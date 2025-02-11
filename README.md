@@ -1,2 +1,2 @@
 # grid
-Example apps for inference.sh
+example apps for inference.sh
