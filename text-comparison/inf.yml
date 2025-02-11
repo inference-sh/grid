@@ -1,0 +1,4 @@
+name: text-comparison
+description: Compare two texts
+version: 0.1.0
+resource: cpu
