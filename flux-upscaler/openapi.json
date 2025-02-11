@@ -1,0 +1,186 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "inference.sh API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/predict": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$defs": {
+                  "File": {
+                    "description": "A class representing a file in the inference.sh ecosystem.\n\nThis class is used to standardize file handling between the worker and API,\nparticularly for outputs that need to be moved out of containers and uploaded.",
+                    "properties": {
+                      "path": {
+                        "title": "Path",
+                        "type": "string"
+                      },
+                      "mime_type": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null,
+                        "title": "Mime Type"
+                      },
+                      "size": {
+                        "anyOf": [
+                          {
+                            "type": "integer"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null,
+                        "title": "Size"
+                      },
+                      "filename": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null,
+                        "title": "Filename"
+                      }
+                    },
+                    "required": [
+                      "path"
+                    ],
+                    "title": "File",
+                    "type": "object"
+                  }
+                },
+                "properties": {
+                  "image": {
+                    "$ref": "#/$defs/File"
+                  },
+                  "target_width": {
+                    "default": 2048,
+                    "title": "Target Width",
+                    "type": "integer"
+                  },
+                  "target_height": {
+                    "default": 2048,
+                    "title": "Target Height",
+                    "type": "integer"
+                  },
+                  "prompt": {
+                    "default": "",
+                    "title": "Prompt",
+                    "type": "string"
+                  },
+                  "negative_prompt": {
+                    "default": "",
+                    "title": "Negative Prompt",
+                    "type": "string"
+                  },
+                  "strength": {
+                    "default": 0.3,
+                    "title": "Strength",
+                    "type": "number"
+                  },
+                  "guidance_scale": {
+                    "default": 7.5,
+                    "title": "Guidance Scale",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "image"
+                ],
+                "title": "AppInput",
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful prediction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$defs": {
+                    "File": {
+                      "description": "A class representing a file in the inference.sh ecosystem.\n\nThis class is used to standardize file handling between the worker and API,\nparticularly for outputs that need to be moved out of containers and uploaded.",
+                      "properties": {
+                        "path": {
+                          "title": "Path",
+                          "type": "string"
+                        },
+                        "mime_type": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": null,
+                          "title": "Mime Type"
+                        },
+                        "size": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": null,
+                          "title": "Size"
+                        },
+                        "filename": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": null,
+                          "title": "Filename"
+                        }
+                      },
+                      "required": [
+                        "path"
+                      ],
+                      "title": "File",
+                      "type": "object"
+                    }
+                  },
+                  "properties": {
+                    "result": {
+                      "$ref": "#/$defs/File"
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ],
+                  "title": "AppOutput",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

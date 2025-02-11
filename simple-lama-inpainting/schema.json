@@ -1,0 +1,137 @@
+{
+  "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mime Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "image": {
+        "$ref": "#/$defs/File",
+        "description": "The image to inpaint"
+      },
+      "mask": {
+        "$ref": "#/$defs/File",
+        "description": "The mask image to inpaint with. Must be the same size as the image."
+      }
+    },
+    "required": [
+      "image",
+      "mask"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mime Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "image": {
+        "$ref": "#/$defs/File",
+        "description": "The inpainted image"
+      }
+    },
+    "required": [
+      "image"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

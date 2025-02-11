@@ -1,0 +1,4 @@
+name: flux-text-to-image
+description: A text to image app with FLUX
+version: 0.1.0
+resource: gpu
