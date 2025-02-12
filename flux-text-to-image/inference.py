@@ -264,7 +264,7 @@ class App(BaseApp):
 
         output_files = []
         for i, image in enumerate(images):
-            output_path = f"/tmp/output_{i}.png"
+            output_path = f"/tmp/output_{i}_{hash(str(torch.rand(1)[0].item()))}.png"
             image.save(output_path)
             output_files.append(File.from_path(output_path))
         return AppOutput(result=output_files)
