@@ -22,21 +22,37 @@
 # fine-tuning enabling code and other elements of the foregoing made publicly available
 # by Tencent in accordance with TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT.
 
-import trimesh
-import xatlas
 
+class RunningStats():
+    def __init__(self) -> None:
+        self.count = 0
+        self.sum = 0
+        self.mean = 0
+        self.min = None
+        self.max = None
 
-def mesh_uv_wrap(mesh):
-    if isinstance(mesh, trimesh.Scene):
-        mesh = mesh.dump(concatenate=True)
+    def add_value(self, value):
+        self.count += 1
+        self.sum += value
+        self.mean = self.sum / self.count
 
-    if len(mesh.faces) > 500000000:
-        raise ValueError("The mesh has more than 500,000,000 faces, which is not supported.")
+        if self.min is None or value < self.min:
+            self.min = value
 
-    vmapping, indices, uvs = xatlas.parametrize(mesh.vertices, mesh.faces)
+        if self.max is None or value > self.max:
+            self.max = value
 
-    mesh.vertices = mesh.vertices[vmapping]
-    mesh.faces = indices
-    mesh.visual.uv = uvs
+    def get_count(self):
+        return self.count
 
-    return mesh
+    def get_sum(self):
+        return self.sum
+
+    def get_mean(self):
+        return self.mean
+
+    def get_min(self):
+        return self.min
+
+    def get_max(self):
+        return self.max

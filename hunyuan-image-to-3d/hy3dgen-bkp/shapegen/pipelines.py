@@ -199,49 +199,40 @@ class Hunyuan3DDiTPipeline:
     def from_pretrained(
         cls,
         model_path,
+        ckpt_name='model.ckpt',
+        config_name='config.yaml',
         device='cuda',
         dtype=torch.float16,
         use_safetensors=None,
-        variant=None,
-        subfolder='hunyuan3d-dit-v2-0',
         **kwargs,
     ):
         original_model_path = model_path
-        # try local path
-        base_dir = os.environ.get('HY3DGEN_MODELS', '~/.cache/hy3dgen')
-        model_path = os.path.expanduser(os.path.join(base_dir, model_path, subfolder))
-        print('Try to load model from local path:', model_path)
         if not os.path.exists(model_path):
-            print('Model path not exists, try to download from huggingface')
-            try:
-                import huggingface_hub
-                # download from huggingface
-                path = huggingface_hub.snapshot_download(repo_id=original_model_path)
-                model_path = os.path.join(path, subfolder)
-            except ImportError:
-                logger.warning(
-                    "You need to install HuggingFace Hub to load models from the hub."
-                )
-                raise RuntimeError(f"Model path {model_path} not found")
-            except Exception as e:
-                raise e
-
+            # try local path
+            base_dir = os.environ.get('HY3DGEN_MODELS', '~/.cache/hy3dgen')
+            model_path = os.path.expanduser(os.path.join(base_dir, model_path, 'hunyuan3d-dit-v2-0'))
+            if not os.path.exists(model_path):
+                try:
+                    import huggingface_hub
+                    # download from huggingface
+                    path = huggingface_hub.snapshot_download(repo_id=original_model_path)
+                    model_path = os.path.join(path, 'hunyuan3d-dit-v2-0')
+                except ImportError:
+                    logger.warning(
+                        "You need to install HuggingFace Hub to load models from the hub."
+                    )
+                    raise RuntimeError(f"Model path {model_path} not found")
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model path {original_model_path} not found")
 
-        extension = 'ckpt' if not use_safetensors else 'safetensors'
-        variant = '' if variant is None else f'.{variant}'
-        ckpt_name = f'model{variant}.{extension}'
-        config_path = os.path.join(model_path, 'config.yaml')
+        config_path = os.path.join(model_path, config_name)
         ckpt_path = os.path.join(model_path, ckpt_name)
-
         return cls.from_single_file(
             ckpt_path,
             config_path,
             device=device,
             dtype=dtype,
             use_safetensors=use_safetensors,
-            variant=variant,
             **kwargs
         )
 
@@ -560,7 +551,6 @@ class Hunyuan3DDiTFlowMatchingPipeline(Hunyuan3DDiTPipeline):
         if hasattr(self.model, 'guidance_embed') and \
             self.model.guidance_embed is True:
             guidance = torch.tensor([guidance_scale] * batch_size, device=device, dtype=dtype)
-            print(f'Using guidance embed with scale {guidance_scale}')
 
         for i, t in enumerate(tqdm(timesteps, disable=not enable_pbar, desc="Diffusion Sampling:")):
             # expand the latents if we are doing classifier free guidance

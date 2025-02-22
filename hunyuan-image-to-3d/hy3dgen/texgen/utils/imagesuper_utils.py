@@ -22,21 +22,23 @@
 # fine-tuning enabling code and other elements of the foregoing made publicly available
 # by Tencent in accordance with TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT.
 
-import trimesh
-import xatlas
+import torch
+from diffusers import StableDiffusionUpscalePipeline
 
+class Image_Super_Net():
+    def __init__(self, config):
+        self.up_pipeline_x4 = StableDiffusionUpscalePipeline.from_pretrained(
+                        'stabilityai/stable-diffusion-x4-upscaler',
+                        torch_dtype=torch.float16,
+                    ).to(config.device)
+        self.up_pipeline_x4.set_progress_bar_config(disable=True)
 
-def mesh_uv_wrap(mesh):
-    if isinstance(mesh, trimesh.Scene):
-        mesh = mesh.dump(concatenate=True)
+    def __call__(self, image, prompt=''):
+        with torch.no_grad():
+            upscaled_image = self.up_pipeline_x4(
+                prompt=[prompt],
+                image=image,
+                num_inference_steps=5,
+            ).images[0]
 
-    if len(mesh.faces) > 500000000:
-        raise ValueError("The mesh has more than 500,000,000 faces, which is not supported.")
-
-    vmapping, indices, uvs = xatlas.parametrize(mesh.vertices, mesh.faces)
-
-    mesh.vertices = mesh.vertices[vmapping]
-    mesh.faces = indices
-    mesh.visual.uv = uvs
-
-    return mesh
+        return upscaled_image
