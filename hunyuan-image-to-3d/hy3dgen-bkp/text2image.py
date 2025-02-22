@@ -51,11 +51,16 @@ class HunyuanDiTPipeline:
             enable_pag=True,
             pag_applied_layers=["blocks.(16|17|18|19)"]
         ).to(device)
-        self.pos_txt = ",白色背景,3D风格,最佳质量"
-        self.neg_txt = "文本,特写,裁剪,出框,最差质量,低质量,JPEG伪影,PGLY,重复,病态," \
-                       "残缺,多余的手指,变异的手,画得不好的手,画得不好的脸,变异,畸形,模糊,脱水,糟糕的解剖学," \
-                       "糟糕的比例,多余的肢体,克隆的脸,毁容,恶心的比例,畸形的肢体,缺失的手臂,缺失的腿," \
-                       "额外的手臂,额外的腿,融合的手指,手指太多,长脖子"
+        # self.pos_txt = ",白色背景,3D风格,最佳质量"
+        # self.neg_txt = "文本,特写,裁剪,出框,最差质量,低质量,JPEG伪影,PGLY,重复,病态," \
+        #                "残缺,多余的手指,变异的手,画得不好的手,画得不好的脸,变异,畸形,模糊,脱水,糟糕的解剖学," \
+        #                "糟糕的比例,多余的肢体,克隆的脸,毁容,恶心的比例,畸形的肢体,缺失的手臂,缺失的腿," \
+        #                "额外的手臂,额外的腿,融合的手指,手指太多,长脖子"
+        self.pos_txt = ",white background,3D style,best quality"
+        self.neg_txt = "text,close-up,cropped,out of frame,worst quality,low quality,JPEG artifacts,PGLY,duplicate,deformed," \
+                       "mutilated,extra fingers,mutated hands,poorly drawn hands,poorly drawn face,mutation,deformed,blurry,dehydrated,bad anatomy," \
+                       "bad proportions,extra limbs,cloned face,disfigured,gross proportions,malformed limbs,missing arms,missing legs," \
+                       "extra arms,extra legs,fused fingers,too many fingers,long neck"
 
     def compile(self):
         # accelarate hunyuan-dit transformer,first inference will cost long time

@@ -23,20 +23,24 @@
 # by Tencent in accordance with TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT.
 
 import trimesh
-import xatlas
 
 
-def mesh_uv_wrap(mesh):
-    if isinstance(mesh, trimesh.Scene):
-        mesh = mesh.dump(concatenate=True)
+def remesh_mesh(mesh_path, remesh_path, method='trimesh'):
+    if method == 'trimesh':
+        mesh_simplify_trimesh(mesh_path, remesh_path)
+    else:
+        raise f'Method {method} has not been implemented.'
 
-    if len(mesh.faces) > 500000000:
-        raise ValueError("The mesh has more than 500,000,000 faces, which is not supported.")
 
-    vmapping, indices, uvs = xatlas.parametrize(mesh.vertices, mesh.faces)
+def mesh_simplify_trimesh(inputpath, outputpath):
+    import pymeshlab
+    ms = pymeshlab.MeshSet()
+    ms.load_new_mesh(inputpath, load_in_a_single_layer=True)
+    ms.save_current_mesh(outputpath.replace('.glb', '.obj'), save_textures=False)
 
-    mesh.vertices = mesh.vertices[vmapping]
-    mesh.faces = indices
-    mesh.visual.uv = uvs
+    courent = trimesh.load(outputpath.replace('.glb', '.obj'), force='mesh')
+    face_num = courent.faces.shape[0]
 
-    return mesh
+    if face_num > 100000:
+        courent = courent.simplify_quadric_decimation(40000)
+    courent.export(outputpath)
