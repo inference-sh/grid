@@ -1,0 +1,142 @@
+{
+  "input": {
+    "properties": {
+      "prompt": {
+        "description": "Text prompt for video generation",
+        "title": "Prompt",
+        "type": "string"
+      },
+      "size": {
+        "default": "1280*720",
+        "description": "Size of the generated video (width*height)",
+        "title": "Size",
+        "type": "string"
+      },
+      "num_frames": {
+        "default": 81,
+        "description": "Number of frames to generate (should be 4n+1)",
+        "title": "Num Frames",
+        "type": "integer"
+      },
+      "fps": {
+        "default": 8,
+        "description": "Frames per second for the output video",
+        "title": "Fps",
+        "type": "integer"
+      },
+      "guidance_scale": {
+        "default": 9.0,
+        "description": "Classifier-free guidance scale",
+        "title": "Guidance Scale",
+        "type": "number"
+      },
+      "num_inference_steps": {
+        "default": 50,
+        "description": "Number of denoising steps",
+        "title": "Num Inference Steps",
+        "type": "integer"
+      },
+      "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": -1,
+        "description": "Random seed for reproducibility (-1 for random)",
+        "title": "Seed"
+      },
+      "negative_prompt": {
+        "default": "",
+        "description": "Negative prompt to guide generation",
+        "title": "Negative Prompt",
+        "type": "string"
+      },
+      "sample_solver": {
+        "default": "unipc",
+        "description": "Solver to use for sampling (unipc or dpm++)",
+        "title": "Sample Solver",
+        "type": "string"
+      },
+      "shift": {
+        "default": 5.0,
+        "description": "Noise schedule shift parameter",
+        "title": "Shift",
+        "type": "number"
+      }
+    },
+    "required": [
+      "prompt"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mime Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "video": {
+        "$ref": "#/$defs/File",
+        "description": "Generated video file"
+      }
+    },
+    "required": [
+      "video"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

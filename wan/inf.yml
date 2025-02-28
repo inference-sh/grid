@@ -1,0 +1,5 @@
+name: wan21-text-to-video
+description: Text to video generation using Wan2.1 (14B) model
+version: 0.1.0
+resource: gpu
+gpu_memory: 40GB
