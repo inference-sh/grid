@@ -3,49 +3,52 @@ import os
 import torch
 import sys
 import tempfile
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Literal
 from pydantic import Field
+import numpy as np
+import subprocess
+from moviepy.editor import ImageSequenceClip
+from huggingface_hub import snapshot_download
+from .wan.text2video import WanT2V
+from .wan.configs import WAN_CONFIGS, SIZE_CONFIGS, SUPPORTED_SIZES
+import random
+
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text prompt for video generation")
-    size: str = Field(default="1280*720", description="Size of the generated video (width*height)")
-    num_frames: int = Field(default=81, description="Number of frames to generate (should be 4n+1)")
-    fps: int = Field(default=8, description="Frames per second for the output video")
+    size: Literal["1280*720", "720*1280", "480*832", "832*480", "1024*1024"] = Field(
+        default="1280*720", 
+        description="Size of the generated video (width*height)"
+    )
+    num_frames: int = Field(
+        default=81, 
+        description="Number of frames to generate (should be 4n+1)"
+    )
+    fps: int = Field(
+        default=8, 
+        description="Frames per second for the output video"
+    )
     guidance_scale: float = Field(default=9.0, description="Classifier-free guidance scale")
-    num_inference_steps: int = Field(default=50, description="Number of denoising steps")
+    num_inference_steps: int = Field(default=20, description="Number of denoising steps")
     seed: Optional[int] = Field(default=-1, description="Random seed for reproducibility (-1 for random)")
     negative_prompt: str = Field(default="", description="Negative prompt to guide generation")
     sample_solver: str = Field(default="unipc", description="Solver to use for sampling (unipc or dpm++)")
     shift: float = Field(default=5.0, description="Noise schedule shift parameter")
+
+    class Config:
+        schema_extra = {
+            "required": ["prompt", "size", "num_frames", "fps"]
+        }
 
 class AppOutput(BaseAppOutput):
     video: File = Field(description="Generated video file")
 
 class App(BaseApp):
     async def setup(self):
-        """Initialize the Wan2.1 model and resources."""
-        # Add Wan2.1 to the Python path
-        import subprocess
-        import os
-        
-        # Clone the Wan2.1 repository if it doesn't exist
-        if not os.path.exists("Wan2.1"):
-            print("Cloning Wan2.1 repository...")
-            subprocess.check_call(
-                ["git", "clone", "https://github.com/Wan-Video/Wan2.1.git"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            print("Repository cloned successfully!")
-        else:
-            print("Wan2.1 repository already exists, skipping clone.")
-        
-        sys.path.append(os.path.abspath("Wan2.1"))
-        
-        # Import Wan2.1 modules
-        from wan import WanT2V
-        from wan.configs import WAN_CONFIGS, SIZE_CONFIGS
-        
+        # Download Wan2.1 model
+        model_path = snapshot_download("Wan-AI/Wan2.1-T2V-14B")
+        print(f"Model downloaded to {model_path}")
+
         # Set up device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device_id = 0 if torch.cuda.is_available() else -1
@@ -55,29 +58,34 @@ class App(BaseApp):
         self.size_configs = SIZE_CONFIGS
         
         # Initialize the model
-        print("Loading Wan2.1 T2V model...")
         self.model = WanT2V(
             config=self.config,
-            checkpoint_dir="Wan2.1",
+            checkpoint_dir=model_path,
             device_id=self.device_id,
             rank=0,
             t5_fsdp=False,
             dit_fsdp=False,
             use_usp=False,
-            t5_cpu=False
+            t5_cpu=True
         )
         print("Model loaded successfully!")
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run video generation on the input prompt."""
-        import numpy as np
-        from moviepy.editor import ImageSequenceClip
-        from wan.configs import SIZE_CONFIGS
+        # Validate inputs
+        task = "t2v-14B"  # We're using the text-to-video model
         
-        # Parse size
-        if input_data.size not in SIZE_CONFIGS:
-            raise ValueError(f"Invalid size: {input_data.size}. Supported sizes: {', '.join(SIZE_CONFIGS.keys())}")
-        size = SIZE_CONFIGS[input_data.size]
+        # Validate size
+        if input_data.size not in SUPPORTED_SIZES[task]:
+            supported_sizes = ", ".join(SUPPORTED_SIZES[task])
+            raise ValueError(f"Unsupported size: {input_data.size}. Supported sizes for {task}: {supported_sizes}")
+        
+        # Validate frame number (should be 4n+1)
+        if (input_data.num_frames - 1) % 4 != 0:
+            raise ValueError(f"Number of frames should be 4n+1, got {input_data.num_frames}")
+        
+        # Set seed
+        seed = input_data.seed if input_data.seed >= 0 else random.randint(0, sys.maxsize)
         
         # Generate the video
         print(f"Generating video for prompt: {input_data.prompt}")
@@ -85,15 +93,15 @@ class App(BaseApp):
         
         video_tensor = self.model.generate(
             input_prompt=input_data.prompt,
-            size=size,
+            size=SIZE_CONFIGS[input_data.size],
             frame_num=input_data.num_frames,
             shift=input_data.shift,
             sample_solver=input_data.sample_solver,
             sampling_steps=input_data.num_inference_steps,
             guide_scale=input_data.guidance_scale,
             n_prompt=input_data.negative_prompt,
-            seed=input_data.seed,
-            offload_model=True
+            seed=seed,
+            offload_model=False
         )
         
         # Convert tensor to numpy frames

@@ -9,6 +9,13 @@
       "size": {
         "default": "1280*720",
         "description": "Size of the generated video (width*height)",
+        "enum": [
+          "1280*720",
+          "720*1280",
+          "480*832",
+          "832*480",
+          "1024*1024"
+        ],
         "title": "Size",
         "type": "string"
       },
@@ -31,7 +38,7 @@
         "type": "number"
       },
       "num_inference_steps": {
-        "default": 50,
+        "default": 20,
         "description": "Number of denoising steps",
         "title": "Num Inference Steps",
         "type": "integer"
