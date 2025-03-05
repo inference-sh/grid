@@ -1,7 +1,6 @@
 # Adapted from https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/attention.py
 
 from dataclasses import dataclass
-from turtle import forward
 from typing import Optional
 
 import torch
