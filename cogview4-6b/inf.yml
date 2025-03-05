@@ -1,0 +1,4 @@
+name: cogview4
+description: A sample app for inference.sh
+version: 0.1.0
+resource: gpu

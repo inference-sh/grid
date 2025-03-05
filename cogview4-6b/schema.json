@@ -1,0 +1,137 @@
+{
+  "input": {
+    "properties": {
+      "prompt": {
+        "description": "Text description of the image to generate. For best results, use detailed descriptions.",
+        "title": "Prompt",
+        "type": "string"
+      },
+      "guidance_scale": {
+        "default": 3.5,
+        "description": "Controls how closely the image follows the prompt. Higher values adhere more strictly to the prompt.",
+        "maximum": 20.0,
+        "minimum": 0.0,
+        "title": "Guidance Scale",
+        "type": "number"
+      },
+      "num_inference_steps": {
+        "default": 50,
+        "description": "Number of denoising steps. More steps generally result in higher quality images but take longer.",
+        "maximum": 100,
+        "minimum": 20,
+        "title": "Num Inference Steps",
+        "type": "integer"
+      },
+      "width": {
+        "default": 1024,
+        "description": "Width of the generated image in pixels. Must be a multiple of 32.",
+        "maximum": 2048,
+        "minimum": 512,
+        "title": "Width",
+        "type": "integer"
+      },
+      "height": {
+        "default": 1024,
+        "description": "Height of the generated image in pixels. Must be a multiple of 32.",
+        "maximum": 2048,
+        "minimum": 512,
+        "title": "Height",
+        "type": "integer"
+      },
+      "negative_prompt": {
+        "default": "",
+        "description": "Text description of elements to avoid in the generated image.",
+        "title": "Negative Prompt",
+        "type": "string"
+      },
+      "num_images_per_prompt": {
+        "default": 1,
+        "description": "Number of images to generate for the prompt. Only the first image will be returned.",
+        "maximum": 4,
+        "minimum": 1,
+        "title": "Num Images Per Prompt",
+        "type": "integer"
+      },
+      "seed": {
+        "default": null,
+        "description": "Random seed for reproducible image generation. Leave empty for random results.",
+        "title": "Seed",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "prompt"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mime Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "images": {
+        "description": "The generated image in PNG format.",
+        "items": {
+          "$ref": "#/$defs/File"
+        },
+        "title": "Images",
+        "type": "array"
+      }
+    },
+    "required": [
+      "images"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}
