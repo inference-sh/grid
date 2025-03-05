@@ -1,2 +1,1 @@
-# grid
-example apps for inference.sh
+the grid. a digital frontier. i tried to picture clusters of information as they moved through the computer. what did they look like? ships, motorcycles? were the circuits like freeways? i kept dreaming of a world i thought i'd never see. and then, one day I got in...
