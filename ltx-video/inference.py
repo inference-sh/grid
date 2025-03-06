@@ -1,0 +1,147 @@
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+import os
+import sys
+import torch
+import tempfile
+import base64
+from typing import Optional, List, Union
+from pathlib import Path
+import imageio
+import numpy as np
+from PIL import Image
+from huggingface_hub import hf_hub_download
+
+# Add LTX-Video to path
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.join(os.path.dirname(__file__), "ltx"))
+
+# Import from LTX-Video
+from ltx_video.pipelines.pipeline_ltx_video import ConditioningItem
+from ltx.inference import (
+    create_ltx_video_pipeline,
+    load_image_to_tensor_with_resize_and_crop,
+    calculate_padding,
+    get_device,
+    prepare_conditioning
+)
+
+class AppInput(BaseAppInput):
+    prompt: str
+    negative_prompt: Optional[str] = "worst quality, inconsistent motion, blurry, jittery, distorted"
+    height: Optional[int] = 480
+    width: Optional[int] = 704
+    num_frames: Optional[int] = 121
+    frame_rate: Optional[int] = 25
+    num_inference_steps: Optional[int] = 40
+    guidance_scale: Optional[float] = 3.0
+    seed: Optional[int] = 171198
+    image: Optional[str] = None  # Base64 encoded image for image-to-video
+
+class AppOutput(BaseAppOutput):
+    video: File
+
+class App(BaseApp):
+    async def setup(self):
+        """Initialize the LTX-Video model."""
+        model_dir = "models"   # The local directory to save downloaded checkpoint
+        hf_hub_download(repo_id="Lightricks/LTX-Video", filename="ltx-video-2b-v0.9.5.safetensors", local_dir=model_dir, local_dir_use_symlinks=False, repo_type='model')
+
+        self.device = get_device()
+        
+        # Path to the model checkpoint
+        self.ckpt_path = os.environ.get("MODEL_PATH", "models/ltx-video-2b-v0.9.5.safetensors")
+        
+        # Create the pipeline
+        self.pipeline = create_ltx_video_pipeline(
+            ckpt_path=self.ckpt_path,
+            precision="bfloat16",
+            text_encoder_model_name_or_path="PixArt-alpha/PixArt-XL-2-1024-MS",
+            device=self.device,
+            enhance_prompt=True,
+            prompt_enhancer_image_caption_model_name_or_path="MiaoshouAI/Florence-2-large-PromptGen-v2.0",
+            prompt_enhancer_llm_model_name_or_path="unsloth/Llama-3.2-3B-Instruct",
+        )
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Run video generation with LTX-Video."""
+        # Set up generator with seed
+        generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
+        
+        # Adjust dimensions to be divisible by 32 and num_frames to be (N * 8 + 1)
+        height_padded = ((input_data.height - 1) // 32 + 1) * 32
+        width_padded = ((input_data.width - 1) // 32 + 1) * 32
+        num_frames_padded = ((input_data.num_frames - 2) // 8 + 1) * 8 + 1
+        
+        padding = calculate_padding(
+            input_data.height, 
+            input_data.width, 
+            height_padded, 
+            width_padded
+        )
+        
+        # Prepare conditioning if image is provided
+        conditioning_items = None
+        if input_data.image:
+            # Decode base64 image
+            image_data = base64.b64decode(input_data.image)
+            image = Image.open(tempfile.NamedTemporaryFile(suffix=".png", delete=False))
+            image.write(image_data)
+            image.close()
+            
+            # Create conditioning item
+            frame_tensor = load_image_to_tensor_with_resize_and_crop(
+                image.filename, input_data.height, input_data.width
+            )
+            frame_tensor = torch.nn.functional.pad(frame_tensor, padding)
+            conditioning_items = [ConditioningItem(frame_tensor, 0, 1.0)]
+        
+        # Prepare input for the pipeline
+        sample = {
+            "prompt": input_data.prompt,
+            "prompt_attention_mask": None,
+            "negative_prompt": input_data.negative_prompt,
+            "negative_prompt_attention_mask": None,
+        }
+        
+        # Run inference
+        images = self.pipeline(
+            num_inference_steps=input_data.num_inference_steps,
+            num_images_per_prompt=1,
+            guidance_scale=input_data.guidance_scale,
+            generator=generator,
+            output_type="pt",
+            height=height_padded,
+            width=width_padded,
+            num_frames=num_frames_padded,
+            frame_rate=input_data.frame_rate,
+            **sample,
+            conditioning_items=conditioning_items,
+            is_video=True,
+            vae_per_channel_normalize=True,
+            enhance_prompt=True,
+        ).images
+        
+        # Crop the padded images to the desired resolution and number of frames
+        (pad_left, pad_right, pad_top, pad_bottom) = padding
+        pad_bottom = -pad_bottom if pad_bottom != 0 else images.shape[3]
+        pad_right = -pad_right if pad_right != 0 else images.shape[4]
+        images = images[:, :, :input_data.num_frames, pad_top:pad_bottom, pad_left:pad_right]
+        
+        # Convert to video
+        video_np = images[0].permute(1, 2, 3, 0).cpu().float().numpy()
+        video_np = (video_np * 255).astype(np.uint8)
+        
+        # Save video to temporary file
+        output_path = "/tmp/output_video.mp4"
+        with imageio.get_writer(output_path, fps=input_data.frame_rate) as video:
+            for frame in video_np:
+                video.append_data(frame)
+        
+        return AppOutput(video=File(path=output_path))
+
+    async def unload(self):
+        """Clean up resources."""
+        # Free up GPU memory
+        if hasattr(self, 'pipeline'):
+            del self.pipeline
+        torch.cuda.empty_cache()
