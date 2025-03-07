@@ -50,21 +50,38 @@
         ],
         "title": "File",
         "type": "object"
+      },
+      "ImageMask": {
+        "properties": {
+          "image": {
+            "$ref": "#/$defs/File",
+            "description": "The image to inpaint"
+          },
+          "mask": {
+            "$ref": "#/$defs/File",
+            "description": "The mask image to inpaint with. Must be the same size as the image."
+          }
+        },
+        "required": [
+          "image",
+          "mask"
+        ],
+        "title": "ImageMask",
+        "type": "object"
       }
     },
     "properties": {
-      "image": {
-        "$ref": "#/$defs/File",
-        "description": "The image to inpaint"
-      },
-      "mask": {
-        "$ref": "#/$defs/File",
-        "description": "The mask image to inpaint with. Must be the same size as the image."
+      "inputs": {
+        "description": "The images to inpaint with. Must be the same size as the image.",
+        "items": {
+          "$ref": "#/$defs/ImageMask"
+        },
+        "title": "Inputs",
+        "type": "array"
       }
     },
     "required": [
-      "image",
-      "mask"
+      "inputs"
     ],
     "title": "AppInput",
     "type": "object"

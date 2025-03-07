@@ -1,7 +1,8 @@
 from .simple_lama import SimpleLama
 from PIL import Image
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
-from pydantic import Field
+from pydantic import Field, BaseModel
+from typing import List
 from io import BytesIO
 from PIL import Image
 import base64
@@ -11,9 +12,12 @@ def image_to_base64(image: Image.Image) -> str:
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
-class AppInput(BaseAppInput):
+class ImageMask(BaseModel):
     image: File = Field(description="The image to inpaint")
     mask: File = Field(description="The mask image to inpaint with. Must be the same size as the image.")
+
+class AppInput(BaseAppInput):
+    inputs: List[ImageMask] = Field(description="The images to inpaint with. Must be the same size as the image.")
 
 class AppOutput(BaseAppOutput):
     image: File = Field(description="The inpainted image")
