@@ -1,5 +1,37 @@
 {
   "input": {
+    "$defs": {
+      "ConditioningImage": {
+        "properties": {
+          "image": {
+            "title": "Image",
+            "type": "string"
+          },
+          "frame_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frame Index"
+          },
+          "strength": {
+            "default": 1.0,
+            "title": "Strength",
+            "type": "number"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "title": "ConditioningImage",
+        "type": "object"
+      }
+    },
     "properties": {
       "prompt": {
         "title": "Prompt",
@@ -101,17 +133,20 @@
         "default": 171198,
         "title": "Seed"
       },
-      "image": {
+      "conditioning_images": {
         "anyOf": [
           {
-            "type": "string"
+            "items": {
+              "$ref": "#/$defs/ConditioningImage"
+            },
+            "type": "array"
           },
           {
             "type": "null"
           }
         ],
         "default": null,
-        "title": "Image"
+        "title": "Conditioning Images"
       }
     },
     "required": [

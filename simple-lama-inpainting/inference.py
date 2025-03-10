@@ -13,8 +13,32 @@ def image_to_base64(image: Image.Image) -> str:
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
 class ImageMask(BaseModel):
-    image: File = Field(description="The image to inpaint")
-    mask: File = Field(description="The mask image to inpaint with. Must be the same size as the image.")
+    image: File = Field(
+        description="The original image you want to fix or modify.",
+        example=File(
+            path="https://example.com/sample-image.jpg",
+            mime_type="image/jpeg",
+            filename="sample-image.jpg"
+        ),
+        default=File(
+            path="/path/to/default-image.jpg",
+            mime_type="image/jpeg",
+            filename="default-image.jpg"
+        )
+    )
+    mask: File = Field(
+        description="The mask image that shows which areas to inpaint (white = replace, black = keep). Must be the same size as the input image.",
+        example=File(
+            path="https://example.com/sample-mask.png",
+            mime_type="image/png",
+            filename="sample-mask.png"
+        ),
+        default=File(
+            path="/path/to/default-mask.png",
+            mime_type="image/png",
+            filename="default-mask.png"
+        )
+    )
 
 class AppInput(BaseAppInput):
     inputs: List[ImageMask] = Field(description="The images to inpaint with. Must be the same size as the image.")

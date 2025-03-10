@@ -1,0 +1,4 @@
+name: caption-videos
+description: A simple app to caption videos
+version: 0.1.0
+resource: cpu

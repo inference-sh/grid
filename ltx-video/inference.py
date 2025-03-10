@@ -4,11 +4,13 @@ import sys
 import torch
 import tempfile
 import base64
-from typing import Optional, List, Union
+import json
+from typing import Optional, List, Union, Dict
 from pathlib import Path
 import imageio
 import numpy as np
 from PIL import Image
+from pydantic import BaseModel
 from huggingface_hub import hf_hub_download
 
 # Add LTX-Video to path
@@ -25,6 +27,11 @@ from ltx.inference import (
     prepare_conditioning
 )
 
+class ConditioningImage(BaseModel):
+    image: str  # Base64 encoded image
+    frame_index: Optional[int] = None  # If None, will be automatically assigned
+    strength: float = 1.0  # Default to maximum strength
+
 class AppInput(BaseAppInput):
     prompt: str
     negative_prompt: Optional[str] = "worst quality, inconsistent motion, blurry, jittery, distorted"
@@ -35,7 +42,7 @@ class AppInput(BaseAppInput):
     num_inference_steps: Optional[int] = 40
     guidance_scale: Optional[float] = 3.0
     seed: Optional[int] = 171198
-    image: Optional[str] = None  # Base64 encoded image for image-to-video
+    conditioning_images: Optional[List[ConditioningImage]] = None  # List of conditioning images with their parameters
 
 class AppOutput(BaseAppOutput):
     video: File
@@ -79,21 +86,76 @@ class App(BaseApp):
             width_padded
         )
         
-        # Prepare conditioning if image is provided
-        conditioning_items = None
-        if input_data.image:
-            # Decode base64 image
-            image_data = base64.b64decode(input_data.image)
-            image = Image.open(tempfile.NamedTemporaryFile(suffix=".png", delete=False))
-            image.write(image_data)
-            image.close()
+        # Prepare conditioning items
+        conditioning_items = []
+        
+        # Handle conditioning images if provided
+        if input_data.conditioning_images and len(input_data.conditioning_images) > 0:
+            # Collect all images with explicit frame indices
+            explicit_frames = []
+            unassigned_images = []
             
-            # Create conditioning item
-            frame_tensor = load_image_to_tensor_with_resize_and_crop(
-                image.filename, input_data.height, input_data.width
-            )
-            frame_tensor = torch.nn.functional.pad(frame_tensor, padding)
-            conditioning_items = [ConditioningItem(frame_tensor, 0, 1.0)]
+            for item in input_data.conditioning_images:
+                if item.frame_index is not None:
+                    explicit_frames.append(item)
+                else:
+                    unassigned_images.append(item)
+            
+            # Assign frame indices to images without explicit indices
+            num_unassigned = len(unassigned_images)
+            if num_unassigned > 0:
+                # Get list of already assigned frames
+                assigned_frames = [item.frame_index for item in explicit_frames]
+                
+                if num_unassigned == 1:
+                    # If there's only one unassigned image, place it at the middle frame
+                    # or at 0 if no explicit frames yet
+                    if not assigned_frames:
+                        unassigned_images[0].frame_index = 0
+                    else:
+                        mid_frame = input_data.num_frames // 2
+                        # Try to avoid collision with explicit frames
+                        while mid_frame in assigned_frames:
+                            mid_frame = (mid_frame + 1) % input_data.num_frames
+                        unassigned_images[0].frame_index = mid_frame
+                else:
+                    # For multiple images, distribute them evenly across available frames
+                    available_frames = [i for i in range(input_data.num_frames) if i not in assigned_frames]
+                    
+                    # If we have fewer available frames than images, we'll have to reuse some frames
+                    if len(available_frames) < num_unassigned:
+                        available_frames = list(range(input_data.num_frames))
+                    
+                    # Select frames at regular intervals from available frames
+                    step = len(available_frames) / num_unassigned
+                    for i, item in enumerate(unassigned_images):
+                        frame_idx = available_frames[int(i * step)]
+                        item.frame_index = frame_idx
+            
+            # Now process all images (both explicit and assigned)
+            all_images = explicit_frames + unassigned_images
+            
+            # Process each conditioning image
+            for item in all_images:
+                # Decode base64 image
+                image_data = base64.b64decode(item.image)
+                temp_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+                temp_file.write(image_data)
+                temp_file.close()
+                
+                # Create conditioning item
+                frame_tensor = load_image_to_tensor_with_resize_and_crop(
+                    temp_file.name, input_data.height, input_data.width
+                )
+                frame_tensor = torch.nn.functional.pad(frame_tensor, padding)
+                
+                # Ensure frame index is within valid range
+                frame_index = max(0, min(item.frame_index, input_data.num_frames - 1))
+                
+                conditioning_items.append(ConditioningItem(frame_tensor, frame_index, item.strength))
+                
+                # Clean up temp file
+                os.unlink(temp_file.name)
         
         # Prepare input for the pipeline
         sample = {
@@ -115,7 +177,7 @@ class App(BaseApp):
             num_frames=num_frames_padded,
             frame_rate=input_data.frame_rate,
             **sample,
-            conditioning_items=conditioning_items,
+            conditioning_items=conditioning_items if conditioning_items else None,
             is_video=True,
             vae_per_channel_normalize=True,
             enhance_prompt=True,

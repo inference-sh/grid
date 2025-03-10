@@ -1,0 +1,4 @@
+name: fast-whisper-large-v3
+description: An optimized version of the Fast Whisper large model for transcription and translation of audio files (uses flash-attn)
+version: 0.1.0
+resource: gpu
