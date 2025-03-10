@@ -70,11 +70,11 @@
       "File": {
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
-          "path": {
-            "title": "Path",
+          "uri": {
+            "title": "Uri",
             "type": "string"
           },
-          "mime_type": {
+          "path": {
             "anyOf": [
               {
                 "type": "string"
@@ -84,7 +84,19 @@
               }
             ],
             "default": null,
-            "title": "Mime Type"
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
           },
           "size": {
             "anyOf": [
@@ -112,7 +124,7 @@
           }
         },
         "required": [
-          "path"
+          "uri"
         ],
         "title": "File",
         "type": "object"

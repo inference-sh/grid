@@ -40,7 +40,7 @@
             "title": "Path",
             "type": "string"
           },
-          "mime_type": {
+          "content_type": {
             "anyOf": [
               {
                 "type": "string"
@@ -105,7 +105,7 @@
             "title": "Path",
             "type": "string"
           },
-          "mime_type": {
+          "content_type": {
             "anyOf": [
               {
                 "type": "string"

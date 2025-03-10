@@ -4,11 +4,11 @@
       "File": {
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
-          "path": {
-            "title": "Path",
+          "uri": {
+            "title": "Uri",
             "type": "string"
           },
-          "mime_type": {
+          "path": {
             "anyOf": [
               {
                 "type": "string"
@@ -18,7 +18,19 @@
               }
             ],
             "default": null,
-            "title": "Mime Type"
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
           },
           "size": {
             "anyOf": [
@@ -46,43 +58,54 @@
           }
         },
         "required": [
-          "path"
+          "uri"
         ],
         "title": "File",
-        "type": "object"
-      },
-      "ImageMask": {
-        "properties": {
-          "image": {
-            "$ref": "#/$defs/File",
-            "description": "The image to inpaint"
-          },
-          "mask": {
-            "$ref": "#/$defs/File",
-            "description": "The mask image to inpaint with. Must be the same size as the image."
-          }
-        },
-        "required": [
-          "image",
-          "mask"
-        ],
-        "title": "ImageMask",
         "type": "object"
       }
     },
     "properties": {
-      "inputs": {
-        "description": "The images to inpaint with. Must be the same size as the image.",
-        "items": {
-          "$ref": "#/$defs/ImageMask"
+      "image": {
+        "$ref": "#/$defs/File",
+        "default": {
+          "uri": "https://1nf.sh/samples/bike.png",
+          "path": "/tmp/tmpcyank64u.png",
+          "content_type": "image/png",
+          "size": 3955501,
+          "filename": "tmpcyank64u.png"
         },
-        "title": "Inputs",
-        "type": "array"
+        "description": "The original image you want to fix or modify.",
+        "examples": [
+          {
+            "content_type": "image/png",
+            "filename": "tmpradco635.png",
+            "path": "/tmp/tmpradco635.png",
+            "size": 3955501,
+            "uri": "https://1nf.sh/samples/bike.png"
+          }
+        ]
+      },
+      "mask": {
+        "$ref": "#/$defs/File",
+        "default": {
+          "uri": "https://1nf.sh/samples/bike_mask.png",
+          "path": "/tmp/tmptg01p6az.png",
+          "content_type": "image/png",
+          "size": 20646,
+          "filename": "tmptg01p6az.png"
+        },
+        "description": "The mask image that shows which areas to inpaint (white = replace, black = keep). Must be the same size as the input image.",
+        "examples": [
+          {
+            "content_type": "image/png",
+            "filename": "tmpmo7_kdi6.png",
+            "path": "/tmp/tmpmo7_kdi6.png",
+            "size": 20646,
+            "uri": "https://1nf.sh/samples/bike_mask.png"
+          }
+        ]
       }
     },
-    "required": [
-      "inputs"
-    ],
     "title": "AppInput",
     "type": "object"
   },
@@ -91,11 +114,11 @@
       "File": {
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
-          "path": {
-            "title": "Path",
+          "uri": {
+            "title": "Uri",
             "type": "string"
           },
-          "mime_type": {
+          "path": {
             "anyOf": [
               {
                 "type": "string"
@@ -105,7 +128,19 @@
               }
             ],
             "default": null,
-            "title": "Mime Type"
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
           },
           "size": {
             "anyOf": [
@@ -133,7 +168,7 @@
           }
         },
         "required": [
-          "path"
+          "uri"
         ],
         "title": "File",
         "type": "object"
