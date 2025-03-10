@@ -1,4 +1,4 @@
 name: flux-upscaler  # Change this to your username/appname
 description: Upscale images and videos with Flux
 version: 0.1.0
-resource: gpu
+resource_type: gpu

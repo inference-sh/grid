@@ -1,12 +1,15 @@
 pydantic >= 2.0.0
 inferencesh
-torch==2.5.1
+numpy
+torch
+torchvision
+xformers
+accelerate
 diffusers
 transformers
 sentencepiece
 huggingface_hub
-hf-transfer==0.1.9
-numpy==1.22.4
-opencv_contrib_python_headless==4.10.0.84
-Pillow==11.1.0
-torchao==0.8.0
+hf-transfer
+opencv_contrib_python_headless
+Pillow
+torchao

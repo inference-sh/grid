@@ -1,0 +1,4 @@
+name: video-interpolation
+description: A video interpolation app using the RIFE model
+version: 0.1.0
+resource: gpu

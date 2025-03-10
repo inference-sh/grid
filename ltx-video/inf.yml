@@ -1,7 +1,7 @@
 name: ltx-video
 description: Generate high-quality videos with LTX-Video model
 version: 0.1.0
-resource: gpu
+resource_type: gpu
 gpu_memory: 16GB
 env:
   MODEL_PATH: /models/ltx-video-2b-v0.9.5.safetensors

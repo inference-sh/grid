@@ -1,4 +1,4 @@
 name: whisper-v3-large
 description: A large-sized Whisper model for transcription and translation of audio files.
 version: 0.1.0
-resource: gpu
+resource_type: gpu

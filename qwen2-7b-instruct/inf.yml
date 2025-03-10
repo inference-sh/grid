@@ -1,4 +1,4 @@
 name: qwen2-7b-instruct
 description: Qwen2-7B-Instruct
 version: 0.1.0
-resource: gpu
+resource_type: gpu

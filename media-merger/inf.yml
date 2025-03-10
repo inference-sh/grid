@@ -1,4 +1,4 @@
 name: media-merger
 description: An application that merges multiple videos and images with customizable transitions
 version: 0.1.0
-resource: cpu
+resource_type: cpu

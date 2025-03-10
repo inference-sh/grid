@@ -1,4 +1,4 @@
 name: hunyuan-image-to-3d
 description: A text to 3d app with Hunyuan
 version: 0.1.0
-resource: gpu
+resource_type: gpu

@@ -69,17 +69,17 @@
         "$ref": "#/$defs/File",
         "default": {
           "uri": "https://1nf.sh/samples/bike.png",
-          "path": "/tmp/tmpcyank64u.png",
+          "path": "/tmp/tmpnvpey3s1.png",
           "content_type": "image/png",
           "size": 3955501,
-          "filename": "tmpcyank64u.png"
+          "filename": "tmpnvpey3s1.png"
         },
         "description": "The original image you want to fix or modify.",
         "examples": [
           {
             "content_type": "image/png",
-            "filename": "tmpradco635.png",
-            "path": "/tmp/tmpradco635.png",
+            "filename": "tmpng1wbbku.png",
+            "path": "/tmp/tmpng1wbbku.png",
             "size": 3955501,
             "uri": "https://1nf.sh/samples/bike.png"
           }
@@ -89,17 +89,17 @@
         "$ref": "#/$defs/File",
         "default": {
           "uri": "https://1nf.sh/samples/bike_mask.png",
-          "path": "/tmp/tmptg01p6az.png",
+          "path": "/tmp/tmpv72jvgt3.png",
           "content_type": "image/png",
           "size": 20646,
-          "filename": "tmptg01p6az.png"
+          "filename": "tmpv72jvgt3.png"
         },
         "description": "The mask image that shows which areas to inpaint (white = replace, black = keep). Must be the same size as the input image.",
         "examples": [
           {
             "content_type": "image/png",
-            "filename": "tmpmo7_kdi6.png",
-            "path": "/tmp/tmpmo7_kdi6.png",
+            "filename": "tmpgqo0gs_7.png",
+            "path": "/tmp/tmpgqo0gs_7.png",
             "size": 20646,
             "uri": "https://1nf.sh/samples/bike_mask.png"
           }
