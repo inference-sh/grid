@@ -1,0 +1,4 @@
+name: wan2gp-text-to-video
+description: Text to video generation using Wan2.1 (14B) model
+version: 0.1.0
+resource_type: gpu

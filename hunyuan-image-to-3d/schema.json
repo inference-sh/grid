@@ -5,8 +5,16 @@
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
           "uri": {
-            "title": "Uri",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
           },
           "path": {
             "anyOf": [
@@ -57,9 +65,6 @@
             "title": "Filename"
           }
         },
-        "required": [
-          "uri"
-        ],
         "title": "File",
         "type": "object"
       }
@@ -138,8 +143,16 @@
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
           "uri": {
-            "title": "Uri",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
           },
           "path": {
             "anyOf": [
@@ -190,9 +203,6 @@
             "title": "Filename"
           }
         },
-        "required": [
-          "uri"
-        ],
         "title": "File",
         "type": "object"
       }

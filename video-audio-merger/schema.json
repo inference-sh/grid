@@ -70,47 +70,25 @@
       }
     },
     "properties": {
-      "image": {
+      "video_file": {
         "$ref": "#/$defs/File",
-        "default": {
-          "uri": "https://1nf.sh/samples/bike.png",
-          "path": "/tmp/tmp208xypiz.png",
-          "content_type": "image/png",
-          "size": 3955501,
-          "filename": "tmp208xypiz.png"
-        },
-        "description": "The original image you want to fix or modify.",
-        "examples": [
-          {
-            "content_type": "image/png",
-            "filename": "tmpflgv0bxt.png",
-            "path": "/tmp/tmpflgv0bxt.png",
-            "size": 3955501,
-            "uri": "https://1nf.sh/samples/bike.png"
-          }
-        ]
+        "description": "The video file to process"
       },
-      "mask": {
+      "audio_file": {
         "$ref": "#/$defs/File",
-        "default": {
-          "uri": "https://1nf.sh/samples/bike_mask.png",
-          "path": "/tmp/tmpt7u08kax.png",
-          "content_type": "image/png",
-          "size": 20646,
-          "filename": "tmpt7u08kax.png"
-        },
-        "description": "The mask image that shows which areas to inpaint (white = replace, black = keep). Must be the same size as the input image.",
-        "examples": [
-          {
-            "content_type": "image/png",
-            "filename": "tmp9pjm_htn.png",
-            "path": "/tmp/tmp9pjm_htn.png",
-            "size": 20646,
-            "uri": "https://1nf.sh/samples/bike_mask.png"
-          }
-        ]
+        "description": "The audio file to merge with the video"
+      },
+      "preserve_original_audio": {
+        "default": false,
+        "description": "Whether to preserve the original video audio and add the new audio on top (True) or replace it entirely (False)",
+        "title": "Preserve Original Audio",
+        "type": "boolean"
       }
     },
+    "required": [
+      "video_file",
+      "audio_file"
+    ],
     "title": "AppInput",
     "type": "object"
   },
@@ -185,13 +163,13 @@
       }
     },
     "properties": {
-      "image": {
+      "merged_video": {
         "$ref": "#/$defs/File",
-        "description": "The inpainted image"
+        "description": "The video with merged audio"
       }
     },
     "required": [
-      "image"
+      "merged_video"
     ],
     "title": "AppOutput",
     "type": "object"
