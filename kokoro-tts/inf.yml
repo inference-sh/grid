@@ -2,3 +2,4 @@ name: kokoro-tts
 description: Text-to-Speech application using the Kokoro-82M model
 version: 0.1.0
 resource_type: gpu
+category: audio

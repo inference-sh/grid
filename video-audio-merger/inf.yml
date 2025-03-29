@@ -2,3 +2,4 @@ name: video-audio-merger
 description: An app that merges video and audio files, with an option to preserve original video audio
 version: 0.1.0
 resource_type: cpu
+category: video

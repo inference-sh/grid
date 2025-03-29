@@ -2,3 +2,4 @@ name: video-audio-extractor
 description: An app that extracts audio from videos and creates silent videos
 version: 0.1.0
 resource_type: cpu
+category: audio

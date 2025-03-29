@@ -2,3 +2,4 @@ name: cogview4-6b
 description: A sample app for inference.sh
 version: 0.1.0
 resource_type: gpu
+category: image
