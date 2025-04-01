@@ -1,0 +1,4 @@
+name: text-reverse
+description: a text reverse app
+version: 0.1.0
+resource_type: cpu
