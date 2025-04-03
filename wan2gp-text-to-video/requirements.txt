@@ -20,5 +20,3 @@ mmgp==3.2.3
 peft==0.14.0
 safetensors
 huggingface_hub
-flash_attn
-git+https://github.com/thu-ml/SageAttention.git

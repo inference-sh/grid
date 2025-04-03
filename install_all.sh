@@ -1,0 +1,1 @@
+for dir in */; do (cd "$dir" && infsh deploy); done
