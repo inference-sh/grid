@@ -1,0 +1,5 @@
+name: omni-zero
+description: SDXL zero shot stylised portrait creation
+version: 0.1.0
+resource_type: gpu
+category: image
