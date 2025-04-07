@@ -7,6 +7,7 @@ import tempfile
 from kokoro import KPipeline
 from pydub import AudioSegment
 import numpy as np
+import torch
 
 # Define the supported voice types with descriptive human-readable values
 class VoiceType(str, Enum):
@@ -72,8 +73,6 @@ class App(BaseApp):
     async def setup(self):
         """Initialize the Kokoro TTS model."""
         
-        print("FIRST PASS")
-
         # Map voice types to their corresponding Kokoro voice IDs
         self.voice_id_map = {
             VoiceType.AMERICAN_FEMALE_HEART: "af_heart",
@@ -124,11 +123,19 @@ class App(BaseApp):
             "pm": "p"
         }
         
+        # Check if CUDA is available
+        self.cuda_available = torch.cuda.is_available()
+        
         # Pre-load pipelines for all supported languages
         self.pipelines = {}
-        print("SECOND PASS")
         for lang_code in ["a", "b", "e", "f", "h", "i", "j", "p", "z"]: 
             self.pipelines[lang_code] = KPipeline(lang_code=lang_code)
+        
+        # Add custom pronunciation for "kokoro"
+        if "a" in self.pipelines:
+            self.pipelines["a"].g2p.lexicon.golds['kokoro'] = 'kˈOkəɹO'
+        if "b" in self.pipelines:
+            self.pipelines["b"].g2p.lexicon.golds['kokoro'] = 'kˈQkəɹQ'
         
         print("Kokoro TTS model initialized successfully")
 

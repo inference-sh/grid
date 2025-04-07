@@ -1,48 +1,31 @@
-# PyTorch and related packages
+pydantic
+inferencesh
 torch==2.2.2
 torchvision==0.17.2
-torchaudio
---extra-index-url https://download.pytorch.org/whl/cu121
-xformers==0.0.25.post1
+xformers
 triton==2.2.0
 
-# Diffusion models and transformers
-diffusers==0.11.1
+diffusers[torch]==0.11.1
 transformers==4.38.0
 huggingface-hub==0.25.2
-
-# Image, video and audio processing
 imageio==2.27.0
 decord==0.6.0
-opencv-python==4.9.0.80
-mediapipe==0.10.11
-av==11.0.0
-python_speech_features==0.6
-librosa==0.10.1
-scenedetect==0.6.1
-ffmpeg-python==0.2.0
-face-alignment==1.4.1
-moviepy
-
-# ML utilities
 accelerate==0.26.1
 einops==0.7.0
 omegaconf==2.3.0
 safetensors==0.4.2
+opencv-python==4.9.0.80
+mediapipe==0.10.11
+av==11.0.0
 torch-fidelity==0.3.0
 torchmetrics==1.3.1
+python_speech_features==0.6
+librosa==0.10.1
+scenedetect==0.6.1
+ffmpeg-python==0.2.0
 lpips==0.1.4
+face-alignment==1.4.1
 ninja==1.11.1.1
-
-# Data handling and visualization
 pandas==2.0.3
 numpy==1.24.4
-scipy
-matplotlib
-
-# API and utilities
 gradio==5.12.0
-pydantic >= 2.0.0
-inferencesh
-tqdm
-tkinter

@@ -1,27 +1,88 @@
 {
   "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
     "properties": {
       "video_path": {
-        "$ref": "#/$defs/File",
-        "description": "Input video file for lip syncing",
-        "title": "Video Path"
+        "$ref": "#/$defs/File"
       },
       "audio_path": {
-        "$ref": "#/$defs/File",
-        "description": "Input audio file to sync with the video",
-        "title": "Audio Path"
+        "$ref": "#/$defs/File"
       },
       "inference_steps": {
         "default": 20,
-        "description": "Number of inference steps for the lip sync model",
-        "minimum": 1,
         "title": "Inference Steps",
         "type": "integer"
       },
       "guidance_scale": {
         "default": 1.5,
-        "description": "Guidance scale for the lip sync model",
-        "minimum": 0.0,
         "title": "Guidance Scale",
         "type": "number"
       }
@@ -31,14 +92,36 @@
       "audio_path"
     ],
     "title": "AppInput",
-    "type": "object",
+    "type": "object"
+  },
+  "output": {
     "$defs": {
       "File": {
         "description": "A class representing a file in the inference.sh ecosystem.",
         "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
           "path": {
-            "title": "Path",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
           },
           "content_type": {
             "anyOf": [
@@ -50,7 +133,7 @@
               }
             ],
             "default": null,
-            "title": "Mime Type"
+            "title": "Content Type"
           },
           "size": {
             "anyOf": [
@@ -77,77 +160,19 @@
             "title": "Filename"
           }
         },
-        "required": [
-          "path"
-        ],
         "title": "File",
         "type": "object"
       }
-    }
-  },
-  "output": {
+    },
     "properties": {
       "result_video": {
-        "$ref": "#/$defs/File",
-        "description": "The output video with synchronized lips"
+        "$ref": "#/$defs/File"
       }
     },
     "required": [
       "result_video"
     ],
     "title": "AppOutput",
-    "type": "object",
-    "$defs": {
-      "File": {
-        "description": "A class representing a file in the inference.sh ecosystem.",
-        "properties": {
-          "path": {
-            "title": "Path",
-            "type": "string"
-          },
-          "content_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Mime Type"
-          },
-          "size": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Size"
-          },
-          "filename": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Filename"
-          }
-        },
-        "required": [
-          "path"
-        ],
-        "title": "File",
-        "type": "object"
-      }
-    }
+    "type": "object"
   }
 }

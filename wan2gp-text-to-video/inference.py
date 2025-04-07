@@ -11,7 +11,13 @@ from moviepy.editor import ImageSequenceClip
 from huggingface_hub import snapshot_download, hf_hub_download
 import shutil
 import requests
+from PIL import Image
 
+from mmgp import offload, safetensors2, profile_type
+from .wan.configs import MAX_AREA_CONFIGS, WAN_CONFIGS, SUPPORTED_SIZES
+from .wan.modules.attention import get_attention_modes
+from .wan import WanT2V
+from mmgp import offload
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text prompt for video generation")
@@ -45,20 +51,7 @@ class AppOutput(BaseAppOutput):
 
 class App(BaseApp):
     async def setup(self):
-        # Clone the Wan2GP repository
-        if os.path.exists("Wan2GP"):
-            #subprocess.run(["rm", "-rf", "Wan2GP"], check=True)
-            print("Wan2GP already exists")
-        else:
-            subprocess.run(["git", "clone", "https://github.com/deepbeepmeep/Wan2GP.git"], check=True)
-
-        # Add Wan2GP to the path so we can import the wan module
-        sys.path.append(os.path.abspath("Wan2GP"))
-
-        from mmgp import offload, safetensors2, profile_type
-        from wan.configs import MAX_AREA_CONFIGS, WAN_CONFIGS, SUPPORTED_SIZES
-        from wan.modules.attention import get_attention_modes
-        
+       
         # Create directories for models and loras
         os.makedirs("ckpts", exist_ok=True)
         os.makedirs("loras", exist_ok=True)
@@ -80,31 +73,19 @@ class App(BaseApp):
     def download_models(self):
         """Download required model files from HuggingFace"""
         # Define model files to download
-        transformer_filename = "ckpts/wan2.1_text2video_14B_quanto_int8.safetensors"
-        text_encoder_filename = "ckpts/models_t5_umt5-xxl-enc-quanto_int8.safetensors"
-        
-        files_to_download = [
-            "Wan2.1_VAE.pth",
-            "models_clip_open-clip-xlm-roberta-large-vit-huge-14.pth",
-            "wan2.1_text2video_14B_quanto_int8.safetensors",
-            "models_t5_umt5-xxl-enc-quanto_int8.safetensors"
-        ]
-        
         repo_id = "DeepBeepMeep/Wan2.1"
-        
-        for file in files_to_download:
-            target_path = os.path.join("ckpts", file)
-            if not os.path.exists(target_path):
-                print(f"Downloading {file}...")
-                hf_hub_download(repo_id=repo_id, filename=file, local_dir="ckpts")
-                
+
+        self.transformer_filename = hf_hub_download(repo_id=repo_id, filename="wan2.1_text2video_14B_quanto_int8.safetensors")
+        self.text_encoder_filename = hf_hub_download(repo_id=repo_id, filename="models_t5_umt5-xxl-enc-quanto_int8.safetensors")
+
+        self.vae_filename = hf_hub_download(repo_id=repo_id, filename="Wan2.1_VAE_bf16.safetensors")
+        self.clip_filename = hf_hub_download(repo_id=repo_id, filename="models_clip_open-clip-xlm-roberta-large-vit-huge-14-bf16.safetensors")
+
         print("All model files downloaded successfully!")
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run video generation with Wan2GP optimizations."""
         # Import necessary modules
-        from wan import WanT2V
-        from mmgp import offload
         
         # Parse size
         width, height = map(int, input_data.size.split('x'))
@@ -112,22 +93,25 @@ class App(BaseApp):
         
         # Load model with optimizations
         print("Loading model...")
-        transformer_filename = "ckpts/wan2.1_text2video_14B_quanto_int8.safetensors"
-        text_encoder_filename = "ckpts/models_t5_umt5-xxl-enc-quanto_int8.safetensors"
-        
+        checkpoint_dir = "/".join(self.vae_filename.split("/")[:-1])
+        print(self.transformer_filename)
+        print(self.text_encoder_filename)
+        print(self.vae_filename)
+        print(self.clip_filename)
+        print(checkpoint_dir)
         config = self.WAN_CONFIGS['t2v-14B']
         
         # Initialize the model
         wan_model = WanT2V(
             config=config,
-            checkpoint_dir="ckpts",
+            checkpoint_dir=checkpoint_dir,
             device_id=self.device_id,
             rank=0,
             t5_fsdp=False,
             dit_fsdp=False,
             use_usp=False,
-            model_filename=transformer_filename,
-            text_encoder_filename=text_encoder_filename
+            model_filename=self.transformer_filename,
+            text_encoder_filename=self.text_encoder_filename
         )
 
         # This is needed because Wan2GP gradio app has a _interrupt attribute which the original Wan does not have
@@ -245,10 +229,30 @@ class App(BaseApp):
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
             output_path = temp_file.name
         
-        # Create and save the video
+        # Save video using FFmpeg with Safari-specific compatibility settings
         print(f"Saving video to {output_path}...")
-        clip = ImageSequenceClip([frame for frame in video_np], fps=input_data.fps)
-        clip.write_videofile(output_path, codec="libx264", verbose=False, logger=None)
+        # First save frames as temporary PNG files
+        temp_dir = tempfile.mkdtemp()
+        for i, frame in enumerate(video_np):
+            frame_path = os.path.join(temp_dir, f"frame_{i:05d}.png")
+            Image.fromarray(frame).save(frame_path)
+
+        # Use FFmpeg with proven Safari compatibility settings
+        ffmpeg_cmd = [
+            "ffmpeg", "-y",
+            "-framerate", str(input_data.fps),
+            "-i", os.path.join(temp_dir, "frame_%05d.png"),
+            "-c:v", "libx264",
+            "-profile:v", "main",  # Critical for Safari
+            "-pix_fmt", "yuv420p",  # Critical for Safari
+            "-movflags", "+faststart",  # Helps with streaming
+            "-crf", "23",  # Reasonable quality
+            output_path
+        ]
+        subprocess.run(ffmpeg_cmd, check=True, capture_output=True)
+
+        # Clean up temporary files
+        shutil.rmtree(temp_dir)
         
         return AppOutput(video=File(path=output_path))
 
