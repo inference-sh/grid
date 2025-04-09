@@ -128,7 +128,7 @@ class App(BaseApp):
         
         # Pre-load pipelines for all supported languages
         self.pipelines = {}
-        for lang_code in ["a", "b", "e", "f", "h", "i", "j", "p", "z"]: 
+        for lang_code in ["a", "b"]: 
             self.pipelines[lang_code] = KPipeline(lang_code=lang_code)
         
         # Add custom pronunciation for "kokoro"
