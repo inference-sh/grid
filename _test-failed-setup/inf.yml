@@ -1,0 +1,5 @@
+name: _test-failed-setup
+description: A test app for failed setup
+version: 0.1.0
+resource_type: cpu
+category: text

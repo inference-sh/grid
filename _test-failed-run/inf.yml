@@ -1,0 +1,5 @@
+name: _test-failed-run
+description: A test app for failed run
+version: 0.1.0
+resource_type: cpu
+category: text
