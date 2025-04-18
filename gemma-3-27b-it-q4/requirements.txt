@@ -1,0 +1,7 @@
+pydantic >= 2.0.0
+inferencesh
+
+huggingface_hub==0.25.0
+hf-transfer==0.1.9
+
+llama-cpp-python
