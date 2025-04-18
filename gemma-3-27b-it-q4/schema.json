@@ -54,36 +54,6 @@
               "content": "The capital of France is Paris.",
               "role": "assistant"
             }
-          ],
-          [
-            {
-              "content": "What is the weather like today?",
-              "role": "user"
-            },
-            {
-              "content": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location.",
-              "role": "assistant"
-            }
-          ],
-          [
-            {
-              "content": "Can you help me write a poem about spring?",
-              "role": "user"
-            },
-            {
-              "content": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth.",
-              "role": "assistant"
-            }
-          ],
-          [
-            {
-              "content": "Explain quantum computing in simple terms",
-              "role": "user"
-            },
-            {
-              "content": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems.",
-              "role": "assistant"
-            }
           ]
         ],
         "items": {
@@ -96,9 +66,7 @@
         "description": "The user prompt to use for the model",
         "examples": [
           "What is the capital of France?",
-          "What is the weather like today?",
-          "Can you help me write a poem about spring?",
-          "Explain quantum computing in simple terms"
+          "Can you help me write a poem about spring?"
         ],
         "title": "User Prompt",
         "type": "string"

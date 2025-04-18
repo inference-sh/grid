@@ -3,3 +3,5 @@ description: Gemma 3 27B Instruct [Q4_K]
 version: 0.1.0
 resource_type: gpu
 category: text
+env:
+  CMAKE_ARGS: "-DGGML_CUDA=on"
