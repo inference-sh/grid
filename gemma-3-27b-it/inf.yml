@@ -1,0 +1,5 @@
+name: gemma-3-27b-it
+description: Gemma 3 27B
+version: 0.1.0
+resource_type: gpu
+category: text

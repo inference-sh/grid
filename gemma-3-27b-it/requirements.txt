@@ -1,0 +1,9 @@
+pydantic>=2.0.0
+inferencesh
+torch
+transformers>=4.50.0
+accelerate
+sentencepiece
+huggingface_hub
+hf-transfer
+pillow
