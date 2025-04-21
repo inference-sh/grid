@@ -133,10 +133,10 @@ class App(BaseApp):
         # Apply chat template and prepare inputs
         prompt = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, return_dict=True, return_tensors="pt")
         print(prompt)
-        image = PIL.Image.open(input_data.image.path)
+        images = [PIL.Image.open(input_data.image.path).convert("RGB")] if input_data.image else None
         model_inputs = self.processor(
             text=prompt,
-            images=[image],
+            images=images,
             return_tensors="pt"
         ).to(self.device)
         streamer = TextIteratorStreamer(self.processor.tokenizer, skip_prompt=True, decode_kwargs={"skip_special_tokens": True})
@@ -144,7 +144,7 @@ class App(BaseApp):
         generation_kwargs = dict(
             **model_inputs,
             streamer=streamer,
-            max_new_tokens=100,
+            max_new_tokens=20736,
             do_sample=False,
             # temperature=0.7,
             # top_p=0.95
