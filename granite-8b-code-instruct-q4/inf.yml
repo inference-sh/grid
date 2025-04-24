@@ -1,0 +1,7 @@
+name: granite-8b-code-instruct-q4
+description: Granite 8B Code Instruct [Q4_K]
+version: 0.1.0
+resource_type: gpu
+category: chat
+env:
+  CMAKE_ARGS: "-DGGML_CUDA=on"
