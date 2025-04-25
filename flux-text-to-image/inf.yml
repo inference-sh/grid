@@ -1,5 +1,5 @@
-name: flux-text-to-image
-description: A text to image app with FLUX
+name: flux.1-dev
+description: a text to image app with flux.1-dev
 version: 0.1.0
 resource_type: gpu
 category: image

@@ -239,7 +239,7 @@ class App(BaseApp):
         self.pipe = load_pipeline(
             pipeline=pipe,
             fuse_attn_projections=True,
-            compile=True,
+            # compile=True,
             # quantization="fp8dq",
             # sparsify=False,
             # dtype=torch.bfloat16,
