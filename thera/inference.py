@@ -7,6 +7,9 @@ from huggingface_hub import hf_hub_download
 from .model import build_thera
 from .super_resolve import process
 
+import sys
+print(f"Python version: {sys.version}")
+
 class AppInput(BaseAppInput):
     image: File  # Input image file
     scale: float = 3.92  # Default scaling factor
