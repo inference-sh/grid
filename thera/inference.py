@@ -1,4 +1,5 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from pydantic import Field
 import pickle
 import numpy as np
 import jax
@@ -11,10 +12,10 @@ import sys
 print(f"Python version: {sys.version}")
 
 class AppInput(BaseAppInput):
-    image: File  # Input image file
-    scale: float = 3.92  # Default scaling factor
-    model: str = "edsr"  # Model choice: "edsr" or "rdn"
-    do_ensemble: bool = False  # Whether to use ensemble
+    image: File = Field(description="Input image file")  # Input image file
+    scale: float = Field(default=3.92, description="Default scaling factor")  # Default scaling factor
+    model: str = Field(default="edsr", description="Model choice: 'edsr' or 'rdn'")  # Model choice: "edsr" or "rdn"
+    do_ensemble: bool = Field(default=False, description="Whether to use ensemble")  # Whether to use ensemble
 
 class AppOutput(BaseAppOutput):
     result: File  # Output super-resolved image file

@@ -71,20 +71,24 @@
     },
     "properties": {
       "image": {
-        "$ref": "#/$defs/File"
+        "$ref": "#/$defs/File",
+        "description": "Input image file"
       },
       "scale": {
         "default": 3.92,
+        "description": "Default scaling factor",
         "title": "Scale",
         "type": "number"
       },
       "model": {
         "default": "edsr",
+        "description": "Model choice: 'edsr' or 'rdn'",
         "title": "Model",
         "type": "string"
       },
       "do_ensemble": {
         "default": false,
+        "description": "Whether to use ensemble",
         "title": "Do Ensemble",
         "type": "boolean"
       }
