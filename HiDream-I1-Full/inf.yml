@@ -1,0 +1,5 @@
+name: HiDream-I1-Full
+description: HiDream-I1 is a new open-source image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality within seconds.
+version: 0.1.0
+resource_type: gpu
+category: image

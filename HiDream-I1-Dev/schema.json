@@ -1,0 +1,120 @@
+{
+  "input": {
+    "properties": {
+      "prompt": {
+        "description": "The prompt to generate an image from",
+        "title": "Prompt",
+        "type": "string"
+      },
+      "resolution": {
+        "choices": [
+          "1024 \u00d7 1024 (Square)",
+          "768 \u00d7 1360 (Portrait)",
+          "1360 \u00d7 768 (Landscape)",
+          "880 \u00d7 1168 (Portrait)",
+          "1168 \u00d7 880 (Landscape)",
+          "1248 \u00d7 832 (Landscape)",
+          "832 \u00d7 1248 (Portrait)"
+        ],
+        "default": "1024 \u00d7 1024 (Square)",
+        "description": "The resolution of the generated image",
+        "title": "Resolution",
+        "type": "string"
+      },
+      "seed": {
+        "default": -1,
+        "description": "The seed for the random number generator",
+        "maximum": 1000000,
+        "minimum": -1,
+        "title": "Seed",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "prompt"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "result": {
+        "$ref": "#/$defs/File"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}
