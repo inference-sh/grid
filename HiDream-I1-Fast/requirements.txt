@@ -3,7 +3,8 @@ inferencesh
 
 torch>=2.5.1
 torchvision>=0.20.1
-diffusers>=0.32.1
-transformers>=4.47.1
+sentencepiece
+git+https://github.com/huggingface/diffusers.git@main
+transformers
 einops>=0.7.0
 accelerate>=1.2.1

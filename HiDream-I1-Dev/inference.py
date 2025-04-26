@@ -1,9 +1,10 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 import torch
-from .hi_diffusers import HiDreamImagePipeline, HiDreamImageTransformer2DModel
-from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
-from .hi_diffusers.schedulers.flash_flow_match import FlashFlowMatchEulerDiscreteScheduler
+from diffusers.pipelines import HiDreamImagePipeline
+from diffusers.models import HiDreamImageTransformer2DModel
+from diffusers.schedulers import UniPCMultistepScheduler
+from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
 
 MODEL_PREFIX = "HiDream-ai"
@@ -16,21 +17,21 @@ MODEL_CONFIGS = {
         "guidance_scale": 0.0,
         "num_inference_steps": 28,
         "shift": 6.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler
+        "scheduler": FlowMatchEulerDiscreteScheduler
     },
     "full": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Full",
         "guidance_scale": 5.0,
         "num_inference_steps": 50,
         "shift": 3.0,
-        "scheduler": FlowUniPCMultistepScheduler
+        "scheduler": UniPCMultistepScheduler
     },
     "fast": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Fast",
         "guidance_scale": 0.0,
         "num_inference_steps": 16,
         "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler
+        "scheduler": FlowMatchEulerDiscreteScheduler
     }
 }
 
@@ -73,7 +74,7 @@ def parse_resolution(resolution_str):
 class App(BaseApp):
     async def setup(self):
         """Initialize your model and resources here."""
-        self.model_type = "dev"  # Default model type
+        self.model_type = "fast"  # Default model type
         config = MODEL_CONFIGS[self.model_type]
         
         # Model configuration
@@ -94,14 +95,7 @@ class App(BaseApp):
             output_hidden_states=True,
             output_attentions=True,
             torch_dtype=torch.bfloat16
-        ).to("cuda")
-
-        # Load transformer and pipeline
-        self.transformer = HiDreamImageTransformer2DModel.from_pretrained(
-            config["path"],
-            subfolder="transformer",
-            torch_dtype=torch.bfloat16
-        ).to("cuda")
+        )
 
         self.pipe = HiDreamImagePipeline.from_pretrained(
             config["path"],
@@ -109,8 +103,8 @@ class App(BaseApp):
             tokenizer_4=self.tokenizer,
             text_encoder_4=self.text_encoder,
             torch_dtype=torch.bfloat16
-        ).to("cuda", torch.bfloat16)
-        self.pipe.transformer = self.transformer
+        )
+        self.pipe.enable_model_cpu_offload()
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run prediction on the input data."""

@@ -1,9 +1,10 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 import torch
-from .hi_diffusers import HiDreamImagePipeline, HiDreamImageTransformer2DModel
-from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
-from .hi_diffusers.schedulers.flash_flow_match import FlashFlowMatchEulerDiscreteScheduler
+from diffusers.pipelines import HiDreamImagePipeline
+from diffusers.models import HiDreamImageTransformer2DModel
+from diffusers.schedulers import UniPCMultistepScheduler
+from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
 
 MODEL_PREFIX = "HiDream-ai"
@@ -16,21 +17,21 @@ MODEL_CONFIGS = {
         "guidance_scale": 0.0,
         "num_inference_steps": 28,
         "shift": 6.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler
+        "scheduler": FlowMatchEulerDiscreteScheduler
     },
     "full": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Full",
         "guidance_scale": 5.0,
         "num_inference_steps": 50,
         "shift": 3.0,
-        "scheduler": FlowUniPCMultistepScheduler
+        "scheduler": UniPCMultistepScheduler
     },
     "fast": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Fast",
         "guidance_scale": 0.0,
         "num_inference_steps": 16,
         "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler
+        "scheduler": FlowMatchEulerDiscreteScheduler
     }
 }
 
@@ -108,9 +109,9 @@ class App(BaseApp):
             scheduler=self.scheduler,
             tokenizer_4=self.tokenizer,
             text_encoder_4=self.text_encoder,
-            torch_dtype=torch.bfloat16
+            torch_dtype=torch.bfloat16,
+            transformer=self.transformer
         ).to("cuda", torch.bfloat16)
-        self.pipe.transformer = self.transformer
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run prediction on the input data."""
