@@ -3,3 +3,4 @@ description: Generate high-quality videos with LTX-Video model
 version: 0.1.0
 resource_type: gpu
 category: video
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/udmHYos0RYmwShldvsEJhQ.png

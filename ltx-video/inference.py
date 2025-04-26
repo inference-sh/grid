@@ -50,15 +50,10 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     async def setup(self):
         """Initialize the LTX-Video model."""
-        model_dir = "models"   # The local directory to save downloaded checkpoint
-        hf_hub_download(repo_id="Lightricks/LTX-Video", filename="ltx-video-2b-v0.9.5.safetensors", local_dir=model_dir, local_dir_use_symlinks=False, repo_type='model')
+        self.ckpt_path = hf_hub_download(repo_id="Lightricks/LTX-Video", filename="ltx-video-2b-v0.9.5.safetensors", repo_type='model')
 
         self.device = get_device()
         
-        # Path to the model checkpoint
-        self.ckpt_path = os.environ.get("MODEL_PATH", "models/ltx-video-2b-v0.9.5.safetensors")
-        
-        # Create the pipeline
         self.pipeline = create_ltx_video_pipeline(
             ckpt_path=self.ckpt_path,
             precision="bfloat16",
