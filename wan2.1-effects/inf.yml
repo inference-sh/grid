@@ -1,0 +1,5 @@
+name: sample-app
+description: A sample app for inference.sh
+version: 0.1.0
+resource_type: cpu
+category: text
