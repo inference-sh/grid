@@ -7,7 +7,9 @@
         "type": "string"
       },
       "resolution": {
-        "choices": [
+        "default": "1024 \u00d7 1024 (Square)",
+        "description": "The resolution of the generated image",
+        "enum": [
           "1024 \u00d7 1024 (Square)",
           "768 \u00d7 1360 (Portrait)",
           "1360 \u00d7 768 (Landscape)",
@@ -16,8 +18,6 @@
           "1248 \u00d7 832 (Landscape)",
           "832 \u00d7 1248 (Portrait)"
         ],
-        "default": "1024 \u00d7 1024 (Square)",
-        "description": "The resolution of the generated image",
         "title": "Resolution",
         "type": "string"
       },

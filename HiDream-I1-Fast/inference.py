@@ -47,7 +47,7 @@ RESOLUTION_OPTIONS = [
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="The prompt to generate an image from")
-    resolution: str = Field(default="1024 × 1024 (Square)", choices=RESOLUTION_OPTIONS, description="The resolution of the generated image")
+    resolution: str = Field(default="1024 × 1024 (Square)", enum=RESOLUTION_OPTIONS, description="The resolution of the generated image")
     seed: int = Field(default=-1, ge=-1, le=1000000, description="The seed for the random number generator")
 
 class AppOutput(BaseAppOutput):
