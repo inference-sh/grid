@@ -1,0 +1,5 @@
+name: Real-ESRGAN
+description: Run Real-ESRGAN on an image or video
+version: 0.1.0
+resource_type: gpu
+category: imagem
