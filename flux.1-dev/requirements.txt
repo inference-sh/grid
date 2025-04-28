@@ -1,0 +1,16 @@
+pydantic >= 2.0.0
+inferencesh
+protobuf
+numpy
+torch
+torchvision
+xformers
+accelerate
+diffusers
+transformers
+sentencepiece
+huggingface_hub
+hf-transfer
+opencv_contrib_python_headless
+Pillow
+torchao

@@ -1,0 +1,5 @@
+name: sd-xl-inpainting
+description: Stable Diffusion XL Inpainting is a model that can fill in areas of an image based on a text prompt and a mask.
+version: 0.1.0
+resource_type: gpu
+category: image

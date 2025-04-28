@@ -1,0 +1,199 @@
+{
+  "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "image": {
+        "$ref": "#/$defs/File",
+        "default": {
+          "uri": "https://1nf.sh/samples/bike.png",
+          "path": "/tmp/tmpqp1dmt85.png",
+          "content_type": "image/png",
+          "size": 3955501,
+          "filename": "tmpqp1dmt85.png"
+        },
+        "description": "The original image you want to fix or modify.",
+        "examples": [
+          {
+            "content_type": "image/png",
+            "filename": "tmplis36h0q.png",
+            "path": "/tmp/tmplis36h0q.png",
+            "size": 3955501,
+            "uri": "https://1nf.sh/samples/bike.png"
+          }
+        ]
+      },
+      "mask": {
+        "$ref": "#/$defs/File",
+        "default": {
+          "uri": "https://1nf.sh/samples/bike_mask.png",
+          "path": "/tmp/tmpibq0qvcj.png",
+          "content_type": "image/png",
+          "size": 20646,
+          "filename": "tmpibq0qvcj.png"
+        },
+        "description": "The mask image that shows which areas to inpaint (white = replace, black = keep). Must be the same size as the input image.",
+        "examples": [
+          {
+            "content_type": "image/png",
+            "filename": "tmpydg6vqh9.png",
+            "path": "/tmp/tmpydg6vqh9.png",
+            "size": 20646,
+            "uri": "https://1nf.sh/samples/bike_mask.png"
+          }
+        ]
+      }
+    },
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "image": {
+        "$ref": "#/$defs/File",
+        "description": "The inpainted image"
+      }
+    },
+    "required": [
+      "image"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

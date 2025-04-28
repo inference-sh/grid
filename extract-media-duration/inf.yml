@@ -1,0 +1,5 @@
+name: extract-media-duration
+description: An app that extracts the duration of video or audio files using ffmpeg
+version: 0.1.0
+resource_type: cpu
+category: media

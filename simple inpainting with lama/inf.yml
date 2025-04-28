@@ -1,0 +1,5 @@
+name: simple-lama-inpainting
+description: Inpaint images with a mask using a pre-trained model
+version: 0.1.0
+resource_type: gpu
+category: text

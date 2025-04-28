@@ -1,0 +1,5 @@
+name: bounce-repeat-videos
+description: Creates a video effect by repeating a video forward and backward for a specified duration
+version: 0.1.0
+resource_type: cpu
+category: video
