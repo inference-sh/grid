@@ -1,0 +1,5 @@
+name: wan2.1-t2v-effects
+description: Text to video generation using Wan2.1 (14B) model with t2v effects
+version: 0.1.0
+resource_type: gpu
+category: video
