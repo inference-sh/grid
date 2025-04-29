@@ -1,0 +1,7 @@
+name: qwen3-30b-a3b-gguf
+description: Qwen3 30B A3B [GGUF]
+version: 0.1.0
+resource_type: gpu
+category: chat
+env:
+  CMAKE_ARGS: "-DGGML_CUDA=on"

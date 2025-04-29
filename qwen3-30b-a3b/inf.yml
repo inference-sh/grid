@@ -1,0 +1,5 @@
+name: qwen3-30b-a3b
+description: Qwen3 30B
+version: 0.1.0
+resource_type: gpu
+category: chat

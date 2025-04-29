@@ -214,7 +214,7 @@ class AppInput(BaseAppInput):
     prompt: str = Field(description="The input prompt describing the video to generate")
     image: File = Field(description="Optional input image for I2V mode")
     # lora_path: Optional[str] = Field(None, description="Path to LoRA weights File")
-    i2v_effect: str = Field(description="Choose an effect", enum=list(i2v_effects.keys()))
+    i2v_effect: Optional[str] = Field(description="Choose an effect", enum=list(i2v_effects.keys()))
     negative_prompt: str = Field(
         description="The negative prompt to guide generation", default=""
     )
@@ -249,6 +249,8 @@ class App(BaseApp):
         )
         
         self.i2v_pipe.to(self.device)
+        
+        self.loaded_lora = ""
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run either T2V or I2V based on whether an image is provided."""
@@ -262,17 +264,25 @@ class App(BaseApp):
         # if input_data.lora_path:
         #     self.i2v_pipe.load_lora_weights(input_data.lora_path)
         
-        lora_path = i2v_effects[input_data.i2v_effect]["file"]
-        # Download LoRA weights from HF Hub        
-        repo_id = i2v_effects[input_data.i2v_effect]["repo"]
-        folder = i2v_effects[input_data.i2v_effect]["folder"]
-        filename = i2v_effects[input_data.i2v_effect]["file"]
-        
-        lora_path = hf_hub_download(
-            repo_id=repo_id,
-            filename=f"{folder}/{filename}",
-        )
-        self.i2v_pipe.load_lora_weights(lora_path)
+        if input_data.i2v_effect:
+            # Download LoRA weights from HF Hub        
+            repo_id = i2v_effects[input_data.i2v_effect]["repo"]
+            folder = i2v_effects[input_data.i2v_effect]["folder"]
+            filename = i2v_effects[input_data.i2v_effect]["file"]
+            
+            lora_path = hf_hub_download(
+                repo_id=repo_id,
+                filename=f"{folder}/{filename}",
+            )
+            
+            if self.loaded_lora != lora_path and self.loaded_lora != "":
+                self.i2v_pipe.unload_lora_weights()
+                
+            self.i2v_pipe.load_lora_weights(lora_path)
+            self.loaded_lora = lora_path
+        else:
+            self.i2v_pipe.unload_lora_weights()
+            self.loaded_lora = ""
 
         # Load and preprocess image
         image = load_image(input_data.image.path)

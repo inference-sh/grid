@@ -28,7 +28,7 @@ from ltx.inference import (
 )
 
 class ConditioningImage(BaseModel):
-    image: str  # Base64 encoded image
+    image: File  # Base64 encoded image
     frame_index: Optional[int] = None  # If None, will be automatically assigned
     strength: float = 1.0  # Default to maximum strength
 

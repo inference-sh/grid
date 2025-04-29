@@ -80,6 +80,14 @@
         "description": "Optional input image for I2V mode"
       },
       "i2v_effect": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
         "description": "Choose an effect",
         "enum": [
           "Assassin",
@@ -122,8 +130,7 @@
           "crying",
           "kissing"
         ],
-        "title": "I2V Effect",
-        "type": "string"
+        "title": "I2V Effect"
       },
       "negative_prompt": {
         "default": "",
