@@ -24,21 +24,22 @@ from moviepy.video.fx.AccelDecel import AccelDecel
 from enum import Enum
 import numpy as np
 
-class TransitionType(str, Enum):
-    """Enum for supported transition types with MoviePy 2.x"""
-    CROSSFADE = "crossfade"
-    SLIDE_LEFT = "slide_left"
-    SLIDE_RIGHT = "slide_right"
-    SLIDE_UP = "slide_up"
-    SLIDE_DOWN = "slide_down"
-    FADE_TO_BLACK = "fade_to_black"
+transition_types = [
+    "crossfade",
+    "slide_left",
+    "slide_right",
+    "slide_up",
+    "slide_down",
+    "fade_to_black"
+]
     
 class Media(BaseModel):
     file: File = Field(
         description="The media file (video or image) to include in the sequence"
     )
-    transition_type: TransitionType = Field(
-        default=TransitionType.CROSSFADE,
+    transition_type: str = Field(
+        default="crossfade",
+        enum=transition_types,
         description="Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)"
     )
     duration: Optional[float] = Field(
@@ -84,11 +85,11 @@ class App(BaseApp):
         
         # For transitions that need clips to overlap
         if transition_type in [
-            TransitionType.CROSSFADE, 
-            TransitionType.FADE_TO_BLACK,
+            "crossfade", 
+            "fade_to_black",
         ]:
             # Create the transitioned clips
-            if transition_type == TransitionType.CROSSFADE:
+            if transition_type == "crossfade":
                 clip1_out = clip1.with_effects([CrossFadeOut(duration)])
                 clip2_in = clip2.with_effects([CrossFadeIn(duration)])
                 
@@ -102,7 +103,7 @@ class App(BaseApp):
                 ])
 
             
-            elif transition_type == TransitionType.FADE_TO_BLACK:
+            elif transition_type == "fade_to_black":
                 clip1_out = clip1.with_effects([FadeOut(duration)])
                 clip2_in = clip2.with_effects([FadeIn(duration)])
                 
@@ -122,23 +123,23 @@ class App(BaseApp):
         
         # For slide transitions
         elif transition_type in [
-            TransitionType.SLIDE_LEFT,
-            TransitionType.SLIDE_RIGHT,
-            TransitionType.SLIDE_UP,
-            TransitionType.SLIDE_DOWN
+            "slide_left",
+            "slide_right",
+            "slide_up",
+            "slide_down"
         ]:
             # Ensure clip2 has the same dimensions as clip1
             if clip2.size != (w, h):
                 clip2 = clip2.with_effects([Resize(width=w, height=h)])
                 
             # Determine slide direction
-            if transition_type == TransitionType.SLIDE_LEFT:
+            if transition_type == "slide_left":
                 side = 'right'
-            elif transition_type == TransitionType.SLIDE_RIGHT:
+            elif transition_type == "slide_right":
                 side = 'left'
-            elif transition_type == TransitionType.SLIDE_UP:
+            elif transition_type == "slide_up":
                 side = 'bottom'
-            elif transition_type == TransitionType.SLIDE_DOWN:
+            elif transition_type == "slide_down":
                 side = 'top'
             
             # Apply slide effect to the second clip
@@ -238,11 +239,16 @@ class App(BaseApp):
         output_path = os.path.join(self.temp_dir, f"result.{input_data.output_format}")
         final_video.write_videofile(
             output_path,
-            codec="libx264", 
+            codec="libx264",
             audio_codec="aac",
+            profile="main",  # Critical for Safari
+            pix_fmt="yuv420p",  # Critical for Safari
+            movflags="+faststart",  # Helps with streaming
+            crf=23,  # Reasonable quality
             fps=input_data.fps or 30,
             logger=None  # MoviePy 2.x changed logger behavior
         )
+        
         
         # Close all clips to release resources
         for clip in clips:

@@ -133,14 +133,11 @@ class App(BaseApp):
             # Process each conditioning image
             for item in all_images:
                 # Decode base64 image
-                image_data = base64.b64decode(item.image)
-                temp_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-                temp_file.write(image_data)
-                temp_file.close()
+                
                 
                 # Create conditioning item
                 frame_tensor = load_image_to_tensor_with_resize_and_crop(
-                    temp_file.name, input_data.height, input_data.width
+                    item.image.path, input_data.height, input_data.width
                 )
                 frame_tensor = torch.nn.functional.pad(frame_tensor, padding)
                 
@@ -149,8 +146,6 @@ class App(BaseApp):
                 
                 conditioning_items.append(ConditioningItem(frame_tensor, frame_index, item.strength))
                 
-                # Clean up temp file
-                os.unlink(temp_file.name)
         
         # Prepare input for the pipeline
         sample = {

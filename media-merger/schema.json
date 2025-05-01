@@ -75,9 +75,18 @@
             "description": "The media file (video or image) to include in the sequence"
           },
           "transition_type": {
-            "$ref": "#/$defs/TransitionType",
             "default": "crossfade",
-            "description": "Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)"
+            "description": "Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)",
+            "enum": [
+              "crossfade",
+              "slide_left",
+              "slide_right",
+              "slide_up",
+              "slide_down",
+              "fade_to_black"
+            ],
+            "title": "Transition Type",
+            "type": "string"
           },
           "duration": {
             "anyOf": [
@@ -111,19 +120,6 @@
         ],
         "title": "Media",
         "type": "object"
-      },
-      "TransitionType": {
-        "description": "Enum for supported transition types with MoviePy 2.x",
-        "enum": [
-          "crossfade",
-          "slide_left",
-          "slide_right",
-          "slide_up",
-          "slide_down",
-          "fade_to_black"
-        ],
-        "title": "TransitionType",
-        "type": "string"
       }
     },
     "properties": {
