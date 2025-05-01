@@ -240,11 +240,13 @@ class App(BaseApp):
         final_video.write_videofile(
             output_path,
             codec="libx264",
-            audio_codec="aac",
-            profile="main",  # Critical for Safari
-            pix_fmt="yuv420p",  # Critical for Safari
-            movflags="+faststart",  # Helps with streaming
-            crf=23,  # Reasonable quality
+            audio_codec="aac", 
+            ffmpeg_params=[
+                "-profile:v", "main",  # Critical for Safari
+                "-pix_fmt", "yuv420p",  # Critical for Safari
+                "-movflags", "+faststart",  # Helps with streaming
+                "-crf", "23"  # Reasonable quality
+            ],
             fps=input_data.fps or 30,
             logger=None  # MoviePy 2.x changed logger behavior
         )
