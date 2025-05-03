@@ -8,8 +8,9 @@ from pydantic import Field
 from magi.pipeline import MagiPipeline
 from typing import Optional
 from enum import Enum
+import json
+from huggingface_hub import snapshot_download
 
-# Set environment variables for MAGI pipeline
 class Mode(str, Enum):
     T2V = "t2v"
     I2V = "i2v"
@@ -28,6 +29,39 @@ class App(BaseApp):
     async def setup(self):
         """Initialize the MAGI-1 pipeline."""
         config_file = os.path.join(os.path.dirname(__file__), "example/4.5B/4.5B_config.json")
+        config_json = json.load(open(config_file))
+
+        # 1. Download MAGI base weights
+        magi_weights_path = snapshot_download(
+            repo_id="sand-ai/MAGI-1",
+            allow_patterns=["ckpt/magi/4.5B_base/inference_weight/*.safetensors", "ckpt/magi/4.5B_base/inference_weight/*.json"],
+        )
+        config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/4.5B_base/")
+
+        # 2. Download T5 model files
+        t5_path = snapshot_download(
+            repo_id="sand-ai/MAGI-1",
+            allow_patterns=[
+                "ckpt/t5/t5-v1_1-xxl/*.bin",
+                "ckpt/t5/t5-v1_1-xxl/*.json",
+                "ckpt/t5/t5-v1_1-xxl/spiece.model"
+            ],
+        )
+        config_json["runtime_config"]["t5_pretrained"] = os.path.join(t5_path, "ckpt/t5/")
+
+        # 3. Download VAE model files
+        vae_path = snapshot_download(
+            repo_id="sand-ai/MAGI-1",
+            allow_patterns=[
+                "ckpt/vae/*.safetensors",
+                "ckpt/vae/config.json"
+            ],
+        )
+        config_json["runtime_config"]["vae_pretrained"] = os.path.join(vae_path, "ckpt/vae/")
+        
+        # Write updated config back to file
+        with open(config_file, "w") as f:
+            json.dump(config_json, f, indent=4)
         self.pipeline = MagiPipeline(config_file)
 
     async def run(self, input_data: AppInput) -> AppOutput:

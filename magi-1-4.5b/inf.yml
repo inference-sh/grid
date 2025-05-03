@@ -4,3 +4,16 @@ version: 0.1.0
 resource_type: gpu
 category: video
 card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/38md9klgTJynmBX_zrt04Q.png
+env:
+  MASTER_ADDR: localhost
+  MASTER_PORT: 6009
+  GPUS_PER_NODE: 1
+  NNODES: 1
+  WORLD_SIZE: 1
+  # CUDA_VISIBLE_DEVICES: 1
+  PAD_HQ: 1
+  PAD_DURATION: 1
+  PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+  OFFLOAD_T5_CACHE: true
+  OFFLOAD_VAE_CACHE: true
+  # TORCH_CUDA_ARCH_LIST: "8.9;9.0"

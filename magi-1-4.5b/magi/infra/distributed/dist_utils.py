@@ -32,6 +32,7 @@ def dist_init(config):
     if torch.distributed.is_initialized():
         print_rank_0("Torch distribution already initialized, skipping initialization ...")
     else:
+        print_rank_0("Initializing torch distribution")
         rank = int(os.getenv("RANK", "0"))
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         # Manually set the device ids.
@@ -50,6 +51,7 @@ def dist_init(config):
         if mpu.model_parallel_is_initialized():
             print_rank_0("Model parallel is already initialized")
         else:
+            print_rank_0("Initializing model parallel")
             mpu.initialize_model_parallel(
                 cp_size=config.engine_config.cp_size,
                 pp_size=config.engine_config.pp_size,
@@ -57,7 +59,9 @@ def dist_init(config):
                 distributed_timeout_minutes=config.engine_config.distributed_timeout_minutes,
                 order="tp-cp-pp-dp",
             )
+    print_rank_0(f"Model parallel initialized: {mpu.get_pp_world_size() > 1}")
     if mpu.get_pp_world_size() > 1:
+        print_rank_0("Initializing pipeline parallel")
         init_pp_scheduler()
     print_rank_0("Initialize torch distribution and model parallel successfully")
 
