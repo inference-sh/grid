@@ -2,7 +2,7 @@ name: magi-1-24b
 description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
 version: 0.1.0
 category: video
-gpucount: 1
+gpucount: 8
 gpuvram: 0
 gputype: any
 env:

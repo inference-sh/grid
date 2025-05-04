@@ -1,17 +1,8 @@
 annotated-types==0.7.0
-decorator==5.2.1
-imageio==2.37.0
-imageio-ffmpeg==0.6.0
 inferencesh==0.1.23
-moviepy==2.1.2
 ninja==1.11.1.4
-numpy==2.2.5
-pillow==10.4.0
-proglog==0.1.11
 pydantic==2.11.4
 pydantic-core==2.33.2
-python-dotenv==1.1.0
 setuptools==80.2.0
-tqdm==4.67.1
 typing-extensions==4.13.2
 typing-inspection==0.4.0
