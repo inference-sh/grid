@@ -1,5 +1,14 @@
 name: HiDream-I1-Fast
 description: HiDream-I1 is a new open-source image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality within seconds.
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-a3pjemftqxspohqt_xyw-g/EHEhaYE-Qm61pB-TQQzEfw.zip
 version: 0.1.0
-resource_type: gpu
 category: image
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: false
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/c0t3rWl4QwakzCb5CBuixw.png
+thumbnail: ""
+banner_image: ""

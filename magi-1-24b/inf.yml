@@ -1,24 +1,24 @@
 name: magi-1-24b
 description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-1qo1owr5qt2vd6esrnsw9a/23xhafahdafjy07xed1enc69ye.zip
 version: 0.1.0
-resource_type: gpu
 category: video
-card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/38md9klgTJynmBX_zrt04Q.png
+gpucount: 0
+gpuvram: 0
+gputype: any
 env:
-  # MASTER_ADDR: 127.0.0.1
-  # MASTER_PORT: 6009
-  CUDA_DEVICE_MAX_CONNECTIONS: 1
-  NCCL_ALGO: ^NVLS
-  # NCCL_DEBUG: INFO
-  # NCCL_DEBUG_SUBSYS: ALL
-  NCCL_IB_DISABLE: 1
-  NCCL_P2P_DISABLE: 1
-  NCCL_SOCKET_IFNAME: eth0
-  OFFLOAD_T5_CACHE: true
-  OFFLOAD_VAE_CACHE: true
-  PAD_DURATION: 1
-  PAD_HQ: 1
-  TORCH_CUDA_ARCH_LIST: "8.9;9.0"
-  # TORCH_DISTRIBUTED_DEBUG: DETAIL
-  # TORCH_NCCL_ASYNC_ERROR_HANDLING: 1
-  # TORCH_SHOW_CPP_STACKTRACES: 1
+    CUDA_DEVICE_MAX_CONNECTIONS: "1"
+    NCCL_ALGO: ^NVLS
+    NCCL_IB_DISABLE: "1"
+    NCCL_P2P_DISABLE: "1"
+    NCCL_SOCKET_IFNAME: eth0
+    OFFLOAD_T5_CACHE: "true"
+    OFFLOAD_VAE_CACHE: "true"
+    PAD_DURATION: "1"
+    PAD_HQ: "1"
+    TORCH_CUDA_ARCH_LIST: 8.9;9.0
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/38md9klgTJynmBX_zrt04Q.png
+thumbnail: ""
+banner_image: ""

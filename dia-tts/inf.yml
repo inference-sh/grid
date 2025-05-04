@@ -1,5 +1,14 @@
 name: dia-tts
 description: A text-to-speech app using the DIA model for generating realistic dialogue
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-h4svwlawssaz9heo-tt2w/OSgScNgLTNW5aNYZG8IH6w.zip
 version: 0.1.0
-resource_type: gpu
 category: audio
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/RhqbwoDYT0WHEvflbRB3FA.png
+thumbnail: ""
+banner_image: ""

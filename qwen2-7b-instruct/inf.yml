@@ -1,5 +1,14 @@
 name: qwen2-7b-instruct
-description: Qwen2-7B-Instruct
+description: Qwen2-7B-Instruct a lightweight 8B parameter LLM for generating text
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-1e12ce2f-df38-4166-826d-2fe5829bd97a/kaUTl1jER9S8JnkTlcEhrg.zip
 version: 0.1.0
-resource_type: gpu
 category: chat
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/8uIlU3-ZSYi0rCVC5LaAog.png
+thumbnail: ""
+banner_image: ""

@@ -1,5 +1,14 @@
 name: extract-media-duration
 description: An app that extracts the duration of video or audio files using ffmpeg
+repository: https://api.inference.sh/storage/files/users/d48e21dd-e62d-4964-a030-c8dc4c2331f7/apps/MWNjYjdmYTItMTBmOC00ZDFhLWExM2MtYjc0OTA5NTkxYzE0/9433e1bd-4dc4-4a81-9c5d-07f505c8ed7c.zip
 version: 0.1.0
-resource_type: cpu
 category: media
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/6nkDeTqgTAu_BcE7jWnGzg.png
+thumbnail: ""
+banner_image: ""

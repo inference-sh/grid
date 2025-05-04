@@ -1,5 +1,14 @@
 name: latentsync
 description: Lip sync application using LatentSync model
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/ae0428b3-f636-4418-8699-bf5810ac8093/eafa0bbb-e9ea-49d9-a192-e2e8685a134f.zip
 version: 0.1.0
-resource_type: gpu
 category: video
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/f8H-m7-cTgmJ8Dkw1qHmzw.png
+thumbnail: ""
+banner_image: ""

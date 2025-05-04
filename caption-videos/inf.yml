@@ -1,5 +1,14 @@
 name: caption-videos
-description: A simple app to caption videos
+description: An app to add caption videos from a caption file (like the output from whisper STT)
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/f21ade19-e11b-4950-9deb-dcb12f1cc7ee/6b238525-c29d-4bfe-94a3-dfdb3523d507.zip
 version: 0.1.0
-resource_type: cpu
-category: video
+category: other
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/uKX9cbBDTve-a1gvFkrbUQ.png
+thumbnail: ""
+banner_image: ""

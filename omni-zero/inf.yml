@@ -1,5 +1,14 @@
 name: omni-zero
 description: SDXL zero shot stylised portrait creation
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/3b96b796-a579-4e55-9244-37d45212a177/f36f8f81-18ee-4956-835f-3cd884134d67.zip
 version: 0.1.0
-resource_type: gpu
 category: image
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/upREI6tvTYa42KrYlVVWjQ.png
+thumbnail: ""
+banner_image: ""

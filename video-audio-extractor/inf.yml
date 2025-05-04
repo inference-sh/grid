@@ -1,5 +1,14 @@
 name: video-audio-extractor
 description: An app that extracts audio from videos and creates silent videos
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/9a63886b-049d-41a0-aa1d-a435eaf4c726/0273967a-15d0-41f9-a79a-be099d24eb37.zip
 version: 0.1.0
-resource_type: cpu
-category: audio
+category: other
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/b55EXm6PQe2xEOJRMKLj3w.png
+thumbnail: ""
+banner_image: ""

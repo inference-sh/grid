@@ -116,22 +116,48 @@
         "title": "Joint Pass",
         "type": "boolean"
       },
-      "quantize_transformer": {
-        "default": true,
-        "description": "Quantize transformer to 8-bit for lower VRAM usage",
-        "title": "Quantize Transformer",
-        "type": "boolean"
-      },
       "attention": {
-        "default": "sage2",
+        "default": "sage",
         "description": "Attention mechanism to use for generation",
         "enum": [
-          "auto",
-          "sdpa",
-          "sage2",
-          "flash"
+          "sage",
+          "sdpa"
         ],
         "title": "Attention",
+        "type": "string"
+      },
+      "cfg_star_switch": {
+        "default": true,
+        "description": "Enable CFG* guidance",
+        "title": "Cfg Star Switch",
+        "type": "boolean"
+      },
+      "cfg_zero_step": {
+        "default": 5,
+        "description": "Step at which to switch to CFG* guidance",
+        "title": "Cfg Zero Step",
+        "type": "integer"
+      },
+      "temporal_upsampling": {
+        "default": "",
+        "description": "Temporal upsampling method",
+        "enum": [
+          "",
+          "rife2",
+          "rife4"
+        ],
+        "title": "Temporal Upsampling",
+        "type": "string"
+      },
+      "spatial_upsampling": {
+        "default": "",
+        "description": "Spatial upsampling method",
+        "enum": [
+          "",
+          "lanczos1.5",
+          "lanczos2"
+        ],
+        "title": "Spatial Upsampling",
         "type": "string"
       }
     },

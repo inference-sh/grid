@@ -1,0 +1,14 @@
+name: wan2gp-image-to-video-quanto
+description: Image to video generation using Wan2.1 (14B) 480p model, quantized
+repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-0832qkfbwt6bc88mv08s3gpdab/2kf7nappfma4nn8s288tg6g3pv.zip
+version: 0.1.0
+category: video
+gpucount: 0
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: ""
+thumbnail: ""
+banner_image: ""

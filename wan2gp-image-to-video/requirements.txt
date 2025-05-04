@@ -29,4 +29,5 @@ timm
 segment-anything
 omegaconf
 hydra-core
+mutagen
 gradio
