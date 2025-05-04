@@ -34,9 +34,9 @@ class App(BaseApp):
         # 1. Download MAGI base weights
         magi_weights_path = snapshot_download(
             repo_id="sand-ai/MAGI-1",
-            allow_patterns=["ckpt/magi/24B_base/inference_weight/*.safetensors", "ckpt/magi/24B_base/inference_weight/*.json"],
+            allow_patterns=["ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.safetensors", "ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.json"],
         )
-        config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/24B_base/inference_weight")
+        config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/24B_distill_quant/")
 
         # 2. Download T5 model files
         t5_path = snapshot_download(
@@ -47,7 +47,7 @@ class App(BaseApp):
                 "ckpt/t5/t5-v1_1-xxl/spiece.model"
             ],
         )
-        config_json["runtime_config"]["t5_pretrained"] = os.path.join(t5_path, "ckpt/t5/t5-v1_1-xxl")
+        config_json["runtime_config"]["t5_pretrained"] = os.path.join(t5_path, "ckpt/t5/")
 
         # 3. Download VAE model files
         vae_path = snapshot_download(
@@ -57,7 +57,7 @@ class App(BaseApp):
                 "ckpt/vae/config.json"
             ],
         )
-        config_json["runtime_config"]["vae_pretrained"] = os.path.join(vae_path, "ckpt/vae")
+        config_json["runtime_config"]["vae_pretrained"] = os.path.join(vae_path, "ckpt/vae/")
         
         # Write updated config back to file
         with open(config_file, "w") as f:
