@@ -34,9 +34,16 @@ class App(BaseApp):
         # 1. Download MAGI base weights
         magi_weights_path = snapshot_download(
             repo_id="sand-ai/MAGI-1",
-            allow_patterns=["ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.safetensors", "ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.json"],
+            allow_patterns=["ckpt/magi/24B_base/inference_weight/*.safetensors", "ckpt/magi/24B_base/inference_weight/*.json"],
         )
-        config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/24B_distill_quant/")
+        config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/24B_base/")
+        
+        # magi_weights_path = snapshot_download(
+        #     repo_id="sand-ai/MAGI-1",
+        #     allow_patterns=["ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.safetensors", "ckpt/magi/24B_distill_quant/inference_weight.fp8.distill/*.json"],
+        # )
+        # config_json["runtime_config"]["load"] = os.path.join(magi_weights_path, "ckpt/magi/24B_distill_quant/")
+
 
         # 2. Download T5 model files
         t5_path = snapshot_download(
