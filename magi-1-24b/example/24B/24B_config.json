@@ -24,7 +24,7 @@
         "gated_linear_unit": true
     },
     "runtime_config": {
-        "cfg_number": 1,
+        "cfg_number": 3,
         "cfg_t_range": [
             0.0,
             0.0217,

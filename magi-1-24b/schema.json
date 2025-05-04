@@ -1,6 +1,73 @@
 {
   "input": {
     "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      },
       "Mode": {
         "enum": [
           "t2v",
@@ -21,31 +88,75 @@
         "title": "Prompt",
         "type": "string"
       },
-      "image_path": {
+      "image": {
         "anyOf": [
           {
-            "type": "string"
+            "$ref": "#/$defs/File"
           },
           {
             "type": "null"
           }
         ],
         "default": null,
-        "description": "For i2v mode, the source image path",
-        "title": "Image Path"
+        "description": "For i2v mode, the source image path"
       },
-      "prefix_video_path": {
+      "prefix_video": {
         "anyOf": [
           {
-            "type": "string"
+            "$ref": "#/$defs/File"
           },
           {
             "type": "null"
           }
         ],
         "default": null,
-        "description": "For v2v mode, the source video path",
-        "title": "Prefix Video Path"
+        "description": "For v2v mode, the source video path"
+      },
+      "seed": {
+        "default": -1,
+        "description": "Random seed. -1 means random.",
+        "title": "Seed",
+        "type": "integer"
+      },
+      "num_frames": {
+        "default": 96,
+        "description": "Number of frames in the output video.",
+        "title": "Num Frames",
+        "type": "integer"
+      },
+      "num_steps": {
+        "default": 8,
+        "description": "Number of inference steps.",
+        "title": "Num Steps",
+        "type": "integer"
+      },
+      "window_size": {
+        "default": 4,
+        "description": "Window size for inference.",
+        "title": "Window Size",
+        "type": "integer"
+      },
+      "fps": {
+        "default": 24,
+        "description": "Frames per second.",
+        "title": "Fps",
+        "type": "integer"
+      },
+      "chunk_width": {
+        "default": 6,
+        "description": "Chunk width for inference.",
+        "title": "Chunk Width",
+        "type": "integer"
+      },
+      "video_size": {
+        "default": "720p",
+        "description": "Video size: 480p or 720p.",
+        "enum": [
+          "480p",
+          "720p"
+        ],
+        "title": "Video Size",
+        "type": "string"
       }
     },
     "required": [
