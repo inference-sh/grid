@@ -1,6 +1,5 @@
 name: bounce-repeat-videos
 description: Creates a video effect by repeating a video forward and backward for a specified duration
-repository: https://api.inference.sh/storage/files/users/d48e21dd-e62d-4964-a030-c8dc4c2331f7/apps/OGZmNWE2NmMtNGFjMC00ODY4LThkYzYtN2RiMDc0NTJiZTAy/cdc27bc7-48a2-4f0e-9a87-32c595d90323.zip
 version: 0.1.0
 category: video
 gpucount: 0

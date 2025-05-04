@@ -1,9 +1,8 @@
 name: granite-8b-code-instruct-q4
 description: Granite 8B Code Instruct [Q4_K]
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-ypb1jflcr6ejkv03djdptq/eZFS7YdcTZ6I6Ce3JTk5iQ.zip
 version: 0.1.0
 category: chat
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env:

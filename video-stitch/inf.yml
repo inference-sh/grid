@@ -1,5 +1,0 @@
-name: video-stitch
-description: A video stitching app for inference.sh
-version: 0.1.0
-resource_type: cpu
-category: video

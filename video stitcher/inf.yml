@@ -1,6 +1,5 @@
 name: video stitcher
 description: app for stitching multiple videos together into one
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/a8b5afba-3828-4007-8470-74cae36e5b2d/2f356b7c-45e6-4552-96df-6db86fd04d2d.zip
 version: 0.1.0
 category: video
 gpucount: 0

@@ -1,9 +1,8 @@
 name: qwen-qwq-32b-q4
 description: Qwen QwQ 32B [Q4_K]
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-ptnajqxhqnoggxi9qsdg2g/I8GF2LnSR8m6dIxT93_1sA.zip
 version: 0.1.0
 category: chat
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env:

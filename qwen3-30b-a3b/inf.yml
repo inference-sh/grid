@@ -1,9 +1,8 @@
 name: qwen3-30b-a3b
 description: Qwen3 30B
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-57oiedalsnwxkpdbfsrt9q/979b8YvlSXy0bU2OTTapwA.zip
 version: 0.1.0
 category: chat
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

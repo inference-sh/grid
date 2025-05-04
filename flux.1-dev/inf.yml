@@ -1,9 +1,8 @@
 name: flux.1-dev
 description: a text to image app with flux.1-dev
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-5c3d9b2a-309d-4b52-b9c4-b9ebb4033f49/ftwD-u_HSUK1CqHhwRoaSA.zip
 version: 0.1.0
 category: image
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

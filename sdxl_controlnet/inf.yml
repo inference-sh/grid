@@ -1,9 +1,8 @@
 name: sdxl_controlnet
 description: Stable Diffusion XL image generator with ControlNets
-repository: https://api.inference.sh/storage/files/users/d48e21dd-e62d-4964-a030-c8dc4c2331f7/apps-o-iqlcxfqpcufajod34eng/s0D3fUiPSJ6e44RyJrQfRg.zip
 version: 0.1.0
 category: image
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

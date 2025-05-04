@@ -1,9 +1,8 @@
 name: deepseek-r1-distill-qwen-7b
 description: Fast reasoning text LLM model app using DeepSeek R1 Distill Qwen 7B
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-c02a1a94-b965-4559-8117-14e60d5e605d/eTTDi_-YQIKSl_uSTPMkCA.zip
 version: 0.1.0
 category: chat
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

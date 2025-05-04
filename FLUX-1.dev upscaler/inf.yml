@@ -1,9 +1,8 @@
 name: FLUX-1.dev upscaler
 description: Upscale images and videos with FLUX-1.dev
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/e51a3031-247f-46f9-bc2d-4c904d7c476a/475d5e8a-0dee-43f8-adaa-9ac44239f9d1.zip
 version: 0.1.0
 category: image
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

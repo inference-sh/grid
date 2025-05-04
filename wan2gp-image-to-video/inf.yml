@@ -1,9 +1,8 @@
 name: wan2gp-image-to-video
 description: Image to video generation using Wan2.1 (14B) model
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-01jt8n2m62f6z7gg1fkj1rks0v/5d6cyedd6gnzy59kcfh563cjw3.zip
 version: 0.1.0
 category: video
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

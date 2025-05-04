@@ -1,9 +1,8 @@
 name: whisper-v3-large
 description: A large-sized Whisper model for transcription and translation of audio files.
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/9070f15f-d5c1-4d34-afd9-c07ad4469238/2aa762a2-07a7-4ea2-88e5-5b1b6f7bc8f9.zip
 version: 0.1.0
 category: other
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

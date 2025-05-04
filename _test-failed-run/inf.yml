@@ -1,6 +1,5 @@
 name: _test-failed-run
 description: A test app for failed run
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/PHcisr86SS-qLN8kD65bbw/95a5a368-708f-4996-9040-51188f212dd7.zip
 version: 0.1.0
 category: text
 gpucount: 0

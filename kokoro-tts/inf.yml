@@ -1,9 +1,8 @@
 name: kokoro-tts
 description: Text-to-Speech application using the Kokoro-82M model
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps/7b8cb257-053e-4ee2-84d9-68e46299c38a/315b180e-a8e8-4164-8734-24edd7e414bb.zip
 version: 0.1.0
 category: audio
-gpucount: 0
+gpucount: 1
 gpuvram: 0
 gputype: any
 env: {}

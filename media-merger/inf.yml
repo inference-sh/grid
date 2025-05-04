@@ -1,6 +1,5 @@
 name: media-merger
 description: An application that merges multiple videos and images with customizable transitions
-repository: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/apps-01jt676bq26d84a92ympmdv1vq/01jt6a73xgetqg4kkbs7fadweh.zip
 version: 0.1.0
 category: video
 gpucount: 0
