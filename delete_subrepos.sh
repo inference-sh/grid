@@ -1,0 +1,1 @@
+find . -name wan -type d -exec find {} -name .git -type d \; | xargs rm -rf
