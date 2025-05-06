@@ -1,0 +1,13 @@
+name: BiRefNet
+description: An app for background removal using BiRefNet
+version: 0.1.0
+category: image
+gpucount: 1
+gpuvram: 0
+gputype: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/PiCBdC8IScKYJF_2gxHHLg.png
+thumbnail: ""
+banner_image: ""

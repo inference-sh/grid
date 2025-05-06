@@ -1,0 +1,10 @@
+{
+  "string_input": "example_string",
+  "number_input": 0,
+  "boolean_input": false,
+  "list_input": [
+    0
+  ],
+  "optional_input": "example_string",
+  "file_input": "test.txt"
+}

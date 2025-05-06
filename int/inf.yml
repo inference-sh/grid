@@ -1,0 +1,14 @@
+name: int
+description: Int number primitive node
+version: 0.1.0
+category: other
+gpucount: 0
+gpuvram: 0
+gputype: any
+env:
+    FOO: bar
+python: "3.12"
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/b55EXm6PQe2xEOJRMKLj3w.png
+thumbnail: ""
+banner_image: ""

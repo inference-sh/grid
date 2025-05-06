@@ -7,7 +7,7 @@ gpuvram: 0
 gputype: any
 env: {}
 python: ""
-is_public: false
+is_public: true
 card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/5Bsvr3eKTN-7eKvAeIptXw.png
 thumbnail: ""
 banner_image: ""

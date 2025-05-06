@@ -1,0 +1,30 @@
+{
+  "input": {
+    "properties": {
+      "text_input": {
+        "description": "Text input string",
+        "title": "Text Input",
+        "type": "string"
+      }
+    },
+    "required": [
+      "text_input"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "properties": {
+      "text_output": {
+        "description": "Text output string",
+        "title": "Text Output",
+        "type": "string"
+      }
+    },
+    "required": [
+      "text_output"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

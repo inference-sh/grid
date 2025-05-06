@@ -18,7 +18,7 @@ humanfriendly==10.0
 idna==3.10
 imageio==2.37.0
 importlib-metadata==8.7.0
-inferencesh==0.1.23
+inferencesh==0.3.0
 jinja2==3.1.6
 jsonschema==4.23.0
 jsonschema-specifications==2025.4.1
@@ -69,7 +69,7 @@ safetensors==0.5.3
 scikit-image==0.25.2
 scipy==1.15.2
 sentencepiece==0.2.0
-setuptools==80.2.0
+setuptools==80.3.1
 sympy==1.13.1
 tensorrt==10.8.0.43
 tensorrt-cu12==10.8.0.43

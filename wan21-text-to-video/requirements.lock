@@ -21,7 +21,7 @@ idna==3.10
 imageio==2.37.0
 imageio-ffmpeg==0.6.0
 importlib-metadata==8.7.0
-inferencesh==0.1.23
+inferencesh==0.3.0
 jinja2==3.1.6
 markupsafe==3.0.2
 moviepy==1.0.3
@@ -56,7 +56,7 @@ pyyaml==6.0.2
 regex==2024.11.6
 requests==2.32.3
 safetensors==0.5.3
-setuptools==80.2.0
+setuptools==80.3.1
 sympy==1.14.0
 tokenizers==0.21.1
 torch==2.7.0
