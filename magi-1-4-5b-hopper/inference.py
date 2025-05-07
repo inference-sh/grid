@@ -97,7 +97,7 @@ class App(BaseApp):
 
     async def setup(self):
         config_file = os.path.join(
-            os.path.dirname(__file__), "example/24B/24B_base_config.json"
+            os.path.dirname(__file__), "example/4.5B/4.5B_base_config.json"
         )
         with open(config_file, "r") as f:
             json.load(f)  # validate
@@ -105,12 +105,12 @@ class App(BaseApp):
         magi_weights_path = snapshot_download(
             repo_id="sand-ai/MAGI-1",
             allow_patterns=[
-                "ckpt/magi/24B_base/inference_weight/*.safetensors",
-                "ckpt/magi/24B_base/inference_weight/*.json",
+                "ckpt/magi/4.5B_base/inference_weight/*.safetensors",
+                "ckpt/magi/4.5B_base/inference_weight/*.json",
             ],
         )
         self._weights_paths["load"] = os.path.join(
-            magi_weights_path, "ckpt/magi/24B_base/"
+            magi_weights_path, "ckpt/magi/4.5B_base/"
         )
 
         t5_path = snapshot_download(
@@ -132,7 +132,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         output_path = "/tmp/output.mp4"
         config_file = os.path.join(
-            os.path.dirname(__file__), "example/24B/24B_base_config.json"
+            os.path.dirname(__file__), "example/4.5B/4.5B_base_config.json"
         )
         is_primary = (
             dist.get_rank() == 0
