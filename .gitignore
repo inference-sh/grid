@@ -1,2 +1,6 @@
 **/.git/
 !/.git/
+**/.infsh
+**/.safetensors
+**/.pt
+**/.ckpt

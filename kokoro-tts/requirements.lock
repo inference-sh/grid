@@ -20,7 +20,8 @@ docopt==0.6.2
 espeakng-loader==0.2.4
 filelock==3.18.0
 fsspec==2025.3.2
-huggingface-hub==0.30.2
+hf-xet==1.1.0
+huggingface-hub==0.31.0
 idna==3.10
 inferencesh==0.3.0
 isodate==0.7.2

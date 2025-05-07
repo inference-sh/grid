@@ -5,7 +5,8 @@ charset-normalizer==3.4.2
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.3.2
-huggingface-hub==0.30.2
+hf-xet==1.1.0
+huggingface-hub==0.31.0
 idna==3.10
 imageio==2.37.0
 inferencesh==0.3.0
