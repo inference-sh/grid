@@ -15,7 +15,7 @@
 import argparse
 import sys
 
-from pipeline import MagiPipeline
+from magi.pipeline import MagiPipeline
 
 
 def parse_arguments():

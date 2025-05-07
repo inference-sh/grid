@@ -26,7 +26,6 @@ importlib-metadata==8.7.0
 inferencesh==0.3.0
 jinja2==3.1.6
 kiwisolver==1.4.8
-magi-attention @ git+https://github.com/SandAI-org/MagiAttention.git@1ec7f7f8d4c6dd6f921909c8c53dfdbccdf2e460
 markdown-it-py==3.0.0
 markupsafe==3.0.2
 matplotlib==3.10.1
@@ -44,7 +43,7 @@ nvidia-cufft-cu12==11.0.2.54
 nvidia-curand-cu12==10.3.2.106
 nvidia-cusolver-cu12==11.4.5.107
 nvidia-cusparse-cu12==12.1.0.106
-nvidia-ml-py==12.570.86
+nvidia-ml-py==12.575.51
 nvidia-nccl-cu12==2.20.5
 nvidia-nvjitlink-cu12==12.9.41
 nvidia-nvtx-cu12==12.1.105

@@ -24,7 +24,7 @@
         "gated_linear_unit": true
     },
     "runtime_config": {
-        "cfg_number": 1,
+        "cfg_number": 3,
         "cfg_t_range": [
             0.0,
             0.0217,
@@ -58,7 +58,7 @@
         "num_frames": 96,
         "video_size_h": 720,
         "video_size_w": 1280,
-        "num_steps": 8,
+        "num_steps": 32,
         "window_size": 4,
         "fps": 24,
         "chunk_width": 6,
@@ -76,10 +76,10 @@
         "cp_size": 8,
         "cp_strategy": "cp_ulysses",
         "ulysses_overlap_degree": 1,
-        "fp8_quant": true,
+        "fp8_quant": false,
         "distill_nearly_clean_chunk_threshold": 0.3,
         "shortcut_mode": "8,16,16",
-        "distill": true,
+        "distill": false,
         "kv_offload": true,
         "enable_cuda_graph": false
     }

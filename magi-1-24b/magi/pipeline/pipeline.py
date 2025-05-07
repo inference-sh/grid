@@ -27,12 +27,9 @@ from .video_process import post_chunk_process, process_image, process_prefix_vid
 class MagiPipeline:
     def __init__(self, config_path):
         self.config = MagiConfig.from_json(config_path)
-        if self.config.runtime_config.seed is not None:
-            set_random_seed(self.config.runtime_config.seed)
+        set_random_seed(self.config.runtime_config.seed)
         dist_init(self.config)
         print_rank_0(self.config)
-        self.dit = get_dit(self.config)
-
 
     def run_text_to_video(self, prompt: str, output_path: str):
         self._run(prompt, None, output_path)
@@ -47,11 +44,12 @@ class MagiPipeline:
 
     def _run(self, prompt: str, prefix_video: torch.Tensor, output_path: str):
         caption_embs, emb_masks = get_txt_embeddings(prompt, self.config)
+        dit = get_dit(self.config)
         videos = torch.cat(
             [
                 post_chunk_process(chunk, self.config)
                 for chunk in generate_per_chunk(
-                    model=self.dit, prompt=prompt, prefix_video=prefix_video, caption_embs=caption_embs, emb_masks=emb_masks
+                    model=dit, prompt=prompt, prefix_video=prefix_video, caption_embs=caption_embs, emb_masks=emb_masks
                 )
             ],
             dim=0,

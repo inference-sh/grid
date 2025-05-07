@@ -17,7 +17,7 @@ export MASTER_PORT=6009
 export GPUS_PER_NODE=1
 export NNODES=1
 export WORLD_SIZE=1
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=0
 
 export PAD_HQ=1
 export PAD_DURATION=1
@@ -32,7 +32,7 @@ LOG_DIR=log_$(date "+%Y-%m-%d_%H:%M:%S").log
 
 export PYTHONPATH="$MAGI_ROOT:$PYTHONPATH"
 python3 inference/pipeline/entry.py \
-    --config_file example/4.5B/4.5B_config.json \
+    --config_file example/4.5B/4.5B_base_config.json \
     --mode t2v \
     --prompt "Good Boy" \
     --output_path example/assets/output_t2v.mp4 \

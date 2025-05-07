@@ -61,7 +61,7 @@ class ModelMetaArgs:
 
 class InferenceParams:
     """Inference parameters that are passed to the main model in order
-    to efficienly calculate and store the context during inference."""
+    to efficienly calculate and store the context during magi."""
 
     def __init__(self, max_batch_size, max_sequence_length):
         self.max_sequence_length = max_sequence_length

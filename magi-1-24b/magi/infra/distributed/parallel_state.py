@@ -319,25 +319,20 @@ def initialize_model_parallel(
             f"x cp_size ({cp_size})"
         )
 
-    print("Starting parallel group initialization...")
     nccl_comm_cfgs = {}
     if nccl_communicator_config_path is not None:
         try:
             import yaml
-            print(f"Loading NCCL communicator config from {nccl_communicator_config_path}")
         except ImportError:
             raise RuntimeError("Cannot import `yaml`. Setting custom nccl communicator configs " "requires the yaml package.")
 
         with open(nccl_communicator_config_path, "r") as stream:
             nccl_comm_cfgs = yaml.safe_load(stream)
-        print(f"Loaded NCCL communicator config: {nccl_comm_cfgs}")
 
     dp_size: int = world_size // (tp_size * pp_size * cp_size)
     rank = torch.distributed.get_rank()
     rank_generator = RankGenerator(tp=tp_size, dp=dp_size, pp=pp_size, cp=cp_size, order=order)
     timeout = timedelta(minutes=distributed_timeout_minutes)
-
-    print(f"Initializing with world_size={world_size}, dp_size={dp_size}, tp_size={tp_size}, pp_size={pp_size}, cp_size={cp_size}")
 
     # Build the data-parallel groups.
     global _DATA_PARALLEL_GROUP
@@ -348,19 +343,14 @@ def initialize_model_parallel(
     global _DATA_PARALLEL_GLOBAL_RANKS_WITH_CP
     assert _DATA_PARALLEL_GROUP is None, "data parallel group is already initialized"
 
-    print("Building data-parallel groups...")
     for ranks in rank_generator.get_ranks("dp"):
-        print(f"Creating data-parallel group with ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("dp", nccl_comm_cfgs))
-        print(f"Creating data-parallel gloo group with ranks {ranks}")
         group_gloo = torch.distributed.new_group(ranks, timeout=timeout, backend="gloo")
         if rank in ranks:
             _DATA_PARALLEL_GROUP = group
             _DATA_PARALLEL_GROUP_GLOO = group_gloo
             _DATA_PARALLEL_GLOBAL_RANKS = ranks
-            print(f"Rank {rank} assigned to data-parallel group with ranks {ranks}")
     for ranks_with_cp in rank_generator.get_ranks("dp-cp"):
-        print(f"Creating data-parallel group with CP, ranks {ranks_with_cp}")
         group_with_cp = torch.distributed.new_group(
             ranks_with_cp, timeout=timeout, pg_options=get_nccl_options("dp_cp", nccl_comm_cfgs)
         )
@@ -369,92 +359,69 @@ def initialize_model_parallel(
             _DATA_PARALLEL_GROUP_WITH_CP = group_with_cp
             _DATA_PARALLEL_GROUP_WITH_CP_GLOO = group_with_cp_gloo
             _DATA_PARALLEL_GLOBAL_RANKS_WITH_CP = ranks_with_cp
-            print(f"Rank {rank} assigned to data-parallel group with CP, ranks {ranks_with_cp}")
 
     # Build the context-parallel groups.
-    print("Building context-parallel groups...")
     global _CONTEXT_PARALLEL_GROUP
     global _CONTEXT_PARALLEL_GLOBAL_RANKS
     assert _CONTEXT_PARALLEL_GROUP is None, "context parallel group is already initialized"
     for ranks in rank_generator.get_ranks("cp"):
-        print(f"Creating context-parallel group with ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("cp", nccl_comm_cfgs))
         if rank in ranks:
             _CONTEXT_PARALLEL_GROUP = group
             _CONTEXT_PARALLEL_GLOBAL_RANKS = ranks
-            print(f"Rank {rank} assigned to context-parallel group with ranks {ranks}")
 
     # Build the model-parallel groups.
-    print("Building model-parallel groups...")
     global _MODEL_PARALLEL_GROUP
     assert _MODEL_PARALLEL_GROUP is None, "model parallel group is already initialized"
     for ranks in rank_generator.get_ranks("tp-pp"):
-        print(f"Creating model-parallel group with ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("mp", nccl_comm_cfgs))
         if rank in ranks:
             _MODEL_PARALLEL_GROUP = group
-            print(f"Rank {rank} assigned to model-parallel group with ranks {ranks}")
 
     # Build the tensor model-parallel groups.
-    print("Building tensor model-parallel groups...")
     global _TENSOR_MODEL_PARALLEL_GROUP
     global _TENSOR_MODEL_PARALLEL_GLOBAL_RANKS
     assert _TENSOR_MODEL_PARALLEL_GROUP is None, "tensor model parallel group is already initialized"
     for ranks in rank_generator.get_ranks("tp"):
-        print(f"Creating tensor model-parallel group with ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("tp", nccl_comm_cfgs))
         if rank in ranks:
             _TENSOR_MODEL_PARALLEL_GROUP = group
             _TENSOR_MODEL_PARALLEL_GLOBAL_RANKS = ranks
-            print(f"Rank {rank} assigned to tensor model-parallel group with ranks {ranks}")
 
     # Build the tensor + context parallel groups.
-    print("Building tensor + context parallel groups...")
     global _TENSOR_MODEL_PARALLEL_GROUP_WITH_CP
     global _TENSOR_MODEL_PARALLEL_GLOBAL_RANKS_WITH_CP
     assert (
         _TENSOR_MODEL_PARALLEL_GROUP_WITH_CP is None
     ), "tensor model parallel group with context parallel is already initialized"
     for ranks in rank_generator.get_ranks("tp-cp"):
-        print(f"Creating tensor model-parallel group with CP, ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("tp_cp", nccl_comm_cfgs))
         if rank in ranks:
             _TENSOR_MODEL_PARALLEL_GROUP_WITH_CP = group
             _TENSOR_MODEL_PARALLEL_GLOBAL_RANKS_WITH_CP = ranks
-            print(f"Rank {rank} assigned to tensor model-parallel group with CP, ranks {ranks}")
 
     # Build the pipeline model-parallel groups
-    print("Building pipeline model-parallel groups...")
     global _PIPELINE_MODEL_PARALLEL_GROUP
     global _PIPELINE_GLOBAL_RANKS
     assert _PIPELINE_MODEL_PARALLEL_GROUP is None, "pipeline model parallel group is already initialized"
     for ranks in rank_generator.get_ranks("pp"):
-        print(f"Creating pipeline model-parallel group with ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("pp", nccl_comm_cfgs))
         if rank in ranks:
             _PIPELINE_MODEL_PARALLEL_GROUP = group
             _PIPELINE_GLOBAL_RANKS = ranks
-            print(f"Rank {rank} assigned to pipeline model-parallel group with ranks {ranks}")
 
     # Build the tensor + data parallel groups.
-    print("Building tensor + data parallel groups...")
     global _TENSOR_AND_DATA_PARALLEL_GROUP
     global _TENSOR_AND_DATA_PARALLEL_GROUP_WITH_CP
     assert _TENSOR_AND_DATA_PARALLEL_GROUP is None, "Tensor + data parallel group is already initialized"
     for ranks in rank_generator.get_ranks("tp-cp-dp"):
-        print(f"Creating tensor + data parallel group with CP, ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("tp_cp_dp", nccl_comm_cfgs))
         if rank in ranks:
             _TENSOR_AND_DATA_PARALLEL_GROUP_WITH_CP = group
-            print(f"Rank {rank} assigned to tensor + data parallel group with CP, ranks {ranks}")
     for ranks in rank_generator.get_ranks("tp-dp"):
-        print(f"Creating tensor + data parallel group, ranks {ranks}")
         group = torch.distributed.new_group(ranks, timeout=timeout, pg_options=get_nccl_options("tp_dp", nccl_comm_cfgs))
         if rank in ranks:
             _TENSOR_AND_DATA_PARALLEL_GROUP = group
-            print(f"Rank {rank} assigned to tensor + data parallel group, ranks {ranks}")
-
-    print("Parallel group initialization complete.")
 
 
 def is_initialized():

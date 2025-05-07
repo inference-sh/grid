@@ -141,6 +141,7 @@ def load_state_dict(runtime_config: RuntimeConfig, engine_config: EngineConfig):
     if engine_config.distill:
         default_subdir = f"{default_subdir}.distill"
     inference_weight_dir = os.path.join(load_dir, default_subdir)
+
     assert os.path.exists(inference_weight_dir)
     print_rank_0(f"load {default_subdir} weight from {inference_weight_dir}")
     assert (
