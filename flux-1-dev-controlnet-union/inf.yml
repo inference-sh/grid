@@ -1,5 +1,5 @@
-name: flux.1-dev
-description: a text to image app with flux.1-dev
+name: flux.1-dev-controlnet-union
+description: Image generation with FLUX.1 Dev with ControlNet
 category: image
 is_public: true
 card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/1nd25j9wr46nbsn7ke9drmw71r.png

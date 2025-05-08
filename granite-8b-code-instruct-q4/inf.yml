@@ -1,14 +1,13 @@
 name: granite-8b-code-instruct-q4
 description: Granite 8B Code Instruct [Q4_K]
-version: 0.1.0
 category: chat
+is_public: true
+card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/5eag1w84ryhhqhqk833hsyec2z.png
+thumbnail: ""
+banner_image: ""
 gpu_count: 1
 gpu_vram: 0
 gpu_type: any
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
 python: ""
-is_public: true
-card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/TShn3DBsR3m7XxRBHmIMgw.png
-thumbnail: ""
-banner_image: ""

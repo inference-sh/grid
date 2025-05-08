@@ -1,13 +1,12 @@
 name: ltx-video
 description: Generate high-quality videos with LTX-Video model
-version: 0.1.0
 category: video
+is_public: true
+card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0crs5j5a1bnysnft5kts1zsq8h.png
+thumbnail: ""
+banner_image: ""
 gpu_count: 1
 gpu_vram: 0
 gpu_type: any
 env: {}
 python: ""
-is_public: true
-card_image: https://api.inference.sh/storage/files/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/38md9klgTJynmBX_zrt04Q.png
-thumbnail: ""
-banner_image: ""

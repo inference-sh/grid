@@ -1,0 +1,12 @@
+name: _test-failed-setup
+description: A test app for failed setup
+category: text
+is_public: true
+card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/7zbfrzr2k2f8beka54a79e322a.png
+thumbnail: ""
+banner_image: ""
+gpu_count: 0
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: ""
