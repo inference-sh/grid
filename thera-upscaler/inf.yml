@@ -2,9 +2,9 @@ name: thera
 description: 'Thera: Aliasing-Free Arbitrary-Scale Super-Resolution with Neural Heat Fields'
 version: 0.1.0
 category: image
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env:
     UV_PYTHON: "3.11"
 python: ""

@@ -2,9 +2,9 @@ name: FLUX.1-Fill
 description: FLUX.1 Fill [dev] is a 12 billion parameter rectified flow transformer capable of filling areas in existing images based on a text description
 version: 0.1.0
 category: image
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env: {}
 python: ""
 is_public: true

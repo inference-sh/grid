@@ -24,15 +24,51 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from .wan.wan.configs import WAN_CONFIGS
 from mmgp import offload
 
-# Import core functions from wgp
-from .wan.wgp import (
-    download_models,
-    generate_video
-)
-
 def send_cmd(cmd, message="", *args, **kwargs):
     if cmd != "preview":
         print(f"{cmd}: {message}")
+
+
+def setup_model_directories(target_dir: Path) -> tuple[str, str]:
+    """
+    Set up model directories with symlinks to Hugging Face cache.
+    
+    Args:
+        target_dir: Path to the current directory
+        
+    Returns:
+        tuple[str, str]: Paths to ckpts and loras directories
+    """
+    # Get Hugging Face home directory from environment variable
+    hf_home = os.getenv('HF_HOME', os.path.expanduser('~/.cache/huggingface'))
+    ckpts_dir = os.path.join(hf_home, "hub", "inference-sh", "wan", "ckpts")
+    loras_dir = os.path.join(hf_home, "hub", "inference-sh", "wan", "loras")
+    
+    # Create the directories
+    os.makedirs(ckpts_dir, exist_ok=True)
+    os.makedirs(loras_dir, exist_ok=True)
+    
+    # Remove existing symlinks in target directory if they exist
+    for link_name in ["ckpts", "loras"]:
+        link_path = target_dir / link_name
+        if link_path.exists():
+            if link_path.is_symlink():
+                link_path.unlink()
+            else:
+                shutil.rmtree(link_path)
+    
+    # Create symlinks
+    try:
+        os.symlink(ckpts_dir, target_dir / "ckpts")
+        os.symlink(loras_dir, target_dir / "loras")
+    except FileExistsError:
+        # If symlink already exists, remove it and try again
+        (target_dir / "ckpts").unlink()
+        (target_dir / "loras").unlink()
+        os.symlink(ckpts_dir, target_dir / "ckpts")
+        os.symlink(loras_dir, target_dir / "loras")
+    
+    return ckpts_dir, loras_dir
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text prompt for video generation")
@@ -79,6 +115,16 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     async def setup(self):
         """Initialize the app and download required models"""
+          
+        # wan2gp repo is so messed up, it tries downloading models when importing
+        # so we need to set up the model directories here as symlinks to the HF cache
+        # so it doesn't try downloading them to the current directory and they are cached
+        # and we can use the same models for multiple apps
+        # one day i will fix this repo
+        # until then, here we are
+        running_dir = Path(os.getcwd())  # Convert string to Path object
+        self.ckpts_dir, self.loras_dir = setup_model_directories(running_dir)
+        
         # Set device and check capabilities
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.device_id = 0 if torch.cuda.is_available() else -1
@@ -99,54 +145,20 @@ class App(BaseApp):
         self.text_encoder_filename = "models_t5_umt5-xxl-enc-bf16.safetensors"
         self.vae_filename = "Wan2.1_VAE.safetensors"
         
-        # Create directories for models and loras
-        ckpts_dir = os.path.join(str(current_dir), "ckpts")
-        self.ckpts_dir = ckpts_dir
-        loras_dir = os.path.join(str(current_dir), "loras")
-        self.loras_dir = loras_dir
-        
-        os.makedirs(ckpts_dir, exist_ok=True)
-        os.makedirs(loras_dir, exist_ok=True)
-        
-        # Print current contents of ckpts directory
-        print("\nCurrent contents of ckpts directory:")
-        if os.path.exists(ckpts_dir):
-            for file in os.listdir(ckpts_dir):
-                print(f"  - {file}")
-        else:
-            print("  Directory does not exist yet")
-        
-        # Download models
-        try:
-            print("\nDownloading models...")
-            download_models(self.i2v_transformer_filename, self.text_encoder_filename)
-            
-            # Print contents after download
-            print("\nContents of ckpts directory after download:")
-            for file in os.listdir(ckpts_dir):
-                print(f"  - {file}")
-            
-            # Verify that all required model files exist
-            required_files = [
-                os.path.join(ckpts_dir, self.i2v_transformer_filename),
-                os.path.join(ckpts_dir, self.text_encoder_filename),
-                os.path.join(ckpts_dir, self.vae_filename)
-            ]
-            
-            missing_files = [f for f in required_files if not os.path.exists(f)]
-            if missing_files:
-                raise FileNotFoundError(f"Missing required model files: {', '.join(missing_files)}")
-                
-        except Exception as e:
-            print(f"Error during model setup: {str(e)}")
-            raise
-        
         # Set default device if specified
         if self.device_id >= 0:
             torch.set_default_device(self.device)
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run video generation"""
+        # Import core functions from wgp
+        # and here we are importing it again because the first import was for setup
+        # and we need to import it again here to use it in run
+        # i have no words
+        
+        from .wan.wgp import (
+            generate_video
+        )
         # Parse size
         width, height = map(int, input_data.size.split('x'))
         size = (width, height)

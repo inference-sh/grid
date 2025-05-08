@@ -2,9 +2,9 @@ name: hunyuan-image-to-3d
 description: A text to 3d object app using Hunyuan
 version: 0.1.0
 category: 3d
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env: {}
 python: ""
 is_public: true

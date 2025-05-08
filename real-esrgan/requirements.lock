@@ -49,7 +49,7 @@ nvidia-nvtx-cu12==12.6.77
 opencv-python==4.11.0.86
 packaging==25.0
 pillow==11.2.1
-platformdirs==4.3.7
+platformdirs==4.3.8
 protobuf==6.30.2
 pydantic==2.11.4
 pydantic-core==2.33.2

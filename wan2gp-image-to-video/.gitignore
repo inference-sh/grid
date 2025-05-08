@@ -24,6 +24,7 @@ wheels/
 .installed.cfg
 *.egg
 ckpts/
+loras/
 data/
 
 # Virtual Environment

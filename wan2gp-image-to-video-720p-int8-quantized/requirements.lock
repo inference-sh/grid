@@ -85,7 +85,7 @@ packaging==25.0
 pandas==2.2.3
 peft==0.14.0
 pillow==11.2.1
-platformdirs==4.3.7
+platformdirs==4.3.8
 pooch==1.8.2
 proglog==0.1.11
 propcache==0.3.1

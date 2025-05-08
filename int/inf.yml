@@ -2,9 +2,9 @@ name: int
 description: Int number primitive node
 version: 0.1.0
 category: other
-gpucount: 0
-gpuvram: 0
-gputype: any
+gpu_count: 0
+gpu_vram: 0
+gpu_type: any
 env:
     FOO: bar
 python: "3.12"

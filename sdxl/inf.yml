@@ -2,9 +2,9 @@ name: sdxl
 description: Stable Diffusion XL image generator
 version: 0.1.0
 category: image
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env: {}
 python: ""
 is_public: true

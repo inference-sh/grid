@@ -2,9 +2,9 @@ name: qwen-qwq-32b-q4
 description: Qwen QwQ 32B [Q4_K]
 version: 0.1.0
 category: chat
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
 python: ""

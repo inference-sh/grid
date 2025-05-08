@@ -2,9 +2,9 @@ name: deepseek-r1-distill-qwen-7b
 description: Fast reasoning text LLM model app using DeepSeek R1 Distill Qwen 7B
 version: 0.1.0
 category: chat
-gpucount: 1
-gpuvram: 0
-gputype: any
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
 env: {}
 python: ""
 is_public: true

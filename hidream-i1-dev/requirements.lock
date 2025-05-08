@@ -2,7 +2,7 @@ accelerate==1.6.0
 annotated-types==0.7.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@53bd367b039f1bee1255c6db44867f4252b73f7d
+diffusers @ git+https://github.com/huggingface/diffusers.git@66e50d4e248a32ef8f8698cf3e6f0e1040f74cfc
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.3.2

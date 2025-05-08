@@ -1,0 +1,13 @@
+name: sdxl-controlnet
+description: Stable Diffusion XL image generator with ControlNets
+version: 0.1.0
+category: image
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: ""
+is_public: true
+card_image: https://api.inference.sh/storage/files/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/qmZueE37TUCt-Yvd5xMJbQ.png
+thumbnail: ""
+banner_image: ""
