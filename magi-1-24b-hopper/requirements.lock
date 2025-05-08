@@ -19,7 +19,7 @@ ftfy==6.2.0
 future==1.0.0
 gpustat==1.1.1
 hf-xet==1.1.0
-huggingface-hub==0.31.0
+huggingface-hub==0.31.1
 idna==3.10
 imageio==2.34.0
 imageio-ffmpeg==0.6.0

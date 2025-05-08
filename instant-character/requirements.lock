@@ -7,7 +7,7 @@ einops==0.8.1
 filelock==3.18.0
 fsspec==2025.3.2
 hf-xet==1.1.0
-huggingface-hub==0.31.0
+huggingface-hub==0.31.1
 idna==3.10
 importlib-metadata==8.7.0
 inferencesh==0.3.0
