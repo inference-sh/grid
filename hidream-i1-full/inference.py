@@ -6,6 +6,7 @@ from diffusers.models import HiDreamImageTransformer2DModel
 from diffusers.schedulers import UniPCMultistepScheduler
 from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
+from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
 
 MODEL_PREFIX = "HiDream-ai"
 LLAMA_MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
@@ -24,7 +25,7 @@ MODEL_CONFIGS = {
         "guidance_scale": 5.0,
         "num_inference_steps": 50,
         "shift": 3.0,
-        "scheduler": UniPCMultistepScheduler
+        "scheduler": FlowUniPCMultistepScheduler
     },
     "fast": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Fast",
@@ -104,7 +105,6 @@ class App(BaseApp):
             text_encoder_4=self.text_encoder,
             torch_dtype=torch.bfloat16
         )
-        self.pipe.enable_model_cpu_offload()
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run prediction on the input data."""
