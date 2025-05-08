@@ -73,30 +73,25 @@ class App(BaseApp):
         self.model = self.model.to(device)
 
         # Process video input if provided
-        if input_data.video_file is not None:
-            video_path = input_data.video_file.path
-            target_fps = self.model_config.get("video_fps", 5)
-            video_tensors = read_video(video_path, seek_time=input_data.seconds_start, 
-                                     duration=input_data.seconds_total, target_fps=target_fps)
-        else:
-            video_tensors = None
+        video_path = input_data.video_file.path if input_data.video_file is not None else None
+        target_fps = self.model_config.get("video_fps", 5)
+        video_tensors = read_video(video_path, seek_time=input_data.seconds_start, 
+                                 duration=input_data.seconds_total, target_fps=target_fps)
 
         # Process audio prompt if provided
-        if input_data.audio_prompt_file is not None:
-            audio_path = input_data.audio_prompt_file.path
-            audio_tensor = load_and_process_audio(audio_path, self.sample_rate, 
-                                                input_data.seconds_start, input_data.seconds_total)
-            audio_tensor = audio_tensor.to(device)
-        else:
-            audio_tensor = None
+        audio_path = input_data.audio_prompt_file.path if input_data.audio_prompt_file is not None else None
+        audio_tensor = load_and_process_audio(audio_path, self.sample_rate, 
+                                            input_data.seconds_start, input_data.seconds_total)
+        audio_tensor = audio_tensor.to(device) if audio_tensor is not None else None
 
         # Prepare conditioning
+        seconds_input = self.sample_size / self.sample_rate
         conditioning = [{
             "video_prompt": [video_tensors.unsqueeze(0)] if video_tensors is not None else None,
             "text_prompt": input_data.prompt,
             "audio_prompt": audio_tensor.unsqueeze(0) if audio_tensor is not None else None,
             "seconds_start": input_data.seconds_start,
-            "seconds_total": self.sample_size / self.sample_rate
+            "seconds_total": seconds_input
         }]
 
         # Prepare negative conditioning if provided
