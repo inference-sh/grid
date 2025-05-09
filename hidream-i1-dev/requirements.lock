@@ -2,7 +2,7 @@ accelerate==1.6.0
 annotated-types==0.7.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@393aefcdc7c7e786d7b2adf95750cf72fbfbed89
+diffusers @ git+https://github.com/huggingface/diffusers.git@d6bf268a4ad71443f975923126ff1f5157b30ecb
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.3.2
@@ -10,7 +10,7 @@ hf-xet==1.1.0
 huggingface-hub==0.31.1
 idna==3.10
 importlib-metadata==8.7.0
-inferencesh==0.3.0
+inferencesh==0.2.4
 jinja2==3.1.6
 markupsafe==3.0.2
 mpmath==1.3.0
@@ -42,6 +42,7 @@ requests==2.32.3
 safetensors==0.5.3
 sentencepiece==0.2.0
 setuptools==80.3.1
+setuptools-scm==8.3.1
 sympy==1.14.0
 tokenizers==0.21.1
 torch==2.7.0

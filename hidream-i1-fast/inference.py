@@ -119,7 +119,7 @@ class App(BaseApp):
         config = MODEL_CONFIGS[self.model_type]
         
         # Parse resolution
-        height, width = parse_resolution(input_data.resolution)
+        width, height = parse_resolution(input_data.resolution)
         
         # Set up generator for reproducibility
         seed = input_data.seed if input_data.seed != -1 else torch.randint(0, 1000000, (1,)).item()
