@@ -105,6 +105,7 @@ class App(BaseApp):
             text_encoder_4=self.text_encoder,
             torch_dtype=torch.bfloat16
         )
+        self.pipe.enable_model_cpu_offload()
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run prediction on the input data."""
