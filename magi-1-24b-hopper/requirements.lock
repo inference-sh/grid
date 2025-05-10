@@ -11,9 +11,9 @@ diffusers==0.29.2
 einops==0.8.1
 ffmpeg-python==0.2.0
 filelock==3.18.0
-flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.7/flash_attn-2.4.3+cu128torch2.5-cp312-cp312-linux_x86_64.whl
+flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.8/flash_attn-2.7.4.post1+cu126torch2.5-cp311-cp311-linux_x86_64.whl
 flashinfer-python==0.2.0.post2+cu124torch2.4
-fonttools==4.57.0
+fonttools==4.58.0
 fsspec==2025.3.2
 ftfy==6.2.0
 future==1.0.0
@@ -24,10 +24,10 @@ idna==3.10
 imageio==2.34.0
 imageio-ffmpeg==0.6.0
 importlib-metadata==8.7.0
-inferencesh==0.3.0
+inferencesh==0.2.4
 jinja2==3.1.6
 kiwisolver==1.4.8
-magi-attention @ git+https://github.com/SandAI-org/MagiAttention.git@1ec7f7f8d4c6dd6f921909c8c53dfdbccdf2e460
+magi-attention @ git+https://github.com/SandAI-org/MagiAttention.git@c3b577e99aa145c335853459556384fd2e0dcff8
 markdown-it-py==3.0.0
 markupsafe==3.0.2
 matplotlib==3.10.1
@@ -63,9 +63,10 @@ regex==2024.11.6
 requests==2.32.3
 rich==14.0.0
 safetensors==0.5.3
-scipy==1.15.2
+scipy==1.15.3
 sentencepiece==0.2.0
-setuptools==80.3.1
+setuptools==80.4.0
+setuptools-scm==8.3.1
 six==1.17.0
 soupsieve==2.7
 sympy==1.14.0

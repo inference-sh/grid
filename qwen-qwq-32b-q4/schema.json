@@ -4,14 +4,8 @@
       "ContextMessage": {
         "properties": {
           "role": {
-            "description": "The role of the message",
-            "enum": [
-              "user",
-              "assistant",
-              "system"
-            ],
-            "title": "Role",
-            "type": "string"
+            "$ref": "#/$defs/ContextMessageRole",
+            "description": "The role of the message"
           },
           "text": {
             "description": "The text content of the message",
@@ -25,6 +19,15 @@
         ],
         "title": "ContextMessage",
         "type": "object"
+      },
+      "ContextMessageRole": {
+        "enum": [
+          "user",
+          "assistant",
+          "system"
+        ],
+        "title": "ContextMessageRole",
+        "type": "string"
       }
     },
     "properties": {
@@ -155,6 +158,18 @@
       "response": {
         "title": "Response",
         "type": "string"
+      },
+      "thinking_content": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Thinking Content"
       }
     },
     "required": [

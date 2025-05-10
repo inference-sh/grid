@@ -57,7 +57,7 @@ class App(BaseApp):
                     stream=True,
                     temperature=temp,
                     top_p=top_p,
-                    max_tokens=512
+                    max_tokens=24576
                 ):
                     delta = chunk.get("choices", [{}])[0] \
                                   .get("delta", {}) \
