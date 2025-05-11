@@ -1,0 +1,66 @@
+{
+  "input": {
+    "$defs": {
+      "BooleanOperator": {
+        "enum": [
+          "==",
+          "!=",
+          "and",
+          "or",
+          "xor",
+          "nand",
+          "nor",
+          "xnor"
+        ],
+        "title": "BooleanOperator",
+        "type": "string"
+      }
+    },
+    "properties": {
+      "left_operand": {
+        "description": "The left side boolean of the comparison (condition value)",
+        "title": "Left Operand",
+        "type": "boolean"
+      },
+      "operator": {
+        "$ref": "#/$defs/BooleanOperator",
+        "description": "The boolean comparison operator to use"
+      },
+      "right_operand": {
+        "description": "The right side boolean of the comparison (value to check against)",
+        "title": "Right Operand",
+        "type": "boolean"
+      },
+      "true_value": {
+        "description": "The value to return if the condition is true",
+        "title": "True Value"
+      },
+      "false_value": {
+        "description": "The value to return if the condition is false",
+        "title": "False Value"
+      }
+    },
+    "required": [
+      "left_operand",
+      "operator",
+      "right_operand",
+      "true_value",
+      "false_value"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "properties": {
+      "result": {
+        "description": "The selected value based on the boolean condition evaluation",
+        "title": "Result"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}
