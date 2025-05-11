@@ -7,7 +7,7 @@ cycler==0.12.1
 diffusers==0.32.2
 einops==0.8.1
 filelock==3.18.0
-fonttools==4.57.0
+fonttools==4.58.0
 fsspec==2025.3.2
 huggingface-hub==0.25.2
 idna==3.10
@@ -49,7 +49,7 @@ regex==2024.11.6
 requests==2.32.3
 safetensors==0.5.3
 sentencepiece==0.2.0
-setuptools==80.3.1
+setuptools==80.4.0
 setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0

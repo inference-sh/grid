@@ -100,6 +100,7 @@
     },
     "properties": {
       "prompt": {
+        "description": "Text prompt to guide video generation",
         "title": "Prompt",
         "type": "string"
       },
@@ -113,19 +114,8 @@
           }
         ],
         "default": "worst quality, inconsistent motion, blurry, jittery, distorted",
+        "description": "Negative prompt to specify undesired features",
         "title": "Negative Prompt"
-      },
-      "height": {
-        "anyOf": [
-          {
-            "type": "integer"
-          },
-          {
-            "type": "null"
-          }
-        ],
-        "default": 480,
-        "title": "Height"
       },
       "width": {
         "anyOf": [
@@ -137,7 +127,21 @@
           }
         ],
         "default": 704,
+        "description": "Width of the output video frames",
         "title": "Width"
+      },
+      "height": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": 480,
+        "description": "Height of the output video frames",
+        "title": "Height"
       },
       "num_frames": {
         "anyOf": [
@@ -149,6 +153,7 @@
           }
         ],
         "default": 121,
+        "description": "Number of frames to generate in the output video",
         "title": "Num Frames"
       },
       "frame_rate": {
@@ -161,6 +166,7 @@
           }
         ],
         "default": 25,
+        "description": "Frame rate for the output video",
         "title": "Frame Rate"
       },
       "num_inference_steps": {
@@ -172,7 +178,8 @@
             "type": "null"
           }
         ],
-        "default": 40,
+        "default": 8,
+        "description": "Number of denoising steps in the diffusion process",
         "title": "Num Inference Steps"
       },
       "guidance_scale": {
@@ -185,6 +192,7 @@
           }
         ],
         "default": 3.0,
+        "description": "Scale for classifier-free guidance",
         "title": "Guidance Scale"
       },
       "seed": {
@@ -197,6 +205,7 @@
           }
         ],
         "default": 171198,
+        "description": "Random seed for reproducibility",
         "title": "Seed"
       },
       "conditioning_images": {
@@ -212,6 +221,7 @@
           }
         ],
         "default": null,
+        "description": "List of conditioning images with their parameters",
         "title": "Conditioning Images"
       },
       "offload_to_cpu": {
@@ -224,6 +234,7 @@
           }
         ],
         "default": false,
+        "description": "Whether to offload unnecessary computations to CPU",
         "title": "Offload To Cpu"
       },
       "image_cond_noise_scale": {
@@ -236,7 +247,46 @@
           }
         ],
         "default": 0.15,
+        "description": "Scale of noise to add to conditioning images",
         "title": "Image Cond Noise Scale"
+      },
+      "input_media": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Input video file for video-to-video generation"
+      },
+      "strength": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": 1.0,
+        "description": "Strength of input video influence in video-to-video generation",
+        "title": "Strength"
+      },
+      "pipeline_config": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": "configs/ltxv-2b-0.9.6-dev.yaml",
+        "description": "Path to custom pipeline configuration file",
+        "title": "Pipeline Config"
       }
     },
     "required": [
