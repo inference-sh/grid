@@ -19,4 +19,4 @@ env:
     PAD_HQ: "1"
     PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
     WORLD_SIZE: "1"
-python: ""
+python: "3.12"
