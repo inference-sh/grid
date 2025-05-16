@@ -1,4 +1,4 @@
-name: magi-1-4.5b-hopper
+name: magi-1-24b-hopper-distill-quant
 description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
 category: video
 is_public: true
@@ -9,14 +9,14 @@ gpu_count: 8
 gpu_vram: 0
 gpu_type: any
 env:
-    GPUS_PER_NODE: "1"
-    MASTER_ADDR: localhost
-    MASTER_PORT: "6009"
-    NNODES: "1"
-    OFFLOAD_T5_CACHE: "true"
-    OFFLOAD_VAE_CACHE: "true"
+    CUDA_DEVICE_MAX_CONNECTIONS: "1"
+    NCCL_ALGO: ^NVLS
+    NCCL_IB_DISABLE: "1"
+    NCCL_P2P_DISABLE: "1"
+    NCCL_SOCKET_IFNAME: eth0
+    OFFLOAD_T5_CACHE: "false"
+    OFFLOAD_VAE_CACHE: "false"
     PAD_DURATION: "1"
     PAD_HQ: "1"
-    PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
-    WORLD_SIZE: "1"
+    TORCH_CUDA_ARCH_LIST: 8.9;9.0
 python: "3.12"
