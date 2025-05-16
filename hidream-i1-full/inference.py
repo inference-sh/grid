@@ -36,41 +36,39 @@ MODEL_CONFIGS = {
     }
 }
 
-RESOLUTION_OPTIONS = [
-    "1024 × 1024 (Square)",
-    "768 × 1360 (Portrait)",
-    "1360 × 768 (Landscape)",
-    "880 × 1168 (Portrait)",
-    "1168 × 880 (Landscape)",
-    "1248 × 832 (Landscape)",
-    "832 × 1248 (Portrait)"
-]
+MAX_TOTAL_PIXELS = 1920 * 1080  # Maximum total pixels allowed
+
+def round_to_multiple_of_8(n: int) -> int:
+    """Round a number to the nearest multiple of 8."""
+    return ((n + 4) // 8) * 8
+
+def adjust_dimensions(width: int, height: int) -> tuple[int, int]:
+    """Adjust dimensions to be multiples of 8 and respect max pixel count."""
+    # First round to multiples of 8
+    width = round_to_multiple_of_8(width)
+    height = round_to_multiple_of_8(height)
+    
+    # If total pixels exceed max, scale down while maintaining aspect ratio
+    total_pixels = width * height
+    if total_pixels > MAX_TOTAL_PIXELS:
+        aspect_ratio = width / height
+        # Solve: w * h = MAX_TOTAL_PIXELS and w/h = aspect_ratio
+        new_height = int((MAX_TOTAL_PIXELS / aspect_ratio) ** 0.5)
+        new_width = int(new_height * aspect_ratio)
+        # Round to multiples of 8 again
+        width = round_to_multiple_of_8(new_width)
+        height = round_to_multiple_of_8(new_height)
+    
+    return width, height
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="The prompt to generate an image from")
-    resolution: str = Field(default="1024 × 1024 (Square)", enum=RESOLUTION_OPTIONS, description="The resolution of the generated image")
+    width: int = Field(default=1024, ge=8, description="The width of the generated image (will be adjusted to nearest multiple of 8)")
+    height: int = Field(default=1024, ge=8, description="The height of the generated image (will be adjusted to nearest multiple of 8)")
     seed: int = Field(default=-1, ge=-1, le=1000000, description="The seed for the random number generator")
 
 class AppOutput(BaseAppOutput):
     result: File
-
-def parse_resolution(resolution_str):
-    if "1024 × 1024" in resolution_str:
-        return 1024, 1024
-    elif "768 × 1360" in resolution_str:
-        return 768, 1360
-    elif "1360 × 768" in resolution_str:
-        return 1360, 768
-    elif "880 × 1168" in resolution_str:
-        return 880, 1168
-    elif "1168 × 880" in resolution_str:
-        return 1168, 880
-    elif "1248 × 832" in resolution_str:
-        return 1248, 832
-    elif "832 × 1248" in resolution_str:
-        return 832, 1248
-    else:
-        return 1024, 1024  # Default fallback
 
 class App(BaseApp):
     async def setup(self):
@@ -112,8 +110,8 @@ class App(BaseApp):
         # Get configuration for current model
         config = MODEL_CONFIGS[self.model_type]
         
-        # Parse resolution
-        width, height = parse_resolution(input_data.resolution)
+        # Adjust dimensions to be multiples of 8 and respect max pixel count
+        width, height = adjust_dimensions(input_data.width, input_data.height)
         
         # Set up generator for reproducibility
         seed = input_data.seed if input_data.seed != -1 else torch.randint(0, 1000000, (1,)).item()

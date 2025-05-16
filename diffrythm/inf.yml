@@ -1,0 +1,12 @@
+name: diffrythm
+description: Blazingly Fast and Embarrassingly Simple End-to-End Full-Length Song Generation with Latent Diffusion
+category: audio
+is_public: false
+card_image: ""
+thumbnail: ""
+banner_image: ""
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: "3.11"

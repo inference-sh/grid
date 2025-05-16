@@ -6,20 +6,19 @@
         "title": "Prompt",
         "type": "string"
       },
-      "resolution": {
-        "default": "1024 \u00d7 1024 (Square)",
-        "description": "The resolution of the generated image",
-        "enum": [
-          "1024 \u00d7 1024 (Square)",
-          "768 \u00d7 1360 (Portrait)",
-          "1360 \u00d7 768 (Landscape)",
-          "880 \u00d7 1168 (Portrait)",
-          "1168 \u00d7 880 (Landscape)",
-          "1248 \u00d7 832 (Landscape)",
-          "832 \u00d7 1248 (Portrait)"
-        ],
-        "title": "Resolution",
-        "type": "string"
+      "width": {
+        "default": 1024,
+        "description": "The width of the generated image (will be adjusted to nearest multiple of 8)",
+        "minimum": 8,
+        "title": "Width",
+        "type": "integer"
+      },
+      "height": {
+        "default": 1024,
+        "description": "The height of the generated image (will be adjusted to nearest multiple of 8)",
+        "minimum": 8,
+        "title": "Height",
+        "type": "integer"
       },
       "seed": {
         "default": -1,

@@ -153,7 +153,7 @@
           }
         ],
         "default": 121,
-        "description": "Number of frames to generate in the output video",
+        "description": "Number of frames to generate",
         "title": "Num Frames"
       },
       "frame_rate": {
@@ -178,8 +178,8 @@
             "type": "null"
           }
         ],
-        "default": 8,
-        "description": "Number of denoising steps in the diffusion process",
+        "default": 40,
+        "description": "Number of denoising steps",
         "title": "Num Inference Steps"
       },
       "guidance_scale": {
@@ -221,7 +221,7 @@
           }
         ],
         "default": null,
-        "description": "List of conditioning images with their parameters",
+        "description": "List of conditioning images",
         "title": "Conditioning Images"
       },
       "offload_to_cpu": {
@@ -234,7 +234,7 @@
           }
         ],
         "default": false,
-        "description": "Whether to offload unnecessary computations to CPU",
+        "description": "Whether to offload to CPU",
         "title": "Offload To Cpu"
       },
       "image_cond_noise_scale": {
@@ -247,7 +247,7 @@
           }
         ],
         "default": 0.15,
-        "description": "Scale of noise to add to conditioning images",
+        "description": "Scale of noise for conditioning",
         "title": "Image Cond Noise Scale"
       },
       "input_media": {
@@ -272,21 +272,8 @@
           }
         ],
         "default": 1.0,
-        "description": "Strength of input video influence in video-to-video generation",
+        "description": "Strength of input video influence",
         "title": "Strength"
-      },
-      "pipeline_config": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
-        ],
-        "default": "configs/ltxv-2b-0.9.6-dev.yaml",
-        "description": "Path to custom pipeline configuration file",
-        "title": "Pipeline Config"
       }
     },
     "required": [

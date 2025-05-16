@@ -1,4 +1,4 @@
-accelerate==1.6.0
+accelerate==1.7.0
 annotated-types==0.7.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
@@ -14,7 +14,7 @@ idna==3.10
 imageio==2.37.0
 imageio-ffmpeg==0.6.0
 importlib-metadata==8.7.0
-inferencesh==0.2.4
+inferencesh==0.2.7
 jinja2==3.1.6
 kiwisolver==1.4.8
 markupsafe==3.0.2
@@ -49,7 +49,7 @@ regex==2024.11.6
 requests==2.32.3
 safetensors==0.5.3
 sentencepiece==0.2.0
-setuptools==80.4.0
+setuptools==80.7.1
 setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0

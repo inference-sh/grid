@@ -1,7 +1,16 @@
 {
   "input": {
     "$defs": {
-      "ContextMessage": {
+      "ContextMessageRole": {
+        "enum": [
+          "user",
+          "assistant",
+          "system"
+        ],
+        "title": "ContextMessageRole",
+        "type": "string"
+      },
+      "ContextMessageWithImage": {
         "properties": {
           "role": {
             "$ref": "#/$defs/ContextMessageRole",
@@ -11,23 +20,26 @@
             "description": "The text content of the message",
             "title": "Text",
             "type": "string"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/File"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The image url of the message"
           }
         },
         "required": [
           "role",
           "text"
         ],
-        "title": "ContextMessage",
+        "title": "ContextMessageWithImage",
         "type": "object"
-      },
-      "ContextMessageRole": {
-        "enum": [
-          "user",
-          "assistant",
-          "system"
-        ],
-        "title": "ContextMessageRole",
-        "type": "string"
       },
       "File": {
         "description": "A class representing a file in the inference.sh ecosystem.",
@@ -121,6 +133,10 @@
                 {
                   "text": "What is the capital of France?",
                   "type": "text"
+                },
+                {
+                  "type": "image",
+                  "url": "https://example.com/image.jpg"
                 }
               ],
               "role": "user"
@@ -134,70 +150,10 @@
               ],
               "role": "assistant"
             }
-          ],
-          [
-            {
-              "content": [
-                {
-                  "text": "What is the weather like today?",
-                  "type": "text"
-                }
-              ],
-              "role": "user"
-            },
-            {
-              "content": [
-                {
-                  "text": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location.",
-                  "type": "text"
-                }
-              ],
-              "role": "assistant"
-            }
-          ],
-          [
-            {
-              "content": [
-                {
-                  "text": "Can you help me write a poem about spring?",
-                  "type": "text"
-                }
-              ],
-              "role": "user"
-            },
-            {
-              "content": [
-                {
-                  "text": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth.",
-                  "type": "text"
-                }
-              ],
-              "role": "assistant"
-            }
-          ],
-          [
-            {
-              "content": [
-                {
-                  "text": "Explain quantum computing in simple terms",
-                  "type": "text"
-                }
-              ],
-              "role": "user"
-            },
-            {
-              "content": [
-                {
-                  "text": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems.",
-                  "type": "text"
-                }
-              ],
-              "role": "assistant"
-            }
           ]
         ],
         "items": {
-          "$ref": "#/$defs/ContextMessage"
+          "$ref": "#/$defs/ContextMessageWithImage"
         },
         "title": "Context",
         "type": "array"
