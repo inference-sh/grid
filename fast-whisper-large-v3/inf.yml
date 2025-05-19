@@ -1,0 +1,12 @@
+name: fast-whisper-large-v3
+description: An optimized version of the Fast Whisper large model for transcription and translation of audio files (uses flash-attn)
+category: audio
+is_public: true
+card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/2xvvnz34f9bc6em43jtwabp3h4.png
+thumbnail: ""
+banner_image: ""
+gpu_count: 0
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: ""

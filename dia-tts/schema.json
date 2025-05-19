@@ -1,0 +1,213 @@
+{
+  "input": {
+    "$defs": {
+      "AudioFormat": {
+        "enum": [
+          "wav",
+          "mp3",
+          "ogg",
+          "flac"
+        ],
+        "title": "AudioFormat",
+        "type": "string"
+      },
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "text": {
+        "description": "The text to convert to speech. Use [S1] and [S2] tags for different speakers.",
+        "title": "Text",
+        "type": "string"
+      },
+      "format": {
+        "$ref": "#/$defs/AudioFormat",
+        "default": "wav",
+        "description": "The output audio format"
+      },
+      "speed": {
+        "default": 1.0,
+        "description": "Speech speed (0.1 to 0.5)",
+        "title": "Speed",
+        "type": "number"
+      },
+      "clone_from_text": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The transcript text used for voice cloning. Must use [S1] and [S2] tags.",
+        "title": "Clone From Text"
+      },
+      "clone_from_audio": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The audio file to clone voices from"
+      }
+    },
+    "required": [
+      "text"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "audio": {
+        "$ref": "#/$defs/File",
+        "description": "The generated audio file"
+      }
+    },
+    "required": [
+      "audio"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

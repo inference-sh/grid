@@ -1,0 +1,30 @@
+{
+  "input": {
+    "properties": {
+      "float_input": {
+        "description": "Number input",
+        "title": "Float Input",
+        "type": "number"
+      }
+    },
+    "required": [
+      "float_input"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "properties": {
+      "float_output": {
+        "description": "Number output",
+        "title": "Float Output",
+        "type": "number"
+      }
+    },
+    "required": [
+      "float_output"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

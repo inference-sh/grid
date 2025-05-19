@@ -1,0 +1,299 @@
+i2v_effects = {
+"Assassin" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Assassin",
+file:"assassin_45_epochs.safetensors"
+},
+"Baby" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Baby",
+file:"baby_50_epochs.safetensors"
+},
+"Bride" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Bride",
+file:"bride_50_epochs.safetensors"
+},
+"Cakeify" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Cakeify",
+file:"cakeify_16_epochs.safetensors"
+},
+"Cartoon_Jaw_Drop" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Cartoon_Jaw_Drop",
+file:"cartoon_jaw_drop_50_epochs.safetensors"
+},
+"Classy" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Classy",
+file:"classy_45_epochs.safetensors"
+},
+"Crush" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Crush",
+file:"crush_20_epochs.safetensors"
+},
+"Deflate" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Deflate",
+file:"deflate_20_epochs.safetensors"
+},
+"Disney-Princess" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Disney-Princess",
+file:"disney_princess_45_epochs.safetensors"
+},
+"Dolly-Effect" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Dolly-Effect",
+file:"dolly_25_epochs.safetensors"
+},
+"Electrify" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Electrify",
+file:"electrify_50_epochs.safetensors"
+},
+"Explode" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Explode",
+file:"explode_30_epochs.safetensors"
+},
+"Fus-Ro-Dah" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Fus-Ro-Dah",
+file:"fus_ro_dah_20_epochs.safetensors"
+},
+"Gun-Shooting" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Gun-Shooting",
+file:"gun_20_epochs.safetensors"
+},
+"Hug-Jesus" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Hug-Jesus",
+file:"hug_jesus_20_epochs.safetensors"
+},
+"Hulk-Transformation" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Hulk-Transformation",
+file:"hulk_35_epochs.safetensors"
+},
+"Inflate" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Inflate",
+file:"inflate_20_epochs.safetensors"
+},
+"Jumpscare" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Jumpscare",
+file:"jumpscare_35_epochs.safetensors"
+},
+"Jungle" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Jungle",
+file:"jungle_50_epochs.safetensors"
+},
+"Laughing" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Laughing",
+file:"laughing_15_epochs.safetensors"
+},
+"Mona-Lisa" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Mona-Lisa",
+file:"mona_lisa_45_epochs.safetensors"
+},
+"Muscle" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Muscle",
+file:"muscle_18_epochs.safetensors"
+},
+"Painting" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Painting",
+file:"painting_50_epochs.safetensors"
+},
+"Pirate-Captain" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Pirate-Captain",
+file:"pirate_captain_50_epochs.safetensors"
+},
+"Princess" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Princess",
+file:"princess_45_epochs.safetensors"
+},
+"Puppy" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Puppy",
+file:"puppy_50_epochs.safetensors"
+},
+"Robot-Face-Reveal" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Robot-Face-Reveal",
+file:"robot_face_reveal_35_epochs.safetensors"
+},
+"Rotate" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Rotate",
+file:"rotate_20_epochs.safetensors"
+},
+"Samurai" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Samurai",
+file:"samurai_50_epochs.safetensors"
+},
+"Selfie-With-Younger-Self" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Selfie-With-Younger-Self",
+file:"selfie_younger_self_15_epochs.safetensors"
+},
+"Snow-White" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Snow-White",
+file:"snow_white_50_epochs.safetensors"
+},
+"Squish" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Squish",
+file:"squish_18.safetensors"
+},
+"Super-Saiyan" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Super-Saiyan",
+file:"super_saiyan_35_epochs.safetensors"
+},
+"VIP" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "VIP",
+file:"vip_50_epochs.safetensors"
+},
+"Warrior" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Warrior",
+file:"warrior_45_epochs.safetensors"
+},
+"Zen" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "Zen",
+file:"zen_50_epochs.safetensors"
+},
+"angry-face" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "angry-face",
+file:"angry_face_5_epochs.safetensors"
+},
+"crying" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "crying",
+file:"crying_20_epochs.safetensors"
+},
+"kissing" : {
+repo: "inference-sh/remade-ai-wan2.1-i2v-effects",
+folder: "kissing",
+file:"kissing_30_epochs.safetensors"
+}
+}
+t2v_effects= {
+"Abandoned-Places" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Abandoned-Places",
+file:"abandoned_50_epochs.safetensors"
+},
+"Animal-Documentary" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Animal-Documentary",
+file:"animal_doc_5_epochs.safetensors"
+},
+"Boxing" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Boxing",
+file:"boxing_10_epochs.safetensors"
+},
+"Cats" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Cats",
+file:"cats_10_epochs.safetensors"
+},
+"Cyberpunk" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Cyberpunk",
+file:"cyberpunk_20_epochs.safetensors"
+},
+"Dogs" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Dogs",
+file:"dogs_5_epochs.safetensors"
+},
+"Doom-FPS" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Doom-FPS",
+file:"doom_8_epochs.safetensors"
+},
+"Eye-Close-Up" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Eye-Close-Up",
+file:"eye_10_epochs.safetensors"
+},
+"Fantasy-Landscapes" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Fantasy-Landscapes",
+file:"fantasy_50_epochs.safetensors"
+},
+"Film-Noir" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Film-Noir",
+file:"film_noir_10_epochs.safetensors"
+},
+"Fire" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Fire",
+file:"fire_12_epochs.safetensors"
+},
+"Lego" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Lego",
+file:"lego_35_epochs.safetensors"
+},
+"POV-Driving" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "POV-Driving",
+file:"pov_driving_5_epochs.safetensors"
+},
+"Pixar" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Pixar",
+file:"pixar_10_epochs.safetensors"
+},
+"Tiny-Planet-Fisheye" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Tiny-Planet-Fisheye",
+file:"fisheye_15_epochs.safetensors"
+},
+"Tornado" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Tornado",
+file:"tornado_10_epochs.safetensors"
+},
+"Tsunami" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Tsunami",
+file:"tsunami_4_epochs.safetensors"
+},
+"Ultra-Wide" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Ultra-Wide",
+file:"ultra_wide_5_epochs.safetensors"
+},
+"Vintage-VHS" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Vintage-VHS",
+file:"vhs_20_epochs.safetensors"
+},
+"Zoom-Call" : {
+repo: "inference-sh/remade-ai-wan2.1-t2v-effects",
+folder: "Zoom-Call",
+file:"zoom_call_10_epochs.safetensors"
+}
+}

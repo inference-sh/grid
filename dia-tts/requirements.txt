@@ -1,0 +1,9 @@
+pydantic >= 2.0.0
+inferencesh
+torch >= 2.0.0
+transformers
+soundfile
+numpy
+pydub
+hatchling
+librosa

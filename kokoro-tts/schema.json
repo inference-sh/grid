@@ -1,0 +1,156 @@
+{
+  "input": {
+    "$defs": {
+      "AudioFormat": {
+        "enum": [
+          "wav",
+          "mp3",
+          "ogg",
+          "flac"
+        ],
+        "title": "AudioFormat",
+        "type": "string"
+      },
+      "VoiceType": {
+        "enum": [
+          "American Female (Heart)",
+          "American Female (Bella)",
+          "American Female (Nicole)",
+          "American Female (Kore)",
+          "American Female (Sarah)",
+          "American Male (Fenrir)",
+          "American Male (Michael)",
+          "American Male (Puck)",
+          "British Female (Emma)",
+          "British Male (Fable)",
+          "British Male (George)",
+          "Japanese Female (Alpha)",
+          "Japanese Male (Kumo)",
+          "Chinese Female (Xiaobei)",
+          "Chinese Male (Yunjian)",
+          "Spanish Female (Dora)",
+          "Spanish Male (Alex)",
+          "French Female (Siwis)",
+          "Hindi Female (Alpha)",
+          "Hindi Male (Omega)",
+          "Italian Female (Sara)",
+          "Italian Male (Nicola)",
+          "Portuguese Female (Dora)",
+          "Portuguese Male (Alex)"
+        ],
+        "title": "VoiceType",
+        "type": "string"
+      }
+    },
+    "properties": {
+      "text": {
+        "description": "The text to convert to speech",
+        "title": "Text",
+        "type": "string"
+      },
+      "voice": {
+        "$ref": "#/$defs/VoiceType",
+        "default": "American Female (Heart)",
+        "description": "The voice type to use"
+      },
+      "format": {
+        "$ref": "#/$defs/AudioFormat",
+        "default": "wav",
+        "description": "The output audio format"
+      },
+      "speed": {
+        "default": 1.0,
+        "description": "Speech speed (0.5 to 2.0)",
+        "title": "Speed",
+        "type": "number"
+      }
+    },
+    "required": [
+      "text"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "audio": {
+        "$ref": "#/$defs/File",
+        "description": "The generated audio file"
+      }
+    },
+    "required": [
+      "audio"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

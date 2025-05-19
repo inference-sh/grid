@@ -1,0 +1,12 @@
+name: wan2gp-image-to-video-720p
+description: Image to video generation using Wan2.1 (14B) 720p model
+category: video
+is_public: true
+card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/6n98f7nb85gx2b2ta3hnmg5jnt.png
+thumbnail: ""
+banner_image: ""
+gpu_count: 1
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: ""

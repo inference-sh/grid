@@ -1,0 +1,12 @@
+name: array-element-switch
+description: switch between two inputs according to an array-element comparison condition
+category: other
+is_public: true
+card_image: ""
+thumbnail: ""
+banner_image: ""
+gpu_count: 0
+gpu_vram: 0
+gpu_type: any
+env: {}
+python: "3.12"

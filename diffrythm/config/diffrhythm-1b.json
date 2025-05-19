@@ -1,0 +1,13 @@
+{
+    "model_type": "diffrhythm",
+    "model": {
+        "dim": 2048,
+        "depth": 16, 
+        "heads": 32,
+        "ff_mult": 4,
+        "text_dim": 512,
+        "conv_layers": 4,
+        "mel_dim": 64,
+        "text_num_embeds": 363
+    }
+}

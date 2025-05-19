@@ -1,0 +1,241 @@
+{
+  "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "lyrics": {
+        "description": "The lyrics to generate music for in LRC format",
+        "title": "Lyrics",
+        "type": "string"
+      },
+      "style_prompt": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": "",
+        "description": "Text prompt describing the desired music style",
+        "title": "Style Prompt"
+      },
+      "reference_audio": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Reference audio file to use as style"
+      },
+      "audio_length": {
+        "default": 95,
+        "description": "Length of generated song in seconds (95 or 285)",
+        "title": "Audio Length",
+        "type": "integer"
+      },
+      "edit_mode": {
+        "default": false,
+        "description": "Whether to use edit mode",
+        "title": "Edit Mode",
+        "type": "boolean"
+      },
+      "reference_song": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Reference song for editing"
+      },
+      "edit_segments": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Time segments to edit in format [[start1,end1],...]",
+        "title": "Edit Segments"
+      },
+      "batch_size": {
+        "default": 1,
+        "description": "Number of songs to generate per batch",
+        "title": "Batch Size",
+        "type": "integer"
+      },
+      "chunked_processing": {
+        "default": false,
+        "description": "Whether to use chunked processing",
+        "title": "Chunked Processing",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "lyrics"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "generated_audio": {
+        "$ref": "#/$defs/File",
+        "description": "The generated audio file"
+      }
+    },
+    "required": [
+      "generated_audio"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

@@ -1,0 +1,4 @@
+pydantic >= 2.0.0
+inferencesh
+moviepy >= 2.1.2
+requests >= 2.28.1

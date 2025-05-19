@@ -1,0 +1,19 @@
+inferencesh
+pydantic >= 2.0.0
+torch
+torchvision
+opencv-python
+diffusers
+transformers
+tokenizers
+accelerate
+tqdm
+imageio
+easydict
+ftfy
+imageio-ffmpeg
+numpy
+moviepy==1.0.3
+huggingface_hub
+dashscope
+einops
