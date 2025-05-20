@@ -7,7 +7,7 @@ images:
     thumbnail:
     banner:
 variants:
-  - default:
+    default:
         name: default
         resources:
             gpu:

@@ -1,0 +1,37 @@
+{
+  "input": {
+    "properties": {
+      "input": {
+        "description": "the input to the model",
+        "title": "Input",
+        "type": "string"
+      }
+    },
+    "required": [
+      "input"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "properties": {
+      "output": {
+        "description": "the output of the model",
+        "title": "Output",
+        "type": "string"
+      },
+      "config": {
+        "additionalProperties": true,
+        "description": "the config of the model",
+        "title": "Config",
+        "type": "object"
+      }
+    },
+    "required": [
+      "output",
+      "config"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

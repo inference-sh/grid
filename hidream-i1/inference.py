@@ -6,6 +6,7 @@ from diffusers.models import HiDreamImageTransformer2DModel
 from diffusers.schedulers import UniPCMultistepScheduler
 from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
+from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
 
 MODEL_PREFIX = "HiDream-ai"
 LLAMA_MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
@@ -24,7 +25,7 @@ MODEL_CONFIGS = {
         "guidance_scale": 5.0,
         "num_inference_steps": 50,
         "shift": 3.0,
-        "scheduler": UniPCMultistepScheduler
+        "scheduler": FlowUniPCMultistepScheduler
     },
     "fast": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Fast",
@@ -70,9 +71,9 @@ class AppOutput(BaseAppOutput):
     result: File
 
 class App(BaseApp):
-    async def setup(self):
+    async def setup(self, metadata: dict):
         """Initialize your model and resources here."""
-        self.model_type = "fast"  # Default model type
+        self.model_type = "full"  # Default model type
         config = MODEL_CONFIGS[self.model_type]
         
         # Model configuration
@@ -103,12 +104,20 @@ class App(BaseApp):
             torch_dtype=torch.bfloat16
         )
         self.pipe.enable_model_cpu_offload()
+        
+        self.variant = metadata.get("app_variant")
+        self.model = "fast"
+        if self.variant == "default":
+            self.model = "fast"
+        elif self.variant == "full":
+            self.model = "full"
+        elif self.variant == "dev":
+            self.model = "dev"
+        self.config = MODEL_CONFIGS[self.model]
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Run prediction on the input data."""
-        # Get configuration for current model
-        config = MODEL_CONFIGS[self.model_type]
-        
+        # Get configuration for current model        
         # Adjust dimensions to be multiples of 8 and respect max pixel count
         width, height = adjust_dimensions(input_data.width, input_data.height)
         
@@ -121,8 +130,8 @@ class App(BaseApp):
             input_data.prompt,
             height=height,
             width=width,
-            guidance_scale=config["guidance_scale"],
-            num_inference_steps=config["num_inference_steps"],
+            guidance_scale=self.config["guidance_scale"],
+            num_inference_steps=self.config["num_inference_steps"],
             num_images_per_prompt=1,
             generator=generator
         ).images

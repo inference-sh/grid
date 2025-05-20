@@ -1,4 +1,4 @@
-name: hidream-i1-fast
+name: hidream-i1
 description: HiDream-I1 is a new open-source image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality within seconds.
 category: image
 is_public: true
@@ -7,12 +7,30 @@ images:
     thumbnail:
     banner:
 variants:
-  - default:
-        name: default
+    default:
+        name: fast
         resources:
             gpu:
                 count: 1
                 vram: 0
                 type: any
         env:
-        python: 3.12
+            python: 3.12
+    dev:
+        name: dev
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+        env:
+            python: 3.12
+    full:
+        name: full
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+        env:
+            python: 3.12

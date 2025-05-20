@@ -1,0 +1,29 @@
+name: _test-variant
+description: ""
+category: other
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+variants:
+    default:
+        name: ""
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 0
+        env: {}
+        python: "3.11"
+    variant1:
+        name: "variant1"
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 0
+        env: {}
+        python: "3.11"
