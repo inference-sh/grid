@@ -1,0 +1,2 @@
+git+https://github.com/xinntao/Real-ESRGAN.git
+git+https://github.com/XPixelGroup/BasicSR.git

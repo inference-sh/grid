@@ -2,11 +2,17 @@ name: text-split
 description: a simple app that allows to split text into a list of subtexts using a delimiter
 category: text
 is_public: true
-card_image: ""
-thumbnail: ""
-banner_image: ""
-gpu_count: 0
-gpu_vram: 0
-gpu_type: any
-env: {}
-python: "3.12"
+images:
+    card: ""
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+        env:
+        python: 3.12

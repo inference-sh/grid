@@ -2,11 +2,17 @@ name: wan2.1-i2v-effects
 description: Text to video generation using Wan2.1 (14B) model with i2v effects
 category: video
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/1gczmpzen7pe13td6mk5fhhwb1.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 1
-gpu_vram: 0
-gpu_type: any
-env: {}
-python: ""
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/1gczmpzen7pe13td6mk5fhhwb1.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+        env:
+        python: 3.11

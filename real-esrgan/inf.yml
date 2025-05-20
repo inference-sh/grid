@@ -2,11 +2,17 @@ name: Real-ESRGAN
 description: Run Real-ESRGAN on an image or video
 category: imagem
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/70qd11zdtx24js333n4h5q19g8.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 1
-gpu_vram: 0
-gpu_type: any
-env: {}
-python: ""
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/70qd11zdtx24js333n4h5q19g8.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: ""
+        env:
+        python: 3.11

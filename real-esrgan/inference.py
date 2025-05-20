@@ -57,50 +57,83 @@ class App(BaseApp):
         }
     )
 
-    async def setup(self):
-        """Initialize Real-ESRGAN models and resources."""
-        # Create weights directory if it doesn't exist
-        os.makedirs('weights', exist_ok=True)
+    def _choose_model(self, input_data: AppInput):
+        """Choose and initialize the appropriate model based on input parameters."""
+        half = True if torch.cuda.is_available() and not input_data.fp32 else False
         
-        # Initialize models based on configuration
-        model_name = 'realesr-general-x4v3'  # Default model
-        model_path = os.path.join('weights', model_name + '.pth')
+        if input_data.model_name == 'RealESRGAN_x4plus':
+            model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+            model_path = os.path.join('weights', 'RealESRGAN_x4plus.pth')
+            scale = 4
+        elif input_data.model_name == 'realesr-general-x4v3':
+            model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
+            model_path = os.path.join('weights', 'realesr-general-x4v3.pth')
+            scale = 4
+        elif input_data.model_name == 'RealESRGAN_x4plus_anime_6B':
+            model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
+            model_path = os.path.join('weights', 'RealESRGAN_x4plus_anime_6B.pth')
+            scale = 4
+        elif input_data.model_name == 'realesr-animevideov3':
+            model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
+            model_path = os.path.join('weights', 'realesr-animevideov3.pth')
+            scale = 4
+        elif input_data.model_name == 'RealESRGAN_x2plus':
+            model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+            model_path = os.path.join('weights', 'RealESRGAN_x2plus.pth')
+            scale = 2
+        elif input_data.model_name == 'realesr-general-wdn-x4v3':
+            model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
+            model_path = os.path.join('weights', 'realesr-general-wdn-x4v3.pth')
+            scale = 4
+        else:
+            raise ValueError(f"Unknown model name: {input_data.model_name}")
         
+        # Download model if it doesn't exist
         if not os.path.isfile(model_path):
             ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-            for url in self.model_paths[model_name]:
+            for url in self.model_paths[input_data.model_name]:
                 model_path = load_file_from_url(
                     url=url, 
                     model_dir=os.path.join(ROOT_DIR, 'weights'), 
                     progress=True, 
                     file_name=None
                 )
-
-        # Initialize the upsampler
+        
+        # Initialize upsampler
         self.upsampler = RealESRGANer(
-            scale=4,
+            scale=scale,
             model_path=model_path,
-            model=RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4),
-            tile=0,
-            tile_pad=10,
-            pre_pad=0,
-            half=True,
+            model=model,
+            tile=input_data.tile,
+            tile_pad=input_data.tile_pad,
+            pre_pad=input_data.pre_pad,
+            half=half,
             gpu_id=0 if torch.cuda.is_available() else None
         )
 
+    async def setup(self):
+        """Initialize Real-ESRGAN models and resources."""
+        # Create weights directory if it doesn't exist
+        os.makedirs('weights', exist_ok=True)
+        
+        # Model initialization will be done per request in _choose_model method
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Run Real-ESRGAN on the input image/video."""
+        # Choose and initialize the appropriate model
+        self._choose_model(input_data)
+        
         # Initialize face enhancer if needed
-        if self.face_enhancer is None:
+        if input_data.face_enhance and self.face_enhancer is None:
             from gfpgan import GFPGANer
             self.face_enhancer = GFPGANer(
                 model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-                upscale=4,
+                upscale=input_data.outscale,
                 arch='clean',
                 channel_multiplier=2,
                 bg_upsampler=self.upsampler
             )
-
-    async def run(self, input_data: AppInput) -> AppOutput:
-        """Run Real-ESRGAN on the input image/video."""
+        
         # Determine if input is video or image
         is_video = input_data.input_file.path.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))
         

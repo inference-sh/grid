@@ -2,11 +2,17 @@ name: media-merger
 description: An application that merges multiple videos and images with customizable transitions
 category: video
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0yc016cjffbnn8mayx3cwx23gc.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 0
-gpu_vram: 0
-gpu_type: any
-env: {}
-python: ""
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0yc016cjffbnn8mayx3cwx23gc.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+        env:
+        python: 3.12

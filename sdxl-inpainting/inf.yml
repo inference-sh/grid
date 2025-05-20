@@ -2,11 +2,17 @@ name: sdxl-inpainting
 description: Stable Diffusion XL Inpainting is a model that can fill in areas of an image based on a text prompt and a mask.
 category: image
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/672082s70nk8tq77k5s1454set.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 1
-gpu_vram: 0
-gpu_type: any
-env: {}
-python: ""
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/672082s70nk8tq77k5s1454set.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+        env:
+        python: 3.12

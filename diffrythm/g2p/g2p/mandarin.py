@@ -11,6 +11,7 @@ from typing import List
 from g2p.g2p.chinese_model_g2p import BertPolyPredict
 from g2p.utils.front_utils import *
 import os
+from huggingface_hub import snapshot_download
 
 # from g2pw import G2PWConverter
 
@@ -34,6 +35,11 @@ poly_dict = generate_poly_lexicon(poly_all_class_path)
 
 # Set up G2PW model parameters
 g2pw_poly_model_path = os.path.join(resource_path, "sources", "g2p_chinese_model")
+snapshot_download(
+    repo_id="inference-sh/diff-rythm-g2p-chinese-model",
+    local_dir=g2pw_poly_model_path,
+    local_dir_use_symlinks=False,
+)
 if not os.path.exists(g2pw_poly_model_path):
     print(
         "Incorrect path for g2pw polyphonic character model: {}, please check...".format(

@@ -2,12 +2,18 @@ name: gemma-3-27b-it-q4
 description: Gemma 3 27B Instruct [Q4_K]
 category: chat
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/169p0e9mws7n7yry16qa02g9fs.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 1
-gpu_vram: 0
-gpu_type: any
-env:
-    CMAKE_ARGS: -DGGML_CUDA=on
-python: ""
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/169p0e9mws7n7yry16qa02g9fs.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+        env:
+            CMAKE_ARGS: -DGGML_CUDA=on
+        python: 3.12

@@ -2,21 +2,27 @@ name: magi-1-24b
 description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
 category: video
 is_public: true
-card_image: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/3z79zb0f1wk3x9fg4g53zpfrkm.png
-thumbnail: ""
-banner_image: ""
-gpu_count: 8
-gpu_vram: 0
-gpu_type: any
-env:
-    CUDA_DEVICE_MAX_CONNECTIONS: "1"
-    NCCL_ALGO: ^NVLS
-    NCCL_IB_DISABLE: "1"
-    NCCL_P2P_DISABLE: "1"
-    NCCL_SOCKET_IFNAME: eth0
-    OFFLOAD_T5_CACHE: "true"
-    OFFLOAD_VAE_CACHE: "true"
-    PAD_DURATION: "1"
-    PAD_HQ: "1"
-    TORCH_CUDA_ARCH_LIST: 8.9;9.0
-python: "3.12"
+images:
+    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/3z79zb0f1wk3x9fg4g53zpfrkm.png
+    thumbnail:
+    banner:
+variants:
+  - default:
+        name: default
+        resources:
+            gpu:
+                count: 8
+                vram: 0
+                type: any
+        env:
+            CUDA_DEVICE_MAX_CONNECTIONS: "1"
+            NCCL_ALGO: ^NVLS
+            NCCL_IB_DISABLE: "1"
+            NCCL_P2P_DISABLE: "1"
+            NCCL_SOCKET_IFNAME: eth0
+            OFFLOAD_T5_CACHE: "true"
+            OFFLOAD_VAE_CACHE: "true"
+            PAD_DURATION: "1"
+            PAD_HQ: "1"
+            TORCH_CUDA_ARCH_LIST: 8.9;9.0
+        python: 3.12
