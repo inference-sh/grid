@@ -8,7 +8,7 @@ diffusers==0.32.2
 einops==0.8.1
 filelock==3.18.0
 fonttools==4.58.0
-fsspec==2025.3.2
+fsspec==2025.5.0
 huggingface-hub==0.25.2
 idna==3.10
 imageio==2.37.0
@@ -22,7 +22,7 @@ matplotlib==3.10.3
 mpmath==1.3.0
 networkx==3.4.2
 ninja==1.11.1.4
-numpy==2.2.5
+numpy==2.2.6
 nvidia-cublas-cu12==12.6.4.1
 nvidia-cuda-cupti-cu12==12.6.80
 nvidia-cuda-nvrtc-cu12==12.6.77
@@ -49,7 +49,7 @@ regex==2024.11.6
 requests==2.32.3
 safetensors==0.5.3
 sentencepiece==0.2.0
-setuptools==80.7.1
+setuptools==80.8.0
 setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0

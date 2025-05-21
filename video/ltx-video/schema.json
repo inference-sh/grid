@@ -179,7 +179,7 @@
           }
         ],
         "default": 40,
-        "description": "Number of denoising steps",
+        "description": "Number of denoising steps. Use 4,8,16 for distilled models",
         "title": "Num Inference Steps"
       },
       "guidance_scale": {
