@@ -145,16 +145,16 @@ class App(BaseApp):
         self.downsample_rate = 2048
         self.io_channels = 2
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate music from the input data."""
         # Update max_frames based on audio length
-        if input.audio_length == 285:
+        if input_data.audio_length == 285:
             self.max_frames = 6144
 
         # Process lyrics
         lrc_tokens, start_time = get_lrc_token(
             self.max_frames,
-            input.lyrics,
+            input_data.lyrics,
             self.tokenizer,
             self.device
         )
@@ -162,8 +162,8 @@ class App(BaseApp):
         # Get style prompt
         style_prompt = get_style_prompt(
             self.muq,
-            wav_path=input.reference_audio.path if input.reference_audio else None,
-            prompt=input.style_prompt if input.style_prompt else None
+            wav_path=input_data.reference_audio.path if input_data.reference_audio else None,
+            prompt=input_data.style_prompt if input_data.style_prompt else None
         )
         negative_prompt = get_negative_style_prompt(self.device)
 
@@ -171,9 +171,9 @@ class App(BaseApp):
         latent_prompt, pred_frames = get_reference_latent(
             self.device,
             self.max_frames,
-            input.edit_mode,
-            input.edit_segments,
-            input.reference_song.path if input.reference_song else None,
+            input_data.edit_mode,
+            input_data.edit_segments,
+            input_data.reference_song.path if input_data.reference_song else None,
             self.vae
         )
 
@@ -189,8 +189,8 @@ class App(BaseApp):
             negative_style_prompt=negative_prompt,
             start_time=start_time,
             pred_frames=pred_frames,
-            chunked=input.chunked_processing,
-            batch_infer_num=input.batch_size
+            chunked=input_data.chunked_processing,
+            batch_infer_num=input_data.batch_size
         )
         e_t = time.time() - s_t
         logger.info(f"Inference cost {e_t:.2f} seconds")

@@ -15,4 +15,4 @@ variants:
                 vram: 0
                 type: any
         env:
-            python: 3.12
+        python: 3.11

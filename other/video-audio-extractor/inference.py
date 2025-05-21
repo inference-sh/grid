@@ -22,10 +22,10 @@ class App(BaseApp):
         """Initialize your model and resources here."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Extract audio from video and create silent video."""
         # Define output paths
-        video_path = input.video_file.path
+        video_path = input_data.video_file.path
         filename = os.path.splitext(os.path.basename(video_path))[0]
         audio_path = f"/tmp/{filename}_audio.mp3"
         silent_video_path = f"/tmp/{filename}_silent.mp4"

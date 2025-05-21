@@ -38,13 +38,13 @@ class App(BaseApp):
         """Initialize your model and resources here."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Process the template with the provided strings."""
         # Create a dictionary of replacements
-        replacements = {str(i+1): string for i, string in enumerate(input.strings)}
+        replacements = {str(i+1): string for i, string in enumerate(input_data.strings)}
         
         # Process the template
-        result = input.template
+        result = input_data.template
         for placeholder, value in replacements.items():
             result = result.replace(f"{{{placeholder}}}", value)
         

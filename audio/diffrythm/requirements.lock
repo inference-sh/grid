@@ -125,7 +125,7 @@ regex==2024.11.6
 requests==2.32.3
 rfc3986==1.5.0
 rich==14.0.0
-rpds-py==0.25.0
+rpds-py==0.25.1
 ruff==0.11.10
 safehttpx==0.1.6
 safetensors==0.5.3

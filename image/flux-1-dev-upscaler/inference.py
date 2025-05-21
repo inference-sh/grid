@@ -123,10 +123,10 @@ class App(BaseApp):
         self.esrgan = RealESRGAN(self.device, scale=4)
         self.esrgan.load_weights(model_path)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run upscaling with FLUX and RealESRGAN"""
         # Load input image
-        image = Image.open(input.image.path)
+        image = Image.open(input_data.image.path)
 
         def upscale_fn(img: Image.Image, scale_factor: int) -> Image.Image:
             esrgan_result = self.esrgan.predict(img)
@@ -137,29 +137,29 @@ class App(BaseApp):
 
         def process_fn(img: Image.Image, mask: Image.Image) -> Image.Image:
             return self.pipe(
-                prompt=input.prompt,
+                prompt=input_data.prompt,
                 image=img,
                 mask_image=mask,
                 width=img.width,
                 height=img.height,
-                strength=input.strength,
-                guidance_scale=input.guidance_scale,
-                num_inference_steps=int(10/input.strength),
+                strength=input_data.strength,
+                guidance_scale=input_data.guidance_scale,
+                num_inference_steps=int(10/input_data.strength),
                 max_sequence_length=512,
-                generator=torch.Generator(self.device).manual_seed(input.seed)
+                generator=torch.Generator(self.device).manual_seed(input_data.seed)
             ).images[0]
 
         # Process the image using direct upscale function
         result = upscale(
             image=image,
-            target_width=input.target_width,
-            target_height=input.target_height,
-            tile_width=input.tile_width,
-            tile_height=input.tile_height,
-            redraw_padding=input.redraw_padding,
-            redraw_mask_blur=input.redraw_mask_blur,
-            upscale_mode=input.upscale_mode,
-            seam_fix_mode=input.seam_fix_mode,
+            target_width=input_data.target_width,
+            target_height=input_data.target_height,
+            tile_width=input_data.tile_width,
+            tile_height=input_data.tile_height,
+            redraw_padding=input_data.redraw_padding,
+            redraw_mask_blur=input_data.redraw_mask_blur,
+            upscale_mode=input_data.upscale_mode,
+            seam_fix_mode=input_data.seam_fix_mode,
             upscale_fn=upscale_fn,
             process_fn=process_fn
         )

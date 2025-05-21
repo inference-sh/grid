@@ -52,7 +52,7 @@ class App(BaseApp):
         
         print("AudioX model initialized successfully")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate audio using AudioX."""
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -73,35 +73,35 @@ class App(BaseApp):
         self.model = self.model.to(device)
 
         # Process video input if provided
-        video_path = input.video_file.path if input.video_file is not None else None
+        video_path = input_data.video_file.path if input_data.video_file is not None else None
         target_fps = self.model_config.get("video_fps", 5)
-        video_tensors = read_video(video_path, seek_time=input.seconds_start, 
-                                 duration=input.seconds_total, target_fps=target_fps)
+        video_tensors = read_video(video_path, seek_time=input_data.seconds_start, 
+                                 duration=input_data.seconds_total, target_fps=target_fps)
 
         # Process audio prompt if provided
-        audio_path = input.audio_prompt_file.path if input.audio_prompt_file is not None else None
+        audio_path = input_data.audio_prompt_file.path if input_data.audio_prompt_file is not None else None
         audio_tensor = load_and_process_audio(audio_path, self.sample_rate, 
-                                            input.seconds_start, input.seconds_total)
+                                            input_data.seconds_start, input_data.seconds_total)
         audio_tensor = audio_tensor.to(device) if audio_tensor is not None else None
 
         # Prepare conditioning
         seconds_input = self.sample_size / self.sample_rate
         conditioning = [{
             "video_prompt": [video_tensors.unsqueeze(0)] if video_tensors is not None else None,
-            "text_prompt": input.prompt,
+            "text_prompt": input_data.prompt,
             "audio_prompt": audio_tensor.unsqueeze(0) if audio_tensor is not None else None,
-            "seconds_start": input.seconds_start,
+            "seconds_start": input_data.seconds_start,
             "seconds_total": seconds_input
         }]
 
         # Prepare negative conditioning if provided
-        if input.negative_prompt:
+        if input_data.negative_prompt:
             negative_conditioning = [{
                 "video_prompt": [video_tensors.unsqueeze(0)] if video_tensors is not None else None,
-                "text_prompt": input.negative_prompt,
+                "text_prompt": input_data.negative_prompt,
                 "audio_prompt": audio_tensor.unsqueeze(0) if audio_tensor is not None else None,
-                "seconds_start": input.seconds_start,
-                "seconds_total": input.seconds_total
+                "seconds_start": input_data.seconds_start,
+                "seconds_total": input_data.seconds_total
             }] * 1
         else:
             negative_conditioning = None
@@ -111,21 +111,21 @@ class App(BaseApp):
             self.model,
             conditioning=conditioning,
             negative_conditioning=negative_conditioning,
-            steps=input.steps,
-            cfg_scale=input.cfg_scale,
+            steps=input_data.steps,
+            cfg_scale=input_data.cfg_scale,
             batch_size=1,
             sample_size=self.sample_size,
             sample_rate=self.sample_rate,
-            seed=input.seed,
+            seed=input_data.seed,
             device=device,
-            sampler_type=input.sampler_type,
-            sigma_min=input.sigma_min,
-            sigma_max=input.sigma_max,
+            sampler_type=input_data.sampler_type,
+            sigma_min=input_data.sigma_min,
+            sigma_max=input_data.sigma_max,
             init_audio=None,
             init_noise_level=0.1,
             mask_args=None,
             callback=None,
-            scale_phi=input.cfg_rescale
+            scale_phi=input_data.cfg_rescale
         )
 
         # Process generated audio
@@ -140,14 +140,14 @@ class App(BaseApp):
 
         # Process video output if video input was provided
         output_video_path = None
-        if input.video_file is not None:
+        if input_data.video_file is not None:
             output_video_path = os.path.join(self.temp_dir, f"output_{os.path.basename(video_path)}")
             merge_video_audio(
                 video_path,
                 output_audio_path,
                 output_video_path,
-                input.seconds_start,
-                input.seconds_total
+                input_data.seconds_start,
+                input_data.seconds_total
             )
 
         # Cleanup

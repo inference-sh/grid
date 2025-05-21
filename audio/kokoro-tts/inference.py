@@ -139,10 +139,10 @@ class App(BaseApp):
         
         print("Kokoro TTS model initialized successfully")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate speech from text using Kokoro TTS."""
         # Get the voice ID for the selected voice
-        voice_id = self.voice_id_map[input.voice]
+        voice_id = self.voice_id_map[input_data.voice]
         
         # Get the language code by extracting the first two characters of the voice ID
         voice_prefix = voice_id[:2]
@@ -155,14 +155,14 @@ class App(BaseApp):
         pipeline = self.pipelines[lang_code]
         
         # Create a temporary file
-        with tempfile.NamedTemporaryFile(suffix=f".{input.format.value}", delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(suffix=f".{input_data.format.value}", delete=False) as temp_file:
             output_path = temp_file.name
         
         # Generate speech using the voice ID (not the enum value)
         generator = pipeline(
-            input.text,
+            input_data.text,
             voice=voice_id,  # Use the mapped voice ID here
-            speed=input.speed,
+            speed=input_data.speed,
             split_pattern=r'\n+'
         )
         
@@ -175,7 +175,7 @@ class App(BaseApp):
         combined_audio = np.concatenate(full_audio)
 
         # Save the audio in the requested format
-        if input.format == AudioFormat.WAV:
+        if input_data.format == AudioFormat.WAV:
             sf.write(output_path, combined_audio, 24000)
         else:
             # For other formats, first save as WAV and then convert
@@ -184,7 +184,7 @@ class App(BaseApp):
             
             # Convert to the requested format using pydub
             audio = AudioSegment.from_wav(temp_wav)
-            audio.export(output_path, format=input.format.value)
+            audio.export(output_path, format=input_data.format.value)
             os.remove(temp_wav)
         
         return AppOutput(audio=File(path=output_path))

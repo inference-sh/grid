@@ -26,27 +26,27 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the numerical condition and return the appropriate value."""
         condition_met = False
         
         # Evaluate the condition based on the operator
-        if input.operator == NumericalOperator.EQUAL:
-            condition_met = input.left_operand == input.right_operand
-        elif input.operator == NumericalOperator.NOT_EQUAL:
-            condition_met = input.left_operand != input.right_operand
-        elif input.operator == NumericalOperator.GREATER_THAN:
-            condition_met = input.left_operand > input.right_operand
-        elif input.operator == NumericalOperator.GREATER_EQUAL:
-            condition_met = input.left_operand >= input.right_operand
-        elif input.operator == NumericalOperator.LESS_EQUAL:
-            condition_met = input.left_operand <= input.right_operand
-        elif input.operator == NumericalOperator.LESS_THAN:
-            condition_met = input.left_operand < input.right_operand
+        if input_data.operator == NumericalOperator.EQUAL:
+            condition_met = input_data.left_operand == input_data.right_operand
+        elif input_data.operator == NumericalOperator.NOT_EQUAL:
+            condition_met = input_data.left_operand != input_data.right_operand
+        elif input_data.operator == NumericalOperator.GREATER_THAN:
+            condition_met = input_data.left_operand > input_data.right_operand
+        elif input_data.operator == NumericalOperator.GREATER_EQUAL:
+            condition_met = input_data.left_operand >= input_data.right_operand
+        elif input_data.operator == NumericalOperator.LESS_EQUAL:
+            condition_met = input_data.left_operand <= input_data.right_operand
+        elif input_data.operator == NumericalOperator.LESS_THAN:
+            condition_met = input_data.left_operand < input_data.right_operand
 
         # Return the appropriate value based on the condition
         return AppOutput(
-            result=input.true_value if condition_met else input.false_value
+            result=input_data.true_value if condition_met else input_data.false_value
         )
 
     async def unload(self):

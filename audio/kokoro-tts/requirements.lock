@@ -76,7 +76,7 @@ regex==2024.11.6
 requests==2.32.3
 rfc3986==1.5.0
 rich==14.0.0
-rpds-py==0.25.0
+rpds-py==0.25.1
 safetensors==0.5.3
 segments==2.3.0
 setuptools==80.8.0
@@ -95,7 +95,7 @@ thinc==8.3.6
 tokenizers==0.21.1
 torch==2.7.0
 tqdm==4.67.1
-transformers==4.52.1
+transformers==4.52.2
 triton==3.3.0
 typer==0.15.4
 typing-extensions==4.13.2

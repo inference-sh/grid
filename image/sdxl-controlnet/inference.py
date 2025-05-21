@@ -194,15 +194,15 @@ class App(BaseApp):
         
         return Image.fromarray(processed_img)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate an image based on the input prompt and ControlNets."""
         if not self.pipeline:
             raise RuntimeError("Model not initialized. Call setup() first.")
 
         # If a custom model URL is provided, load it
-        if input.model_url != self.default_model_url:
+        if input_data.model_url != self.default_model_url:
             eulera_scheduler = EulerAncestralDiscreteScheduler.from_pretrained(
-                input.model_url, subfolder="scheduler"
+                input_data.model_url, subfolder="scheduler"
             )
             vae = AutoencoderKL.from_pretrained(
                 "madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16
@@ -214,7 +214,7 @@ class App(BaseApp):
             )
 
             self.pipeline = StableDiffusionXLControlNetUnionPipeline.from_pretrained(
-                input.model_url,
+                input_data.model_url,
                 controlnet=controlnet_model,
                 vae=vae,
                 torch_dtype=torch.float16,
@@ -240,7 +240,7 @@ class App(BaseApp):
         }
 
         # Process each ControlNet
-        for controlnet in input.controlnets:
+        for controlnet in input_data.controlnets:
             idx = type_to_index[controlnet.type]
             processed_image = self._process_controlnet_image(controlnet)
             image_list[idx] = processed_image
@@ -250,14 +250,14 @@ class App(BaseApp):
         generator = torch.Generator('cuda').manual_seed(torch.randint(0, 2147483647, (1,)).item())
         
         images = self.pipeline(
-            prompt=[input.prompt],
+            prompt=[input_data.prompt],
             image_list=image_list,
-            negative_prompt=[input.negative_prompt] if input.negative_prompt else None,
+            negative_prompt=[input_data.negative_prompt] if input_data.negative_prompt else None,
             generator=generator,
-            width=input.width,
-            height=input.height,
-            num_inference_steps=input.num_inference_steps,
-            guidance_scale=input.guidance_scale,
+            width=input_data.width,
+            height=input_data.height,
+            num_inference_steps=input_data.num_inference_steps,
+            guidance_scale=input_data.guidance_scale,
             union_control=True,
             union_control_type=control_type,
         ).images

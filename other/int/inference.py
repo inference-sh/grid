@@ -12,11 +12,11 @@ class App(BaseApp):
     async def setup(self, metadata):
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Simply return the input number as output
         return AppOutput(
-            int_output=input.int_input
+            int_output=input_data.int_input
         )
 
     async def unload(self):

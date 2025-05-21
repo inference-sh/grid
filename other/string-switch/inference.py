@@ -28,35 +28,35 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the string condition and return the appropriate value."""
         condition_met = False
         
         # Evaluate the condition based on the operator
-        if input.operator == StringOperator.EQUAL:
-            condition_met = input.left_operand == input.right_operand
-        elif input.operator == StringOperator.NOT_EQUAL:
-            condition_met = input.left_operand != input.right_operand
-        elif input.operator == StringOperator.CONTAINS:
-            condition_met = input.right_operand in input.left_operand
-        elif input.operator == StringOperator.STARTS_WITH:
-            condition_met = input.left_operand.startswith(input.right_operand)
-        elif input.operator == StringOperator.ENDS_WITH:
-            condition_met = input.left_operand.endswith(input.right_operand)
-        elif input.operator == StringOperator.IS_EMPTY:
-            condition_met = not input.left_operand.strip()
-        elif input.operator == StringOperator.IS_NOT_EMPTY:
-            condition_met = bool(input.left_operand.strip())
-        elif input.operator == StringOperator.MATCHES_REGEX:
+        if input_data.operator == StringOperator.EQUAL:
+            condition_met = input_data.left_operand == input_data.right_operand
+        elif input_data.operator == StringOperator.NOT_EQUAL:
+            condition_met = input_data.left_operand != input_data.right_operand
+        elif input_data.operator == StringOperator.CONTAINS:
+            condition_met = input_data.right_operand in input_data.left_operand
+        elif input_data.operator == StringOperator.STARTS_WITH:
+            condition_met = input_data.left_operand.startswith(input_data.right_operand)
+        elif input_data.operator == StringOperator.ENDS_WITH:
+            condition_met = input_data.left_operand.endswith(input_data.right_operand)
+        elif input_data.operator == StringOperator.IS_EMPTY:
+            condition_met = not input_data.left_operand.strip()
+        elif input_data.operator == StringOperator.IS_NOT_EMPTY:
+            condition_met = bool(input_data.left_operand.strip())
+        elif input_data.operator == StringOperator.MATCHES_REGEX:
             import re
             try:
-                condition_met = bool(re.search(input.right_operand, input.left_operand))
+                condition_met = bool(re.search(input_data.right_operand, input_data.left_operand))
             except re.error:
-                raise ValueError(f"Invalid regular expression pattern: {input.right_operand}")
+                raise ValueError(f"Invalid regular expression pattern: {input_data.right_operand}")
 
         # Return the appropriate value based on the condition
         return AppOutput(
-            result=input.true_value if condition_met else input.false_value
+            result=input_data.true_value if condition_met else input_data.false_value
         )
 
     async def unload(self):

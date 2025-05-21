@@ -141,11 +141,11 @@ class App(BaseApp):
             self.latent_upsampler = create_latent_upsampler(self.spatial_upscaler_path, self.device)
             self.pipeline = LTXMultiScalePipeline(self.pipeline, latent_upsampler=self.latent_upsampler)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run video generation with LTX-Video 13B."""
         # Load custom config if provided
-        # if input.pipeline_config and input.pipeline_config != self.config.get("config_file"):
-        #     config_path = os.path.join(os.path.dirname(__file__), input.pipeline_config)
+        # if input_data.pipeline_config and input_data.pipeline_config != self.config.get("config_file"):
+        #     config_path = os.path.join(os.path.dirname(__file__), input_data.pipeline_config)
         #     if not os.path.exists(config_path):
         #         raise ValueError(f"Custom config file {config_path} does not exist")
         #     with open(config_path, "r") as f:
@@ -153,59 +153,59 @@ class App(BaseApp):
         #         logger.warning(f"Loaded custom config from {config_path}: {self.config}")
 
         # Validate input dimensions
-        total_pixels = input.height * input.width
+        total_pixels = input_data.height * input_data.width
         if total_pixels > MAX_PIXELS:
             raise ValueError(f"Total pixels exceed maximum allowed: {MAX_PIXELS} (current: {total_pixels})")
-        if input.num_frames > MAX_NUM_FRAMES:
+        if input_data.num_frames > MAX_NUM_FRAMES:
             raise ValueError(f"Number of frames exceeds maximum allowed: {MAX_NUM_FRAMES}")
 
         # Handle CPU offloading
-        if input.offload_to_cpu and not torch.cuda.is_available():
+        if input_data.offload_to_cpu and not torch.cuda.is_available():
             logger.warning("CPU offloading disabled - model already running on CPU")
             offload_to_cpu = False
         else:
-            offload_to_cpu = input.offload_to_cpu
+            offload_to_cpu = input_data.offload_to_cpu
 
         # Set up generator with seed
-        generator = torch.Generator(device=self.device).manual_seed(input.seed)
+        generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
         
         # Adjust dimensions for padding
-        height_padded = ((input.height - 1) // 32 + 1) * 32
-        width_padded = ((input.width - 1) // 32 + 1) * 32
-        num_frames_padded = ((input.num_frames - 2) // 8 + 1) * 8 + 1
+        height_padded = ((input_data.height - 1) // 32 + 1) * 32
+        width_padded = ((input_data.width - 1) // 32 + 1) * 32
+        num_frames_padded = ((input_data.num_frames - 2) // 8 + 1) * 8 + 1
         
         padding = calculate_padding(
-            input.height, 
-            input.width, 
+            input_data.height, 
+            input_data.width, 
             height_padded, 
             width_padded
         )
 
         # Handle input media for video-to-video
         media_item = None
-        if input.input_media:
+        if input_data.input_media:
             media_item = load_media_file(
-                media_path=input.input_media.path,
-                height=input.height,
-                width=input.width,
+                media_path=input_data.input_media.path,
+                height=input_data.height,
+                width=input_data.width,
                 max_frames=num_frames_padded,
                 padding=padding,
             )
         
         # Prepare conditioning items
         conditioning_items = []
-        if input.conditioning_images:
-            media_paths = [img.image.path for img in input.conditioning_images]
-            strengths = [img.strength for img in input.conditioning_images]
-            start_frames = [img.frame_index for img in input.conditioning_images]
+        if input_data.conditioning_images:
+            media_paths = [img.image.path for img in input_data.conditioning_images]
+            strengths = [img.strength for img in input_data.conditioning_images]
+            start_frames = [img.frame_index for img in input_data.conditioning_images]
             
             conditioning_items = prepare_conditioning(
                 conditioning_media_paths=media_paths,
                 conditioning_strengths=strengths,
                 conditioning_start_frames=start_frames,
-                height=input.height,
-                width=input.width,
-                num_frames=input.num_frames,
+                height=input_data.height,
+                width=input_data.width,
+                num_frames=input_data.num_frames,
                 padding=padding,
                 pipeline=self.pipeline,
             )
@@ -237,9 +237,9 @@ class App(BaseApp):
 
         # Prepare pipeline input
         sample = {
-            "prompt": input.prompt,
+            "prompt": input_data.prompt,
             "prompt_attention_mask": None,
-            "negative_prompt": input.negative_prompt,
+            "negative_prompt": input_data.negative_prompt,
             "negative_prompt_attention_mask": None,
         }
 
@@ -252,14 +252,14 @@ class App(BaseApp):
             "height": height_padded,
             "width": width_padded,
             "num_frames": num_frames_padded,
-            "frame_rate": input.frame_rate,
+            "frame_rate": input_data.frame_rate,
             **sample,
             "media_items": media_item,
-            "strength": input.strength,
+            "strength": input_data.strength,
             "conditioning_items": conditioning_items,
             "is_video": True,
             "vae_per_channel_normalize": True,
-            "image_cond_noise_scale": input.image_cond_noise_scale,
+            "image_cond_noise_scale": input_data.image_cond_noise_scale,
             "mixed_precision": (self.config["precision"] == "mixed_precision"),
             "offload_to_cpu": offload_to_cpu,
             "device": self.device,
@@ -281,7 +281,7 @@ class App(BaseApp):
         (pad_left, pad_right, pad_top, pad_bottom) = padding
         pad_bottom = -pad_bottom if pad_bottom != 0 else images.shape[3]
         pad_right = -pad_right if pad_right != 0 else images.shape[4]
-        images = images[:, :, :input.num_frames, pad_top:pad_bottom, pad_left:pad_right]
+        images = images[:, :, :input_data.num_frames, pad_top:pad_bottom, pad_left:pad_right]
 
         # Create output directory
         output_dir = Path(f"outputs/{datetime.today().strftime('%Y-%m-%d')}")
@@ -291,8 +291,8 @@ class App(BaseApp):
         video_np = images[0].permute(1, 2, 3, 0).cpu().float().numpy()
         video_np = (video_np * 255).astype(np.uint8)
         
-        output_filename = str(output_dir / f"video_output_{input.seed}.mp4")
-        with imageio.get_writer(output_filename, fps=input.frame_rate) as video:
+        output_filename = str(output_dir / f"video_output_{input_data.seed}.mp4")
+        with imageio.get_writer(output_filename, fps=input_data.frame_rate) as video:
             for frame in video_np:
                 video.append_data(frame)
 

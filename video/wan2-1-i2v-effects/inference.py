@@ -252,23 +252,23 @@ class App(BaseApp):
         
         self.loaded_lora = ""
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run either T2V or I2V based on whether an image is provided."""
         output_path = "/tmp/output_video.mp4"
         
         # Assert that exactly one of lora_path, t2v_effect, or i2v_effect is provided
-        # options = [bool(input.lora_path), bool(input.t2v_effect), bool(input.i2v_effect)]
+        # options = [bool(input_data.lora_path), bool(input_data.t2v_effect), bool(input_data.i2v_effect)]
         # if sum(options) != 1:
         #     raise ValueError("Must provide exactly one of: lora_path, t2v_effect, or i2v_effect")
 
-        # if input.lora_path:
-        #     self.i2v_pipe.load_lora_weights(input.lora_path)
+        # if input_data.lora_path:
+        #     self.i2v_pipe.load_lora_weights(input_data.lora_path)
         
-        if input.i2v_effect:
+        if input_data.i2v_effect:
             # Download LoRA weights from HF Hub        
-            repo_id = i2v_effects[input.i2v_effect]["repo"]
-            folder = i2v_effects[input.i2v_effect]["folder"]
-            filename = i2v_effects[input.i2v_effect]["file"]
+            repo_id = i2v_effects[input_data.i2v_effect]["repo"]
+            folder = i2v_effects[input_data.i2v_effect]["folder"]
+            filename = i2v_effects[input_data.i2v_effect]["file"]
             
             lora_path = hf_hub_download(
                 repo_id=repo_id,
@@ -285,7 +285,7 @@ class App(BaseApp):
             self.loaded_lora = ""
 
         # Load and preprocess image
-        image = load_image(input.image.path)
+        image = load_image(input_data.image.path)
         max_area = 480 * 832
         aspect_ratio = image.height / image.width
         mod_value = (
@@ -298,16 +298,16 @@ class App(BaseApp):
 
         output = self.i2v_pipe(
             image=image,
-            prompt=input.prompt,
-            negative_prompt=input.negative_prompt,
+            prompt=input_data.prompt,
+            negative_prompt=input_data.negative_prompt,
             height=height,
             width=width,
-            num_frames=input.num_frames,
-            guidance_scale=input.guidance_scale,
+            num_frames=input_data.num_frames,
+            guidance_scale=input_data.guidance_scale,
         ).frames[0]
 
        
-        export_to_video(output, output_path, fps=input.fps)
+        export_to_video(output, output_path, fps=input_data.fps)
         return AppOutput(video_output=File(path=output_path))
 
     async def unload(self):

@@ -64,7 +64,7 @@ referencing==0.36.2
 regex==2024.11.6
 rembg==2.0.61
 requests==2.32.3
-rpds-py==0.25.0
+rpds-py==0.25.1
 safetensors==0.5.3
 scikit-image==0.25.2
 scipy==1.15.3

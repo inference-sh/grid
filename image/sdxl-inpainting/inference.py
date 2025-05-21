@@ -28,12 +28,12 @@ class App(BaseApp):
         ).to("cuda")
         self.current_model_url = "diffusers/stable-diffusion-xl-1.0-inpainting-0.1"
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Reinitialize the pipeline if a different model URL is provided
-        if input.model_url != self.current_model_url:
+        if input_data.model_url != self.current_model_url:
             tmp = AutoPipelineForInpainting.from_pretrained(
-                input.model_url,
+                input_data.model_url,
                 torch_dtype=torch.float16,
                 variant="fp16"
             ).to("cuda")
@@ -41,11 +41,11 @@ class App(BaseApp):
                 del self.pipe
                 torch.cuda.empty_cache()
             self.pipe = tmp
-            self.current_model_url = input.model_url
+            self.current_model_url = input_data.model_url
 
         # Load input image and mask
-        input_image = Image.open(input.image.path).convert("RGB")
-        mask_image = Image.open(input.mask.path).convert("RGB")
+        input_image = Image.open(input_data.image.path).convert("RGB")
+        mask_image = Image.open(input_data.mask.path).convert("RGB")
         
         # Verify image and mask dimensions match
         if input_image.size != mask_image.size:
@@ -53,13 +53,13 @@ class App(BaseApp):
         
         # Generate the filled image
         result = self.pipe(
-            prompt=input.prompt,
+            prompt=input_data.prompt,
             image=input_image,
             mask_image=mask_image,
-            guidance_scale=input.guidance_scale,
-            num_inference_steps=input.num_inference_steps,
-            strength=input.strength,
-            generator=torch.Generator("cuda").manual_seed(input.seed if input.seed is not None else 0)
+            guidance_scale=input_data.guidance_scale,
+            num_inference_steps=input_data.num_inference_steps,
+            strength=input_data.strength,
+            generator=torch.Generator("cuda").manual_seed(input_data.seed if input_data.seed is not None else 0)
         ).images[0]
         
         # Save the result

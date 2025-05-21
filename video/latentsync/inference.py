@@ -109,7 +109,7 @@ class App(BaseApp):
                     except Exception as e:
                         print(f"Warning: Could not create symlink {dst_path}: {e}")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run lip sync inference on the input video and audio."""
         # Create temporary directory for processing
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -119,8 +119,8 @@ class App(BaseApp):
             output_path = os.path.join(temp_dir, "output_video.mp4")
             
             # Copy input files to temp paths
-            shutil.copy(input.video_path.path, video_path)
-            shutil.copy(input.audio_path.path, audio_path)
+            shutil.copy(input_data.video_path.path, video_path)
+            shutil.copy(input_data.audio_path.path, audio_path)
             
             # Get the path to the do_inference.py script
             # Assuming do_inference.py is in the same directory as this file
@@ -136,8 +136,8 @@ class App(BaseApp):
                     inference_script,
                     "--unet_config_path", "configs/unet/second_stage.yaml",
                     "--inference_ckpt_path", "checkpoints/latentsync_unet.pt",
-                    "--inference_steps", str(input.inference_steps),
-                    "--guidance_scale", str(input.guidance_scale),
+                    "--inference_steps", str(input_data.inference_steps),
+                    "--guidance_scale", str(input_data.guidance_scale),
                     "--video_path", video_path,
                     "--audio_path", audio_path,
                     "--video_out_path", output_path,

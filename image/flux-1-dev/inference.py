@@ -247,19 +247,19 @@ class App(BaseApp):
         )
 
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run text to image with FLUX"""
         # Load input image
 
         images = self.pipe(
-                prompt=input.prompt,
-                num_images_per_prompt=input.number_of_images,
-                width=input.width,
-                height=input.height,
-                guidance_scale=input.guidance_scale,
-                num_inference_steps=input.number_of_steps,
+                prompt=input_data.prompt,
+                num_images_per_prompt=input_data.number_of_images,
+                width=input_data.width,
+                height=input_data.height,
+                guidance_scale=input_data.guidance_scale,
+                num_inference_steps=input_data.number_of_steps,
                 max_sequence_length=512,
-                generator=torch.Generator(self.device).manual_seed(input.seed)
+                generator=torch.Generator(self.device).manual_seed(input_data.seed)
             ).images
 
         output_files = []

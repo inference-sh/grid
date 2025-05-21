@@ -59,39 +59,39 @@ class App(BaseApp):
 
     def _choose_model(self, input: AppInput):
         """Choose and initialize the appropriate model based on input parameters."""
-        half = True if torch.cuda.is_available() and not input.fp32 else False
+        half = True if torch.cuda.is_available() and not input_data.fp32 else False
         
-        if input.model_name == 'RealESRGAN_x4plus':
+        if input_data.model_name == 'RealESRGAN_x4plus':
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
             model_path = os.path.join('weights', 'RealESRGAN_x4plus.pth')
             scale = 4
-        elif input.model_name == 'realesr-general-x4v3':
+        elif input_data.model_name == 'realesr-general-x4v3':
             model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
             model_path = os.path.join('weights', 'realesr-general-x4v3.pth')
             scale = 4
-        elif input.model_name == 'RealESRGAN_x4plus_anime_6B':
+        elif input_data.model_name == 'RealESRGAN_x4plus_anime_6B':
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
             model_path = os.path.join('weights', 'RealESRGAN_x4plus_anime_6B.pth')
             scale = 4
-        elif input.model_name == 'realesr-animevideov3':
+        elif input_data.model_name == 'realesr-animevideov3':
             model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
             model_path = os.path.join('weights', 'realesr-animevideov3.pth')
             scale = 4
-        elif input.model_name == 'RealESRGAN_x2plus':
+        elif input_data.model_name == 'RealESRGAN_x2plus':
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
             model_path = os.path.join('weights', 'RealESRGAN_x2plus.pth')
             scale = 2
-        elif input.model_name == 'realesr-general-wdn-x4v3':
+        elif input_data.model_name == 'realesr-general-wdn-x4v3':
             model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
             model_path = os.path.join('weights', 'realesr-general-wdn-x4v3.pth')
             scale = 4
         else:
-            raise ValueError(f"Unknown model name: {input.model_name}")
+            raise ValueError(f"Unknown model name: {input_data.model_name}")
         
         # Download model if it doesn't exist
         if not os.path.isfile(model_path):
             ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-            for url in self.model_paths[input.model_name]:
+            for url in self.model_paths[input_data.model_name]:
                 model_path = load_file_from_url(
                     url=url, 
                     model_dir=os.path.join(ROOT_DIR, 'weights'), 
@@ -104,9 +104,9 @@ class App(BaseApp):
             scale=scale,
             model_path=model_path,
             model=model,
-            tile=input.tile,
-            tile_pad=input.tile_pad,
-            pre_pad=input.pre_pad,
+            tile=input_data.tile,
+            tile_pad=input_data.tile_pad,
+            pre_pad=input_data.pre_pad,
             half=half,
             gpu_id=0 if torch.cuda.is_available() else None
         )
@@ -118,24 +118,24 @@ class App(BaseApp):
         
         # Model initialization will be done per request in _choose_model method
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run Real-ESRGAN on the input image/video."""
         # Choose and initialize the appropriate model
         self._choose_model(input)
         
         # Initialize face enhancer if needed
-        if input.face_enhance and self.face_enhancer is None:
+        if input_data.face_enhance and self.face_enhancer is None:
             from gfpgan import GFPGANer
             self.face_enhancer = GFPGANer(
                 model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-                upscale=input.outscale,
+                upscale=input_data.outscale,
                 arch='clean',
                 channel_multiplier=2,
                 bg_upsampler=self.upsampler
             )
         
         # Determine if input is video or image
-        is_video = input.input_file.path.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))
+        is_video = input_data.input_file.path.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))
         
         if is_video:
             # Handle video processing
@@ -148,10 +148,10 @@ class App(BaseApp):
 
     def _process_image(self, input: AppInput) -> str:
         """Process a single image using Real-ESRGAN."""
-        img = cv2.imread(input.input_file.path, cv2.IMREAD_UNCHANGED)
+        img = cv2.imread(input_data.input_file.path, cv2.IMREAD_UNCHANGED)
         
         try:
-            if input.face_enhance:
+            if input_data.face_enhance:
                 _, _, output = self.face_enhancer.enhance(
                     img, 
                     has_aligned=False, 
@@ -159,14 +159,14 @@ class App(BaseApp):
                     paste_back=True
                 )
             else:
-                output, _ = self.upsampler.enhance(img, outscale=input.outscale)
+                output, _ = self.upsampler.enhance(img, outscale=input_data.outscale)
         except RuntimeError as error:
             print('Error:', error)
             print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
             raise
 
         # Save the output
-        output_path = os.path.splitext(input.input_file.path)[0] + '_out.png'
+        output_path = os.path.splitext(input_data.input_file.path)[0] + '_out.png'
         cv2.imwrite(output_path, output)
         return output_path
 
@@ -175,20 +175,20 @@ class App(BaseApp):
         # Create temporary directory for frames
         with tempfile.TemporaryDirectory() as temp_dir:
             # Read video
-            video = cv2.VideoCapture(input.input_file.path)
+            video = cv2.VideoCapture(input_data.input_file.path)
             fps = video.get(cv2.CAP_PROP_FPS)
             total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
             width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
             height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             
             # Create output video writer
-            output_path = os.path.splitext(input.input_file.path)[0] + '_out.mp4'
+            output_path = os.path.splitext(input_data.input_file.path)[0] + '_out.mp4'
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             out = cv2.VideoWriter(
                 output_path,
                 fourcc,
                 fps,
-                (int(width * input.outscale), int(height * input.outscale))
+                (int(width * input_data.outscale), int(height * input_data.outscale))
             )
             
             # Process each frame
@@ -199,7 +199,7 @@ class App(BaseApp):
                     break
                     
                 try:
-                    if input.face_enhance:
+                    if input_data.face_enhance:
                         _, _, output = self.face_enhancer.enhance(
                             frame,
                             has_aligned=False,
@@ -207,7 +207,7 @@ class App(BaseApp):
                             paste_back=True
                         )
                     else:
-                        output, _ = self.upsampler.enhance(frame, outscale=input.outscale)
+                        output, _ = self.upsampler.enhance(frame, outscale=input_data.outscale)
                 except RuntimeError as error:
                     print('Error:', error)
                     print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')

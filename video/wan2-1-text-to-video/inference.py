@@ -70,36 +70,36 @@ class App(BaseApp):
         )
         print("Model loaded successfully!")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run video generation on the input prompt."""
         # Validate inputs
         task = "t2v-14B"  # We're using the text-to-video model
         
         # Validate size
-        if input.size not in SUPPORTED_SIZES[task]:
+        if input_data.size not in SUPPORTED_SIZES[task]:
             supported_sizes = ", ".join(SUPPORTED_SIZES[task])
-            raise ValueError(f"Unsupported size: {input.size}. Supported sizes for {task}: {supported_sizes}")
+            raise ValueError(f"Unsupported size: {input_data.size}. Supported sizes for {task}: {supported_sizes}")
         
         # Validate frame number (should be 4n+1)
-        if (input.num_frames - 1) % 4 != 0:
-            raise ValueError(f"Number of frames should be 4n+1, got {input.num_frames}")
+        if (input_data.num_frames - 1) % 4 != 0:
+            raise ValueError(f"Number of frames should be 4n+1, got {input_data.num_frames}")
         
         # Set seed
-        seed = input.seed if input.seed >= 0 else random.randint(0, sys.maxsize)
+        seed = input_data.seed if input_data.seed >= 0 else random.randint(0, sys.maxsize)
         
         # Generate the video
-        print(f"Generating video for prompt: {input.prompt}")
-        print(f"Size: {input.size}, Frames: {input.num_frames}, Steps: {input.num_inference_steps}")
+        print(f"Generating video for prompt: {input_data.prompt}")
+        print(f"Size: {input_data.size}, Frames: {input_data.num_frames}, Steps: {input_data.num_inference_steps}")
         
         video_tensor = self.model.generate(
-            input_prompt=input.prompt,
-            size=SIZE_CONFIGS[input.size],
-            frame_num=input.num_frames,
-            shift=input.shift,
-            sample_solver=input.sample_solver,
-            sampling_steps=input.num_inference_steps,
-            guide_scale=input.guidance_scale,
-            n_prompt=input.negative_prompt,
+            input_prompt=input_data.prompt,
+            size=SIZE_CONFIGS[input_data.size],
+            frame_num=input_data.num_frames,
+            shift=input_data.shift,
+            sample_solver=input_data.sample_solver,
+            sampling_steps=input_data.num_inference_steps,
+            guide_scale=input_data.guidance_scale,
+            n_prompt=input_data.negative_prompt,
             seed=seed,
             offload_model=False
         )
@@ -114,7 +114,7 @@ class App(BaseApp):
             output_path = temp_file.name
         
         # Create and save the video
-        clip = ImageSequenceClip([frame for frame in video_np], fps=input.fps)
+        clip = ImageSequenceClip([frame for frame in video_np], fps=input_data.fps)
         clip.write_videofile(output_path, codec="libx264", verbose=False, logger=None)
         
         return AppOutput(video=File(path=output_path))

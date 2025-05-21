@@ -21,23 +21,23 @@ class App(BaseApp):
         self.model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2-7B-Instruct", device_map="auto").to(self.device)
         self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-7B-Instruct")
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
         # Build messages list
         messages = [
             {
                 "role": "system",
-                "content": input.system_prompt
+                "content": input_data.system_prompt
             }
         ]
 
         # Add context messages
-        for msg in input.context:
+        for msg in input_data.context:
             message = {"role": msg.role, "content": msg.text}
             messages.append(message)
 
         # Add user message with text and media if provided
-        user_message = input.text            
+        user_message = input_data.text            
         messages.append({"role": "user", "content": user_message})
 
         # Apply chat template and prepare inputs

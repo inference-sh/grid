@@ -25,7 +25,7 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the condition and return the appropriate value."""
         condition_met = False
         

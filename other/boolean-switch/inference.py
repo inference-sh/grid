@@ -28,31 +28,31 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the boolean condition and return the appropriate value."""
         condition_met = False
         
         # Evaluate the condition based on the operator
-        if input.operator == BooleanOperator.EQUAL:
-            condition_met = input.left_operand == input.right_operand
-        elif input.operator == BooleanOperator.NOT_EQUAL:
-            condition_met = input.left_operand != input.right_operand
-        elif input.operator == BooleanOperator.AND:
-            condition_met = input.left_operand and input.right_operand
-        elif input.operator == BooleanOperator.OR:
-            condition_met = input.left_operand or input.right_operand
-        elif input.operator == BooleanOperator.XOR:
-            condition_met = input.left_operand != input.right_operand
-        elif input.operator == BooleanOperator.NAND:
-            condition_met = not (input.left_operand and input.right_operand)
-        elif input.operator == BooleanOperator.NOR:
-            condition_met = not (input.left_operand or input.right_operand)
-        elif input.operator == BooleanOperator.XNOR:
-            condition_met = input.left_operand == input.right_operand
+        if input_data.operator == BooleanOperator.EQUAL:
+            condition_met = input_data.left_operand == input_data.right_operand
+        elif input_data.operator == BooleanOperator.NOT_EQUAL:
+            condition_met = input_data.left_operand != input_data.right_operand
+        elif input_data.operator == BooleanOperator.AND:
+            condition_met = input_data.left_operand and input_data.right_operand
+        elif input_data.operator == BooleanOperator.OR:
+            condition_met = input_data.left_operand or input_data.right_operand
+        elif input_data.operator == BooleanOperator.XOR:
+            condition_met = input_data.left_operand != input_data.right_operand
+        elif input_data.operator == BooleanOperator.NAND:
+            condition_met = not (input_data.left_operand and input_data.right_operand)
+        elif input_data.operator == BooleanOperator.NOR:
+            condition_met = not (input_data.left_operand or input_data.right_operand)
+        elif input_data.operator == BooleanOperator.XNOR:
+            condition_met = input_data.left_operand == input_data.right_operand
 
         # Return the appropriate value based on the condition
         return AppOutput(
-            result=input.true_value if condition_met else input.false_value
+            result=input_data.true_value if condition_met else input_data.false_value
         )
 
     async def unload(self):

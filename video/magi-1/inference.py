@@ -147,7 +147,7 @@ class App(BaseApp):
         )
         self._weights_paths["vae_pretrained"] = os.path.join(vae_path, "ckpt/vae/")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         output_path = "/tmp/output.mp4"
         config_file = os.path.join(
             os.path.dirname(__file__), self.variant_config["config_file"]
@@ -171,21 +171,21 @@ class App(BaseApp):
             ]
 
             seed = (
-                input.seed
-                if input.seed != -1
+                input_data.seed
+                if input_data.seed != -1
                 else random.randint(0, 2**31 - 1)
             )
-            h, w = (input.height, input.width)
+            h, w = (input_data.height, input_data.width)
 
             rc = config_json["runtime_config"]
             rc.update(
                 {
                     "seed": seed,
-                    "num_frames": input.num_frames,
-                    "num_steps": input.num_steps,
-                    "window_size": input.window_size,
-                    "fps": input.fps,
-                    "chunk_width": input.chunk_width,
+                    "num_frames": input_data.num_frames,
+                    "num_steps": input_data.num_steps,
+                    "window_size": input_data.window_size,
+                    "fps": input_data.fps,
+                    "chunk_width": input_data.chunk_width,
                     "video_size_h": h,
                     "video_size_w": w,
                 }
@@ -209,24 +209,24 @@ class App(BaseApp):
             self.pipeline = MagiPipeline(config_file)
             self._last_runtime_config = rc
 
-        if input.mode == Mode.T2V:
+        if input_data.mode == Mode.T2V:
             self.pipeline.run_text_to_video(
-                prompt=input.prompt, output_path=output_path
+                prompt=input_data.prompt, output_path=output_path
             )
-        elif input.mode == Mode.I2V:
-            if not input.image:
+        elif input_data.mode == Mode.I2V:
+            if not input_data.image:
                 raise ValueError("image is required for i2v mode")
             self.pipeline.run_image_to_video(
-                prompt=input.prompt,
-                image_path=input.image.path,
+                prompt=input_data.prompt,
+                image_path=input_data.image.path,
                 output_path=output_path,
             )
-        elif input.mode == Mode.V2V:
-            if not input.prefix_video:
+        elif input_data.mode == Mode.V2V:
+            if not input_data.prefix_video:
                 raise ValueError("prefix_video is required for v2v mode")
             self.pipeline.run_video_to_video(
-                prompt=input.prompt,
-                prefix_video_path=input.prefix_video.path,
+                prompt=input_data.prompt,
+                prefix_video_path=input_data.prefix_video.path,
                 output_path=output_path,
             )
 

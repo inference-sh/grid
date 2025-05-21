@@ -62,15 +62,15 @@ class App(BaseApp):
         )
         self.pipeline.to("cuda")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate an image based on the input prompt."""
         if not self.pipeline:
             raise RuntimeError("Model not initialized. Call setup() first.")
 
         # If a custom model URL is provided, load it
-        if input.model_url != self.default_model_url:
+        if input_data.model_url != self.default_model_url:
             self.pipeline = StableDiffusionXLPipeline.from_pretrained(
-                input.model_url,
+                input_data.model_url,
                 torch_dtype=torch.float16,
                 use_safetensors=True,
                 variant="fp16"
@@ -79,12 +79,12 @@ class App(BaseApp):
 
         # Generate the image
         image = self.pipeline(
-            prompt=input.prompt,
-            negative_prompt=input.negative_prompt,
-            num_inference_steps=input.num_inference_steps,
-            guidance_scale=input.guidance_scale,
-            width=input.width,
-            height=input.height
+            prompt=input_data.prompt,
+            negative_prompt=input_data.negative_prompt,
+            num_inference_steps=input_data.num_inference_steps,
+            guidance_scale=input_data.guidance_scale,
+            width=input_data.width,
+            height=input_data.height
         ).images[0]
 
         # Save the image

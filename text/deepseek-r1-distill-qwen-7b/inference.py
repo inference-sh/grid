@@ -73,12 +73,12 @@ class App(BaseApp):
         print(self.tokenizer.bos_token)
         print(self.tokenizer.eos_token)
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
         messages = [
-            {"role": "system", "content": input.system_prompt},
-            *input.context,
-            {"role": "user", "content": input.user_prompt}
+            {"role": "system", "content": input_data.system_prompt},
+            *input_data.context,
+            {"role": "user", "content": input_data.user_prompt}
         ]
 
         text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)

@@ -1,0 +1,99 @@
+name: wan2gp-i2v
+description: wan2gp image to video
+category: video
+is_public: true
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+variants:
+    480p_int8:
+        name: 480p (Int8)
+        resources:
+            gpu:
+                count: 1
+                vram: 12000
+                type: nvidia
+            ram: 24000
+        env: {}
+        python: "3.12"
+    720p:
+        name: 720p
+        resources:
+            gpu:
+                count: 1
+                vram: 24000
+                type: nvidia
+            ram: 48000
+        env: {}
+        python: "3.12"
+    720p_int8:
+        name: 720p (Int8)
+        resources:
+            gpu:
+                count: 1
+                vram: 18000
+                type: nvidia
+            ram: 36000
+        env: {}
+        python: "3.12"
+    default:
+        name: 480p (Default)
+        resources:
+            gpu:
+                count: 1
+                vram: 16000
+                type: nvidia
+            ram: 32000
+        env: {}
+        python: "3.12"
+    flf2v:
+        name: FLF2V
+        resources:
+            gpu:
+                count: 1
+                vram: 24000
+                type: nvidia
+            ram: 48000
+        env: {}
+        python: "3.12"
+    flf2v_int8:
+        name: FLF2V (Int8)
+        resources:
+            gpu:
+                count: 1
+                vram: 18000
+                type: nvidia
+            ram: 36000
+        env: {}
+        python: "3.12"
+    fun_inp_1.3B:
+        name: Fun Inpainting 1.3B
+        resources:
+            gpu:
+                count: 1
+                vram: 12000
+                type: nvidia
+            ram: 24000
+        env: {}
+        python: "3.12"
+    fun_inp_14B:
+        name: Fun Inpainting 14B
+        resources:
+            gpu:
+                count: 1
+                vram: 24000
+                type: nvidia
+            ram: 48000
+        env: {}
+        python: "3.12"
+    fun_inp_14B_int8:
+        name: Fun Inpainting 14B (Int8)
+        resources:
+            gpu:
+                count: 1
+                vram: 18000
+                type: nvidia
+            ram: 36000
+        env: {}
+        python: "3.12"

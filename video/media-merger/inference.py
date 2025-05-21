@@ -170,13 +170,13 @@ class App(BaseApp):
             
         return composite
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         clips = []
         base_width, base_height = None, None
         
         # Process each media file
-        for i, media in enumerate(input.media_files):
+        for i, media in enumerate(input_data.media_files):
             file_path = media.file.path
             file_ext = os.path.splitext(file_path)[1].lower()
             
@@ -214,8 +214,8 @@ class App(BaseApp):
                 result_clip = current_clip
             else:
                 # Apply transition between current result and next clip
-                transition_type = input.media_files[i-1].transition_type
-                transition_duration = input.media_files[i-1].transition_duration or 1.0
+                transition_type = input_data.media_files[i-1].transition_type
+                transition_duration = input_data.media_files[i-1].transition_duration or 1.0
                 
                 # Calculate safe transition duration
                 transition_duration = min(
@@ -236,7 +236,7 @@ class App(BaseApp):
         final_video = result_clip
 
         # Save the output
-        output_path = os.path.join(self.temp_dir, f"result.{input.output_format}")
+        output_path = os.path.join(self.temp_dir, f"result.{input_data.output_format}")
         final_video.write_videofile(
             output_path,
             codec="libx264",
@@ -247,7 +247,7 @@ class App(BaseApp):
                 "-movflags", "+faststart",  # Helps with streaming
                 "-crf", "23"  # Reasonable quality
             ],
-            fps=input.fps or 30,
+            fps=input_data.fps or 30,
             logger=None  # MoviePy 2.x changed logger behavior
         )
         

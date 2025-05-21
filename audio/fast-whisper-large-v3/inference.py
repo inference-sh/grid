@@ -59,22 +59,22 @@ class App(BaseApp):
             #model_kwargs={"attn_implementation": "flash_attention_2"}
         )
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run transcription/translation on the input audio"""
         # Prepare generation kwargs
         generate_kwargs = {
-            "task": input.task,
-            "language": input.language if input.language != "auto" else None,
+            "task": input_data.task,
+            "language": input_data.language if input_data.language != "auto" else None,
         }
 
-        duration = get_duration_in_seconds(input.audio.path)
+        duration = get_duration_in_seconds(input_data.audio.path)
 
-        timestamps = True if (duration > 30 or input.return_timestamps == "sentence") else ("word" if input.return_timestamps == "word" else False)
+        timestamps = True if (duration > 30 or input_data.return_timestamps == "sentence") else ("word" if input_data.return_timestamps == "word" else False)
         
         # Run inference
         result = self.pipe(
-            input.audio.path,
-            batch_size=input.batch_size,
+            input_data.audio.path,
+            batch_size=input_data.batch_size,
             return_timestamps=timestamps,
             generate_kwargs=generate_kwargs
         )

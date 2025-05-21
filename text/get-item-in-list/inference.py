@@ -50,13 +50,13 @@ class App(BaseApp):
 
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Get the element at the specified index in the list."""
         try:
-            element = input.list_input[input.index]
+            element = input_data.list_input[input_data.index]
             return AppOutput(element=element)
         except IndexError:
-            raise RuntimeError(f"Index {input.index} is out of range for list of length {len(input.list_input)}")
+            raise RuntimeError(f"Index {input_data.index} is out of range for list of length {len(input_data.list_input)}")
 
     async def unload(self):
         """Clean up resources here."""

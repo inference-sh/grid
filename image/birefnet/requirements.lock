@@ -53,7 +53,7 @@ tokenizers==0.21.1
 torch==2.5.1
 torchvision==0.20.1
 tqdm==4.67.1
-transformers==4.52.1
+transformers==4.52.2
 triton==3.1.0
 typing-extensions==4.13.2
 typing-inspection==0.4.0

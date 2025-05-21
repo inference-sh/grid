@@ -137,14 +137,14 @@ class App(BaseApp):
         )
         self.t2v_pipe.to(self.device)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run T2V generation."""
         output_path = "/tmp/output_video.mp4"
         
         # Download LoRA weights from HF Hub        
-        repo_id = t2v_effects[input.t2v_effect]["repo"]
-        folder = t2v_effects[input.t2v_effect]["folder"]
-        filename = t2v_effects[input.t2v_effect]["file"]
+        repo_id = t2v_effects[input_data.t2v_effect]["repo"]
+        folder = t2v_effects[input_data.t2v_effect]["folder"]
+        filename = t2v_effects[input_data.t2v_effect]["file"]
         
         lora_path = hf_hub_download(
             repo_id=repo_id,
@@ -153,12 +153,12 @@ class App(BaseApp):
         self.t2v_pipe.load_lora_weights(lora_path)
 
         output = self.t2v_pipe(
-            prompt=input.prompt,
-            negative_prompt=input.negative_prompt,
-            num_frames=input.num_frames,
+            prompt=input_data.prompt,
+            negative_prompt=input_data.negative_prompt,
+            num_frames=input_data.num_frames,
         ).frames[0]
 
-        export_to_video(output, output_path, fps=input.fps)
+        export_to_video(output, output_path, fps=input_data.fps)
         return AppOutput(video_output=File(path=output_path))
 
     async def unload(self):

@@ -33,26 +33,26 @@ class App(BaseApp):
         self.model = Dia.from_pretrained("nari-labs/Dia-1.6B", compute_dtype="float16")
         print("DIA model initialized successfully")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate speech from text using DIA TTS."""
         # Create a temporary file
-        with tempfile.NamedTemporaryFile(suffix=f".{input.format.value}", delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(suffix=f".{input_data.format.value}", delete=False) as temp_file:
             output_path = temp_file.name
         
         # Generate speech using DIA
-        if input.clone_from_text and input.clone_from_audio:
+        if input_data.clone_from_text and input_data.clone_from_audio:
             # For voice cloning, concatenate the clone text with generation text
-            full_text = input.clone_from_text + input.text
+            full_text = input_data.clone_from_text + input_data.text
             output = self.model.generate(
                 full_text,
-                audio_prompt=input.clone_from_audio.path,
+                audio_prompt=input_data.clone_from_audio.path,
                 use_torch_compile=True,
                 verbose=True
             )
         else:
             # Regular generation without cloning
             output = self.model.generate(
-                input.text,
+                input_data.text,
                 use_torch_compile=True,
                 verbose=True
             )
@@ -64,7 +64,7 @@ class App(BaseApp):
         if output is not None:
             original_len = len(output)
             # Ensure speed_factor is positive and not excessively small/large
-            speed_factor = max(0.1, min(input.speed, 5))
+            speed_factor = max(0.1, min(input_data.speed, 5))
             target_len = int(original_len / speed_factor)  # Target length based on speed_factor
 
             if target_len != original_len and target_len > 0:  # Only interpolate if length changes and is valid
@@ -104,7 +104,7 @@ class App(BaseApp):
             output = np.zeros(1, dtype=np.float32)
         
         # Save the audio in the requested format
-        if input.format == AudioFormat.WAV:
+        if input_data.format == AudioFormat.WAV:
             self.model.save_audio(output_path, output)
         else:
             # For other formats, first save as WAV and then convert
@@ -113,7 +113,7 @@ class App(BaseApp):
             
             # Convert to the requested format using pydub
             audio = AudioSegment.from_wav(temp_wav)
-            audio.export(output_path, format=input.format.value)
+            audio.export(output_path, format=input_data.format.value)
             os.remove(temp_wav)
         
         return AppOutput(audio=File(path=output_path))

@@ -12,15 +12,15 @@ class App(BaseApp):
     async def setup(self, metadata):
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Check if input file exists and is accessible
-        if not input.image_input.exists():
-            raise RuntimeError(f"Input file does not exist at path: {input.image_input.path}")
+        if not input_data.image_input_data.exists():
+            raise RuntimeError(f"Input file does not exist at path: {input_data.image_input_data.path}")
         
         # Simply return the input image as output
         return AppOutput(
-            image_output=input.image_input
+            image_output=input_data.image_input
         )
 
     async def unload(self):

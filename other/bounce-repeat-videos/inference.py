@@ -37,7 +37,7 @@ class App(BaseApp):
         if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
             raise RuntimeError("ffmpeg and ffprobe are required but not found in the system PATH.")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Create a bouncing video effect using ffmpeg.
         
         Args:
@@ -47,7 +47,7 @@ class App(BaseApp):
             AppOutput with the processed bouncing video.
         """
         # Get input parameters from the pydantic model
-        input_path = input.video.path
+        input_path = input_data.video.path
         
         # Create a temporary directory for output
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -60,7 +60,7 @@ class App(BaseApp):
                 original_duration = get_video_duration(input_path)
                 
                 # Use user-specified duration or default to 3x original
-                target_duration = input.duration or (original_duration * 3)
+                target_duration = input_data.duration or (original_duration * 3)
                 
                 # Create the bounce effect in a single ffmpeg command using filter_complex
                 # This creates a sequence of: original -> reversed -> original

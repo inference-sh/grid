@@ -37,46 +37,46 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the array-element condition and return the appropriate value."""
         condition_met = False
         
         # Evaluate the condition based on the operator
-        if input.operator == ArrayElementOperator.CONTAINS:
-            condition_met = input.element in input.array
-        elif input.operator == ArrayElementOperator.NOT_CONTAINS:
-            condition_met = input.element not in input.array
-        elif input.operator == ArrayElementOperator.CONTAINS_ALL:
-            condition_met = all(x == input.element for x in input.array)
-        elif input.operator == ArrayElementOperator.CONTAINS_ANY:
-            condition_met = any(x == input.element for x in input.array)
-        elif input.operator == ArrayElementOperator.CONTAINS_NONE:
-            condition_met = not any(x == input.element for x in input.array)
-        elif input.operator == ArrayElementOperator.COUNT_EQUAL:
-            condition_met = input.array.count(input.element) == input.index
-        elif input.operator == ArrayElementOperator.COUNT_GREATER:
-            condition_met = input.array.count(input.element) > input.index
-        elif input.operator == ArrayElementOperator.COUNT_LESS:
-            condition_met = input.array.count(input.element) < input.index
-        elif input.operator == ArrayElementOperator.FIRST_EQUAL:
-            condition_met = input.array and input.array[0] == input.element
-        elif input.operator == ArrayElementOperator.LAST_EQUAL:
-            condition_met = input.array and input.array[-1] == input.element
-        elif input.operator == ArrayElementOperator.INDEX_EQUAL:
-            if input.index is None:
+        if input_data.operator == ArrayElementOperator.CONTAINS:
+            condition_met = input_data.element in input_data.array
+        elif input_data.operator == ArrayElementOperator.NOT_CONTAINS:
+            condition_met = input_data.element not in input_data.array
+        elif input_data.operator == ArrayElementOperator.CONTAINS_ALL:
+            condition_met = all(x == input_data.element for x in input_data.array)
+        elif input_data.operator == ArrayElementOperator.CONTAINS_ANY:
+            condition_met = any(x == input_data.element for x in input_data.array)
+        elif input_data.operator == ArrayElementOperator.CONTAINS_NONE:
+            condition_met = not any(x == input_data.element for x in input_data.array)
+        elif input_data.operator == ArrayElementOperator.COUNT_EQUAL:
+            condition_met = input_data.array.count(input_data.element) == input_data.index
+        elif input_data.operator == ArrayElementOperator.COUNT_GREATER:
+            condition_met = input_data.array.count(input_data.element) > input_data.index
+        elif input_data.operator == ArrayElementOperator.COUNT_LESS:
+            condition_met = input_data.array.count(input_data.element) < input_data.index
+        elif input_data.operator == ArrayElementOperator.FIRST_EQUAL:
+            condition_met = input_data.array and input_data.array[0] == input_data.element
+        elif input_data.operator == ArrayElementOperator.LAST_EQUAL:
+            condition_met = input_data.array and input_data.array[-1] == input_data.element
+        elif input_data.operator == ArrayElementOperator.INDEX_EQUAL:
+            if input_data.index is None:
                 raise ValueError("Index is required for index-based comparison")
-            condition_met = (0 <= input.index < len(input.array) and 
-                           input.array[input.index] == input.element)
-        elif input.operator == ArrayElementOperator.ALL_EQUAL:
-            condition_met = all(x == input.element for x in input.array)
-        elif input.operator == ArrayElementOperator.ANY_EQUAL:
-            condition_met = any(x == input.element for x in input.array)
-        elif input.operator == ArrayElementOperator.NONE_EQUAL:
-            condition_met = not any(x == input.element for x in input.array)
+            condition_met = (0 <= input_data.index < len(input_data.array) and 
+                           input_data.array[input_data.index] == input_data.element)
+        elif input_data.operator == ArrayElementOperator.ALL_EQUAL:
+            condition_met = all(x == input_data.element for x in input_data.array)
+        elif input_data.operator == ArrayElementOperator.ANY_EQUAL:
+            condition_met = any(x == input_data.element for x in input_data.array)
+        elif input_data.operator == ArrayElementOperator.NONE_EQUAL:
+            condition_met = not any(x == input_data.element for x in input_data.array)
 
         # Return the appropriate value based on the condition
         return AppOutput(
-            result=input.true_value if condition_met else input.false_value
+            result=input_data.true_value if condition_met else input_data.false_value
         )
 
     async def unload(self):

@@ -132,7 +132,7 @@ torch-stoi==0.2.3
 torchaudio==2.6.0+cu126
 tqdm==4.67.1
 traitlets==5.14.3
-transformers==4.52.1
+transformers==4.52.2
 triton==3.2.0
 trove-classifiers==2025.5.9.12
 typer==0.15.4

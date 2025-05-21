@@ -30,37 +30,37 @@ class App(BaseApp):
             base_model="frankjoshua/albedobaseXL_v13",
         )
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Load and process images
-        base_image = Image.open(input.base_image.path)
-        composition_image = Image.open(input.composition_image.path)
-        style_image = Image.open(input.style_image.path)
-        identity_image = Image.open(input.identity_image.path)
-        depth_image = Image.open(input.depth_image.path) if input.depth_image else None
+        base_image = Image.open(input_data.base_image.path)
+        composition_image = Image.open(input_data.composition_image.path)
+        style_image = Image.open(input_data.style_image.path)
+        identity_image = Image.open(input_data.identity_image.path)
+        depth_image = Image.open(input_data.depth_image.path) if input_data.depth_image else None
 
         # Generate image
         images = self.omni_zero.generate(
-            seed=input.seed,
-            prompt=input.prompt,
-            negative_prompt=input.negative_prompt,
-            guidance_scale=input.guidance_scale,
+            seed=input_data.seed,
+            prompt=input_data.prompt,
+            negative_prompt=input_data.negative_prompt,
+            guidance_scale=input_data.guidance_scale,
             number_of_images=1,  # We only generate one image
-            number_of_steps=input.number_of_steps,
+            number_of_steps=input_data.number_of_steps,
             base_image=base_image,
-            base_image_strength=input.base_image_strength,
+            base_image_strength=input_data.base_image_strength,
             composition_image=composition_image,
-            composition_image_strength=input.composition_image_strength,
+            composition_image_strength=input_data.composition_image_strength,
             style_image=style_image,
-            style_image_strength=input.style_image_strength,
+            style_image_strength=input_data.style_image_strength,
             identity_image=identity_image,
-            identity_image_strength=input.identity_image_strength,
+            identity_image_strength=input_data.identity_image_strength,
             depth_image=depth_image,
-            depth_image_strength=input.depth_image_strength,
+            depth_image_strength=input_data.depth_image_strength,
         )
 
         # Save the generated image
-        output_path = "/tmp/" + input.identity_image.filename + ".png"
+        output_path = "/tmp/" + input_data.identity_image.filename + ".png"
         images[0].save(output_path)
         
         return AppOutput(result=File(path=output_path))

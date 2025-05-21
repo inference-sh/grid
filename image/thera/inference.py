@@ -44,28 +44,28 @@ class App(BaseApp):
             self.params_rdn, backbone, size = check['model'], check['backbone'], check['size']
             self.model_rdn = build_thera(3, backbone, size)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run super-resolution on the input image."""
         # Read input image
-        image_in = Image.open(input.image.path).convert("RGB")
+        image_in = Image.open(input_data.image.path).convert("RGB")
         source = np.asarray(image_in) / 255.
 
         # Determine target shape
         target_shape = (
-            round(source.shape[0] * input.scale),
-            round(source.shape[1] * input.scale),
+            round(source.shape[0] * input_data.scale),
+            round(source.shape[1] * input_data.scale),
         )
 
         # Select model and parameters
-        if input.model == 'edsr':
+        if input_data.model == 'edsr':
             m, p = self.model_edsr, self.params_edsr
-        elif input.model == 'rdn':
+        elif input_data.model == 'rdn':
             m, p = self.model_rdn, self.params_rdn
         else:
-            raise ValueError(f"Unknown model: {input.model}")
+            raise ValueError(f"Unknown model: {input_data.model}")
 
         # Process image
-        out = process(source, m, p, target_shape, do_ensemble=input.do_ensemble)
+        out = process(source, m, p, target_shape, do_ensemble=input_data.do_ensemble)
         out_image = Image.fromarray(np.asarray(out))
 
         # Save result

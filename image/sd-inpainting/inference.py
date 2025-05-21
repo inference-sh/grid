@@ -26,23 +26,23 @@ class App(BaseApp):
         ).to("cuda")
         self.current_model_url = "Sanster/anything-4.0-inpainting"
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Reinitialize the pipeline if a different model URL is provided
-        if input.model_url != self.current_model_url:
+        if input_data.model_url != self.current_model_url:
             tmp = StableDiffusionInpaintPipeline.from_pretrained(
-                input.model_url,
+                input_data.model_url,
                 torch_dtype=torch.float16,
             ).to("cuda")
             if self.pipe is not None and tmp is not None:
                 del self.pipe
                 torch.cuda.empty_cache()
             self.pipe = tmp
-            self.current_model_url = input.model_url
+            self.current_model_url = input_data.model_url
 
         # Load input image and mask
-        input_image = Image.open(input.image.path).convert("RGB")
-        mask_image = Image.open(input.mask.path).convert("RGB")
+        input_image = Image.open(input_data.image.path).convert("RGB")
+        mask_image = Image.open(input_data.mask.path).convert("RGB")
         
         # Verify image and mask dimensions match
         if input_image.size != mask_image.size:
@@ -50,12 +50,12 @@ class App(BaseApp):
         
         # Generate the filled image
         result = self.pipe(
-            prompt=input.prompt,
+            prompt=input_data.prompt,
             image=input_image,
             mask_image=mask_image,
-            guidance_scale=input.guidance_scale,
-            num_inference_steps=input.num_inference_steps,
-            generator=torch.Generator("cuda").manual_seed(input.seed if input.seed is not None else 0)
+            guidance_scale=input_data.guidance_scale,
+            num_inference_steps=input_data.num_inference_steps,
+            generator=torch.Generator("cuda").manual_seed(input_data.seed if input_data.seed is not None else 0)
         ).images[0]
         
         # Save the result

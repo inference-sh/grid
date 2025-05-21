@@ -59,10 +59,10 @@ class App(BaseApp):
         self.normal_model.eval()
         self.normal_model.half()
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run background removal on the input image."""
         # Load and preprocess image
-        image = Image.open(input.image.path).convert("RGB")
+        image = Image.open(input_data.image.path).convert("RGB")
         
         # Resize image to 2048x2048 as recommended by the model
         image_size = (2048, 2048)
@@ -76,7 +76,7 @@ class App(BaseApp):
         input_tensor = transform(image).unsqueeze(0).to(self.device).half()
         
         # Select model based on input
-        model = self.matting_model if input.return_mask else self.normal_model
+        model = self.matting_model if input_data.return_mask else self.normal_model
         
         # Run inference
         with torch.no_grad():
@@ -87,7 +87,7 @@ class App(BaseApp):
         mask = (mask * 255).byte().numpy()
         mask = Image.fromarray(mask).resize(image.size)
         
-        if not input.return_mask:
+        if not input_data.return_mask:
             # Create transparent image
             transparent_image = image.copy()
             transparent_image.putalpha(mask)

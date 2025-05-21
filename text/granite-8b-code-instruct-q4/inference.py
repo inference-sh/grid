@@ -76,24 +76,24 @@ class App(BaseApp):
             n_ctx=4096
         )
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         messages = [
             {
                 "role": "system",
-                "content": input.system_prompt,
+                "content": input_data.system_prompt,
             }
         ]
 
         # Add context messages
-        for msg in input.context:
+        for msg in input_data.context:
             messages.append({
                 "role": msg.role,
                 "content": msg.text
             })
 
         # Add user message with text and media if provided
-        if input.text:
-            messages.append({"role": "user", "content": input.text})
+        if input_data.text:
+            messages.append({"role": "user", "content": input_data.text})
 
 
         print(messages)

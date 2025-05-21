@@ -107,17 +107,17 @@ class App(BaseApp):
         self.face_reducer = FaceReducer()
         self.paint_pipeline = Hunyuan3DPaintPipeline.from_pretrained(self.model_path)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate 3D model from image or text"""
         print(f"Running Hunyuan3D model with input data: {input}")
-        if input.input_image and not input.prompt:
+        if input_data.input_image and not input_data.prompt:
             # Image-to-3D path
-            image = Image.open(input.input_image.path)
+            image = Image.open(input_data.input_image.path)
             if image.mode == 'RGB':
                 image = self.rembg(image)
-        elif input.prompt and not input.input_image:
+        elif input_data.prompt and not input_data.input_image:
             # Text-to-3D path
-            image = self.t2i_pipeline(input.prompt)
+            image = self.t2i_pipeline(input_data.prompt)
             image = self.rembg(image)
         else:
             raise ValueError("Please provide either an input image OR a text prompt, not both or neither")
@@ -125,9 +125,9 @@ class App(BaseApp):
         # Generate 3D mesh
         mesh = self.i23d_pipeline(
             image=image,
-            num_inference_steps=input.num_inference_steps,
+            num_inference_steps=input_data.num_inference_steps,
             mc_algo='mc',
-            generator=torch.manual_seed(input.seed)
+            generator=torch.manual_seed(input_data.seed)
         )[0]
 
         # Post-process mesh
@@ -136,7 +136,7 @@ class App(BaseApp):
         mesh = self.face_reducer(mesh)
 
         # Paint texture if enabled
-        if input.paint_texture:
+        if input_data.paint_texture:
             mesh = self.paint_pipeline(mesh, image=image)
 
         # Save and return result

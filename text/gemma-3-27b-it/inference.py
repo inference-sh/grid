@@ -39,19 +39,19 @@ class App(BaseApp):
         self.model.eval()
         self.processor = AutoProcessor.from_pretrained(model_name)
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
   
         # Build messages list
         messages = [
             {
                 "role": "system",
-                "content": [{"type": "text", "text": input.system_prompt}],
+                "content": [{"type": "text", "text": input_data.system_prompt}],
             }
         ]
 
         # Add context messages
-        for msg in input.context:
+        for msg in input_data.context:
             message_content = []
             if msg.text:
                 message_content.append({"type": "text", "text": msg.text})
@@ -64,10 +64,10 @@ class App(BaseApp):
 
         # Add user message with text and media if provided
         user_content = []
-        if input.text:
-            user_content.append({"type": "text", "text": input.text})
-        if input.image and input.image.uri:
-            user_content.append({"type": "image", "url": input.image.uri})
+        if input_data.text:
+            user_content.append({"type": "text", "text": input_data.text})
+        if input_data.image and input_data.image.uri:
+            user_content.append({"type": "image", "url": input_data.image.uri})
         messages.append({"role": "user", "content": user_content})
 
         print(messages)
@@ -75,7 +75,7 @@ class App(BaseApp):
         # Apply chat template and prepare inputs
         prompt = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, return_dict=True, return_tensors="pt")
         print(prompt)
-        images = [PIL.Image.open(input.image.path).convert("RGB")] if input.image else None
+        images = [PIL.Image.open(input_data.image.path).convert("RGB")] if input_data.image else None
         model_inputs = self.processor(
             text=prompt,
             images=images,

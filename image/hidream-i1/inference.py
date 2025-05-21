@@ -105,7 +105,7 @@ class App(BaseApp):
         )
         self.pipe.enable_model_cpu_offload()
         
-        self.variant = metadata.get("app_variant")
+        self.variant = metadata.app_variant
         self.model = "fast"
         if self.variant == "default":
             self.model = "fast"
@@ -115,19 +115,19 @@ class App(BaseApp):
             self.model = "dev"
         self.config = MODEL_CONFIGS[self.model]
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Get configuration for current model        
         # Adjust dimensions to be multiples of 8 and respect max pixel count
-        width, height = adjust_dimensions(input.width, input.height)
+        width, height = adjust_dimensions(input_data.width, input_data.height)
         
         # Set up generator for reproducibility
-        seed = input.seed if input.seed != -1 else torch.randint(0, 1000000, (1,)).item()
+        seed = input_data.seed if input_data.seed != -1 else torch.randint(0, 1000000, (1,)).item()
         generator = torch.Generator("cuda").manual_seed(seed)
 
         # Generate image
         images = self.pipe(
-            input.prompt,
+            input_data.prompt,
             height=height,
             width=width,
             guidance_scale=self.config["guidance_scale"],

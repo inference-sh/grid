@@ -146,17 +146,17 @@ class App(BaseApp):
         """Initialize resources."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Add captions to the video based on the timestamps in the captions file."""
         # Load the captions from the JSON file
-        with open(input.captions_file.path, "r") as f:
+        with open(input_data.captions_file.path, "r") as f:
             captions_data = json.load(f)
         
         # Load the video
-        video = VideoFileClip(input.video_file.path)
+        video = VideoFileClip(input_data.video_file.path)
                 
         # Create margin tuple (horizontal, vertical)
-        margin_tuple = (input.margin_horizontal, input.margin_vertical)
+        margin_tuple = (input_data.margin_horizontal, input_data.margin_vertical)
         
         # Determine font path
         font_path = 'Arial.otf'  # Default font
@@ -164,7 +164,7 @@ class App(BaseApp):
         # Download the selected Google font
         try:
             # Get the URL from the mapping dictionary using the enum value
-            font_url = FONT_URL_MAP[input.font]
+            font_url = FONT_URL_MAP[input_data.font]
             response = requests.get(font_url)
             response.raise_for_status()  # Ensure the request was successful
             
@@ -187,7 +187,7 @@ class App(BaseApp):
         for caption in captions_data:
             text = caption["text"]
             start_time, end_time = caption["timestamp"]
-            if end_time < prev_end_time and input.fix_whisper_30s_timestamps:
+            if end_time < prev_end_time and input_data.fix_whisper_30s_timestamps:
                 prev_end_time = end_time
                 end_time += extra_seconds
                 start_time += extra_seconds
@@ -197,17 +197,17 @@ class App(BaseApp):
             txt_clip = TextClip(
                 text=text,
                 font=font_path,  # Use downloaded font or default
-                font_size=input.font_size,
-                color=input.font_color,
-                bg_color=input.bg_color if input.bg_color != 'transparent' else None,
-                stroke_color=input.stroke_color,
-                stroke_width=input.stroke_width,
-                interline=input.font_size * 0.2,
+                font_size=input_data.font_size,
+                color=input_data.font_color,
+                bg_color=input_data.bg_color if input_data.bg_color != 'transparent' else None,
+                stroke_color=input_data.stroke_color,
+                stroke_width=input_data.stroke_width,
+                interline=input_data.font_size * 0.2,
                 method='caption',  # Wrap text to fit video width
-                size=(video.w - 2*input.margin_horizontal, None),  # Width with margin, auto height
-                text_align=input.text_align.value,  # Alignment within the text block
+                size=(video.w - 2*input_data.margin_horizontal, None),  # Width with margin, auto height
+                text_align=input_data.text_align.value,  # Alignment within the text block
                 margin=margin_tuple,  # Margin around text as a tuple (horizontal, vertical)
-            ).with_position(input.position.value.split('-'))
+            ).with_position(input_data.position.value.split('-'))
 
             # Set the duration of the text (from start to end timestamp)
             txt_clip = txt_clip.with_start(start_time).with_end(end_time)

@@ -32,25 +32,25 @@ class App(BaseApp):
         ).to(self.device)
         self.model.eval()
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
         
         # Build messages list
         messages = [
             {
                 "role": "system",
-                "content": input.system_prompt
+                "content": input_data.system_prompt
             }
         ]
 
         # Add context messages
-        for msg in input.context:
+        for msg in input_data.context:
             message = {"role": msg.role, "content": msg.text}
             messages.append(message)
 
         # Add user message with text and media if provided
-        user_message = input.text
-        if input.enable_thinking:
+        user_message = input_data.text
+        if input_data.enable_thinking:
             user_message = f"{user_message} /think"
         else:
             user_message = f"{user_message} /no_think"
@@ -62,7 +62,7 @@ class App(BaseApp):
             messages,
             tokenize=False,
             add_generation_prompt=True,
-            enable_thinking=input.enable_thinking
+            enable_thinking=input_data.enable_thinking
         )
         
         model_inputs = self.tokenizer(
@@ -80,7 +80,7 @@ class App(BaseApp):
             "streamer": TextIteratorStreamer(self.tokenizer, skip_prompt=True, decode_kwargs={"skip_special_tokens": True})
         }
         
-        if input.enable_thinking:
+        if input_data.enable_thinking:
             generation_kwargs.update({
                 "temperature": 0.6,
                 "top_p": 0.95,
@@ -109,7 +109,7 @@ class App(BaseApp):
         # Collect the generated text
         response = ""
         thinking_content = ""
-        in_thinking = input.enable_thinking
+        in_thinking = input_data.enable_thinking
         
         try:
             for new_text in streamer:

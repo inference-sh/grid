@@ -62,7 +62,7 @@ setuptools==80.8.0
 setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0
-tb-nightly==2.20.0a20250520
+tb-nightly==2.20.0a20250521
 tensorboard-data-server==0.7.2
 tifffile==2025.5.10
 torch==2.7.0

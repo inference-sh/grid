@@ -26,15 +26,15 @@ class App(BaseApp):
         """Initialize your model and resources here."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Merge audio with video."""
         # Define output paths
-        video_path = input.video_file.path
-        audio_path = input.audio_file.path
+        video_path = input_data.video_file.path
+        audio_path = input_data.audio_file.path
         filename = os.path.splitext(os.path.basename(video_path))[0]
         output_path = f"/tmp/{filename}_merged.mp4"
         
-        if input.preserve_original_audio:
+        if input_data.preserve_original_audio:
             # Merge audio with original audio preserved (mix them)
             # The -shortest flag makes the output as long as the shortest input
             subprocess.run([

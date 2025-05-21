@@ -143,7 +143,7 @@ class App(BaseApp):
         )
         self.pipeline.to("cuda")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate an image based on the input prompt and ControlNet."""
         if not self.pipeline:
             raise RuntimeError("Model not initialized. Call setup() first.")
@@ -153,12 +153,12 @@ class App(BaseApp):
         control_mode = None
         control_scale = None
 
-        if input.controlnet_type and input.controlnet_image:
+        if input_data.controlnet_type and input_data.controlnet_image:
             # Read the image
-            img = cv2.imread(input.controlnet_image.path)
+            img = cv2.imread(input_data.controlnet_image.path)
             
             # If pre_process is False, just resize the image and return
-            if not input.controlnet_pre_process:
+            if not input_data.controlnet_pre_process:
                 height, width, _ = img.shape
                 ratio = np.sqrt(1024. * 1024. / (width * height))
                 new_width, new_height = int(width * ratio), int(height * ratio)
@@ -166,22 +166,22 @@ class App(BaseApp):
                 control_image = Image.fromarray(processed_img)
             else:
                 # Process based on ControlNet type
-                if input.controlnet_type == ControlNetType.CANNY:
+                if input_data.controlnet_type == ControlNetType.CANNY:
                     processed_img = cv2.Canny(img, 100, 200)
                     processed_img = HWC3(processed_img)
-                elif input.controlnet_type == ControlNetType.DEPTH:
+                elif input_data.controlnet_type == ControlNetType.DEPTH:
                     processed_img = self.processor(img, output_type='cv2')
-                elif input.controlnet_type == ControlNetType.POSE:
+                elif input_data.controlnet_type == ControlNetType.POSE:
                     processed_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     processed_img = HWC3(processed_img)
-                elif input.controlnet_type == ControlNetType.GRAY:
+                elif input_data.controlnet_type == ControlNetType.GRAY:
                     processed_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     processed_img = HWC3(processed_img)
-                elif input.controlnet_type == ControlNetType.BLUR:
+                elif input_data.controlnet_type == ControlNetType.BLUR:
                     processed_img = cv2.GaussianBlur(img, (5, 5), 0)
-                elif input.controlnet_type == ControlNetType.TILE:
+                elif input_data.controlnet_type == ControlNetType.TILE:
                     processed_img = img
-                elif input.controlnet_type == ControlNetType.LOW_QUALITY:
+                elif input_data.controlnet_type == ControlNetType.LOW_QUALITY:
                     height, width = img.shape[:2]
                     processed_img = cv2.resize(img, (width//4, height//4))
                     processed_img = cv2.resize(processed_img, (width, height))
@@ -196,8 +196,8 @@ class App(BaseApp):
                 
                 control_image = Image.fromarray(processed_img)
 
-            control_mode = input.controlnet_type.to_int()
-            control_scale = input.controlnet_strength
+            control_mode = input_data.controlnet_type.to_int()
+            control_scale = input_data.controlnet_strength
 
         # Generate the image
         generator = torch.Generator('cuda').manual_seed(torch.randint(0, 2147483647, (1,)).item())
@@ -207,16 +207,16 @@ class App(BaseApp):
         print("Scale: ", control_scale)
 
         images = self.pipeline(
-            prompt=input.prompt,
+            prompt=input_data.prompt,
             control_image=control_image,
             control_mode=control_mode,
             generator=generator,
-            width=input.width,
-            height=input.height,
-            num_inference_steps=input.num_inference_steps,
-            guidance_scale=input.guidance_scale,
-            control_guidance_start=input.control_guidance_start,
-            control_guidance_end=input.control_guidance_end,
+            width=input_data.width,
+            height=input_data.height,
+            num_inference_steps=input_data.num_inference_steps,
+            guidance_scale=input_data.guidance_scale,
+            control_guidance_start=input_data.control_guidance_start,
+            control_guidance_end=input_data.control_guidance_end,
             controlnet_conditioning_scale=control_scale,
         ).images
 

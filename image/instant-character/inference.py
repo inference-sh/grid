@@ -174,52 +174,52 @@ class App(BaseApp):
         self._check_lora_directory()
         print(f"{style.value} style LoRA downloaded successfully")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate an image based on the input prompt and reference image."""
         if not self.pipeline:
             raise RuntimeError("Model not initialized. Call setup() first.")
 
         # Download style LoRA if needed
-        await self._download_style_lora(input.style)
+        await self._download_style_lora(input_data.style)
 
         # Load the reference image
-        ref_image = Image.open(input.subject_image.path).convert('RGB')
+        ref_image = Image.open(input_data.subject_image.path).convert('RGB')
 
         # Generate the image
         generator = torch.Generator('cuda').manual_seed(torch.randint(0, 2147483647, (1,)).item())
 
-        if input.style != StyleType.NONE:
+        if input_data.style != StyleType.NONE:
             # Use style LoRA
-            if not input.style_trigger:
+            if not input_data.style_trigger:
                 raise ValueError("style_trigger is required when using a style")
             
             print("\nLoRA generation parameters:")
-            print(f"LoRA path: {input.style.lora_path}")
-            print(f"File exists: {os.path.exists(input.style.lora_path)}")
-            print(f"Style trigger: {input.style_trigger}")
-            print(f"Prompt: {input.prompt}")
-            print(f"Num inference steps: {input.num_inference_steps}")
-            print(f"Guidance scale: {input.guidance_scale}")
-            print(f"Subject scale: {input.subject_scale}")
+            print(f"LoRA path: {input_data.style.lora_path}")
+            print(f"File exists: {os.path.exists(input_data.style.lora_path)}")
+            print(f"Style trigger: {input_data.style_trigger}")
+            print(f"Prompt: {input_data.prompt}")
+            print(f"Num inference steps: {input_data.num_inference_steps}")
+            print(f"Guidance scale: {input_data.guidance_scale}")
+            print(f"Subject scale: {input_data.subject_scale}")
 
             image = self.pipeline.with_style_lora(
-                lora_file_path=input.style.lora_path,
-                trigger=input.style_trigger,
-                prompt=input.prompt,
-                num_inference_steps=input.num_inference_steps,
-                guidance_scale=input.guidance_scale,
+                lora_file_path=input_data.style.lora_path,
+                trigger=input_data.style_trigger,
+                prompt=input_data.prompt,
+                num_inference_steps=input_data.num_inference_steps,
+                guidance_scale=input_data.guidance_scale,
                 subject_image=ref_image,
-                subject_scale=input.subject_scale,
+                subject_scale=input_data.subject_scale,
                 generator=generator,
             ).images[0]
         else:
             # Generate without style
             image = self.pipeline(
-                prompt=input.prompt,
-                num_inference_steps=input.num_inference_steps,
-                guidance_scale=input.guidance_scale,
+                prompt=input_data.prompt,
+                num_inference_steps=input_data.num_inference_steps,
+                guidance_scale=input_data.guidance_scale,
                 subject_image=ref_image,
-                subject_scale=input.subject_scale,
+                subject_scale=input_data.subject_scale,
                 generator=generator,
             ).images[0]
 

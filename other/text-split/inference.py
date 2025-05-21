@@ -16,17 +16,17 @@ class App(BaseApp):
         """Initialize your model and resources here."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Split the input text based on the delimiter."""
-        if input.use_regex:
+        if input_data.use_regex:
             try:
                 # Use regex split
-                split_result = re.split(input.delimiter, input.text)
+                split_result = re.split(input_data.delimiter, input_data.text)
             except re.error as e:
                 raise ValueError(f"Invalid regex pattern: {str(e)}")
         else:
             # Use normal string split
-            split_result = input.text.split(input.delimiter)
+            split_result = input_data.text.split(input_data.delimiter)
         
         # Remove empty strings from the result
         split_result = [part for part in split_result if part]

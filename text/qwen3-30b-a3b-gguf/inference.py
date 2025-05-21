@@ -30,17 +30,17 @@ class App(BaseApp):
             n_ctx=32768
         )
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         # Modify user prompt based on thinking mode
-        user_prompt = input.text
-        if input.enable_thinking:
+        user_prompt = input_data.text
+        if input_data.enable_thinking:
             user_prompt = f"{user_prompt} /think"
         else:
             user_prompt = f"{user_prompt} /no_think"
 
         messages = [
-            {"role": "system", "content": input.system_prompt},
-            *input.context,
+            {"role": "system", "content": input_data.system_prompt},
+            *input_data.context,
             {"role": "user", "content": user_prompt}
         ]
 
@@ -49,8 +49,8 @@ class App(BaseApp):
         def generation_thread():
             try:
                 # Adjust temperature and top_p based on thinking mode
-                temp = 0.6 if input.enable_thinking else 0.7
-                top_p = 0.95 if input.enable_thinking else 0.8
+                temp = 0.6 if input_data.enable_thinking else 0.7
+                top_p = 0.95 if input_data.enable_thinking else 0.8
                 
                 for chunk in self.model.create_chat_completion(
                     messages=messages,
@@ -72,7 +72,7 @@ class App(BaseApp):
 
         buffer = ""
         thinking_content = ""
-        in_thinking = input.enable_thinking
+        in_thinking = input_data.enable_thinking
         
         loop = asyncio.get_event_loop()
         while True:

@@ -25,11 +25,11 @@ class App(BaseApp):
             torch_dtype=torch.bfloat16
         ).to("cuda")
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
         # Load input image and mask
-        input_image = Image.open(input.image.path).convert("RGB")
-        mask_image = Image.open(input.mask.path).convert("RGB")
+        input_image = Image.open(input_data.image.path).convert("RGB")
+        mask_image = Image.open(input_data.mask.path).convert("RGB")
         
         # Verify image and mask dimensions match
         if input_image.size != mask_image.size:
@@ -37,13 +37,13 @@ class App(BaseApp):
         
         # Generate the filled image
         result = self.pipe(
-            prompt=input.prompt,
+            prompt=input_data.prompt,
             image=input_image,
             mask_image=mask_image,
-            guidance_scale=input.guidance_scale,
-            num_inference_steps=input.num_inference_steps,
-            max_sequence_length=input.max_sequence_length,
-            generator=torch.Generator("cuda").manual_seed(input.seed if input.seed is not None else 0)
+            guidance_scale=input_data.guidance_scale,
+            num_inference_steps=input_data.num_inference_steps,
+            max_sequence_length=input_data.max_sequence_length,
+            generator=torch.Generator("cuda").manual_seed(input_data.seed if input_data.seed is not None else 0)
         ).images[0]
         
         # Save the result

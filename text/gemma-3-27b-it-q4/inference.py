@@ -58,17 +58,17 @@ class App(BaseApp):
             print(f"Error during setup: {e}")
             raise
 
-    async def run(self, input: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
         # Build messages list with proper multimodal format
         messages = [
             {
                 "role": "system",
-                "content": [{"type": "text", "text": input.system_prompt}],
+                "content": [{"type": "text", "text": input_data.system_prompt}],
             }
         ]
 
         # Add context messages
-        for msg in input.context:
+        for msg in input_data.context:
             message_content = []
             if msg.text:
                 message_content.append({"type": "text", "text": msg.text})
@@ -83,18 +83,18 @@ class App(BaseApp):
 
         # Add user message with text and image if provided
         user_content = []
-        user_text = input.text
+        user_text = input_data.text
         
         # Add thinking instructions if enabled
-        if hasattr(input, 'enable_thinking') and input.enable_thinking:
+        if hasattr(input, 'enable_thinking') and input_data.enable_thinking:
             user_text = f"{user_text} /think"
         
         if user_text:
             user_content.append({"type": "text", "text": user_text})
-        if input.image and input.image.path:
-            user_content.append({"type": "image", "url": input.image.path})
-        if input.image and input.image.uri:
-            user_content.append({"type": "image", "url": input.image.uri})
+        if input_data.image and input_data.image.path:
+            user_content.append({"type": "image", "url": input_data.image.path})
+        if input_data.image and input_data.image.uri:
+            user_content.append({"type": "image", "url": input_data.image.uri})
             
         messages.append({"role": "user", "content": user_content})
 
@@ -131,7 +131,7 @@ class App(BaseApp):
 
         buffer = ""
         thinking_content = ""
-        in_thinking = hasattr(input, 'enable_thinking') and input.enable_thinking
+        in_thinking = hasattr(input, 'enable_thinking') and input_data.enable_thinking
         
         loop = asyncio.get_event_loop()
         while True:
@@ -143,7 +143,7 @@ class App(BaseApp):
             piece = piece.replace("<|im_end|>", "").replace("<|im_start|>", "").replace("<end_of_turn>", "")
             
             # Parse thinking content if enabled
-            if hasattr(input, 'enable_thinking') and input.enable_thinking:
+            if hasattr(input, 'enable_thinking') and input_data.enable_thinking:
                 # Check for </think> token to switch from thinking to response
                 if "</think>" in piece:
                     parts = piece.split("</think>")
@@ -166,7 +166,7 @@ class App(BaseApp):
                 buffer += piece
                 
             output = {"response": buffer.strip()}
-            if hasattr(input, 'enable_thinking') and input.enable_thinking and thinking_content:
+            if hasattr(input, 'enable_thinking') and input_data.enable_thinking and thinking_content:
                 output["thinking_content"] = thinking_content.strip()
             yield AppOutput(**output)
 

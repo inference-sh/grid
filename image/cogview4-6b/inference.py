@@ -75,24 +75,24 @@ class App(BaseApp):
         self.optimize_prompt_enabled = False
         # You could add prompt optimization setup here if needed
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate an image from the input prompt using CogView4."""
-        prompt = input.prompt
+        prompt = input_data.prompt
         
         # Set random seed if provided
         generator = None
-        if input.seed is not None:
-            generator = torch.Generator("cuda").manual_seed(input.seed)
+        if input_data.seed is not None:
+            generator = torch.Generator("cuda").manual_seed(input_data.seed)
         
         # Generate the image
         output = self.pipe(
             prompt=prompt,
-            negative_prompt=input.negative_prompt,
-            guidance_scale=input.guidance_scale,
-            num_inference_steps=input.num_inference_steps,
-            width=input.width,
-            height=input.height,
-            num_images_per_prompt=input.num_images_per_prompt,
+            negative_prompt=input_data.negative_prompt,
+            guidance_scale=input_data.guidance_scale,
+            num_inference_steps=input_data.num_inference_steps,
+            width=input_data.width,
+            height=input_data.height,
+            num_images_per_prompt=input_data.num_images_per_prompt,
             generator=generator,
         )
         

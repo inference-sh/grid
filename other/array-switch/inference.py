@@ -35,41 +35,41 @@ class App(BaseApp):
         """Initialize any resources if needed."""
         pass
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Evaluate the array condition and return the appropriate value."""
         condition_met = False
         
         # Evaluate the condition based on the operator
-        if input.operator == ArrayOperator.EQUAL:
-            condition_met = input.left_operand == input.right_operand
-        elif input.operator == ArrayOperator.NOT_EQUAL:
-            condition_met = input.left_operand != input.right_operand
-        elif input.operator == ArrayOperator.CONTAINS:
-            condition_met = input.right_operand in input.left_operand
-        elif input.operator == ArrayOperator.NOT_CONTAINS:
-            condition_met = input.right_operand not in input.left_operand
-        elif input.operator == ArrayOperator.SUBSET:
-            condition_met = all(item in input.left_operand for item in input.right_operand)
-        elif input.operator == ArrayOperator.SUPERSET:
-            condition_met = all(item in input.right_operand for item in input.left_operand)
-        elif input.operator == ArrayOperator.INTERSECTS:
-            condition_met = any(item in input.right_operand for item in input.left_operand)
-        elif input.operator == ArrayOperator.DISJOINT:
-            condition_met = not any(item in input.right_operand for item in input.left_operand)
-        elif input.operator == ArrayOperator.LENGTH_EQUAL:
-            condition_met = len(input.left_operand) == len(input.right_operand)
-        elif input.operator == ArrayOperator.LENGTH_GREATER:
-            condition_met = len(input.left_operand) > len(input.right_operand)
-        elif input.operator == ArrayOperator.LENGTH_LESS:
-            condition_met = len(input.left_operand) < len(input.right_operand)
-        elif input.operator == ArrayOperator.EMPTY:
-            condition_met = len(input.left_operand) == 0
-        elif input.operator == ArrayOperator.NOT_EMPTY:
-            condition_met = len(input.left_operand) > 0
+        if input_data.operator == ArrayOperator.EQUAL:
+            condition_met = input_data.left_operand == input_data.right_operand
+        elif input_data.operator == ArrayOperator.NOT_EQUAL:
+            condition_met = input_data.left_operand != input_data.right_operand
+        elif input_data.operator == ArrayOperator.CONTAINS:
+            condition_met = input_data.right_operand in input_data.left_operand
+        elif input_data.operator == ArrayOperator.NOT_CONTAINS:
+            condition_met = input_data.right_operand not in input_data.left_operand
+        elif input_data.operator == ArrayOperator.SUBSET:
+            condition_met = all(item in input_data.left_operand for item in input_data.right_operand)
+        elif input_data.operator == ArrayOperator.SUPERSET:
+            condition_met = all(item in input_data.right_operand for item in input_data.left_operand)
+        elif input_data.operator == ArrayOperator.INTERSECTS:
+            condition_met = any(item in input_data.right_operand for item in input_data.left_operand)
+        elif input_data.operator == ArrayOperator.DISJOINT:
+            condition_met = not any(item in input_data.right_operand for item in input_data.left_operand)
+        elif input_data.operator == ArrayOperator.LENGTH_EQUAL:
+            condition_met = len(input_data.left_operand) == len(input_data.right_operand)
+        elif input_data.operator == ArrayOperator.LENGTH_GREATER:
+            condition_met = len(input_data.left_operand) > len(input_data.right_operand)
+        elif input_data.operator == ArrayOperator.LENGTH_LESS:
+            condition_met = len(input_data.left_operand) < len(input_data.right_operand)
+        elif input_data.operator == ArrayOperator.EMPTY:
+            condition_met = len(input_data.left_operand) == 0
+        elif input_data.operator == ArrayOperator.NOT_EMPTY:
+            condition_met = len(input_data.left_operand) > 0
 
         # Return the appropriate value based on the condition
         return AppOutput(
-            result=input.true_value if condition_met else input.false_value
+            result=input_data.true_value if condition_met else input_data.false_value
         )
 
     async def unload(self):
