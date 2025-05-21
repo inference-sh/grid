@@ -75,6 +75,9 @@ configs = {
     },
     "13B_dev": {
         "config_file": "configs/ltxv-13b-0.9.7-dev.yaml",
+    },
+    "13B_distilled": {
+        "config_file": "configs/ltxv-13b-0.9.7-distilled.yaml",
     }
 }
 
