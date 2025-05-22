@@ -248,11 +248,9 @@ class App(BaseApp):
         if self.device_id >= 0:
             torch.set_default_device(self.device)
 
-    async def run(self, input: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run video generation"""
 
-        input_data = input
-        
         # Parse size
         width, height = map(int, input_data.size.split('x'))
         size = (width, height)

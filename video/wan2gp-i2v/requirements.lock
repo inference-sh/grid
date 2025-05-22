@@ -105,7 +105,7 @@ regex==2024.11.6
 rembg==2.0.65
 requests==2.32.3
 rich==14.0.0
-rpds-py==0.25.0
+rpds-py==0.25.1
 ruff==0.11.10
 safehttpx==0.1.6
 safetensors==0.5.3
@@ -129,7 +129,7 @@ torch==2.7.0
 torchaudio==2.7.0
 torchvision==0.22.0
 tqdm==4.67.1
-transformers==4.52.1
+transformers==4.52.2
 triton==3.3.0
 typer==0.15.4
 typing-extensions==4.13.2
