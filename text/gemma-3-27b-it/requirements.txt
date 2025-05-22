@@ -1,7 +1,7 @@
 pydantic>=2.0.0
-inferencesh>=0.2.6
+inferencesh
 torch
-transformers>=4.50.0
+transformers==4.51.3
 accelerate
 sentencepiece
 huggingface_hub

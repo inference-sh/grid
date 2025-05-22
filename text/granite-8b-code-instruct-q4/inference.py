@@ -76,7 +76,7 @@ class App(BaseApp):
             n_ctx=4096
         )
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         messages = [
             {
                 "role": "system",

@@ -32,7 +32,7 @@ class App(BaseApp):
         ).to(self.device)
         self.model.eval()
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
         
         # Build messages list

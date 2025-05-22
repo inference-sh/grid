@@ -30,7 +30,7 @@ class App(BaseApp):
             n_ctx=32768
         )
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         # Modify user prompt based on thinking mode
         user_prompt = input_data.text
         if input_data.enable_thinking:

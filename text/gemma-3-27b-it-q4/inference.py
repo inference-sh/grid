@@ -58,7 +58,7 @@ class App(BaseApp):
             print(f"Error during setup: {e}")
             raise
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         # Build messages list with proper multimodal format
         messages = [
             {

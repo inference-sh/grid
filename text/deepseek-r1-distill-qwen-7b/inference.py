@@ -73,7 +73,7 @@ class App(BaseApp):
         print(self.tokenizer.bos_token)
         print(self.tokenizer.eos_token)
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
         messages = [
             {"role": "system", "content": input_data.system_prompt},
