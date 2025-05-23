@@ -1,5 +1,6 @@
 inferencesh
 pydantic>=2.0.0
+protobuf
 diffusers
 transformers
 sentencepiece

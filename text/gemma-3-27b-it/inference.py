@@ -103,6 +103,7 @@ class App(BaseApp):
         self.processor = AutoProcessor.from_pretrained(
             model_name,
             padding_side="left",
+            pad_to_multiple_of=8,
         )
 
     async def run(

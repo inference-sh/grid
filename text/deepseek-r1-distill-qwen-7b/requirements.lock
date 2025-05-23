@@ -2,7 +2,7 @@ accelerate==1.7.0
 annotated-types==0.7.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
-deepspeed==0.16.8
+deepspeed==0.16.9
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.5.0
@@ -36,7 +36,7 @@ packaging==25.0
 peft==0.15.2
 psutil==7.0.0
 py-cpuinfo==9.0.0
-pydantic==2.11.4
+pydantic==2.11.5
 pydantic-core==2.33.2
 pyyaml==6.0.2
 regex==2024.11.6
@@ -54,5 +54,5 @@ tqdm==4.67.1
 transformers==4.48.3
 triton==3.3.0
 typing-extensions==4.13.2
-typing-inspection==0.4.0
+typing-inspection==0.4.1
 urllib3==2.4.0

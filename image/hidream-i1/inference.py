@@ -2,11 +2,10 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 import torch
 from diffusers.pipelines import HiDreamImagePipeline
-from diffusers.models import HiDreamImageTransformer2DModel
-from diffusers.schedulers import UniPCMultistepScheduler
-from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
 from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
+from hi_diffusers.schedulers.flash_flow_match import FlashFlowMatchEulerDiscreteScheduler
+
 
 MODEL_PREFIX = "HiDream-ai"
 LLAMA_MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
@@ -18,7 +17,7 @@ MODEL_CONFIGS = {
         "guidance_scale": 0.0,
         "num_inference_steps": 28,
         "shift": 6.0,
-        "scheduler": FlowMatchEulerDiscreteScheduler
+        "scheduler": FlashFlowMatchEulerDiscreteScheduler
     },
     "full": {
         "path": f"{MODEL_PREFIX}/HiDream-I1-Full",
@@ -32,7 +31,7 @@ MODEL_CONFIGS = {
         "guidance_scale": 0.0,
         "num_inference_steps": 16,
         "shift": 3.0,
-        "scheduler": FlowMatchEulerDiscreteScheduler
+        "scheduler": FlashFlowMatchEulerDiscreteScheduler
     }
 }
 
