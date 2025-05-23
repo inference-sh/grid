@@ -1,5 +1,5 @@
 import os
-
+import base64
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, BaseAppOutput, LLMInput
@@ -15,37 +15,46 @@ class AppOutput(BaseAppOutput):
     response: str
     thinking_content: Optional[str] = None
 
+def image_to_base64_data_uri(file_path):
+    with open(file_path, "rb") as img_file:
+        base64_data = base64.b64encode(img_file.read()).decode('utf-8')
+        return f"data:image/png;base64,{base64_data}"
+
 def QwenMessageBuilder(input_data: AppInput):
     messages = [
-        {"role": "system", "content": input_data.system_prompt}
+        {
+            "role": "system",
+            "content": [{"type": "text", "text": input_data.system_prompt}],
+        }
     ]
 
     # Add context messages
     for msg in input_data.context:
-        # Each context message may have text and/or image
-        content_parts = []
-        if hasattr(msg, 'text') and msg.text:
-            content_parts.append({"type": "text", "text": msg.text})
-        if hasattr(msg, 'image') and msg.image and getattr(msg.image, 'uri', None):
-            content_parts.append({"type": "image", "url": msg.image.uri})
-        # For Qwen, flatten content_parts to a string if only text, else keep as list
-        if len(content_parts) == 1 and content_parts[0]["type"] == "text":
-            content = content_parts[0]["text"]
-        else:
-            content = content_parts
-        messages.append({"role": msg.role, "content": content})
+        message_content = []
+        if msg.text:
+            message_content.append({"type": "text", "text": msg.text})
+        if msg.image and msg.image.path:
+            image_data_uri = image_to_base64_data_uri(msg.image.path)
+            message_content.append({"type": "image_url", "image_url": {"url": image_data_uri}})
+        elif msg.image and msg.image.uri:
+            message_content.append({"type": "image_url", "image_url": {"url": msg.image.uri}})
+        messages.append({
+            "role": msg.role,
+            "content": message_content
+        })
 
     # Add user message with text and image if provided
-    user_content_parts = []
-    if hasattr(input_data, 'text') and input_data.text:
-        user_content_parts.append({"type": "text", "text": input_data.text})
-    if hasattr(input_data, 'image') and input_data.image and getattr(input_data.image, 'uri', None):
-        user_content_parts.append({"type": "image", "url": input_data.image.uri})
-    if len(user_content_parts) == 1 and user_content_parts[0]["type"] == "text":
-        user_content = user_content_parts[0]["text"]
-    else:
-        user_content = user_content_parts
+    user_content = []
+    user_text = input_data.text
+    if user_text:
+        user_content.append({"type": "text", "text": user_text})
+    if input_data.image and input_data.image.path:
+        image_data_uri = image_to_base64_data_uri(input_data.image.path)
+        user_content.append({"type": "image_url", "image_url": {"url": image_data_uri}})
+    elif input_data.image and input_data.image.uri:
+        user_content.append({"type": "image_url", "image_url": {"url": input_data.image.uri}})
     messages.append({"role": "user", "content": user_content})
+
     return messages
 
 def stream_generate(model, messages, AppOutput):

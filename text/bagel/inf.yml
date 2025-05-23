@@ -1,0 +1,19 @@
+name: bagel
+description: unified model for multi-modal understanding and generation
+category: text
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+variants:
+    default:
+        name: ""
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: any
+            ram: 0
+        env: {}
+        python: "3.11"

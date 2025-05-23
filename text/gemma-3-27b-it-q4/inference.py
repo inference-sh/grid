@@ -57,7 +57,6 @@ def Gemma3MessageBuilder(input_data: AppInput):
     # Add user message with text and image if provided
     user_content = []
     user_text = input_data.text
-    print(f"input_data.image: {input_data.image}")
     if user_text:
         user_content.append({"type": "text", "text": user_text})
     if input_data.image and input_data.image.path:
@@ -67,7 +66,6 @@ def Gemma3MessageBuilder(input_data: AppInput):
         user_content.append({"type": "image_url", "image_url": {"url": input_data.image.uri}})
     messages.append({"role": "user", "content": user_content})
 
-    print(f"messages: {messages}")
     return messages
 
 def stream_generate(model, messages, AppOutput):
