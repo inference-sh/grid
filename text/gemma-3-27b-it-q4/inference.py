@@ -12,6 +12,7 @@ from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Gemma3ChatHandler
 from huggingface_hub import hf_hub_download
 import os.path
+import base64
 
 class AppInput(LLMInputWithImage):
     # enable_thinking: bool = Field(
@@ -23,6 +24,96 @@ class AppInput(LLMInputWithImage):
 class AppOutput(BaseAppOutput):
     response: str
     # thinking_content: Optional[str] = None
+    
+
+def image_to_base64_data_uri(file_path):
+    with open(file_path, "rb") as img_file:
+        base64_data = base64.b64encode(img_file.read()).decode('utf-8')
+        return f"data:image/png;base64,{base64_data}"
+
+def Gemma3MessageBuilder(input_data: AppInput):
+    messages = [
+        {
+            "role": "system",
+            "content": [{"type": "text", "text": input_data.system_prompt}],
+        }
+    ]
+
+    # Add context messages
+    for msg in input_data.context:
+        message_content = []
+        if msg.text:
+            message_content.append({"type": "text", "text": msg.text})
+        if msg.image and msg.image.path:
+            image_data_uri = image_to_base64_data_uri(msg.image.path)
+            message_content.append({"type": "image_url", "image_url": {"url": image_data_uri}})
+        elif msg.image and msg.image.uri:
+            message_content.append({"type": "image_url", "image_url": {"url": msg.image.uri}})
+        messages.append({
+            "role": msg.role,
+            "content": message_content
+        })
+
+    # Add user message with text and image if provided
+    user_content = []
+    user_text = input_data.text
+    print(f"input_data.image: {input_data.image}")
+    if user_text:
+        user_content.append({"type": "text", "text": user_text})
+    if input_data.image and input_data.image.path:
+        image_data_uri = image_to_base64_data_uri(input_data.image.path)
+        user_content.append({"type": "image_url", "image_url": {"url": image_data_uri}})
+    elif input_data.image and input_data.image.uri:
+        user_content.append({"type": "image_url", "image_url": {"url": input_data.image.uri}})
+    messages.append({"role": "user", "content": user_content})
+
+    print(f"messages: {messages}")
+    return messages
+
+def stream_generate(model, messages, AppOutput):
+    response_queue: "Queue[Optional[str]]" = Queue()
+    thread_exception = None
+
+    def generation_thread():
+        nonlocal thread_exception
+        try:
+            for chunk in model.create_chat_completion(
+                messages=messages,
+                stream=True,
+                temperature=0.7,
+                top_p=0.95,
+                max_tokens=512,
+                stop=['<end_of_turn>', '<eos>']
+            ):
+                delta = chunk.get("choices", [{}])[0] \
+                              .get("delta", {}) \
+                              .get("content", "")
+                if delta:
+                    response_queue.put(delta)
+        except Exception as e:
+            thread_exception = e
+        finally:
+            response_queue.put(None)
+
+    thread = Thread(target=generation_thread, daemon=True)
+    thread.start()
+
+    buffer = ""
+    try:
+        while True:
+            piece = response_queue.get()
+            if piece is None:
+                break
+            if thread_exception:
+                raise thread_exception
+            # Clean up any special tokens that might be in the response
+            piece = piece.replace("<|im_end|>", "").replace("<|im_start|>", "").replace("<end_of_turn>", "")
+            buffer += piece
+            yield AppOutput(response=buffer)
+        if thread_exception:
+            raise thread_exception
+    finally:
+        thread.join(timeout=2.0)
 
 class App(BaseApp):
     async def setup(self, metadata):
@@ -59,118 +150,9 @@ class App(BaseApp):
             raise
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        # Build messages list with proper multimodal format
-        messages = [
-            {
-                "role": "system",
-                "content": [{"type": "text", "text": input_data.system_prompt}],
-            }
-        ]
-
-        # Add context messages
-        for msg in input_data.context:
-            message_content = []
-            if msg.text:
-                message_content.append({"type": "text", "text": msg.text})
-            if msg.image and msg.image.path:
-                message_content.append({"type": "image", "url": msg.image.path})
-            if msg.image and msg.image.uri:
-                message_content.append({"type": "image", "url": msg.image.uri})
-            messages.append({
-                "role": msg.role,
-                "content": message_content
-            })
-
-        # Add user message with text and image if provided
-        user_content = []
-        user_text = input_data.text
-        
-        # Add thinking instructions if enabled
-        if hasattr(input, 'enable_thinking') and input_data.enable_thinking:
-            user_text = f"{user_text} /think"
-        
-        if user_text:
-            user_content.append({"type": "text", "text": user_text})
-        if input_data.image and input_data.image.path:
-            user_content.append({"type": "image", "url": input_data.image.path})
-        if input_data.image and input_data.image.uri:
-            user_content.append({"type": "image", "url": input_data.image.uri})
-            
-        messages.append({"role": "user", "content": user_content})
-
-        print(f"Sending messages to model: {messages}")
-        
-        response_queue: "Queue[Optional[str]]" = Queue()
-
-        def generation_thread():
-            try:
-                print("Starting generation...")
-                for chunk in self.model.create_chat_completion(
-                    messages=messages,
-                    stream=True,
-                    temperature=0.7,
-                    top_p=0.95,
-                    max_tokens=512,
-                    stop=['<end_of_turn>', '<eos>']
-                ):
-                    delta = chunk.get("choices", [{}])[0] \
-                                  .get("delta", {}) \
-                                  .get("content", "")
-                    if delta:
-                        response_queue.put(delta)
-                print("Generation completed successfully")
-            except Exception as e:
-                print(f"Error during generation: {e}")
-                # Put the error message in the queue so the user sees it
-                response_queue.put(f"\nError during generation: {str(e)}")
-            finally:
-                response_queue.put(None)
-
-        thread = Thread(target=generation_thread, daemon=True)
-        thread.start()
-
-        buffer = ""
-        thinking_content = ""
-        in_thinking = hasattr(input, 'enable_thinking') and input_data.enable_thinking
-        
-        loop = asyncio.get_event_loop()
-        while True:
-            piece = await loop.run_in_executor(None, response_queue.get)
-            if piece is None:
-                break
-                
-            # Clean up any special tokens that might be in the response
-            piece = piece.replace("<|im_end|>", "").replace("<|im_start|>", "").replace("<end_of_turn>", "")
-            
-            # Parse thinking content if enabled
-            if hasattr(input, 'enable_thinking') and input_data.enable_thinking:
-                # Check for </think> token to switch from thinking to response
-                if "</think>" in piece:
-                    parts = piece.split("</think>")
-                    if in_thinking:
-                        thinking_content += parts[0]
-                        # Clean up any <think> tag from thinking content
-                        thinking_content = thinking_content.replace("<think>", "")
-                        buffer += parts[1] if len(parts) > 1 else ""
-                        in_thinking = False
-                    else:
-                        buffer += piece
-                else:
-                    if in_thinking:
-                        # Clean up any <think> tag while accumulating thinking content
-                        piece = piece.replace("<think>", "")
-                        thinking_content += piece
-                    else:
-                        buffer += piece
-            else:
-                buffer += piece
-                
-            output = {"response": buffer.strip()}
-            if hasattr(input, 'enable_thinking') and input_data.enable_thinking and thinking_content:
-                output["thinking_content"] = thinking_content.strip()
-            yield AppOutput(**output)
-
-        thread.join()
+        messages = Gemma3MessageBuilder(input_data)
+        for output in stream_generate(self.model, messages, AppOutput):
+            yield output
 
     async def unload(self):
         del self.model

@@ -1,9 +1,9 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, LLMInput, ContextMessage
-from pydantic import Field, BaseModel
-from typing import AsyncGenerator, List, Optional
+from inferencesh import BaseApp, BaseAppOutput, LLMInput
+from pydantic import Field
+from typing import AsyncGenerator, Optional
 from queue import Queue
 from threading import Thread
 import asyncio
@@ -19,67 +19,72 @@ class AppOutput(BaseAppOutput):
     response: str
     thinking_content: Optional[str] = None
 
-class App(BaseApp):
-    async def setup(self, metadata):
-        # Initialize llama.cpp model
-        self.model = Llama.from_pretrained(
-            repo_id="unsloth/Qwen3-30B-A3B-GGUF",
-            filename="Qwen3-30B-A3B-Q6_K.gguf",
-            verbose=True,
-            n_gpu_layers=-1,
-            n_ctx=32768
-        )
+def Qwen3MessageBuilder(input_data: AppInput):
+    messages = [
+        {"role": "system", "content": input_data.system_prompt}
+    ]
+    # Add context messages
+    for msg in input_data.context:
+        content = []
+        if hasattr(msg, 'text') and msg.text:
+            content.append({"type": "text", "text": msg.text})
+        # flatten for llama.cpp compatibility
+        if len(content) == 1:
+            content = content[0]["text"]
+        messages.append({
+            "role": msg.role,
+            "content": content
+        })
+    # Add user message with thinking mode
+    user_prompt = input_data.text
+    if input_data.enable_thinking:
+        user_prompt = f"{user_prompt} /think"
+    else:
+        user_prompt = f"{user_prompt} /no_think"
+    user_content = [{"type": "text", "text": user_prompt}]
+    user_content = user_content[0]["text"]
+    messages.append({"role": "user", "content": user_content})
+    return messages
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        # Modify user prompt based on thinking mode
-        user_prompt = input_data.text
-        if input_data.enable_thinking:
-            user_prompt = f"{user_prompt} /think"
-        else:
-            user_prompt = f"{user_prompt} /no_think"
+def stream_generate(model, messages, AppOutput, enable_thinking):
+    response_queue: "Queue[Optional[str]]" = Queue()
+    thread_exception = None
 
-        messages = [
-            {"role": "system", "content": input_data.system_prompt},
-            *input_data.context,
-            {"role": "user", "content": user_prompt}
-        ]
+    def generation_thread():
+        nonlocal thread_exception
+        try:
+            temp = 0.6 if enable_thinking else 0.7
+            top_p = 0.95 if enable_thinking else 0.8
+            for chunk in model.create_chat_completion(
+                messages=messages,
+                stream=True,
+                temperature=temp,
+                top_p=top_p,
+                max_tokens=24576
+            ):
+                delta = chunk.get("choices", [{}])[0] \
+                              .get("delta", {}) \
+                              .get("content", "")
+                if delta:
+                    response_queue.put(delta)
+        except Exception as e:
+            thread_exception = e
+        finally:
+            response_queue.put(None)
 
-        response_queue: "Queue[Optional[str]]" = Queue()
+    thread = Thread(target=generation_thread, daemon=True)
+    thread.start()
 
-        def generation_thread():
-            try:
-                # Adjust temperature and top_p based on thinking mode
-                temp = 0.6 if input_data.enable_thinking else 0.7
-                top_p = 0.95 if input_data.enable_thinking else 0.8
-                
-                for chunk in self.model.create_chat_completion(
-                    messages=messages,
-                    stream=True,
-                    temperature=temp,
-                    top_p=top_p,
-                    max_tokens=24576
-                ):
-                    delta = chunk.get("choices", [{}])[0] \
-                                  .get("delta", {}) \
-                                  .get("content", "")
-                    if delta:
-                        response_queue.put(delta)
-            finally:
-                response_queue.put(None)
-
-        thread = Thread(target=generation_thread, daemon=True)
-        thread.start()
-
-        buffer = ""
-        thinking_content = ""
-        in_thinking = input_data.enable_thinking
-        
-        loop = asyncio.get_event_loop()
+    buffer = ""
+    thinking_content = ""
+    in_thinking = enable_thinking
+    try:
         while True:
-            piece = await loop.run_in_executor(None, response_queue.get)
+            piece = response_queue.get()
             if piece is None:
                 break
-            print(piece)
+            if thread_exception:
+                raise thread_exception
             # Handle thinking vs response content
             if "</think>" in piece:
                 parts = piece.split("</think>")
@@ -94,13 +99,30 @@ class App(BaseApp):
                     thinking_content += piece.replace("<think>", "")
                 else:
                     buffer += piece
-                    
             yield AppOutput(
                 response=buffer.strip(),
                 thinking_content=thinking_content.strip() if thinking_content else None
             )
+        if thread_exception:
+            raise thread_exception
+    finally:
+        thread.join(timeout=2.0)
 
-        thread.join()
+class App(BaseApp):
+    async def setup(self, metadata):
+        # Initialize llama.cpp model
+        self.model = Llama.from_pretrained(
+            repo_id="unsloth/Qwen3-30B-A3B-GGUF",
+            filename="Qwen3-30B-A3B-Q6_K.gguf",
+            verbose=True,
+            n_gpu_layers=-1,
+            n_ctx=32768
+        )
+
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+        messages = Qwen3MessageBuilder(input_data)
+        for output in stream_generate(self.model, messages, AppOutput, input_data.enable_thinking):
+            yield output
 
     async def unload(self):
         del self.model

@@ -1,9 +1,9 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppOutput, BaseAppInput
 from pydantic import Field, BaseModel
-from typing import AsyncGenerator, List, Optional
+from typing import AsyncGenerator, Optional
 from queue import Queue
 from threading import Thread
 import asyncio
@@ -65,9 +65,76 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     response: str
 
+def GraniteMessageBuilder(input_data: AppInput):
+    messages = [
+        {
+            "role": "system",
+            "content": input_data.system_prompt,
+        }
+    ]
+    # Add context messages
+    for msg in input_data.context:
+        content = []
+        if hasattr(msg, 'text') and msg.text:
+            content.append({"type": "text", "text": msg.text})
+        # flatten for llama.cpp compatibility
+        if len(content) == 1:
+            content = content[0]["text"]
+        messages.append({
+            "role": msg.role,
+            "content": content
+        })
+    # Add user message
+    if hasattr(input_data, 'text') and input_data.text:
+        user_content = [{"type": "text", "text": input_data.text}]
+        user_content = user_content[0]["text"]
+        messages.append({"role": "user", "content": user_content})
+    return messages
+
+def stream_generate(model, messages, AppOutput):
+    response_queue: "Queue[Optional[str]]" = Queue()
+    thread_exception = None
+
+    def generation_thread():
+        nonlocal thread_exception
+        try:
+            for chunk in model.create_chat_completion(
+                messages=messages,
+                stream=True,
+                temperature=0.7,
+                top_p=0.95,
+                max_tokens=512
+            ):
+                delta = chunk.get("choices", [{}])[0] \
+                              .get("delta", {}) \
+                              .get("content", "")
+                if delta:
+                    response_queue.put(delta)
+        except Exception as e:
+            thread_exception = e
+        finally:
+            response_queue.put(None)
+
+    thread = Thread(target=generation_thread, daemon=True)
+    thread.start()
+
+    buffer = ""
+    try:
+        while True:
+            piece = response_queue.get()
+            if piece is None:
+                break
+            if thread_exception:
+                raise thread_exception
+            buffer += piece
+            yield AppOutput(response=buffer)
+        if thread_exception:
+            raise thread_exception
+    finally:
+        thread.join(timeout=2.0)
+
 class App(BaseApp):
     async def setup(self, metadata):
-        # Initialize llama.cpp model
         self.model = Llama.from_pretrained(
             repo_id="ibm-granite/granite-8b-code-instruct-4k-GGUF",
             filename="granite-8b-code-instruct.Q4_K_M.gguf",
@@ -77,59 +144,9 @@ class App(BaseApp):
         )
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        messages = [
-            {
-                "role": "system",
-                "content": input_data.system_prompt,
-            }
-        ]
-
-        # Add context messages
-        for msg in input_data.context:
-            messages.append({
-                "role": msg.role,
-                "content": msg.text
-            })
-
-        # Add user message with text and media if provided
-        if input_data.text:
-            messages.append({"role": "user", "content": input_data.text})
-
-
-        print(messages)
-
-        response_queue: "Queue[Optional[str]]" = Queue()
-
-        def generation_thread():
-            try:
-                for chunk in self.model.create_chat_completion(
-                    messages=messages,
-                    stream=True,
-                    temperature=0.7,
-                    top_p=0.95,
-                    max_tokens=512
-                ):
-                    delta = chunk.get("choices", [{}])[0] \
-                                  .get("delta", {}) \
-                                  .get("content", "")
-                    if delta:
-                        response_queue.put(delta)
-            finally:
-                response_queue.put(None)
-
-        thread = Thread(target=generation_thread, daemon=True)
-        thread.start()
-
-        buffer = ""
-        loop = asyncio.get_event_loop()
-        while True:
-            piece = await loop.run_in_executor(None, response_queue.get)
-            if piece is None:
-                break
-            buffer += piece
-            yield AppOutput(response=buffer)
-
-        thread.join()
+        messages = GraniteMessageBuilder(input_data)
+        for output in stream_generate(self.model, messages, AppOutput):
+            yield output
 
     async def unload(self):
         del self.model
