@@ -4,7 +4,7 @@ import torch
 from diffusers.pipelines import HiDreamImagePipeline
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
 from .hi_diffusers.schedulers.fm_solvers_unipc import FlowUniPCMultistepScheduler
-from hi_diffusers.schedulers.flash_flow_match import FlashFlowMatchEulerDiscreteScheduler
+from .hi_diffusers.schedulers.flash_flow_match import FlashFlowMatchEulerDiscreteScheduler
 
 
 MODEL_PREFIX = "HiDream-ai"
@@ -102,7 +102,8 @@ class App(BaseApp):
             text_encoder_4=self.text_encoder,
             torch_dtype=torch.bfloat16
         )
-        self.pipe.enable_model_cpu_offload()
+        self.pipe.to("cuda")
+        # self.pipe.enable_model_cpu_offload()
         
         self.variant = metadata.app_variant
         self.model = "fast"

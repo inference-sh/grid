@@ -2,11 +2,12 @@ accelerate==1.7.0
 annotated-types==0.7.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@a5f4cc7f846d3edbd91264675c4e441608cbbb93
+diffusers @ git+https://github.com/huggingface/diffusers.git@f161e277d0ec534afa4dfc461bc5baacffd7278b
 einops==0.8.1
 filelock==3.18.0
-fsspec==2025.5.0
-huggingface-hub==0.31.4
+fsspec==2025.5.1
+hf-xet==1.1.2
+huggingface-hub==0.32.0
 idna==3.10
 importlib-metadata==8.7.0
 inferencesh==0.2.7
