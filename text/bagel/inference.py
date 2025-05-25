@@ -274,7 +274,8 @@ class App(BaseApp):
                 yield AppOutput(response=output_dict.get('text'))
             else:
                 # Regular generation - check if thinking was involved
-                result_text = output_dict.get('text').replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "")
+                output_text = output_dict.get('text')
+                result_text = output_text.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "") if output_text else None
                 result_image = output_dict.get('image')
                 
                 # Save image if generated
@@ -325,7 +326,8 @@ class App(BaseApp):
                 
             elif stream_type == "thinking_token":
                 # Thinking mode - yield incremental thinking content
-                accumulated = stream_output["accumulated"].replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "")
+                accumulated = stream_output["accumulated"]
+                accumulated = accumulated.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "") if accumulated else None
                 final_thinking_content = accumulated
                 yield AppOutput(thinking_content=accumulated)
                 
@@ -336,7 +338,8 @@ class App(BaseApp):
                 
             elif stream_type == "final_thinking":
                 # Final thinking content (without image yet)
-                final_thinking_content = content.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "")
+                content_cleaned = content.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "") if content else None
+                final_thinking_content = content_cleaned
                 print("✅ Thinking complete! Now generating image...")
                 yield AppOutput(thinking_content=final_thinking_content)
                 

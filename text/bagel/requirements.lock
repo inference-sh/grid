@@ -11,7 +11,7 @@ einops==0.8.1
 filelock==3.18.0
 flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.8/flash_attn-2.5.9+cu126torch2.5-cp311-cp311-linux_x86_64.whl
 fonttools==4.58.0
-fsspec==2025.5.0
+fsspec==2025.5.1
 gitdb==4.0.12
 gitpython==3.1.44
 huggingface-hub==0.29.1
