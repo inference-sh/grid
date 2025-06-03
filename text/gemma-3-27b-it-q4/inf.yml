@@ -16,4 +16,5 @@ variants:
                 type: any
         env:
             CMAKE_ARGS: -DGGML_CUDA=on
-        python: 3.12
+            FORCE_CMAKE: 1
+        python: 3.11
