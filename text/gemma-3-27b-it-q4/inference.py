@@ -137,7 +137,7 @@ class App(BaseApp):
             self.model = Llama.from_pretrained(
                 repo_id="ggml-org/gemma-3-27b-it-GGUF",
                 filename="gemma-3-27b-it-Q4_K_M.gguf",
-                verbose=True,
+                verbose=False,
                 n_gpu_layers=-1,
                 n_ctx=32768,
                 chat_handler=self.chat_handler
