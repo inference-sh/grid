@@ -4,15 +4,16 @@ category: image
 is_public: true
 images:
     card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/3qhkvpntmny2rtmcv320pe183p.png
-    thumbnail:
-    banner:
+    thumbnail: ""
+    banner: ""
 variants:
     default:
         name: default
         resources:
             gpu:
                 count: 1
-                vram: 0
+                vram: 24000000000
                 type: any
-        env:
-        python: 3.12
+            ram: 12000000000
+        env: {}
+        python: "3.12"

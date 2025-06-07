@@ -1,11 +1,11 @@
 name: get-item-in-list
 description: a simple app to return an item at a certain position of an input list
-category: text
+category: other
 is_public: true
 images:
     card: ""
-    thumbnail:
-    banner:
+    thumbnail: ""
+    banner: ""
 variants:
     default:
         name: default
@@ -14,5 +14,6 @@ variants:
                 count: 0
                 vram: 0
                 type: any
-        env:
-        python: 3.12
+            ram: 0
+        env: {}
+        python: "3.12"

@@ -17,4 +17,4 @@ onnxruntime-gpu
 hf_transfer
 gradio
 spaces
-xformers
+xformers==0.0.30

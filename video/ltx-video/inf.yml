@@ -4,42 +4,46 @@ category: video
 is_public: true
 images:
     card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0crs5j5a1bnysnft5kts1zsq8h.png
-    thumbnail:
-    banner:
+    thumbnail: ""
+    banner: ""
 variants:
-    "2B_dev":
+    2B_dev:
         name: 2B_dev
         resources:
             gpu:
                 count: 1
                 vram: 0
                 type: any
-        env:
-        python: 3.12
-    "2B_distilled":
+            ram: 0
+        env: {}
+        python: "3.12"
+    2B_distilled:
         name: 2B_distilled
         resources:
             gpu:
                 count: 1
                 vram: 0
                 type: any
-        env:
-        python: 3.12
-    "13B_dev":
+            ram: 0
+        env: {}
+        python: "3.12"
+    13B_dev:
         name: 13B_dev
         resources:
             gpu:
                 count: 1
                 vram: 0
                 type: any
-        env:
-        python: 3.12
-    "13B_distilled":
+            ram: 0
+        env: {}
+        python: "3.12"
+    13B_distilled:
         name: 13B_distilled
         resources:
             gpu:
                 count: 1
                 vram: 0
                 type: any
-        env:
-        python: 3.12
+            ram: 0
+        env: {}
+        python: "3.12"
