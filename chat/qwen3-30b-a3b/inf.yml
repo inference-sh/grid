@@ -15,5 +15,6 @@ variants:
                 vram: 25769803776
                 type: any
             ram: 17179869184
-        env: {}
+        env:
+            CMAKE_ARGS: -DGGML_CUDA=on
         python: "3.11"

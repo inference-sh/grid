@@ -17,5 +17,4 @@ variants:
             ram: 4000000000
         env:
             CMAKE_ARGS: -DGGML_CUDA=on
-            FORCE_CMAKE: "1"
         python: "3.11"

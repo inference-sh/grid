@@ -2,7 +2,7 @@
 pydantic >= 2.0.0
 inferencesh
 
-huggingface_hub==0.25.0
-hf-transfer==0.1.9
+huggingface_hub
+hf-transfer
 
-llama-cpp-python
+git+https://github.com/inference-sh/llama-cpp-python.git
