@@ -291,6 +291,10 @@ def get_style_prompt(model, wav_path=None, prompt=None):
 
     if prompt is not None:
         return mulan(texts=prompt).half()
+    
+    if wav_path is None:
+        # Return a default zero embedding when no style input is provided
+        return torch.zeros(1, 512, device=model.device).half()
 
     ext = os.path.splitext(wav_path)[-1].lower()
     if ext == ".mp3":
