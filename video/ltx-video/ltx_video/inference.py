@@ -11,6 +11,7 @@ import imageio
 import json
 import numpy as np
 import torch
+import cv2
 from safetensors import safe_open
 from PIL import Image
 from transformers import (
@@ -35,6 +36,7 @@ from ltx_video.pipelines.pipeline_ltx_video import (
 from ltx_video.schedulers.rf import RectifiedFlowScheduler
 from ltx_video.utils.skip_layer_strategy import SkipLayerStrategy
 from ltx_video.models.autoencoders.latent_upsampler import LatentUpsampler
+import ltx_video.pipelines.crf_compressor as crf_compressor
 
 MAX_HEIGHT = 720
 MAX_WIDTH = 1280
@@ -96,7 +98,12 @@ def load_image_to_tensor_with_resize_and_crop(
     image = image.crop((x_start, y_start, x_start + new_width, y_start + new_height))
     if not just_crop:
         image = image.resize((target_width, target_height))
-    frame_tensor = torch.tensor(np.array(image)).permute(2, 0, 1).float()
+
+    image = np.array(image)
+    image = cv2.GaussianBlur(image, (3, 3), 0)
+    frame_tensor = torch.from_numpy(image).float()
+    frame_tensor = crf_compressor.compress(frame_tensor / 255.0) * 255.0
+    frame_tensor = frame_tensor.permute(2, 0, 1)
     frame_tensor = (frame_tensor / 127.5) - 1.0
     # Create 5D tensor: (batch_size=1, channels=3, num_frames=1, height, width)
     return frame_tensor.unsqueeze(0).unsqueeze(2)
@@ -266,13 +273,6 @@ def main():
         help="Path to the input video (or imaage) to be modified using the video-to-video pipeline",
     )
 
-    parser.add_argument(
-        "--strength",
-        type=float,
-        default=1.0,
-        help="Editing strength (noising level) for video-to-video pipeline.",
-    )
-
     # Conditioning arguments
     parser.add_argument(
         "--conditioning_media_paths",
@@ -407,7 +407,6 @@ def infer(
     negative_prompt: str,
     offload_to_cpu: bool,
     input_media_path: Optional[str] = None,
-    strength: Optional[float] = 1.0,
     conditioning_media_paths: Optional[List[str]] = None,
     conditioning_strengths: Optional[List[float]] = None,
     conditioning_start_frames: Optional[List[int]] = None,
@@ -614,7 +613,6 @@ def infer(
         frame_rate=frame_rate,
         **sample,
         media_items=media_item,
-        strength=strength,
         conditioning_items=conditioning_items,
         is_video=True,
         vae_per_channel_normalize=True,

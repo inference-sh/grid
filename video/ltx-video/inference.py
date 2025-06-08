@@ -13,6 +13,15 @@ from pydantic import BaseModel, Field
 from huggingface_hub import hf_hub_download
 from diffusers.utils import logging
 from datetime import datetime
+import cv2
+from PIL import Image
+from transformers import (
+    T5EncoderModel,
+    T5Tokenizer,
+    AutoModelForCausalLM,
+    AutoProcessor,
+    AutoTokenizer,
+)
 
 # Import from LTX-Video core functionality
 from ltx_video.inference import (
@@ -23,9 +32,18 @@ from ltx_video.inference import (
     create_latent_upsampler,
     load_media_file
 )
-
+from ltx_video.models.autoencoders.causal_video_autoencoder import CausalVideoAutoencoder
+from ltx_video.models.transformers.symmetric_patchifier import SymmetricPatchifier
+from ltx_video.models.transformers.transformer3d import Transformer3DModel
+from ltx_video.pipelines.pipeline_ltx_video import (
+    ConditioningItem,
+    LTXVideoPipeline,
+    LTXMultiScalePipeline,
+)
+from ltx_video.schedulers.rf import RectifiedFlowScheduler
 from ltx_video.utils.skip_layer_strategy import SkipLayerStrategy
-from ltx_video.pipelines.pipeline_ltx_video import LTXMultiScalePipeline
+from ltx_video.models.autoencoders.latent_upsampler import LatentUpsampler
+import ltx_video.pipelines.crf_compressor as crf_compressor
 
 # Constants
 MAX_HEIGHT = 720
@@ -34,6 +52,12 @@ MAX_PIXELS = MAX_HEIGHT * MAX_WIDTH  # 921,600 pixels
 MAX_NUM_FRAMES = 257
 
 logger = logging.get_logger("LTX-Video")
+
+def get_total_gpu_memory():
+    if torch.cuda.is_available():
+        total_memory = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+        return total_memory
+    return 0
 
 class ConditioningImage(BaseModel):
     image: File
@@ -49,7 +73,7 @@ class AppInput(BaseAppInput):
     width: Optional[int] = Field(default=704, description="Width of the output video frames")
     height: Optional[int] = Field(default=480, description="Height of the output video frames")
     num_frames: Optional[int] = Field(default=121, description="Number of frames to generate")
-    frame_rate: Optional[int] = Field(default=25, description="Frame rate for the output video")
+    frame_rate: Optional[int] = Field(default=30, description="Frame rate for the output video")
     num_inference_steps: Optional[int] = Field(default=40, description="Number of denoising steps. Use 4,8,16 for distilled models")
     guidance_scale: Optional[float] = Field(default=3.0, description="Scale for classifier-free guidance")
     seed: Optional[int] = Field(default=171198, description="Random seed for reproducibility")
@@ -92,7 +116,7 @@ class App(BaseApp):
         self.latent_upsampler = None
 
     async def setup(self, metadata):
-        """Initialize the LTX-Video 13B model."""
+        """Initialize the LTX-Video model."""
         # Load config file
         self.variant_config = configs[metadata.app_variant]
         config_file = self.variant_config["config_file"]
@@ -121,6 +145,19 @@ class App(BaseApp):
             )
 
         self.device = get_device()
+
+        # Check if prompt enhancement should be enabled
+        prompt_enhancement_words_threshold = self.config.get("prompt_enhancement_words_threshold", 0)
+        prompt_word_count = len(self.config.get("prompt", "").split())
+        enhance_prompt = (
+            prompt_enhancement_words_threshold > 0
+            and prompt_word_count < prompt_enhancement_words_threshold
+        )
+        
+        if prompt_enhancement_words_threshold > 0 and not enhance_prompt:
+            logger.info(
+                f"Prompt has {prompt_word_count} words, which exceeds the threshold of {prompt_enhancement_words_threshold}. Prompt enhancement disabled."
+            )
         
         # Create pipeline with config parameters
         self.pipeline = create_ltx_video_pipeline(
@@ -129,7 +166,7 @@ class App(BaseApp):
             text_encoder_model_name_or_path=self.config["text_encoder_model_name_or_path"],
             sampler=self.config.get("sampler", "from_checkpoint"),
             device=self.device,
-            enhance_prompt=self.config.get("prompt_enhancement_words_threshold", 0) > 0,
+            enhance_prompt=enhance_prompt,
             prompt_enhancer_image_caption_model_name_or_path=self.config.get("prompt_enhancer_image_caption_model_name_or_path"),
             prompt_enhancer_llm_model_name_or_path=self.config.get("prompt_enhancer_llm_model_name_or_path"),
         )
@@ -142,16 +179,7 @@ class App(BaseApp):
             self.pipeline = LTXMultiScalePipeline(self.pipeline, latent_upsampler=self.latent_upsampler)
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
-        """Run video generation with LTX-Video 13B."""
-        # Load custom config if provided
-        # if input_data.pipeline_config and input_data.pipeline_config != self.config.get("config_file"):
-        #     config_path = os.path.join(os.path.dirname(__file__), input_data.pipeline_config)
-        #     if not os.path.exists(config_path):
-        #         raise ValueError(f"Custom config file {config_path} does not exist")
-        #     with open(config_path, "r") as f:
-        #         self.config = yaml.safe_load(f)
-        #         logger.warning(f"Loaded custom config from {config_path}: {self.config}")
-
+        """Run video generation with LTX-Video."""
         # Validate input dimensions
         total_pixels = input_data.height * input_data.width
         if total_pixels > MAX_PIXELS:
@@ -164,7 +192,7 @@ class App(BaseApp):
             logger.warning("CPU offloading disabled - model already running on CPU")
             offload_to_cpu = False
         else:
-            offload_to_cpu = input_data.offload_to_cpu
+            offload_to_cpu = input_data.offload_to_cpu and get_total_gpu_memory() < 30
 
         # Set up generator with seed
         generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
@@ -214,16 +242,11 @@ class App(BaseApp):
         stg_mode = self.config.get("stg_mode", "attention_values")
         config_dict = dict(self.config)
         
-        # Debug logging
-        logger.warning(f"Initial config: {self.config}")
-        
         # Remove non-pipeline parameters but keep pipeline_type for later
         config_dict.pop("stg_mode", None)
         config_dict.pop("checkpoint_path", None)
         config_dict.pop("spatial_upscaler_model_path", None)
         
-        logger.warning(f"Pipeline type: {self.config.get('pipeline_type')}")
-            
         if stg_mode.lower() in ["stg_av", "attention_values"]:
             skip_layer_strategy = SkipLayerStrategy.AttentionValues
         elif stg_mode.lower() in ["stg_as", "attention_skip"]:
@@ -253,6 +276,8 @@ class App(BaseApp):
             "width": width_padded,
             "num_frames": num_frames_padded,
             "frame_rate": input_data.frame_rate,
+            "num_inference_steps": input_data.num_inference_steps,
+            "guidance_scale": input_data.guidance_scale,
             **sample,
             "media_items": media_item,
             "strength": input_data.strength,

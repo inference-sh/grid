@@ -45,6 +45,11 @@ from ltx_video.models.autoencoders.vae_encode import (
 )
 
 
+try:
+    import torch_xla.distributed.spmd as xs
+except ImportError:
+    xs = None
+
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 
@@ -127,7 +132,8 @@ def retrieve_timesteps(
     num_inference_steps: Optional[int] = None,
     device: Optional[Union[str, torch.device]] = None,
     timesteps: Optional[List[int]] = None,
-    max_timestep: Optional[float] = 1.0,
+    skip_initial_inference_steps: int = 0,
+    skip_final_inference_steps: int = 0,
     **kwargs,
 ):
     """
@@ -170,14 +176,21 @@ def retrieve_timesteps(
         scheduler.set_timesteps(num_inference_steps, device=device, **kwargs)
         timesteps = scheduler.timesteps
 
-    if max_timestep < 1.0:
-        if max_timestep < timesteps.min():
+        if (
+            skip_initial_inference_steps < 0
+            or skip_final_inference_steps < 0
+            or skip_initial_inference_steps + skip_final_inference_steps
+            >= num_inference_steps
+        ):
             raise ValueError(
-                f"max_timestep {max_timestep} is smaller than the minimum timestep {timesteps.min()}"
+                "invalid skip inference step values: must be non-negative and the sum of skip_initial_inference_steps and skip_final_inference_steps must be less than the number of inference steps"
             )
-        timesteps = timesteps[timesteps <= max_timestep]
-        num_inference_steps = len(timesteps)
+
+        timesteps = timesteps[
+            skip_initial_inference_steps : len(timesteps) - skip_final_inference_steps
+        ]
         scheduler.set_timesteps(timesteps=timesteps, device=device, **kwargs)
+        num_inference_steps = len(timesteps)
 
     return timesteps, num_inference_steps
 
@@ -752,8 +765,11 @@ class LTXVideoPipeline(DiffusionPipeline):
         prompt: Union[str, List[str]] = None,
         negative_prompt: str = "",
         num_inference_steps: int = 20,
+        skip_initial_inference_steps: int = 0,
+        skip_final_inference_steps: int = 0,
         timesteps: List[int] = None,
         guidance_scale: Union[float, List[float]] = 4.5,
+        cfg_star_rescale: bool = False,
         skip_layer_strategy: Optional[SkipLayerStrategy] = None,
         skip_block_list: Optional[Union[List[List[int]], List[int]]] = None,
         stg_scale: Union[float, List[float]] = 1.0,
@@ -779,7 +795,6 @@ class LTXVideoPipeline(DiffusionPipeline):
         text_encoder_max_tokens: int = 256,
         stochastic_sampling: bool = False,
         media_items: Optional[torch.Tensor] = None,
-        strength: Optional[float] = 1.0,
         **kwargs,
     ) -> Union[ImagePipelineOutput, Tuple]:
         """
@@ -796,6 +811,12 @@ class LTXVideoPipeline(DiffusionPipeline):
             num_inference_steps (`int`, *optional*, defaults to 100):
                 The number of denoising steps. More denoising steps usually lead to a higher quality image at the
                 expense of slower inference. If `timesteps` is provided, this parameter is ignored.
+            skip_initial_inference_steps (`int`, *optional*, defaults to 0):
+                The number of initial timesteps to skip. After calculating the timesteps, this number of timesteps will
+                be removed from the beginning of the timesteps list. Meaning the highest-timesteps values will not run.
+            skip_final_inference_steps (`int`, *optional*, defaults to 0):
+                The number of final timesteps to skip. After calculating the timesteps, this number of timesteps will
+                be removed from the end of the timesteps list. Meaning the lowest-timesteps values will not run.
             timesteps (`List[int]`, *optional*):
                 Custom timesteps to use for the denoising process. If not defined, equal spaced `num_inference_steps`
                 timesteps are used. Must be in descending order.
@@ -805,6 +826,9 @@ class LTXVideoPipeline(DiffusionPipeline):
                 Paper](https://arxiv.org/pdf/2205.11487.pdf). Guidance scale is enabled by setting `guidance_scale >
                 1`. Higher guidance scale encourages to generate images that are closely linked to the text `prompt`,
                 usually at the expense of lower image quality.
+            cfg_star_rescale (`bool`, *optional*, defaults to `False`):
+                If set to `True`, applies the CFG star rescale. Scales the negative prediction according to dot
+                product between positive and negative.
             num_images_per_prompt (`int`, *optional*, defaults to 1):
                 The number of images to generate per prompt.
             height (`int`, *optional*, defaults to self.unet.config.sample_size):
@@ -852,10 +876,6 @@ class LTXVideoPipeline(DiffusionPipeline):
                 If set to `True`, the sampling is stochastic. If set to `False`, the sampling is deterministic.
             media_items ('torch.Tensor', *optional*):
                 The input media item used for image-to-image / video-to-video.
-                When provided, they will be noised according to 'strength' and then fully denoised.
-            strength ('floaty', *optional* defaults to 1.0):
-                The editing level in image-to-image / video-to-video. The provided input will be noised
-                to this level.
         Examples:
 
         Returns:
@@ -912,8 +932,12 @@ class LTXVideoPipeline(DiffusionPipeline):
         if isinstance(self.scheduler, TimestepShifter):
             retrieve_timesteps_kwargs["samples_shape"] = latent_shape
 
-        assert strength == 1.0 or latents is not None or media_items is not None, (
-            "strength < 1 is used for image-to-image/video-to-video - "
+        assert (
+            skip_initial_inference_steps == 0
+            or latents is not None
+            or media_items is not None
+        ), (
+            f"skip_initial_inference_steps ({skip_initial_inference_steps}) is used for image-to-image/video-to-video - "
             "media_item or latents should be provided."
         )
 
@@ -922,9 +946,11 @@ class LTXVideoPipeline(DiffusionPipeline):
             num_inference_steps,
             device,
             timesteps,
-            max_timestep=strength,
+            skip_initial_inference_steps=skip_initial_inference_steps,
+            skip_final_inference_steps=skip_final_inference_steps,
             **retrieve_timesteps_kwargs,
         )
+
         if self.allowed_inference_steps is not None:
             for timestep in [round(x, 4) for x in timesteps.tolist()]:
                 assert (
@@ -981,7 +1007,7 @@ class LTXVideoPipeline(DiffusionPipeline):
         # Normalize skip_block_list to always be None or a list of lists matching timesteps
         if skip_block_list is not None:
             # Convert single list to list of lists if needed
-            if not isinstance(skip_block_list[0], list):
+            if len(skip_block_list) == 0 or not isinstance(skip_block_list[0], list):
                 skip_block_list = [skip_block_list] * len(timesteps)
             else:
                 new_skip_block_list = []
@@ -1189,6 +1215,22 @@ class LTXVideoPipeline(DiffusionPipeline):
                     )[-2:]
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = noise_pred.chunk(num_conds)[:2]
+
+                    if cfg_star_rescale:
+                        # Rescales the unconditional noise prediction using the projection of the conditional prediction onto it:
+                        # α = (⟨ε_text, ε_uncond⟩ / ||ε_uncond||²), then ε_uncond ← α * ε_uncond
+                        # where ε_text is the conditional noise prediction and ε_uncond is the unconditional one.
+                        positive_flat = noise_pred_text.view(batch_size, -1)
+                        negative_flat = noise_pred_uncond.view(batch_size, -1)
+                        dot_product = torch.sum(
+                            positive_flat * negative_flat, dim=1, keepdim=True
+                        )
+                        squared_norm = (
+                            torch.sum(negative_flat**2, dim=1, keepdim=True) + 1e-8
+                        )
+                        alpha = dot_product / squared_norm
+                        noise_pred_uncond = alpha * noise_pred_uncond
+
                     noise_pred = noise_pred_uncond + guidance_scale[i] * (
                         noise_pred_text - noise_pred_uncond
                     )
@@ -1695,6 +1737,37 @@ class LTXVideoPipeline(DiffusionPipeline):
         return num_frames
 
 
+def adain_filter_latent(
+    latents: torch.Tensor, reference_latents: torch.Tensor, factor=1.0
+):
+    """
+    Applies Adaptive Instance Normalization (AdaIN) to a latent tensor based on
+    statistics from a reference latent tensor.
+
+    Args:
+        latent (torch.Tensor): Input latents to normalize
+        reference_latent (torch.Tensor): The reference latents providing style statistics.
+        factor (float): Blending factor between original and transformed latent.
+                       Range: -10.0 to 10.0, Default: 1.0
+
+    Returns:
+        torch.Tensor: The transformed latent tensor
+    """
+    result = latents.clone()
+
+    for i in range(latents.size(0)):
+        for c in range(latents.size(1)):
+            r_sd, r_mean = torch.std_mean(
+                reference_latents[i, c], dim=None
+            )  # index by original dim order
+            i_sd, i_mean = torch.std_mean(result[i, c], dim=None)
+
+            result[i, c] = ((result[i, c] - i_mean) / i_sd) * r_sd + r_mean
+
+    result = torch.lerp(latents, result, factor)
+    return result
+
+
 class LTXMultiScalePipeline:
     def _upsample_latents(
         self, latest_upsampler: LatentUpsampler, latents: torch.Tensor
@@ -1743,6 +1816,9 @@ class LTXMultiScalePipeline:
         latents = result.images
 
         upsampled_latents = self._upsample_latents(self.latent_upsampler, latents)
+        upsampled_latents = adain_filter_latent(
+            latents=upsampled_latents, reference_latents=latents
+        )
 
         kwargs = original_kwargs
 
