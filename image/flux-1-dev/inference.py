@@ -38,14 +38,6 @@ class AppInput(BaseAppInput):
         min_length=1,
         max_length=1000,
     )
-
-    number_of_images: int = Field(
-        default=1,
-        description="Number of images to generate", 
-        ge=1,
-        le=4,
-        examples=[1, 2]
-    )
     
     width: int = Field(
         default=1024,
@@ -102,9 +94,8 @@ class AppInput(BaseAppInput):
         }
 
 class AppOutput(BaseAppOutput):
-    result: list[File] = Field(
-        description="List of generated image files",
-        min_items=1
+    image: File = Field(
+        description="Generated image file"
     )
 
 
@@ -253,7 +244,7 @@ class App(BaseApp):
 
         images = self.pipe(
                 prompt=input_data.prompt,
-                num_images_per_prompt=input_data.number_of_images,
+                num_images_per_prompt=1,
                 width=input_data.width,
                 height=input_data.height,
                 guidance_scale=input_data.guidance_scale,
@@ -262,9 +253,6 @@ class App(BaseApp):
                 generator=torch.Generator(self.device).manual_seed(input_data.seed)
             ).images
 
-        output_files = []
-        for i, image in enumerate(images):
-            output_path = f"/tmp/output_{i}_{hash(str(torch.rand(1)[0].item()))}.png"
-            image.save(output_path)
-            output_files.append(File.from_path(output_path))
-        return AppOutput(result=output_files)
+        output_path = f"/tmp/output_{hash(str(torch.rand(1)[0].item()))}.png"
+        images[0].save(output_path)
+        return AppOutput(image=File.from_path(output_path))

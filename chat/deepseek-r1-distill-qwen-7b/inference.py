@@ -1,67 +1,42 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
-from pydantic import Field, BaseModel
+from inferencesh import BaseApp, BaseAppOutput, LLMInput
+from pydantic import Field
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 from threading import Thread
 
-class ContextMessage(BaseModel):
-    role: str = Field(
-        description="The role of the message",
-        enum=["user", "assistant", "system"]
-    )
-    content: str = Field(
-        description="The content of the message"
-    )
-
-class AppInput(BaseAppInput):
-    system_prompt: str = Field(
-        description="The system prompt to use for the model",
-        default="You are a helpful assistant that can answer questions and help with tasks.",
-        examples=[
-            "You are a helpful assistant that can answer questions and help with tasks.",
-            "You are a certified medical professional who can provide accurate health information.",
-            "You are a certified financial advisor who can give sound investment guidance.",
-            "You are a certified cybersecurity expert who can explain security best practices.",
-            "You are a certified environmental scientist who can discuss climate and sustainability.",
-        ]
-    )
-    context: list[ContextMessage] = Field(
-        description="The context to use for the model",
-        examples=[
-            [
-                {"role": "user", "content": "What is the capital of France?"}, 
-                {"role": "assistant", "content": "The capital of France is Paris."}
-            ],
-            [
-                {"role": "user", "content": "What is the weather like today?"}, 
-                {"role": "assistant", "content": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location."}
-            ],
-            [
-                {"role": "user", "content": "Can you help me write a poem about spring?"}, 
-                {"role": "assistant", "content": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth."}
-            ],
-            [
-                {"role": "user", "content": "Explain quantum computing in simple terms"}, 
-                {"role": "assistant", "content": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems."}
-            ]
-        ],
-        default=[]
-    )
-    user_prompt: str = Field(
-        description="The user prompt to use for the model",
-        examples=[
-            "What is the capital of France?",
-            "What is the weather like today?",
-            "Can you help me write a poem about spring?",
-            "Explain quantum computing in simple terms"
-        ],
+class AppInput(LLMInput):
+    enable_thinking: bool = Field(
+        description="Whether to enable thinking mode for complex reasoning",
+        default=True
     )
 
 class AppOutput(BaseAppOutput):
     response: str
+    thinking_content: Optional[str] = None
+
+def build_messages(input_data: AppInput):
+    messages = [
+        {"role": "system", "content": input_data.system_prompt}
+    ]
+    # Add context messages
+    for msg in input_data.context:
+        content = msg.text if hasattr(msg, 'text') else msg.content
+        messages.append({
+            "role": msg.role,
+            "content": content
+        })
+    
+    # Add user message with thinking mode
+    user_prompt = input_data.text
+    if input_data.enable_thinking:
+        user_prompt = f"{user_prompt} /think"
+    else:
+        user_prompt = f"{user_prompt} /no_think"
+    messages.append({"role": "user", "content": user_prompt})
+    return messages
 
 class App(BaseApp):
     async def setup(self, metadata):
@@ -70,25 +45,22 @@ class App(BaseApp):
 
         self.model = AutoModelForCausalLM.from_pretrained("deepseek-ai/DeepSeek-R1-Distill-Qwen-7B", device_map="auto").to(self.device)
         self.tokenizer = AutoTokenizer.from_pretrained("deepseek-ai/DeepSeek-R1-Distill-Qwen-7B")
-        print(self.tokenizer.bos_token)
-        print(self.tokenizer.eos_token)
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         """Run prediction on the input data."""
-        messages = [
-            {"role": "system", "content": input_data.system_prompt},
-            *input_data.context,
-            {"role": "user", "content": input_data.user_prompt}
-        ]
-
+        messages = build_messages(input_data)
+        
         text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, decode_kwargs={"skip_special_tokens": True})
+        
         generation_kwargs = dict(
             input_ids=model_inputs.input_ids,
             streamer=streamer,
             max_new_tokens=32768,
-            do_sample=True
+            do_sample=True,
+            temperature=0.6 if input_data.enable_thinking else 0.7,
+            top_p=0.95 if input_data.enable_thinking else 0.8
         )
 
         # Run generation in a separate thread to allow non-blocking streaming
@@ -96,12 +68,32 @@ class App(BaseApp):
         thread.start()
 
         # Collect the generated text
-        response = ""
+        buffer = ""
+        thinking_content = ""
+        in_thinking = input_data.enable_thinking
+        
         for new_text in streamer:
-            new_text = new_text.replace(self.tokenizer.eos_token, "").replace("<think>", "---thinking---").replace("</think>", "---thinking---")
-            response += new_text
-            yield AppOutput(response=response)
+            new_text = new_text.replace(self.tokenizer.eos_token, "")
+            
+            if "</think>" in new_text:
+                parts = new_text.split("</think>")
+                if in_thinking:
+                    thinking_content += parts[0].replace("<think>", "")
+                    buffer = parts[1] if len(parts) > 1 else ""
+                    in_thinking = False
+                else:
+                    buffer += new_text
+            else:
+                if in_thinking:
+                    thinking_content += new_text.replace("<think>", "")
+                else:
+                    buffer += new_text
+                    
+            yield AppOutput(
+                response=buffer.strip(),
+                thinking_content=thinking_content.strip() if thinking_content else None
+            )
 
     async def unload(self):
         """Clean up resources here."""
-        pass
+        del self.model

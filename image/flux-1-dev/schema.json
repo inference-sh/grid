@@ -24,18 +24,6 @@
         "title": "Prompt",
         "type": "string"
       },
-      "number_of_images": {
-        "default": 1,
-        "description": "Number of images to generate",
-        "examples": [
-          1,
-          2
-        ],
-        "maximum": 4,
-        "minimum": 1,
-        "title": "Number Of Images",
-        "type": "integer"
-      },
       "width": {
         "default": 1024,
         "description": "Width of generated image in pixels",
@@ -173,18 +161,13 @@
       }
     },
     "properties": {
-      "result": {
-        "description": "List of generated image files",
-        "items": {
-          "$ref": "#/$defs/File"
-        },
-        "minItems": 1,
-        "title": "Result",
-        "type": "array"
+      "image": {
+        "$ref": "#/$defs/File",
+        "description": "Generated image file"
       }
     },
     "required": [
-      "result"
+      "image"
     ],
     "title": "AppOutput",
     "type": "object"

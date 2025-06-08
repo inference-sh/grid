@@ -44,14 +44,6 @@
         "title": "Negative Prompt",
         "type": "string"
       },
-      "num_images_per_prompt": {
-        "default": 1,
-        "description": "Number of images to generate for the prompt. Only the first image will be returned.",
-        "maximum": 4,
-        "minimum": 1,
-        "title": "Num Images Per Prompt",
-        "type": "integer"
-      },
       "seed": {
         "default": null,
         "description": "Random seed for reproducible image generation. Leave empty for random results.",
@@ -136,17 +128,13 @@
       }
     },
     "properties": {
-      "images": {
-        "description": "The generated image in PNG format.",
-        "items": {
-          "$ref": "#/$defs/File"
-        },
-        "title": "Images",
-        "type": "array"
+      "image": {
+        "$ref": "#/$defs/File",
+        "description": "The generated image in PNG format."
       }
     },
     "required": [
-      "images"
+      "image"
     ],
     "title": "AppOutput",
     "type": "object"

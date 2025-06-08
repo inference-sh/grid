@@ -39,19 +39,14 @@ class AppInput(BaseAppInput):
         default="",
         description="Text description of elements to avoid in the generated image."
     )
-    num_images_per_prompt: int = Field(
-        default=1,
-        description="Number of images to generate for the prompt. Only the first image will be returned.",
-        ge=1,
-        le=4
-    )
+    
     seed: int = Field(
         default=None,
         description="Random seed for reproducible image generation. Leave empty for random results."
     )
 
 class AppOutput(BaseAppOutput):
-    images: List[File] = Field(
+    image: File = Field(
         description="The generated image in PNG format."
     )
 
@@ -92,19 +87,16 @@ class App(BaseApp):
             num_inference_steps=input_data.num_inference_steps,
             width=input_data.width,
             height=input_data.height,
-            num_images_per_prompt=input_data.num_images_per_prompt,
+            num_images_per_prompt=1,
             generator=generator,
         )
         
 
-        images = []
-        for i, image in enumerate(output.images):
-            # Save the image to a temporary file
-            output_path = f"/tmp/generated_image_{i}.png"
-            image.save(output_path)
-            images.append(File(path=output_path))
+        # Save the image to a temporary file
+        output_path = "/tmp/generated_image.png"
+        output.images[0].save(output_path)
         
-        return AppOutput(images=images)
+        return AppOutput(image=File(path=output_path))
 
     async def unload(self):
         """Clean up resources."""
