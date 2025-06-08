@@ -298,6 +298,8 @@ class App(BaseApp):
             "width": width_padded,
             "num_frames": num_frames_padded,
             "frame_rate": input_data.frame_rate,
+            "num_inference_steps": input_data.num_inference_steps,
+            "guidance_scale": input_data.guidance_scale,
             **sample,
             "media_items": media_item,
             "strength": input_data.strength,
