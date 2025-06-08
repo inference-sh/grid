@@ -61,7 +61,7 @@ def get_total_gpu_memory():
 
 class ConditioningImage(BaseModel):
     image: File
-    frame_index: Optional[int] = None
+    frame_index: Optional[int] = 0
     strength: float = 1.0
 
 class AppInput(BaseAppInput):
@@ -82,6 +82,7 @@ class AppInput(BaseAppInput):
     image_cond_noise_scale: Optional[float] = Field(default=0.15, description="Scale of noise for conditioning")
     input_media: Optional[File] = Field(default=None, description="Input video file for video-to-video generation")
     strength: Optional[float] = Field(default=1.0, description="Strength of input video influence")
+    enable_prompt_enhancement: Optional[bool] = Field(default=None, description="Explicitly enable or disable prompt enhancement. If None, will use word count threshold logic.")
     # pipeline_config: Optional[str] = Field(
     #     default="configs/ltxv-13b-0.9.7-dev.yaml",
     #     description="Path to pipeline configuration file"
@@ -187,6 +188,27 @@ class App(BaseApp):
         if input_data.num_frames > MAX_NUM_FRAMES:
             raise ValueError(f"Number of frames exceeds maximum allowed: {MAX_NUM_FRAMES}")
 
+        # Check if prompt enhancement should be enabled
+        enhance_prompt = input_data.enable_prompt_enhancement
+        if enhance_prompt is None:
+            # Use word count threshold logic only if not explicitly set
+            prompt_enhancement_words_threshold = self.config.get("prompt_enhancement_words_threshold", 0)
+            prompt_word_count = len(input_data.prompt.split())
+            enhance_prompt = (
+                prompt_enhancement_words_threshold > 0
+                and prompt_word_count < prompt_enhancement_words_threshold
+            )
+            
+            if prompt_enhancement_words_threshold > 0 and not enhance_prompt:
+                logger.info(
+                    f"Prompt has {prompt_word_count} words, which exceeds the threshold of {prompt_enhancement_words_threshold}. Prompt enhancement disabled."
+                )
+        else:
+            if enhance_prompt:
+                logger.info("Prompt enhancement explicitly enabled.")
+            else:
+                logger.info("Prompt enhancement explicitly disabled.")
+
         # Handle CPU offloading
         if input_data.offload_to_cpu and not torch.cuda.is_available():
             logger.warning("CPU offloading disabled - model already running on CPU")
@@ -221,7 +243,7 @@ class App(BaseApp):
             )
         
         # Prepare conditioning items
-        conditioning_items = []
+        conditioning_items = None
         if input_data.conditioning_images:
             media_paths = [img.image.path for img in input_data.conditioning_images]
             strengths = [img.strength for img in input_data.conditioning_images]
@@ -276,8 +298,6 @@ class App(BaseApp):
             "width": width_padded,
             "num_frames": num_frames_padded,
             "frame_rate": input_data.frame_rate,
-            "num_inference_steps": input_data.num_inference_steps,
-            "guidance_scale": input_data.guidance_scale,
             **sample,
             "media_items": media_item,
             "strength": input_data.strength,
@@ -288,7 +308,7 @@ class App(BaseApp):
             "mixed_precision": (self.config["precision"] == "mixed_precision"),
             "offload_to_cpu": offload_to_cpu,
             "device": self.device,
-            "enhance_prompt": self.config.get("prompt_enhancement_words_threshold", 0) > 0,
+            "enhance_prompt": enhance_prompt,
         }
 
         if self.config.get("pipeline_type", None) == "multi-scale":

@@ -15,7 +15,7 @@
                 "type": "null"
               }
             ],
-            "default": null,
+            "default": 0,
             "title": "Frame Index"
           },
           "strength": {
@@ -165,7 +165,7 @@
             "type": "null"
           }
         ],
-        "default": 25,
+        "default": 30,
         "description": "Frame rate for the output video",
         "title": "Frame Rate"
       },
@@ -274,6 +274,19 @@
         "default": 1.0,
         "description": "Strength of input video influence",
         "title": "Strength"
+      },
+      "enable_prompt_enhancement": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Explicitly enable or disable prompt enhancement. If None, will use word count threshold logic.",
+        "title": "Enable Prompt Enhancement"
       }
     },
     "required": [

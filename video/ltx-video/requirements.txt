@@ -10,5 +10,7 @@ timm
 accelerate
 matplotlib
 imageio[ffmpeg]
+av
+opencv-python
 pillow
 numpy
