@@ -67,9 +67,22 @@
         },
         "title": "File",
         "type": "object"
+      },
+      "Mode": {
+        "enum": [
+          "tts",
+          "vc"
+        ],
+        "title": "Mode",
+        "type": "string"
       }
     },
     "properties": {
+      "mode": {
+        "$ref": "#/$defs/Mode",
+        "default": "tts",
+        "description": "Mode of operation: 'tts' (Text-to-Speech with optional voice cloning) or 'vc' (Voice Conversion between two speakers)"
+      },
       "text": {
         "description": "The text content to be converted to speech (used in TTS mode)",
         "title": "Text",
@@ -110,12 +123,6 @@
         ],
         "default": null,
         "description": "Reference audio file containing the target voice style for voice conversion. The source_audio will be converted to match this voice's characteristics"
-      },
-      "mode": {
-        "default": "tts",
-        "description": "Mode of operation: 'tts' (Text-to-Speech with optional voice cloning) or 'vc' (Voice Conversion between two speakers)",
-        "title": "Mode",
-        "type": "string"
       },
       "exaggeration": {
         "default": 0.5,
