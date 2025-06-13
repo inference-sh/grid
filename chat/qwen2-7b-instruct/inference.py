@@ -18,7 +18,7 @@ class App(BaseApp):
         """Initialize your model and resources here."""
         self.device = "cuda" # the device to load the model onto
 
-        self.model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2-7B-Instruct", device_map="auto").to(self.device)
+        self.model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2-7B-Instruct", device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-7B-Instruct")
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
@@ -47,7 +47,7 @@ class App(BaseApp):
             add_generation_prompt=True,
         )
         
-        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
+        model_inputs = self.tokenizer([text], return_tensors="pt")
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, decode_kwargs={"skip_special_tokens": True})
         generation_kwargs = dict(
             input_ids=model_inputs.input_ids,
