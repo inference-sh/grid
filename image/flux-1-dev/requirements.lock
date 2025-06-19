@@ -1,4 +1,4 @@
-accelerate==1.7.0
+accelerate==1.8.0
 annotated-types==0.7.0
 certifi==2025.6.15
 charset-normalizer==3.4.2
