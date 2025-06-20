@@ -2,21 +2,15 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, BaseAppOutput, ContextMessage, LLMInput
-from pydantic import Field, BaseModel
-from typing import AsyncGenerator, List, Optional
+from pydantic import Field
+from typing import AsyncGenerator, Optional
 from queue import Queue
 from threading import Thread
-import asyncio
-import PIL
+
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import os.path
-import base64
 from llama_cpp.llama_chat_format import Jinja2ChatFormatter
-from contextlib import ExitStack
-
-def strftime_now(*args, **kwargs):
-    return datetime.now().strftime(**kwargs)
 
 configs = {
     "default": {
@@ -243,6 +237,18 @@ def MessageBuilder(input_data: AppInput):
 
     return messages
 
+def default_response_transform(piece: str, buffer: str) -> tuple[str, AppOutput]:
+    """Default response transformation that removes special tokens and returns updated buffer and output."""
+    cleaned = (piece.replace("<|im_end|>", "")
+                   .replace("<|im_start|>", "")
+                   .replace("<start_of_turn>", "")
+                   .replace("<end_of_turn>", ""))
+    new_buffer = buffer + cleaned
+    return new_buffer, AppOutput(
+        response=new_buffer,
+        thinking_content="",
+    )
+
 def stream_generate(
     model,
     messages,
@@ -250,46 +256,92 @@ def stream_generate(
     temperature=0.7,
     top_p=0.95,
     max_tokens=4096,
+    transform_response=None,
 ):
-    """Stream model output, splitting <think> ... </think> and handling tags that span chunks."""
+    """Stream model output with thread safety.
+    
+    Args:
+        model: The LLM model instance
+        messages: List of chat messages
+        AppOutput: Output class type
+        temperature: Sampling temperature
+        top_p: Top-p sampling parameter
+        max_tokens: Maximum tokens to generate
+        transform_response: Function(piece: str, buffer: str) -> tuple[str, AppOutput] that transforms 
+                          each response piece and returns (new_buffer, output)
+    """
+    if transform_response is None:
+        raise ValueError("transform_response function must be provided")
 
-    TAG_OPEN = "<think>"
-    TAG_CLOSE = "</think>"
+    response_queue: "Queue[Optional[str]]" = Queue()
+    thread_exception = None
+    thread = None
 
-    buffer = ""               # unparsed running buffer
-    thinking_content = ""
-    response_content = ""
-    seen_think = False
-    finished_think = False
+    def generation_thread():
+        nonlocal thread_exception
+        try:
+            for chunk in model.create_chat_completion(
+                messages=messages,
+                stream=True,
+                temperature=temperature,
+                top_p=top_p,
+                max_tokens=max_tokens,
+            ):
+                delta = chunk.get("choices", [{}])[0] \
+                              .get("delta", {}) \
+                              .get("content", "")
+                if delta:
+                    response_queue.put(delta)
+        except Exception as e:
+            print(f"[ERROR] Exception in generation thread: {type(e).__name__}: {str(e)}")
+            thread_exception = e
+        finally:
+            print("[DEBUG] Generation thread finished, sending None to queue")
+            response_queue.put(None)
 
-    last_think_len = 0
-    last_resp_len = 0
+    try:
+        thread = Thread(target=generation_thread, daemon=True)
+        thread.start()
 
-    def _clean(txt: str) -> str:
-        return (
-            txt.replace("<|im_start|>", "")
-               .replace("<|im_end|>", "")
-               .replace("<start_of_turn>", "")
-               .replace("<end_of_turn>", "")
-        )
-
-    for chunk in model.create_chat_completion(
-        messages=messages,
-        stream=True,
-        temperature=temperature,
-        top_p=top_p,
-        max_tokens=max_tokens,
-    ):
-        delta = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
-        if not delta:
-            continue
-
-        response_content += delta
-        
-        yield AppOutput(
-            response=response_content,
-            thinking_content="",
-        )
+        buffer = ""
+        while True:
+            try:
+                piece = response_queue.get(timeout=30.0)  # Add timeout to prevent infinite wait
+                
+                # Check for thread exception first
+                if thread_exception:
+                    print(f"[ERROR] Propagating thread exception: {type(thread_exception).__name__}: {str(thread_exception)}")
+                    raise thread_exception
+                
+                # Then check for None
+                if piece is None:
+                    print("[DEBUG] Received None from queue, breaking loop")
+                    break
+                
+                try:
+                    buffer, output = transform_response(piece, buffer)
+                    yield output
+                except Exception as e:
+                    print(f"[ERROR] Exception in transform_response: {type(e).__name__}: {str(e)}")
+                    raise
+                
+            except Exception as e:
+                print(f"[ERROR] Exception in main loop: {type(e).__name__}: {str(e)}")
+                if thread_exception and isinstance(e, thread_exception.__class__):
+                    print("[DEBUG] Re-raising thread exception")
+                    raise thread_exception
+                print("[DEBUG] Breaking loop due to exception")
+                break
+    finally:
+        if thread and thread.is_alive():
+            print("[DEBUG] Joining thread with timeout")
+            thread.join(timeout=2.0)
+            if thread.is_alive():
+                print("[WARNING] Thread did not terminate within timeout")
+            # Check one final time for thread exception
+            if thread_exception:
+                print(f"[ERROR] Thread exception found during cleanup: {type(thread_exception).__name__}: {str(thread_exception)}")
+                raise thread_exception
 
 class App(BaseApp):
     def __init__(self):
@@ -323,7 +375,7 @@ class App(BaseApp):
             self.model = Llama.from_pretrained(
                 repo_id=self.variant_config["repo_id"],
                 filename=self.variant_config["model_filename"],
-                verbose=True,
+                verbose=False,
                 n_gpu_layers=-1,
                 n_ctx=n_ctx,
                 local_files_only=model_is_available,
@@ -338,7 +390,21 @@ class App(BaseApp):
         # If context_size changed, re-setup the model
         if not hasattr(self, 'last_context_size') or input_data.context_size != self.last_context_size:
             print(f"Context size changed (was {getattr(self, 'last_context_size', None)}, now {input_data.context_size}), triggering re-setup.")
-            await self.setup(metadata, context_size=input_data.context_size)
+            self.model.recreate_context(
+                n_ctx=input_data.context_size,
+            )     
+
+        def transform_response(piece: str, buffer: str) -> tuple[str, AppOutput]:
+            """Transform each response piece and return updated buffer and output."""
+            cleaned = (piece.replace("<|im_end|>", "")
+                          .replace("<|im_start|>", "")
+                          .replace("<start_of_turn>", "")
+                          .replace("<end_of_turn>", ""))
+            new_buffer = buffer + cleaned
+            return new_buffer, AppOutput(
+                response=new_buffer,
+                thinking_content="",
+            )
 
         # Build messages using the new AppInput fields
         messages = [
@@ -357,15 +423,22 @@ class App(BaseApp):
         messages.append({"role": "user", "content": user_content})
 
         # Stream generate with user-specified parameters
-        for output in stream_generate(
+        generator = stream_generate(
             self.model,
             messages,
             AppOutput,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
-            max_tokens=input_data.max_tokens
-        ):
-            yield output
+            max_tokens=input_data.max_tokens,
+            transform_response=transform_response
+        )
+        
+        try:
+            for output in generator:
+                yield output
+        except Exception as e:
+            print(f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}")
+            raise  # Re-raise the exception to propagate it upstream
 
     async def unload(self):
         del self.model

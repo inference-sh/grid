@@ -9,6 +9,7 @@ images:
 variants:
     default:
         name: default
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -21,6 +22,7 @@ variants:
         python: "3.11"
     q4:
         name: q4
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -33,6 +35,7 @@ variants:
         python: "3.11"
     q4_0:
         name: q4_0
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -45,6 +48,7 @@ variants:
         python: "3.11"
     q5:
         name: q5
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -57,13 +61,12 @@ variants:
         python: "3.11"
     q8:
         name: q8
+        order: 0
         resources:
             gpu:
-                count: 1
-                vram: 24000000000
+                count: 0
+                vram: 0
                 type: any
             ram: 4000000000
-        env:
-            CMAKE_ARGS: -DGGML_CUDA=on
-            FORCE_CMAKE: "1"
+        env: {}
         python: "3.11"
