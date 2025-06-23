@@ -2,10 +2,12 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, BaseAppOutput, ContextMessage, LLMInput
-from pydantic import Field
+from pydantic import Field, BaseModel
 from typing import AsyncGenerator, Optional
 from queue import Queue
 from threading import Thread
+import time
+from contextlib import contextmanager
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -205,10 +207,39 @@ class AppInput(LLMInput):
         default=4096,
     )
 
+class LLMUsage(BaseModel):
+    stop_reason: str = Field(
+        description="The reason the generation stopped",
+        default="",
+    )
+    time_to_first_token: float = Field(
+        description="The time to the first token",
+        default=0,
+    )
+    tokens_per_second: float = Field(
+        description="The number of tokens per second",
+        default=0,
+    )
+    prompt_tokens: int = Field(
+        description="The number of tokens in the prompt",
+        default=0,
+    )
+    completion_tokens: int = Field(
+        description="The number of tokens in the completion",
+        default=0,
+    )
+    total_tokens: int = Field(
+        description="The total number of tokens used",
+        default=0,
+    )
 
 class AppOutput(BaseAppOutput):
     response: str
     thinking_content: Optional[str] = None
+    usage: LLMUsage = Field(
+        description="The usage information for the generation",
+        default=LLMUsage(),
+    )
     
 def MessageBuilder(input_data: AppInput):
     messages = [
@@ -249,99 +280,161 @@ def default_response_transform(piece: str, buffer: str) -> tuple[str, AppOutput]
         thinking_content="",
     )
 
+@contextmanager
+def timing_context():
+    """Context manager to track timing information for LLM generation."""
+    class TimingInfo:
+        def __init__(self):
+            self.start_time = time.time()
+            self.first_token_time = None
+        
+        def mark_first_token(self):
+            if self.first_token_time is None:
+                self.first_token_time = time.time()
+        
+        @property
+        def stats(self):
+            end_time = time.time()
+            if self.first_token_time is None:
+                # If we never got a first token, use end time
+                self.first_token_time = end_time
+            
+            time_to_first = self.first_token_time - self.start_time
+            generation_time = end_time - self.first_token_time
+            
+            return {
+                "time_to_first_token": time_to_first,
+                "generation_time": generation_time
+            }
+    
+    timing = TimingInfo()
+    try:
+        yield timing
+    finally:
+        pass
+
 def stream_generate(
     model,
     messages,
-    AppOutput,
     temperature=0.7,
     top_p=0.95,
     max_tokens=4096,
     transform_response=None,
 ):
-    """Stream model output with thread safety.
-    
-    Args:
-        model: The LLM model instance
-        messages: List of chat messages
-        AppOutput: Output class type
-        temperature: Sampling temperature
-        top_p: Top-p sampling parameter
-        max_tokens: Maximum tokens to generate
-        transform_response: Function(piece: str, buffer: str) -> tuple[str, AppOutput] that transforms 
-                          each response piece and returns (new_buffer, output)
-    """
+    """Stream model output with thread safety."""
     if transform_response is None:
         raise ValueError("transform_response function must be provided")
 
-    response_queue: "Queue[Optional[str]]" = Queue()
+    response_queue: "Queue[Optional[tuple[str, dict]]]" = Queue()
     thread_exception = None
     thread = None
+    usage_stats = {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "stop_reason": ""
+    }
 
-    def generation_thread():
-        nonlocal thread_exception
-        try:
-            for chunk in model.create_chat_completion(
-                messages=messages,
-                stream=True,
-                temperature=temperature,
-                top_p=top_p,
-                max_tokens=max_tokens,
-            ):
-                delta = chunk.get("choices", [{}])[0] \
-                              .get("delta", {}) \
-                              .get("content", "")
-                if delta:
-                    response_queue.put(delta)
-        except Exception as e:
-            print(f"[ERROR] Exception in generation thread: {type(e).__name__}: {str(e)}")
-            thread_exception = e
-        finally:
-            print("[DEBUG] Generation thread finished, sending None to queue")
-            response_queue.put(None)
-
-    try:
-        thread = Thread(target=generation_thread, daemon=True)
-        thread.start()
-
-        buffer = ""
-        while True:
+    with timing_context() as timing:
+        def generation_thread():
+            nonlocal thread_exception, usage_stats
             try:
-                piece = response_queue.get(timeout=30.0)  # Add timeout to prevent infinite wait
+                completion = model.create_chat_completion(
+                    messages=messages,
+                    stream=True,
+                    temperature=temperature,
+                    top_p=top_p,
+                    max_tokens=max_tokens,
+                )
                 
-                # Check for thread exception first
-                if thread_exception:
-                    print(f"[ERROR] Propagating thread exception: {type(thread_exception).__name__}: {str(thread_exception)}")
-                    raise thread_exception
-                
-                # Then check for None
-                if piece is None:
-                    print("[DEBUG] Received None from queue, breaking loop")
-                    break
-                
-                try:
-                    buffer, output = transform_response(piece, buffer)
-                    yield output
-                except Exception as e:
-                    print(f"[ERROR] Exception in transform_response: {type(e).__name__}: {str(e)}")
-                    raise
+                # Process all chunks including the final ones
+                for chunk in completion:
+                    
+                    # Get usage from root level if present and not None
+                    if "usage" in chunk and chunk["usage"] is not None:
+                        usage_stats.update(chunk["usage"])
+                    
+                    # Get content from choices
+                    delta = chunk.get("choices", [{}])[0]
+                    content = None
+                    finish_reason = None
+                    
+                    if "message" in delta:
+                        # Handle non-streaming response
+                        content = delta["message"].get("content", "")
+                        finish_reason = delta.get("finish_reason")
+                    elif "delta" in delta:
+                        # Handle streaming response
+                        content = delta["delta"].get("content", "")
+                        finish_reason = delta.get("finish_reason")
+                    
+                    # Handle content if present
+                    if content:
+                        if not timing.first_token_time:  # Mark first token time if not already marked
+                            timing.mark_first_token()
+                        response_queue.put((content, {}))
+                        
+                    # Update usage stats if finish_reason is present
+                    if finish_reason:
+                        usage_stats["stop_reason"] = finish_reason
                 
             except Exception as e:
-                print(f"[ERROR] Exception in main loop: {type(e).__name__}: {str(e)}")
-                if thread_exception and isinstance(e, thread_exception.__class__):
-                    print("[DEBUG] Re-raising thread exception")
+                print(f"[ERROR] Exception in generation thread: {type(e).__name__}: {str(e)}")
+                thread_exception = e
+            finally:
+                timing_stats = timing.stats
+                # Calculate tokens per second using final usage stats
+                generation_time = timing_stats["generation_time"]
+                tokens_per_second = (usage_stats["completion_tokens"] / generation_time) if generation_time > 0 else 0
+                response_queue.put((None, {
+                    "time_to_first_token": timing_stats["time_to_first_token"],
+                    "tokens_per_second": tokens_per_second
+                }))
+
+        try:
+            thread = Thread(target=generation_thread, daemon=True)
+            thread.start()
+
+            buffer = ""
+            while True:
+                try:
+                    result = response_queue.get(timeout=30.0)
+                    if thread_exception:
+                        print(f"[ERROR] Propagating thread exception: {type(thread_exception).__name__}: {str(thread_exception)}")
+                        raise thread_exception
+                    
+                    piece, timing_stats = result
+                    if piece is None:
+                        # Final yield with complete usage stats
+                        usage = LLMUsage(
+                            stop_reason=usage_stats["stop_reason"],
+                            time_to_first_token=timing_stats["time_to_first_token"],
+                            tokens_per_second=timing_stats["tokens_per_second"],
+                            prompt_tokens=usage_stats["prompt_tokens"],
+                            completion_tokens=usage_stats["completion_tokens"],
+                            total_tokens=usage_stats["total_tokens"]
+                        )
+                        buffer, output = transform_response(piece or "", buffer)
+                        output.usage = usage
+                        yield output
+                        break
+                    
+                    buffer, output = transform_response(piece, buffer)
+                    yield output
+                    
+                except Exception as e:
+                    print(f"[ERROR] Exception in main loop: {type(e).__name__}: {str(e)}")
+                    if thread_exception and isinstance(e, thread_exception.__class__):
+                        raise thread_exception
+                    break
+        finally:
+            if thread and thread.is_alive():
+                thread.join(timeout=2.0)
+                if thread.is_alive():
+                    print("[WARNING] Thread did not terminate within timeout")
+                if thread_exception:
+                    print(f"[ERROR] Thread exception found during cleanup: {type(thread_exception).__name__}: {str(thread_exception)}")
                     raise thread_exception
-                print("[DEBUG] Breaking loop due to exception")
-                break
-    finally:
-        if thread and thread.is_alive():
-            print("[DEBUG] Joining thread with timeout")
-            thread.join(timeout=2.0)
-            if thread.is_alive():
-                print("[WARNING] Thread did not terminate within timeout")
-            # Check one final time for thread exception
-            if thread_exception:
-                print(f"[ERROR] Thread exception found during cleanup: {type(thread_exception).__name__}: {str(thread_exception)}")
-                raise thread_exception
 
 class App(BaseApp):
     def __init__(self):
@@ -424,9 +517,8 @@ class App(BaseApp):
 
         # Stream generate with user-specified parameters
         generator = stream_generate(
-            self.model,
-            messages,
-            AppOutput,
+            model=self.model,
+            messages=messages,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,

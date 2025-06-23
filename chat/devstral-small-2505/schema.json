@@ -174,6 +174,50 @@
     "type": "object"
   },
   "output": {
+    "$defs": {
+      "LLMUsage": {
+        "properties": {
+          "stop_reason": {
+            "default": "",
+            "description": "The reason the generation stopped",
+            "title": "Stop Reason",
+            "type": "string"
+          },
+          "time_to_first_token": {
+            "default": 0,
+            "description": "The time to the first token",
+            "title": "Time To First Token",
+            "type": "number"
+          },
+          "tokens_per_second": {
+            "default": 0,
+            "description": "The number of tokens per second",
+            "title": "Tokens Per Second",
+            "type": "number"
+          },
+          "prompt_tokens": {
+            "default": 0,
+            "description": "The number of tokens in the prompt",
+            "title": "Prompt Tokens",
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "default": 0,
+            "description": "The number of tokens in the completion",
+            "title": "Completion Tokens",
+            "type": "integer"
+          },
+          "total_tokens": {
+            "default": 0,
+            "description": "The total number of tokens used",
+            "title": "Total Tokens",
+            "type": "integer"
+          }
+        },
+        "title": "LLMUsage",
+        "type": "object"
+      }
+    },
     "properties": {
       "response": {
         "title": "Response",
@@ -190,6 +234,18 @@
         ],
         "default": null,
         "title": "Thinking Content"
+      },
+      "usage": {
+        "$ref": "#/$defs/LLMUsage",
+        "default": {
+          "stop_reason": "",
+          "time_to_first_token": 0.0,
+          "tokens_per_second": 0.0,
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "description": "The usage information for the generation"
       }
     },
     "required": [
