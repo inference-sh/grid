@@ -236,16 +236,15 @@
         "title": "Thinking Content"
       },
       "usage": {
-        "$ref": "#/$defs/LLMUsage",
-        "default": {
-          "stop_reason": "",
-          "time_to_first_token": 0.0,
-          "tokens_per_second": 0.0,
-          "prompt_tokens": 0,
-          "completion_tokens": 0,
-          "total_tokens": 0
-        },
-        "description": "The usage information for the generation"
+        "anyOf": [
+          {
+            "$ref": "#/$defs/LLMUsage"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
       }
     },
     "required": [

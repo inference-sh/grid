@@ -236,10 +236,7 @@ class LLMUsage(BaseModel):
 class AppOutput(BaseAppOutput):
     response: str
     thinking_content: Optional[str] = None
-    usage: LLMUsage = Field(
-        description="The usage information for the generation",
-        default=LLMUsage(),
-    )
+    usage: Optional[LLMUsage] = None
     
 def MessageBuilder(input_data: AppInput):
     messages = [
