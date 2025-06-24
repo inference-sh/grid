@@ -1,93 +1,72 @@
 {
   "input": {
-    "description": "Input parameters for generating images from text descriptions",
-    "examples": [
-      {
-        "guidance_scale": 4.0,
-        "height": 1024,
-        "number_of_images": 1,
-        "number_of_steps": 28,
-        "prompt": "a photo of a cat sitting on a windowsill at sunset",
-        "seed": 42,
-        "width": 1024
-      }
-    ],
     "properties": {
       "prompt": {
-        "description": "The text prompt describing the desired image",
-        "examples": [
-          "a photo of a cat sitting on a windowsill at sunset",
-          "an oil painting of mountains at sunrise"
-        ],
-        "maxLength": 1000,
-        "minLength": 1,
+        "description": "The text prompt to generate an image from.",
         "title": "Prompt",
         "type": "string"
       },
-      "width": {
-        "default": 1024,
-        "description": "Width of generated image in pixels",
-        "examples": [
-          1024,
-          768
-        ],
-        "maximum": 2048,
-        "minimum": 512,
-        "title": "Width",
-        "type": "integer"
-      },
       "height": {
         "default": 1024,
-        "description": "Height of generated image in pixels",
-        "examples": [
-          1024,
-          768
-        ],
-        "maximum": 2048,
-        "minimum": 512,
+        "description": "The height in pixels of the generated image.",
         "title": "Height",
         "type": "integer"
       },
-      "number_of_steps": {
-        "default": 28,
-        "description": "Number of denoising steps (higher = better quality but slower)",
-        "examples": [
-          28,
-          50
-        ],
-        "maximum": 100,
-        "minimum": 1,
-        "title": "Number Of Steps",
+      "width": {
+        "default": 1024,
+        "description": "The width in pixels of the generated image.",
+        "title": "Width",
+        "type": "integer"
+      },
+      "num_inference_steps": {
+        "default": 30,
+        "description": "The number of inference steps.",
+        "title": "Num Inference Steps",
         "type": "integer"
       },
       "guidance_scale": {
-        "default": 4.0,
-        "description": "How closely to follow the prompt (higher = more faithful but less creative)",
-        "examples": [
-          4.0,
-          7.5
-        ],
-        "maximum": 20.0,
-        "minimum": 1.0,
+        "default": 3.5,
+        "description": "The guidance scale.",
         "title": "Guidance Scale",
         "type": "number"
       },
       "seed": {
-        "default": 0,
-        "description": "Random seed for reproducible results",
-        "examples": [
-          42,
-          123456
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
         ],
-        "minimum": 0,
-        "title": "Seed",
-        "type": "integer"
+        "default": null,
+        "description": "The seed for random generation.",
+        "title": "Seed"
+      },
+      "lora_url": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "URL to LoRA file (.safetensors) or Civitai model page",
+        "title": "Lora Url"
+      },
+      "lora_multiplier": {
+        "default": 1.0,
+        "description": "Multiplier for the LoRA effect",
+        "title": "Lora Multiplier",
+        "type": "number"
       }
     },
     "required": [
       "prompt"
     ],
-    "title": "Text to Image Generation Input",
+    "title": "AppInput",
     "type": "object"
   },
   "output": {
@@ -161,13 +140,13 @@
       }
     },
     "properties": {
-      "image": {
+      "image_output": {
         "$ref": "#/$defs/File",
-        "description": "Generated image file"
+        "description": "The generated image."
       }
     },
     "required": [
-      "image"
+      "image_output"
     ],
     "title": "AppOutput",
     "type": "object"

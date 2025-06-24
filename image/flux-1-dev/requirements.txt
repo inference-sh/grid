@@ -1,16 +1,16 @@
-pydantic >= 2.0.0
-inferencesh
-protobuf
-numpy
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh==0.2.7
 torch
-torchvision
-xformers
-accelerate
+gguf>=0.13.0
+tqdm
 diffusers
 transformers
-sentencepiece
 huggingface_hub
-hf-transfer
-opencv_contrib_python_headless
+accelerate
+sentencepiece
+protobuf
 Pillow
-torchao
+einops
+accelerate
+python-dateutil
+peft
