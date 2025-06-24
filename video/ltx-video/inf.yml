@@ -9,6 +9,7 @@ images:
 variants:
     2B_dev:
         name: 2B_dev
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -19,6 +20,7 @@ variants:
         python: "3.12"
     2B_distilled:
         name: 2B_distilled
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -29,6 +31,7 @@ variants:
         python: "3.12"
     13B_dev:
         name: 13B_dev
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -39,6 +42,7 @@ variants:
         python: "3.12"
     13B_distilled:
         name: 13B_distilled
+        order: 0
         resources:
             gpu:
                 count: 1

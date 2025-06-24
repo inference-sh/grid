@@ -123,6 +123,19 @@
         "title": "Height",
         "type": "integer"
       },
+      "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The seed for random generation.",
+        "title": "Seed"
+      },
       "controlnet_type": {
         "$ref": "#/$defs/ControlNetType",
         "default": null,
@@ -161,6 +174,25 @@
         "maximum": 1.0,
         "minimum": 0.0,
         "title": "Control Guidance End",
+        "type": "number"
+      },
+      "lora_url": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "URL to LoRA file (.safetensors) or Civitai model page",
+        "title": "Lora Url"
+      },
+      "lora_multiplier": {
+        "default": 1.0,
+        "description": "Multiplier for the LoRA effect",
+        "title": "Lora Multiplier",
         "type": "number"
       }
     },

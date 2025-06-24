@@ -1,7 +1,7 @@
 name: chatterbox
 description: Whether you're working on memes, videos, games, or AI agents, Chatterbox brings your content to life. It's also the first open source TTS model to support emotion exaggeration control, a powerful feature that makes your voices stand out.
 category: audio
-is_public: false
+is_public: true
 images:
     card: https://cloud.inference.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0emy2jc9er8xmzcb19ecze662b.png
     thumbnail: ""
@@ -9,6 +9,7 @@ images:
 variants:
     default:
         name: default
+        order: 0
         resources:
             gpu:
                 count: 1

@@ -13,23 +13,23 @@ import os.path
 
 # Configuration for the model
 vision_config = {
-    "mmproj_repo": "ggml-org/gemma-3-27b-it-GGUF",
+    "mmproj_repo": "ggml-org/gemma-3-12b-it-GGUF",
     "mmproj_filename": "mmproj-model-f16.gguf"
 }
 
 
 configs = {
     "default": {
-        "repo_id": "ggml-org/gemma-3-27b-it-GGUF",
-        "model_filename": "gemma-3-27b-it-Q4_K_M.gguf",
+        "repo_id": "ggml-org/gemma-3-12b-it-GGUF",
+        "model_filename": "gemma-3-12b-it-Q4_K_M.gguf",
     },
     "q8_0": {
-        "repo_id": "ggml-org/gemma-3-27b-it-GGUF",
-        "model_filename": "gemma-3-27b-it-Q8_0.gguf",
+        "repo_id": "ggml-org/gemma-3-12b-it-GGUF",
+        "model_filename": "gemma-3-12b-it-Q8_0.gguf",
     },
     "q4_k_m": {
-        "repo_id": "ggml-org/gemma-3-27b-it-GGUF",
-        "model_filename": "gemma-3-27b-it-Q4_K_M.gguf",
+        "repo_id": "ggml-org/gemma-3-12b-it-GGUF",
+        "model_filename": "gemma-3-12b-it-Q4_K_M.gguf",
     }
 }
 

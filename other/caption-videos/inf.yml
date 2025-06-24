@@ -9,6 +9,7 @@ images:
 variants:
     default:
         name: default
+        order: 0
         resources:
             gpu:
                 count: 0

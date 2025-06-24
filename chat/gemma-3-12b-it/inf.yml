@@ -1,5 +1,5 @@
-name: gemma-3-27b-it
-description: Gemma 3 27B
+name: gemma-3-12b-it
+description: Gemma 3 12B
 category: chat
 is_public: true
 images:

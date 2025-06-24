@@ -2,7 +2,6 @@
   "input": {
     "properties": {
       "prompt": {
-        "default": "A cat astronaut, photorealistic, 4k",
         "description": "The text prompt to generate an image from.",
         "title": "Prompt",
         "type": "string"
@@ -64,6 +63,9 @@
         "type": "number"
       }
     },
+    "required": [
+      "prompt"
+    ],
     "title": "AppInput",
     "type": "object"
   },

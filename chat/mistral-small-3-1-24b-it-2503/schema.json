@@ -111,15 +111,9 @@
     },
     "properties": {
       "system_prompt": {
-        "default": "You are a helpful assistant that can answer questions and help with tasks.",
+        "default": "A user will ask you to solve a task. You should first draft your thinking process (inner monologue) until you have derived the final answer. Afterwards, write a self-contained summary of your thoughts (i.e. your summary should be succinct but contain all the critical steps you needed to reach the conclusion). You should use Markdown and Latex to format your response. Write both your thoughts and summary in the same language as the task posed by the user.\n\nYour thinking process must follow the template below:\n<think>\nYour thoughts or/and draft, like working through an exercise on scratch paper. Be as casual and as long as you want until you are confident to generate a correct answer.\n</think>\n\nHere, provide a concise summary that reflects your reasoning and presents a clear final answer to the user.\n\nProblem:",
         "description": "The system prompt to use for the model",
-        "examples": [
-          "You are a helpful assistant that can answer questions and help with tasks.",
-          "You are a certified medical professional who can provide accurate health information.",
-          "You are a certified financial advisor who can give sound investment guidance.",
-          "You are a certified cybersecurity expert who can explain security best practices.",
-          "You are a certified environmental scientist who can discuss climate and sustainability."
-        ],
+        "examples": [],
         "title": "System Prompt",
         "type": "string"
       },

@@ -9,6 +9,7 @@ images:
 variants:
     4.5B_base:
         name: 4.5B_base
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -29,6 +30,7 @@ variants:
         python: "3.12"
     24B_base:
         name: 24B_base
+        order: 0
         resources:
             gpu:
                 count: 8
@@ -49,6 +51,7 @@ variants:
         python: "3.12"
     24B_distill:
         name: 24B_distill
+        order: 0
         resources:
             gpu:
                 count: 8
@@ -69,6 +72,7 @@ variants:
         python: "3.12"
     24B_distill_quant:
         name: 24B_distill_quant
+        order: 0
         resources:
             gpu:
                 count: 8

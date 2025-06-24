@@ -317,6 +317,7 @@ def create_ltx_video_pipeline(
         metadata = f.metadata()
         config_str = metadata.get("config")
         configs = json.loads(config_str)
+        print(configs)
         allowed_inference_steps = configs.get("allowed_inference_steps", None)
 
     vae = CausalVideoAutoencoder.from_pretrained(ckpt_path)

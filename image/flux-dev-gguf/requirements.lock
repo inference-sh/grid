@@ -2,7 +2,7 @@ accelerate==1.8.1
 annotated-types==0.7.0
 certifi==2025.6.15
 charset-normalizer==3.4.2
-diffusers==0.33.1
+diffusers==0.34.0
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.5.1
@@ -33,11 +33,13 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
+peft==0.15.2
 pillow==11.2.1
 protobuf==6.31.1
 psutil==7.0.0
 pydantic==2.11.7
 pydantic-core==2.33.2
+python-dateutil==2.9.0.post0
 pyyaml==6.0.2
 regex==2024.11.6
 requests==2.32.4
@@ -45,8 +47,9 @@ safetensors==0.5.3
 sentencepiece==0.2.0
 setuptools==80.9.0
 setuptools-scm==8.3.1
+six==1.17.0
 sympy==1.14.0
-tokenizers==0.21.1
+tokenizers==0.21.2
 torch==2.7.1
 tqdm==4.67.1
 transformers==4.52.4

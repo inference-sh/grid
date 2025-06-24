@@ -21,12 +21,47 @@
         "type": "integer"
       },
       "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
         "default": -1,
-        "description": "The seed for the random number generator",
-        "maximum": 1000000,
-        "minimum": -1,
-        "title": "Seed",
+        "description": "The seed for the random number generator (-1 for random)",
+        "title": "Seed"
+      },
+      "num_inference_steps": {
+        "default": null,
+        "description": "Number of denoising steps (uses variant default if not provided)",
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Num Inference Steps",
         "type": "integer"
+      },
+      "guidance_scale": {
+        "default": null,
+        "description": "CFG scale - how closely to follow the prompt (uses variant default if not provided)",
+        "maximum": 20.0,
+        "minimum": 0.0,
+        "title": "Guidance Scale",
+        "type": "number"
+      },
+      "shift": {
+        "default": null,
+        "description": "Shift parameter for scheduler (uses variant default if not provided)",
+        "maximum": 10.0,
+        "minimum": 0.0,
+        "title": "Shift",
+        "type": "number"
+      },
+      "scheduler_type": {
+        "default": null,
+        "description": "Scheduler type: 'flow_unipc' or 'flash_flow' (uses variant default if not provided)",
+        "title": "Scheduler Type",
+        "type": "string"
       }
     },
     "required": [
