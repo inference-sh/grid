@@ -1,13 +1,11 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, BaseAppOutput, ContextMessage, LLMInput
-from pydantic import Field, BaseModel
+from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput
+from inferencesh.models.llm import build_messages, stream_generate
+from pydantic import Field
 from typing import AsyncGenerator, Optional
-from queue import Queue
-from threading import Thread
-import time
-from contextlib import contextmanager
+from enum import Enum
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -37,128 +35,18 @@ configs = {
     },
 }
 
-MAGISTRAL_JINJA_TEMPLATE = ("{{ '<bos>' }}"
-        "{%- if messages[0]['role'] == 'system' -%}"
-        "{%- if messages[0]['content'] is string -%}"
-        "{%- set first_user_prefix = messages[0]['content'] + '\n\n' -%}"
-        "{%- else -%}"
-        "{%- set first_user_prefix = messages[0]['content'][0]['text'] + '\n\n' -%}"
-        "{%- endif -%}"
-        "{%- set loop_messages = messages[1:] -%}"
-        "{%- else -%}"
-        "{%- set first_user_prefix = \"\" -%}"
-        "{%- set loop_messages = messages -%}"
-        "{%- endif -%}"
-        "{%- for message in loop_messages -%}"
-        "{%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) -%}"
-        "{{ raise_exception(\"Conversation roles must alternate user/assistant/user/assistant/...\") }}"
-        "{%- endif -%}"
-        "{%- if (message['role'] == 'assistant') -%}"
-        "{%- set role = \"model\" -%}"
-        "{%- else -%}"
-        "{%- set role = message['role'] -%}"
-        "{%- endif -%}"
-        "{{ '<start_of_turn>' + role + '\n' + (first_user_prefix if loop.first else \"\") }}"
-        "{%- if message['content'] is string -%}"
-        "{{ message['content'] | trim }}"
-        "{%- elif message['content'] is iterable -%}"
-        "{%- for item in message['content'] -%}"
-        "{%- if item['type'] == 'image_url' -%}"
-        "{{ '<start_of_image>' }}"
-        "{%- elif item['type'] == 'text' -%}"
-        "{{ item['text'] | trim }}"
-        "{%- endif -%}"
-        "{%- endfor -%}"
-        "{%- else -%}"
-        "{{ raise_exception(\"Invalid content type\") }}"
-        "{%- endif -%}"
-        "{{ '<end_of_turn>\n' }}"
-        "{%- endfor -%}"
-        "{%- if add_generation_prompt -%}"
-        "{{ '<start_of_turn>model\n' }}"
-        "{%- endif -%}")
+# Load the template and system prompt
+with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "r") as f:
+    MAGISTRAL_JINJA_TEMPLATE = f.read()
 
+with open(os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt"), "r") as f:
+    SYSTEM_PROMPT = f.read()
 
 jinja_formatter = Jinja2ChatFormatter(
     MAGISTRAL_JINJA_TEMPLATE,
     eos_token="<end_of_turn>",
     bos_token="<bos>"
 )
-
-SYSTEM_PROMPT = """You are Devstral, a helpful agentic model trained by Mistral AI and using the OpenHands scaffold. You can interact with a computer to solve tasks.
-
-<ROLE>
-Your primary role is to assist users by executing commands, modifying code, and solving technical problems effectively. You should be thorough, methodical, and prioritize quality over speed.
-* If the user asks a question, like "why is X happening", don't try to fix the problem. Just give an answer to the question.
-</ROLE>
-
-<EFFICIENCY>
-* Each action you take is somewhat expensive. Wherever possible, combine multiple actions into a single action, e.g. combine multiple bash commands into one, using sed and grep to edit/view multiple files at once.
-* When exploring the codebase, use efficient tools like find, grep, and git commands with appropriate filters to minimize unnecessary operations.
-</EFFICIENCY>
-
-<FILE_SYSTEM_GUIDELINES>
-* When a user provides a file path, do NOT assume it's relative to the current working directory. First explore the file system to locate the file before working on it.
-* If asked to edit a file, edit the file directly, rather than creating a new file with a different filename.
-* For global search-and-replace operations, consider using `sed` instead of opening file editors multiple times.
-</FILE_SYSTEM_GUIDELINES>
-
-<CODE_QUALITY>
-* Write clean, efficient code with minimal comments. Avoid redundancy in comments: Do not repeat information that can be easily inferred from the code itself.
-* When implementing solutions, focus on making the minimal changes needed to solve the problem.
-* Before implementing any changes, first thoroughly understand the codebase through exploration.
-* If you are adding a lot of code to a function or file, consider splitting the function or file into smaller pieces when appropriate.
-</CODE_QUALITY>
-
-<VERSION_CONTROL>
-* When configuring git credentials, use "openhands" as the user.name and "openhands@all-hands.dev" as the user.email by default, unless explicitly instructed otherwise.
-* Exercise caution with git operations. Do NOT make potentially dangerous changes (e.g., pushing to main, deleting repositories) unless explicitly asked to do so.
-* When committing changes, use `git status` to see all modified files, and stage all files necessary for the commit. Use `git commit -a` whenever possible.
-* Do NOT commit files that typically shouldn't go into version control (e.g., node_modules/, .env files, build directories, cache files, large binaries) unless explicitly instructed by the user.
-* If unsure about committing certain files, check for the presence of .gitignore files or ask the user for clarification.
-</VERSION_CONTROL>
-
-<PULL_REQUESTS>
-* When creating pull requests, create only ONE per session/issue unless explicitly instructed otherwise.
-* When working with an existing PR, update it with new commits rather than creating additional PRs for the same issue.
-* When updating a PR, preserve the original PR title and purpose, updating description only when necessary.
-</PULL_REQUESTS>
-
-<PROBLEM_SOLVING_WORKFLOW>
-1. EXPLORATION: Thoroughly explore relevant files and understand the context before proposing solutions
-2. ANALYSIS: Consider multiple approaches and select the most promising one
-3. TESTING:
-   * For bug fixes: Create tests to verify issues before implementing fixes
-   * For new features: Consider test-driven development when appropriate
-   * If the repository lacks testing infrastructure and implementing tests would require extensive setup, consult with the user before investing time in building testing infrastructure
-   * If the environment is not set up to run tests, consult with the user first before investing time to install all dependencies
-4. IMPLEMENTATION: Make focused, minimal changes to address the problem
-5. VERIFICATION: If the environment is set up to run tests, test your implementation thoroughly, including edge cases. If the environment is not set up to run tests, consult with the user first before investing time to run tests.
-</PROBLEM_SOLVING_WORKFLOW>
-
-<SECURITY>
-* Only use GITHUB_TOKEN and other credentials in ways the user has explicitly requested and would expect.
-* Use APIs to work with GitHub or other platforms, unless the user asks otherwise or your task requires browsing.
-</SECURITY>
-
-<ENVIRONMENT_SETUP>
-* When user asks you to run an application, don't stop if the application is not installed. Instead, please install the application and run the command again.
-* If you encounter missing dependencies:
-  1. First, look around in the repository for existing dependency files (requirements.txt, pyproject.toml, package.json, Gemfile, etc.)
-  2. If dependency files exist, use them to install all dependencies at once (e.g., `pip install -r requirements.txt`, `npm install`, etc.)
-  3. Only install individual packages directly if no dependency files are found or if only specific packages are needed
-* Similarly, if you encounter missing dependencies for essential tools requested by the user, install them when possible.
-</ENVIRONMENT_SETUP>
-
-<TROUBLESHOOTING>
-* If you've made repeated attempts to solve a problem but tests still fail or the user reports it's still broken:
-  1. Step back and reflect on 5-7 different possible sources of the problem
-  2. Assess the likelihood of each possible cause
-  3. Methodically address the most likely causes, starting with the highest probability
-  4. Document your reasoning process
-* When you run into any major issue while executing a plan from the user, please don't try to directly work around it. Instead, propose a new plan and confirm with the user before proceeding.
-</TROUBLESHOOTING>"""
-
 
 class AppInput(LLMInput):
     system_prompt: str = Field(
@@ -207,231 +95,20 @@ class AppInput(LLMInput):
         default=4096,
     )
 
-class LLMUsage(BaseModel):
-    stop_reason: str = Field(
-        description="The reason the generation stopped",
-        default="",
-    )
-    time_to_first_token: float = Field(
-        description="The time to the first token",
-        default=0,
-    )
-    tokens_per_second: float = Field(
-        description="The number of tokens per second",
-        default=0,
-    )
-    prompt_tokens: int = Field(
-        description="The number of tokens in the prompt",
-        default=0,
-    )
-    completion_tokens: int = Field(
-        description="The number of tokens in the completion",
-        default=0,
-    )
-    total_tokens: int = Field(
-        description="The total number of tokens used",
-        default=0,
-    )
-
-class AppOutput(BaseAppOutput):
-    response: str
-    thinking_content: Optional[str] = None
-    usage: Optional[LLMUsage] = None
-    
-def MessageBuilder(input_data: AppInput):
-    messages = [
-        {
-            "role": "system",
-            "content": [{"type": "text", "text": input_data.system_prompt}],
-        }
-    ]
-
-    # Add context messages
-    for msg in input_data.context:
-        message_content = []
-        if msg.text:
-            message_content.append({"type": "text", "text": msg.text})
-        messages.append({
-            "role": msg.role,
-            "content": message_content
-        })
-
-    # Add user message with text and image if provided
-    user_content = []
-    user_text = input_data.text
-    if user_text:
-        user_content.append({"type": "text", "text": user_text})
-    messages.append({"role": "user", "content": user_content})
-
-    return messages
-
-def default_response_transform(piece: str, buffer: str) -> tuple[str, AppOutput]:
-    """Default response transformation that removes special tokens and returns updated buffer and output."""
+def transform_response(piece: str, buffer: str) -> tuple[str, LLMOutput]:
+    """Transform each response piece and return updated buffer and output."""
     cleaned = (piece.replace("<|im_end|>", "")
-                   .replace("<|im_start|>", "")
-                   .replace("<start_of_turn>", "")
-                   .replace("<end_of_turn>", ""))
+                  .replace("<|im_start|>", "")
+                  .replace("<start_of_turn>", "")
+                  .replace("<end_of_turn>", ""))
     new_buffer = buffer + cleaned
-    return new_buffer, AppOutput(
+    return new_buffer, LLMOutput(
         response=new_buffer,
         thinking_content="",
     )
-
-@contextmanager
-def timing_context():
-    """Context manager to track timing information for LLM generation."""
-    class TimingInfo:
-        def __init__(self):
-            self.start_time = time.time()
-            self.first_token_time = None
-        
-        def mark_first_token(self):
-            if self.first_token_time is None:
-                self.first_token_time = time.time()
-        
-        @property
-        def stats(self):
-            end_time = time.time()
-            if self.first_token_time is None:
-                # If we never got a first token, use end time
-                self.first_token_time = end_time
-            
-            time_to_first = self.first_token_time - self.start_time
-            generation_time = end_time - self.first_token_time
-            
-            return {
-                "time_to_first_token": time_to_first,
-                "generation_time": generation_time
-            }
     
-    timing = TimingInfo()
-    try:
-        yield timing
-    finally:
-        pass
-
-def stream_generate(
-    model,
-    messages,
-    temperature=0.7,
-    top_p=0.95,
-    max_tokens=4096,
-    transform_response=None,
-):
-    """Stream model output with thread safety."""
-    if transform_response is None:
-        raise ValueError("transform_response function must be provided")
-
-    response_queue: "Queue[Optional[tuple[str, dict]]]" = Queue()
-    thread_exception = None
-    thread = None
-    usage_stats = {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "stop_reason": ""
-    }
-
-    with timing_context() as timing:
-        def generation_thread():
-            nonlocal thread_exception, usage_stats
-            try:
-                completion = model.create_chat_completion(
-                    messages=messages,
-                    stream=True,
-                    temperature=temperature,
-                    top_p=top_p,
-                    max_tokens=max_tokens,
-                )
-                
-                # Process all chunks including the final ones
-                for chunk in completion:
-                    
-                    # Get usage from root level if present and not None
-                    if "usage" in chunk and chunk["usage"] is not None:
-                        usage_stats.update(chunk["usage"])
-                    
-                    # Get content from choices
-                    delta = chunk.get("choices", [{}])[0]
-                    content = None
-                    finish_reason = None
-                    
-                    if "message" in delta:
-                        # Handle non-streaming response
-                        content = delta["message"].get("content", "")
-                        finish_reason = delta.get("finish_reason")
-                    elif "delta" in delta:
-                        # Handle streaming response
-                        content = delta["delta"].get("content", "")
-                        finish_reason = delta.get("finish_reason")
-                    
-                    # Handle content if present
-                    if content:
-                        if not timing.first_token_time:  # Mark first token time if not already marked
-                            timing.mark_first_token()
-                        response_queue.put((content, {}))
-                        
-                    # Update usage stats if finish_reason is present
-                    if finish_reason:
-                        usage_stats["stop_reason"] = finish_reason
-                
-            except Exception as e:
-                print(f"[ERROR] Exception in generation thread: {type(e).__name__}: {str(e)}")
-                thread_exception = e
-            finally:
-                timing_stats = timing.stats
-                # Calculate tokens per second using final usage stats
-                generation_time = timing_stats["generation_time"]
-                tokens_per_second = (usage_stats["completion_tokens"] / generation_time) if generation_time > 0 else 0
-                response_queue.put((None, {
-                    "time_to_first_token": timing_stats["time_to_first_token"],
-                    "tokens_per_second": tokens_per_second
-                }))
-
-        try:
-            thread = Thread(target=generation_thread, daemon=True)
-            thread.start()
-
-            buffer = ""
-            while True:
-                try:
-                    result = response_queue.get(timeout=30.0)
-                    if thread_exception:
-                        print(f"[ERROR] Propagating thread exception: {type(thread_exception).__name__}: {str(thread_exception)}")
-                        raise thread_exception
-                    
-                    piece, timing_stats = result
-                    if piece is None:
-                        # Final yield with complete usage stats
-                        usage = LLMUsage(
-                            stop_reason=usage_stats["stop_reason"],
-                            time_to_first_token=timing_stats["time_to_first_token"],
-                            tokens_per_second=timing_stats["tokens_per_second"],
-                            prompt_tokens=usage_stats["prompt_tokens"],
-                            completion_tokens=usage_stats["completion_tokens"],
-                            total_tokens=usage_stats["total_tokens"]
-                        )
-                        buffer, output = transform_response(piece or "", buffer)
-                        output.usage = usage
-                        yield output
-                        break
-                    
-                    buffer, output = transform_response(piece, buffer)
-                    yield output
-                    
-                except Exception as e:
-                    print(f"[ERROR] Exception in main loop: {type(e).__name__}: {str(e)}")
-                    if thread_exception and isinstance(e, thread_exception.__class__):
-                        raise thread_exception
-                    break
-        finally:
-            if thread and thread.is_alive():
-                thread.join(timeout=2.0)
-                if thread.is_alive():
-                    print("[WARNING] Thread did not terminate within timeout")
-                if thread_exception:
-                    print(f"[ERROR] Thread exception found during cleanup: {type(thread_exception).__name__}: {str(thread_exception)}")
-                    raise thread_exception
+class AppOutput(LLMOutput):
+    pass
 
 class App(BaseApp):
     def __init__(self):
@@ -472,11 +149,24 @@ class App(BaseApp):
                 chat_handler=jinja_formatter.to_chat_handler()
             )
             print("Model initialization complete!")
+            total_layers = self.model.n_layer
+            print(f"Total layers: {total_layers}")
+            device_layers = {
+                0: 0,  # CPU
+                1: 0,  # GPU
+                2: 0,  # ACCEL
+            }
+            for i in range(total_layers):
+                dev_layer = self.model.dev_layer(i)
+                # Use the enum value (integer) as the key
+                dev_layer_value = int(dev_layer.value)
+                device_layers[dev_layer_value] += 1
+            print(f"Layers on CPU: {device_layers[0]}, GPU: {device_layers[1]}, ACCEL: {device_layers[2]}")
         except Exception as e:
             print(f"Error during setup: {e}")
             raise
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[LLMOutput, None]:
         # If context_size changed, re-setup the model
         if not hasattr(self, 'last_context_size') or input_data.context_size != self.last_context_size:
             print(f"Context size changed (was {getattr(self, 'last_context_size', None)}, now {input_data.context_size}), triggering re-setup.")
@@ -484,38 +174,14 @@ class App(BaseApp):
                 n_ctx=input_data.context_size,
             )     
 
-        def transform_response(piece: str, buffer: str) -> tuple[str, AppOutput]:
-            """Transform each response piece and return updated buffer and output."""
-            cleaned = (piece.replace("<|im_end|>", "")
-                          .replace("<|im_start|>", "")
-                          .replace("<start_of_turn>", "")
-                          .replace("<end_of_turn>", ""))
-            new_buffer = buffer + cleaned
-            return new_buffer, AppOutput(
-                response=new_buffer,
-                thinking_content="",
-            )
+        # Build messages using SDK helper
+        messages = build_messages(input_data)
 
-        # Build messages using the new AppInput fields
-        messages = [
-            {
-                "role": "system",
-                "content": [{"type": "text", "text": input_data.system_prompt}],
-            }
-        ]
-        # Add context messages
-        for msg in input_data.context:
-            messages.append(msg)
-        # Add user message
-        user_content = []
-        if input_data.text:
-            user_content.append({"type": "text", "text": input_data.text})
-        messages.append({"role": "user", "content": user_content})
-
-        # Stream generate with user-specified parameters
+        # Stream generate with user-specified parameters using SDK helper
         generator = stream_generate(
             model=self.model,
             messages=messages,
+            output_cls=AppOutput,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,

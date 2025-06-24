@@ -11,6 +11,18 @@
             "description": "The text content of the message",
             "title": "Text",
             "type": "string"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/File"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The image url of the message"
           }
         },
         "required": [
@@ -28,6 +40,73 @@
         ],
         "title": "ContextMessageRole",
         "type": "string"
+      },
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
       }
     },
     "properties": {
@@ -165,6 +244,23 @@
         ],
         "title": "Text",
         "type": "string"
+      },
+      "image": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The image to use for the model"
+      },
+      "enable_thinking": {
+        "default": false,
+        "title": "Enable Thinking",
+        "type": "boolean"
       }
     },
     "required": [
@@ -179,37 +275,31 @@
         "properties": {
           "stop_reason": {
             "default": "",
-            "description": "The reason the generation stopped",
             "title": "Stop Reason",
             "type": "string"
           },
           "time_to_first_token": {
-            "default": 0,
-            "description": "The time to the first token",
+            "default": 0.0,
             "title": "Time To First Token",
             "type": "number"
           },
           "tokens_per_second": {
-            "default": 0,
-            "description": "The number of tokens per second",
+            "default": 0.0,
             "title": "Tokens Per Second",
             "type": "number"
           },
           "prompt_tokens": {
             "default": 0,
-            "description": "The number of tokens in the prompt",
             "title": "Prompt Tokens",
             "type": "integer"
           },
           "completion_tokens": {
             "default": 0,
-            "description": "The number of tokens in the completion",
             "title": "Completion Tokens",
             "type": "integer"
           },
           "total_tokens": {
             "default": 0,
-            "description": "The total number of tokens used",
             "title": "Total Tokens",
             "type": "integer"
           }
