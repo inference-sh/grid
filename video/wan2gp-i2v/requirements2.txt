@@ -1,2 +1,2 @@
 #flash_attn
-git+https://github.com/thu-ml/SageAttention.git
+git+https://github.com/thu-ml/SageAttention

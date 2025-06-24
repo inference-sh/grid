@@ -62,11 +62,22 @@ class WanI2V:
         self.num_train_timesteps = config.num_train_timesteps
         self.param_dtype = config.param_dtype
         # shard_fn = partial(shard_model, device_id=device_id)
+        print(f"luke14free: Loading text encoder from {text_encoder_filename}")
+        
+        # Debug: List all files in the directory of text_encoder_filename
+        text_encoder_dir = os.path.dirname(os.path.join(checkpoint_dir, text_encoder_filename))
+        if os.path.isdir(text_encoder_dir):
+            print(f"luke14free: Files in {text_encoder_dir}:")
+            for fname in os.listdir(text_encoder_dir):
+                print(f"  - {fname}")
+        else:
+            print(f"luke14free: Directory {text_encoder_dir} does not exist!")
+
         self.text_encoder = T5EncoderModel(
             text_len=config.text_len,
             dtype=config.t5_dtype,
             device=torch.device('cpu'),
-            checkpoint_path=text_encoder_filename,
+            checkpoint_path=os.path.join(checkpoint_dir, text_encoder_filename),
             tokenizer_path=os.path.join(checkpoint_dir, config.t5_tokenizer),
             shard_fn=None,
         )

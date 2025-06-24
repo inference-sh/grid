@@ -2,14 +2,10 @@ import os
 import sys
 from pathlib import Path
 
-# Force profile to 1 by adding it to sys.argv before any imports
-if "--profile" not in sys.argv:
-    sys.argv.append("--profile")
-    sys.argv.append("1")
-
 current_dir = Path(__file__).parent.absolute()
 sys.path.append(os.path.join(str(current_dir), "wan"))
 sys.path.append(os.path.join(str(current_dir), "wan", "wan"))
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 import torch
 from typing import Optional
@@ -19,11 +15,12 @@ import tempfile
 import shutil
 import subprocess
 import numpy as np
+from accelerate import Accelerator
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from .wan.wan.configs import WAN_CONFIGS
 from mmgp import offload
-
+import wgp
 
 def send_cmd(cmd, message="", *args, **kwargs):
     if cmd != "preview":
@@ -50,7 +47,7 @@ class AppInput(BaseAppInput):
     enable_RIFLEx: bool = Field(default=True, description="Enable RIFLEx positional embedding for longer videos")
     joint_pass: bool = Field(default=True, description="Enable joint pass for 10% speed boost")
     attention: str = Field(
-        default="sage", 
+        default="sage",
         description="Attention mechanism to use for generation",
         enum=["sage", "sdpa"]
     )
@@ -77,47 +74,110 @@ configs = {
     "default": {
         "i2v_transformer_filename": "wan2.1_image2video_480p_14B_mbf16.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-bf16.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 3
     },
-    "480p_int8": {
+    "default_low_vram": {
+        "i2v_transformer_filename": "wan2.1_image2video_480p_14B_mbf16.safetensors",
+        "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
+    },
+    #"480p_int8": {
+    #    "i2v_transformer_filename": "wan2.1_image2video_480p_14B_quanto_mbf16_int8.safetensors",
+    #    "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+    #    "vae_filename": "Wan2.1_VAE.safetensors",
+    #    "profile": 3
+    #},
+    "480p_int8_low_vram": {
         "i2v_transformer_filename": "wan2.1_image2video_480p_14B_quanto_mbf16_int8.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
     },
     "720p": {
         "i2v_transformer_filename": "wan2.1_image2video_720p_14B_mbf16.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-bf16.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 3
     },
-    "720p_int8": {
+    "720p_low_vram": {
+        "i2v_transformer_filename": "wan2.1_image2video_720p_14B_mbf16.safetensors",
+        "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
+    },
+    #"720p_int8": {
+    #    "i2v_transformer_filename": "wan2.1_image2video_720p_14B_quanto_mbf16_int8.safetensors",
+    #    "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+    #    "vae_filename": "Wan2.1_VAE.safetensors",
+    #    "profile": 3
+    #},
+    "720p_int8_low_vram": {
         "i2v_transformer_filename": "wan2.1_image2video_720p_14B_quanto_mbf16_int8.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
     },
     "flf2v": {
         "i2v_transformer_filename": "wan2.1_FLF2V_720p_14B_bf16.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-bf16.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 3
     },
-    "flf2v_int8": {
+    "flf2v_low_vram": {
+        "i2v_transformer_filename": "wan2.1_FLF2V_720p_14B_bf16.safetensors",
+        "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
+    },
+    #"flf2v_int8": {
+    #    "i2v_transformer_filename": "wan2.1_FLF2V_720p_14B_quanto_int8.safetensors",
+    #    "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+    #    "vae_filename": "Wan2.1_VAE.safetensors",
+    #    "profile": 3
+    #},
+    "flf2v_int8_low_vram": {
         "i2v_transformer_filename": "wan2.1_FLF2V_720p_14B_quanto_int8.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
     },
     "fun_inp_1.3B": {
         "i2v_transformer_filename": "wan2.1_Fun_InP_1.3B_bf16.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-bf16.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 3
+    },
+    "fun_inp_1.3B_low_vram": {
+        "i2v_transformer_filename": "wan2.1_Fun_InP_1.3B_bf16.safetensors",
+        "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
     },
     "fun_inp_14B": {
         "i2v_transformer_filename": "wan2.1_Fun_InP_14B_bf16.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-bf16.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 3
     },
-    "fun_inp_14B_int8": {
+    "fun_inp_14B_low_vram": {
+        "i2v_transformer_filename": "wan2.1_Fun_InP_14B_bf16.safetensors",
+        "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
+    },
+    #"fun_inp_14B_int8": {
+    #    "i2v_transformer_filename": "wan2.1_Fun_InP_14B_quanto_int8.safetensors",
+    #    "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
+    #    "vae_filename": "Wan2.1_VAE.safetensors",
+    #    "profile": 3
+    #},
+    "fun_inp_14B_int8_low_vram": {
         "i2v_transformer_filename": "wan2.1_Fun_InP_14B_quanto_int8.safetensors",
         "text_encoder_filename": "models_t5_umt5-xxl-enc-quanto_int8.safetensors",
-        "vae_filename": "Wan2.1_VAE.safetensors"
+        "vae_filename": "Wan2.1_VAE.safetensors",
+        "profile": 4
     }
 }
 
@@ -125,10 +185,10 @@ configs = {
 def setup_model_directories(target_dir: Path) -> tuple[str, str]:
     """
     Set up model directories with symlinks to Hugging Face cache.
-    
+
     Args:
         target_dir: Path to the current directory
-        
+
     Returns:
         tuple[str, str]: Paths to ckpts and loras directories
     """
@@ -136,11 +196,11 @@ def setup_model_directories(target_dir: Path) -> tuple[str, str]:
     hf_home = os.getenv('HF_HOME', os.path.expanduser('~/.cache/huggingface'))
     ckpts_dir = os.path.join(hf_home, "hub", "inference-sh", "wan", "ckpts")
     loras_dir = os.path.join(hf_home, "hub", "inference-sh", "wan", "loras")
-    
+
     # Create the directories
     os.makedirs(ckpts_dir, exist_ok=True)
     os.makedirs(loras_dir, exist_ok=True)
-    
+
     # Remove existing symlinks in target directory if they exist
     for link_name in ["ckpts", "loras"]:
         link_path = target_dir / link_name
@@ -149,7 +209,7 @@ def setup_model_directories(target_dir: Path) -> tuple[str, str]:
                 link_path.unlink()
             else:
                 shutil.rmtree(link_path)
-    
+
     # Create symlinks
     try:
         os.symlink(ckpts_dir, target_dir / "ckpts")
@@ -160,7 +220,7 @@ def setup_model_directories(target_dir: Path) -> tuple[str, str]:
         (target_dir / "loras").unlink()
         os.symlink(ckpts_dir, target_dir / "ckpts")
         os.symlink(loras_dir, target_dir / "loras")
-    
+
     return ckpts_dir, loras_dir
 
 class App(BaseApp):
@@ -170,47 +230,67 @@ class App(BaseApp):
         running_dir = Path(os.getcwd())  # Convert string to Path object
         self.ckpts_dir, self.loras_dir = setup_model_directories(running_dir)
 
+        # Initialize accelerator
+        self.accelerator = Accelerator()
+
         # We don't use this import but wan2gp repo is so messed up, it tries downloading models when importing
         # so we need to import it here to properly download models in setup
         # Import core functions from wgp
-        from .wan.wgp import (
-            download_models,
-            generate_video
-        )
+        download_models = wgp.download_models
+        generate_video = wgp.generate_video
+        server_config = wgp.server_config
+        profile = wgp.profile
 
         self.genv = generate_video
         # Get config for the selected variant
         self.variant_config = configs[metadata.app_variant]
-        
-        # Set device and check capabilities
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        # Set device using accelerator
+        self.device = self.accelerator.device
         self.device_id = 0 if torch.cuda.is_available() else -1
-        
-        # Force profile to 1 for high RAM/VRAM usage
-        offload.shared_state["_profile"] = 1
-        
+
+        # Set profile based on variant config
+        offload.shared_state["_profile"] = self.variant_config["profile"]
+
+        # Force profile to 1 by adding it to sys.argv before any imports
+        if "--profile" not in sys.argv:
+            wgp.profile = self.variant_config["profile"]
+            sys.argv.append("--profile")
+            sys.argv.append(self.variant_config["profile"])
+            wgp.server_config["profile"] = self.variant_config["profile"] # this is an ugly global variable
+
         # Check GPU capabilities and set default dtype
-        major, minor = torch.cuda.get_device_capability(self.device)
-        if major < 8:
-            print("Switching to f16 model as GPU architecture doesn't support bf16")
-            self.default_dtype = torch.float16
+        if torch.cuda.is_available():
+            major, minor = torch.cuda.get_device_capability(self.device)
+            if major < 8:
+                print("Switching to f16 model as GPU architecture doesn't support bf16")
+                self.default_dtype = torch.float16
+            else:
+                self.default_dtype = torch.bfloat16
         else:
-            self.default_dtype = torch.bfloat16
-        
+            self.default_dtype = torch.float32
+
         # Initialize model filenames from config
         self.i2v_transformer_filename = self.variant_config["i2v_transformer_filename"]
         self.text_encoder_filename = self.variant_config["text_encoder_filename"]
         self.vae_filename = self.variant_config["vae_filename"]
-        
+
+        # Ensure wgp.server_config matches the selected config to avoid global overrides
+        wgp.server_config["i2v_transformer_filename"] = self.i2v_transformer_filename
+        wgp.server_config["text_encoder_filename"] = self.text_encoder_filename
+        wgp.server_config["vae_filename"] = self.vae_filename
+        wgp.text_encoder_filename = self.text_encoder_filename
+        wgp.transformer_filename = self.i2v_transformer_filename
+
         # Create directories for models and loras
         ckpts_dir = os.path.join(str(current_dir), "ckpts")
         self.ckpts_dir = ckpts_dir
         loras_dir = os.path.join(str(current_dir), "loras")
         self.loras_dir = loras_dir
-        
+
         os.makedirs(ckpts_dir, exist_ok=True)
         os.makedirs(loras_dir, exist_ok=True)
-        
+
         # Print current contents of ckpts directory
         print("\nCurrent contents of ckpts directory:")
         if os.path.exists(ckpts_dir):
@@ -218,35 +298,35 @@ class App(BaseApp):
                 print(f"  - {file}")
         else:
             print("  Directory does not exist yet")
-        
+
         # Download models
         try:
             print("\nDownloading models...")
             download_models(self.i2v_transformer_filename, self.text_encoder_filename)
-            
+
             # Print contents after download
             print("\nContents of ckpts directory after download:")
             for file in os.listdir(ckpts_dir):
                 print(f"  - {file}")
-            
+
             # Verify that all required model files exist
             required_files = [
                 os.path.join(ckpts_dir, self.i2v_transformer_filename),
                 os.path.join(ckpts_dir, self.text_encoder_filename),
                 os.path.join(ckpts_dir, self.vae_filename)
             ]
-            
+
             missing_files = [f for f in required_files if not os.path.exists(f)]
             if missing_files:
                 raise FileNotFoundError(f"Missing required model files: {', '.join(missing_files)}")
-                
+
         except Exception as e:
             print(f"Error during model setup: {str(e)}")
             raise
-        
+
         # Set default device if specified
         if self.device_id >= 0:
-            torch.set_default_device(self.device)
+            torch.set_default_device(self.accelerator.device)
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run video generation"""
@@ -254,15 +334,15 @@ class App(BaseApp):
         # Parse size
         width, height = map(int, input_data.size.split('x'))
         size = (width, height)
-        
+
         # Load and preprocess input image
         input_img = Image.open(input_data.input_image.path).convert("RGB")
         end_img = Image.open(input_data.end_frame.path).convert("RGB") if input_data.end_frame else None
-        
+
         # Create a temporary file for the video
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
             output_path = temp_file.name
-        
+
         # Create state dictionary with all necessary keys
         state = {
             "gen": {
@@ -292,7 +372,7 @@ class App(BaseApp):
             "advanced": "",
             "model_filename": self.i2v_transformer_filename,
         }
-        
+
         # Generate video using the generate_video function
         self.genv(
             task_id=0,  # Not used in this context
@@ -339,24 +419,26 @@ class App(BaseApp):
             state=state,  # Pass the state dictionary
             model_filename=os.path.join(self.ckpts_dir, self.i2v_transformer_filename)  # Include full path to model file
         )
-        
+
         # Find the most recently created MP4 file in the outputs directory
         outputs_dir = os.path.join(str(current_dir), "outputs")
         os.makedirs(outputs_dir, exist_ok=True)
-        
+
         # Get all MP4 files in the outputs directory
         mp4_files = [f for f in os.listdir(outputs_dir) if f.endswith('.mp4')]
         if not mp4_files:
             raise FileNotFoundError("No MP4 files found in outputs directory")
-            
+
         # Get the most recently modified file
         latest_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(outputs_dir, f)))
         latest_file_path = os.path.join(outputs_dir, latest_file)
-        
+
         return AppOutput(video=File(path=latest_file_path))
 
     async def unload(self):
         """Clean up resources."""
         # Free up GPU memory
-        torch.cuda.empty_cache() 
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
 

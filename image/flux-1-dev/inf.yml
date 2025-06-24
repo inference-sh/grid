@@ -1,5 +1,5 @@
 name: flux-1-dev
-description: A text-to-image model using FLUX.1-Dev with TorchAO quantization support
+description: a text to image app with flux.1-dev
 category: image
 is_public: true
 images:
@@ -7,8 +7,20 @@ images:
     thumbnail: ""
     banner: ""
 variants:
+    bf16-cpu-offload:
+        name: bf16-cpu-offload
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 34359738368
+                type: any
+            ram: 0
+        env: {}
+        python: ""
     default:
         name: bf16
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -17,15 +29,9 @@ variants:
             ram: 2147483648
         env: {}
         python: "3.12"
-    bf16-cpu-offload:
-        name: bf16-cpu-offload
-        resources:
-            gpu:
-                count: 1
-                vram: 34359738368
-                type: any
     fp8dq:
         name: fp8-dynamic
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -36,6 +42,7 @@ variants:
         python: "3.12"
     fp8wo:
         name: fp8-weight-only
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -46,6 +53,7 @@ variants:
         python: "3.12"
     int8dq:
         name: int8-dynamic
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -56,6 +64,7 @@ variants:
         python: "3.12"
     int8wo:
         name: int8-weight-only
+        order: 5
         resources:
             gpu:
                 count: 1

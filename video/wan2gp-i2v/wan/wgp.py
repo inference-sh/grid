@@ -1395,6 +1395,7 @@ if os.path.isfile("t2v_settings.json"):
 if not os.path.isfile(server_config_filename) and os.path.isfile("gradio_config.json"):
     shutil.move("gradio_config.json", server_config_filename) 
 
+print("expected path: ", Path(server_config_filename).resolve())
 if not Path(server_config_filename).is_file():
     server_config = {"attention_mode" : "auto",  
                      "transformer_types": [], 
@@ -1725,15 +1726,26 @@ def download_models(transformer_filename, text_encoder_filename):
     for sourceFolder, files in zip(sourceFolderList,fileList ):
         if len(files)==0:
             if not Path(targetRoot + sourceFolder).exists():
+                print(f"[download_models] Downloading all files in folder: {sourceFolder}")
                 snapshot_download(repo_id=repoId,  allow_patterns=sourceFolder +"/*", local_dir= targetRoot)
+            else:
+                print(f"[download_models] Skipping folder {sourceFolder}, already exists.")
         else:
              for onefile in files:     
                 if len(sourceFolder) > 0: 
-                    if not os.path.isfile(targetRoot + sourceFolder + "/" + onefile ):          
+                    file_path = targetRoot + sourceFolder + "/" + onefile
+                    if not os.path.isfile(file_path):          
+                        print(f"[download_models] Downloading {onefile} to {file_path}")
                         hf_hub_download(repo_id=repoId,  filename=onefile, local_dir = targetRoot, subfolder=sourceFolder)
+                    else:
+                        print(f"[download_models] Skipping {onefile}, already exists at {file_path}")
                 else:
-                    if not os.path.isfile(targetRoot + onefile ):          
+                    file_path = targetRoot + onefile
+                    if not os.path.isfile(file_path):          
+                        print(f"[download_models] Downloading {onefile} to {file_path}")
                         hf_hub_download(repo_id=repoId,  filename=onefile, local_dir = targetRoot)
+                    else:
+                        print(f"[download_models] Skipping {onefile}, already exists at {file_path}")
 
 
 offload.default_verboseLevel = verbose_level
@@ -1746,7 +1758,7 @@ for file_name in to_remove:
         except:
             pass
 
-download_models(transformer_filename, text_encoder_filename) 
+# download_models(transformer_filename, text_encoder_filename) 
 
 def sanitize_file_name(file_name, rep =""):
     return file_name.replace("/",rep).replace("\\",rep).replace(":",rep).replace("|",rep).replace("?",rep).replace("<",rep).replace(">",rep).replace("\"",rep).replace("\n",rep).replace("\r",rep) 
@@ -1895,7 +1907,7 @@ def load_models(model_filename):
     if default_dtype == torch.float16   :
         if "quanto" in model_filename:
             model_filename = model_filename.replace("quanto_int8", "quanto_fp16_int8")
-    download_models(model_filename, text_encoder_filename)
+    # download_models(model_filename, text_encoder_filename)
     VAE_dtype = torch.float16 if server_config.get("vae_precision","16") == "16" else torch.float
     mixed_precision_transformer =  server_config.get("mixed_precision","0") == "1"
     if test_class_i2v(model_filename):
@@ -1905,6 +1917,7 @@ def load_models(model_filename):
         wan_model, pipe = load_t2v_model(model_filename, "", quantizeTransformer = quantizeTransformer, dtype = default_dtype, VAE_dtype = VAE_dtype, mixed_precision_transformer = mixed_precision_transformer)
     wan_model._model_file_name = model_filename
     kwargs = { "extraModelsToQuantize": None}
+    print("luke14free loading with profile:", profile)
     if profile == 2 or profile == 4:
         kwargs["budgets"] = { "transformer" : 100 if preload  == 0 else preload, "text_encoder" : 100, "*" : 1000 }
         # if profile == 4:
@@ -3591,7 +3604,7 @@ def download_loras():
     return
 
 def refresh_image_prompt_type(state, image_prompt_type):
-    return gr.update(visible = "S" in image_prompt_type ), gr.update(visible = "E" in image_prompt_type ), gr.update(visible = "V" in image_prompt_type) , gr.update(visible = "V" in image_prompt_type ) 
+    return gr.update(visible = "S" in image_prompt_type ), gr.update(visible = "E" in image_prompt_type ), gr.update(visible = "V" in image_prompt_type ) , gr.update(visible = "V" in image_prompt_type ) 
 
 def refresh_video_prompt_type(state, video_prompt_type):
     return gr.Gallery(visible = "I" in video_prompt_type), gr.Video(visible= "V" in video_prompt_type),gr.Video(visible= "M" in video_prompt_type ), gr.Text(visible= "V" in video_prompt_type) , gr.Checkbox(visible= "I" in video_prompt_type)
