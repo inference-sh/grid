@@ -75,3 +75,4 @@ variants:
 metadata:
     capabilities:
       - image
+      - reasoning
