@@ -43,3 +43,6 @@ variants:
         env:
             CMAKE_ARGS: -DGGML_CUDA=on
         python: "3.11"
+metadata:
+    capabilities:
+      - image
