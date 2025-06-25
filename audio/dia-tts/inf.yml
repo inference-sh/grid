@@ -17,4 +17,4 @@ variants:
                 type: any
             ram: 8000000000
         env: {}
-        python: "3.12"
+        python: "3.10"

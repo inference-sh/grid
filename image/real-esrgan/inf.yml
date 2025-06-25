@@ -17,4 +17,4 @@ variants:
                 type: ""
             ram: 0
         env: {}
-        python: "3.11"
+        python: "3.10"
