@@ -72,3 +72,6 @@ variants:
             CMAKE_ARGS: -DGGML_CUDA=on
             FORCE_CMAKE: "1"
         python: "3.11"
+metadata:
+    capabilities:
+      - image
