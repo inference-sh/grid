@@ -1,11 +1,10 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput
+from inferencesh import BaseApp, LLMInput, LLMOutput
 from inferencesh.models.llm import build_messages, stream_generate
 from pydantic import Field
-from typing import AsyncGenerator, Optional
-from enum import Enum
+from typing import AsyncGenerator
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
