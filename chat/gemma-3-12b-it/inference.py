@@ -71,39 +71,36 @@ class App(BaseApp):
         super().__init__()
         self.last_context_size = None
 
-    async def setup(self, metadata, context_size=None):
-        config = configs[metadata.variant]
-        try:
-            # Download CLIP model from Hugging Face Hub
-            print(f"Downloading CLIP model from {vision_config['mmproj_repo']}...")
-            clip_model_path = hf_hub_download(
-                repo_id=vision_config['mmproj_repo'],
-                filename=vision_config['mmproj_filename'],
-            )
-            print(f"Downloaded CLIP model to: {clip_model_path}")
-            
-            # Initialize Gemma3ChatHandler for multimodal support
-            print(f"Initializing Gemma3ChatHandler with clip model: {clip_model_path}")
-            self.chat_handler = Gemma3ChatHandler(clip_model_path=clip_model_path)
-            
-            # Use context_size from input if provided, else default
-            n_ctx = context_size if context_size is not None else 32768
-            self.last_context_size = n_ctx
+    async def setup(self, metadata):
+        self.variant_config = configs[metadata.app_variant]
+        # Use context_size from input if provided, else default
+        n_ctx = 4096
+        # Download CLIP model from Hugging Face Hub
+        print(f"Downloading CLIP model from {vision_config['mmproj_repo']}...")
+        clip_model_path = hf_hub_download(
+            repo_id=vision_config['mmproj_repo'],
+            filename=vision_config['mmproj_filename'],
+        )
+        print(f"Downloaded CLIP model to: {clip_model_path}")
+        
+        # Initialize Gemma3ChatHandler for multimodal support
+        print(f"Initializing Gemma3ChatHandler with clip model: {clip_model_path}")
+        self.chat_handler = Gemma3ChatHandler(clip_model_path=clip_model_path)
+        
+        # Use context_size from input if provided, else default
+        self.last_context_size = n_ctx
 
-            print("Downloading and initializing Gemma model...")
-            self.model = Llama.from_pretrained(
-                repo_id=config['repo_id'],
-                filename=config['model_filename'],
-                verbose=False,
-                n_gpu_layers=-1,
-                n_ctx=n_ctx,
-                chat_handler=self.chat_handler
-            )
-            print("Model initialization complete!")
-            log_layers(self.model)
-        except Exception as e:
-            print(f"Error during setup: {e}")
-            raise
+        print("Downloading and initializing Gemma model...")
+        self.model = Llama.from_pretrained(
+            repo_id=self.variant_config['repo_id'],
+            filename=self.variant_config['model_filename'],
+            verbose=False,
+            n_gpu_layers=-1,
+            n_ctx=n_ctx,
+            chat_handler=self.chat_handler
+        )
+        print("Model initialization complete!")
+        log_layers(self.model)
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         # If context_size changed, re-setup the model
@@ -129,7 +126,7 @@ class App(BaseApp):
         )
         
         try:
-            async for output in generator:
+            for output in generator:
                 yield output
         except Exception as e:
             print(f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}")

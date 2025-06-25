@@ -115,10 +115,10 @@ class App(BaseApp):
         super().__init__()
         self.last_context_size = None
 
-    async def setup(self, metadata, context_size=None):
+    async def setup(self, metadata):
         self.variant_config = configs[metadata.app_variant]
         # Use context_size from input if provided, else default
-        n_ctx = context_size if context_size is not None else 4096
+        n_ctx = 4096
         self.last_context_size = n_ctx
         try:
             # Check if model file is available locally

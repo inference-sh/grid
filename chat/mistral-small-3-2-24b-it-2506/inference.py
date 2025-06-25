@@ -13,30 +13,30 @@ from llama_cpp.llama_chat_format import Gemma3ChatHandler
 
 # Vision configuration
 vision_config = {
-    "mmproj_repo": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-    "mmproj_filename": "mmproj-model-f16.gguf"
+    "mmproj_repo": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+    "mmproj_filename": "mmproj-F16.gguf"
 }
 
 configs = {
     "default": {
-        "repo_id": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-        "model_filename": "mistral-small-3.1-24B-Instruct-2503-Q4_K_M.gguf",
+        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
     },
     "q8_0": {
-        "repo_id": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-        "model_filename": "mistral-small-3.1-24B-Instruct-2503-Q8_0.gguf",
+        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q8_0.gguf",
     },
     "q6_k": {
-        "repo_id": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-        "model_filename": "mistral-small-3.1-24B-Instruct-2503-Q6_K.gguf",
+        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q6_K.gguf",
     },
     "q4_k_m": {
-        "repo_id": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-        "model_filename": "mistral-small-3.1-24B-Instruct-2503-Q4_K_M.gguf",
+        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
     },
     "q3_k_l": {
-        "repo_id": "mistralai/Mistral-Small-3.1-24B-Instruct-2503-GGUF",
-        "model_filename": "mistral-small-3.1-24B-Instruct-2503-Q3_K_L.gguf",
+        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q3_K_L.gguf",
     },
 }
 
@@ -105,10 +105,10 @@ class App(BaseApp):
         super().__init__()
         self.last_context_size = None
 
-    async def setup(self, metadata, context_size=None):
+    async def setup(self, metadata):
         self.variant_config = configs[metadata.app_variant]
         # Use context_size from input if provided, else default
-        n_ctx = context_size if context_size is not None else 49152
+        n_ctx = 4096
         self.last_context_size = n_ctx
         try:
             # Download CLIP model from Hugging Face Hub
@@ -120,7 +120,7 @@ class App(BaseApp):
             print(f"Downloaded CLIP model to: {clip_model_path}")
 
             # Initialize Gemma3ChatHandler for multimodal support
-            print(f"Initializing Gemma3ChatHandler with clip model: {clip_model_path}")
+            print(f"Initializing ChatHandler with clip model: {clip_model_path}")
             self.chat_handler = Gemma3ChatHandler(clip_model_path=clip_model_path)
 
             # Check if model file is available locally
@@ -181,7 +181,7 @@ class App(BaseApp):
         )
         
         try:
-            async for output in generator:
+            for output in generator:
                 yield output
         except Exception as e:
             print(f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}")
