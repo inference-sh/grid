@@ -83,7 +83,7 @@ class App(BaseApp):
             self.model = Llama.from_pretrained(
                 repo_id=self.variant_config["repo_id"],
                 filename=self.variant_config["model_filename"],
-                verbose=True,
+                verbose=False,
                 n_gpu_layers=-1,
                 n_ctx=n_ctx,
                 local_files_only=model_is_available,
@@ -145,7 +145,7 @@ class App(BaseApp):
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
             stop=['<|im_end|>', '<end_of_turn>'],
-            verbose=True
+            verbose=False
         )
         
         try:

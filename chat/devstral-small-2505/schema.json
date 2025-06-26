@@ -261,6 +261,15 @@
         "default": false,
         "title": "Reasoning",
         "type": "boolean"
+      },
+      "tools": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Tools",
+        "type": "array"
       }
     },
     "required": [
@@ -334,6 +343,22 @@
         ],
         "default": null,
         "title": "Reasoning"
+      },
+      "tool_calls": {
+        "anyOf": [
+          {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tool Calls"
       },
       "usage": {
         "anyOf": [
