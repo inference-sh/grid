@@ -37,7 +37,7 @@ class AppInput(LLMInputWithImage):
 
 class AppOutput(BaseAppOutput):
     response: Optional[str] = Field(None, description="Generated text response (thinking or understanding)")
-    thinking_content: Optional[str] = Field(None, description="Thinking content")
+    reasoning: Optional[str] = Field(None, description="Thinking content")
     image: Optional[File] = Field(None, description="Generated or processed image")
 
 
@@ -285,10 +285,10 @@ class App(BaseApp):
                     result_image.save(output_path)
                     output_image_file = File(path=output_path)
                 
-                # If thinking was enabled, result goes to thinking_content, otherwise no text output
+                # If thinking was enabled, result goes to reasoning, otherwise no text output
                 if input_data.thinking_enabled and result_text:
                     yield AppOutput(
-                        thinking_content=result_text,
+                        reasoning=result_text,
                         image=output_image_file
                     )
                 else:
@@ -314,7 +314,7 @@ class App(BaseApp):
             print("💭 Thinking about the request...")
         
         # Use the streaming inferencer
-        final_thinking_content = None
+        final_reasoning = None
         for stream_output in self.inferencer.interleave_inference_streaming(input_list, **inference_params):
             stream_type = stream_output["type"]
             content = stream_output["content"]
@@ -328,8 +328,8 @@ class App(BaseApp):
                 # Thinking mode - yield incremental thinking content
                 accumulated = stream_output["accumulated"]
                 accumulated = accumulated.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "") if accumulated else None
-                final_thinking_content = accumulated
-                yield AppOutput(thinking_content=accumulated)
+                final_reasoning = accumulated
+                yield AppOutput(reasoning=accumulated)
                 
             elif stream_type == "final_text":
                 # Final understanding response
@@ -339,9 +339,9 @@ class App(BaseApp):
             elif stream_type == "final_thinking":
                 # Final thinking content (without image yet)
                 content_cleaned = content.replace("</think>", "").replace("<think>", "").replace("<|im_end|>", "") if content else None
-                final_thinking_content = content_cleaned
+                final_reasoning = content_cleaned
                 print("✅ Thinking complete! Now generating image...")
-                yield AppOutput(thinking_content=final_thinking_content)
+                yield AppOutput(reasoning=final_reasoning)
                 
             elif stream_type == "final_image":
                 # Final image result - save and yield
@@ -354,7 +354,7 @@ class App(BaseApp):
                     # Get the final thinking content from previous yield
                     # This will be the complete result
                     yield AppOutput(
-                        thinking_content=final_thinking_content,  # Don't repeat thinking content
+                        reasoning=final_reasoning,  # Don't repeat thinking content
                         image=output_image_file
                     )
                 else:

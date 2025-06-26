@@ -2,7 +2,7 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, LLMInput, LLMOutput
-from inferencesh.models.llm import build_messages, stream_generate
+from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
 from pydantic import Field
 from typing import AsyncGenerator
 
@@ -57,33 +57,6 @@ class AppInput(LLMInput):
 class AppOutput(LLMOutput):
     pass
 
-def transform_response(piece: str, buffer: str) -> tuple[str, LLMOutput]:
-    """Transform each response piece and return updated buffer and output."""
-    cleaned = (piece.replace("<|im_end|>", "")
-                  .replace("<|im_start|>", "")
-                  .replace("<start_of_turn>", "")
-                  .replace("<end_of_turn>", ""))
-    
-    new_buffer = buffer + cleaned
-    
-    # Extract thinking content if present
-    thinking_content = ""
-    if "<think>" in new_buffer:
-        parts = new_buffer.split("</think>", 1)
-        if len(parts) > 1:
-            thinking_content = parts[0].split("<think>", 1)[1].strip()
-            response = parts[1].strip()
-        else:
-            thinking_content = new_buffer.split("<think>", 1)[1].strip()
-            response = ""
-    else:
-        response = new_buffer
-        
-    return new_buffer, LLMOutput(
-        response=response,
-        thinking_content=thinking_content if thinking_content else None,
-    )
-    
 def log_layers(model: Llama):
     total_layers = model.n_layer
     print(f"Total layers: {total_layers}")
@@ -154,15 +127,18 @@ class App(BaseApp):
         # Build messages using SDK helper
         messages = build_messages(input_data)
 
+        # Create transformer instance with our output class
+        transformer = ResponseTransformer(output_cls=AppOutput)
+
         # Stream generate with user-specified parameters using SDK helper
         generator = stream_generate(
             model=self.model,
             messages=messages,
-            output_cls=AppOutput,
+            transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            transform_response=transform_response
+            stop=['<end_of_turn>']
         )
         
         try:

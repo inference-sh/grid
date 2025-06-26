@@ -8,9 +8,9 @@ hf-transfer==0.1.9
 hf-xet==1.1.5
 huggingface-hub==0.33.1
 idna==3.10
-inferencesh @ git+https://github.com/inference-sh/sdk-python.git@818cd5bacbbe606411cf476d711e6b5f5f977a93
+inferencesh @ git+https://github.com/inference-sh/sdk-python.git@a907128a59476087b3acbbf26cb2599103bfa49e
 jinja2==3.1.6
-llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@646beb7e465f5dfa1c41ab79dcaa573af374ba82
+llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@bc3c56db7dc99f9b32b05c12c8dae2e2ae1828c6
 markupsafe==3.0.2
 ninja==1.11.1.4
 numpy==2.3.1

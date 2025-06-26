@@ -6,11 +6,11 @@ filelock==3.18.0
 fsspec==2025.5.1
 hf-transfer==0.1.9
 hf-xet==1.1.5
-huggingface-hub==0.33.0
+huggingface-hub==0.33.1
 idna==3.10
-inferencesh==0.2.13
+inferencesh==0.2.17
 jinja2==3.1.6
-llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@22286bfda29cbb84c9e732697178bca0013aa1f1
+llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@efc4925129106ab647c334af4d7af68a86b3cfd8
 markupsafe==3.0.2
 ninja==1.11.1.4
 numpy==2.3.1

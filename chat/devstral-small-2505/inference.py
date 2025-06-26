@@ -2,10 +2,9 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput
-from inferencesh.models.llm import build_messages, stream_generate
+from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
 from pydantic import Field
-from typing import AsyncGenerator, Optional
-from enum import Enum
+from typing import AsyncGenerator
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -95,18 +94,6 @@ class AppInput(LLMInput):
         default=4096,
     )
 
-def transform_response(piece: str, buffer: str) -> tuple[str, LLMOutput]:
-    """Transform each response piece and return updated buffer and output."""
-    cleaned = (piece.replace("<|im_end|>", "")
-                  .replace("<|im_start|>", "")
-                  .replace("<start_of_turn>", "")
-                  .replace("<end_of_turn>", ""))
-    new_buffer = buffer + cleaned
-    return new_buffer, LLMOutput(
-        response=new_buffer,
-        thinking_content="",
-    )
-    
 class AppOutput(LLMOutput):
     pass
 
@@ -177,15 +164,18 @@ class App(BaseApp):
         # Build messages using SDK helper
         messages = build_messages(input_data)
 
+        # Create transformer instance with our output class
+        transformer = ResponseTransformer(output_cls=AppOutput)
+
         # Stream generate with user-specified parameters using SDK helper
         generator = stream_generate(
             model=self.model,
             messages=messages,
-            output_cls=AppOutput,
+            transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            transform_response=transform_response
+            stop=['<end_of_turn>']
         )
         
         try:

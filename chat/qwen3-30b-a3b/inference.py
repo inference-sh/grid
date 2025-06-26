@@ -2,7 +2,7 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, LLMInput, LLMOutput
-from inferencesh.models.llm import build_messages, stream_generate
+from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
 from typing import AsyncGenerator
 from llama_cpp import Llama
 
@@ -33,17 +33,9 @@ class AppInput(LLMInput):
 class AppOutput(LLMOutput):
     pass
 
-def transform_response(piece: str, buffer: str) -> tuple[str, LLMOutput]:
-    """Transform each response piece and return updated buffer and output."""
-    cleaned = (piece.replace("<|im_end|>", "")
-                  .replace("<|im_start|>", "")
-                  .replace("<end_of_turn>", "")
-                  .replace("<eos>", ""))
-    new_buffer = buffer + cleaned
-    return new_buffer, LLMOutput(
-        response=new_buffer,
-        thinking_content="",
-    )
+
+
+
 
 def log_layers(model: Llama):
     total_layers = model.n_layer
@@ -82,7 +74,6 @@ class App(BaseApp):
         print("Model initialization complete!")
         log_layers(self.model)
 
-
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         # If context_size changed, re-setup the model
         if not hasattr(self, 'last_context_size') or input_data.context_size != self.last_context_size:
@@ -94,16 +85,18 @@ class App(BaseApp):
         # Build messages using SDK helper
         messages = build_messages(input_data)
 
+        # Create transformer instance with our output class
+        transformer = ResponseTransformer(output_cls=AppOutput)
+
         # Stream generate with user-specified parameters using SDK helper
         generator = stream_generate(
             model=self.model,
             messages=messages,
-            output_cls=AppOutput,
+            transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            stop=['<end_of_turn>', '<eos>'],
-            transform_response=transform_response
+            stop=['<end_of_turn>', '<eos>']
         )
         
         try:

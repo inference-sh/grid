@@ -251,9 +251,9 @@
         "title": "Context Size",
         "type": "integer"
       },
-      "enable_thinking": {
+      "reasoning": {
         "default": false,
-        "title": "Enable Thinking",
+        "title": "Reasoning",
         "type": "boolean"
       }
     },
@@ -296,6 +296,16 @@
             "default": 0,
             "title": "Total Tokens",
             "type": "integer"
+          },
+          "reasoning_tokens": {
+            "default": 0,
+            "title": "Reasoning Tokens",
+            "type": "integer"
+          },
+          "reasoning_time": {
+            "default": 0.0,
+            "title": "Reasoning Time",
+            "type": "number"
           }
         },
         "title": "LLMUsage",
@@ -307,7 +317,7 @@
         "title": "Response",
         "type": "string"
       },
-      "thinking_content": {
+      "reasoning": {
         "anyOf": [
           {
             "type": "string"
@@ -317,7 +327,7 @@
           }
         ],
         "default": null,
-        "title": "Thinking Content"
+        "title": "Reasoning"
       },
       "usage": {
         "anyOf": [

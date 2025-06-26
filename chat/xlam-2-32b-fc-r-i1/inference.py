@@ -1,58 +1,37 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
+from pydantic import Field
 from inferencesh import BaseApp, LLMInput, LLMOutput
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from pydantic import Field
 from typing import AsyncGenerator
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import os.path
-from llama_cpp.llama_chat_format import Gemma3ChatHandler
-
-# Vision configuration
-vision_config = {
-    "mmproj_repo": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-    "mmproj_filename": "mmproj-F16.gguf"
-}
 
 configs = {
     "default": {
-        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
+        "repo_id": "mradermacher/xLAM-2-32b-fc-r-i1-GGUF",
+        "model_filename": "xLAM-2-32b-fc-r.i1-Q6_K.gguf",
     },
-    "q8_0": {
-        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q8_0.gguf",
-    },
-    "q6_k": {
-        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q6_K.gguf",
+    "q5_k_m": {
+        "repo_id": "mradermacher/xLAM-2-32b-fc-r-i1-GGUF",
+        "model_filename": "xLAM-2-32b-fc-r.i1-Q5_K_M.gguf",
     },
     "q4_k_m": {
-        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
+        "repo_id": "mradermacher/xLAM-2-32b-fc-r-i1-GGUF",
+        "model_filename": "xLAM-2-32b-fc-r.i1-Q4_K_M.gguf",
     },
-    "q3_k_l": {
-        "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q3_K_L.gguf",
+    "q3_k_s": {
+        "repo_id": "mradermacher/xLAM-2-32b-fc-r-i1-GGUF",
+        "model_filename": "xLAM-2-32b-fc-r.i1-Q3_K_S.gguf",
     },
 }
 
-# Load the template and system prompt
-with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "r") as f:
-    MAGISTRAL_JINJA_TEMPLATE = f.read()
-
-with open(os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt"), "r") as f:
-    SYSTEM_PROMPT = f.read()
-
 class AppInput(LLMInput):
-    system_prompt: str = Field(
-        description="The system prompt to use for the model",
-        default=SYSTEM_PROMPT,
-        examples=[]
-    )
+    system_prompt: str = Field(default="")
+    pass
     
 class AppOutput(LLMOutput):
     pass
@@ -83,18 +62,6 @@ class App(BaseApp):
         n_ctx = 4096
         self.last_context_size = n_ctx
         try:
-            # Download CLIP model from Hugging Face Hub
-            print(f"Downloading CLIP model from {vision_config['mmproj_repo']}...")
-            clip_model_path = hf_hub_download(
-                repo_id=vision_config['mmproj_repo'],
-                filename=vision_config['mmproj_filename'],
-            )
-            print(f"Downloaded CLIP model to: {clip_model_path}")
-
-            # Initialize Gemma3ChatHandler for multimodal support
-            print(f"Initializing ChatHandler with clip model: {clip_model_path}")
-            self.chat_handler = Gemma3ChatHandler(clip_model_path=clip_model_path)
-
             # Check if model file is available locally
             try:
                 local_path = hf_hub_download(
@@ -111,17 +78,16 @@ class App(BaseApp):
             if model_is_available:
                 print("Loading previously downloaded model from cache...")
             else:
-                print("Downloading and initializing Mistral model...")
+                print("Downloading and initializing Phi-4 model...")
 
             self.model = Llama.from_pretrained(
                 repo_id=self.variant_config["repo_id"],
                 filename=self.variant_config["model_filename"],
-                verbose=False,
+                verbose=True,
                 n_gpu_layers=-1,
                 n_ctx=n_ctx,
                 local_files_only=model_is_available,
-                chat_handler=self.chat_handler,
-                clip_model_path=clip_model_path
+                chat_format="gguf-function-calling",
             )
             print("Model initialization complete!")
             log_layers(self.model)
@@ -143,15 +109,43 @@ class App(BaseApp):
         # Create transformer instance with our output class
         transformer = ResponseTransformer(output_cls=AppOutput)
 
+        tools=[{
+            "type": "function",
+            "function": {
+            "name": "SomeFunction",
+            "parameters": {
+                "type": "object",
+                "title": "SomeFunction",
+                "properties": {
+                "arg1": {
+                    "title": "arg1",
+                    "type": "string"
+                },
+                "arg2": {
+                    "title": "arg2",
+                    "type": "integer"
+                }
+                },
+                "required": [ "arg1", "arg2" ]
+            }
+            }
+        }]
+        tool_choice="auto"
         # Stream generate with user-specified parameters using SDK helper
+        print("messages", messages)
+        print("tools", tools)
+        print("tool_choice", tool_choice)
         generator = stream_generate(
             model=self.model,
             messages=messages,
+            tools=tools,
+            tool_choice=tool_choice,
             transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            stop=['<end_of_turn>', '<eos>']
+            stop=['<|im_end|>', '<end_of_turn>'],
+            verbose=True
         )
         
         try:
@@ -163,4 +157,3 @@ class App(BaseApp):
 
     async def unload(self):
         del self.model
-        del self.chat_handler 

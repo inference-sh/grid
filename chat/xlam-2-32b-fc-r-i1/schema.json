@@ -111,15 +111,7 @@
     },
     "properties": {
       "system_prompt": {
-        "default": "You are a helpful assistant that can answer questions and help with tasks.",
-        "description": "The system prompt to use for the model",
-        "examples": [
-          "You are a helpful assistant that can answer questions and help with tasks.",
-          "You are a certified medical professional who can provide accurate health information.",
-          "You are a certified financial advisor who can give sound investment guidance.",
-          "You are a certified cybersecurity expert who can explain security best practices.",
-          "You are a certified environmental scientist who can discuss climate and sustainability."
-        ],
+        "default": "",
         "title": "System Prompt",
         "type": "string"
       },

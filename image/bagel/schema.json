@@ -284,7 +284,7 @@
         "description": "Generated text response (thinking or understanding)",
         "title": "Response"
       },
-      "thinking_content": {
+      "reasoning": {
         "anyOf": [
           {
             "type": "string"
