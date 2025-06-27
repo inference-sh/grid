@@ -3,9 +3,10 @@ description: Text to video generation using Wan2.1 (14B) model with i2v effects
 category: video
 is_public: true
 images:
-    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/1gczmpzen7pe13td6mk5fhhwb1.png
+    card: https://api.inference.sh/api/v1/files/6mybz5z9xm84vab56hk7261yvm
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     default:
         name: default

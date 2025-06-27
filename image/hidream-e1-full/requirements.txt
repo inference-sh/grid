@@ -1,0 +1,15 @@
+pydantic >= 2.0.0
+inferencesh
+
+torch>=2.7.0
+torchvision>=0.20.1
+sentencepiece
+git+https://github.com/huggingface/diffusers.git@main
+transformers>=4.47.1
+einops>=0.7.0
+accelerate>=1.2.1
+optimum>=1.13.0
+optimum-quanto>=0.0.1
+gguf
+safetensors
+peft

@@ -1,0 +1,164 @@
+name: hidream-i1-dev
+description: HiDream-I1-Dev is a development image generative foundation model with 17B parameters that achieves balanced image generation quality with 28 inference steps.
+category: image
+is_public: true
+images:
+    card: https://api.inference.sh/api/v1/files/69rtzyw79gv4cmp6nk5dgs0jwp
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: Dev BF16 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 35000000000
+                type: any
+            ram: 80000000000
+        env: {}
+        python: "3.12"
+    dev-q2k:
+        name: Dev Q2_K (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q3km:
+        name: Dev Q3_K_M (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q3ks:
+        name: Dev Q3_K_S (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q4km:
+        name: Dev Q4_K_M (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q4ks:
+        name: Dev Q4_K_S (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q5km:
+        name: Dev Q5_K_M (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q5ks:
+        name: Dev Q5_K_S (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q6k:
+        name: Dev Q6_K (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q8:
+        name: Dev Q8_0 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q40:
+        name: Dev Q4_0 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q41:
+        name: Dev Q4_1 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q50:
+        name: Dev Q5_0 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q51:
+        name: Dev Q5_1 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"

@@ -6,6 +6,7 @@ images:
     card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/1nd25j9wr46nbsn7ke9drmw71r.png
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     default:
         name: F16 (Default)
@@ -20,7 +21,7 @@ variants:
         python: "3.12"
     q2_k:
         name: Q2_K
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -31,7 +32,7 @@ variants:
         python: "3.12"
     q3_k_s:
         name: Q3_K_S
-        order: 0
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -42,7 +43,7 @@ variants:
         python: "3.12"
     q4_0:
         name: Q4_0
-        order: 0
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -53,7 +54,7 @@ variants:
         python: "3.12"
     q4_1:
         name: Q4_1
-        order: 0
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -64,7 +65,7 @@ variants:
         python: "3.12"
     q4_k_s:
         name: Q4_K_S
-        order: 0
+        order: 5
         resources:
             gpu:
                 count: 1
@@ -75,7 +76,7 @@ variants:
         python: "3.12"
     q5_0:
         name: Q5_0
-        order: 0
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -86,7 +87,7 @@ variants:
         python: "3.12"
     q5_1:
         name: Q5_1
-        order: 0
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -97,7 +98,7 @@ variants:
         python: "3.12"
     q5_k_s:
         name: Q5_K_S
-        order: 0
+        order: 8
         resources:
             gpu:
                 count: 1
@@ -108,7 +109,7 @@ variants:
         python: "3.12"
     q6_k:
         name: Q6_K
-        order: 0
+        order: 9
         resources:
             gpu:
                 count: 1
@@ -119,7 +120,7 @@ variants:
         python: "3.12"
     q8_0:
         name: Q8_0
-        order: 0
+        order: 10
         resources:
             gpu:
                 count: 1

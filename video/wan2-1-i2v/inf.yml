@@ -3,9 +3,10 @@ description: wan2-1 image to video
 category: video
 is_public: true
 images:
-    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/5tpyspfvptmenqc3a7y6f3rsk8.png
+    card: https://api.inference.sh/api/v1/files/0h9xrebhc2gn32xds725mrtj62
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     480p_int8_low_vram:
         name: 480p (Int8 Quantized)
@@ -20,7 +21,7 @@ variants:
         python: "3.12"
     720p:
         name: 720p
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -31,7 +32,7 @@ variants:
         python: "3.12"
     720p_int8_low_vram:
         name: 720p (Int8 Quantized)
-        order: 0
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -42,7 +43,7 @@ variants:
         python: "3.12"
     720p_low_vram:
         name: 720p (Low VRAM)
-        order: 0
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -53,7 +54,7 @@ variants:
         python: "3.12"
     default:
         name: 480p
-        order: 0
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -64,7 +65,7 @@ variants:
         python: "3.12"
     default_low_vram:
         name: 480p (Low VRAM)
-        order: 0
+        order: 5
         resources:
             gpu:
                 count: 1
@@ -75,7 +76,7 @@ variants:
         python: "3.12"
     flf2v:
         name: FLF2V
-        order: 0
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -86,7 +87,7 @@ variants:
         python: "3.12"
     flf2v_int8_low_vram:
         name: FLF2V (Int8 Quantized)
-        order: 0
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -97,7 +98,7 @@ variants:
         python: "3.12"
     flf2v_low_vram:
         name: FLF2V (Low VRAM)
-        order: 0
+        order: 8
         resources:
             gpu:
                 count: 1
@@ -108,7 +109,7 @@ variants:
         python: "3.12"
     fun_inp_1.3B:
         name: Fun Inpainting 1.3B
-        order: 0
+        order: 9
         resources:
             gpu:
                 count: 1
@@ -119,7 +120,7 @@ variants:
         python: "3.12"
     fun_inp_1.3B_low_vram:
         name: Fun Inpainting 1.3B (Low VRAM)
-        order: 0
+        order: 10
         resources:
             gpu:
                 count: 1
@@ -130,7 +131,7 @@ variants:
         python: "3.12"
     fun_inp_14B:
         name: Fun Inpainting 14B
-        order: 0
+        order: 11
         resources:
             gpu:
                 count: 1
@@ -141,7 +142,7 @@ variants:
         python: "3.12"
     fun_inp_14B_int8_low_vram:
         name: Fun Inpainting 14B (Int8 Quantized)
-        order: 0
+        order: 12
         resources:
             gpu:
                 count: 1
@@ -152,7 +153,7 @@ variants:
         python: "3.12"
     fun_inp_14B_low_vram:
         name: Fun Inpainting 14B (Low VRAM)
-        order: 0
+        order: 13
         resources:
             gpu:
                 count: 1

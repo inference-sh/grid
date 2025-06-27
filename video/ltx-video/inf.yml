@@ -3,9 +3,10 @@ description: Generate high-quality videos with LTX-Video model
 category: video
 is_public: true
 images:
-    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/0crs5j5a1bnysnft5kts1zsq8h.png
+    card: https://api.inference.sh/api/v1/files/0hkqp4g77sn618x5hchtv5vmnw
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     2B_dev:
         name: 2B_dev
@@ -20,7 +21,7 @@ variants:
         python: "3.12"
     2B_distilled:
         name: 2B_distilled
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -31,7 +32,7 @@ variants:
         python: "3.12"
     13B_dev:
         name: 13B_dev
-        order: 0
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -42,7 +43,7 @@ variants:
         python: "3.12"
     13B_distilled:
         name: 13B_distilled
-        order: 0
+        order: 3
         resources:
             gpu:
                 count: 1

@@ -6,6 +6,7 @@ images:
     card: ""
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     default:
         name: default

@@ -3,9 +3,10 @@ description: Run Real-ESRGAN on an image or video
 category: image
 is_public: true
 images:
-    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/70qd11zdtx24js333n4h5q19g8.png
+    card: https://api.inference.sh/api/v1/files/1k2y7x3bry82zyd4yd4fehatre
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     default:
         name: default

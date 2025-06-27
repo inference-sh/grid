@@ -3,9 +3,10 @@ description: Upscale images and videos with Flux
 category: image
 is_public: true
 images:
-    card: https://1nf.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/4pp00rqq39bjat4mrp8e9cge56.png
+    card: https://api.inference.sh/api/v1/files/7k3ygemrfzb507zdqs4fm4phks
     thumbnail: ""
     banner: ""
+metadata: {}
 variants:
     default:
         name: default

@@ -1,0 +1,164 @@
+{
+  "input": {
+    "$defs": {
+      "SchedulerType": {
+        "description": "Available scheduler types for the HiDream model.",
+        "enum": [
+          "flow_unipc",
+          "flash_flow"
+        ],
+        "title": "SchedulerType",
+        "type": "string"
+      }
+    },
+    "properties": {
+      "prompt": {
+        "description": "The prompt to generate an image from",
+        "title": "Prompt",
+        "type": "string"
+      },
+      "width": {
+        "default": 1024,
+        "description": "The width of the generated image (will be adjusted to nearest multiple of 8)",
+        "minimum": 8,
+        "title": "Width",
+        "type": "integer"
+      },
+      "height": {
+        "default": 1024,
+        "description": "The height of the generated image (will be adjusted to nearest multiple of 8)",
+        "minimum": 8,
+        "title": "Height",
+        "type": "integer"
+      },
+      "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": -1,
+        "description": "The seed for the random number generator (-1 for random)",
+        "title": "Seed"
+      },
+      "num_inference_steps": {
+        "default": 16,
+        "description": "Number of denoising steps (optimal: 16 for fast model)",
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Num Inference Steps",
+        "type": "integer"
+      },
+      "guidance_scale": {
+        "default": 1.0,
+        "description": "CFG scale - how closely to follow the prompt (optimal: 1.0 for fast model)",
+        "maximum": 20.0,
+        "minimum": 0.0,
+        "title": "Guidance Scale",
+        "type": "number"
+      },
+      "shift": {
+        "default": 3.0,
+        "description": "Shift parameter for scheduler (optimal: 3.0 for fast model)",
+        "maximum": 10.0,
+        "minimum": 0.0,
+        "title": "Shift",
+        "type": "number"
+      },
+      "scheduler_type": {
+        "$ref": "#/$defs/SchedulerType",
+        "default": "flash_flow",
+        "description": "Scheduler type (optimal: 'flash_flow' for fast model)"
+      }
+    },
+    "required": [
+      "prompt"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "result": {
+        "$ref": "#/$defs/File"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}
