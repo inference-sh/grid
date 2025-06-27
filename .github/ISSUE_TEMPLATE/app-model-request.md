@@ -7,15 +7,6 @@ assignees: okaris
 
 ---
 
----
-name: model/app request
-about: request a new ai model or app for a specific use case
-title: "[request] "
-labels: request
-assignees: ''
-
----
-
 **model or app name**
 
 <!-- e.g. mixtral 8x7b, comfyui, whisper, etc -->
