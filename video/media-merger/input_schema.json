@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "Media": {
+      "properties": {
+        "file": {
+          "$ref": "#/$defs/File",
+          "description": "The media file (video or image) to include in the sequence"
+        },
+        "transition_type": {
+          "default": "crossfade",
+          "description": "Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)",
+          "enum": [
+            "crossfade",
+            "slide_left",
+            "slide_right",
+            "slide_up",
+            "slide_down",
+            "fade_to_black"
+          ],
+          "title": "Transition Type",
+          "type": "string"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": -1.0,
+          "description": "Duration in seconds for this media. Use -1 to use entire duration for videos or 5 seconds for images.",
+          "title": "Duration"
+        },
+        "transition_duration": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1.0,
+          "description": "Duration in seconds for the transition effect",
+          "title": "Transition Duration"
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "title": "Media",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "media_files": {
+      "description": "List of media files to merge with transitions",
+      "items": {
+        "$ref": "#/$defs/Media"
+      },
+      "title": "Media Files",
+      "type": "array"
+    },
+    "output_format": {
+      "default": "mp4",
+      "description": "Format of the output video file",
+      "examples": [
+        "mp4",
+        "avi",
+        "mov",
+        "webm"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "fps": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 30,
+      "description": "Frames per second for the output video",
+      "title": "Fps"
+    }
+  },
+  "required": [
+    "media_files"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

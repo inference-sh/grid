@@ -5,7 +5,7 @@ decorator==5.2.1
 idna==3.10
 imageio==2.37.0
 imageio-ffmpeg==0.6.0
-inferencesh==0.2.13
+inferencesh==0.2.25
 moviepy==2.2.1
 ninja==1.11.1.4
 numpy==2.3.1

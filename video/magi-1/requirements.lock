@@ -19,12 +19,12 @@ ftfy==6.2.0
 future==1.0.0
 gpustat==1.1.1
 hf-xet==1.1.5
-huggingface-hub==0.33.0
+huggingface-hub==0.33.1
 idna==3.10
 imageio==2.34.0
 imageio-ffmpeg==0.6.0
 importlib-metadata==8.7.0
-inferencesh==0.2.13
+inferencesh==0.2.25
 jinja2==3.1.6
 kiwisolver==1.4.8
 markdown-it-py==3.0.0

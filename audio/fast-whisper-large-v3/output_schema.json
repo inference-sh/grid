@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "text": {
+      "description": "The transcribed/translated text",
+      "title": "Text",
+      "type": "string"
+    },
+    "chunks": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Timestamp chunks if requested",
+      "title": "Chunks"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

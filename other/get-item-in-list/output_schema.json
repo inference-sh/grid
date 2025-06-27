@@ -1,0 +1,13 @@
+{
+  "properties": {
+    "element": {
+      "description": "The element at the specified index in the list",
+      "title": "Element"
+    }
+  },
+  "required": [
+    "element"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

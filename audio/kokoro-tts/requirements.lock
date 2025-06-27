@@ -21,9 +21,9 @@ espeakng-loader==0.2.4
 filelock==3.18.0
 fsspec==2025.5.1
 hf-xet==1.1.5
-huggingface-hub==0.33.0
+huggingface-hub==0.33.1
 idna==3.10
-inferencesh==0.2.13
+inferencesh==0.2.25
 isodate==0.7.2
 jinja2==3.1.6
 joblib==1.5.1
@@ -96,7 +96,7 @@ thinc==8.3.6
 tokenizers==0.21.2
 torch==2.7.1
 tqdm==4.67.1
-transformers==4.52.4
+transformers==4.53.0
 triton==3.3.1
 typer==0.16.0
 typing-extensions==4.14.0

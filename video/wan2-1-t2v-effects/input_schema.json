@@ -1,0 +1,60 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "The input prompt describing the video to generate",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "t2v_effect": {
+      "description": "Choose an effect",
+      "enum": [
+        "Abandoned-Places",
+        "Animal-Documentary",
+        "Boxing",
+        "Cats",
+        "Cyberpunk",
+        "Dogs",
+        "Doom-FPS",
+        "Eye-Close-Up",
+        "Fantasy-Landscapes",
+        "Film-Noir",
+        "Fire",
+        "Lego",
+        "POV-Driving",
+        "Pixar",
+        "Tiny-Planet-Fisheye",
+        "Tornado",
+        "Tsunami",
+        "Ultra-Wide",
+        "Vintage-VHS",
+        "Zoom-Call"
+      ],
+      "title": "T2V Effect",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "",
+      "description": "The negative prompt to guide generation",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "num_frames": {
+      "default": 33,
+      "description": "Number of frames to generate",
+      "title": "Num Frames",
+      "type": "integer"
+    },
+    "fps": {
+      "default": 16,
+      "description": "Frames per second for output video",
+      "title": "Fps",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt",
+    "t2v_effect"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

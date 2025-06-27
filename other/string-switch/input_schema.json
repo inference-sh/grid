@@ -1,0 +1,51 @@
+{
+  "$defs": {
+    "StringOperator": {
+      "enum": [
+        "==",
+        "!=",
+        "contains",
+        "starts_with",
+        "ends_with",
+        "is_empty",
+        "is_not_empty",
+        "matches_regex"
+      ],
+      "title": "StringOperator",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "left_operand": {
+      "description": "The left side string of the comparison (condition value)",
+      "title": "Left Operand",
+      "type": "string"
+    },
+    "operator": {
+      "$ref": "#/$defs/StringOperator",
+      "description": "The string comparison operator to use"
+    },
+    "right_operand": {
+      "description": "The right side string of the comparison (value to check against)",
+      "title": "Right Operand",
+      "type": "string"
+    },
+    "true_value": {
+      "description": "The value to return if the condition is true",
+      "title": "True Value"
+    },
+    "false_value": {
+      "description": "The value to return if the condition is false",
+      "title": "False Value"
+    }
+  },
+  "required": [
+    "left_operand",
+    "operator",
+    "right_operand",
+    "true_value",
+    "false_value"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

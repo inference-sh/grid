@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "list_input": {
+      "description": "The input list to get an element from",
+      "items": {},
+      "title": "List Input",
+      "type": "array"
+    },
+    "index": {
+      "description": "The index to get the element from (can be negative)",
+      "title": "Index",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "list_input",
+    "index"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

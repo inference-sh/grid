@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "result": {
+      "description": "The processed template with strings substituted",
+      "title": "Result",
+      "type": "string"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

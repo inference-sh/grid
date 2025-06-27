@@ -5,15 +5,15 @@ from inferencesh import BaseApp, LLMInput, LLMOutput
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
 from typing import AsyncGenerator
 from llama_cpp import Llama
-from llama_cpp.llama_chat_format import Gemma3ChatHandler
-from huggingface_hub import hf_hub_download
+# from llama_cpp.llama_chat_format import Gemma3ChatHandler
+# from huggingface_hub import hf_hub_download
 import os.path
 
 # Configuration for the model
-vision_config = {
-    "mmproj_repo": "ggml-org/gemma-3-27b-it-GGUF",
-    "mmproj_filename": "mmproj-model-f16.gguf"
-}
+# vision_config = {
+#     "mmproj_repo": "ggml-org/gemma-3-27b-it-GGUF",
+#     "mmproj_filename": "mmproj-model-f16.gguf"
+# }
 
 
 configs = {

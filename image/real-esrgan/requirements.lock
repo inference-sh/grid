@@ -13,10 +13,10 @@ fonttools==4.58.4
 fsspec==2025.5.1
 future==1.0.0
 gfpgan==1.3.8
-grpcio==1.73.0
+grpcio==1.73.1
 idna==3.10
 imageio==2.37.0
-inferencesh==0.2.13
+inferencesh==0.2.25
 jinja2==3.1.6
 kiwisolver==1.4.8
 lazy-loader==0.4
@@ -62,7 +62,7 @@ setuptools==80.9.0
 setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0
-tb-nightly==2.20.0a20250624
+tb-nightly==2.20.0a20250627
 tensorboard-data-server==0.7.2
 tifffile==2025.5.10
 tomli==2.2.1
