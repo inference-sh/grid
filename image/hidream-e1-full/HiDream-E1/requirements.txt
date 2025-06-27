@@ -1,0 +1,8 @@
+torch>=2.5.1
+torchvision>=0.20.1
+git+https://github.com/huggingface/diffusers.git
+transformers>=4.47.1
+einops>=0.7.0
+accelerate>=1.2.1
+safetensors
+peft
