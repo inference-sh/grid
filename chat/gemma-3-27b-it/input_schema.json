@@ -109,6 +109,18 @@
     }
   },
   "properties": {
+    "reasoning": {
+      "title": "Reasoning",
+      "type": "boolean"
+    },
+    "tools": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tools",
+      "type": "array"
+    },
     "system_prompt": {
       "default": "You are a helpful assistant that can answer questions and help with tasks.",
       "description": "The system prompt to use for the model",
@@ -255,23 +267,11 @@
       "default": 4096,
       "title": "Context Size",
       "type": "integer"
-    },
-    "reasoning": {
-      "default": false,
-      "title": "Reasoning",
-      "type": "boolean"
-    },
-    "tools": {
-      "default": [],
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
     }
   },
   "required": [
+    "reasoning",
+    "tools",
     "text"
   ],
   "title": "AppInput",

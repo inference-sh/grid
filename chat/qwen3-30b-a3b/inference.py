@@ -1,9 +1,10 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput
+from inferencesh import BaseApp, LLMInput, LLMOutput, File
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional, List, Dict, Any
+from pydantic import Field
 from llama_cpp import Llama
 
 import os.path
@@ -12,7 +13,7 @@ configs = {
     "default": {
         "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
         "model_filename": "Qwen3-30B-A3B-Q8_0.gguf",
-    },
+    },  
     "q6_k": {
         "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
         "model_filename": "Qwen3-30B-A3B-Q6_K.gguf",
@@ -28,6 +29,10 @@ configs = {
 }
 
 class AppInput(LLMInput):
+    image: Optional[File] = Field(
+        exclude=True
+    )
+    tools: List[Dict[str, Any]] = Field(exclude=True)
     pass
 
 class AppOutput(LLMOutput):

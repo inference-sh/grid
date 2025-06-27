@@ -57,7 +57,7 @@ matplotlib-inline==0.1.7
 mdurl==0.1.2
 mpmath==1.3.0
 msgpack==1.1.1
-nari-tts @ git+https://github.com/nari-labs/dia.git@e2dacb306c4c4b8c0ae4e3d96909831633253eed
+nari-tts @ git+https://github.com/nari-labs/dia.git@27397d95644a9e7f877ec7388ff9cd96a484aa54
 networkx==3.4.2
 ninja==1.11.1.4
 numba==0.61.2

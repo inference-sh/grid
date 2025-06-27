@@ -2,9 +2,10 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from pydantic import Field
-from inferencesh import BaseApp, LLMInput, LLMOutput
+from inferencesh import BaseApp, LLMInput, LLMOutput, File
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional, List, Dict, Any
+from pydantic import Field
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -31,6 +32,10 @@ configs = {
 
 class AppInput(LLMInput):
     system_prompt: str = Field(default="")
+    image: Optional[File] = Field(
+        exclude=True
+    )
+    reasoning: bool = Field(exclude=True)
     pass
     
 class AppOutput(LLMOutput):
@@ -132,9 +137,6 @@ class App(BaseApp):
         }]
         tool_choice="auto"
         # Stream generate with user-specified parameters using SDK helper
-        print("messages", messages)
-        print("tools", tools)
-        print("tool_choice", tool_choice)
         generator = stream_generate(
             model=self.model,
             messages=messages,

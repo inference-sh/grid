@@ -110,7 +110,7 @@ rpds-py==0.25.1
 ruff==0.12.1
 safehttpx==0.1.6
 safetensors==0.5.3
-sageattention @ git+https://github.com/thu-ml/SageAttention@1439bd9b56e5b9d1e64e583c261a381b419a5ab7
+sageattention @ git+https://github.com/thu-ml/SageAttention@e9b072f0fc2682f104abbda306af3d42fc33b969
 scikit-image==0.25.2
 scipy==1.16.0
 segment-anything==1.0

@@ -109,6 +109,16 @@
     }
   },
   "properties": {
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "system_prompt": {
       "default": "You are a helpful assistant that can answer questions and help with tasks.",
       "description": "The system prompt to use for the model",
@@ -224,18 +234,6 @@
       "title": "Text",
       "type": "string"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The image to use for the model"
-    },
     "temperature": {
       "default": 0.7,
       "title": "Temperature",
@@ -272,6 +270,7 @@
     }
   },
   "required": [
+    "image",
     "text"
   ],
   "title": "AppInput",

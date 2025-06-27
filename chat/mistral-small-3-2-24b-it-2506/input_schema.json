@@ -116,6 +116,24 @@
       "title": "System Prompt",
       "type": "string"
     },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tools": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tools",
+      "type": "array"
+    },
     "context": {
       "default": [],
       "description": "The context to use for the model",
@@ -218,18 +236,6 @@
       "title": "Text",
       "type": "string"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The image to use for the model"
-    },
     "temperature": {
       "default": 0.7,
       "title": "Temperature",
@@ -254,18 +260,11 @@
       "default": false,
       "title": "Reasoning",
       "type": "boolean"
-    },
-    "tools": {
-      "default": [],
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
     }
   },
   "required": [
+    "image",
+    "tools",
     "text"
   ],
   "title": "AppInput",

@@ -114,6 +114,20 @@
       "title": "System Prompt",
       "type": "string"
     },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reasoning": {
+      "title": "Reasoning",
+      "type": "boolean"
+    },
     "context": {
       "default": [],
       "description": "The context to use for the model",
@@ -216,18 +230,6 @@
       "title": "Text",
       "type": "string"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The image to use for the model"
-    },
     "temperature": {
       "default": 0.7,
       "title": "Temperature",
@@ -248,11 +250,6 @@
       "title": "Context Size",
       "type": "integer"
     },
-    "reasoning": {
-      "default": false,
-      "title": "Reasoning",
-      "type": "boolean"
-    },
     "tools": {
       "default": [],
       "items": {
@@ -264,6 +261,8 @@
     }
   },
   "required": [
+    "image",
+    "reasoning",
     "text"
   ],
   "title": "AppInput",

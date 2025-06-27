@@ -1,10 +1,10 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput
+from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput, File
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
 from pydantic import Field
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional, List, Dict, Any
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -92,7 +92,13 @@ class AppInput(LLMInput):
         min_value=4096,
         max_value=49152,
         default=4096,
+    ),
+    image: Optional[File] = Field(
+        exclude=True
     )
+    reasoning: bool = Field(exclude=True)
+    tools: List[Dict[str, Any]] = Field(exclude=True)
+
 
 class AppOutput(LLMOutput):
     pass

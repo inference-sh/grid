@@ -109,6 +109,24 @@
     }
   },
   "properties": {
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tools": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tools",
+      "type": "array"
+    },
     "system_prompt": {
       "default": "You are a helpful assistant that can answer questions and help with tasks.",
       "description": "The system prompt to use for the model",
@@ -224,18 +242,6 @@
       "title": "Text",
       "type": "string"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The image to use for the model"
-    },
     "temperature": {
       "default": 0.7,
       "title": "Temperature",
@@ -260,18 +266,11 @@
       "default": false,
       "title": "Reasoning",
       "type": "boolean"
-    },
-    "tools": {
-      "default": [],
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
     }
   },
   "required": [
+    "image",
+    "tools",
     "text"
   ],
   "title": "AppInput",

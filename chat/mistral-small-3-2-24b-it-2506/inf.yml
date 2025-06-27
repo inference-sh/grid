@@ -6,7 +6,9 @@ images:
     card: https://api.inference.sh/api/v1/files/0npbjbyw0z14jx7j9q5z5fg20r
     thumbnail: ""
     banner: ""
-metadata: {}
+metadata:
+    capabilities:
+      - reasoning
 variants:
     default:
         name: default

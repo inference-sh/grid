@@ -226,12 +226,30 @@
       "type": "integer"
     },
     "context_size": {
-      "default": 4096,
-      "description": "The maximum number of tokens to use for the context (changing this will cause a model re-setup)",
-      "max_value": 49152,
-      "min_value": 4096,
       "title": "Context Size",
       "type": "integer"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reasoning": {
+      "title": "Reasoning",
+      "type": "boolean"
+    },
+    "tools": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tools",
+      "type": "array"
     },
     "text": {
       "description": "The user prompt to use for the model",
@@ -243,35 +261,12 @@
       ],
       "title": "Text",
       "type": "string"
-    },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The image to use for the model"
-    },
-    "reasoning": {
-      "default": false,
-      "title": "Reasoning",
-      "type": "boolean"
-    },
-    "tools": {
-      "default": [],
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
     }
   },
   "required": [
+    "image",
+    "reasoning",
+    "tools",
     "text"
   ],
   "title": "AppInput",
