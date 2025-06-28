@@ -29,7 +29,7 @@ import os.path
 configs = {
     "default": {
         "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",
-        "model_filename": "gemma-3n-E4B-it-BF16.gguf",
+        "model_filename": "gemma-3n-E4B-it-F16.gguf",
     },
     "q8_0": {
         "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",

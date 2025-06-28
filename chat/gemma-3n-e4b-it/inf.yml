@@ -11,7 +11,7 @@ metadata:
       - reasoning
 variants:
     default:
-        name: bf16
+        name: f16
         order: 0
         resources:
             gpu:
