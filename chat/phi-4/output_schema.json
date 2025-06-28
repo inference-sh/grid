@@ -49,6 +49,11 @@
   },
   "description": "Phi-4 output model with token usage and timing information.",
   "properties": {
+    "response": {
+      "description": "The generated text response",
+      "title": "Response",
+      "type": "string"
+    },
     "usage": {
       "anyOf": [
         {
@@ -60,11 +65,6 @@
       ],
       "default": null,
       "description": "Token usage statistics"
-    },
-    "response": {
-      "description": "The generated text response",
-      "title": "Response",
-      "type": "string"
     }
   },
   "required": [
