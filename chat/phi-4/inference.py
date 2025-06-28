@@ -3,8 +3,9 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, LLMInput, LLMOutput, File
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from typing import AsyncGenerator, Optional, List, Dict, Any
-from pydantic import Field
+from typing import AsyncGenerator, List, Dict, Any
+from pydantic.json_schema import SkipJsonSchema
+
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -34,11 +35,9 @@ configs = {
 }
 
 class AppInput(LLMInput):
-    image: Optional[File] = Field(
-        exclude=True
-    )
-    reasoning: bool = Field(exclude=True)
-    tools: List[Dict[str, Any]] = Field(exclude=True)
+    image: SkipJsonSchema[File]
+    reasoning: SkipJsonSchema[bool]
+    tools: SkipJsonSchema[List[Dict[str, Any]]]
     pass
     
 class AppOutput(LLMOutput):

@@ -229,28 +229,6 @@
       "title": "Context Size",
       "type": "integer"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "reasoning": {
-      "title": "Reasoning",
-      "type": "boolean"
-    },
-    "tools": {
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
-    },
     "text": {
       "description": "The user prompt to use for the model",
       "examples": [
@@ -264,9 +242,6 @@
     }
   },
   "required": [
-    "image",
-    "reasoning",
-    "tools",
     "text"
   ],
   "title": "AppInput",

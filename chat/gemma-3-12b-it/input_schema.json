@@ -109,16 +109,6 @@
     }
   },
   "properties": {
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
     "system_prompt": {
       "default": "You are a helpful assistant that can answer questions and help with tasks.",
       "description": "The system prompt to use for the model",
@@ -270,7 +260,6 @@
     }
   },
   "required": [
-    "image",
     "text"
   ],
   "title": "AppInput",

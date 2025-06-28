@@ -114,20 +114,6 @@
       "title": "System Prompt",
       "type": "string"
     },
-    "image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "reasoning": {
-      "title": "Reasoning",
-      "type": "boolean"
-    },
     "context": {
       "default": [],
       "description": "The context to use for the model",
@@ -261,8 +247,6 @@
     }
   },
   "required": [
-    "image",
-    "reasoning",
     "text"
   ],
   "title": "AppInput",

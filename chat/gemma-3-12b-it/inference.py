@@ -3,8 +3,9 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp, LLMInput, LLMOutput, File
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from pydantic import Field
-from typing import AsyncGenerator, Optional, List, Dict, Any
+from pydantic.json_schema import SkipJsonSchema
+
+from typing import AsyncGenerator
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Gemma3ChatHandler
 from huggingface_hub import hf_hub_download
@@ -33,9 +34,7 @@ configs = {
 }
 
 class AppInput(LLMInput):
-    image: Optional[File] = Field(
-        exclude=True
-    )
+    image: SkipJsonSchema[File]
     pass
 
 class AppOutput(LLMOutput):

@@ -1,14 +1,15 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput, File
+from inferencesh import BaseApp, LLMInput, LLMOutput
 from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from typing import AsyncGenerator, Optional, List, Dict, Any
+from typing import AsyncGenerator, List, Dict, Any
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Gemma3ChatHandler
 from huggingface_hub import hf_hub_download
 import os.path
-from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
+
 
 # Configuration for the model
 vision_config = {
@@ -33,8 +34,8 @@ configs = {
 }
 
 class AppInput(LLMInput):
-    reasoning: bool = Field(exclude=True)
-    tools: List[Dict[str, Any]] = Field(exclude=True)
+    reasoning: SkipJsonSchema[bool]
+    tools: SkipJsonSchema[List[Dict[str, Any]]]
     pass
 
 class AppOutput(LLMOutput):
