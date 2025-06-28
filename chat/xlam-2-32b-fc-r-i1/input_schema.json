@@ -108,11 +108,30 @@
       "type": "object"
     }
   },
+  "description": "xLAM 2 32B FC R I1 input model with image and reasoning support.",
   "properties": {
     "system_prompt": {
       "default": "",
+      "description": "The system prompt to use for the model",
       "title": "System Prompt",
       "type": "string"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tool definitions for function calling",
+      "title": "Tools"
     },
     "context": {
       "default": [],
@@ -132,66 +151,6 @@
             "content": [
               {
                 "text": "The capital of France is Paris.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "What is the weather like today?",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "Can you help me write a poem about spring?",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "Explain quantum computing in simple terms",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems.",
                 "type": "text"
               }
             ],
@@ -235,20 +194,11 @@
       "default": 4096,
       "title": "Context Size",
       "type": "integer"
-    },
-    "tools": {
-      "default": [],
-      "items": {
-        "additionalProperties": true,
-        "type": "object"
-      },
-      "title": "Tools",
-      "type": "array"
     }
   },
   "required": [
     "text"
   ],
-  "title": "AppInput",
+  "title": "LLMInput",
   "type": "object"
 }

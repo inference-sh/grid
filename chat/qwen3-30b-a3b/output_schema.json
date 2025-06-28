@@ -47,8 +47,22 @@
       "type": "object"
     }
   },
+  "description": "Qwen3 30B A3B output model with token usage and timing information.",
   "properties": {
+    "usage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LLMUsage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Token usage statistics"
+    },
     "response": {
+      "description": "The generated text response",
       "title": "Response",
       "type": "string"
     },
@@ -62,39 +76,13 @@
         }
       ],
       "default": null,
+      "description": "The reasoning output of the model",
       "title": "Reasoning"
-    },
-    "tool_calls": {
-      "anyOf": [
-        {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Tool Calls"
-    },
-    "usage": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/LLMUsage"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null
     }
   },
   "required": [
     "response"
   ],
-  "title": "AppOutput",
+  "title": "LLMOutput",
   "type": "object"
 }

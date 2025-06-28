@@ -1,17 +1,21 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, ContextMessage, LLMInput, LLMOutput, File
-from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
-
-from typing import AsyncGenerator, List, Dict, Any
-
+from inferencesh import BaseApp
+from inferencesh.models.llm import (
+    LLMInput,
+    LLMOutput,
+    ImageCapabilityMixin,
+    build_messages,
+    stream_generate,
+    ResponseTransformer
+)
+from typing import AsyncGenerator
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import os.path
 from llama_cpp.llama_chat_format import Jinja2ChatFormatter
+from pydantic import Field
 
 configs = {
     "default": {
@@ -50,57 +54,15 @@ jinja_formatter = Jinja2ChatFormatter(
 )
 
 class AppInput(LLMInput):
+    """Devstral Small 2505 input model with image support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
         default=SYSTEM_PROMPT,
-        examples=[]
     )
-    context: list[ContextMessage] = Field(
-        description="The context to use for the model",
-        examples=[
-            [
-                {"role": "user", "content": [{"type": "text", "text": "What is the capital of France?"}]}, 
-                {"role": "assistant", "content": [{"type": "text", "text": "The capital of France is Paris."}]}
-            ],
-            [
-                {"role": "user", "content": [{"type": "text", "text": "What is the weather like today?"}]}, 
-                {"role": "assistant", "content": [{"type": "text", "text": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location."}]}
-            ],
-            [
-                {"role": "user", "content": [{"type": "text", "text": "Can you help me write a poem about spring?"}]}, 
-                {"role": "assistant", "content": [{"type": "text", "text": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth."}]}
-            ],
-            [
-                {"role": "user", "content": [{"type": "text", "text": "Explain quantum computing in simple terms"}]}, 
-                {"role": "assistant", "content": [{"type": "text", "text": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems."}]}
-            ]
-        ],
-        default=[]
-    )
-    temperature: float = Field(
-        description="The temperature to use for the model",
-        default=0.7
-    )
-    top_p: float = Field(
-        description="The top-p to use for the model",
-        default=0.95
-    )
-    max_tokens: int = Field(
-        description="The maximum number of tokens to generate",
-        default=40960
-    )
-    context_size: int = Field(
-        description="The maximum number of tokens to use for the context (changing this will cause a model re-setup)",
-        min_value=4096,
-        max_value=49152,
-        default=4096,
-    ),
-    image: SkipJsonSchema[File]
-    reasoning: SkipJsonSchema[bool]
-    tools: SkipJsonSchema[List[Dict[str, Any]]]
-
+    pass
 
 class AppOutput(LLMOutput):
+    """Devstral Small 2505 output model with token usage and timing information."""
     pass
 
 class App(BaseApp):
@@ -182,6 +144,7 @@ class App(BaseApp):
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
             stop=['<end_of_turn>'],
+            output_cls=AppOutput
         )
         
         try:

@@ -1,13 +1,18 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput, File
-from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
+from inferencesh import BaseApp
+from inferencesh.models.llm import (
+    LLMInput,
+    LLMOutput,
+    ToolsCapabilityMixin,
+    ToolCallsMixin,
+    build_messages,
+    stream_generate,
+    ResponseTransformer
+)
 from typing import AsyncGenerator
 from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
-
-
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import os.path
@@ -31,13 +36,16 @@ configs = {
     },
 }
 
-class AppInput(LLMInput):
-    system_prompt: str = Field(default="")
-    image: SkipJsonSchema[File]
-    reasoning: SkipJsonSchema[bool]
+class AppInput(LLMInput, ToolsCapabilityMixin):
+    """xLAM 2 32B FC R I1 input model with image and reasoning support."""
+    system_prompt: str = Field(
+        description="The system prompt to use for the model",
+        default="",
+    )
     pass
-    
-class AppOutput(LLMOutput):
+
+class AppOutput(ToolCallsMixin, LLMOutput):
+    """xLAM 2 32B FC R I1 output model with token usage and timing information."""
     pass
 
 def log_layers(model: Llama):

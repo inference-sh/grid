@@ -47,22 +47,24 @@
       "type": "object"
     }
   },
+  "description": "xLAM 2 32B FC R I1 output model with token usage and timing information.",
   "properties": {
-    "response": {
-      "title": "Response",
-      "type": "string"
-    },
-    "reasoning": {
+    "usage": {
       "anyOf": [
         {
-          "type": "string"
+          "$ref": "#/$defs/LLMUsage"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "title": "Reasoning"
+      "description": "Token usage statistics"
+    },
+    "response": {
+      "description": "The generated text response",
+      "title": "Response",
+      "type": "string"
     },
     "tool_calls": {
       "anyOf": [
@@ -78,23 +80,13 @@
         }
       ],
       "default": null,
+      "description": "Tool calls for function calling",
       "title": "Tool Calls"
-    },
-    "usage": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/LLMUsage"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null
     }
   },
   "required": [
     "response"
   ],
-  "title": "AppOutput",
+  "title": "LLMOutput",
   "type": "object"
 }

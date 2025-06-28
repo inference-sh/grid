@@ -1,12 +1,20 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput, File
-from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
+from inferencesh import BaseApp
+from inferencesh.models.llm import (
+    LLMInput,
+    LLMOutput,
+    ImageCapabilityMixin,
+    ReasoningCapabilityMixin,
+    ToolsCapabilityMixin,
+    build_messages,
+    stream_generate,
+    ResponseTransformer
+)
 from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
 
-from typing import AsyncGenerator, List, Dict, Any
+from typing import AsyncGenerator
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -50,16 +58,15 @@ jinja_formatter = Jinja2ChatFormatter(
 )
 
 class AppInput(LLMInput):
+    """Magistral Small 2506 input model with image, reasoning and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
         default=SYSTEM_PROMPT,
-        examples=[]
     )
-    image: SkipJsonSchema[File]
-    reasoning: SkipJsonSchema[bool]
-    tools: SkipJsonSchema[List[Dict[str, Any]]]
-    
+    pass
+
 class AppOutput(LLMOutput):
+    """Magistral Small 2506 output model with token usage and timing information."""
     pass
 
 def log_layers(model: Llama):
@@ -143,7 +150,8 @@ class App(BaseApp):
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            stop=['<end_of_turn>']
+            stop=['<end_of_turn>'],
+            output_cls=AppOutput
         )
         
         try:

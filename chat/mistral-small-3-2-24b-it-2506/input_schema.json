@@ -108,13 +108,48 @@
       "type": "object"
     }
   },
+  "description": "Mistral Small 3.2 24B IT 2506 input model with image and tools support.",
   "properties": {
     "system_prompt": {
       "default": "A user will ask you to solve a task. You should first draft your thinking process (inner monologue) until you have derived the final answer. Afterwards, write a self-contained summary of your thoughts (i.e. your summary should be succinct but contain all the critical steps you needed to reach the conclusion). You should use Markdown and Latex to format your response. Write both your thoughts and summary in the same language as the task posed by the user.\n\nYour thinking process must follow the template below:\n<think>\nYour thoughts or/and draft, like working through an exercise on scratch paper. Be as casual and as long as you want until you are confident to generate a correct answer.\n</think>\n\nHere, provide a concise summary that reflects your reasoning and presents a clear final answer to the user.\n\nProblem:",
       "description": "The system prompt to use for the model",
-      "examples": [],
       "title": "System Prompt",
       "type": "string"
+    },
+    "reasoning": {
+      "default": false,
+      "description": "Enable step-by-step reasoning",
+      "title": "Reasoning",
+      "type": "boolean"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tool definitions for function calling",
+      "title": "Tools"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The image to use for the model"
     },
     "context": {
       "default": [],
@@ -134,66 +169,6 @@
             "content": [
               {
                 "text": "The capital of France is Paris.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "What is the weather like today?",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "Can you help me write a poem about spring?",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth.",
-                "type": "text"
-              }
-            ],
-            "role": "assistant"
-          }
-        ],
-        [
-          {
-            "content": [
-              {
-                "text": "Explain quantum computing in simple terms",
-                "type": "text"
-              }
-            ],
-            "role": "user"
-          },
-          {
-            "content": [
-              {
-                "text": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems.",
                 "type": "text"
               }
             ],
@@ -237,16 +212,11 @@
       "default": 4096,
       "title": "Context Size",
       "type": "integer"
-    },
-    "reasoning": {
-      "default": false,
-      "title": "Reasoning",
-      "type": "boolean"
     }
   },
   "required": [
     "text"
   ],
-  "title": "AppInput",
+  "title": "LLMInput",
   "type": "object"
 }

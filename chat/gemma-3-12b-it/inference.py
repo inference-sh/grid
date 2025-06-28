@@ -1,9 +1,16 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput, File
-from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
-from pydantic.json_schema import SkipJsonSchema
+from inferencesh import BaseApp
+from inferencesh.models.llm import (
+    LLMInput,
+    LLMOutput,
+    ImageCapabilityMixin,
+    build_messages,
+    stream_generate,
+    ResponseTransformer
+)
+from pydantic import Field
 
 from typing import AsyncGenerator
 from llama_cpp import Llama
@@ -33,11 +40,16 @@ configs = {
     }
 }
 
-class AppInput(LLMInput):
-    image: SkipJsonSchema[File]
+class AppInput(LLMInput, ImageCapabilityMixin):
+    """Gemma 3 12B IT input model with image support."""
+    system_prompt: str = Field(
+        description="The system prompt to use for the model",
+        default="You are Gemma, a helpful and knowledgeable AI assistant.",
+    )
     pass
 
 class AppOutput(LLMOutput):
+    """Gemma 3 12B IT output model with token usage and timing information."""
     pass
 
 def log_layers(model: Llama):
@@ -113,7 +125,8 @@ class App(BaseApp):
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            stop=['<end_of_turn>', '<eos>']
+            stop=['<end_of_turn>', '<eos>'],
+            output_cls=AppOutput
         )
         
         try:

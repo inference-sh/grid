@@ -1,12 +1,22 @@
 import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
-from inferencesh import BaseApp, LLMInput, LLMOutput, File
-from inferencesh.models.llm import build_messages, stream_generate, ResponseTransformer
+from inferencesh import BaseApp
+from inferencesh.models.llm import (
+    LLMInput,
+    LLMOutput,
+    ImageCapabilityMixin,
+    ToolsCapabilityMixin,
+    ReasoningCapabilityMixin,
+    ReasoningMixin,
+    ToolCallsMixin,
+    build_messages,
+    stream_generate,
+    ResponseTransformer
+)
 from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
 
-from typing import AsyncGenerator, List, Dict, Any
+from typing import AsyncGenerator
 
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
@@ -49,16 +59,16 @@ with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "
 with open(os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt"), "r") as f:
     SYSTEM_PROMPT = f.read()
 
-class AppInput(LLMInput):
+class AppInput(LLMInput, ImageCapabilityMixin, ToolsCapabilityMixin, ReasoningCapabilityMixin):
+    """Mistral Small 3.2 24B IT 2506 input model with image and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
         default=SYSTEM_PROMPT,
-        examples=[]
     )
-    image: SkipJsonSchema[File]
-    tools: SkipJsonSchema[List[Dict[str, Any]]]
-    
-class AppOutput(LLMOutput):
+    pass
+
+class AppOutput(ToolCallsMixin, ReasoningMixin, LLMOutput):
+    """Mistral Small 3.2 24B IT 2506 output model with token usage and timing information."""
     pass
 
 def log_layers(model: Llama):
@@ -155,7 +165,8 @@ class App(BaseApp):
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
-            stop=['<end_of_turn>', '<eos>']
+            stop=['<end_of_turn>', '<eos>'],
+            output_cls=AppOutput
         )
         
         try:

@@ -47,39 +47,8 @@
       "type": "object"
     }
   },
+  "description": "Gemma 3N E4B IT output model with token usage and timing information.",
   "properties": {
-    "response": {
-      "title": "Response",
-      "type": "string"
-    },
-    "reasoning": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Reasoning"
-    },
-    "tool_calls": {
-      "anyOf": [
-        {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Tool Calls"
-    },
     "usage": {
       "anyOf": [
         {
@@ -89,12 +58,18 @@
           "type": "null"
         }
       ],
-      "default": null
+      "default": null,
+      "description": "Token usage statistics"
+    },
+    "response": {
+      "description": "The generated text response",
+      "title": "Response",
+      "type": "string"
     }
   },
   "required": [
     "response"
   ],
-  "title": "AppOutput",
+  "title": "LLMOutput",
   "type": "object"
 }
