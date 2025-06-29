@@ -3,7 +3,7 @@ description: Qwen3 30B A3B
 category: chat
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/3236cpcmtdtxd36hnqb4ngczn6
+    card: https://api.inference.sh/files/3236cpcmtdtxd36hnqb4ngczn6
     thumbnail: ""
     banner: ""
 metadata:

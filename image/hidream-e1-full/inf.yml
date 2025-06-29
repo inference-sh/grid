@@ -3,7 +3,7 @@ description: HiDream-E1-Full is an instruction-based image editing model built o
 category: image
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0654cggkt95hr36j6ac328ph28
+    card: https://api.inference.sh/files/0654cggkt95hr36j6ac328ph28
     thumbnail: ""
     banner: ""
 metadata: {}

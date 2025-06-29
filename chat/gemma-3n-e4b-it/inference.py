@@ -6,7 +6,6 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     ImageCapabilityMixin,
-    ToolsCapabilityMixin,
     build_messages,
     stream_generate,
     ResponseTransformer

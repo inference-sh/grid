@@ -3,7 +3,7 @@ description: Mistral Small 3.2 24B Instruct 2506
 category: chat
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0npbjbyw0z14jx7j9q5z5fg20r
+    card: https://api.inference.sh/files/0npbjbyw0z14jx7j9q5z5fg20r
     thumbnail: ""
     banner: ""
 metadata:

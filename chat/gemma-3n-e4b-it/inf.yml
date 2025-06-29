@@ -3,9 +3,9 @@ description: Gemma 3N E4B IT
 category: chat
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/4766rk777zr95k9g9jzk4c0ewm
-    thumbnail: https://api.inference.sh/api/v1/files/0260w7x14wfngzsywa9yffbddj
-    banner: https://api.inference.sh/api/v1/files/4568m6s8apavs2ppp5xs3jm2np
+    card: https://api.inference.sh/files/4766rk777zr95k9g9jzk4c0ewm
+    thumbnail: https://api.inference.sh/files/0260w7x14wfngzsywa9yffbddj
+    banner: https://api.inference.sh/files/4568m6s8apavs2ppp5xs3jm2np
 metadata:
     capabilities:
       - reasoning

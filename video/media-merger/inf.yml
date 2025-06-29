@@ -3,7 +3,7 @@ description: An application that merges multiple videos and images with customiz
 category: video
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/5zn37maajx242qz8d3cywpfg7n
+    card: https://api.inference.sh/files/5zn37maajx242qz8d3cywpfg7n
     thumbnail: ""
     banner: ""
 metadata: {}

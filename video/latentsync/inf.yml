@@ -3,7 +3,7 @@ description: Lip sync application using LatentSync model
 category: video
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0ewq4gnjq5yefrcydy4t8amvga
+    card: https://api.inference.sh/files/0ewq4gnjq5yefrcydy4t8amvga
     thumbnail: ""
     banner: ""
 metadata: {}

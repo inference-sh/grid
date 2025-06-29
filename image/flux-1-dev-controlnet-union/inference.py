@@ -69,7 +69,7 @@ class ControlNetType(str, Enum):
         return mapping[self]
 
 def get_civit_download_url(model_id):
-    url = f"https://civitai.com/api/v1/models/{model_id}"
+    url = f"https://civitai.com/models/{model_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()

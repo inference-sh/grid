@@ -3,7 +3,7 @@ description: HiDream-I1-Dev is a development image generative foundation model w
 category: image
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/69rtzyw79gv4cmp6nk5dgs0jwp
+    card: https://api.inference.sh/files/69rtzyw79gv4cmp6nk5dgs0jwp
     thumbnail: ""
     banner: ""
 metadata: {}

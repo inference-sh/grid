@@ -3,7 +3,7 @@ description: HiDream-I1-Fast is a fast image generative foundation model with 17
 category: image
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/334jmvzckpnchhn6x0rwv0cjay
+    card: https://api.inference.sh/files/334jmvzckpnchhn6x0rwv0cjay
     thumbnail: ""
     banner: ""
 metadata: {}

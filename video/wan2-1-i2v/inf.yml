@@ -3,7 +3,7 @@ description: wan2-1 image to video
 category: video
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0h9xrebhc2gn32xds725mrtj62
+    card: https://api.inference.sh/files/0h9xrebhc2gn32xds725mrtj62
     thumbnail: ""
     banner: ""
 metadata: {}

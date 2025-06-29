@@ -3,9 +3,9 @@ description: 'Thera: Aliasing-Free Arbitrary-Scale Super-Resolution with Neural 
 category: image
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/6hqc43rzpk3bsyka5sjazrg9sk
-    thumbnail: https://api.inference.sh/api/v1/files/28g7n0cj7d07gzm6p0pwbe5jx7
-    banner: https://api.inference.sh/api/v1/files/1nf4zd5786p10sfaajcaqmkwaf
+    card: https://api.inference.sh/files/6hqc43rzpk3bsyka5sjazrg9sk
+    thumbnail: https://api.inference.sh/files/28g7n0cj7d07gzm6p0pwbe5jx7
+    banner: https://api.inference.sh/files/1nf4zd5786p10sfaajcaqmkwaf
 metadata: {}
 variants:
     default:

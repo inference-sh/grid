@@ -3,7 +3,7 @@ description: MAGI-1 is a world model that generates high-quality videos through 
 category: video
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/2tg8cqyxjqkytae2snhbr3jnk0
+    card: https://api.inference.sh/files/2tg8cqyxjqkytae2snhbr3jnk0
     thumbnail: ""
     banner: ""
 metadata: {}

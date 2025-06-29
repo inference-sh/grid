@@ -3,7 +3,7 @@ description: A text-to-speech app using the DIA model for generating realistic d
 category: audio
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0z5vk7tpafhrc9br9h2t0xg66a
+    card: https://api.inference.sh/files/0z5vk7tpafhrc9br9h2t0xg66a
     thumbnail: ""
     banner: ""
 metadata: {}

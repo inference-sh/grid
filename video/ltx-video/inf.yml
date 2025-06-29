@@ -3,7 +3,7 @@ description: Generate high-quality videos with LTX-Video model
 category: video
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/0hkqp4g77sn618x5hchtv5vmnw
+    card: https://api.inference.sh/files/0hkqp4g77sn618x5hchtv5vmnw
     thumbnail: ""
     banner: ""
 metadata: {}

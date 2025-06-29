@@ -3,7 +3,7 @@ description: HiDream-I1-Full is a high-quality image generative foundation model
 category: image
 is_public: true
 images:
-    card: https://api.inference.sh/api/v1/files/6cx4wbve602p4q4d0651meqzny
+    card: https://api.inference.sh/files/6cx4wbve602p4q4d0651meqzny
     thumbnail: ""
     banner: ""
 metadata: {}
