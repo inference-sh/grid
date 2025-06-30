@@ -27,8 +27,8 @@ fonttools==4.58.4
 frozenlist==1.7.0
 fsspec==2025.5.1
 ftfy==6.3.1
-gradio==5.34.2
-gradio-client==1.10.3
+gradio==5.35.0
+gradio-client==1.10.4
 groovy==0.1.2
 h11==0.16.0
 hf-xet==1.1.5
@@ -55,7 +55,7 @@ mdurl==0.1.2
 mmgp==3.4.1
 moviepy==1.0.3
 mpmath==1.3.0
-multidict==6.6.0
+multidict==6.6.2
 mutagen==1.47.0
 networkx==3.5
 ninja==1.11.1.4
@@ -136,7 +136,7 @@ typer==0.16.0
 typing-extensions==4.14.0
 tzdata==2025.2
 urllib3==2.5.0
-uvicorn==0.34.3
+uvicorn==0.35.0
 wcwidth==0.2.13
 websocket-client==1.8.0
 websockets==15.0.1

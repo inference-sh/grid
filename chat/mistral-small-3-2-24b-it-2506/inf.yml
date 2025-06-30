@@ -8,7 +8,7 @@ images:
     banner: ""
 metadata:
     capabilities:
-      - reasoning
+        - reasoning
 variants:
     default:
         name: default

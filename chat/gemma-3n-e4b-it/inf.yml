@@ -8,7 +8,8 @@ images:
     banner: https://api.inference.sh/files/4568m6s8apavs2ppp5xs3jm2np
 metadata:
     capabilities:
-      - reasoning
+        - image
+        - audio
 variants:
     default:
         name: f16
@@ -24,7 +25,7 @@ variants:
         python: "3.11"
     q4_km:
         name: q4_km
-        order: 3
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -48,7 +49,7 @@ variants:
         python: "3.11"
     q8_0:
         name: q8_0
-        order: 1
+        order: 3
         resources:
             gpu:
                 count: 1

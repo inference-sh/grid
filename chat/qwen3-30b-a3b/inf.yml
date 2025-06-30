@@ -8,7 +8,7 @@ images:
     banner: ""
 metadata:
     capabilities:
-      - reasoning
+        - reasoning
 variants:
     default:
         name: q8_0
@@ -24,7 +24,7 @@ variants:
         python: "3.11"
     q3_k_l:
         name: q3_k_l
-        order: 2
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -36,7 +36,7 @@ variants:
         python: "3.11"
     q4_k_m:
         name: q4_k_m
-        order: 1
+        order: 2
         resources:
             gpu:
                 count: 1

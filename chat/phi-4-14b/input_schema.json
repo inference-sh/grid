@@ -1,0 +1,222 @@
+{
+  "$defs": {
+    "ContextMessage": {
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/ContextMessageRole",
+          "description": "The role of the message"
+        },
+        "text": {
+          "description": "The text content of the message",
+          "title": "Text",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The image url of the message"
+        }
+      },
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "ContextMessage",
+      "type": "object"
+    },
+    "ContextMessageRole": {
+      "enum": [
+        "user",
+        "assistant",
+        "system"
+      ],
+      "title": "ContextMessageRole",
+      "type": "string"
+    },
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "description": "Phi-4 input model with image, reasoning and tools support.",
+  "properties": {
+    "system_prompt": {
+      "default": "You are Phi-4, a helpful and knowledgeable AI assistant.",
+      "description": "The system prompt to use for the model",
+      "title": "System Prompt",
+      "type": "string"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tool definitions for function calling",
+      "title": "Tools"
+    },
+    "reasoning": {
+      "default": false,
+      "description": "Enable step-by-step reasoning",
+      "title": "Reasoning",
+      "type": "boolean"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The image to use for the model"
+    },
+    "context": {
+      "default": [],
+      "description": "The context to use for the model",
+      "examples": [
+        [
+          {
+            "content": [
+              {
+                "text": "What is the capital of France?",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "The capital of France is Paris.",
+                "type": "text"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      ],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "text": {
+      "description": "The user prompt to use for the model",
+      "examples": [
+        "What is the capital of France?",
+        "What is the weather like today?",
+        "Can you help me write a poem about spring?",
+        "Explain quantum computing in simple terms"
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 0.7,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "title": "Top P",
+      "type": "number"
+    },
+    "max_tokens": {
+      "default": 4096,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "context_size": {
+      "default": 4096,
+      "title": "Context Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "LLMInput",
+  "type": "object"
+}

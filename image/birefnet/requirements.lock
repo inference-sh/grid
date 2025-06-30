@@ -9,7 +9,7 @@ hf-xet==1.1.5
 huggingface-hub==0.33.1
 idna==3.10
 imageio==2.37.0
-inferencesh==0.2.25
+inferencesh==0.2.31
 jinja2==3.1.6
 kornia==0.8.1
 kornia-rs==0.1.9

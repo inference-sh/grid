@@ -1,9 +1,9 @@
 name: flux-1-dev
-description: Flux-1 Dev
+description: FLUX.1 Dev is an open-weight, guidance-distilled text-to-image model developed by Black Forest Labs for non-commercial applications
 category: image
 is_public: false
 images:
-    card: ""
+    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
     thumbnail: ""
     banner: ""
 metadata: {}

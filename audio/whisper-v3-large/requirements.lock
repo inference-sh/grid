@@ -17,7 +17,7 @@ fsspec==2025.3.0
 hf-transfer==0.1.9
 huggingface-hub==0.25.0
 idna==3.10
-inferencesh==0.2.25
+inferencesh==0.2.31
 jinja2==3.1.6
 joblib==1.5.1
 lazy-loader==0.4
@@ -26,7 +26,7 @@ llvmlite==0.44.0
 markupsafe==3.0.2
 mpmath==1.3.0
 msgpack==1.1.1
-multidict==6.6.0
+multidict==6.6.2
 multiprocess==0.70.16
 networkx==3.5
 ninja==1.11.1.4

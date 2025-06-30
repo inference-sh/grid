@@ -3,7 +3,7 @@ description: a simple app that allows to split text into a list of subtexts usin
 category: other
 is_public: true
 images:
-    card: ""
+    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
     thumbnail: ""
     banner: ""
 metadata: {}

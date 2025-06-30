@@ -3,7 +3,7 @@ description: a simple app to return an item at a certain position of an input li
 category: other
 is_public: true
 images:
-    card: ""
+    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
     thumbnail: ""
     banner: ""
 metadata: {}

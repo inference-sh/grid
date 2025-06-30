@@ -14,6 +14,7 @@ from typing import AsyncGenerator
 from pydantic import Field
 
 from llama_cpp import Llama
+from llama_cpp.llama_chat_format import Jinja2ChatFormatter
 # from llama_cpp.llama_chat_format import Gemma3ChatHandler
 # from huggingface_hub import hf_hub_download
 import os.path
@@ -71,6 +72,17 @@ def log_layers(model: Llama):
         device_layers[dev_layer_value] += 1
     print(f"Layers on CPU: {device_layers[0]}, GPU: {device_layers[1]}, ACCEL: {device_layers[2]}")
 
+
+# Load the template and system prompt
+with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "r") as f:
+    GEMMA_JINJA_TEMPLATE = f.read()
+
+jinja_formatter = Jinja2ChatFormatter(
+    GEMMA_JINJA_TEMPLATE,
+    eos_token="<end_of_turn>",
+    bos_token="<bos>"
+)
+
 class App(BaseApp):
     def __init__(self):
         super().__init__()
@@ -100,9 +112,10 @@ class App(BaseApp):
         self.model = Llama.from_pretrained(
             repo_id=self.variant_config['repo_id'],
             filename=self.variant_config['model_filename'],
-            verbose=False,
             n_gpu_layers=-1,
             n_ctx=n_ctx,
+            verbose=True,
+            chat_handler=jinja_formatter.to_chat_handler()
             # chat_handler=self.chat_handler
         )
         print("Model initialization complete!")
@@ -119,7 +132,7 @@ class App(BaseApp):
 
         # Build messages using SDK helper
         messages = build_messages(input_data)
-
+        
         # Create transformer instance with our output class
         transformer = ResponseTransformer(output_cls=AppOutput)
 
@@ -132,7 +145,7 @@ class App(BaseApp):
             top_p=input_data.top_p,
             max_tokens=input_data.max_tokens,
             stop=['<end_of_turn>', '<eos>'],
-            output_cls=AppOutput
+            output_cls=AppOutput,
         )
         
         try:

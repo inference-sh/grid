@@ -19,7 +19,7 @@ huggingface-hub==0.33.1
 identify==2.6.12
 idna==3.10
 importlib-metadata==8.7.0
-inferencesh==0.2.25
+inferencesh==0.2.31
 jinja2==3.1.6
 joblib==1.5.1
 lazy-loader==0.4

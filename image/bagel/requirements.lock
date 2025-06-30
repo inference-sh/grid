@@ -15,7 +15,7 @@ gitdb==4.0.12
 gitpython==3.1.44
 huggingface-hub==0.29.1
 idna==3.10
-inferencesh==0.2.25
+inferencesh==0.2.31
 jinja2==3.1.6
 kiwisolver==1.4.8
 markupsafe==3.0.2

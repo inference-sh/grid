@@ -21,7 +21,7 @@ variants:
         python: "3.12"
     full-q2k:
         name: Full Q2_K (gguf)
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -32,7 +32,7 @@ variants:
         python: "3.12"
     full-q3km:
         name: Full Q3_K_M (gguf)
-        order: 0
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -43,7 +43,7 @@ variants:
         python: "3.12"
     full-q3ks:
         name: Full Q3_K_S (gguf)
-        order: 0
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -54,7 +54,7 @@ variants:
         python: "3.12"
     full-q4km:
         name: Full Q4_K_M (gguf)
-        order: 0
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -65,7 +65,7 @@ variants:
         python: "3.12"
     full-q4ks:
         name: Full Q4_K_S (gguf)
-        order: 0
+        order: 5
         resources:
             gpu:
                 count: 1
@@ -76,7 +76,7 @@ variants:
         python: "3.12"
     full-q5km:
         name: Full Q5_K_M (gguf)
-        order: 0
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -87,7 +87,7 @@ variants:
         python: "3.12"
     full-q5ks:
         name: Full Q5_K_S (gguf)
-        order: 0
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -98,7 +98,7 @@ variants:
         python: "3.12"
     full-q6k:
         name: Full Q6_K (gguf)
-        order: 0
+        order: 8
         resources:
             gpu:
                 count: 1
@@ -109,7 +109,7 @@ variants:
         python: "3.12"
     full-q8:
         name: Full Q8_0 (gguf)
-        order: 0
+        order: 9
         resources:
             gpu:
                 count: 1
@@ -120,7 +120,7 @@ variants:
         python: "3.12"
     full-q40:
         name: Full Q4_0 (gguf)
-        order: 0
+        order: 10
         resources:
             gpu:
                 count: 1
@@ -131,7 +131,7 @@ variants:
         python: "3.12"
     full-q41:
         name: Full Q4_1 (gguf)
-        order: 0
+        order: 11
         resources:
             gpu:
                 count: 1
@@ -142,7 +142,7 @@ variants:
         python: "3.12"
     full-q50:
         name: Full Q5_0 (gguf)
-        order: 0
+        order: 12
         resources:
             gpu:
                 count: 1
@@ -153,7 +153,7 @@ variants:
         python: "3.12"
     full-q51:
         name: Full Q5_1 (gguf)
-        order: 0
+        order: 13
         resources:
             gpu:
                 count: 1
