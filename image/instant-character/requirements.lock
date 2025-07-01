@@ -10,7 +10,7 @@ hf-xet==1.1.5
 huggingface-hub==0.33.1
 idna==3.10
 importlib-metadata==8.7.0
-inferencesh==0.2.31
+inferencesh==0.2.33
 inquirerpy==0.3.4
 jinja2==3.1.6
 markupsafe==3.0.2
@@ -34,7 +34,7 @@ nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
 pfzy==0.3.4
-pillow==11.2.1
+pillow==11.3.0
 prompt-toolkit==3.0.51
 protobuf==6.31.1
 psutil==7.0.0

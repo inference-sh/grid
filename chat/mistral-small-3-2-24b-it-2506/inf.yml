@@ -8,8 +8,8 @@ images:
     banner: ""
 metadata:
     capabilities:
-      - reasoning
-      - image
+        - reasoning
+        - image
 variants:
     default:
         name: bf16

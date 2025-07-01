@@ -32,7 +32,7 @@ idna==3.10
 imageio==2.37.0
 importlib-metadata==8.7.0
 importlib-resources==6.5.2
-inferencesh==0.2.31
+inferencesh==0.2.33
 insightface==0.7.3
 jinja2==3.1.6
 joblib==1.5.1

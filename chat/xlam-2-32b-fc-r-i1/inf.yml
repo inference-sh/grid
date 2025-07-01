@@ -8,7 +8,7 @@ images:
     banner: ""
 metadata:
     capabilities:
-      - tools
+        - tools
 variants:
     default:
         name: q6_k
@@ -23,13 +23,13 @@ variants:
             CMAKE_ARGS: -DGGML_CUDA=on
             FORCE_CMAKE: "1"
         python: "3.11"
-    q5_k_m:
-        name: q5_k_m
-        order: 1
+    q3_k_s:
+        name: q3_k_s
+        order: 3
         resources:
             gpu:
                 count: 1
-                vram: 20000000000
+                vram: 12000000000
                 type: any
             ram: 4000000000
         env:
@@ -49,13 +49,13 @@ variants:
             CMAKE_ARGS: -DGGML_CUDA=on
             FORCE_CMAKE: "1"
         python: "3.11"
-    q3_k_s:
-        name: q3_k_s
-        order: 3
+    q5_k_m:
+        name: q5_k_m
+        order: 1
         resources:
             gpu:
                 count: 1
-                vram: 12000000000
+                vram: 20000000000
                 type: any
             ram: 4000000000
         env:

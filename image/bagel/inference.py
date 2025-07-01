@@ -1,7 +1,7 @@
 import os
 import torch
 from huggingface_hub import snapshot_download
-from inferencesh import BaseApp, BaseAppOutput, LLMInputWithImage, File
+from inferencesh import BaseApp, BaseAppOutput, LLMInput, ImageCapabilityMixin , File
 from pydantic import Field
 from typing import Optional, AsyncGenerator
 from PIL import Image
@@ -30,7 +30,7 @@ from Bagel.inferencer import InterleaveInferencer
 from accelerate import infer_auto_device_map, load_checkpoint_and_dispatch, init_empty_weights
 
 
-class AppInput(LLMInputWithImage):
+class AppInput(LLMInput, ImageCapabilityMixin):
     thinking_enabled: bool = Field(default=False, description="Enable thinking mode for enhanced reasoning")
     analysis_mode: bool = Field(default=False, description="Enable understanding mode for image analysis only")
 

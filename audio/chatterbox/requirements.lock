@@ -19,7 +19,7 @@ huggingface-hub==0.33.1
 identify==2.6.12
 idna==3.10
 importlib-metadata==8.7.0
-inferencesh==0.2.31
+inferencesh==0.2.33
 jinja2==3.1.6
 joblib==1.5.1
 lazy-loader==0.4
@@ -49,7 +49,7 @@ nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 onnx==1.18.0
 packaging==25.0
-pillow==11.2.1
+pillow==11.3.0
 platformdirs==4.3.8
 pooch==1.8.2
 pre-commit==4.2.0

@@ -55,7 +55,7 @@ mdurl==0.1.2
 mmgp==3.4.1
 moviepy==1.0.3
 mpmath==1.3.0
-multidict==6.6.2
+multidict==6.6.3
 mutagen==1.47.0
 networkx==3.5
 ninja==1.11.1.4
@@ -84,7 +84,7 @@ orjson==3.10.18
 packaging==25.0
 pandas==2.3.0
 peft==0.14.0
-pillow==11.2.1
+pillow==11.3.0
 platformdirs==4.3.8
 pooch==1.8.2
 proglog==0.1.12
@@ -110,7 +110,7 @@ rpds-py==0.25.1
 ruff==0.12.1
 safehttpx==0.1.6
 safetensors==0.5.3
-sageattention @ git+https://github.com/thu-ml/SageAttention@e9b072f0fc2682f104abbda306af3d42fc33b969
+sageattention @ git+https://github.com/thu-ml/SageAttention@89b4025d1b334a2d697e79f3e99c8df7f4cc9d29
 scikit-image==0.25.2
 scipy==1.16.0
 segment-anything==1.0
