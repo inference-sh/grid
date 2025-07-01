@@ -8,10 +8,11 @@ images:
     banner: ""
 metadata:
     capabilities:
-        - reasoning
+      - reasoning
+      - image
 variants:
     default:
-        name: default
+        name: bf16
         order: 0
         resources:
             gpu:
@@ -23,8 +24,8 @@ variants:
             CMAKE_ARGS: -DGGML_CUDA=on
             FORCE_CMAKE: "1"
         python: "3.11"
-    q3_k_l:
-        name: q3_k_l
+    q3_k_s:
+        name: q3_k_s
         order: 1
         resources:
             gpu:

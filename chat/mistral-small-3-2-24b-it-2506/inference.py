@@ -32,7 +32,7 @@ vision_config = {
 configs = {
     "default": {
         "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-BF16.gguf",
     },
     "q8_0": {
         "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
@@ -46,9 +46,9 @@ configs = {
         "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
         "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
     },
-    "q3_k_l": {
+    "q3_k_s": {
         "repo_id": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q3_K_L.gguf",
+        "model_filename": "Mistral-Small-3.2-24B-Instruct-2506-Q3_K_S.gguf",
     },
 }
 
