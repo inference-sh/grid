@@ -6,5 +6,5 @@ hf-transfer
 pillow
 
 
-git+https://github.com/inference-sh/sdk-python.git@f91c6ba29ec91d87a6861ff3d7d0c700e9669e7d
+git+https://github.com/inference-sh/sdk-python.git@9203a908fc102e6a42d726579bfcbfa894ac3fcd
 git+https://github.com/inference-sh/llama-cpp-python.git@ec8e0221ec7dd8dc659606ce8615dc010b5faf76
