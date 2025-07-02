@@ -9,4 +9,3 @@ huggingface_hub==0.25.0
 hf-transfer==0.1.9
 sentencepiece
 soundfile
-flash_attn @ git+https://github.com/luke14free/flash-attention.git

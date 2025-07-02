@@ -14,7 +14,7 @@ flatbuffers==25.2.10
 fsspec==2025.5.1
 hf-transfer==0.1.8
 hf-xet==1.1.5
-huggingface-hub==0.33.1
+huggingface-hub==0.33.2
 humanfriendly==10.0
 idna==3.10
 imageio==2.37.0
@@ -65,7 +65,7 @@ referencing==0.36.2
 regex==2024.11.6
 rembg==2.0.61
 requests==2.32.4
-rpds-py==0.25.1
+rpds-py==0.26.0
 safetensors==0.5.3
 scikit-image==0.25.2
 scipy==1.16.0
@@ -73,8 +73,10 @@ sentencepiece==0.2.0
 setuptools==80.9.0
 setuptools-scm==8.3.1
 sympy==1.13.1
-tensorrt==10.8.0.43
-tensorrt-cu12==10.8.0.43
+tensorrt==10.12.0.36
+tensorrt-cu12==10.12.0.36
+tensorrt-cu12-bindings==10.12.0.36
+tensorrt-cu12-libs==10.12.0.36
 tifffile==2025.6.11
 tokenizers==0.21.2
 torch==2.5.1

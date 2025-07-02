@@ -1,4 +1,7 @@
 import os
+import os
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+
 import sys
 import subprocess
 import torch
@@ -67,7 +70,8 @@ class App(BaseApp):
             
             # Install custom rasterizer
             print("Installing custom rasterizer...")
-            os.chdir("hy3dgen/texgen/custom_rasterizer")
+            current_file_path = os.path.dirname(os.path.abspath(__file__))
+            os.chdir(os.path.join(current_file_path, "hy3dgen/texgen/custom_rasterizer"))
             subprocess.run(["python3", "setup.py", "build_ext", "--inplace"], check=True)
             subprocess.run(["python3", "setup.py", "install"], check=True)
             
@@ -79,15 +83,15 @@ class App(BaseApp):
             
             # Install differentiable renderer
             print("Installing differentiable renderer...")
-            os.chdir("hy3dgen/texgen/differentiable_renderer")
-            if os.name == 'nt':
-                subprocess.run(["python3", "setup.py", "install"], check=True)
-            else:
-                subprocess.run(["bash", "compile_mesh_painter.sh"], check=True)
+            os.chdir(current_file_path)
+            os.chdir(os.path.join(current_file_path, "hy3dgen/texgen/differentiable_renderer"))
+            subprocess.run(["python3", "setup.py", "install"], check=True)
             
         finally:
             print("Finished installing dependencies")
             os.chdir(original_dir)
+            
+        sys.path.append(current_file_path)
 
         # Import dependencies
         from hy3dgen.rembg import BackgroundRemover

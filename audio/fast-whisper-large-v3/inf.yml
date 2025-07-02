@@ -13,9 +13,9 @@ variants:
         order: 0
         resources:
             gpu:
-                count: 0
+                count: 1
                 vram: 0
                 type: any
             ram: 0
         env: {}
-        python: "3.12"
+        python: "3.11"

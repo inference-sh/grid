@@ -15,7 +15,10 @@ pygltflib==1.16.3
 pymeshlab==2023.12.post2
 pymatting>=1.1.12
 rembg==2.0.61
-tensorrt==10.8.0.43
+tensorrt==10.12.0.36
+tensorrt-cu12==10.12.0.36
+tensorrt-cu12-bindings==10.12.0.36
+tensorrt-cu12-libs==10.12.0.36
 torch==2.5.1
 torchvision==0.20.1
 tqdm==4.67.1

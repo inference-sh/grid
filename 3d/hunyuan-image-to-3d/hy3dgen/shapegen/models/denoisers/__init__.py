@@ -12,23 +12,4 @@
 # fine-tuning enabling code and other elements of the foregoing made publicly available
 # by Tencent in accordance with TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT.
 
-import torch
-from diffusers import StableDiffusionUpscalePipeline
-
-class Image_Super_Net():
-    def __init__(self, config):
-        self.up_pipeline_x4 = StableDiffusionUpscalePipeline.from_pretrained(
-                        'stabilityai/stable-diffusion-x4-upscaler',
-                        torch_dtype=torch.float16,
-                    ).to(config.device)
-        self.up_pipeline_x4.set_progress_bar_config(disable=True)
-
-    def __call__(self, image, prompt=''):
-        with torch.no_grad():
-            upscaled_image = self.up_pipeline_x4(
-                prompt=[prompt],
-                image=image,
-                num_inference_steps=5,
-            ).images[0]
-
-        return upscaled_image
+from .hunyuan3ddit import Hunyuan3DDiT

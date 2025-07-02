@@ -13,7 +13,7 @@ decorator==5.2.1
 dill==0.3.8
 einops==0.8.1
 filelock==3.18.0
-flash-attn @ git+https://github.com/luke14free/flash-attention.git@789eeb00249a92ab4eceffad6d8ac5e0d350fe50
+flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.3.12/flash_attn-2.8.0+cu128torch2.7-cp311-cp311-linux_x86_64.whl
 frozenlist==1.7.0
 fsspec==2025.3.0
 hf-transfer==0.1.9
