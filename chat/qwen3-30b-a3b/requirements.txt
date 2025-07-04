@@ -5,5 +5,5 @@ huggingface_hub
 hf-transfer
 pillow
 
-git+https://github.com/inference-sh/sdk-python.git@9203a908fc102e6a42d726579bfcbfa894ac3fcd
-git+https://github.com/inference-sh/llama-cpp-python.git@ec8e0221ec7dd8dc659606ce8615dc010b5faf76
+git+https://github.com/inference-sh/sdk-python.git@1d9b4debc05ff737a222b1efa90cfd7f81e8dfbb
+git+https://github.com/inference-sh/llama-cpp-python.git@605998efc828e6df2a5ebd3dcf1161a658953af3

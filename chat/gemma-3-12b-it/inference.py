@@ -14,7 +14,7 @@ from pydantic import Field
 
 from typing import AsyncGenerator
 from llama_cpp import Llama
-from llama_cpp.llama_chat_format import Gemma3ChatHandler
+from llama_cpp.llama_chat_format import Llava15ChatHandler
 from huggingface_hub import hf_hub_download
 import os.path
 
@@ -86,7 +86,7 @@ class App(BaseApp):
         
         # Initialize Gemma3ChatHandler for multimodal support
         print(f"Initializing Gemma3ChatHandler with clip model: {clip_model_path}")
-        self.chat_handler = Gemma3ChatHandler(clip_model_path=clip_model_path)
+        self.chat_handler = Llava15ChatHandler(clip_model_path=clip_model_path)
         
         # Use context_size from input if provided, else default
         self.last_context_size = n_ctx
@@ -124,7 +124,6 @@ class App(BaseApp):
             transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
-            max_tokens=input_data.max_tokens,
             stop=['<end_of_turn>', '<eos>'],
             output_cls=AppOutput
         )

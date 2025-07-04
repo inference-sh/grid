@@ -111,7 +111,6 @@ class App(BaseApp):
             transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
-            max_tokens=input_data.max_tokens,
             stop=['<end_of_turn>', '<eos>'],
             output_cls=AppOutput
         )

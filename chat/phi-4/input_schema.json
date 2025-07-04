@@ -195,18 +195,17 @@
     },
     "temperature": {
       "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
       "title": "Temperature",
       "type": "number"
     },
     "top_p": {
       "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
       "title": "Top P",
       "type": "number"
-    },
-    "max_tokens": {
-      "default": 4096,
-      "title": "Max Tokens",
-      "type": "integer"
     },
     "context_size": {
       "default": 4096,
