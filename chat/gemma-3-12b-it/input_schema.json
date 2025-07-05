@@ -125,12 +125,9 @@
           "type": "null"
         }
       ],
-      "content_type": [
-        "image/*"
-      ],
+      "contentMediaType": "image/*",
       "default": null,
-      "description": "the image to use for the model",
-      "max_size_mb": 10
+      "description": "the image to use for the model"
     },
     "context": {
       "default": [],
