@@ -50,7 +50,7 @@
   "description": "Qwen3 30B A3B output model with token usage and timing information.",
   "properties": {
     "response": {
-      "description": "The generated text response",
+      "description": "the generated text response",
       "title": "Response",
       "type": "string"
     },
@@ -64,7 +64,7 @@
         }
       ],
       "default": null,
-      "description": "Token usage statistics"
+      "description": "token usage statistics"
     },
     "reasoning": {
       "anyOf": [
@@ -76,7 +76,7 @@
         }
       ],
       "default": null,
-      "description": "The reasoning output of the model",
+      "description": "the reasoning output of the model",
       "title": "Reasoning"
     }
   },

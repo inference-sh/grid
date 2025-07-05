@@ -50,7 +50,7 @@
   "description": "Mistral Small 3.2 24B IT 2506 output model with token usage and timing information.",
   "properties": {
     "response": {
-      "description": "The generated text response",
+      "description": "the generated text response",
       "title": "Response",
       "type": "string"
     },
@@ -64,7 +64,7 @@
         }
       ],
       "default": null,
-      "description": "Token usage statistics"
+      "description": "token usage statistics"
     },
     "reasoning": {
       "anyOf": [
@@ -76,7 +76,7 @@
         }
       ],
       "default": null,
-      "description": "The reasoning output of the model",
+      "description": "the reasoning output of the model",
       "title": "Reasoning"
     },
     "tool_calls": {
@@ -93,7 +93,7 @@
         }
       ],
       "default": null,
-      "description": "Tool calls for function calling",
+      "description": "tool calls for function calling",
       "title": "Tool Calls"
     }
   },

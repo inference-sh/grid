@@ -50,7 +50,7 @@
   "description": "xLAM 2 32B FC R I1 output model with token usage and timing information.",
   "properties": {
     "response": {
-      "description": "The generated text response",
+      "description": "the generated text response",
       "title": "Response",
       "type": "string"
     },
@@ -64,7 +64,7 @@
         }
       ],
       "default": null,
-      "description": "Token usage statistics"
+      "description": "token usage statistics"
     },
     "tool_calls": {
       "anyOf": [
@@ -80,7 +80,7 @@
         }
       ],
       "default": null,
-      "description": "Tool calls for function calling",
+      "description": "tool calls for function calling",
       "title": "Tool Calls"
     }
   },
