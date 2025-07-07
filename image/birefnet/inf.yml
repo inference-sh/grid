@@ -1,9 +1,9 @@
 name: birefnet
 description: An app for background removal using BiRefNet
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
     thumbnail: ""
     banner: ""
 metadata: {}

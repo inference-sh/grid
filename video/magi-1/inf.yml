@@ -1,9 +1,9 @@
 name: magi-1
 description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
 category: video
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/2tg8cqyxjqkytae2snhbr3jnk0
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

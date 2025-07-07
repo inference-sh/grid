@@ -1,9 +1,9 @@
 name: wan2-1-i2v-effects
 description: Text to video generation using Wan2.1 (14B) model with i2v effects
 category: video
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/6mybz5z9xm84vab56hk7261yvm
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4rk1fyz092rkdxsp4w9517qkh5.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

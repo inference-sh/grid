@@ -1,11 +1,11 @@
 name: gemma-3n-e4b-it
 description: Gemma 3N E4B IT
 category: chat
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/4766rk777zr95k9g9jzk4c0ewm
-    thumbnail: https://api.inference.sh/files/0260w7x14wfngzsywa9yffbddj
-    banner: https://api.inference.sh/files/4568m6s8apavs2ppp5xs3jm2np
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7n1z4js7a32645m7n3axedxmwq.jpg
+    thumbnail: ""
+    banner: ""
 metadata:
     capabilities:
         - image

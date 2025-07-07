@@ -1,11 +1,11 @@
 name: thera
 description: 'Thera: Aliasing-Free Arbitrary-Scale Super-Resolution with Neural Heat Fields'
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/6hqc43rzpk3bsyka5sjazrg9sk
-    thumbnail: https://api.inference.sh/files/28g7n0cj7d07gzm6p0pwbe5jx7
-    banner: https://api.inference.sh/files/1nf4zd5786p10sfaajcaqmkwaf
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/68hjzpwz1we5t5a41gw8b73dba.jpg
+    thumbnail: https://cloud.inference.sh/28g7n0cj7d07gzm6p0pwbe5jx7
+    banner: https://cloud.inference.sh/1nf4zd5786p10sfaajcaqmkwaf
 metadata: {}
 variants:
     default:

@@ -1,9 +1,9 @@
 name: text-templating
 description: A simple text templating app that replaces placeholders in a template with provided strings
 category: other
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn7rnwycq6m6v6yvtxp8p3.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn7rnwycq6m6v6yvtxp8p3.png
     thumbnail: ""
     banner: ""
 metadata: {}

@@ -1,7 +1,11 @@
 import os
 import torch
 from huggingface_hub import snapshot_download
-from inferencesh import BaseApp, BaseAppOutput, LLMInput, ImageCapabilityMixin , File
+from inferencesh import BaseApp, BaseAppOutput, File
+from inferencesh.models.llm import (
+    LLMInput,
+    ImageCapabilityMixin,
+)
 from pydantic import Field
 from typing import Optional, AsyncGenerator
 from PIL import Image

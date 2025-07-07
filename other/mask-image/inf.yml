@@ -1,0 +1,21 @@
+name: mask-image
+description: an app that given as input two images, a png semi-transparent mask and an image to be masked returns the partially transparent masked image
+category: other
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: ""
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 512
+        env: {}
+        python: "3.12"

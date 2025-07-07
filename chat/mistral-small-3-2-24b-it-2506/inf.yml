@@ -1,9 +1,9 @@
 name: mistral-small-3-2-24b-it-2506
 description: Mistral Small 3.2 24B Instruct 2506
 category: chat
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/0npbjbyw0z14jx7j9q5z5fg20r
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4b5f14pem8sng0n0kyhwgyf34j.jpg
     thumbnail: ""
     banner: ""
 metadata:

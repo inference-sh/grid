@@ -1,9 +1,9 @@
 name: sdxl-controlnet
 description: Stable Diffusion XL image generator with ControlNets
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
     thumbnail: ""
     banner: ""
 metadata: {}

@@ -1,9 +1,9 @@
 name: video-audio-extractor
 description: An app that extracts audio from videos and creates silent videos
 category: other
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn53q6jw6kdzvs9tkekk2t.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn53q6jw6kdzvs9tkekk2t.png
     thumbnail: ""
     banner: ""
 metadata: {}

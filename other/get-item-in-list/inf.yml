@@ -1,9 +1,9 @@
 name: get-item-in-list
 description: a simple app to return an item at a certain position of an input list
 category: other
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
     thumbnail: ""
     banner: ""
 metadata: {}

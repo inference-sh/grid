@@ -1,0 +1,211 @@
+{
+  "$defs": {
+    "Color": {
+      "properties": {
+        "r": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 255,
+          "description": "R",
+          "gte": 0,
+          "lte": 255,
+          "title": "R"
+        },
+        "g": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 255,
+          "description": "G",
+          "gte": 0,
+          "lte": 255,
+          "title": "G"
+        },
+        "b": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 255,
+          "description": "B",
+          "gte": 0,
+          "lte": 255,
+          "title": "B"
+        }
+      },
+      "title": "Color",
+      "type": "object"
+    },
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "glb_file": {
+      "$ref": "#/$defs/File",
+      "description": "The input GLB/GLTF file to render"
+    },
+    "rotation_x": {
+      "default": 0.0,
+      "description": "Rotation around X-axis in degrees",
+      "title": "Rotation X",
+      "type": "number"
+    },
+    "rotation_y": {
+      "default": 0.0,
+      "description": "Rotation around Y-axis in degrees",
+      "title": "Rotation Y",
+      "type": "number"
+    },
+    "rotation_z": {
+      "default": 0.0,
+      "description": "Rotation around Z-axis in degrees",
+      "title": "Rotation Z",
+      "type": "number"
+    },
+    "resolution_width": {
+      "default": 1024,
+      "description": "Output image width in pixels",
+      "title": "Resolution Width",
+      "type": "integer"
+    },
+    "resolution_height": {
+      "default": 1024,
+      "description": "Output image height in pixels",
+      "title": "Resolution Height",
+      "type": "integer"
+    },
+    "camera_distance": {
+      "default": 3.0,
+      "description": "Distance of camera from the object",
+      "title": "Camera Distance",
+      "type": "number"
+    },
+    "camera_elevation": {
+      "default": 30.0,
+      "description": "Camera elevation angle in degrees",
+      "title": "Camera Elevation",
+      "type": "number"
+    },
+    "camera_azimuth": {
+      "default": 45.0,
+      "description": "Camera azimuth angle in degrees",
+      "title": "Camera Azimuth",
+      "type": "number"
+    },
+    "background_color": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Color"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Background color as RGB tuple (0-255)"
+    },
+    "wireframe": {
+      "default": false,
+      "description": "Render as wireframe instead of solid",
+      "title": "Wireframe",
+      "type": "boolean"
+    },
+    "mesh_color": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Color"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mesh color as RGB tuple (0-255)"
+    }
+  },
+  "required": [
+    "glb_file"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

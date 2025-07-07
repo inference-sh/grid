@@ -1,9 +1,9 @@
 name: hidream-e1-full
 description: HiDream-E1-Full is an instruction-based image editing model built on HiDream-I1 with 17B parameters that can edit images based on natural language instructions.
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/0654cggkt95hr36j6ac328ph28
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3tzrntk1ara0gyf7er49jsvdf8.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

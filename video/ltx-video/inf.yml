@@ -1,9 +1,9 @@
 name: ltx-video
 description: Generate high-quality videos with LTX-Video model
 category: video
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/0hkqp4g77sn618x5hchtv5vmnw
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4y25g71d2jmp4mwp5gcjzxm74h.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

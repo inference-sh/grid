@@ -1,9 +1,9 @@
 name: hidream-i1-fast
 description: HiDream-I1-Fast is a fast image generative foundation model with 17B parameters that achieves high-quality image generation with only 16 inference steps.
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/334jmvzckpnchhn6x0rwv0cjay
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

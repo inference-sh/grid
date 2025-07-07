@@ -1,9 +1,9 @@
 name: omni-zero
 description: SDXL zero shot stylised portrait creation
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
     thumbnail: ""
     banner: ""
 metadata: {}

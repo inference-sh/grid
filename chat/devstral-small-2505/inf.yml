@@ -1,9 +1,9 @@
 name: devstral-small-2505
 description: Devstral-Small-2505 is an agentic large language model (LLM) designed for software engineering tasks, developed through a collaboration between Mistral AI and All Hands AI. It is fine-tuned from Mistral-Small-3.1 and has a long context window of up to 128k tokens
 category: chat
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz008wnv226d2x18hxvb2wzh.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz008wnv226d2x18hxvb2wzh.png
     thumbnail: ""
     banner: ""
 metadata: {}

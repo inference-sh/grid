@@ -1,9 +1,9 @@
 name: latentsync
 description: Lip sync application using LatentSync model
 category: video
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/0ewq4gnjq5yefrcydy4t8amvga
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/30q0qjev53aps250t64txd3my0.jpg
     thumbnail: ""
     banner: ""
 metadata: {}

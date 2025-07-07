@@ -1,9 +1,9 @@
 name: sd-inpainting
 description: Stable Diffusion Inpainting is a model that can fill in areas of an image based on a text prompt and a mask.
 category: image
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
     thumbnail: ""
     banner: ""
 metadata: {}

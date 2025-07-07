@@ -1,9 +1,9 @@
 name: gemma-3-12b-it
 description: Gemma 3 12B is a 12-billion-parameter vision-language model developed by Google, capable of handling text and image input and generating text output. It features a 128K context window, multilingual support, and open weights, making it suitable for tasks such as question answering, summarization, reasoning, and image understanding
 category: chat
-is_public: true
+is_public: false
 images:
-    card: https://api.inference.sh/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz022t6xqj5n0r3sr5yhpcrc.png
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz022t6xqj5n0r3sr5yhpcrc.png
     thumbnail: ""
     banner: ""
 metadata:
