@@ -230,6 +230,9 @@ class App(BaseApp):
         running_dir = Path(os.getcwd())  # Convert string to Path object
         self.ckpts_dir, self.loras_dir = setup_model_directories(running_dir)
 
+        self.ckpts_dir = 'ckpts'
+        self.loras_dir = 'loras'
+
         # Initialize accelerator
         self.accelerator = Accelerator()
 
@@ -305,20 +308,20 @@ class App(BaseApp):
             download_models(self.i2v_transformer_filename, self.text_encoder_filename)
 
             # Print contents after download
-            print("\nContents of ckpts directory after download:")
-            for file in os.listdir(ckpts_dir):
-                print(f"  - {file}")
+            #print("\nContents of ckpts directory after download:")
+            #for file in os.listdir(ckpts_dir):
+            #    print(f"  - {file}")
 
             # Verify that all required model files exist
-            required_files = [
-                os.path.join(ckpts_dir, self.i2v_transformer_filename),
-                os.path.join(ckpts_dir, self.text_encoder_filename),
-                os.path.join(ckpts_dir, self.vae_filename)
-            ]
+            #required_files = [
+            #    os.path.join(ckpts_dir, self.i2v_transformer_filename),
+            #    os.path.join(ckpts_dir, self.text_encoder_filename),
+            #    os.path.join(ckpts_dir, self.vae_filename)
+            #]
 
-            missing_files = [f for f in required_files if not os.path.exists(f)]
-            if missing_files:
-                raise FileNotFoundError(f"Missing required model files: {', '.join(missing_files)}")
+            #missing_files = [f for f in required_files if not os.path.exists(f)]
+            #if missing_files:
+            #    raise FileNotFoundError(f"Missing required model files: {', '.join(missing_files)}")
 
         except Exception as e:
             print(f"Error during model setup: {str(e)}")
@@ -417,11 +420,11 @@ class App(BaseApp):
             cfg_star_switch=input_data.cfg_star_switch,
             cfg_zero_step=input_data.cfg_zero_step,
             state=state,  # Pass the state dictionary
-            model_filename=os.path.join(self.ckpts_dir, self.i2v_transformer_filename)  # Include full path to model file
+            model_filename=os.path.join("ckpts", self.i2v_transformer_filename)  # Include full path to model file
         )
 
         # Find the most recently created MP4 file in the outputs directory
-        outputs_dir = os.path.join(str(current_dir), "outputs")
+        outputs_dir = 'output' # os.path.join(str(current_dir), "outputs")
         os.makedirs(outputs_dir, exist_ok=True)
 
         # Get all MP4 files in the outputs directory

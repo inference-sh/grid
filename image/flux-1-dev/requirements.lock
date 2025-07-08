@@ -8,7 +8,7 @@ filelock==3.18.0
 fsspec==2025.5.1
 gguf==0.17.1
 hf-xet==1.1.5
-huggingface-hub==0.33.1
+huggingface-hub==0.33.2
 idna==3.10
 importlib-metadata==8.7.0
 inferencesh==0.2.7
@@ -33,7 +33,7 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
-peft==0.15.2
+peft==0.16.0
 pillow==11.3.0
 protobuf==6.31.1
 psutil==7.0.0
@@ -52,9 +52,9 @@ sympy==1.14.0
 tokenizers==0.21.2
 torch==2.7.1
 tqdm==4.67.1
-transformers==4.53.0
+transformers==4.53.1
 triton==3.3.1
-typing-extensions==4.14.0
+typing-extensions==4.14.1
 typing-inspection==0.4.1
 urllib3==2.5.0
 zipp==3.23.0

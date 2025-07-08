@@ -25,6 +25,16 @@
       ],
       "title": "LoraConfig",
       "type": "object"
+    },
+    "SchedulerEnum": {
+      "enum": [
+        "normal",
+        "karras",
+        "exponential",
+        "beta"
+      ],
+      "title": "SchedulerEnum",
+      "type": "string"
     }
   },
   "properties": {
@@ -85,6 +95,19 @@
       "default": null,
       "description": "List of LoRA configs to apply",
       "title": "Loras"
+    },
+    "scheduler": {
+      "$ref": "#/$defs/SchedulerEnum",
+      "default": "normal",
+      "description": "Scheduler to use for diffusion process."
+    },
+    "denoise": {
+      "default": 1.0,
+      "description": "Denoising strength (0.0 to 1.0, where 1.0 is standard full denoising)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Denoise",
+      "type": "number"
     }
   },
   "required": [

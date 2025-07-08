@@ -6,7 +6,8 @@ from huggingface_hub import hf_hub_download
 from diffusers import (
     FluxPipeline, 
     FluxTransformer2DModel,
-    GGUFQuantizationConfig
+    GGUFQuantizationConfig,
+    FlowMatchEulerDiscreteScheduler
 )
 import os
 from PIL import Image
@@ -18,6 +19,7 @@ from accelerate import Accelerator
 from dateutil.parser import parse as parse_date
 import urllib.parse
 import re
+from enum import Enum
 
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
@@ -29,6 +31,13 @@ class LoraConfig(BaseModel):
     lora_url: str = Field(description="URL to LoRA file (.safetensors) or Civitai model page")
     lora_multiplier: float = Field(default=1.0, description="Multiplier for the LoRA effect")
 
+# Define enums for sampler and scheduler
+class SchedulerEnum(str, Enum):
+    normal = "normal"
+    karras = "karras"
+    exponential = "exponential"
+    beta = "beta"
+
 class AppInput(BaseAppInput):
     prompt: str = Field(description="The text prompt to generate an image from.")
     height: int = Field(default=1024, description="The height in pixels of the generated image.")
@@ -37,6 +46,8 @@ class AppInput(BaseAppInput):
     guidance_scale: float = Field(default=3.5, description="The guidance scale.")
     seed: Optional[int] = Field(default=None, description="The seed for random generation.")
     loras: Optional[list[LoraConfig]] = Field(default=None, description="List of LoRA configs to apply")
+    scheduler: SchedulerEnum = Field(default=SchedulerEnum.normal, description="Scheduler to use for diffusion process.")
+    denoise: float = Field(default=1.0, ge=0.0, le=1.0, description="Denoising strength (0.0 to 1.0, where 1.0 is standard full denoising)")
 
 class AppOutput(BaseAppOutput):
     image_output: File = Field(description="The generated image.")
@@ -278,6 +289,39 @@ class App(BaseApp):
         if active_adapters:
             self.pipeline.set_adapters(active_adapters, adapter_weights=adapter_weights)
 
+        # Configure scheduler based on input using FlowMatchEulerDiscreteScheduler parameters
+        scheduler_config = dict(self.pipeline.scheduler.config)
+        
+        # Handle None scheduler value by defaulting to normal
+        selected_scheduler = input_data.scheduler if input_data.scheduler is not None else SchedulerEnum.normal
+        
+        # Reset all sigma types to False first
+        scheduler_config.update({
+            "use_karras_sigmas": False,
+            "use_exponential_sigmas": False,
+            "use_beta_sigmas": False
+        })
+        
+        # Apply scheduler-specific configuration
+        if selected_scheduler == SchedulerEnum.karras:
+            scheduler_config["use_karras_sigmas"] = True
+            logging.info("Using Karras sigmas")
+        elif selected_scheduler == SchedulerEnum.exponential:
+            scheduler_config["use_exponential_sigmas"] = True
+            logging.info("Using exponential sigmas")
+        elif selected_scheduler == SchedulerEnum.beta:
+            scheduler_config["use_beta_sigmas"] = True
+            logging.info("Using beta sigmas")
+        elif selected_scheduler == SchedulerEnum.normal:
+            # Normal/default configuration
+            logging.info("Using normal (default) scheduler configuration")
+        
+        # Create new scheduler with updated config
+        new_scheduler = FlowMatchEulerDiscreteScheduler.from_config(scheduler_config)
+        self.pipeline.scheduler = new_scheduler
+        
+        logging.info(f"Scheduler: {selected_scheduler}, Denoise: {input_data.denoise}")
+        
         prompt = input_data.prompt
         height = input_data.height
         width = input_data.width
@@ -292,11 +336,15 @@ class App(BaseApp):
         
         logging.info(f"Generating image for prompt: '{prompt}'")
         
+        # Note: FluxPipeline doesn't support denoise parameter directly
+        # The denoise value could be used to modify num_inference_steps if needed
+        effective_steps = int(num_inference_steps * input_data.denoise) if input_data.denoise < 1.0 else num_inference_steps
+        
         image = self.pipeline(
-            prompt=prompt, 
+            prompt=prompt,
             height=height,
             width=width,
-            num_inference_steps=num_inference_steps, 
+            num_inference_steps=effective_steps, 
             guidance_scale=guidance_scale,
             generator=generator,
         ).images[0]
