@@ -1,7 +1,7 @@
 name: caption-videos
 description: An app to add caption videos from a caption file (like the output from whisper STT)
 category: other
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynpzdd6hg19g85r3245dwn.png
     thumbnail: ""

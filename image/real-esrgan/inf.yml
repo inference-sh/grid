@@ -1,7 +1,7 @@
 name: real-esrgan
 description: Run Real-ESRGAN on an image or video
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6d02eb5znvsq6ppg0bndzar9ze.jpg
     thumbnail: ""

@@ -1,7 +1,7 @@
 name: diffrythm
 description: Blazingly Fast and Embarrassingly Simple End-to-End Full-Length Song Generation with Latent Diffusion
 category: audio
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
     thumbnail: ""

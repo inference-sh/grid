@@ -1,21 +1,54 @@
 name: fast-wan
 description: fast version of wan using causvid
 category: video
-perms: 493
+perms: 0
 images:
     card: ""
     thumbnail: ""
     banner: ""
 metadata: {}
 variants:
-    default:
-        name: ""
+    causvid_480p:
+        name: CausVid 480p
         order: 0
         resources:
             gpu:
                 count: 1
-                vram: 0
+                vram: 17179869184
                 type: nvidia
-            ram: 0
+            ram: 33285996544
+        env: {}
+        python: "3.12"
+    causvid_720p:
+        name: CausVid 720p
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 21474836480
+                type: nvidia
+            ram: 41875931136
+        env: {}
+        python: "3.12"
+    fusionx_480p:
+        name: FusionX 480p
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 17179869184
+                type: nvidia
+            ram: 33285996544
+        env: {}
+        python: "3.12"
+    fusionx_720p:
+        name: FusionX 720p
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 21474836480
+                type: nvidia
+            ram: 41875931136
         env: {}
         python: "3.12"

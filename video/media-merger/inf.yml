@@ -1,7 +1,7 @@
 name: media-merger
 description: An application that merges multiple videos and images with customizable transitions
 category: video
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
     thumbnail: ""

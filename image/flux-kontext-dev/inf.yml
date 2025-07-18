@@ -1,7 +1,7 @@
 name: flux-kontext-dev
 description: Flux-Kontext Dev
 category: image
-is_public: false
+perms: 0
 images:
     card: ""
     thumbnail: ""

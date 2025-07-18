@@ -1,7 +1,7 @@
 name: mask-image
 description: an app that given as input two images, a png semi-transparent mask and an image to be masked returns the partially transparent masked image
 category: other
-is_public: false
+perms: 0
 images:
     card: ""
     thumbnail: ""

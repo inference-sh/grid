@@ -1,7 +1,7 @@
 name: array-element-switch
 description: switch between two inputs according to an array-element comparison condition
 category: other
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
     thumbnail: ""

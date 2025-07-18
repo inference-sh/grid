@@ -1,7 +1,7 @@
 name: rotate-glb
 description: An app that renders GLB/GLTF 3D models with custom rotation, camera positioning, lighting, and output settings. Supports wireframe rendering and customizable resolution. Uses Open3D for headless rendering.
 category: 3d
-is_public: false
+perms: 0
 images:
     card: ""
     thumbnail: ""

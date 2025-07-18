@@ -16,6 +16,10 @@ from dateutil.parser import parse as parse_date
 import urllib.parse
 import re
 
+from diffusers.utils import logging as diffusers_logging
+
+diffusers_logging.set_verbosity_debug()
+
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 accelerator = Accelerator()
@@ -218,6 +222,16 @@ class App(BaseApp):
             torch_dtype=torch.bfloat16
         )
         self.pipeline.to(device)
+        # self.pipeline.transformer.set_attention_backend("sage_varlen")
+        self.pipeline.transformer.compile_repeated_blocks(fullgraph=True)
+        # self.pipeline.transformer.to(memory_format=torch.channels_last)
+        # self.pipeline.transformer = torch.compile(
+        #     self.pipeline.transformer, mode="max-autotune", fullgraph=True
+        # )
+        # self.pipeline.vae.decode = torch.compile(
+        #     self.pipeline.vae.decode, mode="max-autotune", fullgraph=True
+        # )
+        # self.pipeline.enable_model_cpu_offload()
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         prompt = input_data.prompt
@@ -240,6 +254,7 @@ class App(BaseApp):
             width=width,
             height=height,
         ).images[0]
+        print("pipeline done")
         output_path = "/tmp/generated_image.png"
         result.save(output_path)
         return AppOutput(image_output=File(path=output_path))

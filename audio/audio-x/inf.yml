@@ -1,7 +1,7 @@
 name: audio-x
 description: Diffusion Transformer for Anything-to-Audio Generation
 category: audio
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
     thumbnail: ""

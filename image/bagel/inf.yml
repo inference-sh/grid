@@ -1,7 +1,7 @@
 name: bagel
 description: unified model for multi-modal understanding and generation
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
     thumbnail: ""

@@ -1,7 +1,7 @@
 name: hidream-i1
 description: HiDream-I1 is a new open-source image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality within seconds.
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
     thumbnail: ""

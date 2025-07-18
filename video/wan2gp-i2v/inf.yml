@@ -1,7 +1,7 @@
 name: wan2gp-i2v
 description: wan2gp image to video
 category: video
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
     thumbnail: ""

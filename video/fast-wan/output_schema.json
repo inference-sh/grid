@@ -72,16 +72,10 @@
     "video_output": {
       "$ref": "#/$defs/File",
       "description": "Generated video file (.mp4)"
-    },
-    "seed_used": {
-      "description": "The seed used for generation",
-      "title": "Seed Used",
-      "type": "integer"
     }
   },
   "required": [
-    "video_output",
-    "seed_used"
+    "video_output"
   ],
   "title": "AppOutput",
   "type": "object"

@@ -1,7 +1,7 @@
 name: dia-tts
 description: A text-to-speech app using the DIA model for generating realistic dialogue
 category: audio
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
     thumbnail: ""

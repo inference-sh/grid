@@ -1,7 +1,7 @@
 name: instant-character
 description: Generate images with consistent character style using Instant Character by tencent (uses Flux.1 dev with IP adapter)
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
     thumbnail: ""

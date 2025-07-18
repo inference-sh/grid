@@ -1,7 +1,7 @@
 name: birefnet
 description: An app for background removal using BiRefNet
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
     thumbnail: ""
@@ -14,8 +14,8 @@ variants:
         resources:
             gpu:
                 count: 1
-                vram: 8000000000
+                vram: 8589934592
                 type: any
-            ram: 8000000000
+            ram: 8589934592
         env: {}
         python: "3.12"

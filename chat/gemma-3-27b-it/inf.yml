@@ -1,7 +1,7 @@
 name: gemma-3-27b-it
 description: Gemma 3 27B is a 27-billion-parameter language model developed by Google, designed to handle both text and image inputs with efficiency and contextual understanding. It features a 128K context window, multilingual support, and open weights, making it suitable for complex tasks such as question answering, summarization, reasoning, and image understanding
 category: chat
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzzgtfadzh7a6668a42fkh.png
     thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzzgtfadzh7a6668a42fkh.png

@@ -1,7 +1,7 @@
 name: boolean-switch
 description: switch between two inputs according to a boolean comparison condition
 category: other
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxz8jp19ybcnyhxvf00frp.png
     thumbnail: ""

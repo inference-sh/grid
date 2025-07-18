@@ -1,7 +1,7 @@
 name: gemma-3n-e4b-it
 description: Gemma 3N E4B IT
 category: chat
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7n1z4js7a32645m7n3axedxmwq.jpg
     thumbnail: ""

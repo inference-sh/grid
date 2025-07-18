@@ -1,7 +1,7 @@
 name: kokoro-tts
 description: Text-to-Speech application using the Kokoro-82M model
 category: audio
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00krptarq4bwm89g539aea.png
     thumbnail: ""

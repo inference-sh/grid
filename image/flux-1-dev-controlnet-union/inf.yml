@@ -1,7 +1,7 @@
 name: flux-1-dev-controlnet-union
 description: Image generation with FLUX.1 Dev with ControlNet
 category: image
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzaxfw0yj6a2pjettsrwx0.png
     thumbnail: ""

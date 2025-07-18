@@ -1,7 +1,7 @@
 name: hunyuan-image-to-3d
 description: A text to 3d object app using Hunyuan
 category: 3d
-is_public: false
+perms: 0
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
     thumbnail: ""

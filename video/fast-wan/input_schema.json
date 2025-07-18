@@ -79,22 +79,6 @@
       "title": "Prompt",
       "type": "string"
     },
-    "height": {
-      "default": 512,
-      "description": "Target height for the output video (will be adjusted to multiple of 32)",
-      "maximum": 896,
-      "minimum": 128,
-      "title": "Height",
-      "type": "integer"
-    },
-    "width": {
-      "default": 896,
-      "description": "Target width for the output video (will be adjusted to multiple of 32)",
-      "maximum": 896,
-      "minimum": 128,
-      "title": "Width",
-      "type": "integer"
-    },
     "negative_prompt": {
       "default": "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards, watermark, text, signature",
       "description": "Negative prompt to avoid unwanted elements",
@@ -137,6 +121,12 @@
       "default": false,
       "description": "Whether to use a random seed instead of the provided seed",
       "title": "Randomize Seed",
+      "type": "boolean"
+    },
+    "bounce_loop": {
+      "default": false,
+      "description": "Create a bounce loop video (forward then backward)",
+      "title": "Bounce Loop",
       "type": "boolean"
     }
   },
