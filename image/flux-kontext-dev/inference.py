@@ -3,7 +3,11 @@ from pydantic import Field, BaseModel
 from typing import Optional
 import torch
 from huggingface_hub import hf_hub_download
-from diffusers import FluxKontextPipeline
+from diffusers import (
+    FluxKontextPipeline, 
+    FluxTransformer2DModel,
+    GGUFQuantizationConfig,
+)
 from diffusers.utils import load_image
 import os
 from PIL import Image
@@ -15,6 +19,10 @@ from accelerate import Accelerator
 from dateutil.parser import parse as parse_date
 import urllib.parse
 import re
+from transformers import (
+    T5EncoderModel,
+    QuantoConfig
+)
 
 from diffusers.utils import logging as diffusers_logging
 
@@ -217,21 +225,45 @@ class App(BaseApp):
         logging.info(f"Downloading {filename} from {repo_id}...")
         ckpt_path = hf_hub_download(repo_id=repo_id, filename=filename)
         logging.info(f"Model downloaded to {ckpt_path}")
+        transformer = FluxTransformer2DModel.from_single_file(
+            ckpt_path,
+            quantization_config=GGUFQuantizationConfig(compute_dtype=torch.bfloat16),
+            torch_dtype=torch.bfloat16,
+            config="black-forest-labs/FLUX.1-Kontext-dev",
+            subfolder="transformer",
+        )
+        quanto_config = None
+        if variant == "q2_k":
+            quanto_config = QuantoConfig(weights="int2")
+        elif variant == "q3_k_s":
+            quanto_config = QuantoConfig(weights="int8")
+       
+
+        text_encoder_2 = T5EncoderModel.from_pretrained(
+            "black-forest-labs/FLUX.1-Kontext-dev",
+            subfolder="text_encoder_2",
+            torch_dtype=torch.bfloat16,
+            quantization_config=quanto_config,
+        )
+
         self.pipeline = FluxKontextPipeline.from_pretrained(
             "black-forest-labs/FLUX.1-Kontext-dev",
+            transformer=transformer,
+            text_encoder_2=text_encoder_2,
             torch_dtype=torch.bfloat16
         )
-        self.pipeline.to(device)
+        # self.pipeline.to(device)
         # self.pipeline.transformer.set_attention_backend("sage_varlen")
+        self.pipeline.transformer.to(memory_format=torch.channels_last)
         self.pipeline.transformer.compile_repeated_blocks(fullgraph=True)
-        # self.pipeline.transformer.to(memory_format=torch.channels_last)
         # self.pipeline.transformer = torch.compile(
         #     self.pipeline.transformer, mode="max-autotune", fullgraph=True
         # )
         # self.pipeline.vae.decode = torch.compile(
         #     self.pipeline.vae.decode, mode="max-autotune", fullgraph=True
         # )
-        # self.pipeline.enable_model_cpu_offload()
+        self.pipeline.enable_model_cpu_offload()
+        # self.pipeline.enable_sequential_cpu_offload()
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         prompt = input_data.prompt

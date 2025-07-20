@@ -2,7 +2,7 @@ accelerate==1.9.0
 annotated-types==0.7.0
 certifi==2025.7.14
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@c6fbcf717b8a2d18232da0e8260af5838f93fe8f
+diffusers @ git+https://github.com/huggingface/diffusers.git@cde02b061b6f13012dfefe76bc8abf5e6ec6d3f3
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.7.0
@@ -33,6 +33,7 @@ nvidia-nccl-cu12==2.27.5
 nvidia-nvjitlink-cu12==12.9.86
 nvidia-nvshmem-cu12==3.3.9
 nvidia-nvtx-cu12==12.9.79
+optimum-quanto==0.2.7
 packaging==25.0
 peft==0.16.0
 pillow==11.3.0
@@ -52,7 +53,7 @@ setuptools-scm==8.3.1
 six==1.17.0
 sympy==1.14.0
 tokenizers==0.21.2
-torch==2.9.0.dev20250718+cu129
+torch==2.9.0.dev20250719+cu129
 tqdm==4.67.1
 transformers==4.53.2
 triton==3.3.1
