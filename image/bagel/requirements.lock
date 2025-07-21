@@ -1,6 +1,6 @@
-accelerate==1.8.1
+accelerate==1.9.0
 annotated-types==0.7.0
-certifi==2025.6.15
+certifi==2025.7.14
 charset-normalizer==3.4.2
 click==8.2.1
 contourpy==1.3.2
@@ -9,8 +9,8 @@ decord==0.6.0
 einops==0.8.1
 filelock==3.18.0
 flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.8/flash_attn-2.5.9+cu126torch2.5-cp311-cp311-linux_x86_64.whl
-fonttools==4.58.5
-fsspec==2025.5.1
+fonttools==4.59.0
+fsspec==2025.7.0
 gitdb==4.0.12
 gitpython==3.1.44
 huggingface-hub==0.29.1
@@ -53,7 +53,7 @@ requests==2.32.3
 safetensors==0.4.5
 scipy==1.10.1
 sentencepiece==0.1.99
-sentry-sdk==2.32.0
+sentry-sdk==2.33.0
 setuptools==80.9.0
 setuptools-scm==8.3.1
 six==1.17.0
