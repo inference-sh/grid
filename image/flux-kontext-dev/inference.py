@@ -215,6 +215,12 @@ def resolve_and_load_lora(pipeline, lora_url, lora_multiplier=1.0):
 
 class App(BaseApp):
     async def setup(self, metadata):
+        # Initialize LoRA tracking attributes
+        self.loaded_loras = {}  # adapter_name -> (lora_url, lora_multiplier)
+        self.last_lora_url = None
+        self.last_lora_multiplier = None
+        self.last_lora_adapter_name = None
+
         logging.basicConfig(level=logging.INFO)
         repo_id = "bullerwins/FLUX.1-Kontext-dev-GGUF"
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
@@ -266,6 +272,45 @@ class App(BaseApp):
         # self.pipeline.enable_sequential_cpu_offload()
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
+        """Run prediction on the input data."""
+        loras = getattr(input_data, "loras", None) or []
+        current_adapters = set(self.loaded_loras.keys())
+        requested_adapters = set(lora.adapter_name for lora in loras)
+
+        # Unload adapters that are no longer requested or changed
+        for adapter_name in list(current_adapters):
+            found = next((l for l in loras if l.adapter_name == adapter_name), None)
+            if not found or (
+                self.loaded_loras[adapter_name][0] != found.lora_url or
+                self.loaded_loras[adapter_name][1] != found.lora_multiplier
+            ):
+                try:
+                    self.pipeline.delete_adapters(adapter_name)
+                    logging.info(f"Unloaded previous LoRA adapter: {adapter_name}")
+                except Exception as e:
+                    logging.warning(f"Failed to unload previous LoRA adapter {adapter_name}: {e}")
+                del self.loaded_loras[adapter_name]
+
+        # Load and activate requested adapters
+        adapter_weights = []
+        active_adapters = []
+        for lora in loras:
+            if (
+                lora.adapter_name not in self.loaded_loras or
+                self.loaded_loras[lora.adapter_name][0] != lora.lora_url or
+                self.loaded_loras[lora.adapter_name][1] != lora.lora_multiplier
+            ):
+                success = load_lora_adapter(self.pipeline, lora.lora_url, lora.adapter_name, lora.lora_multiplier)
+                if success:
+                    self.loaded_loras[lora.adapter_name] = (lora.lora_url, lora.lora_multiplier)
+            if lora.adapter_name in self.loaded_loras:
+                active_adapters.append(lora.adapter_name)
+                adapter_weights.append(lora.lora_multiplier)
+
+        # Set all active adapters
+        if active_adapters:
+            self.pipeline.set_adapters(active_adapters, adapter_weights=adapter_weights)
+
         prompt = input_data.prompt
         input_image_path = input_data.input_image.path
         num_inference_steps = input_data.num_inference_steps
