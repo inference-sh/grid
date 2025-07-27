@@ -1,0 +1,171 @@
+{
+  "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "video_file": {
+        "$ref": "#/$defs/File",
+        "description": "The video file to process"
+      }
+    },
+    "required": [
+      "video_file"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "audio_file": {
+        "$ref": "#/$defs/File",
+        "description": "The extracted audio from the video"
+      },
+      "silent_video": {
+        "$ref": "#/$defs/File",
+        "description": "The video file with audio removed"
+      }
+    },
+    "required": [
+      "audio_file",
+      "silent_video"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

@@ -1,0 +1,12 @@
+inferencesh
+pydantic>=2.0.0
+protobuf
+diffusers
+transformers
+sentencepiece
+huggingface_hub
+numpy==1.26.0
+opencv_contrib_python_headless==4.10.0.84
+Pillow==11.1.0
+git+https://github.com/inference-sh/Real-ESRGAN.git
+torch==2.5.1

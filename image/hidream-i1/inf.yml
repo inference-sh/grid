@@ -1,0 +1,515 @@
+name: hidream-i1
+description: HiDream-I1 is a new open-source image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality within seconds.
+category: image
+images:
+    card: https://cloud.inference.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: Fast
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 64000000000
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.12"
+    dev:
+        name: Dev
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 64000000000
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.12"
+    dev-f16:
+        name: Dev F16
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 80000000000
+                type: any
+            ram: 80000000000
+        env: {}
+        python: "3.12"
+    dev-q2k:
+        name: Dev Q2_K
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q3km:
+        name: Dev Q3_K_M
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q3ks:
+        name: Dev Q3_K_S
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q4km:
+        name: Dev Q4_K_M
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q4ks:
+        name: Dev Q4_K_S
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q5km:
+        name: Dev Q5_K_M
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q5ks:
+        name: Dev Q5_K_S
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q6k:
+        name: Dev Q6_K
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q8:
+        name: Dev Q8_0
+        order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q40:
+        name: Dev Q4_0
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q41:
+        name: Dev Q4_1
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q50:
+        name: Dev Q5_0
+        order: 14
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    dev-q51:
+        name: Dev Q5_1
+        order: 15
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-f16:
+        name: Fast F16
+        order: 16
+        resources:
+            gpu:
+                count: 1
+                vram: 80000000000
+                type: any
+            ram: 80000000000
+        env: {}
+        python: "3.12"
+    fast-q2k:
+        name: Fast Q2_K
+        order: 17
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q3km:
+        name: Fast Q3_K_M
+        order: 18
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q3ks:
+        name: Fast Q3_K_S
+        order: 19
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q4km:
+        name: Fast Q4_K_M
+        order: 20
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q4ks:
+        name: Fast Q4_K_S
+        order: 21
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q5km:
+        name: Fast Q5_K_M
+        order: 22
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q5ks:
+        name: Fast Q5_K_S
+        order: 23
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q6k:
+        name: Fast Q6_K
+        order: 24
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q8:
+        name: Fast Q8_0
+        order: 25
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q40:
+        name: Fast Q4_0
+        order: 26
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q41:
+        name: Fast Q4_1
+        order: 27
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q50:
+        name: Fast Q5_0
+        order: 28
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q51:
+        name: Fast Q5_1
+        order: 29
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fp8-full:
+        name: FP8 Full
+        order: 30
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.12"
+    full:
+        name: Full
+        order: 31
+        resources:
+            gpu:
+                count: 1
+                vram: 64000000000
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.12"
+    full-f16:
+        name: Full F16
+        order: 32
+        resources:
+            gpu:
+                count: 1
+                vram: 80000000000
+                type: any
+            ram: 80000000000
+        env: {}
+        python: "3.12"
+    full-q2k:
+        name: Full Q2_K
+        order: 33
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q3km:
+        name: Full Q3_K_M
+        order: 34
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q3ks:
+        name: Full Q3_K_S
+        order: 35
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q4km:
+        name: Full Q4_K_M
+        order: 36
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q4ks:
+        name: Full Q4_K_S
+        order: 37
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q5km:
+        name: Full Q5_K_M
+        order: 38
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q5ks:
+        name: Full Q5_K_S
+        order: 39
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q6k:
+        name: Full Q6_K
+        order: 40
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q8:
+        name: Full Q8_0
+        order: 41
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q40:
+        name: Full Q4_0
+        order: 42
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q41:
+        name: Full Q4_1
+        order: 43
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q50:
+        name: Full Q5_0
+        order: 44
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    full-q51:
+        name: Full Q5_1
+        order: 45
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"

@@ -1,0 +1,196 @@
+{
+  "$defs": {
+    "ContextMessage": {
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/ContextMessageRole",
+          "description": "the role of the message. user, assistant, or system"
+        },
+        "text": {
+          "description": "the text content of the message",
+          "title": "Text",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the image file of the message"
+        }
+      },
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "ContextMessage",
+      "type": "object"
+    },
+    "ContextMessageRole": {
+      "enum": [
+        "user",
+        "assistant",
+        "system"
+      ],
+      "title": "ContextMessageRole",
+      "type": "string"
+    },
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "description": "Gemma 3 12B IT input model with image support.",
+  "properties": {
+    "system_prompt": {
+      "default": "You are Gemma, a helpful and knowledgeable AI assistant.",
+      "description": "The system prompt to use for the model",
+      "title": "System Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "contentMediaType": "image/*",
+      "default": null,
+      "description": "the image to use for the model"
+    },
+    "context": {
+      "default": [],
+      "description": "the context to use for the model",
+      "examples": [
+        [
+          {
+            "content": [
+              {
+                "text": "What is the capital of France?",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "The capital of France is Paris.",
+                "type": "text"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      ],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "text": {
+      "description": "the user prompt to use for the model",
+      "examples": [
+        "write a haiku about artificial general intelligence"
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
+    "context_size": {
+      "default": 4096,
+      "title": "Context Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "LLMInput",
+  "type": "object"
+}

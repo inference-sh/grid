@@ -1,0 +1,11 @@
+annotated-types==0.7.0
+inferencesh==0.2.37
+ninja==1.11.1.4
+packaging==25.0
+pydantic==2.11.7
+pydantic-core==2.33.2
+setuptools==80.9.0
+setuptools-scm==8.3.1
+tqdm==4.67.1
+typing-extensions==4.14.1
+typing-inspection==0.4.1

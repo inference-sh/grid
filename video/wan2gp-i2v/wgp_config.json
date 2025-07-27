@@ -1,0 +1,1 @@
+{"attention_mode": "auto", "transformer_types": [], "transformer_quantization": "int8", "text_encoder_filename": "ckpts/models_t5_umt5-xxl-enc-quanto_int8.safetensors", "save_path": "outputs", "compile": "", "metadata_type": "metadata", "default_ui": "t2v", "boost": 1, "clear_file_list": 5, "vae_config": 0, "profile": 4, "preload_model_policy": [], "UI_theme": "default"}

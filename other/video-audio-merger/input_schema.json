@@ -1,0 +1,93 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "video_file": {
+      "$ref": "#/$defs/File",
+      "description": "The video file to process"
+    },
+    "audio_file": {
+      "$ref": "#/$defs/File",
+      "description": "The audio file to merge with the video"
+    },
+    "preserve_original_audio": {
+      "default": false,
+      "description": "Whether to preserve the original video audio and add the new audio on top (True) or replace it entirely (False)",
+      "title": "Preserve Original Audio",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "video_file",
+    "audio_file"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

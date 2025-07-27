@@ -1,0 +1,78 @@
+{
+  "input": {
+    "$defs": {
+      "ArrayOperator": {
+        "enum": [
+          "==",
+          "!=",
+          "contains",
+          "not_contains",
+          "subset",
+          "superset",
+          "intersects",
+          "disjoint",
+          "length_equal",
+          "length_greater",
+          "length_less",
+          "empty",
+          "not_empty"
+        ],
+        "title": "ArrayOperator",
+        "type": "string"
+      }
+    },
+    "properties": {
+      "left_operand": {
+        "description": "The left side array of the comparison (condition value)",
+        "items": {},
+        "title": "Left Operand",
+        "type": "array"
+      },
+      "operator": {
+        "$ref": "#/$defs/ArrayOperator",
+        "description": "The array comparison operator to use"
+      },
+      "right_operand": {
+        "anyOf": [
+          {
+            "items": {},
+            "type": "array"
+          },
+          {}
+        ],
+        "description": "The right side array or value of the comparison (value to check against)",
+        "title": "Right Operand"
+      },
+      "true_value": {
+        "description": "The value to return if the condition is true",
+        "title": "True Value"
+      },
+      "false_value": {
+        "description": "The value to return if the condition is false",
+        "title": "False Value"
+      }
+    },
+    "required": [
+      "left_operand",
+      "operator",
+      "right_operand",
+      "true_value",
+      "false_value"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "properties": {
+      "result": {
+        "description": "The selected value based on the array condition evaluation",
+        "title": "Result"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

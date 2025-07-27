@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "SchedulerType": {
+      "description": "Available scheduler types for the HiDream model.",
+      "enum": [
+        "flow_unipc",
+        "flash_flow"
+      ],
+      "title": "SchedulerType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "The prompt to generate an image from",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width of the generated image (will be adjusted to nearest multiple of 8)",
+      "minimum": 8,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height of the generated image (will be adjusted to nearest multiple of 8)",
+      "minimum": 8,
+      "title": "Height",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": -1,
+      "description": "The seed for the random number generator (-1 for random)",
+      "title": "Seed"
+    },
+    "num_inference_steps": {
+      "default": 50,
+      "description": "Number of denoising steps (optimal: 50 for full model)",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 5.0,
+      "description": "CFG scale - how closely to follow the prompt (optimal: 5.0 for full model)",
+      "maximum": 20.0,
+      "minimum": 0.0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "shift": {
+      "default": 3.0,
+      "description": "Shift parameter for scheduler (optimal: 3.0 for full model)",
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Shift",
+      "type": "number"
+    },
+    "scheduler_type": {
+      "$ref": "#/$defs/SchedulerType",
+      "default": "flow_unipc",
+      "description": "Scheduler type (optimal: 'flow_unipc' for full model)"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

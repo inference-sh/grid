@@ -1,0 +1,171 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "description": "Input parameters for converting an image or text to a 3D model using Hunyuan3D-2",
+  "examples": [
+    {
+      "additional_images": [],
+      "background_removal": true,
+      "face_reducer": true,
+      "face_remover": true,
+      "floater_remover": true,
+      "input_image": null,
+      "num_inference_steps": 30,
+      "paint_texture": true,
+      "prompt": "a red sports car",
+      "seed": 2025
+    }
+  ],
+  "properties": {
+    "prompt": {
+      "default": "",
+      "description": "Optional text prompt to guide the 3D generation",
+      "examples": [
+        "a red sports car",
+        "a wooden chair"
+      ],
+      "maxLength": 1000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "input_image": {
+      "$ref": "#/$defs/File",
+      "default": null,
+      "description": "Input image to convert to 3D model (optional if prompt is provided)",
+      "examples": [
+        "https://1nf.sh/examples/car.jpg",
+        "https://1nf.sh/examples/chair.png"
+      ]
+    },
+    "additional_images": {
+      "description": "Additional images for multiview input (used for mv/mv_turbo variants)",
+      "items": {
+        "$ref": "#/$defs/File"
+      },
+      "title": "Additional Images",
+      "type": "array"
+    },
+    "num_inference_steps": {
+      "default": 30,
+      "description": "Number of denoising steps (higher = better quality but slower)",
+      "examples": [
+        30,
+        50
+      ],
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 2025,
+      "description": "Random seed for reproducible results",
+      "examples": [
+        2025,
+        42
+      ],
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "background_removal": {
+      "default": true,
+      "description": "Whether to apply background removal to input images",
+      "title": "Background Removal",
+      "type": "boolean"
+    },
+    "floater_remover": {
+      "default": true,
+      "description": "Whether to apply floater removal post-processing",
+      "title": "Floater Remover",
+      "type": "boolean"
+    },
+    "face_remover": {
+      "default": true,
+      "description": "Whether to apply degenerate face removal post-processing",
+      "title": "Face Remover",
+      "type": "boolean"
+    },
+    "face_reducer": {
+      "default": true,
+      "description": "Whether to apply face reduction post-processing",
+      "title": "Face Reducer",
+      "type": "boolean"
+    },
+    "paint_texture": {
+      "default": true,
+      "description": "Whether to paint texture on the 3D model",
+      "title": "Paint Texture",
+      "type": "boolean"
+    }
+  },
+  "title": "Image/Text to 3D Model Generation Input",
+  "type": "object"
+}

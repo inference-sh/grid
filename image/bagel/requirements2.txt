@@ -1,0 +1,2 @@
+# flash_attn==2.5.8
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.8/flash_attn-2.5.9+cu126torch2.5-cp311-cp311-linux_x86_64.whl

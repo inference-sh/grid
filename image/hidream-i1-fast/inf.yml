@@ -1,0 +1,163 @@
+name: hidream-i1-fast
+description: HiDream-I1-Fast is a fast image generative foundation model with 17B parameters that achieves high-quality image generation with only 16 inference steps.
+category: image
+images:
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: Fast BF16 (gguf)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 35000000000
+                type: any
+            ram: 80000000000
+        env: {}
+        python: "3.12"
+    fast-q2k:
+        name: Fast Q2_K (gguf)
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q3km:
+        name: Fast Q3_K_M (gguf)
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q3ks:
+        name: Fast Q3_K_S (gguf)
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q4km:
+        name: Fast Q4_K_M (gguf)
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q4ks:
+        name: Fast Q4_K_S (gguf)
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q5km:
+        name: Fast Q5_K_M (gguf)
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q5ks:
+        name: Fast Q5_K_S (gguf)
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q6k:
+        name: Fast Q6_K (gguf)
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q8:
+        name: Fast Q8_0 (gguf)
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q40:
+        name: Fast Q4_0 (gguf)
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q41:
+        name: Fast Q4_1 (gguf)
+        order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q50:
+        name: Fast Q5_0 (gguf)
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    fast-q51:
+        name: Fast Q5_1 (gguf)
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
