@@ -1,7 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
 torch>=2.4.0
-transformers
+whisper-timestamped
+openai-whisper
+dtw-python
 accelerate
 numba==0.61.0
 datasets[audio]
@@ -9,3 +11,5 @@ huggingface_hub==0.25.0
 hf-transfer==0.1.9
 sentencepiece
 soundfile
+scipy
+librosa

@@ -118,10 +118,10 @@
     }
   },
   "properties": {
-    "captions": {
-      "description": "Array of caption chunks with timestamps and text for video captions",
+    "segments": {
+      "description": "Array of segments with start/end timestamps and text for video captions. Format: [{'start': timestamp_start, 'end': timestamp_end, 'text': text_to_show}]",
       "items": {},
-      "title": "Captions",
+      "title": "Segments",
       "type": "array"
     },
     "video_file": {
@@ -207,7 +207,7 @@
     }
   },
   "required": [
-    "captions",
+    "segments",
     "video_file"
   ],
   "title": "AppInput",

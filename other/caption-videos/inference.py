@@ -83,8 +83,8 @@ for font in GoogleFont:
         FONT_URL_MAP[font] = fallback_url
 
 class AppInput(BaseAppInput):
-    captions: List = Field(
-        description="Array of caption chunks with timestamps and text for video captions"
+    segments: List = Field(
+        description="Array of segments with start/end timestamps and text for video captions. Format: [{'start': timestamp_start, 'end': timestamp_end, 'text': text_to_show}]"
     )
     video_file: File = Field(
         description="Video file to add captions to"
@@ -146,9 +146,9 @@ class App(BaseApp):
         pass
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
-        """Add captions to the video based on the timestamps in the captions array."""
-        # Use the captions directly from input
-        captions_data = input_data.captions
+        """Add captions to the video based on the timestamps in the segments array."""
+        # Use the segments directly from input
+        segments_data = input_data.segments
         
         # Load the video
         video = VideoFileClip(input_data.video_file.path)
@@ -182,9 +182,10 @@ class App(BaseApp):
 
         extra_seconds = 30
 
-        for caption in captions_data:
-            text = caption["text"]
-            start_time, end_time = caption["timestamp"]
+        for segment in segments_data:
+            text = segment["text"]
+            start_time = segment["start"]
+            end_time = segment["end"]
             
             # Handle incomplete timestamps
             if start_time is None:

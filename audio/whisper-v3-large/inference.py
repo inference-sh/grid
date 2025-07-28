@@ -60,12 +60,12 @@ class App(BaseApp):
         ).to(self.device)
 
         # Enable static cache and compile
-        self.model.generation_config.cache_implementation = "static"
-        self.model.forward = torch.compile(
-            self.model.forward,
-            mode="reduce-overhead",
-            fullgraph=True
-        )
+        #self.model.generation_config.cache_implementation = "static"
+        #self.model.forward = torch.compile(
+        #    self.model.forward,
+        #    mode="reduce-overhead",
+        #    fullgraph=True
+        #)
 
         # Initialize processor
         self.processor = AutoProcessor.from_pretrained(model_id)

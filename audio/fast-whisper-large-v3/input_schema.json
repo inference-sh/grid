@@ -102,8 +102,8 @@
       "type": "string"
     },
     "return_timestamps": {
-      "default": "none",
-      "description": "Whether to return timestamps. Use 'none' for no timestamps, 'word' for word-level timestamps, or 'sentence' for sentence-level timestamps. For long audio files, timestamps are automatically returned as sentences.",
+      "default": "word",
+      "description": "Whether to return timestamps. Use 'none' for no timestamps, 'word' for word-level timestamps, or 'sentence' for sentence-level timestamps.",
       "enum": [
         "none",
         "word",
@@ -112,13 +112,17 @@
       "title": "Return Timestamps",
       "type": "string"
     },
-    "batch_size": {
-      "default": 16,
-      "description": "Batch size for processing long audio files",
-      "maximum": 32,
-      "minimum": 1,
-      "title": "Batch Size",
-      "type": "integer"
+    "vad": {
+      "default": false,
+      "description": "Whether to use Voice Activity Detection (VAD) to improve accuracy on files with silence",
+      "title": "Vad",
+      "type": "boolean"
+    },
+    "detect_disfluencies": {
+      "default": false,
+      "description": "Whether to detect speech disfluencies (marked as [*] in transcript)",
+      "title": "Detect Disfluencies",
+      "type": "boolean"
     }
   },
   "required": [

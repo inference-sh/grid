@@ -5,10 +5,13 @@
       "title": "Text",
       "type": "string"
     },
-    "chunks": {
+    "segments": {
       "anyOf": [
         {
-          "items": {},
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
           "type": "array"
         },
         {
@@ -16,8 +19,21 @@
         }
       ],
       "default": null,
-      "description": "Timestamp chunks if requested",
-      "title": "Chunks"
+      "description": "Detailed segments with word-level timestamps and confidence scores",
+      "title": "Segments"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Detected language",
+      "title": "Language"
     }
   },
   "required": [
