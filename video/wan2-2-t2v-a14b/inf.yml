@@ -1,0 +1,20 @@
+name: wan2-2-t2v-a14b
+description: text to video with wan2.2
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 64424509440
+                type: nvidia
+            ram: 34359738368
+        env: {}
+        python: "3.12"

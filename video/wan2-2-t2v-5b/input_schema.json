@@ -1,0 +1,93 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for video generation",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+      "description": "Negative prompt to guide what to avoid in generation",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "720p",
+      "description": "Resolution preset",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Width of the generated video (auto-set based on resolution if not specified)",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Height of the generated video (auto-set based on resolution if not specified)",
+      "title": "Height"
+    },
+    "num_frames": {
+      "default": 121,
+      "description": "Number of frames to generate",
+      "title": "Num Frames",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 5.0,
+      "description": "Classifier-free guidance scale",
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "num_inference_steps": {
+      "default": 50,
+      "description": "Number of denoising steps",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "fps": {
+      "default": 24,
+      "description": "Frames per second for the output video",
+      "title": "Fps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
