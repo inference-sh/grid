@@ -145,9 +145,15 @@
       "title": "Seed"
     },
     "cache_threshold": {
-      "default": 0.1,
-      "description": "First Block Cache threshold (higher = more aggressive caching)",
+      "default": 0,
+      "description": "Cache threshold for transformer (0 to disable caching)",
       "title": "Cache Threshold",
+      "type": "number"
+    },
+    "cache_threshold_2": {
+      "default": 0,
+      "description": "Cache threshold for transformer_2 (0 to disable caching)",
+      "title": "Cache Threshold 2",
       "type": "number"
     }
   },

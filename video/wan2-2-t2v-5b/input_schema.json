@@ -83,6 +83,12 @@
       "default": null,
       "description": "Random seed for reproducibility",
       "title": "Seed"
+    },
+    "cache_threshold": {
+      "default": 0,
+      "description": "Cache threshold for transformer (0 to disable caching)",
+      "title": "Cache Threshold",
+      "type": "number"
     }
   },
   "required": [

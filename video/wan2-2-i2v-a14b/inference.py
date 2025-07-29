@@ -91,8 +91,9 @@ class AppInput(BaseAppInput):
     num_inference_steps: int = Field(default=40, description="Number of denoising steps")
     fps: int = Field(default=16, description="Frames per second for the output video")
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
-    cache_threshold: float = Field(default=0.1, description="First Block Cache threshold (higher = more aggressive caching)")
-
+    cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
+    cache_threshold_2: float = Field(default=0, description="Cache threshold for transformer_2 (0 to disable caching)")
+    
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated video file")
 
@@ -202,13 +203,22 @@ class App(BaseApp):
             generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
             print(f"Using seed: {input_data.seed}")
             
-        # Enable transformer cache with threshold if not already enabled
-        print(f"Using transformer cache with threshold: {input_data.cache_threshold}")
-        if hasattr(self.pipe.transformer, 'enable_cache'):
-            print("Attempting to enable cache...")
+        # Configure caching if thresholds are non-zero
+        # First disable any existing caching to prevent conflicts
+        if hasattr(self.pipe.transformer, 'disable_cache'):
+            self.pipe.transformer.disable_cache()
+        if hasattr(self.pipe.transformer_2, 'disable_cache'):
+            self.pipe.transformer_2.disable_cache()
+        
+        if input_data.cache_threshold > 0:
+            print(f"Enabling cache for transformer with threshold: {input_data.cache_threshold}")
             cache_config = FirstBlockCacheConfig(threshold=input_data.cache_threshold)
             self.pipe.transformer.enable_cache(cache_config)
-            print("Cache enabled successfully")
+        
+        if input_data.cache_threshold_2 > 0:
+            print(f"Enabling cache for transformer_2 with threshold: {input_data.cache_threshold_2}")
+            cache_config_2 = FirstBlockCacheConfig(threshold=input_data.cache_threshold_2)
+            self.pipe.transformer_2.enable_cache(cache_config_2)
         
         # Generate video
         print("Starting video generation...")

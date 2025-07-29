@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 from pydantic import Field
-from diffusers import WanPipeline, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler
+from diffusers import WanPipeline, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler, FirstBlockCacheConfig
 from diffusers.utils import export_to_video
 from accelerate import Accelerator
 from PIL import Image
@@ -29,7 +29,7 @@ class AppInput(BaseAppInput):
     num_inference_steps: int = Field(default=50, description="Number of denoising steps")
     fps: int = Field(default=24, description="Frames per second for the output video")
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
-
+    cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated file (video when num_frames > 1, image when num_frames = 1)")
 
@@ -95,6 +95,16 @@ class App(BaseApp):
             torch.manual_seed(input_data.seed)
             if self.device.type == "cuda":
                 torch.cuda.manual_seed(input_data.seed)
+                
+        # Configure caching if thresholds are non-zero
+        # First disable any existing caching to prevent conflicts
+        if hasattr(self.pipe.transformer, 'disable_cache'):
+            self.pipe.transformer.disable_cache()
+        
+        if input_data.cache_threshold > 0:
+            print(f"Enabling cache for transformer with threshold: {input_data.cache_threshold}")
+            cache_config = FirstBlockCacheConfig(threshold=input_data.cache_threshold)
+            self.pipe.transformer.enable_cache(cache_config)
         
         # Generate video
         print("Starting video generation...")

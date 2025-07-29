@@ -112,13 +112,15 @@ class App(BaseApp):
             print(f"Using seed: {input_data.seed}")
         
 
-        # Enable transformer cache with threshold if not already enabled
-        print(f"Using transformer cache with threshold: {input_data.cache_threshold}")
-        if hasattr(self.pipe.transformer, 'enable_cache'):
-            print("Attempting to enable cache...")
+      # Configure caching if thresholds are non-zero
+        # First disable any existing caching to prevent conflicts
+        if hasattr(self.pipe.transformer, 'disable_cache'):
+            self.pipe.transformer.disable_cache()
+        
+        if input_data.cache_threshold > 0:
+            print(f"Enabling cache for transformer with threshold: {input_data.cache_threshold}")
             cache_config = FirstBlockCacheConfig(threshold=input_data.cache_threshold)
             self.pipe.transformer.enable_cache(cache_config)
-            print("Cache enabled successfully")
         
         # Generate video
         print("Starting video generation...")
