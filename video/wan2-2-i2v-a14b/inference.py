@@ -1,10 +1,6 @@
 import os
 # Enable HF Hub fast transfer for faster model downloads
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
-# Enable more verbose torch logging
-os.environ["TORCH_LOGS"] = "+dynamo,+distributed,+inductor"
-# Enable CUDA debugging if available
-os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 import torch
 import numpy as np
@@ -15,13 +11,9 @@ from pydantic import Field
 from PIL import Image
 from diffusers import WanImageToVideoPipeline, FirstBlockCacheConfig
 from diffusers.utils import export_to_video
-from diffusers import DiffusionPipeline, WanTransformer3DModel, GGUFQuantizationConfig, AutoModel
+from diffusers import WanTransformer3DModel, GGUFQuantizationConfig
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
-import logging
-import traceback
-import psutil
-import gc
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 
@@ -101,34 +93,6 @@ class App(BaseApp):
     async def setup(self, metadata):
         """Initialize the Wan2.2 Image-to-Video pipeline and resources here."""
         print("Setting up Wan2.2 Image-to-Video pipeline...")
-        
-        # Enable comprehensive logging
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
-        
-        # Enable diffusers debugging
-        logging.getLogger("diffusers").setLevel(logging.DEBUG)
-        logging.getLogger("transformers").setLevel(logging.DEBUG)
-        logging.getLogger("accelerate").setLevel(logging.DEBUG)
-        
-        # Enable torch debugging
-        torch.set_printoptions(profile="full")
-        if hasattr(torch, 'set_warn_always'):
-            torch.set_warn_always(True)
-        
-        print("=== SYSTEM DEBUG INFO ===")
-        print(f"PyTorch version: {torch.__version__}")
-        print(f"CUDA available: {torch.cuda.is_available()}")
-        if torch.cuda.is_available():
-            print(f"CUDA version: {torch.version.cuda}")
-            print(f"cuDNN version: {torch.backends.cudnn.version()}")
-            print(f"GPU count: {torch.cuda.device_count()}")
-            for i in range(torch.cuda.device_count()):
-                props = torch.cuda.get_device_properties(i)
-                print(f"GPU {i}: {props.name} ({props.total_memory / 1024**3:.1f} GB)")
-        
         # Store resolution defaults
         self.resolution_presets = {
             "480p": {"max_area": 480 * 832},
@@ -136,35 +100,67 @@ class App(BaseApp):
         }
         
         # Initialize accelerator
-        print("Initializing accelerator...")
         self.accelerator = Accelerator()
         
         # Set up device and dtype using accelerator
         self.device = self.accelerator.device
-        self.dtype = torch.float16 if self.device.type == "cuda" else torch.float32
-        
-        print(f"Using device: {self.device}")
-        print(f"Using dtype: {self.dtype}")
-        print(f"Accelerator state: {self.accelerator.state}")
+        self.dtype = torch.bfloat16 if self.device.type == "cuda" else torch.float32
         
         # Get variant and determine if using quantization
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
         if variant not in MODEL_VARIANTS:
-            logging.warning(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
+            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
             variant = DEFAULT_VARIANT
         
         print(f"Loading model variant: {variant}")
         
-        # Load standard F16 pipeline
-        print("Loading standard F16 Wan2.2 I2V pipeline...")
-        self.pipe = WanImageToVideoPipeline.from_pretrained(
-            "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
-            torch_dtype=self.dtype
-        )
-        # Move to device for default F16 model
-        self.pipe.enable_model_cpu_offload()
-        # print(f"Moving pipeline to {self.device}...")
-        # self.pipe.to(self.device)
+        if variant == "default":
+            # Load standard F16 pipeline
+            print("Loading standard F16 Wan2.2 I2V pipeline...")
+            self.pipe = WanImageToVideoPipeline.from_pretrained(
+                "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
+                torch_dtype=self.dtype
+            )
+            # Move to device for default F16 model
+            print(f"Moving pipeline to {self.device}...")
+            self.pipe.enable_model_cpu_offload()
+            # print(f"Moving pipeline to {self.device}...")
+            # self.pipe.to(self.device)
+        else:
+            # Load quantized transformers
+            print(f"Loading quantized transformers for {variant}...")
+            repo_id = "QuantStack/Wan2.2-I2V-A14B-GGUF"
+            variant_files = MODEL_VARIANTS[variant]
+            
+            high_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['high_noise'])
+           
+            transformer_high_noise = WanTransformer3DModel.from_single_file(
+                high_noise_path,
+                quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
+                config="Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                subfolder="transformer",
+                torch_dtype=self.dtype,
+            )
+
+            low_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['low_noise'])
+            
+            transformer_low_noise = WanTransformer3DModel.from_single_file(
+                low_noise_path,
+                quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
+                config="Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                subfolder="transformer_2",
+                torch_dtype=self.dtype,
+            )
+            
+            self.pipe = WanImageToVideoPipeline.from_pretrained(
+                "Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                transformer=transformer_high_noise,  # High noise goes to main transformer
+                transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
+                torch_dtype=self.dtype
+            )
+             
+            self.pipe.enable_model_cpu_offload()
+              
         
         print("Setup complete!")
 

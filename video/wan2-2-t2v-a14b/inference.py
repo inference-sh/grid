@@ -8,13 +8,74 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 from pydantic import Field
-from diffusers import WanPipeline, AutoencoderKLWan
+from diffusers import WanPipeline, AutoencoderKLWan, WanTransformer3DModel, GGUFQuantizationConfig
 from diffusers.utils import export_to_video
 from diffusers.hooks import FirstBlockCacheConfig
+from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 from PIL import Image
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+
+# Model variants mapping for GGUF quantization from QuantStack
+# Only includes variants where both HighNoise and LowNoise transformers are available
+MODEL_VARIANTS = {
+    "default": None,  # Use default F16 model
+    "q2_k": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q2_K.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q2_K.gguf"
+    },
+    "q3_k_s": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q3_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q3_K_S.gguf"
+    },
+    "q3_k_m": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q3_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q3_K_M.gguf"
+    },
+    "q4_0": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q4_0.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q4_0.gguf"
+    },
+    "q4_1": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q4_1.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q4_1.gguf"
+    },
+    "q4_k_s": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q4_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q4_K_S.gguf"
+    },
+    "q4_k_m": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q4_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q4_K_M.gguf"
+    },
+    "q5_0": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q5_0.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q5_0.gguf"
+    },
+    "q5_1": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q5_1.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q5_1.gguf"
+    },
+    "q5_k_s": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q5_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q5_K_S.gguf"
+    },
+    "q5_k_m": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q5_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q5_K_M.gguf"
+    },
+    "q6_k": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q6_K.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q6_K.gguf"
+    },
+    "q8_0": {
+        "high_noise": "HighNoise/Wan2.2-T2V-A14B-HighNoise-Q8_0.gguf",
+        "low_noise": "LowNoise/Wan2.2-T2V-A14B-LowNoise-Q8_0.gguf"
+    }
+}
+
+DEFAULT_VARIANT = "default"
 
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text prompt for video generation")
@@ -58,6 +119,14 @@ class App(BaseApp):
         print(f"Using device: {self.device}")
         print(f"Using dtype: {self.dtype}")
         
+        # Get variant and determine if using quantization
+        variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
+        if variant not in MODEL_VARIANTS:
+            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
+            variant = DEFAULT_VARIANT
+        
+        print(f"Loading model variant: {variant}")
+        
         # Load VAE
         print("Loading VAE...")
         self.vae = AutoencoderKLWan.from_pretrained(
@@ -66,21 +135,52 @@ class App(BaseApp):
             torch_dtype=torch.float32
         )
         
-        # Load pipeline
-        print("Loading Wan2.2 pipeline...")
-        self.pipe = WanPipeline.from_pretrained(
-            "Wan-AI/Wan2.2-T2V-A14B-Diffusers", 
-            vae=self.vae, 
-            torch_dtype=self.dtype
-        )
-        
-        # Move to device
-        print(f"Moving pipeline to {self.device}...")
-        self.pipe.to(self.device)
-        
-        # Enable model offloading to reduce GPU memory usage
-        print("Enabling model offloading...")
-        self.pipe.enable_model_cpu_offload()
+        if variant == "default":
+            # Load standard F16 pipeline
+            print("Loading standard F16 Wan2.2 T2V pipeline...")
+            self.pipe = WanPipeline.from_pretrained(
+                "Wan-AI/Wan2.2-T2V-A14B-Diffusers", 
+                vae=self.vae, 
+                torch_dtype=self.dtype
+            )
+            # Move to device and enable model offloading
+            print(f"Moving pipeline to {self.device}...")
+            self.pipe.enable_model_cpu_offload()
+        else:
+            # Load quantized transformers
+            print(f"Loading quantized transformers for {variant}...")
+            repo_id = "QuantStack/Wan2.2-T2V-A14B-GGUF"
+            variant_files = MODEL_VARIANTS[variant]
+            
+            high_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['high_noise'])
+           
+            transformer_high_noise = WanTransformer3DModel.from_single_file(
+                high_noise_path,
+                quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
+                config="Wan-AI/Wan2.2-T2V-A14B-Diffusers",
+                subfolder="transformer",
+                torch_dtype=self.dtype,
+            )
+
+            low_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['low_noise'])
+            
+            transformer_low_noise = WanTransformer3DModel.from_single_file(
+                low_noise_path,
+                quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
+                config="Wan-AI/Wan2.2-T2V-A14B-Diffusers",
+                subfolder="transformer_2",
+                torch_dtype=self.dtype,
+            )
+            
+            self.pipe = WanPipeline.from_pretrained(
+                "Wan-AI/Wan2.2-T2V-A14B-Diffusers",
+                vae=self.vae,
+                transformer=transformer_high_noise,  # High noise goes to main transformer
+                transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
+                torch_dtype=self.dtype
+            )
+             
+            self.pipe.enable_model_cpu_offload()
         
         print("Setup complete!")
 

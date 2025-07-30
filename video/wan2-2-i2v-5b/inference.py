@@ -9,12 +9,33 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from PIL import Image
-from diffusers import WanImageToVideoPipeline, WanTransformer3DModel, UniPCMultistepScheduler
+from diffusers import WanImageToVideoPipeline, WanTransformer3DModel, UniPCMultistepScheduler, GGUFQuantizationConfig
 from diffusers.utils import export_to_video
 from diffusers.hooks import apply_first_block_cache, FirstBlockCacheConfig
+from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+
+# Model variants mapping for GGUF quantization from QuantStack
+MODEL_VARIANTS = {
+    "default": None,  # Use default F16 model
+    "q2_k": "Wan2.2-TI2V-5B-Q2_K.gguf",
+    "q3_k_s": "Wan2.2-TI2V-5B-Q3_K_S.gguf",
+    "q3_k_m": "Wan2.2-TI2V-5B-Q3_K_M.gguf",
+    "q4_0": "Wan2.2-TI2V-5B-Q4_0.gguf",
+    "q4_1": "Wan2.2-TI2V-5B-Q4_1.gguf",
+    "q4_k_s": "Wan2.2-TI2V-5B-Q4_K_S.gguf",
+    "q4_k_m": "Wan2.2-TI2V-5B-Q4_K_M.gguf",
+    "q5_0": "Wan2.2-TI2V-5B-Q5_0.gguf",
+    "q5_1": "Wan2.2-TI2V-5B-Q5_1.gguf",
+    "q5_k_s": "Wan2.2-TI2V-5B-Q5_K_S.gguf",
+    "q5_k_m": "Wan2.2-TI2V-5B-Q5_K_M.gguf",
+    "q6_k": "Wan2.2-TI2V-5B-Q6_K.gguf",
+    "q8_0": "Wan2.2-TI2V-5B-Q8_0.gguf"
+}
+
+DEFAULT_VARIANT = "default"
 
 class AppInput(BaseAppInput):
     image: File = Field(description="Input image for video generation")
@@ -56,23 +77,50 @@ class App(BaseApp):
         print(f"Using device: {self.device}")
         print(f"Using dtype: {self.dtype}")
         
+        # Get variant and determine if using quantization
+        variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
+        if variant not in MODEL_VARIANTS:
+            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
+            variant = DEFAULT_VARIANT
+        
+        print(f"Loading model variant: {variant}")
+        
         # Model ID for the TI2V 5B variant (using I2V pipeline with TI2V model)
         self.model_id = "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
         
-        # Load pipeline
-        print("Loading Wan2.2-TI2V-5B I2V pipeline...")
-        self.pipe = WanImageToVideoPipeline.from_pretrained(
-            self.model_id, 
-            torch_dtype=self.dtype
-        )
-        
-        # Move to device
-        print(f"Moving pipeline to {self.device}...")
-        self.pipe.to(self.device)
-        
-        # # Enable CPU offloading to save GPU memory
-        # print("Enabling CPU offloading...")
-        # self.pipe.enable_model_cpu_offload()
+        if variant == "default":
+            # Load standard F16 pipeline
+            print("Loading standard F16 Wan2.2-TI2V-5B I2V pipeline...")
+            self.pipe = WanImageToVideoPipeline.from_pretrained(
+                self.model_id, 
+                torch_dtype=self.dtype
+            )
+            # Move to device and enable model offloading
+            print(f"Moving pipeline to {self.device}...")
+            self.pipe.enable_model_cpu_offload()
+        else:
+            # Load quantized transformer
+            print(f"Loading quantized transformer for {variant}...")
+            repo_id = "QuantStack/Wan2.2-TI2V-5B-GGUF"
+            model_file = MODEL_VARIANTS[variant]
+            
+            model_path = hf_hub_download(repo_id=repo_id, filename=model_file)
+            
+            transformer = WanTransformer3DModel.from_single_file(
+                model_path,
+                quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
+                config=self.model_id,
+                subfolder="transformer",
+                torch_dtype=self.dtype,
+            )
+            
+            self.pipe = WanImageToVideoPipeline.from_pretrained(
+                self.model_id,
+                transformer=transformer,
+                torch_dtype=self.dtype
+            )
+             
+            self.pipe.enable_model_cpu_offload()
         
         print("Setup complete!")
 

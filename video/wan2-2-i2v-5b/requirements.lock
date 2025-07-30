@@ -2,12 +2,13 @@ accelerate==1.9.0
 annotated-types==0.7.0
 certifi==2025.7.14
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/okaris/diffusers.git@15f95d5086347b9aa002b6b8f3e0a74d4ffbdae1
+diffusers @ git+https://github.com/okaris/diffusers.git@fc0677f979408dda1c7cfa9e750f39bd56f284ac
 einops==0.8.1
 filelock==3.18.0
 flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.3.12/flash_attn-2.8.0+cu128torch2.7-cp312-cp312-linux_x86_64.whl
 fsspec==2025.7.0
 ftfy==6.3.1
+gguf==0.17.1
 hf-transfer==0.1.9
 hf-xet==1.1.5
 huggingface-hub==0.34.3
@@ -37,12 +38,13 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
+peft==0.16.0
 pillow==11.3.0
 psutil==7.0.0
 pydantic==2.10.6
 pydantic-core==2.27.2
 pyyaml==6.0.2
-regex==2024.11.6
+regex==2025.7.31
 requests==2.32.4
 safetensors==0.5.3
 setuptools==80.9.0
@@ -53,7 +55,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers==4.54.1
+transformers @ git+https://github.com/huggingface/transformers.git@5348445dfac204763daae803cdf5ae6e7b969b9a
 triton==3.3.1
 typing-extensions==4.14.1
 urllib3==2.5.0
