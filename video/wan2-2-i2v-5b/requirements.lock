@@ -44,7 +44,7 @@ psutil==7.0.0
 pydantic==2.10.6
 pydantic-core==2.27.2
 pyyaml==6.0.2
-regex==2025.7.31
+regex==2025.7.33
 requests==2.32.4
 safetensors==0.5.3
 setuptools==80.9.0
@@ -55,7 +55,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@5348445dfac204763daae803cdf5ae6e7b969b9a
+transformers @ git+https://github.com/huggingface/transformers.git@4f93cc91745181d95cf63f65e50bb9523111bf5a
 triton==3.3.1
 typing-extensions==4.14.1
 urllib3==2.5.0

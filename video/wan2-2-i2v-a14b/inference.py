@@ -14,6 +14,7 @@ from diffusers.utils import export_to_video
 from diffusers import WanTransformer3DModel, GGUFQuantizationConfig
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
+from diffusers.hooks import apply_group_offloading
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 
@@ -104,7 +105,7 @@ class App(BaseApp):
         
         # Set up device and dtype using accelerator
         self.device = self.accelerator.device
-        self.dtype = torch.bfloat16 if self.device.type == "cuda" else torch.float32
+        self.dtype = torch.bfloat16
         
         # Get variant and determine if using quantization
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
@@ -158,8 +159,21 @@ class App(BaseApp):
                 transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
                 torch_dtype=self.dtype
             )
+            
+            onload_device = self.device
+            offload_device = torch.device("cpu")
+            
+            # Use the enable_group_offload method for Diffusers model implementations
+            # offload_to_disk_path="path/to/disk" set to save to disk as a secondary option for offloading
+            self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+
+            # Use the apply_group_offloading method for other model components
+            apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+
              
-            self.pipe.enable_model_cpu_offload()
+            # self.pipe.enable_model_cpu_offload()
               
         
         print("Setup complete!")
