@@ -89,6 +89,14 @@
       "description": "Cache threshold for transformer (0 to disable caching)",
       "title": "Cache Threshold",
       "type": "number"
+    },
+    "video_output_quality": {
+      "default": 5,
+      "description": "Video output quality (1-9)",
+      "maximum": 9,
+      "minimum": 1,
+      "title": "Video Output Quality",
+      "type": "integer"
     }
   },
   "required": [

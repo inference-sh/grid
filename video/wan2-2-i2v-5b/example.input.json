@@ -9,5 +9,6 @@
   "num_inference_steps": 50,
   "fps": 24,
   "seed": null,
-  "cache_threshold": 0.2
+  "cache_threshold": 0.1,
+  "video_output_quality": 5
 }

@@ -9,9 +9,8 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from PIL import Image
-from diffusers import WanImageToVideoPipeline, FirstBlockCacheConfig
+from diffusers import WanImageToVideoPipeline, FirstBlockCacheConfig, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel
 from diffusers.utils import export_to_video
-from diffusers import WanTransformer3DModel, GGUFQuantizationConfig
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 from diffusers.hooks import apply_group_offloading
@@ -86,6 +85,7 @@ class AppInput(BaseAppInput):
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
     cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
     cache_threshold_2: float = Field(default=0, description="Cache threshold for transformer_2 (0 to disable caching)")
+    video_output_quality: int = Field(default=5, ge=1, le=9, description="Video output quality (1-9)")
     
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated video file")
@@ -115,12 +115,20 @@ class App(BaseApp):
         
         print(f"Loading model variant: {variant}")
         
+        self.model_id = "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
+        
+        self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
+
+        # use default wan image processor to resize and crop the image
+        self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
+        
         if variant == "default":
             # Load standard F16 pipeline
             print("Loading standard F16 Wan2.2 I2V pipeline...")
             self.pipe = WanImageToVideoPipeline.from_pretrained(
                 "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
-                torch_dtype=self.dtype
+                vae=self.vae,
+                torch_dtype=self.dtype,
             )
             # Move to device for default F16 model
             print(f"Moving pipeline to {self.device}...")
@@ -155,9 +163,10 @@ class App(BaseApp):
             
             self.pipe = WanImageToVideoPipeline.from_pretrained(
                 "Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                vae=self.vae,
                 transformer=transformer_high_noise,  # High noise goes to main transformer
                 transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
-                torch_dtype=self.dtype
+                torch_dtype=self.dtype,
             )
             
             onload_device = self.device
@@ -178,19 +187,6 @@ class App(BaseApp):
         
         print("Setup complete!")
 
-    def resize_image_for_pipeline(self, image: Image.Image, max_area: int) -> tuple[Image.Image, int, int]:
-        """Resize image according to pipeline requirements."""
-        aspect_ratio = image.height / image.width
-        mod_value = self.pipe.vae_scale_factor_spatial * self.pipe.transformer.config.patch_size[1]
-        
-        height = round(np.sqrt(max_area * aspect_ratio)) // mod_value * mod_value
-        width = round(np.sqrt(max_area / aspect_ratio)) // mod_value * mod_value
-        
-        resized_image = image.resize((width, height))
-        print(f"Resized image from {image.size} to {resized_image.size} (target area: {max_area})")
-        
-        return resized_image, width, height
-
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video from image and text prompt."""
         print(f"Generating video with prompt: {input_data.prompt}")
@@ -205,7 +201,12 @@ class App(BaseApp):
         print(f"Loaded image: {image.size}")
         
         # Resize image according to pipeline requirements
-        resized_image, width, height = self.resize_image_for_pipeline(image, max_area)
+        resized_image = self.image_processor(
+            image=input_data.image.path,
+            max_area=max_area, output="processed_image")
+        
+        width = resized_image.width
+        height = resized_image.height
         
         # Set seed if provided
         generator = None
@@ -251,7 +252,7 @@ class App(BaseApp):
             output_path = temp_file.name
         
         # Export video
-        export_to_video(output, output_path, fps=input_data.fps)
+        export_to_video(output, output_path, fps=input_data.fps, quality=input_data.video_output_quality)
         
         print(f"Video exported to: {output_path}")
         

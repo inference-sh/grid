@@ -94,7 +94,8 @@ class AppInput(BaseAppInput):
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
     cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
     cache_threshold_2: float = Field(default=0, description="Cache threshold for transformer_2 (0 to disable caching)")
-
+    video_output_quality: int = Field(default=5, ge=1, le=9, description="Video output quality (1-9)")
+    
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated file (video when num_frames > 1, image when num_frames = 1)")
 
@@ -270,7 +271,7 @@ class App(BaseApp):
                 output_path = temp_file.name
             
             # Export video
-            export_to_video(output, output_path, fps=input_data.fps)
+            export_to_video(output, output_path, fps=input_data.fps, quality=input_data.video_output_quality)
             
             print(f"Video exported to: {output_path}")
             return AppOutput(file=File(path=output_path))

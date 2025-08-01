@@ -3,7 +3,7 @@ inferencesh==0.2.7
 torch==2.7.1
 torchvision>=0.19.0
 torchaudio
-git+https://github.com/okaris/diffusers.git@wan2.2-cache
+git+https://github.com/huggingface/diffusers.git@58d2b10a2e9cd32dd9765dc50aca98690f516287
 git+https://github.com/huggingface/transformers.git
 tokenizers>=0.20.3
 accelerate>=1.1.1

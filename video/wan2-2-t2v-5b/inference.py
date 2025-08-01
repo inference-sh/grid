@@ -51,6 +51,8 @@ class AppInput(BaseAppInput):
     fps: int = Field(default=24, description="Frames per second for the output video")
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
     cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
+    video_output_quality: int = Field(default=5, ge=1, le=9, description="Video output quality (1-9)")
+    
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated file (video when num_frames > 1, image when num_frames = 1)")
 
@@ -86,11 +88,14 @@ class App(BaseApp):
         # Model ID for the 5B variant
         self.model_id = "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
         
+        self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
+        
         if variant == "default":
             # Load standard F16 pipeline
             print("Loading standard F16 Wan2.2-TI2V-5B pipeline...")
             self.pipe = WanPipeline.from_pretrained(
                 self.model_id, 
+                vae=self.vae,
                 torch_dtype=self.dtype
             )
             # Move to device and enable model offloading
@@ -114,6 +119,7 @@ class App(BaseApp):
             
             self.pipe = WanPipeline.from_pretrained(
                 self.model_id,
+                vae=self.vae,
                 transformer=transformer,
                 torch_dtype=self.dtype
             )
@@ -200,7 +206,7 @@ class App(BaseApp):
                 output_path = temp_file.name
             
             # Export video
-            export_to_video(output, output_path, fps=input_data.fps)
+            export_to_video(output, output_path, fps=input_data.fps, quality=input_data.video_output_quality)
             
             print(f"Video exported to: {output_path}")
             return AppOutput(file=File(path=output_path))
