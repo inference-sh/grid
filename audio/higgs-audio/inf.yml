@@ -1,0 +1,34 @@
+name: higgs-audio
+description: Higgs Audio V2 - Advanced text-to-speech model with expressive audio generation capabilities
+category: audio
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
+    thumbnail: ""
+    banner: ""
+metadata:
+    capabilities:
+        - Text-to-Speech
+        - Voice Cloning
+        - Multi-speaker Dialog
+        - Expressive Audio
+    model_name: Higgs Audio V2
+    model_size: 3B
+    sample_rate: 24000
+    supported_languages:
+        - English
+        - Chinese
+        - Multilingual
+variants:
+    default:
+        name: Base Model (3B)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 8192
+                type: any
+            ram: 16384
+        env:
+            CUDA_LAUNCH_BLOCKING: "1"
+            TORCH_DTYPE: bfloat16
+        python: "3.10"

@@ -1,0 +1,133 @@
+{
+  "properties": {
+    "transcript": {
+      "description": "The text to convert to speech",
+      "title": "Transcript",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 1.0,
+      "description": "The value used to module the next token probabilities",
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_k": {
+      "default": 50,
+      "description": "The number of highest probability vocabulary tokens to keep for top-k-filtering",
+      "title": "Top K",
+      "type": "integer"
+    },
+    "top_p": {
+      "default": 0.95,
+      "description": "Top-p sampling parameter",
+      "title": "Top P",
+      "type": "number"
+    },
+    "max_new_tokens": {
+      "default": 2048,
+      "description": "The maximum number of new tokens to generate",
+      "title": "Max New Tokens",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for generation",
+      "title": "Seed"
+    },
+    "ref_audio": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice reference audio name (e.g., 'belinda', 'broom_salesman') or comma-separated for multi-speaker",
+      "title": "Ref Audio"
+    },
+    "scene_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Scene description prompt for context",
+      "title": "Scene Prompt"
+    },
+    "chunk_method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Chunking method: 'speaker', 'word', or None",
+      "title": "Chunk Method"
+    },
+    "chunk_max_word_num": {
+      "default": 200,
+      "description": "Maximum words per chunk when using word chunking",
+      "title": "Chunk Max Word Num",
+      "type": "integer"
+    },
+    "chunk_max_num_turns": {
+      "default": 1,
+      "description": "Maximum turns per chunk when using speaker chunking",
+      "title": "Chunk Max Num Turns",
+      "type": "integer"
+    },
+    "generation_chunk_buffer_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Maximum chunks to keep in buffer",
+      "title": "Generation Chunk Buffer Size"
+    },
+    "ras_win_len": {
+      "default": 7,
+      "description": "RAS sampling window length (0 to disable)",
+      "title": "Ras Win Len",
+      "type": "integer"
+    },
+    "ras_win_max_num_repeat": {
+      "default": 2,
+      "description": "Maximum RAS window repeats",
+      "title": "Ras Win Max Num Repeat",
+      "type": "integer"
+    },
+    "ref_audio_in_system_message": {
+      "default": false,
+      "description": "Include reference audio description in system message",
+      "title": "Ref Audio In System Message",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "transcript"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
