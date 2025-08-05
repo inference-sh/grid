@@ -1,0 +1,14 @@
+{
+    "mode": "i2v",
+    "prompt": "god particle",
+    "image": "https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg",
+    "prefix_video": null,
+    "seed": -1,
+    "num_frames": 96,
+    "num_steps": 8,
+    "window_size": 4,
+    "fps": 24,
+    "chunk_width": 6,
+    "width": 1280,
+    "height": 720
+  }
