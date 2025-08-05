@@ -64,7 +64,7 @@ def get_device(local_rank=None):
     return device
 
 configs = {
-    "4.5B_base": {
+    "default": {
         "config_file": "example/4.5B/4.5B_base_config.json",
         "weights_base_path": "4.5B_base",
         "weights_path": "4.5B_base/inference_weight"
@@ -118,7 +118,10 @@ class App(BaseApp):
         self._weights_paths = {}
 
     async def setup(self, metadata):
-        self.variant_config = configs[metadata.app_variant]
+        if isinstance(metadata, dict):
+            self.variant_config = configs[metadata.get("app_variant", "default")]
+        else:
+            self.variant_config = configs[metadata.app_variant]
 
         magi_weights_path = snapshot_download(
             repo_id="sand-ai/MAGI-1",

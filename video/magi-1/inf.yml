@@ -7,27 +7,6 @@ images:
     banner: ""
 metadata: {}
 variants:
-    4.5B_base:
-        name: 4.5B_base
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 24000000000
-                type: any
-            ram: 64000000000
-        env:
-            GPUS_PER_NODE: "1"
-            MASTER_ADDR: localhost
-            MASTER_PORT: "6009"
-            NNODES: "1"
-            OFFLOAD_T5_CACHE: "true"
-            OFFLOAD_VAE_CACHE: "true"
-            PAD_DURATION: "1"
-            PAD_HQ: "1"
-            PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
-            WORLD_SIZE: "1"
-        python: "3.12"
     24B_base:
         name: 24B_base
         order: 1
@@ -90,4 +69,25 @@ variants:
             PAD_DURATION: "1"
             PAD_HQ: "1"
             TORCH_CUDA_ARCH_LIST: 8.9;9.0
+        python: "3.12"
+    default:
+        name: 4.5B_base
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 64000000000
+        env:
+            GPUS_PER_NODE: "1"
+            MASTER_ADDR: localhost
+            MASTER_PORT: "6009"
+            NNODES: "1"
+            OFFLOAD_T5_CACHE: "true"
+            OFFLOAD_VAE_CACHE: "true"
+            PAD_DURATION: "1"
+            PAD_HQ: "1"
+            PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+            WORLD_SIZE: "1"
         python: "3.12"

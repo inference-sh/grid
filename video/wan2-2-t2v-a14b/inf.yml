@@ -31,7 +31,7 @@ variants:
         python: "3.12"
     q3_k_m:
         name: q3_k_m
-        order: 3
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -42,7 +42,7 @@ variants:
         python: "3.12"
     q3_k_s:
         name: q3_k_s
-        order: 2
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -53,7 +53,7 @@ variants:
         python: "3.12"
     q4_0:
         name: q4_0
-        order: 3
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -64,7 +64,7 @@ variants:
         python: "3.12"
     q4_1:
         name: q4_1
-        order: 4
+        order: 5
         resources:
             gpu:
                 count: 1
@@ -75,7 +75,7 @@ variants:
         python: "3.12"
     q4_k_m:
         name: q4_k_m
-        order: 5
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -86,7 +86,7 @@ variants:
         python: "3.12"
     q4_k_s:
         name: q4_k_s
-        order: 6
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -97,7 +97,7 @@ variants:
         python: "3.12"
     q5_0:
         name: q5_0
-        order: 7
+        order: 8
         resources:
             gpu:
                 count: 1
@@ -108,7 +108,7 @@ variants:
         python: "3.12"
     q5_1:
         name: q5_1
-        order: 8
+        order: 9
         resources:
             gpu:
                 count: 1
@@ -119,7 +119,7 @@ variants:
         python: "3.12"
     q5_k_m:
         name: q5_k_m
-        order: 9
+        order: 10
         resources:
             gpu:
                 count: 1
@@ -130,7 +130,7 @@ variants:
         python: "3.12"
     q5_k_s:
         name: q5_k_s
-        order: 10
+        order: 11
         resources:
             gpu:
                 count: 1
@@ -141,7 +141,7 @@ variants:
         python: "3.12"
     q6_k:
         name: q6_k
-        order: 11
+        order: 12
         resources:
             gpu:
                 count: 1
@@ -152,7 +152,7 @@ variants:
         python: "3.12"
     q8_0:
         name: q8_0
-        order: 12
+        order: 13
         resources:
             gpu:
                 count: 1

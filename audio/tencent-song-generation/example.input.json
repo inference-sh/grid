@@ -1,0 +1,15 @@
+{
+  "lyrics": "example_string",
+  "descriptions": null,
+  "prompt_audio": null,
+  "auto_prompt_type": null,
+  "generate_type": "mixed",
+  "use_flash_attn": false,
+  "low_mem": false,
+  "temperature": 0.9,
+  "cfg_coef": 1.5,
+  "top_k": 50,
+  "top_p": 0.0,
+  "max_duration": 30,
+  "ckpt_path": null
+}

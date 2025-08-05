@@ -21,7 +21,12 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 # Only includes variants where both HighNoise and LowNoise transformers are available
 MODEL_VARIANTS = {
     "default": None,  # Use default F16 model
+    "default_offload": None,  # Use default F16 model with offloading
     "q2_k": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
+    },
+    "q2_k_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
     },
@@ -29,7 +34,15 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
     },
+    "q3_k_s_offload": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
+    },
     "q3_k_m": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
+    },
+    "q3_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
     },
@@ -37,7 +50,15 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
     },
+    "q4_k_s_offload": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
+    },
     "q4_k_m": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
+    },
+    "q4_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
     },
@@ -45,7 +66,15 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
     },
+    "q5_0_offload": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
+    },
     "q5_1": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
+    },
+    "q5_1_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
     },
@@ -53,7 +82,15 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
     },
+    "q5_k_s_offload": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
+    },
     "q5_k_m": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
+    },
+    "q5_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
     },
@@ -61,7 +98,15 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
     },
+    "q6_k_offload": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
+    },
     "q8_0": {
+        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
+        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    },
+    "q8_0_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
     }
@@ -122,24 +167,57 @@ class App(BaseApp):
         # use default wan image processor to resize and crop the image
         self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
         
-        if variant == "default":
+        # Determine if this variant uses offloading
+        use_offloading = variant.endswith("_offload") or variant == "default"
+        use_cpu_offload = False
+        
+        # Get base variant name for quantized models
+        base_variant = variant.replace("_offload", "") if use_offloading else variant
+        
+        if base_variant == "default":
             # Load standard F16 pipeline
-            print("Loading standard F16 Wan2.2 I2V pipeline...")
+            print(f"Loading standard F16 Wan2.2 I2V pipeline for {variant}...")
             self.pipe = WanImageToVideoPipeline.from_pretrained(
                 "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
                 vae=self.vae,
                 torch_dtype=self.dtype,
             )
-            # Move to device for default F16 model
-            print(f"Moving pipeline to {self.device}...")
-            self.pipe.enable_model_cpu_offload()
-            # print(f"Moving pipeline to {self.device}...")
-            # self.pipe.to(self.device)
+            
+            if use_cpu_offload:
+                # Enable CPU offload for fp16 variants
+                print("Enabling CPU offload...")
+                self.pipe.enable_model_cpu_offload()
+                
+                if use_offloading:
+                    # Additional group offloading for fp16_offload
+                    print("Enabling group offloading...")
+                    onload_device = self.device
+                    offload_device = torch.device("cpu")
+                    
+                    self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            else:
+                # Move to device for default variant
+                print(f"Moving pipeline to {self.device}...")
+                self.pipe.to(self.device)
+                
+                if use_offloading:
+                    # Enable group offloading for default_offload
+                    print("Enabling group offloading...")
+                    onload_device = self.device
+                    offload_device = torch.device("cpu")
+                    
+                    self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                    apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
         else:
             # Load quantized transformers
-            print(f"Loading quantized transformers for {variant}...")
+            print(f"Loading quantized transformers for {base_variant}...")
             repo_id = "QuantStack/Wan2.2-I2V-A14B-GGUF"
-            variant_files = MODEL_VARIANTS[variant]
+            variant_files = MODEL_VARIANTS[base_variant]
             
             high_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['high_noise'])
            
@@ -169,20 +247,16 @@ class App(BaseApp):
                 torch_dtype=self.dtype,
             )
             
-            onload_device = self.device
-            offload_device = torch.device("cpu")
-            
-            # Use the enable_group_offload method for Diffusers model implementations
-            # offload_to_disk_path="path/to/disk" set to save to disk as a secondary option for offloading
-            self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-            self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-            self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-
-            # Use the apply_group_offloading method for other model components
-            apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-
-             
-            # self.pipe.enable_model_cpu_offload()
+            if use_offloading:
+                # Enable group offloading for quantized models with offload suffix
+                print("Enabling group offloading for quantized model...")
+                onload_device = self.device
+                offload_device = torch.device("cpu")
+                
+                self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
               
         
         print("Setup complete!")

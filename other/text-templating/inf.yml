@@ -14,7 +14,7 @@ variants:
             gpu:
                 count: 0
                 vram: 0
-                type: any
+                type: none
             ram: 0
         env:
             FOO: bar

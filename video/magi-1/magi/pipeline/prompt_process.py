@@ -25,7 +25,8 @@ from magi.infra.distributed import is_last_tp_cp_rank
 from magi.infra.distributed import parallel_state as mpu
 from magi.model.t5 import T5Embedder
 
-SPECIAL_TOKEN_PATH = os.getenv("SPECIAL_TOKEN_PATH", "example/assets/special_tokens.npz")
+SPECIAL_TOKEN_PATH = os.getenv("SPECIAL_TOKEN_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "example/assets/special_tokens.npz"))
+
 SPECIAL_TOKEN = np.load(SPECIAL_TOKEN_PATH)
 CAPTION_TOKEN = torch.tensor(SPECIAL_TOKEN["caption_token"].astype(np.float16))
 LOGO_TOKEN = torch.tensor(SPECIAL_TOKEN["logo_token"].astype(np.float16))

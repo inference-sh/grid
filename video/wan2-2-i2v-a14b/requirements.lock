@@ -1,6 +1,6 @@
 accelerate==1.9.0
 annotated-types==0.7.0
-certifi==2025.7.14
+certifi==2025.8.3
 charset-normalizer==3.4.2
 diffusers @ git+https://github.com/huggingface/diffusers.git@58d2b10a2e9cd32dd9765dc50aca98690f516287
 einops==0.8.1
@@ -38,7 +38,7 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
-peft==0.16.0
+peft==0.17.0
 pillow==11.3.0
 psutil==7.0.0
 pydantic==2.10.6
@@ -55,7 +55,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@c962f1515e40521c0b336877a64dc512da4f486d
+transformers @ git+https://github.com/huggingface/transformers.git@6dfd561d9cd722dfc09f702355518c6d09b9b4e3
 triton==3.3.1
 typing-extensions==4.14.1
 urllib3==2.5.0

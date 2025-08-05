@@ -82,7 +82,7 @@ class App(BaseApp):
         
         print(f"Metadata: {metadata}")
         # Get variant and determine if using quantization
-        variant = metadata.get("app_variant", DEFAULT_VARIANT)
+        variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
         if variant not in MODEL_VARIANTS:
             print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
             variant = DEFAULT_VARIANT
