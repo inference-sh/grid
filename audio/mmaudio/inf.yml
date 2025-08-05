@@ -1,0 +1,64 @@
+name: mmaudio
+description: Generate audio for videos
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: large 44khz v2
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    large_44k:
+        name: large 44khz
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    medium_44k:
+        name: medium 44khz
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.12"
+    small_16k:
+        name: small 16khz
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    small_44k:
+        name: small 44khz
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
