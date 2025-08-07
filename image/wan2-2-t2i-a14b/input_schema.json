@@ -1,0 +1,139 @@
+{
+  "$defs": {
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_url": {
+          "description": "URL to LoRA file (.safetensors) or Civitai model page",
+          "title": "Lora Url",
+          "type": "string"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "title": "Lora Multiplier",
+          "type": "number"
+        },
+        "target_transformer": {
+          "default": "both",
+          "description": "Target transformer: 'high', 'low', or 'both'",
+          "title": "Target Transformer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_url"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+      "description": "Negative prompt to guide what to avoid in generation",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1024,
+      "description": "Width of the generated image",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1024,
+      "description": "Height of the generated image",
+      "title": "Height"
+    },
+    "guidance_scale": {
+      "default": 3.5,
+      "description": "Classifier-free guidance scale",
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "num_inference_steps": {
+      "default": 40,
+      "description": "Number of denoising steps",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility",
+      "title": "Seed"
+    },
+    "cache_threshold": {
+      "default": 0,
+      "description": "Cache threshold for transformer (0 to disable caching)",
+      "title": "Cache Threshold",
+      "type": "number"
+    },
+    "cache_threshold_2": {
+      "default": 0,
+      "description": "Cache threshold for transformer_2 (0 to disable caching)",
+      "title": "Cache Threshold 2",
+      "type": "number"
+    },
+    "boundary_ratio": {
+      "default": 0.875,
+      "description": "Boundary ratio for dual transformer setup (0.0-1.0, higher values give more steps to high noise transformer)",
+      "title": "Boundary Ratio",
+      "type": "number"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

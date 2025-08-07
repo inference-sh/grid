@@ -261,7 +261,7 @@ class App(BaseApp):
         # self.pipeline.to(device)
         # self.pipeline.transformer.set_attention_backend("sage_varlen")
         self.pipeline.transformer.to(memory_format=torch.channels_last)
-        self.pipeline.transformer.compile_repeated_blocks(fullgraph=True)
+        # self.pipeline.transformer.compile_repeated_blocks(fullgraph=True)
         # self.pipeline.transformer = torch.compile(
         #     self.pipeline.transformer, mode="max-autotune", fullgraph=True
         # )
