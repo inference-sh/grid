@@ -1,0 +1,175 @@
+name: qwen-image
+description: Qwen-Image - Advanced text-to-image generation with exceptional text rendering capabilities
+category: image
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: Default (Original Model)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 30000000000  # ~30GB VRAM for original model
+                type: any
+            ram: 32000000000  # 32GB RAM
+        env: {}
+        python: "3.12"
+    q2_k:
+        name: Q2_K
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000  # ~8GB VRAM
+                type: any
+            ram: 12000000000  # 12GB RAM
+        env: {}
+        python: "3.12"
+    q3_k_s:
+        name: Q3_K_S
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000  # ~10GB VRAM
+                type: any
+            ram: 14000000000  # 14GB RAM
+        env: {}
+        python: "3.12"
+    q3_k_m:
+        name: Q3_K_M
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 11000000000  # ~11GB VRAM
+                type: any
+            ram: 14000000000  # 14GB RAM
+        env: {}
+        python: "3.12"
+    q4_0:
+        name: Q4_0
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 13000000000  # ~13GB VRAM
+                type: any
+            ram: 16000000000  # 16GB RAM
+        env: {}
+        python: "3.12"
+    q4_1:
+        name: Q4_1
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000  # ~14GB VRAM
+                type: any
+            ram: 16000000000  # 16GB RAM
+        env: {}
+        python: "3.12"
+    q4_k_s:
+        name: Q4_K_S
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 13000000000  # ~13GB VRAM
+                type: any
+            ram: 16000000000  # 16GB RAM
+        env: {}
+        python: "3.12"
+    q4_k_m:
+        name: Q4_K_M
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000  # ~14GB VRAM
+                type: any
+            ram: 16000000000  # 16GB RAM
+        env: {}
+        python: "3.12"
+    q5_0:
+        name: Q5_0
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000  # ~16GB VRAM
+                type: any
+            ram: 20000000000  # 20GB RAM
+        env: {}
+        python: "3.12"
+    q5_1:
+        name: Q5_1
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000  # ~17GB VRAM
+                type: any
+            ram: 20000000000  # 20GB RAM
+        env: {}
+        python: "3.12"
+    q5_k_s:
+        name: Q5_K_S
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000  # ~16GB VRAM
+                type: any
+            ram: 20000000000  # 20GB RAM
+        env: {}
+        python: "3.12"
+    q5_k_m:
+        name: Q5_K_M
+        order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000  # ~17GB VRAM
+                type: any
+            ram: 20000000000  # 20GB RAM
+        env: {}
+        python: "3.12"
+    q6_k:
+        name: Q6_K
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000  # ~20GB VRAM
+                type: any
+            ram: 24000000000  # 24GB RAM
+        env: {}
+        python: "3.12"
+    q8_0:
+        name: Q8_0
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000  # ~24GB VRAM
+                type: any
+            ram: 32000000000  # 32GB RAM
+        env: {}
+        python: "3.12"
+    bf16:
+        name: BF16 (Full Precision)
+        order: 14
+        resources:
+            gpu:
+                count: 1
+                vram: 42000000000  # ~42GB VRAM for BF16
+                type: any
+            ram: 48000000000  # 48GB RAM
+        env: {}
+        python: "3.12"

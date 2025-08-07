@@ -1,0 +1,103 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "The text prompt to generate an image from. Supports both English and Chinese text rendering.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "",
+      "description": "The negative prompt to guide what not to include in the image.",
+      "title": "Negative Prompt"
+    },
+    "width": {
+      "default": 1328,
+      "description": "The width in pixels of the generated image.",
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1328,
+      "description": "The height in pixels of the generated image.",
+      "title": "Height",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "enum": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "1:1",
+      "description": "Predefined aspect ratio that overrides width/height if specified.",
+      "title": "Aspect Ratio"
+    },
+    "num_inference_steps": {
+      "default": 50,
+      "description": "The number of inference steps for generation quality.",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "true_cfg_scale": {
+      "default": 4.0,
+      "description": "The CFG scale for generation guidance.",
+      "title": "True Cfg Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "enum": [
+            "en",
+            "zh"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "en",
+      "description": "Language for prompt optimization (English or Chinese).",
+      "title": "Language"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

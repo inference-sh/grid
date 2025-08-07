@@ -1,0 +1,14 @@
+pydantic >= 2.0.0  # required for inference.sh
+inferencesh==0.2.7
+torch
+git+https://github.com/huggingface/diffusers.git  # Required for QwenImagePipeline and GGUF support
+transformers>=4.45.0
+huggingface_hub>=0.24.0
+accelerate>=0.30.0
+Pillow>=10.0.0
+sentencepiece
+protobuf
+safetensors
+tqdm
+einops
+gguf>=0.13.0  # For GGUF file handling
