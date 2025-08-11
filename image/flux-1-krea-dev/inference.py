@@ -9,6 +9,7 @@ from diffusers import (
     GGUFQuantizationConfig,
     FlowMatchEulerDiscreteScheduler
 )
+from transformers import T5EncoderModel
 import os
 from PIL import Image
 import logging
@@ -53,20 +54,33 @@ class AppOutput(BaseAppOutput):
     image_output: File = Field(description="The generated image.")
 
 MODEL_VARIANTS = {
-    "default": "flux1-dev-F16.gguf",
-    "q2_k": "flux1-krea-dev-Q2_K.gguf",
-    "q3_k_m": "flux1-krea-dev-Q3_K_M.gguf",
-    "q3_k_s": "flux1-krea-dev-Q3_K_S.gguf",
-    "q4_0": "flux1-krea-dev-Q4_0.gguf",
-    "q4_1": "flux1-krea-dev-Q4_1.gguf",
-    "q4_k_m": "flux1-krea-dev-Q4_K_M.gguf",
-    "q4_k_s": "flux1-krea-dev-Q4_K_S.gguf",
-    "q5_0": "flux1-krea-dev-Q5_0.gguf",
-    "q5_1": "flux1-krea-dev-Q5_1.gguf",
-    "q5_k_m": "flux1-krea-dev-Q5_K_M.gguf",
-    "q5_k_s": "flux1-krea-dev-Q5_K_S.gguf",
-    "q6_k": "flux1-krea-dev-Q6_K.gguf",
-    "q8_0": "flux1-krea-dev-Q8_0.gguf",
+    "default": "flux1-krea-dev-f16.gguf",
+    "f32": "flux1-krea-dev-f32.gguf",
+    "bf16": "flux1-krea-dev-bf16.gguf",
+    "iq1_s": "flux1-krea-dev-iq1_s.gguf",
+    "iq1_m": "flux1-krea-dev-iq1_m.gguf",
+    "iq2_xs": "flux1-krea-dev-iq2_xs.gguf",
+    "iq2_s": "flux1-krea-dev-iq2_s.gguf",
+    "iq2_xxs": "flux1-krea-dev-iq2_xxs.gguf",
+    "iq3_xxs": "flux1-krea-dev-iq3_xxs.gguf",
+    "iq3_s": "flux1-krea-dev-iq3_s.gguf",
+    "iq4_xs": "flux1-krea-dev-iq4_xs.gguf",
+    "iq4_nl": "flux1-krea-dev-iq4_nl.gguf",
+    "q2_k": "flux1-krea-dev-q2_k.gguf",
+    "q2_k_s": "flux1-krea-dev-q2_k_s.gguf",
+    "q3_k_s": "flux1-krea-dev-q3_k_s.gguf",
+    "q3_k_m": "flux1-krea-dev-q3_k_m.gguf",
+    "q3_k_l": "flux1-krea-dev-q3_k_l.gguf",
+    "q4_0": "flux1-krea-dev-q4_0.gguf",
+    "q4_1": "flux1-krea-dev-q4_1.gguf",
+    "q4_k_s": "flux1-krea-dev-q4_k_s.gguf",
+    "q4_k_m": "flux1-krea-dev-q4_k_m.gguf",
+    "q5_0": "flux1-krea-dev-q5_0.gguf",
+    "q5_1": "flux1-krea-dev-q5_1.gguf",
+    "q5_k_s": "flux1-krea-dev-q5_k_s.gguf",
+    "q5_k_m": "flux1-krea-dev-q5_k_m.gguf",
+    "q6_k": "flux1-krea-dev-q6_k.gguf",
+    "q8_0": "flux1-krea-dev-q8_0.gguf",
 }
 DEFAULT_VARIANT = "default"
 
@@ -230,32 +244,53 @@ class App(BaseApp):
         self.last_lora_adapter_name = None
         
         logging.basicConfig(level=logging.INFO)
-        repo_id = "QuantStack/FLUX.1-Krea-dev-GGUF"
+        repo_id = "calcuis/krea-gguf"
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
         if variant not in MODEL_VARIANTS:
             logging.warning(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
             variant = DEFAULT_VARIANT
         filename = MODEL_VARIANTS[variant]
-        self.original_model_id = "black-forest-labs/FLUX.1-Krea-dev"
+        self.original_model_id = "callgg/krea-decoder"
         
         if variant == "default":
+            # Load the original non-GGUF version for F16
             self.pipeline = FluxPipeline.from_pretrained(
-                self.original_model_id,
+                "black-forest-labs/FLUX.1-Krea-dev",
                 torch_dtype=torch.bfloat16,
             )
         else:
             logging.info(f"Downloading {filename} from {repo_id}...")
             ckpt_path = hf_hub_download(repo_id=repo_id, filename=filename)
             logging.info(f"Model downloaded to {ckpt_path}")
+            
+            # Load custom text encoder
+            logging.info("Loading T5 text encoder...")
+            
+            #text_encoder = T5EncoderModel.from_pretrained(
+            #    "chatpig/t5-v1_1-xxl-encoder-fp32-gguf",
+            #    gguf_file="t5xxl-encoder-fp32-q2_k.gguf",
+            #    torch_dtype=torch.bfloat16
+            #)
+
+            bfl_repo = "black-forest-labs/FLUX.1-dev"
+            text_encoder_2 = T5EncoderModel.from_pretrained(bfl_repo, subfolder="text_encoder_2", torch_dtype=torch.bfloat16)
+
+            
+            # Load quantized transformer
             transformer = FluxTransformer2DModel.from_single_file(
                 ckpt_path,
                 quantization_config=GGUFQuantizationConfig(compute_dtype=torch.bfloat16),
                 config=self.original_model_id,
                 torch_dtype=torch.bfloat16,
+                subfolder="transformer"
             )
+            
+            # Create pipeline with custom components
+            
             self.pipeline = FluxPipeline.from_pretrained(
                 self.original_model_id,
                 transformer=transformer,
+                text_encoder_2=text_encoder_2,
                 torch_dtype=torch.bfloat16,
             )
         self.pipeline.enable_model_cpu_offload()

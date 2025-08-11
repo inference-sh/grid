@@ -4,10 +4,17 @@
   "width": 1024,
   "height": 1024,
   "guidance_scale": 3.5,
-  "num_inference_steps": 4,
+  "num_inference_steps": 40,
   "seed": null,
   "cache_threshold": 0.0,
   "cache_threshold_2": 0.0,
   "boundary_ratio": 0.875,
-  "loras": null
+  "loras": [
+    {
+      "adapter_name": "style1",
+      "lora_file": { "path": "/path/to/your/style1.safetensors" },
+      "lora_multiplier": 0.8,
+      "target_transformer": "both"
+    }
+  ]
 }

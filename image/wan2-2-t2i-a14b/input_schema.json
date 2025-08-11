@@ -1,5 +1,72 @@
 {
   "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
     "LoraConfig": {
       "properties": {
         "adapter_name": {
@@ -7,27 +74,33 @@
           "title": "Adapter Name",
           "type": "string"
         },
-        "lora_url": {
-          "description": "URL to LoRA file (.safetensors) or Civitai model page",
-          "title": "Lora Url",
-          "type": "string"
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
         },
         "lora_multiplier": {
           "default": 1.0,
           "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
           "title": "Lora Multiplier",
           "type": "number"
         },
         "target_transformer": {
           "default": "both",
           "description": "Target transformer: 'high', 'low', or 'both'",
+          "enum": [
+            "high",
+            "low",
+            "both"
+          ],
           "title": "Target Transformer",
           "type": "string"
         }
       },
       "required": [
         "adapter_name",
-        "lora_url"
+        "lora_file"
       ],
       "title": "LoraConfig",
       "type": "object"
@@ -111,6 +184,8 @@
     "boundary_ratio": {
       "default": 0.875,
       "description": "Boundary ratio for dual transformer setup (0.0-1.0, higher values give more steps to high noise transformer)",
+      "maximum": 1.0,
+      "minimum": 0.0,
       "title": "Boundary Ratio",
       "type": "number"
     },

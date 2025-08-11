@@ -6,5 +6,6 @@
   "guidance_scale": 1.0,
   "num_inference_steps": 40,
   "seed": null,
-  "cache_threshold": 0.0
+  "cache_threshold": 0.0,
+  "boundary_ratio": 0.3
 }

@@ -7,3 +7,5 @@ accelerate
 safetensors
 controlnet-aux
 hf_xet
+huggingface_hub
+requests

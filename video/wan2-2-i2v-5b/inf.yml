@@ -18,9 +18,42 @@ variants:
             ram: 25769803776
         env: {}
         python: "3.12"
+    default_offload_lowvram:
+        name: default_offload_lowvram
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 25769803776
+                type: nvidia
+            ram: 25769803776
+        env: {}
+        python: "3.12"
     q2_k:
         name: q2_k
         order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q2_k_offload:
+        name: q2_k_offload
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q2_k_offload_lowvram:
+        name: q2_k_offload_lowvram
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -40,9 +73,53 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q3_k_m_offload:
+        name: q3_k_m_offload
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k_m_offload_lowvram:
+        name: q3_k_m_offload_lowvram
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q3_k_s:
         name: q3_k_s
         order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k_s_offload:
+        name: q3_k_s_offload
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k_s_offload_lowvram:
+        name: q3_k_s_offload_lowvram
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -62,9 +139,53 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q4_0_offload:
+        name: q4_0_offload
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_0_offload_lowvram:
+        name: q4_0_offload_lowvram
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q4_1:
         name: q4_1
         order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 19000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_1_offload:
+        name: q4_1_offload
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 19000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_1_offload_lowvram:
+        name: q4_1_offload_lowvram
+        order: 11
         resources:
             gpu:
                 count: 1
@@ -84,9 +205,53 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q4_k_m_offload:
+        name: q4_k_m_offload
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k_m_offload_lowvram:
+        name: q4_k_m_offload_lowvram
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q4_k_s:
         name: q4_k_s
         order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k_s_offload:
+        name: q4_k_s_offload
+        order: 14
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k_s_offload_lowvram:
+        name: q4_k_s_offload_lowvram
+        order: 15
         resources:
             gpu:
                 count: 1
@@ -106,9 +271,53 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_0_offload:
+        name: q5_0_offload
+        order: 16
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_0_offload_lowvram:
+        name: q5_0_offload_lowvram
+        order: 17
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_1:
         name: q5_1
         order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_1_offload:
+        name: q5_1_offload
+        order: 18
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_1_offload_lowvram:
+        name: q5_1_offload_lowvram
+        order: 19
         resources:
             gpu:
                 count: 1
@@ -128,9 +337,53 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_k_m_offload:
+        name: q5_k_m_offload
+        order: 20
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k_m_offload_lowvram:
+        name: q5_k_m_offload_lowvram
+        order: 21
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_k_s:
         name: q5_k_s
         order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k_s_offload:
+        name: q5_k_s_offload
+        order: 22
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k_s_offload_lowvram:
+        name: q5_k_s_offload_lowvram
+        order: 23
         resources:
             gpu:
                 count: 1
@@ -150,6 +403,28 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q6_k_offload:
+        name: q6_k_offload
+        order: 24
+        resources:
+            gpu:
+                count: 1
+                vram: 25000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q6_k_offload_lowvram:
+        name: q6_k_offload_lowvram
+        order: 25
+        resources:
+            gpu:
+                count: 1
+                vram: 25000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q8_0:
         name: q8_0
         order: 13
@@ -157,6 +432,28 @@ variants:
             gpu:
                 count: 1
                 vram: 31000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q8_0_offload:
+        name: q8_0_offload
+        order: 26
+        resources:
+            gpu:
+                count: 1
+                vram: 31000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q8_0_offload_lowvram:
+        name: q8_0_offload_lowvram
+        order: 27
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
                 type: any
             ram: 16000000000
         env: {}

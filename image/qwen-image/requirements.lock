@@ -1,14 +1,14 @@
-accelerate==1.9.0
+accelerate==1.10.0
 annotated-types==0.7.0
 certifi==2025.8.3
-charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@f19421e27c3f133133f4586aaaff717c72b355e0
+charset-normalizer==3.4.3
+diffusers @ git+https://github.com/huggingface/diffusers.git@be096b386a25baeb342aa3fc35287354d28de60e
 einops==0.8.1
 filelock==3.18.0
 fsspec==2025.7.0
 gguf==0.17.1
 hf-xet==1.1.7
-huggingface-hub==0.34.3
+huggingface-hub==0.34.4
 idna==3.10
 importlib-metadata==8.7.0
 inferencesh==0.2.7
@@ -41,7 +41,7 @@ pydantic-core==2.33.2
 pyyaml==6.0.2
 regex==2025.7.34
 requests==2.32.4
-safetensors==0.6.1
+safetensors==0.6.2
 sentencepiece==0.2.0
 setuptools==80.9.0
 setuptools-scm==8.3.1

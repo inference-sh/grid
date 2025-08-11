@@ -1,8 +1,8 @@
-accelerate==1.9.0
+accelerate==1.10.0
 annotated-types==0.7.0
 certifi==2025.8.3
 charset-normalizer==3.4.2
-diffusers @ git+https://github.com/huggingface/diffusers.git@7ea065c5070a5278259e6f1effa9dccea232e62a
+diffusers @ git+https://github.com/linoytsaban/diffusers.git@daaa598eac17d39b93075c239d0bdd8e652a2bf4
 einops==0.8.1
 filelock==3.18.0
 flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.3.12/flash_attn-2.8.0+cu128torch2.7-cp312-cp312-linux_x86_64.whl
@@ -10,8 +10,8 @@ fsspec==2025.7.0
 ftfy==6.3.1
 gguf==0.17.1
 hf-transfer==0.1.9
-hf-xet==1.1.5
-huggingface-hub==0.34.3
+hf-xet==1.1.7
+huggingface-hub==0.34.4
 idna==3.10
 imageio==2.37.0
 imageio-ffmpeg==0.6.0
@@ -46,7 +46,7 @@ pydantic-core==2.27.2
 pyyaml==6.0.2
 regex==2025.7.34
 requests==2.32.4
-safetensors==0.5.3
+safetensors==0.6.1
 setuptools==80.9.0
 setuptools-scm==8.3.1
 sympy==1.14.0
@@ -55,7 +55,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@0bd91cc822816c67eb9b7afbaf84ecac25d6c622
+transformers @ git+https://github.com/huggingface/transformers.git@95510ab0182b6581822c55472cd53e85daa3379b
 triton==3.3.1
 typing-extensions==4.14.1
 urllib3==2.5.0

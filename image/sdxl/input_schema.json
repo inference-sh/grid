@@ -1,4 +1,32 @@
 {
+  "$defs": {
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_url": {
+          "description": "URL to LoRA file (.safetensors) or Civitai model page",
+          "title": "Lora Url",
+          "type": "string"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_url"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
   "properties": {
     "prompt": {
       "description": "The text prompt to generate the image from",
@@ -58,12 +86,28 @@
     },
     "model_url": {
       "default": "stabilityai/stable-diffusion-xl-base-1.0",
-      "description": "URL or path to a custom Stable Diffusion XL model",
+      "description": "URL or huggingface path to a custom Stable Diffusion XL model",
       "examples": [
         "stabilityai/stable-diffusion-xl-base-1.0"
       ],
       "title": "Model Url",
       "type": "string"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
     }
   },
   "required": [

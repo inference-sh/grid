@@ -9,24 +9,23 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from PIL import Image
-from diffusers import WanImageToVideoPipeline, FirstBlockCacheConfig, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel
+from diffusers import WanImageToVideoPipeline
 from diffusers.utils import export_to_video
+from diffusers import DiffusionPipeline, WanTransformer3DModel, GGUFQuantizationConfig
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 from diffusers.hooks import apply_group_offloading
+import logging
+import gc
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from contextlib import contextmanager
 
 # Model variants mapping for GGUF quantization from QuantStack
 # Only includes variants where both HighNoise and LowNoise transformers are available
 MODEL_VARIANTS = {
     "default": None,  # Use default F16 model
-    "default_offload": None,  # Use default F16 model with offloading
     "q2_k": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
-    },
-    "q2_k_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
     },
@@ -34,15 +33,7 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
     },
-    "q3_k_s_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
-    },
     "q3_k_m": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
-    },
-    "q3_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
     },
@@ -50,15 +41,7 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
     },
-    "q4_k_s_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
-    },
     "q4_k_m": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
-    },
-    "q4_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
     },
@@ -66,15 +49,7 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
     },
-    "q5_0_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
-    },
     "q5_1": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
-    },
-    "q5_1_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
     },
@@ -82,15 +57,7 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
     },
-    "q5_k_s_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
-    },
     "q5_k_m": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
-    },
-    "q5_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
     },
@@ -98,15 +65,7 @@ MODEL_VARIANTS = {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
     },
-    "q6_k_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
-    },
     "q8_0": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
-    },
-    "q8_0_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
     }
@@ -122,23 +81,20 @@ class AppInput(BaseAppInput):
         description="Negative prompt to guide what to avoid in generation"
     )
     resolution: str = Field(default="720p", description="Resolution preset", enum=["480p", "720p"])
-    max_area: Optional[int] = Field(default=None, description="Maximum area for image resizing (auto-set based on resolution if not specified)")
     num_frames: int = Field(default=81, description="Number of frames to generate")
     guidance_scale: float = Field(default=3.5, description="Classifier-free guidance scale")
     num_inference_steps: int = Field(default=40, description="Number of denoising steps")
     fps: int = Field(default=16, description="Frames per second for the output video")
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
-    cache_threshold: float = Field(default=0, description="Cache threshold for transformer (0 to disable caching)")
-    cache_threshold_2: float = Field(default=0, description="Cache threshold for transformer_2 (0 to disable caching)")
-    video_output_quality: int = Field(default=5, ge=1, le=9, description="Video output quality (1-9)")
-    
+    boundary_ratio: float = Field(default=0.875, ge=0.0, le=1.0, description="Boundary ratio for dual transformer setup (0-1)")
+    end_image: Optional[File] = Field(default=None, description="Optional end image for first-to-last frame video generation")
+
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated video file")
 
 class App(BaseApp):
     async def setup(self, metadata):
         """Initialize the Wan2.2 Image-to-Video pipeline and resources here."""
-        print("Setting up Wan2.2 Image-to-Video pipeline...")
         # Store resolution defaults
         self.resolution_presets = {
             "480p": {"max_area": 480 * 832},
@@ -150,77 +106,51 @@ class App(BaseApp):
         
         # Set up device and dtype using accelerator
         self.device = self.accelerator.device
-        self.dtype = torch.bfloat16
+        self.dtype = torch.float16 if self.device.type == "cuda" else torch.float32
         
-        # Get variant and determine if using quantization
+        # Get variant and determine if using quantization/offloading
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
-        if variant not in MODEL_VARIANTS:
-            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
-            variant = DEFAULT_VARIANT
+        # Offloading policy: default always uses CPU offload; explicit lowvram uses group offload
+        use_group_offload = variant.endswith("_offload_lowvram")
+        # Strip suffix for base variant lookup
+        base_variant = variant.replace("_offload_lowvram", "").replace("_offload", "")
+        if base_variant not in MODEL_VARIANTS:
+            logging.warning(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
+            base_variant = DEFAULT_VARIANT
         
-        print(f"Loading model variant: {variant}")
-        
-        self.model_id = "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
-        
-        self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
-
-        # use default wan image processor to resize and crop the image
-        self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
-        
-        # Determine if this variant uses offloading
-        use_offloading = variant.endswith("_offload") or variant == "default"
-        use_cpu_offload = False
-        
-        # Get base variant name for quantized models
-        base_variant = variant.replace("_offload", "") if use_offloading else variant
-        
+        # Load pipeline based on variant
         if base_variant == "default":
             # Load standard F16 pipeline
-            print(f"Loading standard F16 Wan2.2 I2V pipeline for {variant}...")
             self.pipe = WanImageToVideoPipeline.from_pretrained(
                 "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
-                vae=self.vae,
-                torch_dtype=self.dtype,
+                torch_dtype=self.dtype
             )
-            
-            if use_cpu_offload:
-                # Enable CPU offload for fp16 variants
-                print("Enabling CPU offload...")
-                self.pipe.enable_model_cpu_offload()
-                
-                if use_offloading:
-                    # Additional group offloading for fp16_offload
-                    print("Enabling group offloading...")
-                    onload_device = self.device
-                    offload_device = torch.device("cpu")
-                    
-                    self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                    self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            # Apply offloading/device placement
+            if use_group_offload:
+                onload_device = self.device
+                offload_device = torch.device("cpu")
+                # Group offloading on key modules
+                self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                if hasattr(self.pipe, 'transformer_2'):
                     self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                    apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
             else:
-                # Move to device for default variant
-                print(f"Moving pipeline to {self.device}...")
-                self.pipe.to(self.device)
-                
-                if use_offloading:
-                    # Enable group offloading for default_offload
-                    print("Enabling group offloading...")
-                    onload_device = self.device
-                    offload_device = torch.device("cpu")
-                    
-                    self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                    self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                    self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                    apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                # Default: enable CPU offload for memory efficiency
+                self.pipe.enable_model_cpu_offload()
         else:
             # Load quantized transformers
-            print(f"Loading quantized transformers for {base_variant}...")
             repo_id = "QuantStack/Wan2.2-I2V-A14B-GGUF"
             variant_files = MODEL_VARIANTS[base_variant]
             
+            # Download and load high noise transformer (main transformer)
             high_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['high_noise'])
-           
+            
+            # Force garbage collection
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
             transformer_high_noise = WanTransformer3DModel.from_single_file(
                 high_noise_path,
                 quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
@@ -228,8 +158,14 @@ class App(BaseApp):
                 subfolder="transformer",
                 torch_dtype=self.dtype,
             )
-
+            
+            # Download and load low noise transformer (transformer_2)
             low_noise_path = hf_hub_download(repo_id=repo_id, filename=variant_files['low_noise'])
+            
+            # Force garbage collection again
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
             
             transformer_low_noise = WanTransformer3DModel.from_single_file(
                 low_noise_path,
@@ -239,107 +175,112 @@ class App(BaseApp):
                 torch_dtype=self.dtype,
             )
             
+            # Load pipeline with quantized transformers
             self.pipe = WanImageToVideoPipeline.from_pretrained(
                 "Wan-AI/Wan2.2-I2V-A14B-Diffusers",
-                vae=self.vae,
                 transformer=transformer_high_noise,  # High noise goes to main transformer
                 transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
-                torch_dtype=self.dtype,
+                torch_dtype=self.dtype
             )
-            
-            if use_offloading:
-                # Enable group offloading for quantized models with offload suffix
-                print("Enabling group offloading for quantized model...")
+            # Apply offloading/device placement
+            if use_group_offload:
                 onload_device = self.device
                 offload_device = torch.device("cpu")
-                
                 self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
                 self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-                self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                if hasattr(self.pipe, 'transformer_2'):
+                    self.pipe.transformer_2.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
                 apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
-              
+            else:
+                # Default: enable CPU offload for memory efficiency
+                self.pipe.enable_model_cpu_offload()
+
+    def resize_image_for_pipeline(self, image: Image.Image, max_area: int) -> tuple[Image.Image, int, int]:
+        """Resize image according to pipeline requirements."""
+        aspect_ratio = image.height / image.width
+        mod_value = self.pipe.vae_scale_factor_spatial * self.pipe.transformer.config.patch_size[1]
         
-        print("Setup complete!")
+        height = round(np.sqrt(max_area * aspect_ratio)) // mod_value * mod_value
+        width = round(np.sqrt(max_area / aspect_ratio)) // mod_value * mod_value
+        
+        resized_image = image.resize((width, height))
+        
+        return resized_image, width, height
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video from image and text prompt."""
-        print(f"Generating video with prompt: {input_data.prompt}")
-        
-        # Use resolution preset if max_area not specified
+        # Use resolution preset
         preset = self.resolution_presets.get(input_data.resolution, self.resolution_presets["720p"])
-        max_area = input_data.max_area if input_data.max_area is not None else preset["max_area"]
-        print(f"Using resolution: {input_data.resolution}, max area: {max_area}")
-        
-        # Load and process input image
-        image = Image.open(input_data.image.path).convert("RGB")
-        print(f"Loaded image: {image.size}")
-        
-        # Resize image according to pipeline requirements
-        resized_image = self.image_processor(
-            image=input_data.image.path,
-            max_area=max_area, output="processed_image")
-        
-        width = resized_image.width
-        height = resized_image.height
-        
+        max_area = preset["max_area"]
+
+        # Register boundary ratio to pipeline config
+        try:
+            self.pipe.register_to_config(boundary_ratio=input_data.boundary_ratio)
+        except Exception:
+            pass
+
+        # Load and process input image(s)
+        with Image.open(input_data.image.path) as pil_image:
+            pil_image = pil_image.convert("RGB")
+            resized_image, width, height = self.resize_image_for_pipeline(pil_image, max_area)
+
+        last_image = None
+        if input_data.end_image is not None:
+            with Image.open(input_data.end_image.path) as pil_end_image:
+                pil_end_image = pil_end_image.convert("RGB")
+                # Resize end image to same dims
+                last_image, _, _ = self.resize_image_for_pipeline(pil_end_image, max_area)
+
         # Set seed if provided
         generator = None
         if input_data.seed is not None:
             generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
-            print(f"Using seed: {input_data.seed}")
-            
-        # Configure caching if thresholds are non-zero
-        # First disable any existing caching to prevent conflicts
-        if hasattr(self.pipe.transformer, 'disable_cache'):
-            self.pipe.transformer.disable_cache()
-        if hasattr(self.pipe.transformer_2, 'disable_cache'):
-            self.pipe.transformer_2.disable_cache()
-        
-        if input_data.cache_threshold > 0:
-            print(f"Enabling cache for transformer with threshold: {input_data.cache_threshold}")
-            cache_config = FirstBlockCacheConfig(threshold=input_data.cache_threshold)
-            self.pipe.transformer.enable_cache(cache_config)
-        
-        if input_data.cache_threshold_2 > 0:
-            print(f"Enabling cache for transformer_2 with threshold: {input_data.cache_threshold_2}")
-            cache_config_2 = FirstBlockCacheConfig(threshold=input_data.cache_threshold_2)
-            self.pipe.transformer_2.enable_cache(cache_config_2)
-        
+
         # Generate video
-        print("Starting video generation...")
-        output = self.pipe(
-            image=resized_image,
-            prompt=input_data.prompt,
-            negative_prompt=input_data.negative_prompt,
-            height=height,
-            width=width,
-            num_frames=input_data.num_frames,
-            guidance_scale=input_data.guidance_scale,
-            num_inference_steps=input_data.num_inference_steps,
-            generator=generator,
-        ).frames[0]
-        
-        print("Video generation complete, exporting...")
-        
-        # Create temporary file for output
-        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
-            output_path = temp_file.name
-        
-        # Export video
-        export_to_video(output, output_path, fps=input_data.fps, quality=input_data.video_output_quality)
-        
-        print(f"Video exported to: {output_path}")
-        
-        return AppOutput(file=File(path=output_path))
+        try:
+            with torch.inference_mode():
+                output = self.pipe(
+                    image=resized_image,
+                    prompt=input_data.prompt,
+                    negative_prompt=input_data.negative_prompt,
+                    height=height,
+                    width=width,
+                    num_frames=input_data.num_frames,
+                    guidance_scale=input_data.guidance_scale,
+                    num_inference_steps=input_data.num_inference_steps,
+                    generator=generator,
+                    last_image=last_image,
+                ).frames[0]
+
+            # Create temporary file for output
+            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
+                output_path = temp_file.name
+
+            # Export video
+            export_to_video(output, output_path, fps=input_data.fps)
+
+            return AppOutput(file=File(path=output_path))
+        finally:
+            try:
+                del resized_image
+                del last_image
+                del generator
+                del output
+            except Exception:
+                pass
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+                try:
+                    torch.cuda.ipc_collect()
+                except Exception:
+                    pass
 
     async def unload(self):
         """Clean up resources here."""
-        print("Cleaning up...")
         if hasattr(self, 'pipe'):
             del self.pipe
         
         # Clear GPU cache if using CUDA
         if hasattr(self, 'device') and self.device.type == "cuda":
-            torch.cuda.empty_cache()
-        
-        print("Cleanup complete!") 
+            torch.cuda.empty_cache() 

@@ -94,19 +94,6 @@
       "title": "Resolution",
       "type": "string"
     },
-    "max_area": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Maximum area for image resizing (auto-set based on resolution if not specified)",
-      "title": "Max Area"
-    },
     "num_frames": {
       "default": 81,
       "description": "Number of frames to generate",
@@ -144,25 +131,25 @@
       "description": "Random seed for reproducibility",
       "title": "Seed"
     },
-    "cache_threshold": {
-      "default": 0,
-      "description": "Cache threshold for transformer (0 to disable caching)",
-      "title": "Cache Threshold",
+    "boundary_ratio": {
+      "default": 0.875,
+      "description": "Boundary ratio for dual transformer setup (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Boundary Ratio",
       "type": "number"
     },
-    "cache_threshold_2": {
-      "default": 0,
-      "description": "Cache threshold for transformer_2 (0 to disable caching)",
-      "title": "Cache Threshold 2",
-      "type": "number"
-    },
-    "video_output_quality": {
-      "default": 5,
-      "description": "Video output quality (1-9)",
-      "maximum": 9,
-      "minimum": 1,
-      "title": "Video Output Quality",
-      "type": "integer"
+    "end_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional end image for first-to-last frame video generation"
     }
   },
   "required": [

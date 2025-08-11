@@ -14,6 +14,17 @@
 
 import argparse
 from omegaconf import OmegaConf
+
+# Apply torch compatibility patch before any torch/torchvision imports
+try:
+    from . import torch_compatibility_patch
+except ImportError:
+    # Fallback for direct script execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import torch_compatibility_patch
+
 import torch
 from diffusers import AutoencoderKL, DDIMScheduler
 from latentsync.models.unet import UNet3DConditionModel
@@ -21,6 +32,7 @@ from latentsync.pipelines.lipsync_pipeline import LipsyncPipeline
 from diffusers.utils.import_utils import is_xformers_available
 from accelerate.utils import set_seed
 from latentsync.whisper.audio2feature import Audio2Feature
+from DeepCache import DeepCacheSDHelper
 
 
 def main(config, args):
@@ -32,16 +44,30 @@ def main(config, args):
     print(f"Input audio path: {args.audio_path}")
     print(f"Loaded checkpoint path: {args.inference_ckpt_path}")
 
-    scheduler = DDIMScheduler.from_pretrained("configs")
+    # Load scheduler from local config file
+    import os
+    scheduler_config_path = os.path.join(os.path.dirname(args.unet_config_path), "..", "scheduler_config.json")
+    if os.path.exists(scheduler_config_path):
+        scheduler = DDIMScheduler.from_pretrained(os.path.dirname(scheduler_config_path))
+    else:
+        # Fallback to default scheduler
+        scheduler = DDIMScheduler()
 
     if config.model.cross_attention_dim == 768:
-        whisper_model_path = "checkpoints/whisper/small.pt"
+        whisper_model_name = "small"
     elif config.model.cross_attention_dim == 384:
-        whisper_model_path = "checkpoints/whisper/tiny.pt"
+        whisper_model_name = "tiny"
     else:
         raise NotImplementedError("cross_attention_dim must be 768 or 384")
 
-    audio_encoder = Audio2Feature(model_path=whisper_model_path, device="cuda", num_frames=config.data.num_frames)
+    # Add audio_feat_length parameter from config for better quality
+    audio_feat_length = getattr(config.data, 'audio_feat_length', [2, 2])  # Default fallback
+    audio_encoder = Audio2Feature(
+        model_path=whisper_model_name, 
+        device="cuda", 
+        num_frames=config.data.num_frames,
+        audio_feat_length=audio_feat_length
+    )
 
     vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-mse", torch_dtype=dtype)
     vae.config.scaling_factor = 0.18215
@@ -66,24 +92,31 @@ def main(config, args):
         scheduler=scheduler,
     ).to("cuda")
 
+    # Enable DeepCache for better quality and speed
+    helper = DeepCacheSDHelper(pipe=pipeline)
+    helper.set_params(cache_interval=3, cache_branch_id=0)
+    helper.enable()
+    print("DeepCache enabled for improved quality and performance")
+
     if args.seed != -1:
         set_seed(args.seed)
     else:
         torch.seed()
 
     print(f"Initial seed: {torch.initial_seed()}")
+    print(f"Pipeline parameters: num_inference_steps={args.inference_steps}, guidance_scale={args.guidance_scale}")
 
     pipeline(
         video_path=args.video_path,
         audio_path=args.audio_path,
         video_out_path=args.video_out_path,
-        video_mask_path=args.video_out_path.replace(".mp4", "_mask.mp4"),
         num_frames=config.data.num_frames,
         num_inference_steps=args.inference_steps,
         guidance_scale=args.guidance_scale,
         weight_dtype=dtype,
         width=config.data.resolution,
         height=config.data.resolution,
+        temp_dir="temp",
     )
 
 

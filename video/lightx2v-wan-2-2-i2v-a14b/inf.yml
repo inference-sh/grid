@@ -29,6 +29,17 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
+    default_480p_offload_lowvram:
+        name: default_480p_offload_lowvram
+        order: 30
+        resources:
+            gpu:
+                count: 1
+                vram: 64424509440
+                type: nvidia
+            ram: 34359738368
+        env: {}
+        python: "3.12"
     default_720p:
         name: default_720p
         order: 26
@@ -43,6 +54,17 @@ variants:
     default_720p_offload:
         name: default_720p_offload
         order: 27
+        resources:
+            gpu:
+                count: 1
+                vram: 64424509440
+                type: nvidia
+            ram: 34359738368
+        env: {}
+        python: "3.12"
+    default_720p_offload_lowvram:
+        name: default_720p_offload_lowvram
+        order: 42
         resources:
             gpu:
                 count: 1
@@ -73,6 +95,17 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
+    fp16_480p_offload_lowvram:
+        name: fp16_480p_offload_lowvram
+        order: 31
+        resources:
+            gpu:
+                count: 1
+                vram: 64424509440
+                type: nvidia
+            ram: 34359738368
+        env: {}
+        python: "3.12"
     fp16_720p:
         name: fp16_720p
         order: 28
@@ -95,6 +128,17 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
+    fp16_720p_offload_lowvram:
+        name: fp16_720p_offload_lowvram
+        order: 43
+        resources:
+            gpu:
+                count: 1
+                vram: 64424509440
+                type: nvidia
+            ram: 34359738368
+        env: {}
+        python: "3.12"
     q2_k_480p:
         name: q2_k_480p
         order: 4
@@ -106,9 +150,31 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q2_k_480p_cpu_offload:
+        name: q2_k_480p_cpu_offload
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q2_k_480p_offload:
         name: q2_k_480p_offload
         order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q2_k_480p_offload_lowvram:
+        name: q2_k_480p_offload_lowvram
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -139,6 +205,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q2_k_720p_offload_lowvram:
+        name: q2_k_720p_offload_lowvram
+        order: 44
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q3_k_m_480p:
         name: q3_k_m_480p
         order: 6
@@ -153,6 +230,17 @@ variants:
     q3_k_m_480p_offload:
         name: q3_k_m_480p_offload
         order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k_m_480p_offload_lowvram:
+        name: q3_k_m_480p_offload_lowvram
+        order: 32
         resources:
             gpu:
                 count: 1
@@ -183,6 +271,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q3_k_m_720p_offload_lowvram:
+        name: q3_k_m_720p_offload_lowvram
+        order: 45
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q3_k_s_480p:
         name: q3_k_s_480p
         order: 8
@@ -197,6 +296,17 @@ variants:
     q3_k_s_480p_offload:
         name: q3_k_s_480p_offload
         order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k_s_480p_offload_lowvram:
+        name: q3_k_s_480p_offload_lowvram
+        order: 33
         resources:
             gpu:
                 count: 1
@@ -227,6 +337,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q3_k_s_720p_offload_lowvram:
+        name: q3_k_s_720p_offload_lowvram
+        order: 46
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q4_k_m_480p:
         name: q4_k_m_480p
         order: 10
@@ -241,6 +362,17 @@ variants:
     q4_k_m_480p_offload:
         name: q4_k_m_480p_offload
         order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k_m_480p_offload_lowvram:
+        name: q4_k_m_480p_offload_lowvram
+        order: 34
         resources:
             gpu:
                 count: 1
@@ -271,6 +403,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q4_k_m_720p_offload_lowvram:
+        name: q4_k_m_720p_offload_lowvram
+        order: 47
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q4_k_s_480p:
         name: q4_k_s_480p
         order: 12
@@ -285,6 +428,17 @@ variants:
     q4_k_s_480p_offload:
         name: q4_k_s_480p_offload
         order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k_s_480p_offload_lowvram:
+        name: q4_k_s_480p_offload_lowvram
+        order: 35
         resources:
             gpu:
                 count: 1
@@ -315,6 +469,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q4_k_s_720p_offload_lowvram:
+        name: q4_k_s_720p_offload_lowvram
+        order: 48
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_0_480p:
         name: q5_0_480p
         order: 14
@@ -329,6 +494,17 @@ variants:
     q5_0_480p_offload:
         name: q5_0_480p_offload
         order: 15
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_0_480p_offload_lowvram:
+        name: q5_0_480p_offload_lowvram
+        order: 36
         resources:
             gpu:
                 count: 1
@@ -359,6 +535,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_0_720p_offload_lowvram:
+        name: q5_0_720p_offload_lowvram
+        order: 49
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_1_480p:
         name: q5_1_480p
         order: 16
@@ -373,6 +560,17 @@ variants:
     q5_1_480p_offload:
         name: q5_1_480p_offload
         order: 17
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_1_480p_offload_lowvram:
+        name: q5_1_480p_offload_lowvram
+        order: 37
         resources:
             gpu:
                 count: 1
@@ -403,6 +601,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_1_720p_offload_lowvram:
+        name: q5_1_720p_offload_lowvram
+        order: 50
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_k_m_480p:
         name: q5_k_m_480p
         order: 18
@@ -417,6 +626,17 @@ variants:
     q5_k_m_480p_offload:
         name: q5_k_m_480p_offload
         order: 19
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k_m_480p_offload_lowvram:
+        name: q5_k_m_480p_offload_lowvram
+        order: 38
         resources:
             gpu:
                 count: 1
@@ -447,6 +667,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_k_m_720p_offload_lowvram:
+        name: q5_k_m_720p_offload_lowvram
+        order: 51
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q5_k_s_480p:
         name: q5_k_s_480p
         order: 20
@@ -461,6 +692,17 @@ variants:
     q5_k_s_480p_offload:
         name: q5_k_s_480p_offload
         order: 21
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k_s_480p_offload_lowvram:
+        name: q5_k_s_480p_offload_lowvram
+        order: 39
         resources:
             gpu:
                 count: 1
@@ -491,6 +733,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q5_k_s_720p_offload_lowvram:
+        name: q5_k_s_720p_offload_lowvram
+        order: 52
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q6_k_480p:
         name: q6_k_480p
         order: 22
@@ -505,6 +758,17 @@ variants:
     q6_k_480p_offload:
         name: q6_k_480p_offload
         order: 23
+        resources:
+            gpu:
+                count: 1
+                vram: 25000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q6_k_480p_offload_lowvram:
+        name: q6_k_480p_offload_lowvram
+        order: 40
         resources:
             gpu:
                 count: 1
@@ -535,6 +799,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q6_k_720p_offload_lowvram:
+        name: q6_k_720p_offload_lowvram
+        order: 53
+        resources:
+            gpu:
+                count: 1
+                vram: 25000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q8_0_480p:
         name: q8_0_480p
         order: 24
@@ -557,6 +832,17 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
+    q8_0_480p_offload_lowvram:
+        name: q8_0_480p_offload_lowvram
+        order: 41
+        resources:
+            gpu:
+                count: 1
+                vram: 31000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
     q8_0_720p:
         name: q8_0_720p
         order: 50
@@ -571,6 +857,17 @@ variants:
     q8_0_720p_offload:
         name: q8_0_720p_offload
         order: 51
+        resources:
+            gpu:
+                count: 1
+                vram: 31000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q8_0_720p_offload_lowvram:
+        name: q8_0_720p_offload_lowvram
+        order: 54
         resources:
             gpu:
                 count: 1

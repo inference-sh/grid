@@ -73,6 +73,18 @@
       "$ref": "#/$defs/File",
       "description": "Input image for video generation"
     },
+    "end_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional end frame image; when provided, the video will transition from the first frame to this last frame"
+    },
     "prompt": {
       "description": "Text prompt for video generation",
       "title": "Prompt",
@@ -84,44 +96,15 @@
       "title": "Negative Prompt",
       "type": "string"
     },
-    "resolution": {
-      "default": null,
-      "description": "Resolution preset (auto-detected from variant if not specified)",
-      "enum": [
-        "480p",
-        "720p"
-      ],
-      "title": "Resolution",
-      "type": "string"
-    },
-    "max_area": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Maximum area for image resizing (auto-set based on resolution if not specified)",
-      "title": "Max Area"
-    },
     "num_frames": {
       "default": 81,
       "description": "Number of frames to generate",
       "title": "Num Frames",
       "type": "integer"
     },
-    "guidance_scale": {
-      "default": 1.0,
-      "description": "Classifier-free guidance scale (optimized for LightX2V)",
-      "title": "Guidance Scale",
-      "type": "number"
-    },
     "num_inference_steps": {
       "default": 4,
-      "description": "Number of denoising steps (optimized for LightX2V)",
+      "description": "Number of denoising steps (4 or 6 are typically enough for LightX2V)",
       "title": "Num Inference Steps",
       "type": "integer"
     },
@@ -144,25 +127,13 @@
       "description": "Random seed for reproducibility",
       "title": "Seed"
     },
-    "cache_threshold": {
-      "default": 0,
-      "description": "Cache threshold for transformer (0 to disable caching)",
-      "title": "Cache Threshold",
+    "boundary_ratio": {
+      "default": 0.875,
+      "description": "Boundary ratio between high and low noise transformers (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Boundary Ratio",
       "type": "number"
-    },
-    "cache_threshold_2": {
-      "default": 0,
-      "description": "Cache threshold for transformer_2 (0 to disable caching)",
-      "title": "Cache Threshold 2",
-      "type": "number"
-    },
-    "video_output_quality": {
-      "default": 5,
-      "description": "Video output quality (1-9)",
-      "maximum": 9,
-      "minimum": 1,
-      "title": "Video Output Quality",
-      "type": "integer"
     }
   },
   "required": [

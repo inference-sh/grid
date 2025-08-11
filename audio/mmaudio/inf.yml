@@ -1,6 +1,6 @@
 name: mmaudio
 description: Generate audio for videos
-category: video
+category: audio
 images:
     card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
     thumbnail: ""

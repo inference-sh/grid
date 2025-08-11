@@ -1,8 +1,12 @@
 import os
-import subprocess
+import sys
 import tempfile
 from pathlib import Path
 import shutil
+
+# Apply torch compatibility patch before any torch/torchvision imports
+from . import torch_compatibility_patch
+
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 import diffusers
 
@@ -39,27 +43,27 @@ class App(BaseApp):
             from huggingface_hub import hf_hub_download
             import os
             
+            # Get the directory where inference.py is located
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            checkpoints_dir = os.path.join(current_dir, "checkpoints")
+            
             # Create checkpoints directory structure
-            os.makedirs("checkpoints/whisper", exist_ok=True)
-            os.makedirs("checkpoints/auxiliary", exist_ok=True)
+            os.makedirs(checkpoints_dir, exist_ok=True)
+            os.makedirs(os.path.join(checkpoints_dir, "whisper"), exist_ok=True)
+            os.makedirs(os.path.join(checkpoints_dir, "auxiliary"), exist_ok=True)
             
             # Download main model checkpoint
             print("Downloading LatentSync UNet model...")
             hf_hub_download(
-                repo_id="ByteDance/LatentSync",
+                repo_id="ByteDance/LatentSync-1.6",
                 filename="latentsync_unet.pt",
-                local_dir="checkpoints",
+                local_dir=checkpoints_dir,
                 local_dir_use_symlinks=False
             )
             
-            # Download Whisper model
-            print("Downloading Whisper model...")
-            hf_hub_download(
-                repo_id="ByteDance/LatentSync",
-                filename="whisper/tiny.pt",
-                local_dir="checkpoints",
-                local_dir_use_symlinks=False
-            )
+            # Note: Whisper models will be downloaded automatically by the library
+            # when using model names like "tiny", "small", etc.
+            print("Whisper models will be downloaded automatically when needed")
             
             # Download auxiliary models if needed
             auxiliary_files = [
@@ -72,15 +76,27 @@ class App(BaseApp):
                 try:
                     print(f"Downloading auxiliary model: {aux_file}")
                     hf_hub_download(
-                        repo_id="ByteDance/LatentSync",
+                        repo_id="ByteDance/LatentSync-1.6",
                         filename=aux_file,
-                        local_dir="checkpoints",
+                        local_dir=checkpoints_dir,
                         local_dir_use_symlinks=False
                     )
                 except Exception as e:
                     print(f"Warning: Could not download auxiliary file {aux_file}: {e}")
                     # Continue with other files even if one fails
             
+            # Download SyncNet model
+            try:
+                print("Downloading SyncNet model...")
+                hf_hub_download(
+                    repo_id="ByteDance/LatentSync-1.6",
+                    filename="stable_syncnet.pt",
+                    local_dir=checkpoints_dir,
+                    local_dir_use_symlinks=False
+                )
+            except Exception as e:
+                print(f"Warning: Could not download SyncNet model: {e}")
+                
             print("Model checkpoints downloaded successfully")
         except Exception as e:
             print(f"Error downloading model checkpoints: {e}")
@@ -90,8 +106,11 @@ class App(BaseApp):
         """Create soft links for auxiliary models."""
         os.makedirs(os.path.expanduser("~/.cache/torch/hub/checkpoints"), exist_ok=True)
         
+        # Get the directory where inference.py is located
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        
         # We only need to create these links if the auxiliary models were downloaded
-        aux_dir = Path("checkpoints/auxiliary")
+        aux_dir = Path(os.path.join(current_dir, "checkpoints/auxiliary"))
         if aux_dir.exists():
             links = [
                 ("2DFAN4-cd938726ad.zip", "2DFAN4-cd938726ad.zip"),
@@ -122,50 +141,44 @@ class App(BaseApp):
             shutil.copy(input_data.video_path.path, video_path)
             shutil.copy(input_data.audio_path.path, audio_path)
             
-            # Get the path to the do_inference.py script
-            # Assuming do_inference.py is in the same directory as this file
+            # Add LatentSync to the Python path for imports
             current_dir = os.path.dirname(os.path.abspath(__file__))
-            inference_script = os.path.join(current_dir, "do_inference.py")
+            latentsync_dir = os.path.join(current_dir, "LatentSync")
+            if os.path.exists(latentsync_dir) and latentsync_dir not in sys.path:
+                sys.path.append(latentsync_dir)
+                print(f"Added {latentsync_dir} to Python path")
             
-            # Run inference using Python's exec function
+            # Import and run inference directly
             try:
-                # Prepare arguments as they would be passed to the script
-                import sys
-                original_argv = sys.argv
-                sys.argv = [
-                    inference_script,
-                    "--unet_config_path", "configs/unet/second_stage.yaml",
-                    "--inference_ckpt_path", "checkpoints/latentsync_unet.pt",
-                    "--inference_steps", str(input_data.inference_steps),
-                    "--guidance_scale", str(input_data.guidance_scale),
-                    "--video_path", video_path,
-                    "--audio_path", audio_path,
-                    "--video_out_path", output_path,
-                    "--seed", "1247"  # Default seed
-                ]
+                from omegaconf import OmegaConf
+                from .do_inference import main as inference_main
                 
-                print(f"Running inference with args: {sys.argv}")
+                # Create arguments object similar to argparse
+                from types import SimpleNamespace
                 
-                # Execute the do_inference.py script
-                with open(inference_script, 'r') as f:
-                    script_content = f.read()
+                # Construct paths relative to script location  
+                # Use stage2_512.yaml as recommended in HuggingFace README for better results
+                config_path = os.path.join(current_dir, "LatentSync", "configs", "unet", "stage2_512.yaml")
+                checkpoint_path = os.path.join(current_dir, "checkpoints", "latentsync_unet.pt")
                 
-                # Add the current directory to the Python path if needed
-                if current_dir not in sys.path:
-                    sys.path.append(current_dir)
-                    
-                # Add LatentSync/latentsync to the Python path
-                latentsync_dir = os.path.join(current_dir, "LatentSync")
-                latentsync_module_dir = os.path.join(latentsync_dir, "latentsync")
-                if os.path.exists(latentsync_module_dir) and latentsync_module_dir not in sys.path:
-                    sys.path.append(latentsync_dir)
-                    print(f"Added {latentsync_dir} to Python path")
-                    
-                # Execute the script
-                exec(script_content, {'__name__': '__main__'})
+                args = SimpleNamespace(
+                    unet_config_path=config_path,
+                    inference_ckpt_path=checkpoint_path,
+                    inference_steps=input_data.inference_steps,
+                    guidance_scale=input_data.guidance_scale,
+                    video_path=video_path,
+                    audio_path=audio_path,
+                    video_out_path=output_path,
+                    seed=1247
+                )
                 
-                # Restore original argv
-                sys.argv = original_argv
+                # Load configuration
+                config = OmegaConf.load(args.unet_config_path)
+                
+                print(f"Running inference with parameters: steps={args.inference_steps}, guidance_scale={args.guidance_scale}")
+                
+                # Call the main function directly
+                inference_main(config, args)
                 
                 if not os.path.exists(output_path):
                     raise RuntimeError(f"Output video was not generated.")

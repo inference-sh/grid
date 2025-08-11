@@ -25,9 +25,9 @@ variants:
         resources:
             gpu:
                 count: 1
-                vram: 8192
+                vram: 18253611008
                 type: any
-            ram: 16384
+            ram: 2147483648
         env:
             CUDA_LAUNCH_BLOCKING: "1"
             TORCH_DTYPE: bfloat16

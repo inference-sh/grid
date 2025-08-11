@@ -12,7 +12,7 @@ from pydantic import Field
 from PIL import Image
 from diffusers import WanImageToVideoPipeline, WanTransformer3DModel, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan
 from diffusers.utils import export_to_video
-from diffusers.hooks import FirstBlockCacheConfig
+from diffusers.hooks import FirstBlockCacheConfig, apply_group_offloading
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 import imageio
@@ -47,14 +47,14 @@ class AppInput(BaseAppInput):
         description="Negative prompt to guide what to avoid in generation"
     )
     resolution: str = Field(default="720p", description="Resolution preset", enum=["480p", "720p"])
-    max_area: Optional[int] = Field(default=None, description="Maximum area for image resizing (auto-set based on resolution if not specified)")
     num_frames: int = Field(default=121, description="Number of frames to generate")
     guidance_scale: float = Field(default=5.0, description="Classifier-free guidance scale")
     num_inference_steps: int = Field(default=50, description="Number of denoising steps")
     fps: int = Field(default=24, description="Frames per second for the output video")
     seed: Optional[int] = Field(default=None, description="Random seed for reproducibility")
-    cache_threshold: float = Field(default=0.1, description="First Block Cache threshold (higher = more aggressive caching)")
+    cache_threshold: float = Field(default=0.0, description="First Block Cache threshold (set 0 to disable)")
     video_output_quality: int = Field(default=5, ge=1, le=9, description="Video output quality (1-9)")
+    end_image: Optional[File] = Field(default=None, description="Optional end image for first-to-last frame video generation")
 
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated video file")
@@ -83,9 +83,6 @@ class App(BaseApp):
         print(f"Metadata: {metadata}")
         # Get variant and determine if using quantization
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
-        if variant not in MODEL_VARIANTS:
-            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
-            variant = DEFAULT_VARIANT
         
         print(f"Loading model variant: {variant}")
         
@@ -97,7 +94,14 @@ class App(BaseApp):
         # use default wan image processor to resize and crop the image
         self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
 
-        if variant == "default":
+        # Determine offloading policy: default uses CPU offload; lowvram uses group offload
+        use_group_offload = variant.endswith("_offload_lowvram")
+        base_variant = variant.replace("_offload_lowvram", "").replace("_offload", "")
+        if base_variant not in MODEL_VARIANTS:
+            print(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
+            base_variant = DEFAULT_VARIANT
+
+        if base_variant == "default":
             # Load standard F16 pipeline
             print("Loading standard F16 Wan2.2-TI2V-5B I2V pipeline...")
             self.pipe = WanImageToVideoPipeline.from_pretrained(
@@ -105,14 +109,21 @@ class App(BaseApp):
                 torch_dtype=self.dtype,
                 vae=self.vae,
             )
-            # Move to device and enable model offloading
-            print(f"Moving pipeline to {self.device}...")
-            self.pipe.enable_model_cpu_offload()
+            # Apply offloading/device placement
+            if use_group_offload:
+                onload_device = self.device
+                offload_device = torch.device("cpu")
+                self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            else:
+                # Default: enable CPU offload for memory efficiency
+                self.pipe.enable_model_cpu_offload()
         else:
             # Load quantized transformer
-            print(f"Loading quantized transformer for {variant}...")
+            print(f"Loading quantized transformer for {base_variant}...")
             repo_id = "QuantStack/Wan2.2-TI2V-5B-GGUF"
-            model_file = MODEL_VARIANTS[variant]
+            model_file = MODEL_VARIANTS[base_variant]
             
             model_path = hf_hub_download(repo_id=repo_id, filename=model_file)
             
@@ -130,8 +141,16 @@ class App(BaseApp):
                 transformer=transformer,
                 torch_dtype=self.dtype
             )
-             
-            self.pipe.enable_model_cpu_offload()
+            # Apply offloading/device placement
+            if use_group_offload:
+                onload_device = self.device
+                offload_device = torch.device("cpu")
+                self.pipe.vae.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                self.pipe.transformer.enable_group_offload(onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+                apply_group_offloading(self.pipe.text_encoder, onload_device=onload_device, offload_device=offload_device, offload_type="leaf_level")
+            else:
+                # Default: enable CPU offload for memory efficiency
+                self.pipe.enable_model_cpu_offload()
         
         print("Setup complete!")
 
@@ -139,19 +158,29 @@ class App(BaseApp):
         """Generate video from image and text prompt."""
         print(f"Generating video with prompt: {input_data.prompt}")
         
-        # Use resolution preset if max_area not specified
+        # Use resolution preset
         preset = self.resolution_presets.get(input_data.resolution, self.resolution_presets["720p"])
-        max_area = input_data.max_area if input_data.max_area is not None else preset["max_area"]
+        max_area = preset["max_area"]
         print(f"Using resolution: {input_data.resolution}, max area: {max_area}")
+
+        # 5B model uses a single transformer; do not set boundary ratio or any dual-transformer config
         
         # Load and process input image
         image = Image.open(input_data.image.path).convert("RGB")
         print(f"Loaded image: {image.size}")
-        
+
         # Resize image according to pipeline requirements
         resized_image = self.image_processor(
             image=input_data.image.path,
             max_area=max_area, output="processed_image")
+
+        last_image = None
+        if input_data.end_image is not None:
+            last_image = self.image_processor(
+                image=input_data.end_image.path,
+                max_area=max_area,
+                output="processed_image",
+            )
         
         width = resized_image.width
         height = resized_image.height
@@ -185,6 +214,7 @@ class App(BaseApp):
             guidance_scale=input_data.guidance_scale,
             num_inference_steps=input_data.num_inference_steps,
             generator=generator,
+            last_image=last_image,
         ).frames[0]
         
         print("Video generation complete, exporting...")

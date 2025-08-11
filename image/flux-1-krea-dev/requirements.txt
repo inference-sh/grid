@@ -3,7 +3,7 @@ inferencesh==0.2.7
 torch
 gguf>=0.13.0
 tqdm
-diffusers
+git+https://github.com/calcuis/diffusers.git
 transformers
 huggingface_hub
 accelerate
