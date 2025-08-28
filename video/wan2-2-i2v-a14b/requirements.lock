@@ -1,4 +1,4 @@
-accelerate==1.10.0
+accelerate==1.10.1
 annotated-types==0.7.0
 certifi==2025.8.3
 charset-normalizer==3.4.3
@@ -10,7 +10,7 @@ fsspec==2025.7.0
 ftfy==6.3.1
 gguf==0.17.1
 hf-transfer==0.1.9
-hf-xet==1.1.8
+hf-xet==1.1.9
 huggingface-hub==0.34.4
 idna==3.10
 imageio==2.37.0
@@ -38,7 +38,7 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
-peft==0.17.0
+peft==0.17.1
 pillow==11.3.0
 psutil==7.0.0
 pydantic==2.10.6
@@ -55,9 +55,9 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@bebeccb06a3c10cc8fedf27faaa8ed904df3353b
+transformers @ git+https://github.com/huggingface/transformers.git@89ef1b6e0bae8d409ffb0396c4aaf27548108692
 triton==3.3.1
-typing-extensions==4.14.1
+typing-extensions==4.15.0
 urllib3==2.5.0
 wcwidth==0.2.13
 zipp==3.23.0
