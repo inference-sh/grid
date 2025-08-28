@@ -74,9 +74,10 @@
           "description": "The media file (video or image) to include in the sequence"
         },
         "transition_type": {
-          "default": "crossfade",
+          "default": "no-transition",
           "description": "Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)",
           "enum": [
+            "no-transition",
             "crossfade",
             "slide_left",
             "slide_right",

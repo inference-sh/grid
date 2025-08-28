@@ -25,6 +25,7 @@ from enum import Enum
 import numpy as np
 
 transition_types = [
+    "no-transition",
     "crossfade",
     "slide_left",
     "slide_right",
@@ -38,7 +39,7 @@ class Media(BaseModel):
         description="The media file (video or image) to include in the sequence"
     )
     transition_type: str = Field(
-        default="crossfade",
+        default=transition_types[0],
         enum=transition_types,
         description="Type of transition to apply between this media and the next one (if there is no next clip it will not be applied)"
     )
@@ -82,6 +83,13 @@ class App(BaseApp):
 
         if clip2 is None:
             return clip1.with_effects([FadeOut(duration)])
+        
+        # No transition: simply place clips back-to-back
+        if transition_type == "no-transition":
+            composite = concatenate_videoclips([clip1, clip2])
+            if composite.size != (w, h):
+                composite = composite.with_effects([Resize(width=w, height=h)])
+            return composite
         
         # For transitions that need clips to overlap
         if transition_type in [
