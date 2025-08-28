@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Input image for image-to-video generation"
+    },
+    "prompt": {
+      "description": "Text prompt describing the desired video",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+      "description": "Negative prompt",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "audio_file": {
+      "$ref": "#/$defs/File",
+      "description": "Audio file to drive the video generation"
+    },
+    "resolution": {
+      "default": "infinitetalk-480",
+      "description": "Output resolution",
+      "enum": [
+        "infinitetalk-480",
+        "infinitetalk-720"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "sampling_steps": {
+      "default": 8,
+      "description": "Number of sampling steps",
+      "title": "Sampling Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 42,
+      "description": "Random seed",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "text_guide_scale": {
+      "default": 1.0,
+      "description": "Text guidance scale",
+      "title": "Text Guide Scale",
+      "type": "number"
+    },
+    "audio_guide_scale": {
+      "default": 2.0,
+      "description": "Audio guidance scale",
+      "title": "Audio Guide Scale",
+      "type": "number"
+    },
+    "use_teacache": {
+      "default": false,
+      "description": "Enable TeaCache for faster inference",
+      "title": "Use Teacache",
+      "type": "boolean"
+    },
+    "teacache_thresh": {
+      "default": 0.1,
+      "description": "TeaCache threshold value",
+      "title": "Teacache Thresh",
+      "type": "number"
+    }
+  },
+  "required": [
+    "image",
+    "prompt",
+    "audio_file"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
