@@ -70,20 +70,30 @@
   },
   "properties": {
     "video_path": {
-      "$ref": "#/$defs/File"
+      "$ref": "#/$defs/File",
+      "description": "Input video file containing the face to lip-sync (e.g., MP4)."
     },
     "audio_path": {
-      "$ref": "#/$defs/File"
+      "$ref": "#/$defs/File",
+      "description": "Input audio file used to drive lip movement (WAV recommended)."
     },
     "inference_steps": {
       "default": 20,
+      "description": "Number of diffusion denoising steps for generation.",
       "title": "Inference Steps",
       "type": "integer"
     },
     "guidance_scale": {
       "default": 1.5,
+      "description": "Classifier-free guidance scale; higher can increase fidelity at the cost of diversity.",
       "title": "Guidance Scale",
       "type": "number"
+    },
+    "simple_loop": {
+      "default": false,
+      "description": "If true, loop the source video forward-only to match audio length (no ping-pong).",
+      "title": "Simple Loop",
+      "type": "boolean"
     }
   },
   "required": [

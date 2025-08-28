@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import argparse
+import os
 from omegaconf import OmegaConf
 import torch
 from diffusers import AutoencoderKL, DDIMScheduler
@@ -32,7 +33,24 @@ def main(config, args):
     print(f"Input audio path: {args.audio_path}")
     print(f"Loaded checkpoint path: {args.inference_ckpt_path}")
 
-    scheduler = DDIMScheduler.from_pretrained("configs")
+    # Load scheduler from the directory relative to the provided unet config path
+    # Expect scheduler_config.json to live alongside or one level above the unet config
+    config_dir = os.path.dirname(args.unet_config_path)
+    candidate_dirs = [
+        config_dir,
+        os.path.join(config_dir, ".."),
+        os.path.join(config_dir, "../.."),
+    ]
+    scheduler = None
+    for candidate in candidate_dirs:
+        try:
+            scheduler = DDIMScheduler.from_pretrained(os.path.abspath(candidate))
+            break
+        except Exception:
+            continue
+    if scheduler is None:
+        # Fallback to current working directory configs
+        scheduler = DDIMScheduler.from_pretrained("configs")
 
     if config.model.cross_attention_dim == 768:
         whisper_model_path = "checkpoints/whisper/small.pt"

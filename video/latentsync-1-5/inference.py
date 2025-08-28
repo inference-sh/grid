@@ -134,8 +134,8 @@ class App(BaseApp):
                 original_argv = sys.argv
                 sys.argv = [
                     inference_script,
-                    "--unet_config_path", "configs/unet/second_stage.yaml",
-                    "--inference_ckpt_path", "checkpoints/latentsync_unet.pt",
+                    "--unet_config_path", os.path.join(current_dir, "configs", "unet", "second_stage.yaml"),
+                    "--inference_ckpt_path", os.path.join(current_dir, "checkpoints", "latentsync_unet.pt"),
                     "--inference_steps", str(input_data.inference_steps),
                     "--guidance_scale", str(input_data.guidance_scale),
                     "--video_path", video_path,

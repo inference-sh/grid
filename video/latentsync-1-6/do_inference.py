@@ -106,6 +106,10 @@ def main(config, args):
     print(f"Initial seed: {torch.initial_seed()}")
     print(f"Pipeline parameters: num_inference_steps={args.inference_steps}, guidance_scale={args.guidance_scale}")
 
+    # Determine loop behavior: ping-pong by default unless simple_loop is requested
+    simple_loop = getattr(args, "simple_loop", False)
+    ping_pong = not simple_loop
+
     pipeline(
         video_path=args.video_path,
         audio_path=args.audio_path,
@@ -117,6 +121,7 @@ def main(config, args):
         width=config.data.resolution,
         height=config.data.resolution,
         temp_dir="temp",
+        ping_pong=ping_pong,
     )
 
 
@@ -130,6 +135,11 @@ if __name__ == "__main__":
     parser.add_argument("--inference_steps", type=int, default=20)
     parser.add_argument("--guidance_scale", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=1247)
+    parser.add_argument(
+        "--simple_loop",
+        action="store_true",
+        help="Loop video forward-only to match audio length (disable back-and-forth ping-pong).",
+    )
     args = parser.parse_args()
 
     config = OmegaConf.load(args.unet_config_path)

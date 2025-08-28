@@ -8,14 +8,26 @@ import shutil
 from . import torch_compatibility_patch
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from pydantic import Field
 import diffusers
 
 
 class AppInput(BaseAppInput):
-    video_path: File
-    audio_path: File
-    inference_steps: int = 20
-    guidance_scale: float = 1.5
+    video_path: File = Field(
+        ..., description="Input video file containing the face to lip-sync (e.g., MP4)."
+    )
+    audio_path: File = Field(
+        ..., description="Input audio file used to drive lip movement (WAV recommended)."
+    )
+    inference_steps: int = Field(
+        20, description="Number of diffusion denoising steps for generation."
+    )
+    guidance_scale: float = Field(
+        1.5, description="Classifier-free guidance scale; higher can increase fidelity at the cost of diversity."
+    )
+    simple_loop: bool = Field(
+        False, description="If true, loop the source video forward-only to match audio length (no ping-pong)."
+    )
 
 class AppOutput(BaseAppOutput):
     result_video: File
@@ -169,7 +181,8 @@ class App(BaseApp):
                     video_path=video_path,
                     audio_path=audio_path,
                     video_out_path=output_path,
-                    seed=1247
+                    seed=1247,
+                    simple_loop=input_data.simple_loop,
                 )
                 
                 # Load configuration
