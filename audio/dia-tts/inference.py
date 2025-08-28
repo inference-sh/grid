@@ -30,7 +30,7 @@ class App(BaseApp):
     async def setup(self, metadata):
         """Initialize the DIA TTS model."""
         print("Initializing DIA model...")
-        self.model = Dia.from_pretrained("nari-labs/Dia-1.6B", compute_dtype="float16")
+        self.model = Dia.from_pretrained("nari-labs/Dia-1.6B-0626", compute_dtype="float16")
         print("DIA model initialized successfully")
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
