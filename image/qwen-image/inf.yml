@@ -53,7 +53,7 @@ variants:
         python: "3.12"
     q3_k_m:
         name: Q3_K_M
-        order: 6
+        order: 4
         resources:
             gpu:
                 count: 1
@@ -64,7 +64,7 @@ variants:
         python: "3.12"
     q3_k_m_low_vram:
         name: Q3_K_M_low_vram
-        order: 7
+        order: 5
         resources:
             gpu:
                 count: 1
@@ -75,7 +75,7 @@ variants:
         python: "3.12"
     q3_k_s:
         name: Q3_K_S
-        order: 4
+        order: 6
         resources:
             gpu:
                 count: 1
@@ -86,7 +86,7 @@ variants:
         python: "3.12"
     q3_k_s_low_vram:
         name: Q3_K_S_low_vram
-        order: 5
+        order: 7
         resources:
             gpu:
                 count: 1
@@ -141,7 +141,7 @@ variants:
         python: "3.12"
     q4_k_m:
         name: Q4_K_M
-        order: 14
+        order: 12
         resources:
             gpu:
                 count: 1
@@ -152,7 +152,7 @@ variants:
         python: "3.12"
     q4_k_m_low_vram:
         name: Q4_K_M_low_vram
-        order: 15
+        order: 13
         resources:
             gpu:
                 count: 1
@@ -163,7 +163,7 @@ variants:
         python: "3.12"
     q4_k_s:
         name: Q4_K_S
-        order: 12
+        order: 14
         resources:
             gpu:
                 count: 1
@@ -174,7 +174,7 @@ variants:
         python: "3.12"
     q4_k_s_low_vram:
         name: Q4_K_S_low_vram
-        order: 13
+        order: 15
         resources:
             gpu:
                 count: 1
@@ -229,7 +229,7 @@ variants:
         python: "3.12"
     q5_k_m:
         name: Q5_K_M
-        order: 22
+        order: 20
         resources:
             gpu:
                 count: 1
@@ -240,7 +240,7 @@ variants:
         python: "3.12"
     q5_k_m_low_vram:
         name: Q5_K_M_low_vram
-        order: 23
+        order: 21
         resources:
             gpu:
                 count: 1
@@ -251,7 +251,7 @@ variants:
         python: "3.12"
     q5_k_s:
         name: Q5_K_S
-        order: 20
+        order: 22
         resources:
             gpu:
                 count: 1
@@ -262,7 +262,7 @@ variants:
         python: "3.12"
     q5_k_s_low_vram:
         name: Q5_K_S_low_vram
-        order: 21
+        order: 23
         resources:
             gpu:
                 count: 1
