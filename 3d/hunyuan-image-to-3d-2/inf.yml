@@ -7,6 +7,17 @@ images:
     banner: ""
 metadata: {}
 variants:
+    default:
+        name: Standard (1.1B)
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
     mini:
         name: Mini (600M)
         order: 0
@@ -43,17 +54,6 @@ variants:
     mv_turbo:
         name: Multi-View Turbo (1.1B)
         order: 3
-        resources:
-            gpu:
-                count: 1
-                vram: 12000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.11"
-    standard:
-        name: Standard (1.1B)
-        order: 4
         resources:
             gpu:
                 count: 1

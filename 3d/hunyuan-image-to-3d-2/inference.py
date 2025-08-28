@@ -124,7 +124,7 @@ MODEL_VARIANTS = {
         "texgen_subfolder": "hunyuan3d-paint-v2-0-turbo",
         "enable_flashvdm": True
     },
-    "standard": {
+    "default": {
         "repo_id": "tencent/Hunyuan3D-2",
         "subfolder": "hunyuan3d-dit-v2-0",
         "turbo_subfolder": "hunyuan3d-dit-v2-0-turbo",
