@@ -1,0 +1,16 @@
+{
+  "image": "https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2w49ncjhzrq3rccjtry2mbd.png",
+  "prompt": "video camera seen from the side shooting beams of light that look like ink in water",
+  "negative_prompt": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+  "scale": 5.0,
+  "width": null,
+  "height": null,
+  "guidance_scale": 1.2,
+  "num_inference_steps": 40,
+  "strength": 0.05,
+  "sharpen_input": 0.0,
+  "desaturate_input": 0.0,
+  "seed": null,
+  "cache_threshold": 0.0,
+  "loras": null
+}
