@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from PIL import Image
-from diffusers import WanImageToVideoPipeline, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler
+from diffusers import WanImageToVideoPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler
 from diffusers.utils import export_to_video, load_image
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
@@ -212,6 +212,49 @@ MODEL_VARIANTS = {
 
 DEFAULT_VARIANT = "default"
 
+
+class LocalWan14BImageProcessor:
+    """
+    Minimal local replacement for YiYiXu/WanImageProcessor block.
+    - Resizes input image to fit within max_area while preserving aspect ratio
+    - Ensures height/width are multiples of (vae_stride * patch_size) per dimension
+    """
+
+    def __init__(self, patch_size=(1, 2, 2), vae_stride=(4, 8, 8)) -> None:
+        self.patch_size = patch_size
+        self.vae_stride = vae_stride
+
+    def __call__(self, image, max_area=None, output="processed_image") -> Image.Image:
+        # Accept path or PIL Image
+        if isinstance(image, (str, os.PathLike)):
+            pil = load_image(str(image)).convert("RGB")
+        elif isinstance(image, Image.Image):
+            pil = image
+        else:
+            raise ValueError(f"Invalid image type: {type(image)}; only support PIL Image or path string")
+
+        if max_area is None:
+            max_area = 480 * 832
+
+        aspect_ratio = pil.height / pil.width
+        mod_value_height = self.vae_stride[1] * self.patch_size[1]
+        mod_value_width = self.vae_stride[2] * self.patch_size[2]
+
+        import numpy as np
+        height = int(round(np.sqrt(max_area * aspect_ratio))) // mod_value_height * mod_value_height
+        width = int(round(np.sqrt(max_area / aspect_ratio))) // mod_value_width * mod_value_width
+        if height < mod_value_height:
+            height = mod_value_height
+        if width < mod_value_width:
+            width = mod_value_width
+
+        resized = pil.resize((width, height))
+
+        print(f" initial image size: {pil.size}")
+        print(f" processed image size: {resized.size}")
+
+        return resized
+
 class AppInput(BaseAppInput):
     image: File = Field(description="Input image for video generation")
     end_image: Optional[File] = Field(default=None, description="Optional end frame image; when provided, the video will transition from the first frame to this last frame")
@@ -254,12 +297,12 @@ class App(BaseApp):
         
         print(f"Loading model variant: {variant}")
         
-        self.model_id = "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
+        self.model_id = "magespace/Wan2.2-I2V-A14B-Lightning-Diffusers"
         
-        self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
+        self.vae = AutoencoderKLWan.from_pretrained('magespace/Wan2.1-I2V-14B-480P-Lightning-Diffusers', subfolder="vae", torch_dtype=torch.float32)
 
-        # use default wan image processor to resize and crop the image
-        self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
+        # Use local WAN image processor (replacement for YiYiXu/WanImageProcessor ModularPipeline)
+        self.image_processor = LocalWan14BImageProcessor()
         
         # Determine offloading strategy from variant suffix
         # New convention: *_offload -> model CPU offload, *_offload_lowvram -> leaf/group offload
@@ -281,7 +324,7 @@ class App(BaseApp):
             # Load standard F16 pipeline
             print(f"Loading standard F16 Wan2.2 I2V pipeline for {variant}...")
             self.pipe = WanImageToVideoPipeline.from_pretrained(
-                "Wan-AI/Wan2.2-I2V-A14B-Diffusers", 
+                "magespace/Wan2.2-I2V-A14B-Lightning-Diffusers", 
                 vae=self.vae,
                 torch_dtype=self.dtype,
             )
@@ -296,7 +339,7 @@ class App(BaseApp):
             transformer_high_noise = WanTransformer3DModel.from_single_file(
                 high_noise_path,
                 quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
-                config="Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                config="magespace/Wan2.2-I2V-A14B-Lightning-Diffusers",
                 subfolder="transformer",
                 torch_dtype=self.dtype,
             )
@@ -306,13 +349,13 @@ class App(BaseApp):
             transformer_low_noise = WanTransformer3DModel.from_single_file(
                 low_noise_path,
                 quantization_config=GGUFQuantizationConfig(compute_dtype=self.dtype),
-                config="Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                config="magespace/Wan2.2-I2V-A14B-Lightning-Diffusers",
                 subfolder="transformer_2",
                 torch_dtype=self.dtype,
             )
             
             self.pipe = WanImageToVideoPipeline.from_pretrained(
-                "Wan-AI/Wan2.2-I2V-A14B-Diffusers",
+                "magespace/Wan2.2-I2V-A14B-Lightning-Diffusers",
                 vae=self.vae,
                 transformer=transformer_high_noise,  # High noise goes to main transformer
                 transformer_2=transformer_low_noise,  # Low noise goes to transformer_2
@@ -349,24 +392,24 @@ class App(BaseApp):
             self.pipe.to(self.device)
         
         # Load Lightning LoRAs without fusing
-        print("Loading Lightning LoRAs...")
+        #print("Loading Lightning LoRAs...")
 
-        self.pipe.load_lora_weights(
-            "Kijai/WanVideo_comfy",
-            weight_name="Wan22-Lightning/Wan2.2-Lightning_T2V-A14B-4steps-lora_HIGH_fp16.safetensors",
-            adapter_name="lightning",
-        )
+        #self.pipe.load_lora_weights(
+        #    "Kijai/WanVideo_comfy",
+        #    weight_name="Wan22-Lightning/Wan2.2-Lightning_T2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+        #    adapter_name="lightning",
+        #)
 
-        kwargs = {}
-        kwargs["load_into_transformer_2"] = True
-        self.pipe.load_lora_weights(
-            "Kijai/WanVideo_comfy",
-            weight_name="Wan22-Lightning/Wan2.2-Lightning_T2V-A14B-4steps-lora_LOW_fp16.safetensors",
-            adapter_name="lightning_2",
-            **kwargs,
-        )
+        #kwargs = {}
+        #kwargs["load_into_transformer_2"] = True
+        #self.pipe.load_lora_weights(
+        #    "Kijai/WanVideo_comfy",
+        #    weight_name="Wan22-Lightning/Wan2.2-Lightning_T2V-A14B-4steps-lora_LOW_fp16.safetensors",
+        #    adapter_name="lightning_2",
+        #    **kwargs,
+        #)
 
-        self.pipe.set_adapters(["lightning", "lightning_2"], adapter_weights=[1.25, 1.25])
+        #self.pipe.set_adapters(["lightning", "lightning_2"], adapter_weights=[1.25, 1.25])
         
         print("Setup complete!")
 
