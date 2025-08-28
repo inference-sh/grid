@@ -1,0 +1,11 @@
+{
+  "image": "InfiniteTalk/examples/single/ref_image.jpg",
+  "prompt": "A man is passionately speaking into a microphone in a recording studio. He has focused eyes and is articulating clearly. The studio has professional audio equipment and soundproofing panels on the walls. The lighting is warm and focused on him, creating a professional atmosphere.",
+  "negative_prompt": "bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+  "audio_file": "InfiniteTalk/examples/single/1.wav",
+  "resolution": "infinitetalk-480",
+  "sampling_steps": 8,
+  "seed": 42,
+  "text_guide_scale": 1.0,
+  "audio_guide_scale": 2.0
+}

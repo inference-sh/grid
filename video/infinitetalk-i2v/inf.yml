@@ -1,0 +1,112 @@
+name: infinitetalk-i2v
+description: InfiniteTalk - Audio-driven Video Generation for Sparse-Frame Video Dubbing
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    causvid_480p:
+        name: causvid_480p
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env:
+            USE_CAUSVID_LORA: "true"
+        python: "3.10"
+    causvid_720p:
+        name: causvid_720p
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 32000000000
+        env:
+            USE_CAUSVID_LORA: "true"
+        python: "3.10"
+    causvid_lowvram_480p:
+        name: causvid_lowvram_480p
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 24000000000
+        env:
+            USE_CAUSVID_LORA: "true"
+        python: "3.10"
+    causvid_lowvram_720p:
+        name: causvid_lowvram_720p
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 24000000000
+        env:
+            USE_CAUSVID_LORA: "true"
+        python: "3.10"
+    cpu_only:
+        name: cpu_only
+        order: 4
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.10"
+    default:
+        name: default_480p
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.10"
+    default_720p:
+        name: default_720p
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.10"
+    lowvram_480p:
+        name: lowvram_480p
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 24000000000
+        env: {}
+        python: "3.10"
+    lowvram_720p:
+        name: lowvram_720p
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 24000000000
+        env: {}
+        python: "3.10"
