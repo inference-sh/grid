@@ -150,17 +150,6 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q2_k_480p_cpu_offload:
-        name: q2_k_480p_cpu_offload
-        order: 5
-        resources:
-            gpu:
-                count: 1
-                vram: 12000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
     q2_k_480p_offload:
         name: q2_k_480p_offload
         order: 5

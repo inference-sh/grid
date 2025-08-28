@@ -1,8 +1,8 @@
 accelerate==1.10.0
 annotated-types==0.7.0
 certifi==2025.8.3
-charset-normalizer==3.4.2
-diffusers @ git+https://github.com/linoytsaban/diffusers.git@daaa598eac17d39b93075c239d0bdd8e652a2bf4
+charset-normalizer==3.4.3
+diffusers @ git+https://github.com/linoytsaban/diffusers.git@af03f73926a84922211a9fba53219f9f53961f81
 einops==0.8.1
 filelock==3.18.0
 flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.3.12/flash_attn-2.8.0+cu128torch2.7-cp312-cp312-linux_x86_64.whl
@@ -46,7 +46,7 @@ pydantic-core==2.27.2
 pyyaml==6.0.2
 regex==2025.7.34
 requests==2.32.4
-safetensors==0.6.1
+safetensors==0.6.2
 setuptools==80.9.0
 setuptools-scm==8.3.1
 sympy==1.14.0
@@ -55,7 +55,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@95510ab0182b6581822c55472cd53e85daa3379b
+transformers @ git+https://github.com/huggingface/transformers.git@7dd82f307b6153427f9c1eade0bcf2a0df3719e8
 triton==3.3.1
 typing-extensions==4.14.1
 urllib3==2.5.0

@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from PIL import Image
-from diffusers import WanImageToVideoPipeline, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler
+from diffusers import WanImageToVideoPipeline, GGUFQuantizationConfig, AutoencoderKLWan, WanTransformer3DModel, UniPCMultistepScheduler
 from diffusers.utils import export_to_video, load_image
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
@@ -217,6 +217,49 @@ MODEL_VARIANTS = {
 
 DEFAULT_VARIANT = "default"
 
+
+class LocalWan14BImageProcessor:
+    """
+    Minimal local replacement for YiYiXu/WanImageProcessor14B block.
+    - Resizes input image to fit within max_area while preserving aspect ratio
+    - Ensures height/width are multiples of (vae_stride * patch_size) per dimension
+    """
+
+    def __init__(self, patch_size=(1, 2, 2), vae_stride=(4, 8, 8)) -> None:
+        self.patch_size = patch_size
+        self.vae_stride = vae_stride
+
+    def __call__(self, image, max_area=None, output="processed_image") -> Image.Image:
+        # Accept path or PIL Image
+        if isinstance(image, (str, os.PathLike)):
+            pil = load_image(str(image)).convert("RGB")
+        elif isinstance(image, Image.Image):
+            pil = image
+        else:
+            raise ValueError(f"Invalid image type: {type(image)}; only support PIL Image or path string")
+
+        if max_area is None:
+            max_area = 480 * 832
+
+        aspect_ratio = pil.height / pil.width
+        mod_value_height = self.vae_stride[1] * self.patch_size[1]
+        mod_value_width = self.vae_stride[2] * self.patch_size[2]
+
+        import numpy as np  # local import to avoid global dependency order
+        height = int(round(np.sqrt(max_area * aspect_ratio))) // mod_value_height * mod_value_height
+        width = int(round(np.sqrt(max_area / aspect_ratio))) // mod_value_width * mod_value_width
+        if height < mod_value_height:
+            height = mod_value_height
+        if width < mod_value_width:
+            width = mod_value_width
+
+        resized = pil.resize((width, height))
+
+        print(f" initial image size: {pil.size}")
+        print(f" processed image size: {resized.size}")
+
+        return resized
+
 class AppInput(BaseAppInput):
     image: File = Field(description="Input image for video generation")
     end_image: Optional[File] = Field(default=None, description="Optional end frame image; when provided, the video will transition from the first frame to this last frame")
@@ -263,8 +306,8 @@ class App(BaseApp):
         
         self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
 
-        # use default wan image processor to resize and crop the image
-        self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
+        # Use local WAN image processor (replacement for YiYiXu/WanImageProcessor14B ModularPipeline)
+        self.image_processor = LocalWan14BImageProcessor()
         
         # Determine offloading strategy from variant suffix
         # New convention: *_offload -> model CPU offload, *_offload_lowvram -> leaf/group offload
