@@ -9,7 +9,7 @@ metadata: {}
 variants:
     default:
         name: Standard (1.1B)
-        order: 4
+        order: 0
         resources:
             gpu:
                 count: 1
@@ -20,7 +20,7 @@ variants:
         python: "3.11"
     mini:
         name: Mini (600M)
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1
@@ -31,7 +31,7 @@ variants:
         python: "3.11"
     mini_turbo:
         name: Mini Turbo (600M)
-        order: 1
+        order: 2
         resources:
             gpu:
                 count: 1
@@ -42,7 +42,7 @@ variants:
         python: "3.11"
     mv:
         name: Multi-View (1.1B)
-        order: 2
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -53,7 +53,7 @@ variants:
         python: "3.11"
     mv_turbo:
         name: Multi-View Turbo (1.1B)
-        order: 3
+        order: 4
         resources:
             gpu:
                 count: 1
