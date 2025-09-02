@@ -20,7 +20,7 @@ variants:
         python: "3.10"
     default:
         name: default_480p
-        order: 0
+        order: 1
         resources:
             gpu:
                 count: 1

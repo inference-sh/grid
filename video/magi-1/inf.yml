@@ -72,7 +72,7 @@ variants:
         python: "3.12"
     default:
         name: 4.5B_base
-        order: 0
+        order: 3
         resources:
             gpu:
                 count: 1
