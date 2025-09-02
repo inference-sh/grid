@@ -42,7 +42,7 @@ variants:
         python: "3.12"
     small_16k:
         name: small 16khz
-        order: 4
+        order: 3
         resources:
             gpu:
                 count: 1
@@ -53,7 +53,7 @@ variants:
         python: "3.12"
     small_44k:
         name: small 44khz
-        order: 3
+        order: 4
         resources:
             gpu:
                 count: 1
