@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(infsh run:*)",
+      "Read(/home/luca/wan2-2-i2v-a14b/**)",
+      "Read(/home/luca/wan2-2-i2v-a14b/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
