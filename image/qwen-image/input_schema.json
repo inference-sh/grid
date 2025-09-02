@@ -1,4 +1,100 @@
 {
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_file"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
   "properties": {
     "prompt": {
       "description": "The text prompt to generate an image from. Supports both English and Chinese text rendering.",
@@ -85,6 +181,22 @@
       "description": "If true, switch scheduler to UniPCM flow matching configuration.",
       "title": "Use Unipcm Flow Matching",
       "type": "boolean"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
     }
   },
   "required": [

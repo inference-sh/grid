@@ -17,7 +17,6 @@ from diffusers import (
 )
 from diffusers.hooks import apply_group_offloading
 import os
-from PIL import Image
 import logging
 
 # Set up HuggingFace transfer for faster downloads
@@ -72,20 +71,40 @@ def download_model_data(model_id, downloadUrl, targetFolder):
             file.write(response.content)
     return filePath
 
-def load_lora_adapter(transformer, lora_source, adapter_name="lora", lora_multiplier=1.0):
-    """Load a LoRA adapter for the Qwen-Image transformer."""
+def load_lora_adapter(pipeline, lora_source, adapter_name="lora", lora_multiplier=1.0):
+    """Load a LoRA adapter for the Qwen-Image pipeline or transformer."""
     if not lora_source:
         return False
     
     def _load_single_lora(load_kwargs, base_adapter_name: str):
+        # Try loading on transformer first
         try:
-            if hasattr(transformer, 'load_lora_weights'):
+            transformer = getattr(pipeline, 'transformer', None)
+            if transformer and hasattr(transformer, 'load_lora_weights'):
+                print(f"🔄 Loading LoRA adapter '{base_adapter_name}' onto transformer...")
                 load_kwargs["adapter_name"] = base_adapter_name
                 transformer.load_lora_weights(**load_kwargs)
+                print(f"✅ LoRA adapter '{base_adapter_name}' loaded successfully onto transformer")
                 logging.info(f"Loaded LoRA adapter {base_adapter_name} onto Qwen-Image transformer")
                 return base_adapter_name
         except Exception as e:
-            logging.error(f"Failed to load LoRA {base_adapter_name}: {e}")
+            print(f"⚠️ Failed to load LoRA on transformer: {e}, trying pipeline...")
+            logging.warning(f"Failed to load LoRA {base_adapter_name} on transformer: {e}")
+        
+        # Fallback to pipeline
+        try:
+            if hasattr(pipeline, 'load_lora_weights'):
+                print(f"🔄 Loading LoRA adapter '{base_adapter_name}' onto pipeline...")
+                load_kwargs["adapter_name"] = base_adapter_name
+                pipeline.load_lora_weights(**load_kwargs)
+                print(f"✅ LoRA adapter '{base_adapter_name}' loaded successfully onto pipeline")
+                logging.info(f"Loaded LoRA adapter {base_adapter_name} onto Qwen-Image pipeline")
+                return base_adapter_name
+            else:
+                print(f"❌ Neither transformer nor pipeline support load_lora_weights method")
+        except Exception as e:
+            print(f"❌ Failed to load LoRA '{base_adapter_name}' on pipeline: {e}")
+            logging.error(f"Failed to load LoRA {base_adapter_name} on pipeline: {e}")
         return None
     
     # Local file path
@@ -347,14 +366,19 @@ class App(BaseApp):
         
         # Load Lightning LoRA weights for acceleration
         try:
+            print("🚀 Loading Lightning LoRA weights...")
             logging.info("Loading Lightning LoRA weights...")
             self.pipeline.load_lora_weights(
                 "lightx2v/Qwen-Image-Lightning", 
                 weight_name="Qwen-Image-Lightning-8steps-V1.1.safetensors"
             )
+            print("✅ Lightning LoRA weights loaded successfully")
+            print("🔄 Fusing Lightning LoRA into model...")
             self.pipeline.fuse_lora()
-            logging.info("Successfully loaded Lightning LoRA weights")
+            print("✅ Lightning LoRA fused into model - LoRA is now permanent part of model")
+            logging.info("Successfully loaded and fused Lightning LoRA weights")
         except Exception as e:
+            print(f"❌ Failed to load Lightning LoRA weights: {e}")
             logging.warning(f"Failed to load Lightning LoRA weights: {e}")
             logging.info("Continuing without Lightning LoRA weights")
         
@@ -423,9 +447,29 @@ class App(BaseApp):
                 or previous_mult != found.lora_multiplier
             ):
                 for created_name in previous_created:
+                    # Try deleting from transformer first
+                    deleted = False
                     if hasattr(self.pipeline.transformer, 'delete_adapters'):
-                        self.pipeline.transformer.delete_adapters(created_name)
-                    logging.info(f"Unloaded previous LoRA adapter: {created_name}")
+                        try:
+                            self.pipeline.transformer.delete_adapters(created_name)
+                            deleted = True
+                            print(f"🗑️ Unloaded LoRA adapter '{created_name}' from transformer")
+                        except Exception as e:
+                            print(f"⚠️ Failed to delete LoRA from transformer: {e}, trying pipeline...")
+                    
+                    # Fallback to pipeline deletion
+                    if not deleted and hasattr(self.pipeline, 'delete_adapters'):
+                        try:
+                            self.pipeline.delete_adapters(created_name)
+                            deleted = True
+                            print(f"🗑️ Unloaded LoRA adapter '{created_name}' from pipeline")
+                        except Exception as e:
+                            print(f"❌ Failed to delete LoRA from pipeline: {e}")
+                    
+                    if deleted:
+                        logging.info(f"Unloaded previous LoRA adapter: {created_name}")
+                    else:
+                        print(f"⚠️ Could not delete adapter '{created_name}' - no delete_adapters method available")
                 del self.loaded_loras[adapter_name]
 
         # Load requested adapters
@@ -437,7 +481,7 @@ class App(BaseApp):
             )
             if needs_load:
                 created_names = load_lora_adapter(
-                    self.pipeline.transformer,
+                    self.pipeline,
                     lora.lora_file.path,
                     lora.adapter_name,
                     lora.lora_multiplier,
@@ -459,9 +503,54 @@ class App(BaseApp):
                     active_adapters.append(created_name)
                     adapter_weights.append(lora.lora_multiplier)
 
-        if active_adapters and hasattr(self.pipeline.transformer, 'set_adapters'):
-            self.pipeline.transformer.set_adapters(active_adapters, adapter_weights=adapter_weights)
-            logging.info(f"Activated LoRA adapters: {active_adapters} with weights: {adapter_weights}")
+        if active_adapters:
+            print(f"🎯 Activating LoRA adapters: {active_adapters} with weights: {adapter_weights}")
+            
+            # For multiple adapters, activate each one individually
+            if len(active_adapters) == 1:
+                adapter_name = active_adapters[0]
+                adapter_weight = adapter_weights[0]
+                
+                # Try activating on pipeline first (diffusers standard)
+                activated = False
+                if hasattr(self.pipeline, 'set_adapters'):
+                    try:
+                        self.pipeline.set_adapters(adapter_name, adapter_weights=adapter_weight)
+                        print(f"✅ LoRA adapter '{adapter_name}' activated on pipeline with weight {adapter_weight}")
+                        logging.info(f"Activated LoRA adapter on pipeline: {adapter_name} with weight: {adapter_weight}")
+                        activated = True
+                    except Exception as e:
+                        print(f"⚠️ Failed to activate LoRA on pipeline: {e}, trying transformer...")
+                
+                # Fallback to transformer activation
+                if not activated and hasattr(self.pipeline.transformer, 'set_adapters'):
+                    try:
+                        # PEFT doesn't support adapter_weights parameter
+                        self.pipeline.transformer.set_adapters(adapter_name)
+                        print(f"✅ LoRA adapter '{adapter_name}' activated on transformer (weight control not supported)")
+                        logging.info(f"Activated LoRA adapter on transformer: {adapter_name}")
+                        activated = True
+                    except Exception as e:
+                        print(f"❌ Failed to activate LoRA on transformer: {e}")
+                
+                if not activated:
+                    print(f"⚠️ Found adapter '{adapter_name}' but neither pipeline nor transformer support set_adapters")
+            else:
+                # Multiple adapters - try list format on pipeline only
+                activated = False
+                if hasattr(self.pipeline, 'set_adapters'):
+                    try:
+                        self.pipeline.set_adapters(active_adapters, adapter_weights=adapter_weights)
+                        print(f"✅ Multiple LoRA adapters activated on pipeline successfully")
+                        logging.info(f"Activated LoRA adapters on pipeline: {active_adapters} with weights: {adapter_weights}")
+                        activated = True
+                    except Exception as e:
+                        print(f"❌ Failed to activate multiple LoRA adapters on pipeline: {e}")
+                
+                if not activated:
+                    print(f"⚠️ Found {len(active_adapters)} adapters but pipeline doesn't support multiple adapter activation")
+        else:
+            print("ℹ️ No custom LoRA adapters to activate")
 
         # Configure first-block caching if requested
         # Disable any existing caches to avoid conflicts

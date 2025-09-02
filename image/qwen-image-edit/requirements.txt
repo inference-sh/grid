@@ -14,3 +14,5 @@ einops
 gguf>=0.13.0  # For GGUF file handling
 requests  # For downloading images from URIs
 torchvision
+peft>=0.7.0  # Essential for LoRA adapter support
+python-dateutil>=2.8.0  # For CivitAI date parsing

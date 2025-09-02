@@ -66,6 +66,33 @@
       },
       "title": "File",
       "type": "object"
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_file"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
     }
   },
   "properties": {
@@ -158,6 +185,22 @@
       "description": "If true, switch scheduler to UniPCM flow matching configuration.",
       "title": "Use Unipcm Flow Matching",
       "type": "boolean"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
     }
   },
   "required": [

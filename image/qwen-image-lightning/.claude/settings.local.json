@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(python:*)",
+      "Read(/home/luca/image/qwen-image/**)",
+      "Read(/home/luca/image/qwen-image/**)",
+      "Read(/home/luca/**)",
+      "Bash(infsh deploy:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,6 +1,9 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field, BaseModel
 from typing import Optional, Literal
+import requests
+import re
+from datetime import datetime
 import torch
 import math
 from huggingface_hub import hf_hub_download
@@ -20,6 +23,198 @@ import logging
 # Set up HuggingFace transfer for faster downloads
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
+class LoraConfig(BaseModel):
+    adapter_name: str = Field(description="Name for the LoRA adapter.")
+    lora_file: File = Field(description="LoRA weights file (.safetensors)")
+    lora_multiplier: float = Field(default=1.0, ge=0.0, le=10.0, description="Multiplier for the LoRA effect")
+
+def get_civit_download_url(model_id):
+    civitai_token = os.environ.get('CIVITAI_TOKEN')
+    if civitai_token:
+        url = f"https://civitai.com/models/{model_id}&token={civitai_token}"
+    else:
+        url = f"https://civitai.com/models/{model_id}"
+    response = requests.get(url)
+    response.raise_for_status()
+    data = response.json()
+    versions = data["modelVersions"]
+
+    def get_date(item):
+        date_str = item.get('updatedAt') or item.get('publishedAt') or item.get('createdAt') or ''
+        if 'T' in date_str:
+            return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+        return datetime.fromisoformat(date_str)
+
+    sorted_data = sorted(versions, key=get_date, reverse=True)
+    qwen_versions = [v for v in sorted_data if v.get('baseModel', '').lower().startswith('qwen')]
+    latest_version = qwen_versions[0] if qwen_versions else sorted_data[0]
+    downloadUrl = latest_version["downloadUrl"]
+    return downloadUrl
+
+def download_model_data(model_id, downloadUrl, targetFolder):
+    if not os.path.exists(targetFolder):
+        os.makedirs(targetFolder)
+    filePath = os.path.join(targetFolder, f"{model_id}.safetensors")
+    if not os.path.isfile(filePath):
+        civitai_token = os.environ.get('CIVITAI_TOKEN')
+        if civitai_token:
+            print("Using CivitAI token from environment variable CIVITAI_TOKEN")
+        else:
+            print("WARNING: No CivitAI token found in environment variable CIVITAI_TOKEN, set one if you get a 403 error")
+
+        if 'civitai.com' in downloadUrl and civitai_token:
+            if '?' in downloadUrl:
+                downloadUrl = f"{downloadUrl}&token={civitai_token}"
+            else:
+                downloadUrl = f"{downloadUrl}?token={civitai_token}"
+        response = requests.get(downloadUrl)
+        with open(filePath, 'wb') as file:
+            file.write(response.content)
+    return filePath
+
+def load_lora_adapter(pipeline, lora_source, adapter_name="lora", lora_multiplier=1.0):
+    """Load a LoRA adapter for the Qwen-Image-Edit pipeline or transformer."""
+    if not lora_source:
+        return False
+    
+    def _load_single_lora(load_kwargs, base_adapter_name: str):
+        # Try loading on transformer first
+        try:
+            transformer = getattr(pipeline, 'transformer', None)
+            if transformer and hasattr(transformer, 'load_lora_weights'):
+                print(f"🔄 Loading LoRA adapter '{base_adapter_name}' onto transformer...")
+                load_kwargs["adapter_name"] = base_adapter_name
+                transformer.load_lora_weights(**load_kwargs)
+                print(f"✅ LoRA adapter '{base_adapter_name}' loaded successfully onto transformer")
+                logging.info(f"Loaded LoRA adapter {base_adapter_name} onto Qwen-Image-Edit transformer")
+                return base_adapter_name
+        except Exception as e:
+            print(f"⚠️ Failed to load LoRA on transformer: {e}, trying pipeline...")
+            logging.warning(f"Failed to load LoRA {base_adapter_name} on transformer: {e}")
+        
+        # Fallback to pipeline
+        try:
+            if hasattr(pipeline, 'load_lora_weights'):
+                print(f"🔄 Loading LoRA adapter '{base_adapter_name}' onto pipeline...")
+                load_kwargs["adapter_name"] = base_adapter_name
+                pipeline.load_lora_weights(**load_kwargs)
+                print(f"✅ LoRA adapter '{base_adapter_name}' loaded successfully onto pipeline")
+                logging.info(f"Loaded LoRA adapter {base_adapter_name} onto Qwen-Image-Edit pipeline")
+                return base_adapter_name
+            else:
+                print(f"❌ Neither transformer nor pipeline support load_lora_weights method")
+        except Exception as e:
+            print(f"❌ Failed to load LoRA '{base_adapter_name}' on pipeline: {e}")
+            logging.error(f"Failed to load LoRA {base_adapter_name} on pipeline: {e}")
+        return None
+    
+    # Local file path
+    if isinstance(lora_source, str) and os.path.isfile(lora_source):
+        load_kwargs = {"pretrained_model_name_or_path_or_dict": lora_source}
+        created = _load_single_lora(load_kwargs, adapter_name)
+        if created:
+            logging.info(f"Loaded LoRA adapter {created} from local file: {lora_source}")
+            return [created]
+        return []
+
+    lora_url = lora_source
+
+    # Hugging Face blob URL
+    if isinstance(lora_url, str) and "huggingface.co" in lora_url and "/blob/" in lora_url:
+        parts = lora_url.split('/')
+        if len(parts) >= 7 and 'huggingface.co' in parts and 'blob' in parts:
+            repo_start = parts.index('huggingface.co') + 1
+            blob_index = parts.index('blob')
+            repo_id = '/'.join(parts[repo_start:blob_index])
+            weight_name = '/'.join(parts[blob_index + 2:])
+            load_kwargs = {"repo_id": repo_id, "weight_name": weight_name}
+            created = _load_single_lora(load_kwargs, adapter_name)
+            if created:
+                logging.info(f"Loaded LoRA adapter {created} from HF repo: {repo_id}, file: {weight_name}")
+                return [created]
+            return []
+        else:
+            raise ValueError(f"Invalid Hugging Face blob URL format: {lora_url}")
+    
+    # Hugging Face resolve URL
+    elif isinstance(lora_url, str) and "huggingface.co" in lora_url and "/resolve/" in lora_url:
+        parts = lora_url.split('/')
+        if len(parts) >= 7 and 'huggingface.co' in parts and 'resolve' in parts:
+            repo_start = parts.index('huggingface.co') + 1
+            resolve_index = parts.index('resolve')
+            repo_id = '/'.join(parts[repo_start:resolve_index])
+            weight_name = '/'.join(parts[resolve_index + 2:])
+            load_kwargs = {"repo_id": repo_id, "weight_name": weight_name}
+            created = _load_single_lora(load_kwargs, adapter_name)
+            if created:
+                logging.info(f"Loaded LoRA adapter {created} from HF repo: {repo_id}, file: {weight_name}")
+                return [created]
+            return []
+        else:
+            raise ValueError(f"Invalid Hugging Face resolve URL format: {lora_url}")
+    
+    # Hugging Face repository string
+    elif isinstance(lora_url, str) and "/" in lora_url and not lora_url.startswith('http') and "civitai.com" not in lora_url:
+        parts = lora_url.split('/')
+        if len(parts) == 2:
+            repo_id = lora_url
+            load_kwargs = {"repo_id": repo_id}
+            created = _load_single_lora(load_kwargs, adapter_name)
+            if created:
+                logging.info(f"Loaded LoRA adapter {created} from HF repo: {repo_id}")
+                return [created]
+            return []
+        elif len(parts) > 2:
+            repo_id = '/'.join(parts[:2])
+            weight_name = '/'.join(parts[2:])
+            load_kwargs = {"repo_id": repo_id, "weight_name": weight_name}
+            created = _load_single_lora(load_kwargs, adapter_name)
+            if created:
+                logging.info(f"Loaded LoRA adapter {created} from HF repo: {repo_id}, file: {weight_name}")
+                return [created]
+            return []
+    
+    # Direct .safetensors URL
+    elif isinstance(lora_url, str) and lora_url.endswith('.safetensors') and lora_url.startswith('http'):
+        lora_dir = "loras" if os.path.isdir("loras") else "/tmp/loras"
+        if not os.path.exists(lora_dir):
+            os.makedirs(lora_dir)
+        
+        model_id = os.path.splitext(os.path.basename(lora_url))[0]
+        lora_path = download_model_data(model_id, lora_url, lora_dir)
+        load_kwargs = {"pretrained_model_name_or_path_or_dict": lora_path}
+        created = _load_single_lora(load_kwargs, adapter_name)
+        if created:
+            logging.info(f"Loaded LoRA adapter {created} from URL: {lora_url}")
+            return [created]
+        return []
+    
+    # Civitai model URL
+    elif isinstance(lora_url, str) and "civitai.com" in lora_url:
+        match = re.search(r"/models/(\d+)", lora_url)
+        if not match:
+            raise ValueError("Could not extract model ID from Civitai URL")
+        
+        model_id = match.group(1)
+        download_url = get_civit_download_url(model_id)
+        if not download_url:
+            raise RuntimeError(f"No download URL found for Civitai model {model_id}")
+        
+        lora_dir = "loras" if os.path.isdir("loras") else "/tmp/loras"
+        if not os.path.exists(lora_dir):
+            os.makedirs(lora_dir)
+        
+        lora_path = download_model_data(model_id, download_url, lora_dir)
+        load_kwargs = {"pretrained_model_name_or_path_or_dict": lora_path}
+        created = _load_single_lora(load_kwargs, adapter_name)
+        if created:
+            logging.info(f"Loaded LoRA adapter {created} from Civitai model: {model_id}")
+            return [created]
+        return []
+    
+    else:
+        raise ValueError(f"Unsupported LoRA source format: {lora_url}")
+
 class AppInput(BaseAppInput):
     prompt: str = Field(description="The text prompt describing the desired edits to apply to the input image. Supports both English and Chinese text rendering.")
     image: File = Field(description="Input image to edit. This field is required for image editing.")
@@ -32,6 +227,7 @@ class AppInput(BaseAppInput):
     language: Optional[Literal["en", "zh"]] = Field(default="en", description="Language for prompt optimization (English or Chinese).")
     cache_threshold: float = Field(default=0.0, ge=0.0, le=1.0, description="First-block cache threshold for transformer (0 disables caching).")
     use_unipcm_flow_matching: bool = Field(default=False, description="If true, switch scheduler to UniPCM flow matching configuration.")
+    loras: Optional[list[LoraConfig]] = Field(default=None, description="List of LoRA configs to apply")
 
 class AppOutput(BaseAppOutput):
     image_output: File = Field(description="The edited image file.")
@@ -70,6 +266,9 @@ class App(BaseApp):
     async def setup(self, metadata):
         """Initialize Qwen-Image Lightning model and resources."""
         logging.basicConfig(level=logging.INFO)
+        
+        # Initialize LoRA tracking attributes
+        self.loaded_loras = {}  # adapter_name -> (lora_source_id, lora_multiplier, created_names)
         
         # Determine which model variant to use
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
@@ -248,6 +447,125 @@ class App(BaseApp):
         if input_data.seed is not None:
             generator = torch.Generator(device=self.device).manual_seed(input_data.seed)
             logging.info(f"Using seed: {input_data.seed}")
+
+        # Handle LoRA adapters
+        loras = getattr(input_data, "loras", None) or []
+        requested_by_name = {l.adapter_name: l for l in loras}
+
+        # Unload adapters that are no longer requested or whose config changed
+        for adapter_name in list(self.loaded_loras.keys()):
+            previous_source, previous_mult, previous_created = self.loaded_loras[adapter_name]
+            found = requested_by_name.get(adapter_name)
+            if (
+                found is None
+                or previous_source != found.lora_file.path
+                or previous_mult != found.lora_multiplier
+            ):
+                for created_name in previous_created:
+                    # Try deleting from transformer first
+                    deleted = False
+                    if hasattr(self.pipeline.transformer, 'delete_adapters'):
+                        try:
+                            self.pipeline.transformer.delete_adapters(created_name)
+                            deleted = True
+                            print(f"🗑️ Unloaded LoRA adapter '{created_name}' from transformer")
+                        except Exception as e:
+                            print(f"⚠️ Failed to delete LoRA from transformer: {e}, trying pipeline...")
+                    
+                    # Fallback to pipeline deletion
+                    if not deleted and hasattr(self.pipeline, 'delete_adapters'):
+                        try:
+                            self.pipeline.delete_adapters(created_name)
+                            deleted = True
+                            print(f"🗑️ Unloaded LoRA adapter '{created_name}' from pipeline")
+                        except Exception as e:
+                            print(f"❌ Failed to delete LoRA from pipeline: {e}")
+                    
+                    if deleted:
+                        logging.info(f"Unloaded previous LoRA adapter: {created_name}")
+                    else:
+                        print(f"⚠️ Could not delete adapter '{created_name}' - no delete_adapters method available")
+                del self.loaded_loras[adapter_name]
+
+        # Load requested adapters
+        for lora in loras:
+            needs_load = (
+                lora.adapter_name not in self.loaded_loras
+                or self.loaded_loras[lora.adapter_name][0] != lora.lora_file.path
+                or self.loaded_loras[lora.adapter_name][1] != lora.lora_multiplier
+            )
+            if needs_load:
+                created_names = load_lora_adapter(
+                    self.pipeline,
+                    lora.lora_file.path,
+                    lora.adapter_name,
+                    lora.lora_multiplier,
+                )
+                if created_names:
+                    self.loaded_loras[lora.adapter_name] = (
+                        lora.lora_file.path,
+                        lora.lora_multiplier,
+                        created_names,
+                    )
+
+        # Activate all requested adapters
+        active_adapters = []
+        adapter_weights = []
+        for lora in loras:
+            if lora.adapter_name in self.loaded_loras:
+                created_names = self.loaded_loras[lora.adapter_name][2]
+                for created_name in created_names:
+                    active_adapters.append(created_name)
+                    adapter_weights.append(lora.lora_multiplier)
+
+        if active_adapters:
+            print(f"🎯 Activating LoRA adapters: {active_adapters} with weights: {adapter_weights}")
+            
+            # For multiple adapters, activate each one individually
+            if len(active_adapters) == 1:
+                adapter_name = active_adapters[0]
+                adapter_weight = adapter_weights[0]
+                
+                # Try activating on pipeline first (diffusers standard)
+                activated = False
+                if hasattr(self.pipeline, 'set_adapters'):
+                    try:
+                        self.pipeline.set_adapters(adapter_name, adapter_weights=adapter_weight)
+                        print(f"✅ LoRA adapter '{adapter_name}' activated on pipeline with weight {adapter_weight}")
+                        logging.info(f"Activated LoRA adapter on pipeline: {adapter_name} with weight: {adapter_weight}")
+                        activated = True
+                    except Exception as e:
+                        print(f"⚠️ Failed to activate LoRA on pipeline: {e}, trying transformer...")
+                
+                # Fallback to transformer activation
+                if not activated and hasattr(self.pipeline.transformer, 'set_adapters'):
+                    try:
+                        # PEFT doesn't support adapter_weights parameter
+                        self.pipeline.transformer.set_adapters(adapter_name)
+                        print(f"✅ LoRA adapter '{adapter_name}' activated on transformer (weight control not supported)")
+                        logging.info(f"Activated LoRA adapter on transformer: {adapter_name}")
+                        activated = True
+                    except Exception as e:
+                        print(f"❌ Failed to activate LoRA on transformer: {e}")
+                
+                if not activated:
+                    print(f"⚠️ Found adapter '{adapter_name}' but neither pipeline nor transformer support set_adapters")
+            else:
+                # Multiple adapters - try list format on pipeline only
+                activated = False
+                if hasattr(self.pipeline, 'set_adapters'):
+                    try:
+                        self.pipeline.set_adapters(active_adapters, adapter_weights=adapter_weights)
+                        print(f"✅ Multiple LoRA adapters activated on pipeline successfully")
+                        logging.info(f"Activated LoRA adapters on pipeline: {active_adapters} with weights: {adapter_weights}")
+                        activated = True
+                    except Exception as e:
+                        print(f"❌ Failed to activate multiple LoRA adapters on pipeline: {e}")
+                
+                if not activated:
+                    print(f"⚠️ Found {len(active_adapters)} adapters but pipeline doesn't support multiple adapter activation")
+        else:
+            print("ℹ️ No custom LoRA adapters to activate")
 
         # Configure first-block caching if requested
         # Disable any existing caches to avoid conflicts
