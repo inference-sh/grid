@@ -70,7 +70,6 @@
   },
   "properties": {
     "prompt": {
-      "default": "A beautiful woman.",
       "description": "Text prompt for image generation",
       "title": "Prompt",
       "type": "string"
@@ -178,6 +177,9 @@
       "type": "integer"
     }
   },
+  "required": [
+    "prompt"
+  ],
   "title": "AppInput",
   "type": "object"
 }
