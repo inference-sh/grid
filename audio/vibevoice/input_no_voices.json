@@ -1,0 +1,6 @@
+{
+  "script": "Welcome to our AI podcast! Today we're discussing machine learning and its impact on society. This should be an interesting conversation between our two speakers.",
+  "num_speakers": 2,
+  "cfg_scale": 1.3,
+  "inference_steps": 5
+}

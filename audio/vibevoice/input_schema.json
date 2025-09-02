@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "VoicePreset": {
+      "description": "Available voice presets for speakers.",
+      "enum": [
+        "en-Alice_woman",
+        "en-Carter_man",
+        "en-Frank_man",
+        "en-Mary_woman_bgm",
+        "en-Maya_woman",
+        "in-Samuel_man",
+        "zh-Anchen_man_bgm",
+        "zh-Bowen_man",
+        "zh-Xinran_woman"
+      ],
+      "title": "VoicePreset",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "script": {
+      "description": "The conversation script text. Can be plain text (auto-assigned to speakers) or formatted with 'Speaker X:' prefixes",
+      "title": "Script",
+      "type": "string"
+    },
+    "num_speakers": {
+      "default": 1,
+      "description": "Number of speakers (1-4)",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Speakers",
+      "type": "integer"
+    },
+    "voice_presets": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/VoicePreset"
+          },
+          "maxItems": 4,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice presets for each speaker. If not provided, default voices will be automatically selected.",
+      "title": "Voice Presets"
+    },
+    "custom_voice_samples": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "maxItems": 4,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom voice sample audio files (WAV format, one per speaker). If provided, these override voice_presets.",
+      "title": "Custom Voice Samples"
+    },
+    "cfg_scale": {
+      "default": 1.3,
+      "description": "CFG Scale (guidance strength)",
+      "maximum": 2.0,
+      "minimum": 1.0,
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "inference_steps": {
+      "default": 10,
+      "description": "Number of diffusion inference steps",
+      "maximum": 20,
+      "minimum": 3,
+      "title": "Inference Steps",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "script"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

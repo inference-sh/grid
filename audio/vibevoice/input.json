@@ -1,0 +1,7 @@
+{
+  "script": "Speaker 0: Welcome to our AI podcast! Today we're discussing the future of artificial intelligence.",
+  "num_speakers": 1,
+  "voice_preset": "andrew",
+  "cfg_scale": 1.3,
+  "inference_steps": 10
+}

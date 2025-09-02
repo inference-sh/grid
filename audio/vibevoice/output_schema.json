@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "audio": {
+      "$ref": "#/$defs/File",
+      "description": "Generated podcast audio file"
+    },
+    "duration": {
+      "description": "Audio duration in seconds",
+      "title": "Duration",
+      "type": "number"
+    },
+    "generation_time": {
+      "description": "Time taken to generate audio in seconds",
+      "title": "Generation Time",
+      "type": "number"
+    },
+    "rtf": {
+      "description": "Real Time Factor (generation_time / audio_duration)",
+      "title": "Rtf",
+      "type": "number"
+    },
+    "input_tokens": {
+      "description": "Number of input tokens",
+      "title": "Input Tokens",
+      "type": "integer"
+    },
+    "generated_tokens": {
+      "description": "Number of generated tokens",
+      "title": "Generated Tokens",
+      "type": "integer"
+    },
+    "model_status": {
+      "description": "Status of model availability",
+      "title": "Model Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audio",
+    "duration",
+    "generation_time",
+    "rtf",
+    "input_tokens",
+    "generated_tokens",
+    "model_status"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

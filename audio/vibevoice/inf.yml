@@ -1,0 +1,57 @@
+name: vibevoice
+description: VibeVoice - High-quality AI podcast generation with multiple speakers and natural speech synthesis
+category: audio
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3xgesbd6p1njfvv08st6fzv.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: VibeVoice 1.5B (Fast Load)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 24000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    vibevoice-1.5b-lowmem:
+        name: VibeVoice 1.5B (Low Memory)
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    vibevoice-7b:
+        name: VibeVoice 7B (Fast Load)
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 32000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    vibevoice-7b-lowmem:
+        name: VibeVoice 7B (Low Memory)
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 24000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
