@@ -1,9 +1,7 @@
-# --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
 pydantic >= 2.0.0
-# inferencesh >= 0.2.24
+inferencesh == 0.4.2
 huggingface_hub
 hf-transfer
 pillow
 
-git+https://github.com/inference-sh/sdk-python.git@ad1b8dcce383a7f3f17d045406c56a2fbfee3861
-git+https://github.com/inference-sh/llama-cpp-python.git@605998efc828e6df2a5ebd3dcf1161a658953af3
+git+https://github.com/inference-sh/llama-cpp-python.git@4dbb8f90417142f14fd908f3a5fc44269e868449

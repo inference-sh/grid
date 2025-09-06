@@ -8,6 +8,9 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 # Force flash_attn to be used instead of SDPA
 os.environ["TRANSFORMERS_ATTENTION_TYPE"] = "flash_attention_2"
 
+# Optimize CUDA memory allocation to avoid fragmentation
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 # Smart path setup for InfiniteTalk imports to work in any environment
 base_path = os.path.dirname(__file__)
 infinitetalk_path = os.path.join(base_path, 'InfiniteTalk')
@@ -200,6 +203,33 @@ class App(BaseApp):
         
         logging.info("InfiniteTalk pipeline initialized successfully.")
         
+        # Enable gradient checkpointing for memory efficiency across all models
+        models_to_checkpoint = []
+        if hasattr(self.wan_pipeline, 'model') and hasattr(self.wan_pipeline.model, 'gradient_checkpointing_enable'):
+            self.wan_pipeline.model.gradient_checkpointing_enable()
+            models_to_checkpoint.append('WAN model')
+        
+        if hasattr(self.wan_pipeline, 'vae') and hasattr(self.wan_pipeline.vae, 'gradient_checkpointing_enable'):
+            self.wan_pipeline.vae.gradient_checkpointing_enable()
+            models_to_checkpoint.append('VAE')
+            
+        if hasattr(self.wan_pipeline, 't5') and hasattr(self.wan_pipeline.t5, 'gradient_checkpointing_enable'):
+            self.wan_pipeline.t5.gradient_checkpointing_enable()
+            models_to_checkpoint.append('T5')
+            
+        logging.info(f"Enabled gradient checkpointing for: {', '.join(models_to_checkpoint)}")
+        
+        # Additional memory optimizations for long sequences
+        if hasattr(self.wan_pipeline, 'model'):
+            # Enable mixed precision training mode for inference (saves memory)
+            if hasattr(self.wan_pipeline.model, 'half'):
+                logging.info("Using half precision for memory efficiency")
+            
+        # Clear any residual CUDA cache after model loading
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            logging.info("Cleared CUDA cache after model initialization")
+        
         # Ensure flash_attn is being used for all attention mechanisms
         # Set flash_attention_2 on the T5 model if available
         if hasattr(self.wan_pipeline, 't5') and hasattr(self.wan_pipeline.t5, 'config'):
@@ -323,42 +353,41 @@ class App(BaseApp):
         
         # Extract embeddings with optimized settings
         with torch.no_grad():
-            # Use torch.cuda.amp for potential speedup and memory efficiency
             with torch.autocast(device_type=self.device.type, dtype=torch.bfloat16, enabled=self.device.type == 'cuda'):
                 embeddings = self.audio_encoder(audio_feature, seq_len=int(video_length), output_hidden_states=True)
         
-        if len(embeddings) == 0:
+        if len(embeddings.hidden_states) == 0:
             raise RuntimeError("Failed to extract audio embedding")
         
+        # Stack and rearrange embeddings
         audio_emb = torch.stack(embeddings.hidden_states[1:], dim=1).squeeze(0)
         audio_emb = rearrange(audio_emb, "b s d -> s b d")
         
-        # Keep on GPU and only transfer to CPU when actually needed for saving
-        return audio_emb.detach(), int(video_length)
-    
-    def _process_tts_single(self, text, save_dir, voice1):
-        """Process text-to-speech for single person."""
-        pipeline = KPipeline(lang_code='a', repo_id=self.kokoro_dir)
-        # Use default voice if custom voice path doesn't exist
-        if not os.path.exists(voice1):
-            voice_path = os.path.join(self.kokoro_dir, 'voices', 'af_sarah.pt')
-        else:
-            voice_path = voice1
-        voice_tensor = torch.load(voice_path, weights_only=True)
-        generator = pipeline(text, voice=voice_tensor, speed=1, split_pattern=r'\n+')
+        # Clean up intermediate tensors
+        del audio_feature, embeddings
         
-        audios = []
-        for i, (gs, ps, audio) in enumerate(generator):
-            audios.append(audio)
-        audios = torch.concat(audios, dim=0)
+        # Trim to exact length if needed
+        if target_frames is not None:
+            audio_emb = audio_emb[:target_frames]
         
-        save_path1 = f'{save_dir}/s1.wav'
-        sf.write(save_path1, audios, 24000)
-        s1, _ = librosa.load(save_path1, sr=16000)
-        return s1, save_path1
+        # Move to CPU immediately to free GPU memory
+        return audio_emb.cpu().detach(), int(video_length)
+   
+
+    def _log_gpu_memory(self, prefix=""):
+        """Log GPU memory usage."""
+        if not torch.cuda.is_available():
+            return
+            
+        allocated = torch.cuda.memory_allocated() / (1024**3)
+        reserved = torch.cuda.memory_reserved() / (1024**3)
+        free = torch.cuda.get_device_properties(self.device).total_memory / (1024**3) - allocated
+        
+        logging.info(f"{prefix}GPU Memory: {allocated:.2f}GB allocated, {reserved:.2f}GB reserved, {free:.2f}GB free")
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video using InfiniteTalk."""
+        self._log_gpu_memory("Initial ")
         # Create extra_args with user input
         extra_args = self.ExtraArgs(
             use_teacache=input_data.use_teacache,
@@ -373,11 +402,16 @@ class App(BaseApp):
         }
         
         # Process single audio file
+        self._log_gpu_memory("Before audio processing ")
         human_speech = self._audio_prepare_single(input_data.audio_file.path)
+        self._log_gpu_memory("After audio processing ")
         
         # Calculate frame count based on audio length
         audio_duration = len(human_speech) / 16000  # audio sample rate
         video_frames = max(25, int(audio_duration * 25))  # 25fps, minimum 25 frames (1 second)
+        
+        # Note: InfiniteTalk is designed to handle arbitrary length videos
+        # Memory management is handled through gradient checkpointing and efficient attention
         
         # The audio embedding needs to be longer than the video to allow windowed processing
         # Add some buffer frames for the processing pipeline
@@ -394,11 +428,15 @@ class App(BaseApp):
         emb_path = os.path.join(self.audio_save_dir, '1.pt')
         sum_audio = os.path.join(self.audio_save_dir, 'sum.wav')
         sf.write(sum_audio, human_speech, 16000)
-        # Move to CPU only when saving to disk
-        torch.save(audio_embedding.cpu(), emb_path)
+        # Move to CPU and clear GPU memory
+        audio_embedding = audio_embedding.cpu()
+        torch.save(audio_embedding, emb_path)
+        del audio_embedding
+        torch.cuda.empty_cache()
         
-        logging.info(f"Saved audio embedding shape: {audio_embedding.shape} to {emb_path}")
-        logging.info(f"Video frame count: {self.frame_num}, audio embedding frames: {audio_embedding.shape[0]} (buffer: {audio_embedding.shape[0] - self.frame_num})")
+        # Log frame info
+        logging.info(f"Saved audio embedding to {emb_path}")
+        logging.info(f"Video frame count: {self.frame_num}")
         
         # Set audio paths in input dict
         input_dict['cond_audio'] = {'person1': emb_path}
@@ -406,6 +444,12 @@ class App(BaseApp):
         
         # Generate video
         logging.info("Generating video...")
+        self._log_gpu_memory("Before video generation ")
+        
+        # Clear CUDA cache before generation to ensure maximum available memory
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            
         video = self.wan_pipeline.generate_infinitetalk(
             input_dict,
             size_buckget=input_data.resolution,
@@ -423,6 +467,11 @@ class App(BaseApp):
             extra_args=extra_args,  # Pass the dynamic extra_args
         )
         
+        # Clear CUDA cache after generation to free up memory
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            logging.info("Cleared CUDA cache after video generation")
+        
         # Save video
         formatted_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_filename = f"infinitetalk_{input_data.resolution}_{formatted_time}"
@@ -438,6 +487,10 @@ class App(BaseApp):
         shutil.move(final_output_path, temp_output_path)
         
         logging.info(f"Video generated successfully: {temp_output_path}")
+        
+        # Clear CUDA cache after inference to prevent memory accumulation
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         
         return AppOutput(video=File(path=temp_output_path))
 

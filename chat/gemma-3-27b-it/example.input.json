@@ -1,0 +1,11 @@
+{
+  "system_prompt": "You are Gemma, a helpful and knowledgeable AI assistant.",
+  "image": null,
+  "context": [
+    "example_string"
+  ],
+  "text": "example_string",
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "context_size": 4096
+}

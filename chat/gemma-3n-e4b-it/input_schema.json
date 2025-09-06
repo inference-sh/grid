@@ -4,10 +4,10 @@
       "properties": {
         "role": {
           "$ref": "#/$defs/ContextMessageRole",
-          "description": "The role of the message"
+          "description": "the role of the message. user, assistant, or system"
         },
         "text": {
-          "description": "The text content of the message",
+          "description": "the text content of the message",
           "title": "Text",
           "type": "string"
         },
@@ -21,7 +21,7 @@
             }
           ],
           "default": null,
-          "description": "The image url of the message"
+          "description": "the image file of the message"
         }
       },
       "required": [
@@ -125,12 +125,13 @@
           "type": "null"
         }
       ],
+      "contentMediaType": "image/*",
       "default": null,
-      "description": "The image to use for the model"
+      "description": "the image to use for the model"
     },
     "context": {
       "default": [],
-      "description": "The context to use for the model",
+      "description": "the context to use for the model",
       "examples": [
         [
           {
@@ -160,30 +161,26 @@
       "type": "array"
     },
     "text": {
-      "description": "The user prompt to use for the model",
+      "description": "the user prompt to use for the model",
       "examples": [
-        "What is the capital of France?",
-        "What is the weather like today?",
-        "Can you help me write a poem about spring?",
-        "Explain quantum computing in simple terms"
+        "write a haiku about artificial general intelligence"
       ],
       "title": "Text",
       "type": "string"
     },
     "temperature": {
       "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
       "title": "Temperature",
       "type": "number"
     },
     "top_p": {
       "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
       "title": "Top P",
       "type": "number"
-    },
-    "max_tokens": {
-      "default": 4096,
-      "title": "Max Tokens",
-      "type": "integer"
     },
     "context_size": {
       "default": 4096,

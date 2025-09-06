@@ -2,7 +2,7 @@ name: stitch-images
 description: Stitch merge two images one next to the other
 category: image
 images:
-    card: ""
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
     thumbnail: ""
     banner: ""
 metadata: {}

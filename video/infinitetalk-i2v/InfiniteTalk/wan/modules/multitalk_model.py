@@ -654,6 +654,18 @@ class WanModel(ModelMixin, ConfigMixin):
         audio_cond = audio.to(device=x.device, dtype=x.dtype)
         first_frame_audio_emb_s = audio_cond[:, :1, ...] 
         latter_frame_audio_emb = audio_cond[:, 1:, ...] 
+        
+        # Ensure latter_frame_audio_emb second dimension is divisible by vae_scale for rearrange
+        current_frames = latter_frame_audio_emb.shape[1]
+        target_frames = ((current_frames + self.vae_scale - 1) // self.vae_scale) * self.vae_scale
+        
+        if current_frames < target_frames:
+            # Pad with zeros to make divisible by vae_scale
+            padding_shape = list(latter_frame_audio_emb.shape)
+            padding_shape[1] = target_frames - current_frames
+            padding = torch.zeros(padding_shape, device=latter_frame_audio_emb.device, dtype=latter_frame_audio_emb.dtype)
+            latter_frame_audio_emb = torch.cat([latter_frame_audio_emb, padding], dim=1)
+        
         latter_frame_audio_emb = rearrange(latter_frame_audio_emb, "b (n_t n) w s c -> b n_t n w s c", n=self.vae_scale) 
         middle_index = self.audio_window // 2
         latter_first_frame_audio_emb = latter_frame_audio_emb[:, :, :1, :middle_index+1, ...] 

@@ -73,7 +73,15 @@ class App(BaseApp):
         self.last_context_size = None
 
     async def setup(self, metadata):
-        self.variant_config = configs[metadata.app_variant]
+        print(f"Setup with metadata: {metadata}")
+        if hasattr(metadata, "app_variant"):
+            variant = getattr(metadata, "app_variant", None) or "default"
+        elif isinstance(metadata, dict):
+            variant = metadata.get("app_variant", "default")
+        else:
+            variant = "default"
+        print(f"Using variant: {variant}")
+        self.variant_config = configs[variant]
         # Use context_size from input if provided, else default
         n_ctx = 4096
         # Download CLIP model from Hugging Face Hub

@@ -156,7 +156,14 @@ class App(BaseApp):
         self.motion_frame = 0  # Starting motion frame
         self.mode = "clip"     # Mode for image-to-video
         self.sample_shift = 7  # Default for 480p
-        self.offload_model = True if self.world_size == 1 else False
+        # Disable offloading for high VRAM setups - check if GPU has enough VRAM
+        gpu_vram_gb = 0
+        if self.device.type == 'cuda' and torch.cuda.is_available():
+            gpu_vram_gb = torch.cuda.get_device_properties(self.device).total_memory / (1024**3)
+        # Only offload if less than 32GB VRAM or multi-GPU setup
+        self.offload_model = False if gpu_vram_gb >= 32 else (True if self.world_size == 1 else False)
+        
+        logging.info(f"GPU VRAM: {gpu_vram_gb:.1f}GB, Model offloading: {self.offload_model}")
         self.color_correction_strength = 1.0
         
         # Initialize wav2vec components on CPU first (like original app.py), then move to device
@@ -320,27 +327,7 @@ class App(BaseApp):
         audio_emb = rearrange(audio_emb, "b s d -> s b d")
         
         return audio_emb.cpu().detach(), int(video_length)
-    
-    def _process_tts_single(self, text, save_dir, voice1):
-        """Process text-to-speech for single person."""
-        pipeline = KPipeline(lang_code='a', repo_id=self.kokoro_dir)
-        # Use default voice if custom voice path doesn't exist
-        if not os.path.exists(voice1):
-            voice_path = os.path.join(self.kokoro_dir, 'voices', 'af_sarah.pt')
-        else:
-            voice_path = voice1
-        voice_tensor = torch.load(voice_path, weights_only=True)
-        generator = pipeline(text, voice=voice_tensor, speed=1, split_pattern=r'\n+')
-        
-        audios = []
-        for i, (gs, ps, audio) in enumerate(generator):
-            audios.append(audio)
-        audios = torch.concat(audios, dim=0)
-        
-        save_path1 = f'{save_dir}/s1.wav'
-        sf.write(save_path1, audios, 24000)
-        s1, _ = librosa.load(save_path1, sr=16000)
-        return s1, save_path1
+
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video using InfiniteTalk."""
@@ -379,10 +366,13 @@ class App(BaseApp):
         emb_path = os.path.join(self.audio_save_dir, '1.pt')
         sum_audio = os.path.join(self.audio_save_dir, 'sum.wav')
         sf.write(sum_audio, human_speech, 16000)
-        torch.save(audio_embedding, emb_path)
+        # Log embedding info before deletion
+        emb_shape = audio_embedding.shape
+        logging.info(f"Audio embedding shape: {emb_shape} to {emb_path}")
+        logging.info(f"Video frame count: {self.frame_num}, audio embedding frames: {emb_shape[0]} (buffer: {emb_shape[0] - self.frame_num})")
         
-        logging.info(f"Saved audio embedding shape: {audio_embedding.shape} to {emb_path}")
-        logging.info(f"Video frame count: {self.frame_num}, audio embedding frames: {audio_embedding.shape[0]} (buffer: {audio_embedding.shape[0] - self.frame_num})")
+        torch.save(audio_embedding, emb_path)
+        del audio_embedding, emb_shape  # Explicitly free memory
         
         # Set audio paths in input dict
         input_dict['cond_audio'] = {'person1': emb_path}
