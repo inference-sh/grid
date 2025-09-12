@@ -5,6 +5,7 @@ descript-audio-codec>=1.0.0
 diffusers==0.27.2
 einops>=0.8.1
 einops-exts==0.0.4
+fairseq==0.12.2
 flashy>=0.0.2
 huggingface-hub==0.25.2
 julius>=0.2.7
