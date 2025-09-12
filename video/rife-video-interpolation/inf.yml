@@ -1,0 +1,46 @@
+name: rife-video-interpolation
+description: RIFE-based video frame interpolation to increase frame rate with AI-generated in-between frames
+category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 24000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+            TRANSFORMERS_CACHE: /tmp/cache
+        python: "3.10"
+    high_memory:
+        name: high_memory
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    low_vram:
+        name: low_vram
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
