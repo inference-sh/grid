@@ -2,7 +2,7 @@ name: extract-last-frame
 description: Extract the nth last frame from a video file as a PNG image
 category: video
 images:
-    card: ""
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
     thumbnail: ""
     banner: ""
 metadata: {}
