@@ -1,0 +1,12 @@
+text_len: 512
+patch_size: [ 1, 2, 2 ]
+dim: 5120
+ffn_dim: 13824
+freq_dim: 256
+model_type: "t2v"
+num_heads: 40
+num_layers: 40
+window_size: [ -1, -1 ]
+qk_norm: True
+cross_attn_norm: True
+eps: 1e-6
