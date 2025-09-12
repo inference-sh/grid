@@ -2,10 +2,10 @@ accelerate==1.10.1
 annotated-types==0.7.0
 certifi==2025.8.3
 charset-normalizer==3.4.3
-diffusers @ git+https://github.com/huggingface/diffusers.git@b597577e7ff421682f551c9b98a89cd1d615e215
+diffusers @ git+https://github.com/huggingface/diffusers.git@20514f1bf2c3db856ca8c6b054f3ca00e509ee47
 einops==0.8.1
 filelock==3.19.1
-fsspec==2025.7.0
+fsspec==2025.9.0
 gguf==0.17.1
 hf-xet==1.1.9
 huggingface-hub==0.34.4
@@ -17,7 +17,7 @@ markupsafe==3.0.2
 mpmath==1.3.0
 networkx==3.5
 ninja==1.13.0
-numpy==2.3.2
+numpy==2.3.3
 nvidia-cublas-cu12==12.8.4.1
 nvidia-cuda-cupti-cu12==12.8.90
 nvidia-cuda-nvrtc-cu12==12.8.93
@@ -35,13 +35,13 @@ nvidia-nvtx-cu12==12.8.90
 packaging==25.0
 peft==0.17.1
 pillow==11.3.0
-protobuf==6.32.0
+protobuf==6.32.1
 psutil==7.0.0
 pydantic==2.11.7
 pydantic-core==2.33.2
 python-dateutil==2.9.0.post0
 pyyaml==6.0.2
-regex==2025.8.29
+regex==2025.9.1
 requests==2.32.5
 safetensors==0.6.2
 sentencepiece==0.2.1
@@ -53,7 +53,7 @@ tokenizers==0.22.0
 torch==2.8.0
 torchvision==0.23.0
 tqdm==4.67.1
-transformers==4.56.0
+transformers==4.56.1
 triton==3.4.0
 typing-extensions==4.15.0
 typing-inspection==0.4.1
