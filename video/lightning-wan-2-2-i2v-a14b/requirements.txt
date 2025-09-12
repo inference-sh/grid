@@ -17,3 +17,4 @@ ftfy
 Pillow 
 gguf
 peft
+kernels

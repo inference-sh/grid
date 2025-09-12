@@ -2,9 +2,9 @@ accelerate==1.10.1
 annotated-types==0.7.0
 certifi==2025.8.3
 charset-normalizer==3.4.3
-diffusers @ git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc
+diffusers @ git+https://github.com/huggingface/diffusers.git@9e7ae568d60f59517990b652a9c825a7f4caeaf5
 filelock==3.19.1
-fsspec==2025.7.0
+fsspec==2025.9.0
 ftfy==6.3.1
 gguf==0.17.1
 hf-transfer==0.1.9
@@ -16,6 +16,7 @@ imageio-ffmpeg==0.6.0
 importlib-metadata==8.7.0
 inferencesh==0.2.7
 jinja2==3.1.6
+kernels==0.10.1
 markupsafe==3.0.2
 mpmath==1.3.0
 networkx==3.5
@@ -42,18 +43,18 @@ psutil==7.0.0
 pydantic==2.10.6
 pydantic-core==2.27.2
 pyyaml==6.0.2
-regex==2025.7.34
+regex==2025.9.1
 requests==2.32.5
 safetensors==0.6.2
 setuptools==80.9.0
 setuptools-scm==9.2.0
 sympy==1.14.0
-tokenizers==0.21.4
+tokenizers==0.22.0
 torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@89ef1b6e0bae8d409ffb0396c4aaf27548108692
+transformers @ git+https://github.com/huggingface/transformers.git@0997c2f2ab08c32c8e2f90aaad06e29a7108535b
 triton==3.3.1
 typing-extensions==4.15.0
 urllib3==2.5.0

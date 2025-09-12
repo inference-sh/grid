@@ -1,6 +1,7 @@
 import os
 # Enable HF Hub fast transfer for faster model downloads
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+os.environ["DIFFUSERS_ENABLE_HUB_KERNELS"] = "YES"
 
 import torch
 import gc
@@ -410,6 +411,9 @@ class App(BaseApp):
         #)
 
         #self.pipe.set_adapters(["lightning", "lightning_2"], adapter_weights=[1.25, 1.25])
+        
+        # Set flash attention backend
+        self.pipe.transformer.set_attention_backend("_flash_3_hub")
         
         print("Setup complete!")
 
