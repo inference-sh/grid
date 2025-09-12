@@ -1,0 +1,9 @@
+{
+  "image": "example_string",
+  "audio": "example_string",
+  "prompt": "example_string",
+  "num_frames_per_chunk": 81,
+  "fps": 16,
+  "seed": null,
+  "max_area": 921600
+}

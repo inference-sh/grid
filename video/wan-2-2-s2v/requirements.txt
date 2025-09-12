@@ -1,0 +1,41 @@
+# Core inference.sh requirements
+pydantic==2.10.6
+inferencesh==0.2.7
+
+# PyTorch and vision libraries - using latest version for better CUDA operator support
+torch>=2.7.1
+torchvision>=0.22.0
+torchaudio>=2.7.1
+accelerate>=1.1.1
+
+# Diffusers and transformers (need custom branch for Wan S2V support)
+git+https://github.com/tolgacangoz/diffusers.git@f5439e190e91f047ad62b4d8ce16a4a3986ab34b
+transformers>=4.49.0
+tokenizers>=0.20.3
+decord
+
+# Audio processing
+librosa
+soundfile
+
+# Image and video processing
+Pillow
+imageio
+imageio-ffmpeg
+opencv-python
+
+# Quantization support
+gguf
+safetensors
+
+# Utilities
+numpy>=1.23.5,<2
+requests
+huggingface_hub
+hf_transfer
+ftfy
+
+# Optional dependencies for better performance
+ninja
+packaging
+einops
