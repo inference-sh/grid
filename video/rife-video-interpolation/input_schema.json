@@ -1,71 +1,79 @@
 {
   "$defs": {
     "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
             },
-            {
-              "type": "null"
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
             }
-          ],
-          "default": null,
-          "title": "Uri"
+          },
+          "title": "File",
+          "type": "object"
         },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
+        {
+          "type": "string"
         }
-      },
-      "title": "File",
-      "type": "object"
+      ]
     }
   },
   "properties": {
@@ -73,43 +81,22 @@
       "$ref": "#/$defs/File",
       "description": "Input video file to interpolate"
     },
-    "exp": {
-      "default": 1,
-      "description": "Interpolation level (1=2x, 2=4x, 3=8x frames)",
-      "maximum": 3,
-      "minimum": 1,
-      "title": "Exp",
+    "target_fps": {
+      "default": 30,
+      "description": "Target output FPS.",
+      "enum": [
+        24,
+        30,
+        60,
+        120
+      ],
+      "title": "Target Fps",
       "type": "integer"
     },
-    "scale": {
-      "default": 1.0,
-      "description": "Scale factor for processing (0.5 for 4K video, 1.0 for HD)",
-      "title": "Scale",
-      "type": "number"
-    },
-    "fps": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Target output fps (if None, auto-calculated from input fps * 2^exp)",
-      "title": "Fps"
-    },
-    "fp16": {
+    "fast_mode": {
       "default": true,
-      "description": "Use fp16 mode for faster inference",
-      "title": "Fp16",
-      "type": "boolean"
-    },
-    "uhd": {
-      "default": false,
-      "description": "Enable 4K video support (automatically sets scale=0.5)",
-      "title": "Uhd",
+      "description": "Enable fast mode. Might reduce quality.",
+      "title": "Fast Mode",
       "type": "boolean"
     }
   },

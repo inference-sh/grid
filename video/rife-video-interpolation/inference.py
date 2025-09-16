@@ -8,7 +8,9 @@ from torch.nn import functional as F
 import warnings
 import skvideo.io
 import tempfile
-import time
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from pydantic import Field
+from typing import Optional
 
 # Add current directory to Python path for local imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,19 +21,19 @@ rife_dir = os.path.join(current_dir, 'ECCV2022-RIFE')
 if rife_dir not in sys.path:
     sys.path.append(rife_dir)
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
-from pydantic import Field
-from typing import Optional
-
 warnings.filterwarnings("ignore")
 
 class AppInput(BaseAppInput):
     video: File = Field(description="Input video file to interpolate")
-    exp: int = Field(default=1, ge=1, le=3, description="Interpolation level (1=2x, 2=4x, 3=8x frames)")
-    scale: float = Field(default=1.0, description="Scale factor for processing (0.5 for 4K video, 1.0 for HD)")
-    fps: Optional[int] = Field(default=None, description="Target output fps (if None, auto-calculated from input fps * 2^exp)")
-    fp16: bool = Field(default=True, description="Use fp16 mode for faster inference")
-    uhd: bool = Field(default=False, description="Enable 4K video support (automatically sets scale=0.5)")
+    target_fps: int = Field(
+        default=30,
+        description="Target output FPS.",
+        enum=[24, 30, 60, 120]
+    )
+    fast_mode: bool = Field(
+        default=True,
+        description="Enable fast mode. Might reduce quality."
+    )
 
 class AppOutput(BaseAppOutput):
     video: File = Field(description="Output video with interpolated frames")
@@ -100,28 +102,46 @@ class App(BaseApp):
         if not input_data.video.exists():
             raise RuntimeError(f"Input video does not exist at path: {input_data.video.path}")
         
-        # Configure parameters
-        scale = 0.5 if input_data.uhd and input_data.scale == 1.0 else input_data.scale
-        assert scale in [0.25, 0.5, 1.0, 2.0, 4.0], "Scale must be one of [0.25, 0.5, 1.0, 2.0, 4.0]"
-        
-        # Handle fp16 mode
-        use_fp16 = input_data.fp16 and torch.cuda.is_available()
-        if use_fp16:
-            print("Using fp16 mode")
-            # Note: We don't convert the RIFE model to half precision as it doesn't support it
-            # Instead, we handle tensor dtype conversion explicitly
-        
-        # Get video properties
+        # Get video properties and auto-configure parameters
         videoCapture = cv2.VideoCapture(input_data.video.path)
         original_fps = videoCapture.get(cv2.CAP_PROP_FPS)
+        width = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         tot_frame = int(videoCapture.get(cv2.CAP_PROP_FRAME_COUNT))
         videoCapture.release()
         
-        # Calculate output fps
-        if input_data.fps is None:
-            output_fps = original_fps * (2 ** input_data.exp)
+        # Auto-detect high resolution videos by checking the longer dimension
+        longer_dimension = max(width, height)
+        orientation = "portrait" if height > width else "landscape"
+        
+        # Consider it high-res if longer dimension is 4K-ish (3840) or higher
+        is_high_res = longer_dimension >= 3840
+        scale = 0.5 if is_high_res else 1.0
+        
+        print(f"Video resolution: {width}x{height} ({orientation})")
+        print(f"Processing scale: {scale} ({'high-res' if is_high_res else 'standard-res'} video detected)")
+        
+        # Calculate target FPS and required exp value
+        if input_data.target_fps is None:
+            target_fps = original_fps * 2  # Default to doubling FPS
+            exp = 1  # 2x frames
         else:
-            output_fps = float(input_data.fps)
+            target_fps = float(input_data.target_fps)
+            # Calculate minimum exp needed to reach target FPS
+            ratio = target_fps / original_fps
+            exp = max(1, min(3, int(np.ceil(np.log2(ratio)))))
+            print(f"Target FPS {target_fps} requires {2**exp}x frames (exp={exp})")
+        
+        # Handle fast mode (fp16)
+        use_fp16 = input_data.fast_mode and torch.cuda.is_available()
+        if use_fp16:
+            print("Using fast mode (fp16)")
+            # Note: We don't convert the RIFE model to half precision as it doesn't support it
+            # Instead, we handle tensor dtype conversion explicitly
+        
+        # Video properties already read above
+        
+        # Output FPS already calculated above as target_fps
         
         # Create temporary output files
         temp_output_fd, temp_output_path = tempfile.mkstemp(suffix='_temp.mp4')
@@ -131,18 +151,18 @@ class App(BaseApp):
         
         try:
             # Process video to temporary file
-            total_interpolated_frames = self._interpolate_video(
+            self._interpolate_video(
                 input_data.video.path,
                 temp_output_path,
                 scale=scale,
-                exp=input_data.exp,
-                output_fps=output_fps,
+                exp=exp,
+                output_fps=target_fps,
                 fp16=use_fp16,
                 tot_frame=tot_frame
             )
             
             # Re-encode to browser-friendly format with ffmpeg
-            self._reencode_for_browser(temp_output_path, final_output_path, output_fps)
+            self._reencode_for_browser(temp_output_path, final_output_path, target_fps)
             
             return AppOutput(
                 video=File(path=final_output_path)
@@ -325,16 +345,12 @@ class App(BaseApp):
             '-level', '4.0',  # H.264 level
             '-movflags', '+faststart',  # Optimize for web streaming
             '-r', str(fps),  # Frame rate
-            '-avoid_negative_ts', 'make_zero',  # Fix timestamp issues
-            '-vsync', '0',  # Maintain original timestamps
-            '-start_at_zero',  # Start timestamps at zero
-            '-fflags', '+genpts',  # Generate presentation timestamps
             output_path
         ]
         
         try:
             print(f"Running ffmpeg command: {' '.join(cmd)}")
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=300)  # 5 minute timeout
+            subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=300)  # 5 minute timeout
             print("Re-encoding completed successfully")
             
             # Check if output file exists and has reasonable size

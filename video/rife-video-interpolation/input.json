@@ -1,7 +1,7 @@
 {
-  "video": "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k486etyz5bdmxaga2vmvbrx8.mp4",
+  "video": "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4w5f7ya2mjkxwm0atypaq2n.mp4",
   "exp": 1,
-  "scale": 1.0,
+  "scale": 0.25,
   "fps": null,
   "fp16": true,
   "uhd": false
