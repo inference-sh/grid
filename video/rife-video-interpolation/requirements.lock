@@ -7,7 +7,7 @@ einops==0.8.1
 filelock==3.19.1
 fsspec==2025.9.0
 hf-xet==1.1.10
-huggingface-hub==0.34.5
+huggingface-hub==0.34.6
 idna==3.10
 imageio==2.37.0
 imageio-ffmpeg==0.6.0

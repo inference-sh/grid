@@ -98,6 +98,12 @@
       "description": "Enable fast mode. Might reduce quality.",
       "title": "Fast Mode",
       "type": "boolean"
+    },
+    "slow_motion": {
+      "default": false,
+      "description": "Enable slow-motion mode. Video will be played at half the interpolated frame rate.",
+      "title": "Slow Motion",
+      "type": "boolean"
     }
   },
   "required": [

@@ -34,6 +34,10 @@ class AppInput(BaseAppInput):
         default=True,
         description="Enable fast mode. Might reduce quality."
     )
+    slow_motion: bool = Field(
+        default=False,
+        description="Enable slow-motion mode. Video will be played at half the interpolated frame rate."
+    )
 
 class AppOutput(BaseAppOutput):
     video: File = Field(description="Output video with interpolated frames")
@@ -122,15 +126,13 @@ class App(BaseApp):
         print(f"Processing scale: {scale} ({'high-res' if is_high_res else 'standard-res'} video detected)")
         
         # Calculate target FPS and required exp value
-        if input_data.target_fps is None:
-            target_fps = original_fps * 2  # Default to doubling FPS
-            exp = 1  # 2x frames
-        else:
-            target_fps = float(input_data.target_fps)
-            # Calculate minimum exp needed to reach target FPS
-            ratio = target_fps / original_fps
-            exp = max(1, min(3, int(np.ceil(np.log2(ratio)))))
-            print(f"Target FPS {target_fps} requires {2**exp}x frames (exp={exp})")
+
+        target_fps = float(input_data.target_fps)
+        interpolation_target_fps = target_fps if not input_data.slow_motion else target_fps * 2
+        # Calculate minimum exp needed to reach target FPS
+        ratio = interpolation_target_fps / original_fps
+        exp = max(1, min(3, int(np.ceil(np.log2(ratio)))))
+        print(f"Target FPS {target_fps} requires {2**exp}x frames (exp={exp})")
         
         # Handle fast mode (fp16)
         use_fp16 = input_data.fast_mode and torch.cuda.is_available()
