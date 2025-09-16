@@ -1,0 +1,8 @@
+pydantic >= 2.0.0
+# inferencesh == 0.4.2
+huggingface_hub
+hf-transfer
+pillow
+
+git+https://github.com/inference-sh/llama-cpp-python.git@066638c36ea0ac10a14b9f1a149d874efdf0c151
+git+https://github.com/inference-sh/sdk-python.git@dcbb5874b61ddb41ea7ba7935503a6302445bab6
