@@ -17,6 +17,11 @@ from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
 from diffusers.hooks import apply_group_offloading
 
+import diffusers
+print("Diffusers version:")
+print(diffusers.__file__)   
+print(diffusers.__version__)
+
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 
 # Model variants mapping for GGUF quantization from QuantStack
@@ -277,6 +282,7 @@ class App(BaseApp):
     async def setup(self, metadata):
         """Initialize the Wan2.2 Image-to-Video pipeline and resources here."""
         print("Setting up Wan2.2 Image-to-Video pipeline (Lightning LoRA)...")
+
         # Store resolution defaults
         self.resolution_presets = {
             "480p": {"max_area": 480 * 832},
@@ -442,7 +448,11 @@ class App(BaseApp):
 
         # Optionally process end image for last frame transition
         last_image = None
+        print(f"DEBUG: input_data.end_image = {input_data.end_image}")
+        print(f"DEBUG: last_image initialized to: {last_image}")
+
         if input_data.end_image is not None:
+            print("DEBUG: Processing end_image...")
             resized_end_image = self.image_processor(
                 image=input_data.end_image.path,
                 max_area=max_area,
@@ -454,6 +464,11 @@ class App(BaseApp):
                 except Exception:
                     resized_end_image = resized_end_image.resize((width, height))
             last_image = resized_end_image
+            print(f"DEBUG: last_image set to processed end_image: {type(last_image)} with size {last_image.size}")
+        else:
+            print("DEBUG: No end_image provided, last_image remains None")
+
+        print(f"DEBUG: Final last_image value before pipeline call: {last_image}")
         
         # Set seed if provided
         generator = None
@@ -467,6 +482,8 @@ class App(BaseApp):
         print(f"Updating boundary ratio to: {input_data.boundary_ratio}")
         self.pipe.register_to_config(boundary_ratio=input_data.boundary_ratio)
         
+        print(f"DEBUG: About to call pipeline with last_image = {last_image}")
+
         with torch.inference_mode():
             output = self.pipe(
                 image=resized_image,
@@ -480,6 +497,8 @@ class App(BaseApp):
                 num_inference_steps=input_data.num_inference_steps,
                 generator=generator,
             ).frames[0]
+
+        print(f"DEBUG: Pipeline completed, last_image was: {last_image}")
         
         print("Video generation complete, exporting...")
         

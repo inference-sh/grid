@@ -2,13 +2,13 @@ accelerate==1.10.1
 annotated-types==0.7.0
 certifi==2025.8.3
 charset-normalizer==3.4.3
-diffusers @ git+https://github.com/huggingface/diffusers.git@9e7ae568d60f59517990b652a9c825a7f4caeaf5
+diffusers @ git+https://github.com/huggingface/diffusers.git@f5c113e4395bc373ab540fc5a1f7490b7120c40f
 filelock==3.19.1
 fsspec==2025.9.0
 ftfy==6.3.1
 gguf==0.17.1
 hf-transfer==0.1.9
-hf-xet==1.1.9
+hf-xet==1.1.10
 huggingface-hub==0.34.4
 idna==3.10
 imageio==2.37.0
@@ -54,7 +54,7 @@ torch==2.7.1
 torchaudio==2.7.1
 torchvision==0.22.1
 tqdm==4.67.1
-transformers @ git+https://github.com/huggingface/transformers.git@0997c2f2ab08c32c8e2f90aaad06e29a7108535b
+transformers @ git+https://github.com/huggingface/transformers.git@f5e16418575eee9b08ae2fea8a92c83ae33a3371
 triton==3.3.1
 typing-extensions==4.15.0
 urllib3==2.5.0
