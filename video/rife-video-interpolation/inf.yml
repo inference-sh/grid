@@ -18,7 +18,7 @@ variants:
             ram: 24000000000
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
-            TRANSFORMERS_CACHE: /tmp/cache
+            SAFETENSORS_FAST_GPU: "1"
         python: "3.10"
     high_memory:
         name: high_memory

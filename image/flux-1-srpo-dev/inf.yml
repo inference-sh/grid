@@ -1,0 +1,86 @@
+name: flux-1-srpo-dev
+description: SRPO is a high-quality text-to-image model optimized for photorealistic outputs
+category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: BF16 (default)
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q2_k:
+        name: Q2_K
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 6000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q3_k:
+        name: Q3_K
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 8000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q4_k:
+        name: Q4_K
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q5_k:
+        name: Q5_K
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q6_k:
+        name: Q6_K
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"
+    q8_0:
+        name: Q8_0
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.12"

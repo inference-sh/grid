@@ -18,7 +18,7 @@ variants:
             ram: 16000000000
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
-            TRANSFORMERS_CACHE: /tmp/cache
+            SAFETENSORS_FAST_GPU: "1"
         python: "3.10"
     default:
         name: default
@@ -31,7 +31,7 @@ variants:
             ram: 32000000000
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
-            TRANSFORMERS_CACHE: /tmp/cache
+            SAFETENSORS_FAST_GPU: "1"
         python: "3.10"
     lowvram:
         name: lowvram
@@ -44,5 +44,5 @@ variants:
             ram: 16000000000
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
-            TRANSFORMERS_CACHE: /tmp/cache
+            SAFETENSORS_FAST_GPU: "1"
         python: "3.10"

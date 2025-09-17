@@ -96,7 +96,7 @@ variants:
             ram: 32000000000       # RAM in bytes (32GB)
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
-            TRANSFORMERS_CACHE: "/tmp/cache"
+            SAFETENSORS_FAST_GPU: "1"
         python: "3.10"
         
     lowvram:

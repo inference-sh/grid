@@ -113,7 +113,7 @@ variants:
       storage_gb: 100
     environment:
       CUDA_VISIBLE_DEVICES: "0"
-      TRANSFORMERS_CACHE: "/tmp/cache"
+      SAFETENSORS_FAST_GPU: "1"
 ```
 
 ### Resource Guidelines:
