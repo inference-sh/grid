@@ -1,0 +1,20 @@
+pydantic >= 2.0.0
+inferencesh
+
+# PyTorch and related
+torch>=2.7.1
+torchvision>=0.22.0
+torchaudio>=2.7.1
+
+# Diffusers and related ML libraries
+git+https://github.com/huggingface/diffusers.git
+transformers>=4.49.0
+accelerate>=1.1.1
+
+# Image and video processing
+pillow>=9.0.0
+opencv-python>=4.8.0
+
+# Utilities
+numpy>=1.23.5,<2
+einops>=0.6.0

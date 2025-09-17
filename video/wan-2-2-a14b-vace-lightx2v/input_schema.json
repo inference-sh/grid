@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "first_frame": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first frame image for image-to-video generation"
+    },
+    "prompt": {
+      "description": "Text prompt describing the desired video content",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional list of reference images",
+      "title": "Reference Images"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Negative prompt to avoid unwanted content",
+      "title": "Negative Prompt"
+    },
+    "height": {
+      "default": 480,
+      "description": "Output video height in pixels",
+      "title": "Height",
+      "type": "integer"
+    },
+    "width": {
+      "default": 832,
+      "description": "Output video width in pixels",
+      "title": "Width",
+      "type": "integer"
+    },
+    "num_frames": {
+      "default": 45,
+      "description": "Number of frames in output video",
+      "title": "Num Frames",
+      "type": "integer"
+    },
+    "num_inference_steps": {
+      "default": 8,
+      "description": "Number of inference steps (6-10 recommended)",
+      "maximum": 10,
+      "minimum": 6,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 42,
+      "description": "Random seed for reproducible results",
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
