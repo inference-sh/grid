@@ -112,13 +112,17 @@ class App(BaseApp):
         self.last_context_size = n_ctx
 
         print("Downloading and initializing GLM-4.5-Air model...")
+        # Add our template to model metadata
         self.model = Llama.from_pretrained(
             repo_id=self.variant_config['repo_id'],
             filename=self.variant_config['model_filename'],
             additional_files=self.variant_config['additional_files'],
-            verbose=False,
-            n_gpu_layers=-1,
+            verbose=True,
+            n_gpu_layers=-1, # -1 means use all GPU layers available
             n_ctx=n_ctx,
+            # chat_format="gguf-function-calling",
+            # chat_format="chatml-function-calling",
+            # metadata={"tokenizer.chat_template": MAGISTRAL_JINJA_TEMPLATE},
             chat_handler=jinja_formatter.to_chat_handler()
         )
         print("Model initialization complete!")
@@ -131,6 +135,7 @@ class App(BaseApp):
             self.model.recreate_context(
                 n_ctx=input_data.context_size,
             )
+            self.last_context_size = input_data.context_size
 
         # Build messages using SDK helper with /nothink appended when reasoning is disabled
         def transform_message(text: str) -> str:
@@ -150,8 +155,10 @@ class App(BaseApp):
             transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
+            tools=input_data.tools,
+            tool_choice="auto",
             stop=['<end_of_turn>', '<eos>'],
-            output_cls=AppOutput
+            output_cls=AppOutput,
         )
         
         try:

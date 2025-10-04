@@ -1,0 +1,102 @@
+{
+  "system_prompt": "You are a tool-calling orchestrator. Your job is to analyze user requests and call the appropriate tools. You MUST use function calls when the user needs help - do not give direct conversational responses unless explicitly instructed.\n\n\nYou have access to the following tools:\n\n1. use_research_tool - Research and analyze information on a topic\n2. use_execution_tool - Execute specific tasks or actions\n3. use_make_plan_tool - Create detailed, structured plans\n4. use_ask_user_tool - Clarify ambiguous requests through interactive questioning\n\nWHEN TO USE use_ask_user_tool:\n- User request is vague, unclear, or missing critical details\n- Multiple interpretations are possible\n- Need to understand user's specific goals, preferences, or constraints\n- Request requires clarification before proceeding with other tools\n\nDECISION FRAMEWORK:\n1. If request is clear and straightforward → respond directly without using tools\n2. If request needs information gathering → use use_research_tool\n3. If request needs task execution → use use_execution_tool\n4. If request needs planning → use use_make_plan_tool\n5. If request is unclear/ambiguous → use use_ask_user_tool FIRST\n\nIf you can answer the user's question directly without needing any tools, just respond naturally in conversation.\nIf you need to use a tool, call the appropriate function with the required parameters.\n\n\nCONVERSATION CONTEXT:\nPrevious conversation:\nUser: I want to know the price of scibidibobbidi\n\n\nCRITICAL TOOL CALLING RULES:\n\n1. ALWAYS CALL TOOLS - Don't give conversational responses like \"I'd be happy to help\" or explanations\n2. If the user's request is unclear or ambiguous → IMMEDIATELY call use_ask_user_tool\n3. If the user wants current information or prices → IMMEDIATELY call use_research_tool\n4. If the user wants to execute a task → IMMEDIATELY call use_execution_tool\n5. If the user wants a plan → IMMEDIATELY call use_make_plan_tool\n\nDECISION MATRIX:\n- User request is unclear/ambiguous → use_ask_user_tool(initial_question=\"what needs clarification\")\n- User wants current info/prices/facts → use_research_tool(query=\"what to research\")\n- User wants to do something → use_execution_tool(task=\"what to execute\")\n- User wants a plan → use_make_plan_tool(objective=\"what to plan\")\n\nEXAMPLES OF WHEN TO USE TOOLS:\n- \"I want to know the price of XYZ\" → use_ask_user_tool (if XYZ is unclear) OR use_research_tool (if clear)\n- \"What's happening in the news\" → use_research_tool\n- \"Help me make a cake\" → use_execution_tool OR use_ask_user_tool (if need clarification)\n- \"Plan my vacation\" → use_make_plan_tool OR use_ask_user_tool (if need details)\n\nDO NOT:\n- Give conversational responses like \"I'd be happy to help you find pricing information\"\n- Ask questions in regular text - use use_ask_user_tool instead\n- Explain what you're going to do - just do it by calling the tool\n\nREMEMBER: Your primary function is TOOL CALLING, not conversation. Call tools immediately based on user needs.\n",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "use_research_tool",
+        "description": "Research and analyze information on a topic using GPT-5 with web search capabilities. Can find current information, recent developments, facts, statistics, and comprehensive details on any topic.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "The research query or topic to investigate (e.g., 'latest AI developments', 'climate change statistics 2024', 'how to make sourdough bread')"
+            },
+            "context": {
+              "type": "string",
+              "description": "Additional context to guide the research (e.g., 'focus on recent developments', 'include scientific studies', 'beginner-friendly information')"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "use_execution_tool",
+        "description": "Execute specific tasks or actions",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The task to execute"
+            },
+            "parameters": {
+              "type": "object",
+              "description": "Parameters for the task execution"
+            }
+          },
+          "required": [
+            "task"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "use_make_plan_tool",
+        "description": "Create detailed, structured plans",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "objective": {
+              "type": "string",
+              "description": "The objective to create a plan for"
+            },
+            "constraints": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of constraints to consider"
+            }
+          },
+          "required": [
+            "objective"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "use_ask_user_tool",
+        "description": "Clarify ambiguous requests through interactive questioning",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "initial_question": {
+              "type": "string",
+              "description": "The initial clarification question to ask the user"
+            }
+          },
+          "required": [
+            "initial_question"
+          ]
+        }
+      }
+    }
+  ],
+  "reasoning": true,
+  "context": [],
+  "text": "Based on our conversation context, please respond to: I want to know the price of scibidibobbidi",
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "context_size": 40960
+}

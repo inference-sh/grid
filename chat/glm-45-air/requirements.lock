@@ -6,23 +6,23 @@ filelock==3.19.1
 fsspec==2025.9.0
 hf-transfer==0.1.9
 hf-xet==1.1.10
-huggingface-hub==0.34.5
+huggingface-hub==0.35.3
 idna==3.10
-inferencesh @ git+https://github.com/inference-sh/sdk-python.git@dcbb5874b61ddb41ea7ba7935503a6302445bab6
+inferencesh @ git+https://github.com/inference-sh/sdk-python.git@101042ac7b9ba377d6aa94b447655b8aff4291f3
 jinja2==3.1.6
-llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@066638c36ea0ac10a14b9f1a149d874efdf0c151
-markupsafe==3.0.2
+llama-cpp-python @ git+https://github.com/inference-sh/llama-cpp-python.git@537d249a813b19c57b7cf9ddc5ec7d2a53e5490d
+markupsafe==3.0.3
 ninja==1.13.0
 numpy==2.3.3
 packaging==25.0
 pillow==11.3.0
 pydantic==2.11.9
 pydantic-core==2.33.2
-pyyaml==6.0.2
+pyyaml==6.0.3
 requests==2.32.5
 setuptools==80.9.0
 setuptools-scm==9.2.0
 tqdm==4.67.1
 typing-extensions==4.15.0
-typing-inspection==0.4.1
+typing-inspection==0.4.2
 urllib3==2.5.0
