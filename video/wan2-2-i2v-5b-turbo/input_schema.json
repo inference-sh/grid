@@ -66,38 +66,39 @@
       },
       "title": "File",
       "type": "object"
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_file"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
     }
   },
   "properties": {
     "image": {
       "$ref": "#/$defs/File",
       "description": "Input image for video generation"
-    },
-    "resolution": {
-      "choices": [
-        "480p",
-        "720p"
-      ],
-      "default": "480p",
-      "description": "Resolution for the output video",
-      "enum": [
-        "480p",
-        "720p"
-      ],
-      "title": "Resolution",
-      "type": "string"
-    },
-    "end_image": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Optional end frame image; when provided, the video will transition from the first frame to this last frame"
     },
     "prompt": {
       "description": "Text prompt for video generation",
@@ -110,20 +111,30 @@
       "title": "Negative Prompt",
       "type": "string"
     },
+    "resolution": {
+      "default": "720p",
+      "description": "Resolution preset",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
     "num_frames": {
-      "default": 81,
+      "default": 121,
       "description": "Number of frames to generate",
       "title": "Num Frames",
       "type": "integer"
     },
     "num_inference_steps": {
       "default": 4,
-      "description": "Number of denoising steps (4 or 6 are typically enough for LightX2V)",
+      "description": "Number of denoising steps",
       "title": "Num Inference Steps",
       "type": "integer"
     },
     "fps": {
-      "default": 16,
+      "default": 24,
       "description": "Frames per second for the output video",
       "title": "Fps",
       "type": "integer"
@@ -141,13 +152,39 @@
       "description": "Random seed for reproducibility",
       "title": "Seed"
     },
-    "boundary_ratio": {
-      "default": 0.875,
-      "description": "Boundary ratio between high and low noise transformers (0-1)",
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Boundary Ratio",
+    "cache_threshold": {
+      "default": 0.0,
+      "description": "First Block Cache threshold (set 0 to disable)",
+      "title": "Cache Threshold",
       "type": "number"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional end image for first-to-last frame video generation"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
     }
   },
   "required": [

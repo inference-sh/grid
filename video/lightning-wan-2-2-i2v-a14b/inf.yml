@@ -7,8 +7,8 @@ images:
     banner: ""
 metadata: {}
 variants:
-    default_480p:
-        name: default_480p
+    default:
+        name: default
         order: 0
         resources:
             gpu:
@@ -18,8 +18,8 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
-    default_480p_offload:
-        name: default_480p_offload
+    default_offload:
+        name: default_offload
         order: 1
         resources:
             gpu:
@@ -29,8 +29,8 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
-    default_480p_offload_lowvram:
-        name: default_480p_offload_lowvram
+    default_offload_lowvram:
+        name: default_offload_lowvram
         order: 28
         resources:
             gpu:
@@ -40,107 +40,8 @@ variants:
             ram: 34359738368
         env: {}
         python: "3.12"
-    default_720p:
-        name: default_720p
-        order: 26
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    default_720p_offload:
-        name: default_720p_offload
-        order: 27
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    default_720p_offload_lowvram:
-        name: default_720p_offload_lowvram
-        order: 40
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_480p:
-        name: fp16_480p
-        order: 2
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_480p_offload:
-        name: fp16_480p_offload
-        order: 3
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_480p_offload_lowvram:
-        name: fp16_480p_offload_lowvram
-        order: 29
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_720p:
-        name: fp16_720p
-        order: 28
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_720p_offload:
-        name: fp16_720p_offload
-        order: 29
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    fp16_720p_offload_lowvram:
-        name: fp16_720p_offload_lowvram
-        order: 41
-        resources:
-            gpu:
-                count: 1
-                vram: 64424509440
-                type: nvidia
-            ram: 34359738368
-        env: {}
-        python: "3.12"
-    q2_k_480p:
-        name: q2_k_480p
+    q2_k:
+        name: q2_k
         order: 4
         resources:
             gpu:
@@ -150,8 +51,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q2_k_480p_offload:
-        name: q2_k_480p_offload
+    q2_k_offload:
+        name: q2_k_offload
         order: 5
         resources:
             gpu:
@@ -161,8 +62,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q2_k_480p_offload_lowvram:
-        name: q2_k_480p_offload_lowvram
+    q2_k_offload_lowvram:
+        name: q2_k_offload_lowvram
         order: 6
         resources:
             gpu:
@@ -172,41 +73,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q2_k_720p:
-        name: q2_k_720p
-        order: 30
-        resources:
-            gpu:
-                count: 1
-                vram: 12000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q2_k_720p_offload:
-        name: q2_k_720p_offload
-        order: 31
-        resources:
-            gpu:
-                count: 1
-                vram: 12000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q2_k_720p_offload_lowvram:
-        name: q2_k_720p_offload_lowvram
-        order: 42
-        resources:
-            gpu:
-                count: 1
-                vram: 12000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_m_480p:
-        name: q3_k_m_480p
+    q3_k_m:
+        name: q3_k_m
         order: 6
         resources:
             gpu:
@@ -216,8 +84,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_m_480p_offload:
-        name: q3_k_m_480p_offload
+    q3_k_m_offload:
+        name: q3_k_m_offload
         order: 7
         resources:
             gpu:
@@ -227,8 +95,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_m_480p_offload_lowvram:
-        name: q3_k_m_480p_offload_lowvram
+    q3_k_m_offload_lowvram:
+        name: q3_k_m_offload_lowvram
         order: 30
         resources:
             gpu:
@@ -238,41 +106,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_m_720p:
-        name: q3_k_m_720p
-        order: 32
-        resources:
-            gpu:
-                count: 1
-                vram: 15000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_m_720p_offload:
-        name: q3_k_m_720p_offload
-        order: 33
-        resources:
-            gpu:
-                count: 1
-                vram: 15000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_m_720p_offload_lowvram:
-        name: q3_k_m_720p_offload_lowvram
-        order: 43
-        resources:
-            gpu:
-                count: 1
-                vram: 15000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_s_480p:
-        name: q3_k_s_480p
+    q3_k_s:
+        name: q3_k_s
         order: 8
         resources:
             gpu:
@@ -282,8 +117,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_s_480p_offload:
-        name: q3_k_s_480p_offload
+    q3_k_s_offload:
+        name: q3_k_s_offload
         order: 9
         resources:
             gpu:
@@ -293,8 +128,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_s_480p_offload_lowvram:
-        name: q3_k_s_480p_offload_lowvram
+    q3_k_s_offload_lowvram:
+        name: q3_k_s_offload_lowvram
         order: 31
         resources:
             gpu:
@@ -304,41 +139,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q3_k_s_720p:
-        name: q3_k_s_720p
-        order: 34
-        resources:
-            gpu:
-                count: 1
-                vram: 14000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_s_720p_offload:
-        name: q3_k_s_720p_offload
-        order: 35
-        resources:
-            gpu:
-                count: 1
-                vram: 14000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q3_k_s_720p_offload_lowvram:
-        name: q3_k_s_720p_offload_lowvram
-        order: 44
-        resources:
-            gpu:
-                count: 1
-                vram: 14000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_m_480p:
-        name: q4_k_m_480p
+    q4_k_m:
+        name: q4_k_m
         order: 10
         resources:
             gpu:
@@ -348,8 +150,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_m_480p_offload:
-        name: q4_k_m_480p_offload
+    q4_k_m_offload:
+        name: q4_k_m_offload
         order: 11
         resources:
             gpu:
@@ -359,8 +161,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_m_480p_offload_lowvram:
-        name: q4_k_m_480p_offload_lowvram
+    q4_k_m_offload_lowvram:
+        name: q4_k_m_offload_lowvram
         order: 32
         resources:
             gpu:
@@ -370,41 +172,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_m_720p:
-        name: q4_k_m_720p
-        order: 36
-        resources:
-            gpu:
-                count: 1
-                vram: 20000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_m_720p_offload:
-        name: q4_k_m_720p_offload
-        order: 37
-        resources:
-            gpu:
-                count: 1
-                vram: 20000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_m_720p_offload_lowvram:
-        name: q4_k_m_720p_offload_lowvram
-        order: 45
-        resources:
-            gpu:
-                count: 1
-                vram: 20000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_s_480p:
-        name: q4_k_s_480p
+    q4_k_s:
+        name: q4_k_s
         order: 12
         resources:
             gpu:
@@ -414,8 +183,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_s_480p_offload:
-        name: q4_k_s_480p_offload
+    q4_k_s_offload:
+        name: q4_k_s_offload
         order: 13
         resources:
             gpu:
@@ -425,8 +194,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_s_480p_offload_lowvram:
-        name: q4_k_s_480p_offload_lowvram
+    q4_k_s_offload_lowvram:
+        name: q4_k_s_offload_lowvram
         order: 33
         resources:
             gpu:
@@ -436,41 +205,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q4_k_s_720p:
-        name: q4_k_s_720p
-        order: 38
-        resources:
-            gpu:
-                count: 1
-                vram: 18000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_s_720p_offload:
-        name: q4_k_s_720p_offload
-        order: 39
-        resources:
-            gpu:
-                count: 1
-                vram: 18000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q4_k_s_720p_offload_lowvram:
-        name: q4_k_s_720p_offload_lowvram
-        order: 46
-        resources:
-            gpu:
-                count: 1
-                vram: 18000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_0_480p:
-        name: q5_0_480p
+    q5_0:
+        name: q5_0
         order: 14
         resources:
             gpu:
@@ -480,8 +216,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_0_480p_offload:
-        name: q5_0_480p_offload
+    q5_0_offload:
+        name: q5_0_offload
         order: 15
         resources:
             gpu:
@@ -491,8 +227,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_0_480p_offload_lowvram:
-        name: q5_0_480p_offload_lowvram
+    q5_0_offload_lowvram:
+        name: q5_0_offload_lowvram
         order: 34
         resources:
             gpu:
@@ -502,41 +238,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_0_720p:
-        name: q5_0_720p
-        order: 40
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_0_720p_offload:
-        name: q5_0_720p_offload
-        order: 41
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_0_720p_offload_lowvram:
-        name: q5_0_720p_offload_lowvram
-        order: 47
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_1_480p:
-        name: q5_1_480p
+    q5_1:
+        name: q5_1
         order: 16
         resources:
             gpu:
@@ -546,8 +249,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_1_480p_offload:
-        name: q5_1_480p_offload
+    q5_1_offload:
+        name: q5_1_offload
         order: 17
         resources:
             gpu:
@@ -557,8 +260,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_1_480p_offload_lowvram:
-        name: q5_1_480p_offload_lowvram
+    q5_1_offload_lowvram:
+        name: q5_1_offload_lowvram
         order: 35
         resources:
             gpu:
@@ -568,41 +271,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_1_720p:
-        name: q5_1_720p
-        order: 42
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_1_720p_offload:
-        name: q5_1_720p_offload
-        order: 43
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_1_720p_offload_lowvram:
-        name: q5_1_720p_offload_lowvram
-        order: 48
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_m_480p:
-        name: q5_k_m_480p
+    q5_k_m:
+        name: q5_k_m
         order: 18
         resources:
             gpu:
@@ -612,8 +282,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_m_480p_offload:
-        name: q5_k_m_480p_offload
+    q5_k_m_offload:
+        name: q5_k_m_offload
         order: 19
         resources:
             gpu:
@@ -623,8 +293,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_m_480p_offload_lowvram:
-        name: q5_k_m_480p_offload_lowvram
+    q5_k_m_offload_lowvram:
+        name: q5_k_m_offload_lowvram
         order: 36
         resources:
             gpu:
@@ -634,41 +304,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_m_720p:
-        name: q5_k_m_720p
-        order: 44
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_m_720p_offload:
-        name: q5_k_m_720p_offload
-        order: 45
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_m_720p_offload_lowvram:
-        name: q5_k_m_720p_offload_lowvram
-        order: 49
-        resources:
-            gpu:
-                count: 1
-                vram: 22000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_s_480p:
-        name: q5_k_s_480p
+    q5_k_s:
+        name: q5_k_s
         order: 20
         resources:
             gpu:
@@ -678,8 +315,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_s_480p_offload:
-        name: q5_k_s_480p_offload
+    q5_k_s_offload:
+        name: q5_k_s_offload
         order: 21
         resources:
             gpu:
@@ -689,8 +326,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_s_480p_offload_lowvram:
-        name: q5_k_s_480p_offload_lowvram
+    q5_k_s_offload_lowvram:
+        name: q5_k_s_offload_lowvram
         order: 37
         resources:
             gpu:
@@ -700,41 +337,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q5_k_s_720p:
-        name: q5_k_s_720p
-        order: 46
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_s_720p_offload:
-        name: q5_k_s_720p_offload
-        order: 47
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q5_k_s_720p_offload_lowvram:
-        name: q5_k_s_720p_offload_lowvram
-        order: 50
-        resources:
-            gpu:
-                count: 1
-                vram: 21000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q6_k_480p:
-        name: q6_k_480p
+    q6_k:
+        name: q6_k
         order: 22
         resources:
             gpu:
@@ -744,8 +348,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q6_k_480p_offload:
-        name: q6_k_480p_offload
+    q6_k_offload:
+        name: q6_k_offload
         order: 23
         resources:
             gpu:
@@ -755,8 +359,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q6_k_480p_offload_lowvram:
-        name: q6_k_480p_offload_lowvram
+    q6_k_offload_lowvram:
+        name: q6_k_offload_lowvram
         order: 38
         resources:
             gpu:
@@ -766,41 +370,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q6_k_720p:
-        name: q6_k_720p
-        order: 48
-        resources:
-            gpu:
-                count: 1
-                vram: 25000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q6_k_720p_offload:
-        name: q6_k_720p_offload
-        order: 49
-        resources:
-            gpu:
-                count: 1
-                vram: 25000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q6_k_720p_offload_lowvram:
-        name: q6_k_720p_offload_lowvram
-        order: 51
-        resources:
-            gpu:
-                count: 1
-                vram: 25000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q8_0_480p:
-        name: q8_0_480p
+    q8_0:
+        name: q8_0
         order: 24
         resources:
             gpu:
@@ -810,8 +381,8 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q8_0_480p_offload:
-        name: q8_0_480p_offload
+    q8_0_offload:
+        name: q8_0_offload
         order: 25
         resources:
             gpu:
@@ -821,42 +392,9 @@ variants:
             ram: 16000000000
         env: {}
         python: "3.12"
-    q8_0_480p_offload_lowvram:
-        name: q8_0_480p_offload_lowvram
+    q8_0_offload_lowvram:
+        name: q8_0_offload_lowvram
         order: 39
-        resources:
-            gpu:
-                count: 1
-                vram: 31000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q8_0_720p:
-        name: q8_0_720p
-        order: 50
-        resources:
-            gpu:
-                count: 1
-                vram: 31000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q8_0_720p_offload:
-        name: q8_0_720p_offload
-        order: 51
-        resources:
-            gpu:
-                count: 1
-                vram: 31000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.12"
-    q8_0_720p_offload_lowvram:
-        name: q8_0_720p_offload_lowvram
-        order: 52
         resources:
             gpu:
                 count: 1

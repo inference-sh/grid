@@ -11,7 +11,7 @@ from typing import Optional, Union, List
 from pydantic import Field
 from PIL import Image
 from diffusers import WanImageToVideoPipeline, WanTransformer3DModel, ModularPipeline, GGUFQuantizationConfig, AutoencoderKLWan
-from diffusers.utils import export_to_video
+from diffusers.utils import export_to_video, load_image
 from diffusers.hooks import FirstBlockCacheConfig, apply_group_offloading
 from huggingface_hub import hf_hub_download
 from accelerate import Accelerator
@@ -59,6 +59,45 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     file: File = Field(description="Generated video file")
 
+    
+def process_image(
+    image: Union[str, Image.Image],
+    max_area: int,
+    mod_value: int,
+) -> Image.Image:
+    if isinstance(image, str):
+        image = load_image(image).convert("RGB")
+    elif not isinstance(image, Image.Image):
+        raise ValueError(f"Invalid image type: {type(image)}; only PIL Image or URL string supported")
+
+    iw, ih = image.width, image.height
+    dw, dh = mod_value, mod_value
+    ratio = iw / ih
+    ow = (max_area * ratio) ** 0.5
+    oh = max_area / ow
+
+    ow1 = int(ow // dw * dw)
+    oh1 = int(max_area / ow1 // dh * dh)
+    ratio1 = ow1 / oh1
+
+    oh2 = int(oh // dh * dh)
+    ow2 = int(max_area / oh2 // dw * dw)
+    ratio2 = ow2 / oh2
+
+    if max(ratio / ratio1, ratio1 / ratio) < max(ratio / ratio2, ratio2 / ratio):
+        ow_final, oh_final = ow1, oh1
+    else:
+        ow_final, oh_final = ow2, oh2
+
+    scale = max(ow_final / iw, oh_final / ih)
+    resized = image.resize((round(iw * scale), round(ih * scale)), Image.LANCZOS)
+
+    x1 = (resized.width - ow_final) // 2
+    y1 = (resized.height - oh_final) // 2
+    cropped = resized.crop((x1, y1, x1 + ow_final, y1 + oh_final))
+    return cropped
+
+
 class App(BaseApp):
     async def setup(self, metadata):
         """Initialize the Wan2.2-TI2V-5B Image-to-Video pipeline and resources here."""
@@ -91,9 +130,6 @@ class App(BaseApp):
         
         self.vae = AutoencoderKLWan.from_pretrained(self.model_id, subfolder="vae", torch_dtype=torch.float32)
         
-        # use default wan image processor to resize and crop the image
-        self.image_processor = ModularPipeline.from_pretrained("YiYiXu/WanImageProcessor", trust_remote_code=True)
-
         # Determine offloading policy: default uses CPU offload; lowvram uses group offload
         use_group_offload = variant.endswith("_offload_lowvram")
         base_variant = variant.replace("_offload_lowvram", "").replace("_offload", "")
@@ -169,17 +205,20 @@ class App(BaseApp):
         image = Image.open(input_data.image.path).convert("RGB")
         print(f"Loaded image: {image.size}")
 
+        mod_value = self.pipe.vae_scale_factor_spatial * self.pipe.transformer.config.patch_size[1]
         # Resize image according to pipeline requirements
-        resized_image = self.image_processor(
+        resized_image = process_image(
             image=input_data.image.path,
-            max_area=max_area, output="processed_image")
+            max_area=max_area,
+            mod_value=mod_value,
+        )
 
         last_image = None
         if input_data.end_image is not None:
-            last_image = self.image_processor(
+            last_image = process_image(
                 image=input_data.end_image.path,
                 max_area=max_area,
-                output="processed_image",
+                mod_value=mod_value,
             )
         
         width = resized_image.width

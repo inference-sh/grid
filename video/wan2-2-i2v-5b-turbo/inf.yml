@@ -1,0 +1,31 @@
+name: wan2-2-i2v-5b-turbo
+description: image to video with wan2.2 TI2V 5B model with Turbo LoRA for faster generation
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: turbo
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 25769803776
+                type: nvidia
+            ram: 25769803776
+        env: {}
+        python: "3.12"
+    turbo_offload:
+        name: turbo_offload
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: nvidia
+            ram: 25769803776
+        env: {}
+        python: "3.12"

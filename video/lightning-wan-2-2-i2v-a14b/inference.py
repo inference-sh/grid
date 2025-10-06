@@ -28,192 +28,96 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 # Only includes variants where both HighNoise and LowNoise transformers are available
 MODEL_VARIANTS = {
     # 480p variants
-    "default_480p": None,  # Use default F16 model for 480p
-    "default_480p_offload": None,  # Use default F16 model with offloading for 480p
-    "fp16_480p": None,  # Use default F16 model with CPU offload for 480p
-    "fp16_480p_offload": None,  # Use default F16 model with CPU offload and group offloading for 480p
-    "q2_k_480p": {
+    "default": None,  # Use default F16 model for 480p
+    "default_offload": None,  # Use default F16 model with offloading for 480p
+    "q2_k": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
     },
-    "q2_k_480p_offload": {
+    "q2_k_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
     },
-    "q3_k_s_480p": {
+    "q3_k_s": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
     },
-    "q3_k_s_480p_offload": {
+    "q3_k_s_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
     },
-    "q3_k_m_480p": {
+    "q3_k_m": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
     },
-    "q3_k_m_480p_offload": {
+    "q3_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
     },
-    "q4_k_s_480p": {
+    "q4_k_s": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
     },
-    "q4_k_s_480p_offload": {
+    "q4_k_s_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
     },
-    "q4_k_m_480p": {
+    "q4_k_m": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
     },
-    "q4_k_m_480p_offload": {
+    "q4_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
     },
-    "q5_0_480p": {
+    "q5_0": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
     },
-    "q5_0_480p_offload": {
+    "q5_0_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
     },
-    "q5_1_480p": {
+    "q5_1": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
     },
-    "q5_1_480p_offload": {
+    "q5_1_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
     },
-    "q5_k_s_480p": {
+    "q5_k_s": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
     },
-    "q5_k_s_480p_offload": {
+    "q5_k_s_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
     },
-    "q5_k_m_480p": {
+    "q5_k_m": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
     },
-    "q5_k_m_480p_offload": {
+    "q5_k_m_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
     },
-    "q6_k_480p": {
+    "q6_k": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
     },
-    "q6_k_480p_offload": {
+    "q6_k_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
     },
-    "q8_0_480p": {
+    "q8_0": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
     },
-    "q8_0_480p_offload": {
+    "q8_0_offload": {
         "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
         "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
     },
-    
-    # 720p variants
-    "default_720p": None,  # Use default F16 model for 720p
-    "default_720p_offload": None,  # Use default F16 model with offloading for 720p
-    "fp16_720p": None,  # Use default F16 model with CPU offload for 720p
-    "fp16_720p_offload": None,  # Use default F16 model with CPU offload and group offloading for 720p
-    "q2_k_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
-    },
-    "q2_k_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q2_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q2_K.gguf"
-    },
-    "q3_k_s_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
-    },
-    "q3_k_s_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_S.gguf"
-    },
-    "q3_k_m_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
-    },
-    "q3_k_m_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q3_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q3_K_M.gguf"
-    },
-    "q4_k_s_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
-    },
-    "q4_k_s_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_S.gguf"
-    },
-    "q4_k_m_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
-    },
-    "q4_k_m_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf"
-    },
-    "q5_0_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
-    },
-    "q5_0_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_0.gguf"
-    },
-    "q5_1_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
-    },
-    "q5_1_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_1.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_1.gguf"
-    },
-    "q5_k_s_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
-    },
-    "q5_k_s_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_S.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_S.gguf"
-    },
-    "q5_k_m_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
-    },
-    "q5_k_m_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf"
-    },
-    "q6_k_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
-    },
-    "q6_k_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
-    },
-    "q8_0_720p": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
-    },
-    "q8_0_720p_offload": {
-        "high_noise": "HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
-        "low_noise": "LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
-    }
 }
 
 DEFAULT_VARIANT = "default"
@@ -263,6 +167,7 @@ class LocalWan14BImageProcessor:
 
 class AppInput(BaseAppInput):
     image: File = Field(description="Input image for video generation")
+    resolution: str = Field(default="480p", enum=["480p", "720p"], choices=["480p", "720p"], description="Resolution for the output video")
     end_image: Optional[File] = Field(default=None, description="Optional end frame image; when provided, the video will transition from the first frame to this last frame")
     prompt: str = Field(description="Text prompt for video generation")
     negative_prompt: str = Field(
@@ -428,7 +333,7 @@ class App(BaseApp):
         print(f"Generating video with prompt: {input_data.prompt}")
         
         # Use resolution preset based on selected variant
-        resolution = self.default_resolution
+        resolution = input_data.resolution
         preset = self.resolution_presets.get(resolution, self.resolution_presets["720p"])
         max_area = preset["max_area"]
         print(f"Using resolution: {resolution}, max area: {max_area}")

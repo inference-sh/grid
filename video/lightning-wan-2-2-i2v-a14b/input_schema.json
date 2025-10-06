@@ -73,6 +73,20 @@
       "$ref": "#/$defs/File",
       "description": "Input image for video generation"
     },
+    "resolution": {
+      "choices": [
+        "480p",
+        "720p"
+      ],
+      "default": "480p",
+      "description": "Resolution for the output video",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
     "end_image": {
       "anyOf": [
         {
