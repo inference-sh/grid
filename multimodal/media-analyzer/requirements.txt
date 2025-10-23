@@ -1,0 +1,5 @@
+pydantic >= 2.0.0
+inferencesh
+openai >= 1.0.0
+pillow
+mutagen

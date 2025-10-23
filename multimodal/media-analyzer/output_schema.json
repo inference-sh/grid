@@ -1,0 +1,15 @@
+{
+  "description": "Output schema for the media analyzer.",
+  "properties": {
+    "analysis": {
+      "description": "Analysis of the media",
+      "title": "Analysis",
+      "type": "string"
+    }
+  },
+  "required": [
+    "analysis"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}
