@@ -1,7 +1,7 @@
 pydantic >= 2.0.0
 # inferencesh >= 0.4.20
 # -e /home/ubuntu/inference/sdk-python
-git+https://github.com/inference-sh/sdk-python.git@101042ac7b9ba377d6aa94b447655b8aff4291f3 #debug-template
+git+https://github.com/inference-sh/sdk-python.git@c77579176eb7b661745ca820aa9c4bb03b08db57 #debug-template
 huggingface_hub
 hf-transfer
 pillow
@@ -9,7 +9,7 @@ pillow
 # git+https://github.com/inference-sh/llama-cpp-python.git@066638c36ea0ac10a14b9f1a149d874efdf0c151 #stable
 # git+https://github.com/inference-sh/llama-cpp-python.git@389cd510df1aea8b61fcb77e4b10fa49ebc92d92 #multi-tool
 # git+https://github.com/inference-sh/llama-cpp-python.git@ed2de13af539f6ab48918cb99c56b114e9687a48 #single-tool
-git+https://github.com/inference-sh/llama-cpp-python.git@537d249a813b19c57b7cf9ddc5ec7d2a53e5490d #debug-template
+git+https://github.com/inference-sh/llama-cpp-python.git@8dcdbd28aff164d31eadfd31e2b38bbcd150feb5 #debug-template
 
 
 # -e /home/ubuntu/llama-cpp-python
