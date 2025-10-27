@@ -1,4 +1,4 @@
-https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.3.12/flash_attn-2.8.0+cu128torch2.7-cp310-cp310-linux_x86_64.whl
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp310-cp310-linux_x86_64.whl
 git+https://github.com/facebookresearch/fairseq.git
 antlr4-python3-runtime==4.8
 bitarray==3.4.3

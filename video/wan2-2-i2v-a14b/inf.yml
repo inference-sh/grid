@@ -17,7 +17,7 @@ variants:
                 type: nvidia
             ram: 34359738368
         env: {}
-        python: "3.12"
+        python: "3.11"
     default_offload_lowvram:
         name: default_offload_lowvram
         order: 1
@@ -28,7 +28,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q2_k:
         name: q2_k
         order: 1
@@ -39,7 +39,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q2_k_offload:
         name: q2_k_offload
         order: 3
@@ -50,7 +50,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q2_k_offload_lowvram:
         name: q2_k_offload_lowvram
         order: 4
@@ -61,7 +61,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_m:
         name: q3_k_m
         order: 2
@@ -72,7 +72,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_m_offload:
         name: q3_k_m_offload
         order: 5
@@ -83,7 +83,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_m_offload_lowvram:
         name: q3_k_m_offload_lowvram
         order: 8
@@ -94,7 +94,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_s:
         name: q3_k_s
         order: 3
@@ -105,7 +105,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_s_offload:
         name: q3_k_s_offload
         order: 7
@@ -116,7 +116,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_s_offload_lowvram:
         name: q3_k_s_offload_lowvram
         order: 6
@@ -127,7 +127,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_m:
         name: q4_k_m
         order: 4
@@ -138,7 +138,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_m_offload:
         name: q4_k_m_offload
         order: 9
@@ -149,7 +149,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_m_offload_lowvram:
         name: q4_k_m_offload_lowvram
         order: 12
@@ -160,7 +160,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_s:
         name: q4_k_s
         order: 5
@@ -171,7 +171,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_s_offload:
         name: q4_k_s_offload
         order: 11
@@ -182,7 +182,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_s_offload_lowvram:
         name: q4_k_s_offload_lowvram
         order: 10
@@ -193,7 +193,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_0:
         name: q5_0
         order: 6
@@ -204,7 +204,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_0_offload:
         name: q5_0_offload
         order: 13
@@ -215,7 +215,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_0_offload_lowvram:
         name: q5_0_offload_lowvram
         order: 14
@@ -226,7 +226,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_1:
         name: q5_1
         order: 7
@@ -237,7 +237,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_1_offload:
         name: q5_1_offload
         order: 15
@@ -248,7 +248,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_1_offload_lowvram:
         name: q5_1_offload_lowvram
         order: 16
@@ -259,7 +259,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_m:
         name: q5_k_m
         order: 8
@@ -270,7 +270,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_m_offload:
         name: q5_k_m_offload
         order: 17
@@ -281,7 +281,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_m_offload_lowvram:
         name: q5_k_m_offload_lowvram
         order: 20
@@ -292,7 +292,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_s:
         name: q5_k_s
         order: 9
@@ -303,7 +303,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_s_offload:
         name: q5_k_s_offload
         order: 19
@@ -314,7 +314,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_s_offload_lowvram:
         name: q5_k_s_offload_lowvram
         order: 18
@@ -325,7 +325,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q6_k:
         name: q6_k
         order: 10
@@ -336,7 +336,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q6_k_offload:
         name: q6_k_offload
         order: 21
@@ -347,7 +347,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q6_k_offload_lowvram:
         name: q6_k_offload_lowvram
         order: 22
@@ -358,7 +358,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q8_0:
         name: q8_0
         order: 11
@@ -369,7 +369,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q8_0_offload:
         name: q8_0_offload
         order: 23
@@ -380,7 +380,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q8_0_offload_lowvram:
         name: q8_0_offload_lowvram
         order: 24
@@ -391,4 +391,4 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"

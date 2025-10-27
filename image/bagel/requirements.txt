@@ -13,8 +13,10 @@ Requests==2.32.3
 safetensors==0.4.5
 scipy==1.10.1
 sentencepiece==0.1.99
-torch==2.5.1
-torchvision==0.20.1
+torch>=2.7.0
+torchvision>=0.20.0
 transformers==4.49.0
 accelerate>=0.34.0
 wandb
+
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

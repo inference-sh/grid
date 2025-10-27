@@ -4,15 +4,14 @@ pydantic >= 2.0.0
 inferencesh
 
 torch
-accelerate==0.32.1
+accelerate
 beautifulsoup4==4.13.4
 debugpy==1.8.14
-diffusers==0.29.2
+diffusers
 einops>=0.6.0
 ffmpeg-python
 # flash-attn==2.4.2
-https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.0.8/flash_attn-2.7.4.post1+cu126torch2.4-cp312-cp312-linux_x86_64.whl
-
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
 flashinfer-python==0.2.0.post2
 ftfy==6.2.0
 gpustat==1.1.1

@@ -27,7 +27,7 @@ variants:
             PAD_DURATION: "1"
             PAD_HQ: "1"
             TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.12"
+        python: "3.11"
     24B_distill:
         name: 24B_distill
         order: 2
@@ -48,7 +48,7 @@ variants:
             PAD_DURATION: "1"
             PAD_HQ: "1"
             TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.12"
+        python: "3.11"
     24B_distill_quant:
         name: 24B_distill_quant
         order: 3
@@ -69,7 +69,7 @@ variants:
             PAD_DURATION: "1"
             PAD_HQ: "1"
             TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.12"
+        python: "3.11"
     default:
         name: 4.5B_base
         order: 3
@@ -90,4 +90,4 @@ variants:
             PAD_HQ: "1"
             PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
             WORLD_SIZE: "1"
-        python: "3.12"
+        python: "3.11"

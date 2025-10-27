@@ -1,5 +1,5 @@
 pydantic >= 2.0.0 # required for inference.sh
-inferencesh==0.2.7
+inferencesh
 torch
 torchvision
 omegaconf
@@ -17,3 +17,5 @@ accelerate
 python-dateutil
 peft
 hf_transfer
+
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

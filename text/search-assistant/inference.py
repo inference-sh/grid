@@ -88,8 +88,7 @@ class App(BaseApp):
                 logger.info(f"✅ Research completed successfully")
 
                 return AppOutput(
-                    text=research_result["findings"],
-                    sources=research_result["sources"]
+                    results=research_result["text"]
                 )
             else:
                 error_msg = research_result.get("error", "Unknown error during research")
@@ -192,7 +191,21 @@ class App(BaseApp):
                     query=query
                 )]
 
-                return AppOutput(results=content)
+                return {
+                    "text": content,
+                    "sources": sources,
+                    "status": "success",
+                    "error": None,
+                    "tokens_used": tokens_used,
+                    "model": model,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens,
+                    "top_p": top_p,
+                    "frequency_penalty": frequency_penalty,
+                    "presence_penalty": presence_penalty,
+                    "reasoning_effort": reasoning_effort,
+                    "custom_system_prompt": custom_system_prompt,
+                }
             else:
                 raise ValueError("No response received from language model")
 

@@ -17,7 +17,7 @@ variants:
                 type: nvidia
             ram: 25769803776
         env: {}
-        python: "3.12"
+        python: "3.11"
     turbo_offload:
         name: turbo_offload
         order: 1
@@ -28,4 +28,4 @@ variants:
                 type: nvidia
             ram: 25769803776
         env: {}
-        python: "3.12"
+        python: "3.11"

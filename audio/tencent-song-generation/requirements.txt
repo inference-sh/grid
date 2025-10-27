@@ -18,7 +18,7 @@ ninja>=1.11.1.4
 nnAudio>=0.3.3
 openunmix>=1.3.0
 peft==0.10.0
-torch==2.7.0
+torch>=2.7.0
 torchaudio
 torchvision
 transformers==4.37.2

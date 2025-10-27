@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Input image file to perform OCR on"
+    },
+    "prompt": {
+      "default": "<image>\nFree OCR. ",
+      "description": "Prompt for the OCR model. Use '<image>\nFree OCR.' for basic OCR or '<image>\n<|grounding|>Convert the document to markdown.' for markdown conversion",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "mode": {
+      "default": "gundam",
+      "description": "Model mode affecting image processing parameters. Gundam is optimized for general use.",
+      "enum": [
+        "tiny",
+        "small",
+        "base",
+        "large",
+        "gundam"
+      ],
+      "title": "Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -19,4 +19,4 @@ variants:
         env:
             HF_HUB_ENABLE_HF_TRANSFER: "1"
             SAFETENSORS_FAST_GPU: "1"
-        python: "3.12"
+        python: "3.11"

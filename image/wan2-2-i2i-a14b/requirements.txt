@@ -1,12 +1,12 @@
 pydantic==2.10.6
-inferencesh==0.4.16
-torch==2.7.1
-torchvision>=0.19.0
+inferencesh
+torch>=2.7.0
+torchvision>=0.20.0
 torchaudio
-diffusers==0.35.1
-transformers==4.56.2
-tokenizers>=0.20.3
-accelerate>=1.1.1
+diffusers
+transformers
+tokenizers
+accelerate
 numpy>=1.23.5,<2
 imageio
 imageio-ffmpeg
@@ -16,3 +16,4 @@ hf_transfer
 ftfy
 gguf
 peft
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

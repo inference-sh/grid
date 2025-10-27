@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "LLMUsage": {
+      "properties": {
+        "stop_reason": {
+          "default": "",
+          "title": "Stop Reason",
+          "type": "string"
+        },
+        "time_to_first_token": {
+          "default": 0.0,
+          "title": "Time To First Token",
+          "type": "number"
+        },
+        "tokens_per_second": {
+          "default": 0.0,
+          "title": "Tokens Per Second",
+          "type": "number"
+        },
+        "prompt_tokens": {
+          "default": 0,
+          "title": "Prompt Tokens",
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "default": 0,
+          "title": "Completion Tokens",
+          "type": "integer"
+        },
+        "total_tokens": {
+          "default": 0,
+          "title": "Total Tokens",
+          "type": "integer"
+        },
+        "reasoning_tokens": {
+          "default": 0,
+          "title": "Reasoning Tokens",
+          "type": "integer"
+        },
+        "reasoning_time": {
+          "default": 0.0,
+          "title": "Reasoning Time",
+          "type": "number"
+        }
+      },
+      "title": "LLMUsage",
+      "type": "object"
+    }
+  },
+  "description": "OpenRouter output model with reasoning, tool calls, and usage information.",
+  "properties": {
+    "response": {
+      "description": "the generated text response",
+      "title": "Response",
+      "type": "string"
+    },
+    "usage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LLMUsage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "token usage statistics"
+    },
+    "tool_calls": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "tool calls for function calling",
+      "title": "Tool Calls"
+    },
+    "reasoning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the reasoning output of the model",
+      "title": "Reasoning"
+    }
+  },
+  "required": [
+    "response"
+  ],
+  "title": "LLMOutput",
+  "type": "object"
+}

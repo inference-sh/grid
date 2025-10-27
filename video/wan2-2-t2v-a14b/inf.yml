@@ -17,7 +17,7 @@ variants:
                 type: nvidia
             ram: 34359738368
         env: {}
-        python: "3.12"
+        python: "3.11"
     q2_k:
         name: q2_k
         order: 1
@@ -28,7 +28,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_m:
         name: q3_k_m
         order: 2
@@ -39,7 +39,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k_s:
         name: q3_k_s
         order: 3
@@ -50,7 +50,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_0:
         name: q4_0
         order: 4
@@ -61,7 +61,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_1:
         name: q4_1
         order: 5
@@ -72,7 +72,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_m:
         name: q4_k_m
         order: 6
@@ -83,7 +83,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k_s:
         name: q4_k_s
         order: 7
@@ -94,7 +94,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_0:
         name: q5_0
         order: 8
@@ -105,7 +105,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_1:
         name: q5_1
         order: 9
@@ -116,7 +116,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_m:
         name: q5_k_m
         order: 10
@@ -127,7 +127,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k_s:
         name: q5_k_s
         order: 11
@@ -138,7 +138,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q6_k:
         name: q6_k
         order: 12
@@ -149,7 +149,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q8_0:
         name: q8_0
         order: 13
@@ -160,4 +160,4 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"

@@ -17,7 +17,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q2_k:
         name: Q2_K
         order: 1
@@ -28,7 +28,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q3_k:
         name: Q3_K
         order: 2
@@ -39,7 +39,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q4_k:
         name: Q4_K
         order: 3
@@ -50,7 +50,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q5_k:
         name: Q5_K
         order: 4
@@ -61,7 +61,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q6_k:
         name: Q6_K
         order: 5
@@ -72,7 +72,7 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
     q8_0:
         name: Q8_0
         order: 6
@@ -83,4 +83,4 @@ variants:
                 type: any
             ram: 16000000000
         env: {}
-        python: "3.12"
+        python: "3.11"
