@@ -175,7 +175,23 @@ class App(BaseApp):
             print("[DEBUG] Starting to process stream chunks...")
             try:
                 # Get the stream iterator by awaiting the coroutine
-                stream_iterator = await stream
+                stream_iterator = None
+                try:
+                    stream_iterator = await stream
+                except Exception as e:
+                    # Reflect provider error details when awaiting the stream fails
+                    print(f"[DEBUG] Stream await failed with error: {type(e).__name__}: {str(e)}")
+                    if hasattr(e, "response") and e.response is not None:
+                        try:
+                            error_data = e.response.json()
+                            error_message = error_data.get("error", {}).get(
+                                "message", str(e)
+                            )
+                            raise RuntimeError(f"OpenRouter API error: {error_message}")
+                        except Exception:
+                            raise RuntimeError(f"OpenRouter API error: {str(e)}")
+                    else:
+                        raise RuntimeError(f"OpenRouter API error: {str(e)}")
                 async for chunk in stream_iterator:
                     chunk_count += 1
                     current_time = asyncio.get_event_loop().time()
@@ -277,7 +293,7 @@ class App(BaseApp):
                         break
             finally:
                 # Ensure stream is properly closed even on error
-                if hasattr(stream_iterator, 'aclose'):
+                if stream_iterator is not None and hasattr(stream_iterator, 'aclose'):
                     await stream_iterator.aclose()
 
             # Log final response summary

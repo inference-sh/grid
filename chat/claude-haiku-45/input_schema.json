@@ -23,6 +23,22 @@
           "default": null,
           "description": "the image file of the message"
         },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
         "tool_calls": {
           "anyOf": [
             {
@@ -171,6 +187,22 @@
       "description": "Exclude reasoning tokens from response",
       "title": "Reasoning Exclude",
       "type": "boolean"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the images to use for the model",
+      "title": "Images"
     },
     "tools": {
       "anyOf": [
