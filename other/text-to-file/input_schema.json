@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "content": {
+      "description": "The text content to write to the file",
+      "title": "Content",
+      "type": "string"
+    },
+    "filename": {
+      "description": "The name of the output file",
+      "title": "Filename",
+      "type": "string"
+    }
+  },
+  "required": [
+    "content",
+    "filename"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

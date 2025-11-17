@@ -1,5 +1,6 @@
 import os
 import asyncio
+import json
 from typing import AsyncGenerator
 from pydantic import Field
 
@@ -22,7 +23,15 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # Default model configuration
-DEFAULT_MODEL = "anthropic/claude-sonnet-4.5"
+# DEFAULT_MODEL = "anthropic/claude-sonnet-4.5"
+
+# Load the model name from model.py as text and use as default model
+model_py_path = os.path.join(os.path.dirname(__file__), "model.py")
+if os.path.exists(model_py_path):
+    with open(model_py_path, "r") as f:
+        DEFAULT_MODEL = f.read().strip()
+else:
+    DEFAULT_MODEL = None
 
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
@@ -94,7 +103,7 @@ class App(BaseApp):
                 "stream": True,
                 "extra_headers": {
                     "HTTP-Referer": "https://inference.sh",
-                    "X-Title": "Inference.sh GLM-4.6 App",
+                    "X-Title": "inference.sh",
                 },
             }
 
@@ -117,6 +126,9 @@ class App(BaseApp):
 
             # Add stop sequences
             completion_params["stop"] = ["<end_of_turn>", "<eos>", "<|im_end|>"]
+
+            # Log raw request
+            print(json.dumps(completion_params, default=str))
 
             # Stream the completion with proper error handling and timeout
             try:
@@ -169,6 +181,13 @@ class App(BaseApp):
                 async for chunk in stream_iterator:
                     chunk_count += 1
                     current_time = asyncio.get_event_loop().time()
+                    
+                    # Log raw chunk
+                    try:
+                        chunk_dict = chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk.__dict__ if hasattr(chunk, '__dict__') else str(chunk)
+                        print(json.dumps(chunk_dict, default=str))
+                    except Exception:
+                        print(json.dumps(str(chunk), default=str))
                     
                     # Check for timeout between chunks (15 seconds)
                     if current_time - last_chunk_time > 120.0:

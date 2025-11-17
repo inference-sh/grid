@@ -199,7 +199,7 @@ class App(BaseApp):
         
         # Set up device and dtype using accelerator
         self.device = self.accelerator.device
-        self.dtype = torch.bfloat16
+        self.dtype = torch.float16
         
         # Get variant and determine if using quantization
         variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
@@ -324,7 +324,7 @@ class App(BaseApp):
         #self.pipe.set_adapters(["lightning", "lightning_2"], adapter_weights=[1.25, 1.25])
         
         # Set flash attention backend
-        self.pipe.transformer.set_attention_backend("_flash_3_hub")
+        # self.pipe.transformer.set_attention_backend("_flash_3_hub")
         
         print("Setup complete!")
 
