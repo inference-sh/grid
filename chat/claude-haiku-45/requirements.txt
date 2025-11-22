@@ -1,5 +1,5 @@
 pydantic >= 2.0.0
 # inferencesh >= 0.4.20
 # -e /home/ubuntu/inference/sdk-python
-git+https://github.com/inference-sh/sdk-python.git@59afd22b84f91e5d9707865998a61d302d73fbbe #multi-image
+git+https://github.com/inference-sh/sdk-python.git@4c8ca69be80342ec760b774e775cd4a79bcd36c0 #multi-image
 openai >= 1.0.0

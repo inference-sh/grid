@@ -1,0 +1,15 @@
+{
+  "text_prompt": "example_string",
+  "image": null,
+  "video_frame_height": 512,
+  "video_frame_width": 992,
+  "seed": 100,
+  "solver_name": "unipc",
+  "sample_steps": 50,
+  "shift": 5.0,
+  "video_guidance_scale": 4.0,
+  "audio_guidance_scale": 3.0,
+  "slg_layer": 11,
+  "video_negative_prompt": "example_string",
+  "audio_negative_prompt": "example_string"
+}

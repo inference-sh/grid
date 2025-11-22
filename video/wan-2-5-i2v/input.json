@@ -1,0 +1,11 @@
+{
+  "prompt": "The white dragon warrior stands still, eyes full of determination and strength. The camera slowly moves closer or circles around the warrior, highlighting the powerful presence and heroic spirit of the character.",
+  "image": {
+    "path": "https://storage.googleapis.com/falserverless/model_tests/wan/dragon-warrior.jpg"
+  },
+  "audio": null,
+  "resolution": "1080p",
+  "negative_prompt": "low resolution, error, worst quality, low quality, defects",
+  "enable_prompt_expansion": true,
+  "seed": null
+}

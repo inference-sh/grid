@@ -1,0 +1,21 @@
+name: reve
+description: Reve - Advanced image editing model that transforms existing images via text prompts
+category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 4000000000
+        env:
+            FAL_KEY: ""
+        python: "3.10"

@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Input image to upscale using the Wan2.2 I2V pipeline"
+    },
+    "scale": {
+      "description": "Scale factor (e.g., 2.0 doubles width and height)",
+      "title": "Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional random seed for reproducibility",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "scale"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

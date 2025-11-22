@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "results": {
+      "additionalProperties": true,
+      "description": "Complete search results from Exa API",
+      "title": "Results",
+      "type": "object"
+    },
+    "answer": {
+      "description": "Formatted summary of search results",
+      "title": "Answer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "results",
+    "answer"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

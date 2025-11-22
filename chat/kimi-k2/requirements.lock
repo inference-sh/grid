@@ -10,7 +10,7 @@ idna==3.11
 inferencesh @ git+https://github.com/inference-sh/sdk-python.git@d82b6b5e070a84c8e22d9dc3fd1a9a3b84efb60a
 jiter==0.12.0
 ninja==1.13.0
-openai==2.7.2
+openai==2.8.1
 packaging==25.0
 pydantic==2.12.4
 pydantic-core==2.41.5

@@ -1,0 +1,33 @@
+name: tavily-extract
+description: Tavily-powered content extraction tool that fetches and extracts clean content from specific webpages. Supports markdown/text output, image extraction, and batch processing up to 20 URLs with configurable depth.
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 4000000000
+        env:
+            PYTHONPATH: /app
+        python: "3.10"
+    fast:
+        name: fast
+        order: 1
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 2000000000
+        env:
+            PYTHONPATH: /app
+        python: "3.10"

@@ -1,0 +1,21 @@
+name: exa-answer
+description: Generate LLM-powered answers informed by Exa search results
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 2000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"

@@ -127,9 +127,6 @@ class App(BaseApp):
             # Add stop sequences
             completion_params["stop"] = ["<end_of_turn>", "<eos>", "<|im_end|>"]
 
-            # Log raw request
-            print(json.dumps(completion_params, default=str))
-
             # Stream the completion with proper error handling and timeout
             try:
                 # Add timeout for the initial API call
@@ -181,13 +178,6 @@ class App(BaseApp):
                 async for chunk in stream_iterator:
                     chunk_count += 1
                     current_time = asyncio.get_event_loop().time()
-                    
-                    # Log raw chunk
-                    try:
-                        chunk_dict = chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk.__dict__ if hasattr(chunk, '__dict__') else str(chunk)
-                        print(json.dumps(chunk_dict, default=str))
-                    except Exception:
-                        print(json.dumps(str(chunk), default=str))
                     
                     # Check for timeout between chunks (15 seconds)
                     if current_time - last_chunk_time > 120.0:

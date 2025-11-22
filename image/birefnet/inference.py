@@ -2,10 +2,9 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from PIL import Image
 import torch
 from transformers import AutoModelForImageSegmentation
-import numpy as np
-import os
 from typing import Optional
 from pydantic import Field
+from pydantic.color import Color
 from torchvision import transforms
 
 class AppInput(BaseAppInput):
@@ -18,6 +17,16 @@ class AppInput(BaseAppInput):
         False,
         description="Whether to use the matting model to return a mask (True) or the normal model for binary mask (False)",
         example=False
+    )
+    fill_background: bool = Field(
+        False,
+        description="Fill the background with a solid color instead of returning transparency",
+        example=False
+    )
+    background_color: Color = Field(
+        "#FFFFFFFF",
+        description="Background color to use when fill_background is True",
+        example="#FFFFFFFF"
     )
 
 class AppOutput(BaseAppOutput):
@@ -85,16 +94,20 @@ class App(BaseApp):
         # Convert prediction to mask
         mask = pred[0].squeeze()
         mask = (mask * 255).byte().numpy()
-        mask = Image.fromarray(mask).resize(image.size)
+        mask_image = Image.fromarray(mask).resize(image.size)
         
-        if not input_data.return_mask:
+        if input_data.return_mask:
+            # Create binary mask image
+            output_image = mask_image
+        elif input_data.fill_background:
+            background_rgb = tuple(int(channel) for channel in input_data.background_color.as_rgb_tuple())
+            background = Image.new("RGB", image.size, background_rgb)
+            output_image = Image.composite(image, background, mask_image)
+        else:
             # Create transparent image
             transparent_image = image.copy()
-            transparent_image.putalpha(mask)
+            transparent_image.putalpha(mask_image)
             output_image = transparent_image
-        else:
-            # Create binary mask image
-            output_image = mask
         
         # Save result
         output_path = "/tmp/result.png"

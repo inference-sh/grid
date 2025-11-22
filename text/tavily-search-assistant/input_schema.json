@@ -1,0 +1,100 @@
+{
+  "description": "Input schema for Tavily search.",
+  "properties": {
+    "query": {
+      "description": "Search query to investigate",
+      "title": "Query",
+      "type": "string"
+    },
+    "search_depth": {
+      "default": "basic",
+      "description": "Search depth - 'basic' for quick results, 'advanced' for thorough research",
+      "enum": [
+        "basic",
+        "advanced"
+      ],
+      "title": "Search Depth",
+      "type": "string"
+    },
+    "topic": {
+      "anyOf": [
+        {
+          "enum": [
+            "general",
+            "news"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "general",
+      "description": "Search topic category - 'general' for all content, 'news' for recent news",
+      "title": "Topic"
+    },
+    "max_results": {
+      "default": 5,
+      "description": "Maximum number of search results to return (1-20)",
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    },
+    "include_images": {
+      "default": false,
+      "description": "Include images in search results",
+      "title": "Include Images",
+      "type": "boolean"
+    },
+    "include_answer": {
+      "default": true,
+      "description": "Include AI-generated answer summary",
+      "title": "Include Answer",
+      "type": "boolean"
+    },
+    "include_raw_content": {
+      "default": false,
+      "description": "Include raw HTML content from scraped pages",
+      "title": "Include Raw Content",
+      "type": "boolean"
+    },
+    "include_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of domains to specifically include in search (e.g., ['example.com'])",
+      "title": "Include Domains"
+    },
+    "exclude_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of domains to exclude from search (e.g., ['example.com'])",
+      "title": "Exclude Domains"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

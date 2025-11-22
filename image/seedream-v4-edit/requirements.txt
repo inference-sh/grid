@@ -1,0 +1,11 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+
+# fal.ai integration
+fal-client>=0.4.0
+
+# HTTP requests for downloading videos
+requests>=2.28.0
+
+# Image processing
+pillow>=9.0.0

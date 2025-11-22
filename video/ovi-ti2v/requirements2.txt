@@ -1,0 +1,2 @@
+# Flash Attention 2 - will be compiled from source if wheel not available
+flash-attn>=2.7.0

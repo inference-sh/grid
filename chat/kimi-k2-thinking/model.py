@@ -1,0 +1,1 @@
+moonshotai/kimi-k2-thinking

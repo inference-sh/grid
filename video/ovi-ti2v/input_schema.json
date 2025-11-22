@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "text_prompt": {
+      "description": "Text description for the video. Speech should be wrapped with <S>...<E>. Optional audio description can be wrapped in <AUDCAP>...<ENDAUDCAP>",
+      "title": "Text Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first frame image for image-to-video generation"
+    },
+    "video_frame_height": {
+      "default": 512,
+      "description": "Video frame height (must be divisible by 32)",
+      "maximum": 1280,
+      "minimum": 128,
+      "title": "Video Frame Height",
+      "type": "integer"
+    },
+    "video_frame_width": {
+      "default": 992,
+      "description": "Video frame width (must be divisible by 32)",
+      "maximum": 1280,
+      "minimum": 128,
+      "title": "Video Frame Width",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 100,
+      "description": "Random seed for reproducibility",
+      "maximum": 100000,
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "solver_name": {
+      "default": "unipc",
+      "description": "Solver name: unipc, euler, or dpm++",
+      "title": "Solver Name",
+      "type": "string"
+    },
+    "sample_steps": {
+      "default": 50,
+      "description": "Number of sampling steps",
+      "maximum": 100,
+      "minimum": 20,
+      "title": "Sample Steps",
+      "type": "integer"
+    },
+    "shift": {
+      "default": 5.0,
+      "description": "Shift parameter",
+      "maximum": 20.0,
+      "minimum": 0.0,
+      "title": "Shift",
+      "type": "number"
+    },
+    "video_guidance_scale": {
+      "default": 4.0,
+      "description": "Video guidance scale (CFG)",
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Video Guidance Scale",
+      "type": "number"
+    },
+    "audio_guidance_scale": {
+      "default": 3.0,
+      "description": "Audio guidance scale (CFG)",
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Audio Guidance Scale",
+      "type": "number"
+    },
+    "slg_layer": {
+      "default": 11,
+      "description": "SLG layer parameter",
+      "maximum": 30,
+      "minimum": -1,
+      "title": "Slg Layer",
+      "type": "integer"
+    },
+    "video_negative_prompt": {
+      "default": "",
+      "description": "Negative prompt for video generation",
+      "title": "Video Negative Prompt",
+      "type": "string"
+    },
+    "audio_negative_prompt": {
+      "default": "",
+      "description": "Negative prompt for audio generation",
+      "title": "Audio Negative Prompt",
+      "type": "string"
+    }
+  },
+  "required": [
+    "text_prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

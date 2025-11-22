@@ -1,0 +1,10 @@
+{
+  "prompt": "A futuristic robot with sleek metallic design",
+  "input_images": null,
+  "geometry_file_format": "glb",
+  "material": "All",
+  "quality_mesh_option": "500K Triangle",
+  "use_original_alpha": false,
+  "seed": null,
+  "preview_render": false
+}
