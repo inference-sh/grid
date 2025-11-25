@@ -1,6 +1,5 @@
 # Copyright 2024-2025 The Alibaba Wan Team Authors. All rights reserved.
 import gc
-from inspect import ArgSpec
 import logging
 import json
 import math
@@ -656,7 +655,7 @@ class InfiniteTalkPipeline:
             no_sync = getattr(self.model, 'no_sync', noop_no_sync)
 
             # evaluation mode
-            with torch.no_grad(), no_sync():
+            with torch.no_grad(), no_sync(), torch.inference_mode():
                 
                 # prepare timesteps
                 timesteps = list(np.linspace(self.num_timesteps, 1, sampling_steps, dtype=np.float32))

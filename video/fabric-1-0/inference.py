@@ -42,42 +42,10 @@ class App(BaseApp):
 
         self.logger.info("Fabric 1.0 model initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
-    def _prepare_model_request(self, input_data: AppInput) -> dict:
-        """Prepare the request payload for model inference."""
-        # Upload image and audio files to get URLs
-        image_url = self._upload_file_to_url(input_data.image.path)
-        audio_url = self._upload_file_to_url(input_data.audio.path)
-
-        # Prepare request data
-        request_data = {
-            "image_url": image_url,
-            "audio_url": audio_url,
-            "resolution": input_data.resolution.value,
-        }
-
-        return request_data
-
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate talking video using Fabric 1.0 model."""
         try:
-            # Validate input files
-            if not input_data.image.exists():
-                raise RuntimeError(f"Input image does not exist at path: {input_data.image.path}")
-
-            if not input_data.audio.exists():
-                raise RuntimeError(f"Input audio does not exist at path: {input_data.audio.path}")
-
+          
             # Set up API key from environment
             api_key = os.environ.get("FAL_KEY")
             if not api_key:
@@ -91,10 +59,12 @@ class App(BaseApp):
             self.logger.info("Starting image-to-talking-video generation...")
             self.logger.info(f"Resolution: {input_data.resolution.value}")
 
-            # Prepare request data for model
-            request_data = self._prepare_model_request(input_data)
-
-            self.logger.info("Initializing model inference...")
+            # Prepare request data
+            request_data = {
+                "image": input_data.image.uri,
+                "audio": input_data.audio.uri,
+                "resolution": input_data.resolution.value,
+            }
 
             # Define progress callback
             def on_queue_update(update):

@@ -204,6 +204,9 @@ class App(BaseApp):
         # Initialize WAN pipeline
         cfg = WAN_CONFIGS[self.task]
         logging.info("Creating InfiniteTalk pipeline.")
+        
+        lora_dir = [self.lora_path] if self.lora_path else None
+        lora_scales = [1.0] if self.lora_path else None
 
         self.wan_pipeline = wan.InfiniteTalkPipeline(
             config=cfg,
@@ -215,8 +218,8 @@ class App(BaseApp):
             dit_fsdp=False,
             use_usp=False,
             t5_cpu=False,  # Keep T5 on GPU for high VRAM setups
-            lora_dir=[self.lora_path],  # Use CausVid LoRA if enabled
-            lora_scales=[1.0],  # No LoRA scales
+            lora_dir=lora_dir,  # Use CausVid LoRA if enabled
+            lora_scales=lora_scales,  # No LoRA scales
             quant=None,  # Add quantization type (None = no quantization)
             dit_path=None,  # Add dit path
             infinitetalk_dir=self.infinitetalk_dir,

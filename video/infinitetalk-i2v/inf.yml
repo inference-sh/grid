@@ -18,7 +18,7 @@ variants:
             ram: 32000000000
         env:
             USE_CAUSVID_LORA: "true"
-        python: "3.10"
+        python: "3.11"
     causvid_720p:
         name: causvid_720p
         order: 6
@@ -30,7 +30,7 @@ variants:
             ram: 32000000000
         env:
             USE_CAUSVID_LORA: "true"
-        python: "3.10"
+        python: "3.11"
     causvid_lowvram_480p:
         name: causvid_lowvram_480p
         order: 7
@@ -42,7 +42,7 @@ variants:
             ram: 24000000000
         env:
             USE_CAUSVID_LORA: "true"
-        python: "3.10"
+        python: "3.11"
     causvid_lowvram_720p:
         name: causvid_lowvram_720p
         order: 8
@@ -54,7 +54,7 @@ variants:
             ram: 24000000000
         env:
             USE_CAUSVID_LORA: "true"
-        python: "3.10"
+        python: "3.11"
     cpu_only:
         name: cpu_only
         order: 4
@@ -65,7 +65,7 @@ variants:
                 type: any
             ram: 64000000000
         env: {}
-        python: "3.10"
+        python: "3.11"
     default:
         name: default_480p
         order: 5
@@ -76,7 +76,7 @@ variants:
                 type: any
             ram: 32000000000
         env: {}
-        python: "3.10"
+        python: "3.11"
     default_720p:
         name: default_720p
         order: 1
@@ -87,7 +87,7 @@ variants:
                 type: any
             ram: 32000000000
         env: {}
-        python: "3.10"
+        python: "3.11"
     lowvram_480p:
         name: lowvram_480p
         order: 2
@@ -98,7 +98,7 @@ variants:
                 type: any
             ram: 24000000000
         env: {}
-        python: "3.10"
+        python: "3.11"
     lowvram_720p:
         name: lowvram_720p
         order: 3
@@ -109,4 +109,4 @@ variants:
                 type: any
             ram: 24000000000
         env: {}
-        python: "3.10"
+        python: "3.11"
