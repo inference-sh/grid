@@ -172,6 +172,12 @@
       "title": "Reasoning Exclude",
       "type": "boolean"
     },
+    "context_size": {
+      "default": 200000,
+      "description": "The context size for the model.",
+      "title": "Context Size",
+      "type": "integer"
+    },
     "tools": {
       "anyOf": [
         {
@@ -274,11 +280,6 @@
       "minimum": 0.0,
       "title": "Top P",
       "type": "number"
-    },
-    "context_size": {
-      "default": 4096,
-      "title": "Context Size",
-      "type": "integer"
     }
   },
   "required": [

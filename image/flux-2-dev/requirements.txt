@@ -4,7 +4,7 @@ torch
 gguf>=0.13.0
 tqdm
 # diffusers
-git+https://github.com/huggingface/diffusers.git@5ffb73d4aeac9eaef8366d7b21872d64009bd1c7
+git+https://github.com/huggingface/diffusers.git@c8656ed73c638e51fc2e777a5fd355d69fa5220f
 transformers
 huggingface_hub
 accelerate

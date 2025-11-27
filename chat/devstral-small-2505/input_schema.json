@@ -22,6 +22,36 @@
           ],
           "default": null,
           "description": "the image file of the message"
+        },
+        "tool_calls": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool calls of the message",
+          "title": "Tool Calls"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool call id for tool role messages",
+          "title": "Tool Call Id"
         }
       },
       "required": [
@@ -35,77 +65,86 @@
       "enum": [
         "user",
         "assistant",
-        "system"
+        "system",
+        "tool"
       ],
       "title": "ContextMessageRole",
       "type": "string"
     },
     "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
             },
-            {
-              "type": "null"
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
             }
-          ],
-          "default": null,
-          "title": "Uri"
+          },
+          "title": "File",
+          "type": "object"
         },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
+        {
+          "type": "string"
         }
-      },
-      "title": "File",
-      "type": "object"
+      ]
     }
   },
   "description": "Devstral Small 2505 input model with image support.",
@@ -147,8 +186,13 @@
       "title": "Context",
       "type": "array"
     },
+    "role": {
+      "$ref": "#/$defs/ContextMessageRole",
+      "default": "user",
+      "description": "the role of the input text"
+    },
     "text": {
-      "description": "the user prompt to use for the model",
+      "description": "the input text to use for the model",
       "examples": [
         "write a haiku about artificial general intelligence"
       ],

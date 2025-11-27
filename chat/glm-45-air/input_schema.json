@@ -39,6 +39,19 @@
           "default": null,
           "description": "the tool calls of the message",
           "title": "Tool Calls"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool call id for tool role messages",
+          "title": "Tool Call Id"
         }
       },
       "required": [
@@ -158,6 +171,19 @@
       "default": null,
       "description": "tool definitions for function calling",
       "title": "Tools"
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the tool call id for tool role messages",
+      "title": "Tool Call Id"
     },
     "reasoning": {
       "default": false,

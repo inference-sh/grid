@@ -9,9 +9,8 @@ from inferencesh.models.llm import (
     LLMOutput,
     ReasoningCapabilityMixin,
     ReasoningMixin,
-    ToolsCapabilityMixin,
     ToolCallsMixin,
-    MultipleImageCapabilityMixin,
+    ImageCapabilityMixin,
     build_messages,
     build_tools,
 )
@@ -25,7 +24,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 # Default model configuration
 DEFAULT_MODEL = "google/gemini-3-pro-image-preview"
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, MultipleImageCapabilityMixin):
+class AppInput(LLMInput, ReasoningCapabilityMixin, ImageCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_effort: str = Field(
         default="high",

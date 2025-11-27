@@ -32,6 +32,7 @@ soundfile
 xformers
 misaki[en]
 huggingface_hub
-hf_transfer
+hf_xet
+# hf_transfer
 
 https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

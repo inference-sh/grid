@@ -11,19 +11,6 @@
           "title": "Text",
           "type": "string"
         },
-        "reasoning": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "the reasoning content of the message",
-          "title": "Reasoning"
-        },
         "image": {
           "anyOf": [
             {
@@ -35,22 +22,6 @@
           ],
           "default": null,
           "description": "the image file of the message"
-        },
-        "images": {
-          "anyOf": [
-            {
-              "items": {
-                "$ref": "#/$defs/File"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "the images of the message",
-          "title": "Images"
         },
         "tool_calls": {
           "anyOf": [
@@ -201,21 +172,18 @@
       "title": "Reasoning Exclude",
       "type": "boolean"
     },
-    "images": {
+    "image": {
       "anyOf": [
         {
-          "items": {
-            "$ref": "#/$defs/File"
-          },
-          "type": "array"
+          "$ref": "#/$defs/File"
         },
         {
           "type": "null"
         }
       ],
+      "contentMediaType": "image/*",
       "default": null,
-      "description": "the images to use for the model",
-      "title": "Images"
+      "description": "the image to use for the model"
     },
     "reasoning": {
       "default": false,

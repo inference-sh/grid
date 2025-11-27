@@ -18,6 +18,7 @@ from dateutil.parser import parse as parse_date
 import urllib.parse
 import re
 from enum import Enum
+from diffusers.utils import load_image
 
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
@@ -42,6 +43,7 @@ class AppInput(BaseAppInput):
     width: int = Field(default=1024, description="The width in pixels of the generated image.")
     num_inference_steps: int = Field(default=30, description="The number of inference steps.")
     guidance_scale: float = Field(default=3.5, description="The guidance scale.")
+    reference_images: Optional[list[File]] = Field(default=None, description="List of reference images to use for generation.")
     seed: Optional[int] = Field(default=None, description="The seed for random generation.")
     loras: Optional[list[LoraConfig]] = Field(default=None, description="List of LoRA configs to apply")
     scheduler: SchedulerEnum = Field(default=SchedulerEnum.normal, description="Scheduler to use for diffusion process.")
@@ -298,6 +300,7 @@ class App(BaseApp):
         guidance_scale = input_data.guidance_scale
         seed = input_data.seed
         generator = None
+        reference_images = [load_image(image.path) for image in input_data.reference_images] if input_data.reference_images else None
         
         # Use accelerator.device for generator device
         if seed is not None:
@@ -316,6 +319,7 @@ class App(BaseApp):
             num_inference_steps=effective_steps, 
             guidance_scale=guidance_scale,
             generator=generator,
+            image=reference_images,
         ).images[0]
         
         output_path = "/tmp/generated_image.png"

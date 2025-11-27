@@ -39,6 +39,8 @@ class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     reasoning_exclude: bool = Field(
         default=False, description="Exclude reasoning tokens from response"
     )
+    context_size: int = Field(default=200000, description="The context size for the model.")
+
 
 
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
@@ -100,8 +102,8 @@ class App(BaseApp):
             completion_params = {
                 "model": DEFAULT_MODEL,
                 "messages": messages,
-                "temperature": input_data.temperature,
-                "top_p": input_data.top_p,
+                # "temperature": input_data.temperature,
+                # "top_p": input_data.top_p,
                 "stream": True,
                 "extra_headers": {
                     "HTTP-Referer": "https://inference.sh",

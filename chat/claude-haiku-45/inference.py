@@ -11,7 +11,7 @@ from inferencesh.models.llm import (
     ReasoningMixin,
     ToolsCapabilityMixin,
     ToolCallsMixin,
-    MultipleImageCapabilityMixin,
+    ImageCapabilityMixin,
     build_messages,
     build_tools,
 )
@@ -25,7 +25,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 # Default model configuration
 DEFAULT_MODEL = "anthropic/claude-haiku-4.5"
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, MultipleImageCapabilityMixin):
+class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_effort: str = Field(
         default="high",
