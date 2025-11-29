@@ -1,0 +1,37 @@
+name: z-image
+description: Z-Image - An efficient image generation model with single-stream diffusion transformer from Tongyi-MAI
+category: image
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000  # 24GB VRAM
+                type: any
+            ram: 48000000000  # 48GB RAM
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+            TOKENIZERS_PARALLELISM: "false"
+        python: "3.10"
+    
+    low_vram:
+        name: low_vram
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000  # 16GB VRAM
+                type: any
+            ram: 32000000000  # 32GB RAM
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+            TOKENIZERS_PARALLELISM: "false"
+        python: "3.10"

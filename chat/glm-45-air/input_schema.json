@@ -11,17 +11,50 @@
           "title": "Text",
           "type": "string"
         },
-        "image": {
+        "reasoning": {
           "anyOf": [
             {
-              "$ref": "#/$defs/File"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "the image file of the message"
+          "description": "the reasoning content of the message",
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the files of the message",
+          "title": "Files"
         },
         "tool_calls": {
           "anyOf": [
@@ -145,6 +178,17 @@
           "type": "string"
         }
       ]
+    },
+    "ReasoningEffortEnum": {
+      "description": "Enum for reasoning effort.",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "none"
+      ],
+      "title": "ReasoningEffortEnum",
+      "type": "string"
     }
   },
   "description": "GLM-4.5-Air input model with image and tools support.",
@@ -186,10 +230,35 @@
       "title": "Tool Call Id"
     },
     "reasoning": {
-      "default": false,
-      "description": "enable step-by-step reasoning",
-      "title": "Reasoning",
-      "type": "boolean"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the reasoning input of the message",
+      "title": "Reasoning"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none",
+      "description": "enable step-by-step reasoning"
+    },
+    "reasoning_max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the maximum number of tokens to use for reasoning",
+      "title": "Reasoning Max Tokens"
     },
     "context": {
       "default": [],

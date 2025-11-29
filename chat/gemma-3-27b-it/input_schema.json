@@ -11,17 +11,50 @@
           "title": "Text",
           "type": "string"
         },
-        "image": {
+        "reasoning": {
           "anyOf": [
             {
-              "$ref": "#/$defs/File"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "the image file of the message"
+          "description": "the reasoning content of the message",
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the files of the message",
+          "title": "Files"
         },
         "tool_calls": {
           "anyOf": [
@@ -155,18 +188,21 @@
       "title": "System Prompt",
       "type": "string"
     },
-    "image": {
+    "images": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
         },
         {
           "type": "null"
         }
       ],
-      "contentMediaType": "image/*",
       "default": null,
-      "description": "the image to use for the model"
+      "description": "the images to use for the model",
+      "title": "Images"
     },
     "context": {
       "default": [],

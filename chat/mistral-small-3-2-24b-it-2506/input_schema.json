@@ -11,17 +11,50 @@
           "title": "Text",
           "type": "string"
         },
-        "image": {
+        "reasoning": {
           "anyOf": [
             {
-              "$ref": "#/$defs/File"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "the image file of the message"
+          "description": "the reasoning content of the message",
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the files of the message",
+          "title": "Files"
         },
         "tool_calls": {
           "anyOf": [
@@ -145,6 +178,17 @@
           "type": "string"
         }
       ]
+    },
+    "ReasoningEffortEnum": {
+      "description": "Enum for reasoning effort.",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "none"
+      ],
+      "title": "ReasoningEffortEnum",
+      "type": "string"
     }
   },
   "description": "Mistral Small 3.2 24B IT 2506 input model with image and tools support.",
@@ -156,10 +200,35 @@
       "type": "string"
     },
     "reasoning": {
-      "default": false,
-      "description": "enable step-by-step reasoning",
-      "title": "Reasoning",
-      "type": "boolean"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the reasoning input of the message",
+      "title": "Reasoning"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none",
+      "description": "enable step-by-step reasoning"
+    },
+    "reasoning_max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the maximum number of tokens to use for reasoning",
+      "title": "Reasoning Max Tokens"
     },
     "tools": {
       "anyOf": [
@@ -191,18 +260,21 @@
       "description": "the tool call id for tool role messages",
       "title": "Tool Call Id"
     },
-    "image": {
+    "images": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
         },
         {
           "type": "null"
         }
       ],
-      "contentMediaType": "image/*",
       "default": null,
-      "description": "the image to use for the model"
+      "description": "the images to use for the model",
+      "title": "Images"
     },
     "context": {
       "default": [],

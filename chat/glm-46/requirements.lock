@@ -7,7 +7,7 @@ h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
-inferencesh @ git+https://github.com/inference-sh/sdk-python.git@d82b6b5e070a84c8e22d9dc3fd1a9a3b84efb60a
+inferencesh @ git+https://github.com/inference-sh/sdk-python.git@7be830e8c04baf034c5d57887091f3474e67b066
 jiter==0.12.0
 ninja==1.13.0
 openai==2.8.1
