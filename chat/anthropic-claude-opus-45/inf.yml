@@ -1,5 +1,5 @@
-name: gemini-3-pro-image-preview
-description: Gemini 3 Pro Image Preview
+name: anthropic-claude-opus-45
+description: Claude Opus 4.5
 category: chat
 images:
     card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
@@ -8,7 +8,7 @@ images:
 metadata:
     capabilities:
       - reasoning
-      - images
+      - image
       - file
 variants:
     default:

@@ -191,14 +191,8 @@
       "type": "string"
     }
   },
-  "description": "OpenRouter input model with reasoning and tools support.",
+  "description": "Anthropic input model with extended thinking and tools support.",
   "properties": {
-    "reasoning_exclude": {
-      "default": false,
-      "description": "Exclude reasoning tokens from response",
-      "title": "Reasoning Exclude",
-      "type": "boolean"
-    },
     "context_size": {
       "default": 200000,
       "description": "The context size for the model.",
