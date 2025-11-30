@@ -125,21 +125,7 @@ class App(BaseApp):
             tools = build_tools(input_data.tools)
 
             # Log prepared request
-            print("[DEBUG] Prepared request:")
-            print(f"[DEBUG]   Messages: {len(messages)}")
-            for i, msg in enumerate(messages):
-                role = msg.get("role")
-                content_preview = str(msg.get("content", ""))[:100]
-                has_tool_calls = "tool_calls" in msg and msg["tool_calls"]
-                tool_call_id = msg.get("tool_call_id")
-                print(
-                    f"[DEBUG]     [{i}] role={role}, content={content_preview}..., tool_calls={has_tool_calls}, tool_call_id={tool_call_id}"
-                )
-            if tools:
-                print(f"[DEBUG]   Tools: {len(tools)}")
-                for i, tool in enumerate(tools):
-                    name = tool.get("function", {}).get("name", "unknown")
-                    print(f"[DEBUG]     [{i}] {name}")
+           
 
             # Prepare completion parameters
             completion_params = {
@@ -175,20 +161,14 @@ class App(BaseApp):
             completion_params["stop"] = ["<end_of_turn>", "<eos>", "<|im_end|>"]
 
             # Stream the completion with proper error handling and timeout
-            print("[DEBUG] About to call OpenRouter API...")
-            
-            print(f"[DEBUG] Completion params: {completion_params}")
             try:
                 # Simple per-request timeout via client
-                print("[DEBUG] Starting stream creation with 15s timeout...")
                 stream = await self.client.chat.completions.create(
                     timeout=15.0,
                     **completion_params,
                 )
-                print("[DEBUG] Stream created successfully!")
             except Exception as e:
                 # Handle pre-stream errors (HTTP status errors)
-                print(f"[DEBUG] API call failed with error: {type(e).__name__}: {str(e)}")
                 if hasattr(e, "response") and e.response is not None:
                     try:
                         error_data = e.response.json()
@@ -208,7 +188,6 @@ class App(BaseApp):
             chunk_count = 0
             last_chunk_time = asyncio.get_event_loop().time()
 
-            print("[DEBUG] Starting to process stream chunks...")
             try:
                 async for chunk in stream:
                     chunk_count += 1
@@ -219,7 +198,6 @@ class App(BaseApp):
                         raise RuntimeError("Stream timed out - no chunks received for 120 seconds")
                     
                     last_chunk_time = current_time
-                    print(f"[DEBUG] Processing chunk {chunk_count} at {current_time:.2f}")
                     
                     # Handle mid-stream errors (as per OpenRouter documentation)
                     if hasattr(chunk, "error") and chunk.error:
@@ -314,21 +292,8 @@ class App(BaseApp):
                 if hasattr(stream, 'aclose'):
                     await stream.aclose()
 
-            # Log final response summary
-            print(
-                f"[DEBUG] Response complete: chunks={chunk_count}, content_len={len(response_content)}, tool_calls={len(tool_calls)}"
-            )
-            if tool_calls:
-                for i, tc in enumerate(tool_calls):
-                    name = tc.get("function", {}).get("name", "unknown")
-                    args_len = len(tc.get("function", {}).get("arguments", ""))
-                    print(f"[DEBUG]   Tool call [{i}]: {name}, args_len={args_len}")
-
         except Exception as e:
-            print(
-                f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}"
-            )
-            raise
+            raise RuntimeError(f"OpenRouter API error: {str(e)}")
 
     async def unload(self):
         """Clean up resources."""

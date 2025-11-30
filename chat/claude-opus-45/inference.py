@@ -90,6 +90,7 @@ class App(BaseApp):
 
         try:
 
+            print("[DEBUG] Starting run method")
             # Build messages and tools using SDK helpers - already in OpenAI format!
             messages = build_messages(input_data)
             if hasattr(input_data, "tools") and input_data.tools:
@@ -97,7 +98,6 @@ class App(BaseApp):
             else:
                 tools = None
 
-            print(f"Messages: {messages}")
             # Prepare completion parameters
             completion_params = {
                 "model": DEFAULT_MODEL,

@@ -94,7 +94,6 @@ class App(BaseApp):
             else:
                 tools = None
 
-            print(f"Messages: {messages}")
             # Prepare completion parameters
             completion_params = {
                 "model": DEFAULT_MODEL,
