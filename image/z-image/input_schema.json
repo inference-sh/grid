@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image content",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Output image width in pixels (will be rounded to multiple of 8)",
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Output image height in pixels (will be rounded to multiple of 8)",
+      "title": "Height",
+      "type": "integer"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Seed for reproducible generation. Use -1 for random seed",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "steps": {
+      "default": 9,
+      "description": "Number of inference steps for the diffusion process (recommended: 8-10 for turbo)",
+      "title": "Steps",
+      "type": "integer"
+    },
+    "shift": {
+      "default": 3.0,
+      "description": "Time shift parameter for the flow matching scheduler (1.0-10.0)",
+      "title": "Shift",
+      "type": "number"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

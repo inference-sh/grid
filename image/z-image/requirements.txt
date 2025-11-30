@@ -1,26 +1,12 @@
-# Core inference.sh requirements
-pydantic>=2.0.0
-inferencesh
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
 
-# PyTorch with CUDA support
-torch>=2.7.1
-torchvision>=0.22.0
-
-# Diffusers - need latest for ZImagePipeline support
-git+https://github.com/huggingface/diffusers.git
-
-# Transformers and acceleration
-transformers>=4.49.0
-accelerate>=1.1.1
-
-# HuggingFace utilities
+torch
+transformers
+accelerate
 huggingface_hub
-hf_transfer
-
-# Flash attention for optimal performance
-flash-attn
-
-# Utilities
-pillow
-numpy>=1.23.5,<2
-einops
+spaces
+openai
+git+https://github.com/huggingface/diffusers.git
+kernels
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

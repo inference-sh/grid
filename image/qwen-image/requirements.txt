@@ -1,5 +1,5 @@
 pydantic >= 2.0.0  # required for inference.sh
-inferencesh==0.2.7
+inferencesh
 torch==2.8.0
 git+https://github.com/huggingface/diffusers.git@schedulers/unipc-custom-sigmas
 transformers

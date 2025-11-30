@@ -77,13 +77,13 @@
     }
   },
   "properties": {
-    "image_output": {
+    "image": {
       "$ref": "#/$defs/File",
-      "description": "The generated image file."
+      "description": "Generated image file"
     }
   },
   "required": [
-    "image_output"
+    "image"
   ],
   "title": "AppOutput",
   "type": "object"
