@@ -11,21 +11,20 @@ from inferencesh.models.llm import (
     ToolsCapabilityMixin,
     ToolCallsMixin,
 )
-from .openrouter import stream_completion, complete
+from .openrouter import stream_completion
 from openai import AsyncOpenAI
 
 # OpenRouter configuration
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-DEFAULT_MODEL = None
+DEFAULT_MODEL = "deepseek/deepseek-v3.2"
 
 
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=200000, description="The context size for the model.")
-    stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
@@ -47,12 +46,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
         if not self.client:
             raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
-        
-        if input_data.stream:
-            async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
-                yield AppOutput(**output)
-        else:
-            output = await complete(self.client, input_data, DEFAULT_MODEL)
+        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
             yield AppOutput(**output)
 
     async def unload(self):

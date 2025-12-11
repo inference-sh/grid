@@ -319,6 +319,11 @@
       "default": 4096,
       "title": "Context Size",
       "type": "integer"
+    },
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
+      "type": "integer"
     }
   },
   "required": [

@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta, TextMeta
 from pydantic import Field
 
 class AppInput(BaseAppInput):
@@ -7,32 +7,7 @@ class AppInput(BaseAppInput):
 
 class AppOutput(BaseAppOutput):
     result: str = Field(description="The processed template with strings substituted")
-
-# For LLM apps, you can use the LLMInput and LLMInputWithImage classes for convenience
-# from inferencesh import LLMInput, LLMInputWithImage
-# The LLMInput class provides a standard structure for LLM-based applications with:
-# - system_prompt: Sets the AI assistant's role and behavior
-# - context: List of previous conversation messages between user and assistant
-# - text: The current user's input prompt
-#
-# Example usage:
-# class AppInput(LLMInput):
-#     additional_field: str = Field(description="Any additional input needed")
-
-# The LLMInputWithImage class extends LLMInput to support image inputs by adding:
-# - image: Optional File field for providing images to vision-capable models
-#
-# Example usage:
-# class AppInput(LLMInputWithImage):
-#     additional_field: str = Field(description="Any additional input needed")
-
-# Each ContextMessage in the context list contains:
-# - role: Either "user", "assistant", or "system"
-# - text: The message content
-#
-# ContextMessageWithImage adds:
-# - image: Optional File field for messages containing images
-
+    
 class App(BaseApp):
     async def setup(self, metadata):
         """Initialize your model and resources here."""
@@ -47,8 +22,13 @@ class App(BaseApp):
         result = input_data.template
         for placeholder, value in replacements.items():
             result = result.replace(f"{{{placeholder}}}", value)
+            
+        output_meta = OutputMeta(
+            inputs=[TextMeta(tokens=len(input_data.template))],
+            outputs=[TextMeta(tokens=len(result))]
+        )
         
-        return AppOutput(result=result)
+        return AppOutput(result=result, output_meta=output_meta)
 
     async def unload(self):
         """Clean up resources here."""

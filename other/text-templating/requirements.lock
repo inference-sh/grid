@@ -1,16 +1,16 @@
 annotated-types==0.7.0
-certifi==2025.8.3
-charset-normalizer==3.4.3
-idna==3.10
-inferencesh==0.4.2
+certifi==2025.11.12
+charset-normalizer==3.4.4
+idna==3.11
+inferencesh @ git+https://github.com/inference-sh/sdk-python.git@15227deb408fd37d1efb9c0ef6a1e81a6a5ff9df
 ninja==1.13.0
 packaging==25.0
-pydantic==2.11.7
-pydantic-core==2.33.2
+pydantic==2.12.5
+pydantic-core==2.41.5
 requests==2.32.5
 setuptools==80.9.0
-setuptools-scm==9.2.0
+setuptools-scm==9.2.2
 tqdm==4.67.1
 typing-extensions==4.15.0
-typing-inspection==0.4.1
-urllib3==2.5.0
+typing-inspection==0.4.2
+urllib3==2.6.0

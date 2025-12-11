@@ -1,0 +1,33 @@
+name: falconsai-nsfw-detection
+description: Detects NSFW content in images and videos using Falconsai/nsfw_image_detection model. For videos, samples frames at configurable intervals.
+category: image
+is_public: false
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 4000000000 # 4GB VRAM (model is lightweight)
+                type: any
+            ram: 8000000000 # 8GB RAM
+        python: "3.10"
+
+    cpu:
+        name: cpu
+        order: 1
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 8000000000 # 8GB RAM
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"

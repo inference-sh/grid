@@ -49,6 +49,21 @@
   },
   "description": "OpenRouter output model with reasoning, tool calls, and usage information.",
   "properties": {
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Images"
+    },
     "response": {
       "description": "the generated text response",
       "title": "Response",

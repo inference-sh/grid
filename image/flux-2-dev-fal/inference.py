@@ -89,6 +89,7 @@ class App(BaseApp):
 
             self.logger.info("Image generation completed successfully")
 
+            print(result)
             # Process the generated image
             image_url = result["images"][0]["url"]
             self.logger.info("Processing generated image output...")

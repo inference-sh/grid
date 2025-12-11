@@ -1,0 +1,8 @@
+{
+    "file": {
+        "uri": "https://example.com/test-image.jpg"
+    },
+    "frame_interval_seconds": 1.0,
+    "nsfw_threshold": 0.5
+}
+

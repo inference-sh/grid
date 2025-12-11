@@ -193,17 +193,17 @@
   },
   "description": "OpenRouter input model with reasoning and tools support.",
   "properties": {
-    "model": {
-      "default": "gpt-4o-mini",
-      "description": "The model to use for the inference.",
-      "title": "Model",
-      "type": "string"
-    },
-    "stream": {
-      "default": true,
-      "description": "Stream the response (True) or return complete response (False)",
-      "title": "Stream",
+    "reasoning_exclude": {
+      "default": false,
+      "description": "Exclude reasoning tokens from response",
+      "title": "Reasoning Exclude",
       "type": "boolean"
+    },
+    "context_size": {
+      "default": 200000,
+      "description": "The context size for the model.",
+      "title": "Context Size",
+      "type": "integer"
     },
     "tools": {
       "anyOf": [
@@ -332,11 +332,6 @@
       "minimum": 0.0,
       "title": "Top P",
       "type": "number"
-    },
-    "context_size": {
-      "default": 4096,
-      "title": "Context Size",
-      "type": "integer"
     },
     "max_tokens": {
       "default": 64000,
