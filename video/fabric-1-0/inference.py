@@ -61,8 +61,8 @@ class App(BaseApp):
 
             # Prepare request data
             request_data = {
-                "image": input_data.image.uri,
-                "audio": input_data.audio.uri,
+                "image_url": input_data.image.uri,
+                "audio_url": input_data.audio.uri,
                 "resolution": input_data.resolution.value,
             }
 
