@@ -1,0 +1,11 @@
+{
+  "query": "What are the latest developments in artificial intelligence and machine learning?",
+  "search_depth": "advanced",
+  "topic": "general",
+  "max_results": 5,
+  "include_images": false,
+  "include_answer": true,
+  "include_raw_content": false,
+  "include_domains": null,
+  "exclude_domains": null
+}

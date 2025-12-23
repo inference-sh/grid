@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "duration": {
+      "title": "Duration",
+      "type": "number"
+    },
+    "duration_formatted": {
+      "title": "Duration Formatted",
+      "type": "string"
+    }
+  },
+  "required": [
+    "duration",
+    "duration_formatted"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

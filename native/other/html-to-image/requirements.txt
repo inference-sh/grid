@@ -1,0 +1,6 @@
+# Core inference.sh requirements
+pydantic>=2.0.0
+inferencesh
+
+# Playwright for modern web rendering
+playwright==1.41.0

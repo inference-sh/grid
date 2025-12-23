@@ -1,0 +1,9 @@
+# Optional wheel dependencies for better performance
+# Flash attention for improved transformer performance
+# Add the appropriate wheel for your CUDA version if needed
+# flash-attn --no-build-isolation
+
+# Pre-compiled wheels can be added here if needed for deployment
+# https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+flash-attn

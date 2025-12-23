@@ -1,0 +1,13 @@
+text_len: 512
+patch_size: [ 1, 2, 2 ]
+dim: 1536
+ffn_dim: 8960
+freq_dim: 256
+in_dim: 36
+model_type: "i2v"
+num_heads: 12
+num_layers: 30
+window_size: [ -1, -1 ]
+qk_norm: True
+cross_attn_norm: True
+eps: 1e-6

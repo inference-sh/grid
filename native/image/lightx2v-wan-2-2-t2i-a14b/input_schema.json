@@ -1,0 +1,73 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+      "description": "Negative prompt to guide what to avoid in generation",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1024,
+      "description": "Width of the generated image",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1024,
+      "description": "Height of the generated image",
+      "title": "Height"
+    },
+    "num_inference_steps": {
+      "default": 4,
+      "description": "Number of denoising steps (fixed CFG=1.0)",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility",
+      "title": "Seed"
+    },
+    "boundary_ratio": {
+      "default": 0.875,
+      "description": "Boundary ratio for dual transformer setup (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Boundary Ratio",
+      "type": "number"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

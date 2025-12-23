@@ -1,0 +1,21 @@
+name: rodin-3d-generator
+description: Rodin 3D Generator - Generate high-quality 3D models from text prompts or images
+category: 3d
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 4000000000
+        env:
+            API_KEY: ""
+        python: "3.10"

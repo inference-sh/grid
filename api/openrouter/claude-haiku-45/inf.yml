@@ -1,0 +1,23 @@
+name: claude-haiku-45
+description: Claude Haiku 4.5
+category: chat
+images:
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    thumbnail: ""
+    banner: ""
+metadata:
+    capabilities:
+      - reasoning
+      - images
+      - file
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 0
+        python: "3.11"

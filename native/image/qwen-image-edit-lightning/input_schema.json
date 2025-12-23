@@ -1,0 +1,212 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_file"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the desired edits to apply to the input image. Supports both English and Chinese text rendering.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Input image to edit. This field is required for image editing."
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "",
+      "description": "The negative prompt to guide what not to include in the image.",
+      "title": "Negative Prompt"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width in pixels of the generated image.",
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height in pixels of the generated image.",
+      "title": "Height",
+      "type": "integer"
+    },
+    "num_inference_steps": {
+      "default": 8,
+      "description": "The number of inference steps for generation quality.",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "true_cfg_scale": {
+      "default": 1.0,
+      "description": "The CFG scale for generation guidance.",
+      "title": "True Cfg Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "enum": [
+            "en",
+            "zh"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "en",
+      "description": "Language for prompt optimization (English or Chinese).",
+      "title": "Language"
+    },
+    "cache_threshold": {
+      "default": 0.0,
+      "description": "First-block cache threshold for transformer (0 disables caching).",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cache Threshold",
+      "type": "number"
+    },
+    "use_unipcm_flow_matching": {
+      "default": false,
+      "description": "If true, switch scheduler to UniPCM flow matching configuration.",
+      "title": "Use Unipcm Flow Matching",
+      "type": "boolean"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

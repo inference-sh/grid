@@ -1,0 +1,58 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate. For best results, use detailed descriptions.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "guidance_scale": {
+      "default": 3.5,
+      "description": "Controls how closely the image follows the prompt. Higher values adhere more strictly to the prompt.",
+      "maximum": 20.0,
+      "minimum": 0.0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "num_inference_steps": {
+      "default": 50,
+      "description": "Number of denoising steps. More steps generally result in higher quality images but take longer.",
+      "maximum": 100,
+      "minimum": 20,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Width of the generated image in pixels. Must be a multiple of 32.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Height of the generated image in pixels. Must be a multiple of 32.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Height",
+      "type": "integer"
+    },
+    "negative_prompt": {
+      "default": "",
+      "description": "Text description of elements to avoid in the generated image.",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "seed": {
+      "default": null,
+      "description": "Random seed for reproducible image generation. Leave empty for random results.",
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

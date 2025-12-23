@@ -1,0 +1,7 @@
+pydantic >= 2.0.0  # required for inference.sh
+inferencesh  # required for inference.sh
+trimesh >= 4.0.0  # for loading GLB/GLTF files
+matplotlib >= 3.5.0  # for 3D plotting and rendering
+Pillow >= 10.0.0  # for image processing
+numpy >= 1.21.0  # for mathematical operations
+pygltflib >= 1.15.6  # for GLB/GLTF parsing

@@ -1,0 +1,6 @@
+{
+    "video_path": "https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k1xpazvwjj8s2kwr08apss87.mp4",
+    "audio_path": "https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1z7bsbdk23yy2hckyag3w8e.wav",
+    "inference_steps": 100,
+    "guidance_scale": 1.5
+  }

@@ -1,0 +1,16 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh==0.2.7
+gguf>=0.13.0
+tqdm
+# Install diffusers from source
+git+https://github.com/huggingface/diffusers.git
+transformers
+huggingface_hub
+accelerate
+sentencepiece
+protobuf
+Pillow
+einops
+accelerate
+python-dateutil
+peft

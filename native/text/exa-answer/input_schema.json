@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "query": {
+      "description": "The question or query to answer",
+      "minLength": 1,
+      "title": "Query",
+      "type": "string"
+    },
+    "include_full_text": {
+      "default": false,
+      "description": "Include full text content from search results (may cost extra, disabled by default)",
+      "title": "Include Full Text",
+      "type": "boolean"
+    },
+    "stream": {
+      "default": false,
+      "description": "Stream the response as server-sent events (note: not fully supported in this implementation)",
+      "title": "Stream",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

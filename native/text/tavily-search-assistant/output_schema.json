@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "SearchResult": {
+      "description": "Individual search result from Tavily.",
+      "properties": {
+        "title": {
+          "description": "Title of the search result",
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "description": "URL of the search result",
+          "title": "Url",
+          "type": "string"
+        },
+        "content": {
+          "description": "Content/snippet from the search result",
+          "title": "Content",
+          "type": "string"
+        },
+        "score": {
+          "description": "Relevance score of the result",
+          "title": "Score",
+          "type": "number"
+        },
+        "raw_content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Raw content if include_raw_content is True",
+          "title": "Raw Content"
+        }
+      },
+      "required": [
+        "title",
+        "url",
+        "content",
+        "score"
+      ],
+      "title": "SearchResult",
+      "type": "object"
+    }
+  },
+  "description": "Output schema for Tavily search results.",
+  "properties": {
+    "answer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "AI-generated answer summary (if include_answer is True)",
+      "title": "Answer"
+    },
+    "query": {
+      "description": "The search query used",
+      "title": "Query",
+      "type": "string"
+    },
+    "results": {
+      "description": "List of search results",
+      "items": {
+        "$ref": "#/$defs/SearchResult"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of image URLs (if include_images is True)",
+      "title": "Images"
+    },
+    "response_time": {
+      "description": "Response time in seconds",
+      "title": "Response Time",
+      "type": "number"
+    }
+  },
+  "required": [
+    "query",
+    "results",
+    "response_time"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

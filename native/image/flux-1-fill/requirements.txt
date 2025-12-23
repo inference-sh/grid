@@ -1,0 +1,9 @@
+pydantic >= 2.0.0
+inferencesh
+diffusers
+torch
+numpy
+Pillow
+transformers
+protobuf
+sentencepiece

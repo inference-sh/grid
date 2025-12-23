@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "video": {
+      "$ref": "#/$defs/File",
+      "description": "Input video file for audio generation"
+    },
+    "text_prompt": {
+      "default": "",
+      "description": "Text description of the desired audio (English). Leave empty for video-only audio generation",
+      "title": "Text Prompt",
+      "type": "string"
+    },
+    "guidance_scale": {
+      "default": 4.5,
+      "description": "Classifier-free guidance scale (1.0-10.0). Higher values follow the prompt more closely",
+      "maximum": 10.0,
+      "minimum": 1.0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "num_inference_steps": {
+      "default": 50,
+      "description": "Number of denoising steps (10-100). More steps = higher quality but slower",
+      "maximum": 100,
+      "minimum": 10,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "sample_nums": {
+      "default": 1,
+      "description": "Number of audio samples to generate (1-6)",
+      "maximum": 6,
+      "minimum": 1,
+      "title": "Sample Nums",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

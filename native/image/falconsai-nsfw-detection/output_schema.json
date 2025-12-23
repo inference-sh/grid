@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "FrameResult": {
+      "description": "Result for a single frame",
+      "properties": {
+        "frame_index": {
+          "description": "Frame index in the video",
+          "title": "Frame Index",
+          "type": "integer"
+        },
+        "timestamp_seconds": {
+          "description": "Timestamp in seconds",
+          "title": "Timestamp Seconds",
+          "type": "number"
+        },
+        "classification": {
+          "description": "NSFW or SAFE",
+          "title": "Classification",
+          "type": "string"
+        },
+        "nsfw_score": {
+          "description": "NSFW probability score (0-1)",
+          "title": "Nsfw Score",
+          "type": "number"
+        },
+        "safe_score": {
+          "description": "Safe probability score (0-1)",
+          "title": "Safe Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "frame_index",
+        "timestamp_seconds",
+        "classification",
+        "nsfw_score",
+        "safe_score"
+      ],
+      "title": "FrameResult",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "is_nsfw": {
+      "description": "Whether NSFW content was detected",
+      "title": "Is Nsfw",
+      "type": "boolean"
+    },
+    "overall_classification": {
+      "description": "Overall classification: NSFW or SAFE",
+      "title": "Overall Classification",
+      "type": "string"
+    },
+    "max_nsfw_score": {
+      "description": "Maximum NSFW score found across all frames",
+      "title": "Max Nsfw Score",
+      "type": "number"
+    },
+    "frames_analyzed": {
+      "description": "Number of frames analyzed",
+      "title": "Frames Analyzed",
+      "type": "integer"
+    },
+    "nsfw_frames_count": {
+      "description": "Number of frames classified as NSFW",
+      "title": "Nsfw Frames Count",
+      "type": "integer"
+    },
+    "frame_results": {
+      "description": "Detailed results for each analyzed frame",
+      "items": {
+        "$ref": "#/$defs/FrameResult"
+      },
+      "title": "Frame Results",
+      "type": "array"
+    }
+  },
+  "required": [
+    "is_nsfw",
+    "overall_classification",
+    "max_nsfw_score",
+    "frames_analyzed",
+    "nsfw_frames_count",
+    "frame_results"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

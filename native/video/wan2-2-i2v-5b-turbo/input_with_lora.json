@@ -1,0 +1,23 @@
+{
+  "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "prompt": "A serene landscape with flowing water",
+  "negative_prompt": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+  "resolution": "720p",
+  "num_frames": 121,
+  "guidance_scale": 5.0,
+  "num_inference_steps": 50,
+  "fps": 24,
+  "seed": 42,
+  "cache_threshold": 0.0,
+  "video_output_quality": 5,
+  "end_image": null,
+  "loras": [
+    {
+      "adapter_name": "custom_lora",
+      "lora_file": {
+        "path": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Turbo/Wan22_TI2V_5B_Turbo_lora_rank_64_fp16.safetensors"
+      },
+      "lora_multiplier": 1.0
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image1": {
+      "$ref": "#/$defs/File",
+      "description": "The first image to stitch"
+    },
+    "image2": {
+      "$ref": "#/$defs/File",
+      "description": "The second image to stitch"
+    },
+    "orientation": {
+      "description": "Direction to stitch images: 'horizontal' (side by side), 'vertical' (top to bottom), or 'auto' (automatically choose direction that maximizes final image size)",
+      "enum": [
+        "horizontal",
+        "vertical",
+        "auto"
+      ],
+      "title": "Orientation",
+      "type": "string"
+    },
+    "squared_output": {
+      "default": false,
+      "description": "If True, create a squared output image with white padding instead of scaling down images",
+      "title": "Squared Output",
+      "type": "boolean"
+    },
+    "max_width": {
+      "default": 1024,
+      "description": "Maximum width of the final output image",
+      "title": "Max Width",
+      "type": "integer"
+    },
+    "max_height": {
+      "default": 1024,
+      "description": "Maximum height of the final output image",
+      "title": "Max Height",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "image1",
+    "image2",
+    "orientation"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

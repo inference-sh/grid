@@ -1,0 +1,6 @@
+{
+  "code": "import requests\nfrom bs4 import BeautifulSoup\nimport pandas as pd\nimport numpy as np\n\nprint('Hello from Python Code Executor!')\nprint(f'NumPy version: {np.__version__}')\nprint(f'Pandas version: {pd.__version__}')\nprint(f'Requests available: {requests.__version__}')\nprint(f'BeautifulSoup available: {BeautifulSoup.__name__}')\n\n# Simple calculation\narr = np.array([1, 2, 3, 4, 5])\nprint(f'\\nArray sum: {arr.sum()}')\nprint(f'Array mean: {arr.mean()}')\n\n# Create a simple DataFrame\ndf = pd.DataFrame({\n    'name': ['Alice', 'Bob', 'Charlie'],\n    'age': [25, 30, 35],\n    'city': ['New York', 'London', 'Paris']\n})\nprint('\\nDataFrame:')\nprint(df.to_string())\n\nprint('\\n✅ All libraries loaded successfully!')",
+  "timeout": 30,
+  "capture_output": true,
+  "working_dir": null
+}

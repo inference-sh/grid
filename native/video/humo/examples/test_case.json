@@ -1,0 +1,9 @@
+{
+    "case_1": {
+        "img_paths": [
+            "./examples/man_Jaime.png"
+        ],
+        "audio_path": "./examples/audio1.wav",
+        "prompt": "The scene unfolds in a dimly - lit forest, where the background is filled with trees and a hazy atmosphere. The man with short brown hair and a beard is wearing a dark hooded cloak or robe that covers most of his body. There are some visible cuts or wounds on his face. He stands relatively still, facing slightly to the right of the camera. Throughout the clip, he remains largely motionless. His head is also mostly still, though there's a subtle shift as if he's looking at something off - screen. His facial expression shows weariness and perhaps a hint of fear or apprehension. There's blood visible on his lips and chin."
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "properties": {
+    "result": {
+      "description": "The selected value based on the numerical condition evaluation",
+      "title": "Result"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

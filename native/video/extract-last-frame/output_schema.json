@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "extracted_frame": {
+      "$ref": "#/$defs/File",
+      "description": "The extracted nth last frame from the video as a PNG image file"
+    },
+    "total_frames": {
+      "description": "Total number of frames in the input video",
+      "title": "Total Frames",
+      "type": "integer"
+    },
+    "frame_index": {
+      "description": "The actual frame index that was extracted (0-based)",
+      "title": "Frame Index",
+      "type": "integer"
+    },
+    "video_info": {
+      "description": "Basic information about the processed video (duration, fps, resolution)",
+      "title": "Video Info",
+      "type": "string"
+    }
+  },
+  "required": [
+    "extracted_frame",
+    "total_frames",
+    "frame_index",
+    "video_info"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+pydantic >= 2.0.0
+inferencesh
+torch>=2.4.0
+whisper-timestamped
+openai-whisper
+dtw-python
+accelerate
+numba==0.61.0
+datasets[audio]
+huggingface_hub==0.25.0
+hf-transfer==0.1.9
+sentencepiece
+soundfile
+scipy
+librosa
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

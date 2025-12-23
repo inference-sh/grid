@@ -1,0 +1,21 @@
+name: nano-banana
+description: Nano Banana is a model that allows you to edit an image with multiple provided source images.
+category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 4000000000
+        env:
+            FAL_KEY: ""
+        python: "3.10"

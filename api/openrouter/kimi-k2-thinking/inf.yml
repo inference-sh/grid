@@ -1,0 +1,20 @@
+name: kimi-k2-thinking
+description: 'Kimi K2 Thinking is the latest, most capable version of open-source thinking model. Built as a thinking agent, scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls. '
+category: chat
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9exwzy3xspcjrb5vcsjmg63.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 0
+        env: {}
+        python: "3.11"

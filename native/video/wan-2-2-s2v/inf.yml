@@ -1,0 +1,345 @@
+name: wan-2-2-s2v
+description: Speech-to-Video generation with Wan2.2-S2V-14B model, supporting quantized variants for different VRAM requirements
+category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 32000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    default_offload:
+        name: default_offload
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q2_k:
+        name: q2_k
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q2_k_offload:
+        name: q2_k_offload
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 10000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q3_k_m:
+        name: q3_k_m
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q3_k_m_offload:
+        name: q3_k_m_offload
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 13000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q3_k_s:
+        name: q3_k_s
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q3_k_s_offload:
+        name: q3_k_s_offload
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_0:
+        name: q4_0
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_0_offload:
+        name: q4_0_offload
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_1:
+        name: q4_1
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_1_offload:
+        name: q4_1_offload
+        order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_k_m:
+        name: q4_k_m
+        order: 14
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_k_m_offload:
+        name: q4_k_m_offload
+        order: 15
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_k_s:
+        name: q4_k_s
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q4_k_s_offload:
+        name: q4_k_s_offload
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_0:
+        name: q5_0
+        order: 16
+        resources:
+            gpu:
+                count: 1
+                vram: 19000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_0_offload:
+        name: q5_0_offload
+        order: 17
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_1:
+        name: q5_1
+        order: 18
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_1_offload:
+        name: q5_1_offload
+        order: 19
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_k_m:
+        name: q5_k_m
+        order: 22
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_k_m_offload:
+        name: q5_k_m_offload
+        order: 23
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_k_s:
+        name: q5_k_s
+        order: 20
+        resources:
+            gpu:
+                count: 1
+                vram: 19000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q5_k_s_offload:
+        name: q5_k_s_offload
+        order: 21
+        resources:
+            gpu:
+                count: 1
+                vram: 17000000000
+                type: any
+            ram: 20000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q6_k:
+        name: q6_k
+        order: 24
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 24000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q6_k_offload:
+        name: q6_k_offload
+        order: 25
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 24000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q8_0:
+        name: q8_0
+        order: 26
+        resources:
+            gpu:
+                count: 1
+                vram: 26000000000
+                type: any
+            ram: 28000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"
+    q8_0_offload:
+        name: q8_0_offload
+        order: 27
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 28000000000
+        env:
+            HF_HUB_ENABLE_HF_TRANSFER: "1"
+        python: "3.10"

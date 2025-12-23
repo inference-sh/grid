@@ -1,0 +1,144 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "The text prompt to generate an image from.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height in pixels of the generated image.",
+      "title": "Height",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width in pixels of the generated image.",
+      "title": "Width",
+      "type": "integer"
+    },
+    "num_inference_steps": {
+      "default": 30,
+      "description": "The number of inference steps.",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 3.5,
+      "description": "The guidance scale.",
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of reference images to use for generation (enables edit mode).",
+      "title": "Reference Images"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The seed for random generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

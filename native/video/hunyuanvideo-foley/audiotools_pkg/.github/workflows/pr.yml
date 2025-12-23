@@ -1,0 +1,44 @@
+name: Test
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Run isort + black formatter
+      - name: Python Code Formatter
+        uses: descriptinc/python-format-action@main
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: setup.py
+      - name: Install binaries
+        run: |
+          sudo apt-get update
+          sudo apt-get install ffmpeg libsndfile1-dev libsox-dev libsox-fmt-mp3
+          python -m pip install --upgrade pip
+          pip install wheel
+      - name: Install recent FFMPEG
+        uses: FedericoCarboni/setup-ffmpeg@v2
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install -e ".[tests]"
+      - name: Test with pytest
+        run: |
+          python -m pytest .

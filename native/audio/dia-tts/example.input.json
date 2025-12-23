@@ -1,0 +1,7 @@
+{
+  "text": "example_string",
+  "format": "wav",
+  "speed": 1.0,
+  "clone_from_text": null,
+  "clone_from_audio": null
+}

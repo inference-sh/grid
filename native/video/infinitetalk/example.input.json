@@ -1,0 +1,18 @@
+{
+  "image": null,
+  "video": null,
+  "prompt": "example_string",
+  "negative_prompt": "bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+  "task_mode": "VideoDubbing",
+  "audio_mode": "Single Person(Local File)",
+  "audio_1": null,
+  "audio_2": null,
+  "tts_text": null,
+  "resolution": "infinitetalk-480",
+  "sampling_steps": 8,
+  "seed": 42,
+  "text_guide_scale": 1.0,
+  "audio_guide_scale": 2.0,
+  "human1_voice": "weights/Kokoro-82M/voices/am_adam.pt",
+  "human2_voice": "weights/Kokoro-82M/voices/af_heart.pt"
+}

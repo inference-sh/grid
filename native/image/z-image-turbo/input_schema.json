@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "LoraConfig": {
+      "description": "Configuration for a single LoRA adapter.\n\nProvide either lora_url OR lora_file (not both).",
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL to LoRA file (.safetensors), Civitai model page, or HuggingFace repo",
+          "title": "Lora Url"
+        },
+        "lora_file": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Uploaded LoRA file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect (0.0-2.0 typical)",
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image content",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Output image width in pixels (will be rounded to multiple of 8)",
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Output image height in pixels (will be rounded to multiple of 8)",
+      "title": "Height",
+      "type": "integer"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Seed for reproducible generation. Use -1 for random seed",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "steps": {
+      "default": 9,
+      "description": "Number of inference steps for the diffusion process (recommended: 8-10 for turbo)",
+      "title": "Steps",
+      "type": "integer"
+    },
+    "shift": {
+      "default": 3.0,
+      "description": "Time shift parameter for the flow matching scheduler (1.0-10.0)",
+      "title": "Shift",
+      "type": "number"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply. Each config specifies adapter_name, lora_url, and lora_multiplier",
+      "title": "Loras"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

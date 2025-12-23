@@ -1,0 +1,15 @@
+{
+  "image": "https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k592zp5dav1j9aks6pcyf0gy.png",
+  "prompt": "Dog jumps and flies away",
+  "negative_prompt": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+  "resolution": "720p",
+  "num_frames": 25,
+  "guidance_scale": 5.0,
+  "num_inference_steps": 6,
+  "fps": 8,
+  "seed": 42,
+  "cache_threshold": 0.0,
+  "video_output_quality": 7,
+  "end_image": null,
+  "loras": null
+}

@@ -1,0 +1,302 @@
+{
+  "$defs": {
+    "ContextMessage": {
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/ContextMessageRole",
+          "description": "the role of the message. user, assistant, or system"
+        },
+        "text": {
+          "description": "the text content of the message",
+          "title": "Text",
+          "type": "string"
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the reasoning content of the message",
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/File"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the files of the message",
+          "title": "Files"
+        },
+        "tool_calls": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool calls of the message",
+          "title": "Tool Calls"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool call id for tool role messages",
+          "title": "Tool Call Id"
+        }
+      },
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "ContextMessage",
+      "type": "object"
+    },
+    "ContextMessageRole": {
+      "enum": [
+        "user",
+        "assistant",
+        "system",
+        "tool"
+      ],
+      "title": "ContextMessageRole",
+      "type": "string"
+    },
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "ReasoningEffortEnum": {
+      "description": "Enum for reasoning effort.",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "none"
+      ],
+      "title": "ReasoningEffortEnum",
+      "type": "string"
+    }
+  },
+  "description": "Qwen3 30B A3B input model with image and tools support.",
+  "properties": {
+    "system_prompt": {
+      "default": "You are Qwen3, a helpful and knowledgeable AI assistant.",
+      "description": "The system prompt to use for the model",
+      "title": "System Prompt",
+      "type": "string"
+    },
+    "reasoning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the reasoning input of the message",
+      "title": "Reasoning"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none",
+      "description": "enable step-by-step reasoning"
+    },
+    "reasoning_max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the maximum number of tokens to use for reasoning",
+      "title": "Reasoning Max Tokens"
+    },
+    "context": {
+      "default": [],
+      "description": "the context to use for the model",
+      "examples": [
+        [
+          {
+            "content": [
+              {
+                "text": "What is the capital of France?",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "The capital of France is Paris.",
+                "type": "text"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      ],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "role": {
+      "$ref": "#/$defs/ContextMessageRole",
+      "default": "user",
+      "description": "the role of the input text"
+    },
+    "text": {
+      "description": "the input text to use for the model",
+      "examples": [
+        "write a haiku about artificial general intelligence"
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
+    "context_size": {
+      "default": 4096,
+      "title": "Context Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "LLMInput",
+  "type": "object"
+}

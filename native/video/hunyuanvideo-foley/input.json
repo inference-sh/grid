@@ -1,0 +1,7 @@
+{
+  "video": "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k3r974f59b9cd6dqa9cjewb1.mp4",
+  "text_prompt": "A person walks on frozen ice",
+  "guidance_scale": 4.5,
+  "num_inference_steps": 50,
+  "sample_nums": 1
+}

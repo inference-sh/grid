@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "ContextMessage": {
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/ContextMessageRole",
+          "description": "the role of the message. user, assistant, or system"
+        },
+        "text": {
+          "description": "the text content of the message",
+          "title": "Text",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the image file of the message"
+        },
+        "tool_calls": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool calls of the message",
+          "title": "Tool Calls"
+        }
+      },
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "ContextMessage",
+      "type": "object"
+    },
+    "ContextMessageRole": {
+      "enum": [
+        "user",
+        "assistant",
+        "system",
+        "tool"
+      ],
+      "title": "ContextMessageRole",
+      "type": "string"
+    },
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "thinking_enabled": {
+      "default": false,
+      "description": "Enable thinking mode for enhanced reasoning",
+      "title": "Thinking Enabled",
+      "type": "boolean"
+    },
+    "analysis_mode": {
+      "default": false,
+      "description": "Enable understanding mode for image analysis only",
+      "title": "Analysis Mode",
+      "type": "boolean"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "contentMediaType": "image/*",
+      "default": null,
+      "description": "the image to use for the model"
+    },
+    "system_prompt": {
+      "default": "you are a helpful assistant that can answer questions and help with tasks.",
+      "description": "the system prompt to use for the model",
+      "examples": [
+        "you are a helpful assistant that can answer questions and help with tasks."
+      ],
+      "title": "System Prompt",
+      "type": "string"
+    },
+    "context": {
+      "default": [],
+      "description": "the context to use for the model",
+      "examples": [
+        [
+          {
+            "content": [
+              {
+                "text": "What is the capital of France?",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "The capital of France is Paris.",
+                "type": "text"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      ],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "role": {
+      "$ref": "#/$defs/ContextMessageRole",
+      "default": "user",
+      "description": "the role of the input text"
+    },
+    "text": {
+      "description": "the input text to use for the model",
+      "examples": [
+        "write a haiku about artificial general intelligence"
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
+    "context_size": {
+      "default": 4096,
+      "title": "Context Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "LLMInput",
+  "type": "object"
+}

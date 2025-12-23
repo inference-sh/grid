@@ -1,0 +1,163 @@
+name: wan2-2-t2v-5b
+description: text to video with wan2.2 TI2V 5B model
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18zaxsn5vay8byv1f0zc3ng.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 25769803776
+                type: nvidia
+            ram: 25769803776
+        env: {}
+        python: "3.11"
+    q2_k:
+        name: q2_k
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 12000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q3_k_m:
+        name: q3_k_m
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 15000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q3_k_s:
+        name: q3_k_s
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 14000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q4_0:
+        name: q4_0
+        order: 4
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q4_1:
+        name: q4_1
+        order: 5
+        resources:
+            gpu:
+                count: 1
+                vram: 19000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q4_k_m:
+        name: q4_k_m
+        order: 6
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q4_k_s:
+        name: q4_k_s
+        order: 7
+        resources:
+            gpu:
+                count: 1
+                vram: 18000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q5_0:
+        name: q5_0
+        order: 8
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q5_1:
+        name: q5_1
+        order: 9
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q5_k_m:
+        name: q5_k_m
+        order: 10
+        resources:
+            gpu:
+                count: 1
+                vram: 22000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q5_k_s:
+        name: q5_k_s
+        order: 11
+        resources:
+            gpu:
+                count: 1
+                vram: 21000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q6_k:
+        name: q6_k
+        order: 12
+        resources:
+            gpu:
+                count: 1
+                vram: 25000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"
+    q8_0:
+        name: q8_0
+        order: 13
+        resources:
+            gpu:
+                count: 1
+                vram: 31000000000
+                type: any
+            ram: 16000000000
+        env: {}
+        python: "3.11"

@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "description": "Aspect ratio options.",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "CameraTypeEnum": {
+      "description": "Predefined camera movement types.",
+      "enum": [
+        "none",
+        "simple",
+        "down_back",
+        "forward_up",
+        "right_turn_forward",
+        "left_turn_forward"
+      ],
+      "title": "CameraTypeEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "description": "Video duration options.",
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "description": "Video generation mode.",
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Positive text prompt for video generation. Cannot exceed 2500 characters.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Negative text prompt. Cannot exceed 2500 characters.",
+      "title": "Negative Prompt"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "std",
+      "description": "Video generation mode. 'std' is cost-effective, 'pro' provides higher quality."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video (width:height)."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Video length in seconds."
+    },
+    "cfg_scale": {
+      "default": 0.5,
+      "description": "Flexibility in video generation. Higher value = lower flexibility, stronger relevance to prompt.",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "camera_type": {
+      "$ref": "#/$defs/CameraTypeEnum",
+      "default": "none",
+      "description": "Predefined camera movement type."
+    },
+    "camera_horizontal": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera horizontal movement. Negative=left, positive=right. Only one camera config should be non-zero.",
+      "title": "Camera Horizontal"
+    },
+    "camera_vertical": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera vertical movement. Negative=down, positive=up.",
+      "title": "Camera Vertical"
+    },
+    "camera_pan": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera pan (rotation around x-axis). Negative=down, positive=up.",
+      "title": "Camera Pan"
+    },
+    "camera_tilt": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera tilt (rotation around y-axis). Negative=left, positive=right.",
+      "title": "Camera Tilt"
+    },
+    "camera_roll": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera roll (rotation around z-axis). Negative=counterclockwise, positive=clockwise.",
+      "title": "Camera Roll"
+    },
+    "camera_zoom": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": -10.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Camera zoom. Negative=zoom in (narrower FOV), positive=zoom out (wider FOV).",
+      "title": "Camera Zoom"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

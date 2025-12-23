@@ -1,0 +1,14 @@
+{
+  "mode": "example_string",
+  "prompt": "example_string",
+  "image": null,
+  "prefix_video": null,
+  "seed": -1,
+  "num_frames": 96,
+  "num_steps": 8,
+  "window_size": 4,
+  "fps": 24,
+  "chunk_width": 6,
+  "width": 1280,
+  "height": 720
+}

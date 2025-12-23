@@ -1,0 +1,64 @@
+name: infinitetalk-v2v-causvid
+description: InfiniteTalk with CausVid LoRA - Enhanced Video-to-Video Dubbing
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtycv1rd8qd5bv23nw81r4.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    cpu_only:
+        name: cpu_only
+        order: 4
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 64000000000
+        env: {}
+        python: "3.10"
+    default:
+        name: default_480p
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 24000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.10"
+    default_720p:
+        name: default_720p
+        order: 1
+        resources:
+            gpu:
+                count: 1
+                vram: 32000000000
+                type: any
+            ram: 32000000000
+        env: {}
+        python: "3.10"
+    lowvram_480p:
+        name: lowvram_480p
+        order: 2
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 24000000000
+        env: {}
+        python: "3.10"
+    lowvram_720p:
+        name: lowvram_720p
+        order: 3
+        resources:
+            gpu:
+                count: 1
+                vram: 20000000000
+                type: any
+            ram: 24000000000
+        env: {}
+        python: "3.10"

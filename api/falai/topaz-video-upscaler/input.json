@@ -1,0 +1,8 @@
+{
+  "video": {
+    "path": "https://v3.fal.media/files/kangaroo/y5-1YTGpun17eSeggZMzX_video-1733468228.mp4"
+  },
+  "upscale_factor": 2.0,
+  "target_fps": null,
+  "H264_output": false
+}

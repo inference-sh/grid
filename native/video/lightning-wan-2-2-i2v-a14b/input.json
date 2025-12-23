@@ -1,0 +1,13 @@
+{
+  "image": "https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg",
+  "prompt": "god particle",
+  "negative_prompt": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+  "resolution": "480p",
+  "max_area": null,
+  "num_frames": 121,
+  "guidance_scale": 5.0,
+  "num_inference_steps": 50,
+  "fps": 24,
+  "seed": null,
+  "cache_threshold": 0.2
+}

@@ -1,0 +1,20 @@
+name: latentsync
+description: Lip sync application using LatentSync model
+category: video
+images:
+    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/30q0qjev53aps250t64txd3my0.jpg
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 16000000000
+                type: any
+            ram: 6000000000
+        env: {}
+        python: "3.11"

@@ -1,0 +1,20 @@
+name: humo
+description: HuMo is a unified, human-centric video generation framework designed to produce high-quality, fine-grained, and controllable human videos from multimodal inputs—including text, images, and audio. It supports strong text prompt following, consistent subject preservation, synchronized audio-driven motion.
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: ""
+        order: 0
+        resources:
+            gpu:
+                count: 1
+                vram: 0
+                type: nvidia
+            ram: 0
+        env: { MASTER_ADDR: "localhost", MASTER_PORT: "29500", WORLD_SIZE: "1", RANK: "0", LOCAL_RANK: "0" }
+        python: "3.11"

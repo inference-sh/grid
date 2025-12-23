@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "First frame image for video generation"
+    },
+    "audio": {
+      "$ref": "#/$defs/File",
+      "description": "Audio file for speech-to-video generation"
+    },
+    "prompt": {
+      "description": "Text prompt describing the desired video content",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "720p",
+      "description": "Resolution preset",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "num_frames_per_chunk": {
+      "default": 81,
+      "description": "Number of frames to generate per chunk",
+      "title": "Num Frames Per Chunk",
+      "type": "integer"
+    },
+    "fps": {
+      "default": 16,
+      "description": "Frames per second for the output video",
+      "title": "Fps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility",
+      "title": "Seed"
+    },
+    "enable_first_block_cache": {
+      "default": true,
+      "description": "Enable first block cache for faster inference",
+      "title": "Enable First Block Cache",
+      "type": "boolean"
+    },
+    "first_block_cache_threshold": {
+      "default": 0.05,
+      "description": "Threshold for first block cache (lower = more acceleration, higher = better quality)",
+      "maximum": 0.5,
+      "minimum": 0.01,
+      "title": "First Block Cache Threshold",
+      "type": "number"
+    }
+  },
+  "required": [
+    "image",
+    "audio",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

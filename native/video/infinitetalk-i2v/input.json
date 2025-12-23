@@ -1,0 +1,13 @@
+{
+  "image": "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k46bh0exq3qx15vfzsyaeahj.png",
+  "prompt": "accurate lipsync and stable avatar",
+  "negative_prompt": "bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+  "audio_file": "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k46be5vzh7gjz5at9960anzm.wav",
+  "resolution": "infinitetalk-480",
+  "sampling_steps": 8,
+  "seed": 42,
+  "text_guide_scale": 1,
+  "audio_guide_scale": 2,
+  "use_teacache": false,
+  "teacache_thresh": 0.1
+}

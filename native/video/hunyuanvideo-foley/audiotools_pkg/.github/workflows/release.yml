@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - "master"
+  workflow_dispatch:
+name: Create Release
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Retrieve version
+        run: |
+          echo "TAG_NAME=$(grep -i -o -P '(?<=version=\")[^\"]+(?=\")' setup.py)" > "$GITHUB_OUTPUT"
+        id: version
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: changelog
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          # This token is provided by Actions, you do not need to create your
+          # own token
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.TAG_NAME }}
+          name: Release ${{ steps.version.outputs.TAG_NAME }}
+          body: ${{steps.changelog.outputs.changelog}}
+          draft: false
+          prerelease: false

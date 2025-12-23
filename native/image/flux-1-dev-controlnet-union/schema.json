@@ -1,0 +1,286 @@
+{
+  "input": {
+    "$defs": {
+      "ControlNetType": {
+        "enum": [
+          "canny",
+          "tile",
+          "depth",
+          "blur",
+          "pose",
+          "gray",
+          "low_quality"
+        ],
+        "title": "ControlNetType",
+        "type": "string"
+      },
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "prompt": {
+        "description": "The text prompt to generate the image from",
+        "examples": [
+          "A majestic lion jumping from a big stone at night"
+        ],
+        "title": "Prompt",
+        "type": "string"
+      },
+      "num_inference_steps": {
+        "default": 28,
+        "description": "Number of denoising steps",
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Num Inference Steps",
+        "type": "integer"
+      },
+      "guidance_scale": {
+        "default": 3.5,
+        "description": "Classifier-free guidance scale",
+        "maximum": 20.0,
+        "minimum": 1.0,
+        "title": "Guidance Scale",
+        "type": "number"
+      },
+      "width": {
+        "default": 1024,
+        "description": "Width of the generated image",
+        "maximum": 2048,
+        "minimum": 256,
+        "title": "Width",
+        "type": "integer"
+      },
+      "height": {
+        "default": 1024,
+        "description": "Height of the generated image",
+        "maximum": 2048,
+        "minimum": 256,
+        "title": "Height",
+        "type": "integer"
+      },
+      "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The seed for random generation.",
+        "title": "Seed"
+      },
+      "controlnet_type": {
+        "$ref": "#/$defs/ControlNetType",
+        "default": null,
+        "description": "Type of ControlNet to use"
+      },
+      "controlnet_image": {
+        "$ref": "#/$defs/File",
+        "default": null,
+        "description": "Input image for the ControlNet"
+      },
+      "controlnet_strength": {
+        "default": 1.0,
+        "description": "Strength of the ControlNet effect",
+        "maximum": 1.0,
+        "minimum": 0.0,
+        "title": "Controlnet Strength",
+        "type": "number"
+      },
+      "controlnet_pre_process": {
+        "default": true,
+        "description": "Whether to pre-process the input image",
+        "title": "Controlnet Pre Process",
+        "type": "boolean"
+      },
+      "control_guidance_start": {
+        "default": 0.0,
+        "description": "When to start applying ControlNet guidance (0.0 to 1.0)",
+        "maximum": 1.0,
+        "minimum": 0.0,
+        "title": "Control Guidance Start",
+        "type": "number"
+      },
+      "control_guidance_end": {
+        "default": 1.0,
+        "description": "When to stop applying ControlNet guidance (0.0 to 1.0)",
+        "maximum": 1.0,
+        "minimum": 0.0,
+        "title": "Control Guidance End",
+        "type": "number"
+      },
+      "lora_url": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "URL to LoRA file (.safetensors) or Civitai model page",
+        "title": "Lora Url"
+      },
+      "lora_multiplier": {
+        "default": 1.0,
+        "description": "Multiplier for the LoRA effect",
+        "title": "Lora Multiplier",
+        "type": "number"
+      }
+    },
+    "required": [
+      "prompt"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "result": {
+        "$ref": "#/$defs/File"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

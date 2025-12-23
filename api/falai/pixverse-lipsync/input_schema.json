@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "VoiceIdEnum": {
+      "description": "Voice options for text-to-speech.",
+      "enum": [
+        "Emily",
+        "James",
+        "Isabella",
+        "Liam",
+        "Chloe",
+        "Adrian",
+        "Harper",
+        "Ava",
+        "Sophia",
+        "Julia",
+        "Mason",
+        "Jack",
+        "Oliver",
+        "Ethan",
+        "Auto"
+      ],
+      "title": "VoiceIdEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "$ref": "#/$defs/File",
+      "description": "Input video file for lip synchronization. Supported formats: MP4, MOV, AVI"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for lip sync. If not provided, TTS will be used with the text parameter. Supported formats: WAV, MP3"
+    },
+    "voice_id": {
+      "$ref": "#/$defs/VoiceIdEnum",
+      "default": "Auto",
+      "description": "Voice to use for TTS when audio is not provided."
+    },
+    "text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text content for TTS when audio is not provided. Required if no audio file is given.",
+      "title": "Text"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

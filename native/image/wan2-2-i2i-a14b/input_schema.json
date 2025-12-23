@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_file": {
+          "$ref": "#/$defs/File",
+          "description": "LoRA weights file (.safetensors)"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_file"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Input image to upscale"
+    },
+    "prompt": {
+      "default": "",
+      "description": "Text prompt to guide upscaling",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+      "description": "Negative prompt to guide what to avoid",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "scale": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1.0,
+      "description": "Upscale factor (if not specifying width/height)",
+      "title": "Scale"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target width (overrides scale)",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target height (overrides scale)",
+      "title": "Height"
+    },
+    "guidance_scale": {
+      "default": 2.0,
+      "description": "Classifier-free guidance scale",
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "num_inference_steps": {
+      "default": 40,
+      "description": "Number of denoising steps",
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "strength": {
+      "default": 0.3,
+      "description": "Amount of noise to add (0.0-1.0)",
+      "title": "Strength",
+      "type": "number"
+    },
+    "sharpen_input": {
+      "default": 0.0,
+      "description": "Sharpen input image (0.0-1.0+)",
+      "title": "Sharpen Input",
+      "type": "number"
+    },
+    "desaturate_input": {
+      "default": 0.0,
+      "description": "Desaturate input image (0.0-1.0)",
+      "title": "Desaturate Input",
+      "type": "number"
+    },
+    "pre_downscale_factor": {
+      "default": 1.0,
+      "description": "Pre-downscale factor (0.1-1.0). Values < 1.0 downscale the image first, then upscale to target size with latent noise generation. Lower values add more details/creativity by creating more missing information for the transformer to fill in.",
+      "maximum": 1.0,
+      "minimum": 0.1,
+      "title": "Pre Downscale Factor",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility",
+      "title": "Seed"
+    },
+    "cache_threshold": {
+      "default": 0,
+      "description": "Cache threshold for transformer (0 to disable caching)",
+      "title": "Cache Threshold",
+      "type": "number"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

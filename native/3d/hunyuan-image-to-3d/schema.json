@@ -1,0 +1,222 @@
+{
+  "input": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "description": "Input parameters for converting an image to a 3D model",
+    "examples": [
+      {
+        "input_image": {
+          "filename": "car.jpg"
+        },
+        "num_inference_steps": 30,
+        "paint_texture": false,
+        "prompt": "a red sports car",
+        "seed": 2025
+      }
+    ],
+    "properties": {
+      "prompt": {
+        "default": "",
+        "description": "Optional text prompt to guide the 3D generation",
+        "examples": [
+          "a red sports car",
+          "a wooden chair"
+        ],
+        "maxLength": 1000,
+        "title": "Prompt",
+        "type": "string"
+      },
+      "input_image": {
+        "$ref": "#/$defs/File",
+        "description": "Input image to convert to 3D model",
+        "examples": [
+          "https://1nf.sh/examples/car.jpg",
+          "https://1nf.sh/examples/chair.png"
+        ]
+      },
+      "num_inference_steps": {
+        "default": 30,
+        "description": "Number of denoising steps (higher = better quality but slower)",
+        "examples": [
+          30,
+          50
+        ],
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Num Inference Steps",
+        "type": "integer"
+      },
+      "seed": {
+        "default": 2025,
+        "description": "Random seed for reproducible results",
+        "examples": [
+          2025,
+          42
+        ],
+        "minimum": 0,
+        "title": "Seed",
+        "type": "integer"
+      },
+      "paint_texture": {
+        "default": false,
+        "description": "Whether to paint texture on the 3D model",
+        "title": "Paint Texture",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "input_image"
+    ],
+    "title": "Image to 3D Model Generation Input",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "result": {
+        "$ref": "#/$defs/File",
+        "description": "Generated 3D model file"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

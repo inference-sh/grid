@@ -1,0 +1,33 @@
+name: media-analyzer
+description: AI-powered media analyzer that can analyze images and audio files. Takes a question and a list of media files (images or audio) and returns detailed analysis using vision and audio AI models.
+category: multimodal
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 4000000000
+        env:
+            PYTHONPATH: /app
+        python: "3.10"
+    fast:
+        name: fast
+        order: 1
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: any
+            ram: 2000000000
+        env:
+            PYTHONPATH: /app
+        python: "3.10"

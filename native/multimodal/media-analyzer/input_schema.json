@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "description": "Input schema for the media analyzer.",
+  "properties": {
+    "question": {
+      "default": "Describe this media (describe all media if there are multiple as input):",
+      "description": "Question or prompt about the media",
+      "title": "Question",
+      "type": "string"
+    },
+    "media": {
+      "description": "List of media files to analyze (images or audio)",
+      "items": {
+        "$ref": "#/$defs/File"
+      },
+      "title": "Media",
+      "type": "array"
+    },
+    "model": {
+      "default": "gpt-4o-mini",
+      "description": "Model to use for analysis (gpt-4o-mini, gpt-4o, gpt-4o-audio-preview, etc.)",
+      "title": "Model",
+      "type": "string"
+    },
+    "temperature": {
+      "default": 0.7,
+      "description": "Temperature for response randomness (0.0-2.0)",
+      "maximum": 2.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Maximum tokens in response (optional)",
+      "title": "Max Tokens"
+    }
+  },
+  "required": [
+    "media"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

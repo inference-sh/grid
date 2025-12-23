@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "ExtractedContent": {
+      "description": "Extracted content from a single URL.",
+      "properties": {
+        "url": {
+          "description": "Source URL that was extracted",
+          "title": "Url",
+          "type": "string"
+        },
+        "raw_content": {
+          "description": "Extracted content from the webpage",
+          "title": "Raw Content",
+          "type": "string"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "List of image URLs found on the page (if include_images is True)",
+          "title": "Images"
+        },
+        "favicon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Favicon URL (if include_favicon is True)",
+          "title": "Favicon"
+        }
+      },
+      "required": [
+        "url",
+        "raw_content"
+      ],
+      "title": "ExtractedContent",
+      "type": "object"
+    },
+    "FailedExtraction": {
+      "description": "Information about a failed extraction.",
+      "properties": {
+        "url": {
+          "description": "URL that failed to extract",
+          "title": "Url",
+          "type": "string"
+        },
+        "error": {
+          "description": "Error message describing why extraction failed",
+          "title": "Error",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "error"
+      ],
+      "title": "FailedExtraction",
+      "type": "object"
+    }
+  },
+  "description": "Output schema for Tavily extract results.",
+  "properties": {
+    "results": {
+      "description": "Successfully extracted content from URLs",
+      "items": {
+        "$ref": "#/$defs/ExtractedContent"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "failed_results": {
+      "description": "URLs that failed to extract with error messages",
+      "items": {
+        "$ref": "#/$defs/FailedExtraction"
+      },
+      "title": "Failed Results",
+      "type": "array"
+    },
+    "response_time": {
+      "description": "Response time in seconds",
+      "title": "Response Time",
+      "type": "number"
+    },
+    "request_id": {
+      "description": "Unique request ID for support reference",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "total_urls": {
+      "description": "Total number of URLs processed",
+      "title": "Total Urls",
+      "type": "integer"
+    },
+    "successful_count": {
+      "description": "Number of successfully extracted URLs",
+      "title": "Successful Count",
+      "type": "integer"
+    },
+    "failed_count": {
+      "description": "Number of failed extractions",
+      "title": "Failed Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "results",
+    "failed_results",
+    "response_time",
+    "request_id",
+    "total_urls",
+    "successful_count",
+    "failed_count"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

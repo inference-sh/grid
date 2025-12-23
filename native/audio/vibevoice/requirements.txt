@@ -1,0 +1,38 @@
+# Core inference.sh requirements
+pydantic >= 2.0.0
+inferencesh
+
+# ML frameworks - exact versions for VibeVoice compatibility
+torch>=2.0.0
+torchvision
+torchaudio
+
+# VibeVoice specific versions (critical for compatibility)
+accelerate==1.6.0
+transformers==4.51.3
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.1
+numpy>=1.23.5,<2
+
+# Additional VibeVoice dependencies
+diffusers
+llvmlite>=0.40.0
+numba>=0.57.0
+scipy
+tqdm
+ml-collections
+absl-py
+
+# Utility libraries
+pillow
+einops
+huggingface_hub
+hf_transfer
+
+# Flash Attention (optional, will fall back to SDPA if not available)
+# flash-attn>=2.7.0  # Commented out - will install separately if needed
+
+# VibeVoice package
+-e ./VibeVoice

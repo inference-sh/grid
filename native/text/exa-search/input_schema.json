@@ -1,0 +1,157 @@
+{
+  "properties": {
+    "query": {
+      "default": "Latest developments in LLM capabilities",
+      "description": "The search query string",
+      "title": "Query",
+      "type": "string"
+    },
+    "search_type": {
+      "default": "auto",
+      "description": "Search method: auto (default), neural (embeddings), or keyword",
+      "enum": [
+        "auto",
+        "neural",
+        "keyword"
+      ],
+      "title": "Search Type",
+      "type": "string"
+    },
+    "num_results": {
+      "default": 10,
+      "description": "Number of search results to return (max 100)",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Num Results",
+      "type": "integer"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "enum": [
+            "company",
+            "research paper",
+            "news",
+            "pdf",
+            "github",
+            "tweet",
+            "personal site",
+            "linkedin profile",
+            "financial report"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Focus search on specific content category",
+      "title": "Category"
+    },
+    "include_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of domains to restrict search to (e.g., ['arxiv.org', 'github.com'])",
+      "title": "Include Domains"
+    },
+    "exclude_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of domains to exclude from search",
+      "title": "Exclude Domains"
+    },
+    "start_published_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO 8601 datetime - only content published after this date",
+      "title": "Start Published Date"
+    },
+    "end_published_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO 8601 datetime - only content published before this date",
+      "title": "End Published Date"
+    },
+    "include_text": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Required text strings that must appear in results (max 5 words per string)",
+      "title": "Include Text"
+    },
+    "exclude_text": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text strings that must NOT appear in results",
+      "title": "Exclude Text"
+    },
+    "get_contents": {
+      "default": true,
+      "description": "Include full text content in results",
+      "title": "Get Contents",
+      "type": "boolean"
+    },
+    "get_summary": {
+      "default": false,
+      "description": "Generate LLM-powered summaries for each result (costs extra)",
+      "title": "Get Summary",
+      "type": "boolean"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

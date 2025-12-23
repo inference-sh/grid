@@ -1,0 +1,21 @@
+name: wan-2-5
+description: Wan 2.5 Image-to-Video - Generate high-quality videos from images using state-of-the-art AI
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18zaxsn5vay8byv1f0zc3ng.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+variants:
+    default:
+        name: default
+        order: 0
+        resources:
+            gpu:
+                count: 0
+                vram: 0
+                type: none
+            ram: 4000000000
+        env:
+            FAL_KEY: ""
+        python: "3.10"

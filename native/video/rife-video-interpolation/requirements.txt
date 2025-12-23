@@ -1,0 +1,23 @@
+# Core inference.sh requirements
+pydantic >= 2.0.0
+inferencesh >= 0.4.14
+
+# ML frameworks with specific versions for stability
+torch>=2.7.1
+torchvision>=0.22.0
+torchaudio>=2.7.1
+
+# Acceleration libraries
+accelerate>=1.1.1
+transformers>=4.49.0
+
+# RIFE specific dependencies (from ECCV2022-RIFE)
+numpy>=1.16,<=1.23.5
+tqdm>=4.35.0
+sk-video>=1.1.10
+opencv-python>=4.1.2
+moviepy>=1.0.3
+
+# Utility libraries
+pillow
+einops

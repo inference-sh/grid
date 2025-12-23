@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "audio": {
+      "$ref": "#/$defs/File",
+      "description": "The audio file to transcribe"
+    },
+    "language": {
+      "default": "english",
+      "description": "Optional language of the audio (e.g. 'english', 'french'). If not provided, will be auto-detected.",
+      "enum": [
+        "english",
+        "french",
+        "german",
+        "spanish",
+        "italian",
+        "japanese",
+        "chinese",
+        "portuguese",
+        "russian",
+        "korean"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "task": {
+      "default": "transcribe",
+      "description": "Whether to transcribe the audio in its original language or translate to English",
+      "enum": [
+        "transcribe",
+        "translate"
+      ],
+      "title": "Task",
+      "type": "string"
+    },
+    "return_timestamps": {
+      "default": "word",
+      "description": "Whether to return timestamps. Use 'none' for no timestamps, 'word' for word-level timestamps, or 'sentence' for sentence-level timestamps.",
+      "enum": [
+        "none",
+        "word",
+        "sentence"
+      ],
+      "title": "Return Timestamps",
+      "type": "string"
+    },
+    "vad": {
+      "default": false,
+      "description": "Whether to use Voice Activity Detection (VAD) to improve accuracy on files with silence",
+      "title": "Vad",
+      "type": "boolean"
+    },
+    "detect_disfluencies": {
+      "default": false,
+      "description": "Whether to detect speech disfluencies (marked as [*] in transcript)",
+      "title": "Detect Disfluencies",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

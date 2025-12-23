@@ -1,0 +1,356 @@
+{
+  "input": {
+    "$defs": {
+      "ContextMessage": {
+        "properties": {
+          "role": {
+            "$ref": "#/$defs/ContextMessageRole",
+            "description": "The role of the message"
+          },
+          "text": {
+            "description": "The text content of the message",
+            "title": "Text",
+            "type": "string"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/File"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The image url of the message"
+          }
+        },
+        "required": [
+          "role",
+          "text"
+        ],
+        "title": "ContextMessage",
+        "type": "object"
+      },
+      "ContextMessageRole": {
+        "enum": [
+          "user",
+          "assistant",
+          "system"
+        ],
+        "title": "ContextMessageRole",
+        "type": "string"
+      },
+      "File": {
+        "description": "A class representing a file in the inference.sh ecosystem.",
+        "properties": {
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Content Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filename"
+          }
+        },
+        "title": "File",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "system_prompt": {
+        "default": "You are a helpful assistant that can answer questions and help with tasks.",
+        "description": "The system prompt to use for the model",
+        "examples": [
+          "You are a helpful assistant that can answer questions and help with tasks.",
+          "You are a certified medical professional who can provide accurate health information.",
+          "You are a certified financial advisor who can give sound investment guidance.",
+          "You are a certified cybersecurity expert who can explain security best practices.",
+          "You are a certified environmental scientist who can discuss climate and sustainability."
+        ],
+        "title": "System Prompt",
+        "type": "string"
+      },
+      "context": {
+        "default": [],
+        "description": "The context to use for the model",
+        "examples": [
+          [
+            {
+              "content": [
+                {
+                  "text": "What is the capital of France?",
+                  "type": "text"
+                }
+              ],
+              "role": "user"
+            },
+            {
+              "content": [
+                {
+                  "text": "The capital of France is Paris.",
+                  "type": "text"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          [
+            {
+              "content": [
+                {
+                  "text": "What is the weather like today?",
+                  "type": "text"
+                }
+              ],
+              "role": "user"
+            },
+            {
+              "content": [
+                {
+                  "text": "I apologize, but I don't have access to real-time weather information. You would need to check a weather service or app to get current weather conditions for your location.",
+                  "type": "text"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          [
+            {
+              "content": [
+                {
+                  "text": "Can you help me write a poem about spring?",
+                  "type": "text"
+                }
+              ],
+              "role": "user"
+            },
+            {
+              "content": [
+                {
+                  "text": "Here's a short poem about spring:\n\nGreen buds awakening,\nSoft rain gently falling down,\nNew life springs anew.\n\nWarm sun breaks through clouds,\nBirds return with joyful song,\nNature's sweet rebirth.",
+                  "type": "text"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          [
+            {
+              "content": [
+                {
+                  "text": "Explain quantum computing in simple terms",
+                  "type": "text"
+                }
+              ],
+              "role": "user"
+            },
+            {
+              "content": [
+                {
+                  "text": "Quantum computing is like having a super-powerful calculator that can solve many problems at once instead of one at a time. While regular computers use bits (0s and 1s), quantum computers use quantum bits or \"qubits\" that can be both 0 and 1 at the same time - kind of like being in two places at once! This allows them to process huge amounts of information much faster than regular computers for certain types of problems.",
+                  "type": "text"
+                }
+              ],
+              "role": "assistant"
+            }
+          ]
+        ],
+        "items": {
+          "$ref": "#/$defs/ContextMessage"
+        },
+        "title": "Context",
+        "type": "array"
+      },
+      "text": {
+        "description": "The user prompt to use for the model",
+        "examples": [
+          "What is the capital of France?",
+          "What is the weather like today?",
+          "Can you help me write a poem about spring?",
+          "Explain quantum computing in simple terms"
+        ],
+        "title": "Text",
+        "type": "string"
+      },
+      "image": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/File"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "The image to use for the model"
+      },
+      "temperature": {
+        "default": 0.7,
+        "title": "Temperature",
+        "type": "number"
+      },
+      "top_p": {
+        "default": 0.95,
+        "title": "Top P",
+        "type": "number"
+      },
+      "max_tokens": {
+        "default": 4096,
+        "title": "Max Tokens",
+        "type": "integer"
+      },
+      "context_size": {
+        "default": 4096,
+        "title": "Context Size",
+        "type": "integer"
+      },
+      "reasoning": {
+        "default": false,
+        "title": "Reasoning",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "text"
+    ],
+    "title": "AppInput",
+    "type": "object"
+  },
+  "output": {
+    "$defs": {
+      "LLMUsage": {
+        "properties": {
+          "stop_reason": {
+            "default": "",
+            "title": "Stop Reason",
+            "type": "string"
+          },
+          "time_to_first_token": {
+            "default": 0.0,
+            "title": "Time To First Token",
+            "type": "number"
+          },
+          "tokens_per_second": {
+            "default": 0.0,
+            "title": "Tokens Per Second",
+            "type": "number"
+          },
+          "prompt_tokens": {
+            "default": 0,
+            "title": "Prompt Tokens",
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "default": 0,
+            "title": "Completion Tokens",
+            "type": "integer"
+          },
+          "total_tokens": {
+            "default": 0,
+            "title": "Total Tokens",
+            "type": "integer"
+          },
+          "reasoning_tokens": {
+            "default": 0,
+            "title": "Reasoning Tokens",
+            "type": "integer"
+          },
+          "reasoning_time": {
+            "default": 0.0,
+            "title": "Reasoning Time",
+            "type": "number"
+          }
+        },
+        "title": "LLMUsage",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "response": {
+        "title": "Response",
+        "type": "string"
+      },
+      "reasoning": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reasoning"
+      },
+      "usage": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/LLMUsage"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      }
+    },
+    "required": [
+      "response"
+    ],
+    "title": "AppOutput",
+    "type": "object"
+  }
+}

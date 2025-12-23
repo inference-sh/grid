@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "content_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Content reference image for subject/identity-driven generation"
+    },
+    "style_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Style reference image for style transfer"
+    },
+    "extra_style_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Extra style reference image (experimental feature)"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "maximum": 1536,
+          "minimum": 512,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Generation width (512-1536, step 16). If not specified, inferred from input image",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "maximum": 1536,
+          "minimum": 512,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Generation height (512-1536, step 16). If not specified, inferred from input image",
+      "title": "Height"
+    },
+    "num_steps": {
+      "default": 25,
+      "description": "Number of inference steps (1-50)",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Steps",
+      "type": "integer"
+    },
+    "guidance": {
+      "default": 4.0,
+      "description": "Guidance scale (1.0-5.0)",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Guidance",
+      "type": "number"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Random seed (-1 for random)",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "keep_size": {
+      "default": false,
+      "description": "Keep input image size (for style editing)",
+      "title": "Keep Size",
+      "type": "boolean"
+    },
+    "content_long_size": {
+      "default": 512,
+      "description": "Content reference image size (0-1024)",
+      "maximum": 1024,
+      "minimum": 0,
+      "title": "Content Long Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

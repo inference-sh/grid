@@ -1,0 +1,8 @@
+{
+  "script": "example_string",
+  "num_speakers": 1,
+  "voice_presets": null,
+  "custom_voice_samples": null,
+  "cfg_scale": 1.3,
+  "inference_steps": 10
+}

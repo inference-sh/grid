@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "answer": {
+      "description": "The generated answer based on search results",
+      "title": "Answer",
+      "type": "string"
+    },
+    "citations": {
+      "description": "Search results that informed the answer",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "formatted_response": {
+      "description": "Formatted markdown response with citations",
+      "title": "Formatted Response",
+      "type": "string"
+    },
+    "cost_dollars": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "API cost breakdown",
+      "title": "Cost Dollars"
+    }
+  },
+  "required": [
+    "answer",
+    "citations",
+    "formatted_response"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

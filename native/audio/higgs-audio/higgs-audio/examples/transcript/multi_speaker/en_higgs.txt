@@ -1,0 +1,6 @@
+[SPEAKER0] You're training HiggsAudio again? Aren't you tired of staring at it all day?
+[SPEAKER1] Ha! This time, I'm trying to get it to generate multi-speaker dialogues.
+[SPEAKER0] Oh, so you want it to sound like a real conversation with multiple people? That sounds… tricky.
+[SPEAKER1] It is. The biggest challenge is making sure it understands who's speaking and when. We need a solid dataset with real conversations, including interruptions and natural flow.
+[SPEAKER0] Right, because real conversations aren't just people taking turns like robots. There are overlaps, hesitations, and sudden topic changes.
+[SPEAKER1] Exactly! That's why we need speaker diarization — so the model knows when one speaker stops and another starts, even if they overlap.

@@ -1,0 +1,10 @@
+Hey, everyone! Welcome back to Tech Talk Tuesdays.
+It’s your host, Alex, and today, we’re diving into a topic that’s become absolutely crucial in the tech world — deep learning.
+And let’s be honest, if you’ve been even remotely connected to tech, AI, or machine learning lately, you know that deep learning is everywhere.
+
+So here’s the big question: Do you want to understand how deep learning works?
+How to use it to build powerful models that can predict, automate, and transform industries?
+Well, today, I’ve got some exciting news for you.
+
+We’re going to talk about a course that I highly recommend: Dive into Deep Learning.
+It’s not just another course; it’s an entire experience that will take you from a beginner to someone who is well-versed in deep learning techniques.

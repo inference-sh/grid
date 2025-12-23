@@ -1,0 +1,215 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "GoogleFont": {
+      "enum": [
+        "Roboto",
+        "Open Sans",
+        "Lato",
+        "Montserrat",
+        "Oswald",
+        "Source Sans Pro",
+        "Raleway",
+        "Ubuntu",
+        "Merriweather",
+        "Playfair Display",
+        "Poppins",
+        "Noto Sans",
+        "Rubik",
+        "Alef",
+        "Work Sans",
+        "Nunito",
+        "Fira Sans",
+        "Quicksand",
+        "PT Sans"
+      ],
+      "title": "GoogleFont",
+      "type": "string"
+    },
+    "TextAlign": {
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ],
+      "title": "TextAlign",
+      "type": "string"
+    },
+    "TextPosition": {
+      "enum": [
+        "center-bottom",
+        "center-top",
+        "center-center",
+        "left-bottom",
+        "left-top",
+        "left-center",
+        "right-bottom",
+        "right-top",
+        "right-center"
+      ],
+      "title": "TextPosition",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "segments": {
+      "description": "Array of segments with start/end timestamps and text for video captions. Format: [{'start': timestamp_start, 'end': timestamp_end, 'text': text_to_show}]",
+      "items": {},
+      "title": "Segments",
+      "type": "array"
+    },
+    "video_file": {
+      "$ref": "#/$defs/File",
+      "description": "Video file to add captions to"
+    },
+    "font": {
+      "$ref": "#/$defs/GoogleFont",
+      "default": "Roboto",
+      "description": "Select a font for the captions"
+    },
+    "font_size": {
+      "default": 28,
+      "description": "Font size for captions",
+      "title": "Font Size",
+      "type": "integer"
+    },
+    "font_color": {
+      "default": "white",
+      "description": "Font color (name or hex code)",
+      "title": "Font Color",
+      "type": "string"
+    },
+    "bg_color": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "transparent",
+      "description": "Background color behind text",
+      "title": "Bg Color"
+    },
+    "position": {
+      "$ref": "#/$defs/TextPosition",
+      "default": "center-bottom",
+      "description": "Position of captions on screen"
+    },
+    "stroke_color": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "black",
+      "description": "Text outline color for better visibility",
+      "title": "Stroke Color"
+    },
+    "stroke_width": {
+      "default": 1,
+      "description": "Width of text outline in pixels",
+      "title": "Stroke Width",
+      "type": "integer"
+    },
+    "margin_horizontal": {
+      "default": 0,
+      "description": "Horizontal margin from the edges in pixels",
+      "title": "Margin Horizontal",
+      "type": "integer"
+    },
+    "margin_vertical": {
+      "default": 20,
+      "description": "Vertical margin from the edges in pixels",
+      "title": "Margin Vertical",
+      "type": "integer"
+    },
+    "text_align": {
+      "$ref": "#/$defs/TextAlign",
+      "default": "center",
+      "description": "Text alignment within caption box"
+    },
+    "fix_whisper_30s_timestamps": {
+      "default": false,
+      "description": "Whisper elaborates 30s chunks of audio. This option will fix the timestamps to ensure the captions are in sync with the audio.",
+      "title": "Fix Whisper 30S Timestamps",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "segments",
+    "video_file"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

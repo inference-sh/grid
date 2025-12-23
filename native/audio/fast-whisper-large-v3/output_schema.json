@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "text": {
+      "description": "The transcribed/translated text",
+      "title": "Text",
+      "type": "string"
+    },
+    "segments": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Detailed segments with word-level timestamps and confidence scores",
+      "title": "Segments"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Detected language",
+      "title": "Language"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

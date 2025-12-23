@@ -1,0 +1,19 @@
+pydantic >= 2.0.0
+inferencesh==0.2.7
+torch
+gguf>=0.13.0
+tqdm
+diffusers
+transformers
+huggingface_hub
+accelerate
+sentencepiece
+protobuf
+Pillow
+einops
+python-dateutil
+peft
+safetensors
+controlnet-aux
+hf_xet
+mediapipe
