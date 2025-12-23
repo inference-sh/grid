@@ -1,0 +1,20 @@
+name: Unit Test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code 
+        uses: actions/checkout@v4
+
+      - name: Check Code Formatting with Ruff
+        run: |
+            echo "python version: $(python --version)"
+            pip install ruff==0.12.2  # Ensure ruff is installed
+            ruff format --check .
