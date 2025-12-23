@@ -175,16 +175,3 @@ class App(BaseApp):
             image=File(path=output_path)
         )
 
-    async def unload(self):
-        """Clean up resources."""
-        import gc
-
-        if self.pipe is not None:
-            del self.pipe
-            self.pipe = None
-
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-
-        gc.collect()
-        print("Z-Image model unloaded.")

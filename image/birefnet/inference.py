@@ -114,11 +114,3 @@ class App(BaseApp):
         output_image.save(output_path, "PNG")
         
         return AppOutput(result=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        if self.matting_model is not None:
-            del self.matting_model
-        if self.normal_model is not None:
-            del self.normal_model
-        torch.cuda.empty_cache()

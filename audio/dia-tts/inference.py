@@ -117,10 +117,3 @@ class App(BaseApp):
             os.remove(temp_wav)
         
         return AppOutput(audio=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        # Clear the model from memory
-        self.model = None
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

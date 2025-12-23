@@ -204,10 +204,3 @@ class App(BaseApp):
         )
 
         return AppOutput(generated_audio=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        del self.cfm
-        del self.muq
-        del self.vae
-        torch.cuda.empty_cache()

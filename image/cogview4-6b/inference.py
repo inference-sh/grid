@@ -97,10 +97,3 @@ class App(BaseApp):
         output.images[0].save(output_path)
         
         return AppOutput(image=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        # Free up GPU memory
-        if hasattr(self, 'pipe'):
-            del self.pipe
-            torch.cuda.empty_cache()

@@ -274,9 +274,3 @@ class App(BaseApp):
 
         except Exception as e:
             raise RuntimeError(f"OpenRouter API error: {str(e)}")
-
-    async def unload(self):
-        """Clean up resources."""
-        if self.client:
-            # OpenAI client doesn't need explicit cleanup
-            self.client = None

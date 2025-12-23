@@ -458,9 +458,3 @@ class App(BaseApp):
                     "Anthropic API is overloaded, please try again later"
                 )
             raise
-
-    async def unload(self):
-        """Clean up resources."""
-        if self.client:
-            await self.client.close()
-        self.client = None

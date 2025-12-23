@@ -228,7 +228,3 @@ class App(BaseApp):
         except Exception as e:
             self.logger.error(f"Error during 3D generation: {e}")
             raise RuntimeError(f"3D generation failed: {str(e)}")
-
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Rodin 3D Generator unloaded successfully")

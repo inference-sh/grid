@@ -159,13 +159,3 @@ class App(BaseApp):
             audio_output=File(path=output_audio_path),
             video_output=File(path=output_video_path) if output_video_path else None
         )
-
-    async def unload(self):
-        """Clean up resources."""
-        self.model = None
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        # Clean up temp directory
-        if hasattr(self, 'temp_dir') and os.path.exists(self.temp_dir):
-            import shutil
-            shutil.rmtree(self.temp_dir)

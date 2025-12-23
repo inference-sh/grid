@@ -310,10 +310,3 @@ class App(BaseApp):
         export_to_video(output, output_path, fps=input_data.fps)
         return AppOutput(video_output=File(path=output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        del self.t2v_pipe
-        del self.i2v_pipe
-        del self.image_encoder
-        del self.vae
-        torch.cuda.empty_cache()

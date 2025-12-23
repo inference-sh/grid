@@ -279,6 +279,3 @@ class App(BaseApp):
         except Exception as e:
             raise RuntimeError(f"Error rendering GLB file with pygltflib: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        pass

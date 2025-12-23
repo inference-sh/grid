@@ -419,9 +419,3 @@ class App(BaseApp):
             return AppOutput(audio_output=File(path=output_path))
         else:
             raise RuntimeError("No audio was generated")
-
-    async def unload(self):
-        """Clean up resources."""
-        self.model = None
-        self.audio_tokenizer = None
-        self.kv_caches = None

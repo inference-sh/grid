@@ -131,6 +131,3 @@ class App(BaseApp):
             self.logger.error(f"Error during video generation: {e}")
             raise RuntimeError(f"Video generation failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Omni-Human 1.5 model unloaded successfully")

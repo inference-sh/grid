@@ -168,9 +168,3 @@ class App(BaseApp):
 
         return AppOutput(image=File(path=output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'pipeline'):
-            del self.pipeline
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

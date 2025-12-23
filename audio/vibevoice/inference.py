@@ -545,12 +545,3 @@ class App(BaseApp):
             generated_tokens=generated_tokens,
             model_status=model_status
         )
-
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'model') and self.model is not None:
-            del self.model
-        if hasattr(self, 'processor') and self.processor is not None:
-            del self.processor
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

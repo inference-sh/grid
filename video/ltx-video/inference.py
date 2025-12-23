@@ -346,10 +346,3 @@ class App(BaseApp):
         logger.warning(f"Output saved to {output_filename}")
         return AppOutput(video=File(path=output_filename))
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'pipeline'):
-            del self.pipeline
-        if hasattr(self, 'latent_upsampler'):
-            del self.latent_upsampler
-        torch.cuda.empty_cache()

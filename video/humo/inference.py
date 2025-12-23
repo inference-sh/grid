@@ -180,14 +180,3 @@ class App(BaseApp):
             frames_dir=output_dir if os.path.exists(os.path.join(output_dir, "frames")) else None
         )
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, "temp_dir") and os.path.exists(self.temp_dir):
-            import shutil
-            shutil.rmtree(self.temp_dir)
-        
-        if self.model is not None:
-            del self.model
-            
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

@@ -351,15 +351,3 @@ class App(BaseApp):
 
         return AppOutput(file=File(path=video_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        print("Cleaning up...")
-        if hasattr(self, 'pipe'):
-            del self.pipe
-        
-        # Clear GPU cache if using CUDA
-        gc.collect()
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        
-        print("Cleanup complete!")

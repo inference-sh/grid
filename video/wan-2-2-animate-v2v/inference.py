@@ -466,10 +466,3 @@ class App(BaseApp):
 
         return AppOutput(output_video=File(path=final_output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'wan_animate'):
-            # Clean up GPU memory
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-            del self.wan_animate

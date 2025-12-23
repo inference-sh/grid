@@ -191,7 +191,3 @@ class App(BaseApp):
         except Exception as e:
             self.logger.error(f"Error during image editing: {e}")
             raise RuntimeError(f"Image editing failed: {str(e)}")
-
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Nano Banana Image Editor unloaded successfully")

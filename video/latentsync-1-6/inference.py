@@ -208,7 +208,3 @@ class App(BaseApp):
                 traceback.print_exc()
                 raise
 
-    async def unload(self):
-        """Clean up resources."""
-        # No specific cleanup needed
-        pass

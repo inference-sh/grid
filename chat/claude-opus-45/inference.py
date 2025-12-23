@@ -226,7 +226,3 @@ class App(BaseApp):
         finally:
             if hasattr(stream, "aclose"):
                 await stream.aclose()
-
-    async def unload(self):
-        """Clean up resources."""
-        self.client = None

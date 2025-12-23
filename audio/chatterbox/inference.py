@@ -89,9 +89,3 @@ class App(BaseApp):
         return AppOutput(
             audio_output=File(path=output_path)
         )
-
-    async def unload(self):
-        """Clean up resources."""
-        # Clear CUDA cache if using GPU
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

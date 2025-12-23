@@ -244,6 +244,3 @@ class App(BaseApp):
             self.logger.error(f"Error during image editing: {e}")
             raise RuntimeError(f"Image editing failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Bytedance Seedream v4 Edit unloaded successfully")

@@ -584,14 +584,3 @@ class App(BaseApp):
 
         return AppOutput(video=File(path=temp_output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, "wan_pipeline"):
-            del self.wan_pipeline
-        if hasattr(self, "audio_encoder"):
-            del self.audio_encoder
-        if hasattr(self, "wav2vec_feature_extractor"):
-            del self.wav2vec_feature_extractor
-
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

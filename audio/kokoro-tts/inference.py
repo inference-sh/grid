@@ -188,8 +188,3 @@ class App(BaseApp):
             os.remove(temp_wav)
         
         return AppOutput(audio=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        # Clear any loaded pipelines
-        self.pipelines = {}

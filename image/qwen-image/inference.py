@@ -548,10 +548,3 @@ class App(BaseApp):
         logging.info(f"Image generation completed and saved to {output_path}")
         
         return AppOutput(image_output=File(path=output_path))
-
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'pipeline'):
-            del self.pipeline
-        torch.cuda.empty_cache() if torch.cuda.is_available() else None
-        logging.info("Resources cleaned up")

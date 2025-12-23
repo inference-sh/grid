@@ -117,12 +117,3 @@ class App(BaseApp):
             logger.error(error_msg)
             raise RuntimeError(error_msg)
 
-    async def unload(self):
-        """Clean up resources."""
-        if self.model is not None:
-            del self.model
-        if self.tokenizer is not None:
-            del self.tokenizer
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        logger.info("Resources cleaned up")

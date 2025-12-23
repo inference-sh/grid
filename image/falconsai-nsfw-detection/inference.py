@@ -229,12 +229,3 @@ class App(BaseApp):
             nsfw_frames_count=len(nsfw_frames),
             frame_results=frame_results
         )
-
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'model'):
-            del self.model
-        if hasattr(self, 'processor'):
-            del self.processor
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

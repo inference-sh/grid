@@ -237,6 +237,3 @@ class App(BaseApp):
             except Exception as e:
                 logger.warning(f"Failed to delete temp directory: {e}")
 
-    async def unload(self):
-        """Clean up resources."""
-        logger.info("🧹 Python Code Executor unloaded")

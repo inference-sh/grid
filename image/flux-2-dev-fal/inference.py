@@ -113,7 +113,3 @@ class App(BaseApp):
         except Exception as e:
             self.logger.error(f"Error during image generation: {e}")
             raise RuntimeError(f"Image generation failed: {str(e)}")
-
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Flux 2 model unloaded successfully")

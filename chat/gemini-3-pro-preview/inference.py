@@ -295,9 +295,3 @@ class App(BaseApp):
                 f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}"
             )
             raise
-
-    async def unload(self):
-        """Clean up resources."""
-        if self.client:
-            # OpenAI client doesn't need explicit cleanup
-            self.client = None

@@ -197,6 +197,3 @@ class App(BaseApp):
             self.logger.error(f"Error during image upscaling: {e}")
             raise RuntimeError(f"Image upscaling failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Topaz Image Upscaler unloaded successfully")

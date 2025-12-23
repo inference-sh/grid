@@ -436,14 +436,3 @@ class App(BaseApp):
         
         return AppOutput(image=File(path=output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        print("Cleaning up...")
-        if hasattr(self, 'pipe'):
-            del self.pipe
-        
-        # Clear GPU cache if using CUDA
-        if hasattr(self, 'device') and self.device.type == "cuda":
-            torch.cuda.empty_cache()
-        
-        print("Cleanup complete!")

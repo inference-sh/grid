@@ -146,6 +146,3 @@ class App(BaseApp):
             self.logger.error(f"Error during video upscaling: {e}")
             raise RuntimeError(f"Video upscaling failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Topaz Video Upscaler unloaded successfully")

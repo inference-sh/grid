@@ -110,6 +110,3 @@ class App(BaseApp):
             self.logger.error(f"Error during talking video generation: {e}")
             raise RuntimeError(f"Talking video generation failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Fabric 1.0 model unloaded successfully")

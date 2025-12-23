@@ -205,9 +205,3 @@ class App(BaseApp):
             first_frame=File(path=first_frame_path) if first_frame_path else None
         )
 
-    async def unload(self):
-        """Clean up resources."""
-        if hasattr(self, 'ovi_engine'):
-            del self.ovi_engine
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()

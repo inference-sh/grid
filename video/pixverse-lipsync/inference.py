@@ -172,6 +172,3 @@ class App(BaseApp):
             self.logger.error(f"Error during lip-sync generation: {e}")
             raise RuntimeError(f"Lip-sync generation failed: {str(e)}")
 
-    async def unload(self):
-        """Clean up resources."""
-        self.logger.info("Pixverse Lipsync model unloaded successfully")

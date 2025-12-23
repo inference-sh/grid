@@ -64,8 +64,3 @@ class App(BaseApp):
         
         return AppOutput(result=File(path=output_path))
 
-    async def unload(self):
-        """Clean up resources."""
-        if self.pipe is not None:
-            del self.pipe
-            torch.cuda.empty_cache()

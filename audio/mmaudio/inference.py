@@ -299,13 +299,3 @@ class App(BaseApp):
             duration=duration,
             sampling_rate=self.seq_cfg.sampling_rate
         )
-
-    async def unload(self):
-        """Clean up resources."""
-        if self.net is not None:
-            del self.net
-        if self.feature_utils is not None:
-            del self.feature_utils
-        if self.device is not None and self.device.type == 'cuda':
-            torch.cuda.empty_cache()
-        log.info('MMAudio model unloaded')
