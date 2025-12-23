@@ -33,27 +33,14 @@ class App(BaseApp):
 
         self.logger.info("Omni-Human 1.5 model initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
         # Upload image and audio files to get URLs
-        image_url = self._upload_file_to_url(input_data.image.path)
-        audio_url = self._upload_file_to_url(input_data.audio.path)
 
         # Prepare request data
         request_data = {
-            "image_url": image_url,
-            "audio_url": audio_url,
+            "image_url": input_data.image.uri,
+            "audio_url": input_data.audio.uri,
         }
 
         return request_data

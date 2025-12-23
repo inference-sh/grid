@@ -60,31 +60,18 @@ class App(BaseApp):
 
         self.logger.info("Pixverse Lipsync model initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
         # Upload video file to get URL
-        video_url = self._upload_file_to_url(input_data.video.path)
 
         # Prepare base request
         request_data = {
-            "video_url": video_url,
+            "video_url": input_data.video.uri,
         }
 
         # Add audio if provided
         if input_data.audio:
-            audio_url = self._upload_file_to_url(input_data.audio.path)
-            request_data["audio_url"] = audio_url
+            request_data["audio_url"] = input_data.audio.uri
         else:
             # Use TTS parameters
             request_data["voice_id"] = input_data.voice_id.value

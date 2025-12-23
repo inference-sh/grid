@@ -74,17 +74,6 @@ class App(BaseApp):
 
         self.logger.info("Bytedance Seedream v4 Edit initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _get_image_dimensions(self, image_file: File) -> tuple[int, int]:
         """Get the width and height of an image file."""
         try:
@@ -108,20 +97,11 @@ class App(BaseApp):
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
         # Upload all image files to get URLs
-        image_urls = []
-        for image in input_data.image_urls:
-            # Check if the image path is already a URL
-            if image.path.startswith("http://") or image.path.startswith("https://"):
-                image_urls.append(image.path)
-            else:
-                # Upload local file
-                image_url = self._upload_file_to_url(image.path)
-                image_urls.append(image_url)
 
         # Prepare request data with required fields
         request_data = {
             "prompt": input_data.prompt,
-            "image_urls": image_urls,
+            "image_urls": [image.uri for image in input_data.image_urls],
             "num_images": input_data.num_images,
             "max_images": input_data.max_images,
             "sync_mode": input_data.sync_mode,

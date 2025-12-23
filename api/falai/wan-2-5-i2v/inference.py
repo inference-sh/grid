@@ -93,34 +93,19 @@ class App(BaseApp):
 
         self.logger.info("Wan 2.5 Image-to-Video model initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
-        # Upload image file to get URL
-        image_url = self._upload_file_to_url(input_data.image.path)
-
         # Prepare base request
         request_data = {
             "prompt": input_data.prompt,
-            "image_url": image_url,
+            "image_url": input_data.image.uri,
             "resolution": input_data.resolution.value,
             "enable_prompt_expansion": input_data.enable_prompt_expansion,
         }
 
         # Add optional parameters
         if input_data.audio:
-            audio_url = self._upload_file_to_url(input_data.audio.path)
-            request_data["audio_url"] = audio_url
+            request_data["audio_url"] = input_data.audio.uri
 
         if input_data.negative_prompt:
             request_data["negative_prompt"] = input_data.negative_prompt

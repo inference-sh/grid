@@ -47,26 +47,14 @@ class App(BaseApp):
 
         self.logger.info("Reve Image Editor initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
         # Upload image file to get URL
-        image_url = self._upload_file_to_url(input_data.image.path)
 
         # Prepare request data
         request_data = {
             "prompt": input_data.prompt,
-            "image_url": image_url,
+            "image_url": input_data.image.uri,
             "output_format": input_data.output_format.value,
             "sync_mode": input_data.sync_mode,
         }

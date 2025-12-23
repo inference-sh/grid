@@ -71,29 +71,14 @@ class App(BaseApp):
 
         self.logger.info("Nano Banana Image Editor initialized successfully")
 
-    def _upload_file_to_url(self, file_path: str) -> str:
-        """Upload a local file to temporary storage for processing."""
-        try:
-            # Upload file and get a temporary URL
-            file_url = fal_client.upload_file(file_path)
-            self.logger.info(f"File uploaded to temporary storage successfully")
-            return file_url
-        except Exception as e:
-            self.logger.error(f"Failed to upload file {file_path}: {e}")
-            raise RuntimeError(f"Failed to upload file: {e}")
-
     def _prepare_model_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for model inference."""
         # Upload all image files to get URLs
-        image_urls = []
-        for image in input_data.images:
-            image_url = self._upload_file_to_url(image.path)
-            image_urls.append(image_url)
 
         # Prepare request data
         request_data = {
             "prompt": input_data.prompt,
-            "image_urls": image_urls,
+            "image_urls": [image.uri for image in input_data.images],
             "num_images": input_data.num_images,
             "output_format": input_data.output_format.value,
             "sync_mode": input_data.sync_mode,
