@@ -1,1 +1,0 @@
-# RIFE package initialization

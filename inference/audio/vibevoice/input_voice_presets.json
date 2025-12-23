@@ -1,7 +1,0 @@
-{
-  "script": "Speaker 0: Welcome to our multilingual podcast! Speaker 1: 您好！很高兴能参加这个播客。Speaker 2: Hello! This is going to be an interesting discussion about AI and language.",
-  "num_speakers": 3,
-  "voice_presets": ["en-Alice_woman", "zh-Xinran_woman", "en-Carter_man"],
-  "cfg_scale": 1.3,
-  "inference_steps": 5
-}

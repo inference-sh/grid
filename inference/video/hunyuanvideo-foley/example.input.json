@@ -1,7 +1,0 @@
-{
-  "video": "example_string",
-  "text_prompt": "example_string",
-  "guidance_scale": 4.5,
-  "num_inference_steps": 50,
-  "sample_nums": 1
-}

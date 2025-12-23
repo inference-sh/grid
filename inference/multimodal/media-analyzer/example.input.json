@@ -1,9 +1,0 @@
-{
-  "question": "Describe this media (describe all media if there are multiple as input):",
-  "media": [
-    "example_string"
-  ],
-  "model": "gpt-4o-mini",
-  "temperature": 0.7,
-  "max_tokens": null
-}

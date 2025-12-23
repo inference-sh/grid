@@ -1,6 +1,0 @@
-{
-  "code": "example_string",
-  "timeout": 30,
-  "capture_output": true,
-  "working_dir": null
-}

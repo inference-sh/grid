@@ -1,8 +1,0 @@
-{
-  "image": {
-    "path": "https://storage.googleapis.com/falserverless/example_inputs/omnihuman_v15_input_image.png"
-  },
-  "audio": {
-    "path": "https://storage.googleapis.com/falserverless/example_inputs/omnihuman_v15_input_audio.mp3"
-  }
-}

@@ -1,3 +1,0 @@
-pydantic >= 2.0.0
-inferencesh
-requests >= 2.25.0

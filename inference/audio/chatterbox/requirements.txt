@@ -1,8 +1,0 @@
-pydantic >= 2.0.0 # required for inference.sh
-inferencesh # required for inference.sh
-
-accelerate
-huggingface-hub
-hf-transfer
-# chatterbox-tts
-git+https://github.com/inference-sh/chatterbox.git # forked to add torch==2.7.0

@@ -1,1 +1,0 @@
-# HunyuanVideo-Foley inference.sh application

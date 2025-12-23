@@ -1,5 +1,0 @@
-pydantic >= 2.0.0
-
-# -e /home/ubuntu/inference/sdk-python
-inferencesh
-openai >= 1.0.0

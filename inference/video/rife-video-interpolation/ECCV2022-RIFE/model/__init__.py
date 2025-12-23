@@ -1,1 +1,0 @@
-# RIFE model package initialization
