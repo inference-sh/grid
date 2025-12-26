@@ -8,6 +8,8 @@ images:
     thumbnail: ""
     banner: ""
 metadata: {}
+secrets:
+  - key: FAL_KEY
 variants:
     default:
         name: default

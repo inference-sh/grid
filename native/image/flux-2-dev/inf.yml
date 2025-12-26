@@ -12,7 +12,7 @@ variants:
         order: 0
         resources:
             gpu:
-                count: 1
+                count: 0
                 vram: 24000000000
                 type: any
             ram: 16000000000
