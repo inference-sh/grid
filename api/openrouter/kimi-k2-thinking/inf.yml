@@ -18,3 +18,5 @@ variants:
             ram: 0
         env: {}
         python: "3.11"
+secrets:
+    -key: OPENROUTER_API_KEY

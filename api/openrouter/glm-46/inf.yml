@@ -19,3 +19,5 @@ variants:
                 type: none
             ram: 0
         python: "3.11"
+secrets:
+    -key: OPENROUTER_API_KEY
