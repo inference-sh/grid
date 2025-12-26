@@ -1,0 +1,11 @@
+{
+  "image": "example_string",
+  "end_image": null,
+  "prompt": "example_string",
+  "negative_prompt": "oversaturated, overexposed, static, blurry details, subtitles, stylized, artwork, painting, still image, overall gray, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face, malformed, disfigured, deformed limbs, fused fingers, static motionless frame, cluttered background, three legs, crowded background, walking backwards",
+  "num_frames": 81,
+  "num_inference_steps": 4,
+  "fps": 16,
+  "seed": null,
+  "boundary_ratio": 0.875
+}

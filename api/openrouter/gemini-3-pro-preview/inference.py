@@ -19,7 +19,6 @@ import base64
 
 # OpenRouter configuration
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # Default model configuration
 DEFAULT_MODEL = "google/gemini-3-pro-image-preview"
@@ -67,13 +66,15 @@ class App(BaseApp):
 
     async def setup(self, metadata):
         """Initialize the OpenRouter client and model configuration."""
-        if not OPENROUTER_API_KEY:
+        # Read API key fresh each time setup is called
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
 
         # Initialize OpenAI client with OpenRouter endpoint
         self.client = AsyncOpenAI(
             base_url=OPENROUTER_BASE_URL,
-            api_key=OPENROUTER_API_KEY,
+            api_key=api_key,
         )
 
         print("OpenRouter client initialization complete!")
