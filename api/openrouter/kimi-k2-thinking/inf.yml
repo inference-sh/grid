@@ -19,4 +19,4 @@ variants:
         env: {}
         python: "3.11"
 secrets:
-    -key: OPENROUTER_API_KEY
+  - key: OPENROUTER_API_KEY

@@ -1,0 +1,9 @@
+pydantic>=2.0.0
+inferencesh
+torch>=2.3.0
+torchvision>=0.18.0
+torchaudio>=2.3.0
+pillow
+numpy>=1.23.5,<2
+flit-core
+git+https://github.com/facebookresearch/videoseal.git
