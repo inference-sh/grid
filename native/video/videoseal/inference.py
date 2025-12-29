@@ -3,12 +3,16 @@ import logging
 import tempfile
 from typing import Optional, List
 from enum import Enum
+from pathlib import Path
 
 import torch
 from PIL import Image
 from pydantic import Field
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, VideoMeta
+from inferencesh import BaseApp, BaseAppSetup, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, VideoMeta
+
+# Directory containing model card YAML files
+CARDS_DIR = Path("videoseal/cards")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +28,17 @@ class ModelEnum(str, Enum):
     videoseal = "videoseal"
     pixelseal = "pixelseal"
     chunkyseal = "chunkyseal"
+
+
+class AppSetup(BaseAppSetup):
+    """Setup schema for VideoSeal watermarking.
+    
+    Setup parameters configure which model to load at startup.
+    """
+    model: ModelEnum = Field(
+        default=ModelEnum.videoseal,
+        description="Model to use: 'videoseal' (256-bit stable), 'pixelseal' (SOTA), 'chunkyseal' (1024-bit high capacity)"
+    )
 
 
 class DetectionResult(BaseAppOutput):
@@ -43,10 +58,6 @@ class AppInput(BaseAppInput):
     mode: ModeEnum = Field(
         default=ModeEnum.embed,
         description="Operation mode: 'embed' to add watermark, 'detect' to check for watermark"
-    )
-    model: ModelEnum = Field(
-        default=ModelEnum.videoseal,
-        description="Model to use: 'videoseal' (256-bit stable), 'pixelseal' (SOTA), 'chunkyseal' (1024-bit high capacity)"
     )
     scaling_w: float = Field(
         default=0.2,
@@ -68,30 +79,35 @@ class AppOutput(BaseAppOutput):
 
 class App(BaseApp):
     
-    async def setup(self, metadata):
-        """Initialize VideoSeal models."""
+    async def setup(self, setup_data: AppSetup, metadata):
+        """Initialize VideoSeal model."""
         logger.info("Setting up VideoSeal...")
         
         # Import videoseal
         import videoseal
-        self.videoseal = videoseal
         
         # Detect device
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         logger.info(f"Using device: {self.device}")
         
-        # Pre-load models (they cache after first load)
-        self.models = {}
+        # Map model names to card files
+        model_card_mapping = {
+            "videoseal": "videoseal_1.0.yaml",
+            "pixelseal": "pixelseal_1.0.yaml",
+            "chunkyseal": "chunkyseal_1.0.yaml",
+        }
+        
+        # Load the selected model from local card file
+        self.model_name = setup_data.model.value
+        card_filename = model_card_mapping.get(self.model_name, f"{self.model_name}_1.0.yaml")
+        card_path = CARDS_DIR / card_filename
+        
+        logger.info(f"Loading model: {self.model_name} from {card_path}")
+        self.model = videoseal.load(card_path)
+        if self.device == "cuda":
+            self.model = self.model.to(self.device)
+        
         logger.info("VideoSeal setup complete")
-
-    def _get_model(self, model_name: str):
-        """Get or load a model by name."""
-        if model_name not in self.models:
-            logger.info(f"Loading model: {model_name}")
-            self.models[model_name] = self.videoseal.load(model_name)
-            if self.device == "cuda":
-                self.models[model_name] = self.models[model_name].to(self.device)
-        return self.models[model_name]
 
     def _is_video_file(self, file_path: str) -> bool:
         """Check if file is a video based on extension."""
@@ -192,20 +208,19 @@ class App(BaseApp):
         
         file_path = input_data.file.path
         is_video = self._is_video_file(file_path)
-        model = self._get_model(input_data.model.value)
         
         # Adjust watermark strength
-        if hasattr(model, 'blender') and hasattr(model.blender, 'scaling_w'):
-            model.blender.scaling_w = input_data.scaling_w
+        if hasattr(self.model, 'blender') and hasattr(self.model.blender, 'scaling_w'):
+            self.model.blender.scaling_w = input_data.scaling_w
         
         logger.info(f"Processing {'video' if is_video else 'image'} with mode: {input_data.mode.value}")
         
         if input_data.mode == ModeEnum.embed:
-            return await self._embed(input_data, model, file_path, is_video)
+            return await self._embed(input_data, file_path, is_video)
         else:
-            return await self._detect(input_data, model, file_path, is_video)
+            return await self._detect(input_data, file_path, is_video)
 
-    async def _embed(self, input_data: AppInput, model, file_path: str, is_video: bool) -> AppOutput:
+    async def _embed(self, input_data: AppInput, file_path: str, is_video: bool) -> AppOutput:
         """Embed watermark into image or video."""
         
         if is_video:
@@ -215,7 +230,7 @@ class App(BaseApp):
             
             # Embed watermark
             with torch.no_grad():
-                outputs = model.embed(video_tensor, is_video=True)
+                outputs = self.model.embed(video_tensor, is_video=True)
             
             watermarked = outputs["imgs_w"]
             
@@ -237,7 +252,7 @@ class App(BaseApp):
                     height=height,
                     resolution=self._get_resolution_label(height),
                     seconds=duration,
-                    extra={"model": input_data.model.value, "mode": "embed"}
+                    extra={"model": self.model_name, "mode": "embed"}
                 )]
             )
             
@@ -248,7 +263,7 @@ class App(BaseApp):
             
             # Embed watermark
             with torch.no_grad():
-                outputs = model.embed(img_tensor)
+                outputs = self.model.embed(img_tensor)
             
             watermarked = outputs["imgs_w"]
             
@@ -274,7 +289,7 @@ class App(BaseApp):
                     height=height,
                     resolution_mp=resolution_mp,
                     count=1,
-                    extra={"model": input_data.model.value, "mode": "embed"}
+                    extra={"model": self.model_name, "mode": "embed"}
                 )]
             )
         
@@ -284,11 +299,11 @@ class App(BaseApp):
             output_file=File(path=output_path),
             detection=None,
             mode=input_data.mode.value,
-            model_used=input_data.model.value,
+            model_used=self.model_name,
             output_meta=output_meta
         )
 
-    async def _detect(self, input_data: AppInput, model, file_path: str, is_video: bool) -> AppOutput:
+    async def _detect(self, input_data: AppInput, file_path: str, is_video: bool) -> AppOutput:
         """Detect watermark in image or video."""
         
         if is_video:
@@ -298,7 +313,7 @@ class App(BaseApp):
             
             # Detect watermark (process frame by frame or as batch)
             with torch.no_grad():
-                detected = model.detect(video_tensor)
+                detected = self.model.detect(video_tensor)
             
             # Aggregate results across frames
             preds = detected["preds"]
@@ -324,7 +339,7 @@ class App(BaseApp):
                     height=height,
                     resolution=self._get_resolution_label(height),
                     seconds=duration,
-                    extra={"model": input_data.model.value, "mode": "detect"}
+                    extra={"model": self.model_name, "mode": "detect"}
                 )]
             )
             
@@ -335,7 +350,7 @@ class App(BaseApp):
             
             # Detect watermark
             with torch.no_grad():
-                detected = model.detect(img_tensor)
+                detected = self.model.detect(img_tensor)
             
             preds = detected["preds"][0]  # Get first (and only) image result
             
@@ -360,7 +375,7 @@ class App(BaseApp):
                     height=height,
                     resolution_mp=resolution_mp,
                     count=1,
-                    extra={"model": input_data.model.value, "mode": "detect"}
+                    extra={"model": self.model_name, "mode": "detect"}
                 )]
             )
         
@@ -376,6 +391,6 @@ class App(BaseApp):
             output_file=None,
             detection=detection_result,
             mode=input_data.mode.value,
-            model_used=input_data.model.value,
+            model_used=self.model_name,
             output_meta=output_meta
         )

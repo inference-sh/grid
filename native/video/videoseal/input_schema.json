@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "ModeEnum": {
+      "enum": [
+        "embed",
+        "detect"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for VideoSeal watermarking.\n\nSupports both image and video files for embedding invisible watermarks\nor detecting existing watermarks.",
+  "properties": {
+    "file": {
+      "$ref": "#/$defs/File",
+      "description": "Input image or video file"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "embed",
+      "description": "Operation mode: 'embed' to add watermark, 'detect' to check for watermark"
+    },
+    "scaling_w": {
+      "default": 0.2,
+      "description": "Watermark strength (0.1-0.5). Higher = more robust but more visible. Default: 0.2",
+      "title": "Scaling W",
+      "type": "number"
+    },
+    "message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional custom message to embed (will be converted to binary). If not provided, a random message is used.",
+      "title": "Message"
+    }
+  },
+  "required": [
+    "file"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

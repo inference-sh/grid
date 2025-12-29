@@ -1,0 +1,127 @@
+model: convnext_tiny
+
+hidden:
+  num_blocks: 8
+  num_bits: 16
+  in_channels: 3
+  z_channels: 64
+  normalization: 'group'
+  activation: 'gelu'
+
+hidden_orig:
+  num_blocks: 8
+  num_bits: 16
+  in_channels: 3
+  z_channels: 64
+  normalization: 'batch'
+  activation: 'relu'
+
+sam_small:
+  encoder:
+    img_size: 256
+    embed_dim: 384
+    out_chans: 384
+    depth: 12
+    num_heads: 6
+    patch_size: 16
+    global_attn_indexes: [2, 5, 8, 11]
+    window_size: 8
+    mlp_ratio: 4
+    qkv_bias: True
+    use_rel_pos: True
+  pixel_decoder:
+    pixelwise: False  # return msg per pixel (k h w)
+    upscale_stages: [1]  # 4*2*2 = x16 (patch size)
+    embed_dim: 384  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+    upscale_type: 'bilinear'  # 'pixelshuffle', 'nearest', 'conv',  'bilinear'
+
+sam_small_pw:
+  encoder:
+    img_size: 256
+    embed_dim: 384
+    out_chans: 384
+    depth: 12
+    num_heads: 6
+    patch_size: 16
+    global_attn_indexes: [2, 5, 8, 11]
+    window_size: 8
+    mlp_ratio: 4
+    qkv_bias: True
+    use_rel_pos: True
+  pixel_decoder:
+    pixelwise: True  # return msg per pixel (k h w)
+    upscale_stages: [4, 2, 2]  # 4*2*2 = x16 (patch size)
+    embed_dim: 384  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+    upscale_type: 'bilinear'  # 'pixelshuffle', 'nearest', 'conv',  'bilinear'
+
+convnext_tiny:
+  encoder:
+    depths: [3, 3, 9, 3]
+    dims: [96, 192, 384, 768]
+  pixel_decoder:
+    pixelwise: False  # return msg per pixel (k h w)
+    upscale_stages: [1]
+    embed_dim: 768  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+
+convnext_base:
+  encoder:
+    depths: [3, 3, 27, 3]
+    dims: [128, 256, 512, 1024]
+  pixel_decoder:
+    pixelwise: False  # return msg per pixel (k h w)
+    upscale_stages: [1]
+    embed_dim: 1024  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+
+convnext_tiny_pw:
+  encoder:
+    depths: [3, 3, 9, 3]
+    dims: [96, 192, 384, 768]
+  pixel_decoder:
+    upscale_stages: [4, 4, 2]  # 4*2*2 = x16 (patch size)
+    embed_dim: 768  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+    pixelwise: True
+
+convnext_base_pw:
+  encoder:
+    depths: [3, 3, 27, 3]
+    dims: [128, 256, 512, 1024]
+  pixel_decoder:
+    upscale_stages: [4, 4, 2]  # 4*2*2 = x16 (patch size)
+    embed_dim: 1024  # = encoder.out_chans
+    nbits: 16
+    sigmoid_output: False
+    pixelwise: True
+
+#chunkyseal extractor
+convnext_chunky: # Larger VideoSeal model (ConvNeXt-Base)
+  proportional_dim: True # Scale the dims proportionally to the number of bits, with the defaults being set for 128 bits.
+  encoder:
+    stem_stride: 2 # Reduce the stride for the first layer to 2 from the original 4
+    depths: [3, 3, 27, 3]
+    dims: [128, 256, 512, 1024]
+  pixel_decoder:
+    pixelwise: False  # return msg per pixel (k h w)
+    upscale_stages: [1]
+    sigmoid_output: False
+
+# Alias for backward compatibility with old checkpoints
+convnext_sweep_3_prop_stride2: # Same as convnext_chunky
+  proportional_dim: True
+  encoder:
+    stem_stride: 2
+    depths: [3, 3, 27, 3]
+    dims: [128, 256, 512, 1024]
+  pixel_decoder:
+    pixelwise: False
+    upscale_stages: [1]
+    sigmoid_output: False 

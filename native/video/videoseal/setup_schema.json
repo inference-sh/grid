@@ -1,0 +1,23 @@
+{
+  "$defs": {
+    "ModelEnum": {
+      "enum": [
+        "videoseal",
+        "pixelseal",
+        "chunkyseal"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    }
+  },
+  "description": "Setup schema for VideoSeal watermarking.\n\nSetup parameters configure which model to load at startup.",
+  "properties": {
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "videoseal",
+      "description": "Model to use: 'videoseal' (256-bit stable), 'pixelseal' (SOTA), 'chunkyseal' (1024-bit high capacity)"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}
