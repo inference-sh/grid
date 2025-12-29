@@ -304,33 +304,35 @@ class App(BaseApp):
         )
 
     async def _detect(self, input_data: AppInput, file_path: str, is_video: bool) -> AppOutput:
-        """Detect watermark in image or video."""
+        """Detect watermark in image or video.
+        
+        Uses VideoSeal's built-in detection methods.
+        Note: The model always extracts message bits. To determine if a watermark 
+        is actually present, compare bit_accuracy against the original message,
+        or use statistical tests. Without the original message, we report the
+        average absolute prediction strength as a rough confidence indicator.
+        """
         
         if is_video:
             # Load video
             video_tensor, fps, _, width, height, duration = self._load_video(file_path)
             logger.info(f"Analyzing video: {width}x{height}, {video_tensor.shape[0]} frames")
             
-            # Detect watermark (process frame by frame or as batch)
+            # Use the model's built-in extract_message method for videos
+            # This handles frame aggregation properly
             with torch.no_grad():
-                detected = self.model.detect(video_tensor)
+                # Get raw predictions for confidence calculation
+                detected = self.model.detect(video_tensor, is_video=True)
+                preds = detected["preds"]
+                
+                # Extract message using the model's aggregation (average across frames)
+                msg = self.model.extract_message(video_tensor, aggregation="avg")
+                message_bits = msg[0].int().cpu().tolist()  # [nbits]
             
-            # Aggregate results across frames
-            preds = detected["preds"]
-            
-            # First channel is detection score, rest are message bits
-            detection_scores = preds[:, 0]
-            avg_detection = detection_scores.mean().item()
-            
-            # Get message bits (majority vote across frames)
-            if preds.shape[1] > 1:
-                message_probs = preds[:, 1:].mean(dim=0)
-                message_bits = (message_probs > 0).float().cpu().tolist()
-                message_bits = [int(b) for b in message_bits]
-            else:
-                message_bits = None
-            
-            is_detected = avg_detection > 0.5
+            # Confidence: average absolute magnitude of bit predictions (higher = more confident)
+            # preds[:, 1:] are the message bit predictions
+            bit_preds = preds[:, 1:] if preds.shape[1] > 1 else preds
+            confidence = bit_preds.abs().mean().item()
             
             # Build output meta for video
             output_meta = OutputMeta(
@@ -348,24 +350,27 @@ class App(BaseApp):
             img_tensor, width, height = self._load_image(file_path)
             logger.info(f"Analyzing image: {width}x{height}")
             
-            # Detect watermark
+            # Detect watermark - following the README example:
+            # detected = model.detect(img_tensor)
+            # hidden_message = (detected["preds"][0, 1:] > 0).float()
             with torch.no_grad():
-                detected = self.model.detect(img_tensor)
+                detected = self.model.detect(img_tensor, is_video=False)
             
-            preds = detected["preds"][0]  # Get first (and only) image result
+            preds = detected["preds"]  # [B, 1+nbits] or [B, 1+nbits, H, W]
             
-            # First value is detection score
-            detection_score = preds[0].item()
-            is_detected = detection_score > 0.5
-            
-            # Rest are message bits
-            if len(preds) > 1:
-                message_bits = (preds[1:] > 0).float().cpu().tolist()
-                message_bits = [int(b) for b in message_bits]
+            # Extract message bits following README pattern
+            # preds[0, 1:] gets first image's message bits (skipping detection channel)
+            if preds.dim() == 4:
+                # Spatial output: average over spatial dims first
+                bit_preds = preds[0, 1:].mean(dim=(1, 2))  # [nbits]
             else:
-                message_bits = None
+                # Non-spatial output: [B, 1+nbits]
+                bit_preds = preds[0, 1:]  # [nbits]
             
-            avg_detection = detection_score
+            message_bits = (bit_preds > 0).int().cpu().tolist()
+            
+            # Confidence: average absolute magnitude of predictions
+            confidence = bit_preds.abs().mean().item()
             
             # Build output meta for image
             resolution_mp = round(width * height / 1_000_000, 2)
@@ -379,11 +384,17 @@ class App(BaseApp):
                 )]
             )
         
-        logger.info(f"Detection complete: detected={is_detected}, confidence={avg_detection:.3f}")
+        # Note: Without the original embedded message, we cannot definitively determine
+        # if a watermark is present. The confidence score represents the average absolute
+        # magnitude of bit predictions - higher values suggest stronger/clearer signal.
+        # A typical threshold for "likely watermarked" might be confidence > 1.0
+        is_detected = confidence > 1.0
+        
+        logger.info(f"Detection complete: detected={is_detected}, confidence={confidence:.3f}")
         
         detection_result = DetectionResult(
             detected=is_detected,
-            confidence=avg_detection,
+            confidence=confidence,
             message_bits=message_bits
         )
         

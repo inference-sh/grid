@@ -9,7 +9,7 @@ resources:
         count: 1
         vram: 8000000000 # 8GB VRAM
         type: any
-    ram: 16000000000 # 16GB RAM
+    ram: 0 # 16GB RAM
 
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
