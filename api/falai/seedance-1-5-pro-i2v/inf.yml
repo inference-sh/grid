@@ -1,0 +1,32 @@
+name: seedance-1-5-pro-i2v
+description: Generate videos with audio from images using ByteDance's Seedance 1.5 Pro. Supports start and end frame control for seamless video transitions.
+category: video
+
+kernel: python-3.11
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+
+env: {}
+
+secrets:
+  - key: FAL_KEY
+    description: fal.ai API key for model access
+    optional: false
+
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+
+metadata:
+    provider: bytedance
+    tags:
+      - seedance
+      - image-to-video
+      - audio
+      - bytedance

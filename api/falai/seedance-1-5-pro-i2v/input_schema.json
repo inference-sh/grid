@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "description": "Video aspect ratio options.",
+      "enum": [
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedance 1.5 Pro Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt used to generate the video. Describe the motion and action.",
+      "examples": [
+        "A man is crying and he says \"I shouldn't have done it. I regret everything\""
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "The starting image for video generation. Supported formats: JPEG, PNG, WebP."
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional ending image for the video. Creates a transition between start and end frames."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "The aspect ratio of the generated video."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution. 480p for faster generation, 720p for better quality."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (4-12 seconds)."
+    },
+    "camera_fixed": {
+      "default": false,
+      "description": "Whether to fix the camera position during video generation.",
+      "title": "Camera Fixed",
+      "type": "boolean"
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate audio for the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation. Use -1 or None for random.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,32 @@
+name: seedance-1-5-pro-t2v
+description: Generate videos with audio from text prompts using ByteDance's Seedance 1.5 Pro. High-quality text-to-video generation with audio synthesis.
+category: video
+
+kernel: python-3.11
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+
+env: {}
+
+secrets:
+  - key: FAL_KEY
+    description: fal.ai API key for model access
+    optional: false
+
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+
+metadata:
+    provider: bytedance
+    tags:
+      - seedance
+      - text-to-video
+      - audio
+      - bytedance
