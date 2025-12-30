@@ -38,81 +38,6 @@
       "title": "AudioMeta",
       "type": "object"
     },
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "ImageMeta": {
       "description": "Metadata for image inputs/outputs.",
       "properties": {
@@ -369,19 +294,16 @@
       "type": "string"
     }
   },
+  "description": "Output schema for posted tweet.",
   "properties": {
-    "images": {
-      "description": "The generated or edited images",
-      "items": {
-        "$ref": "#/$defs/File"
-      },
-      "title": "Images",
-      "type": "array"
+    "tweet_id": {
+      "description": "ID of the posted tweet",
+      "title": "Tweet Id",
+      "type": "string"
     },
-    "description": {
-      "default": "",
-      "description": "Text description or response from the model",
-      "title": "Description",
+    "tweet_url": {
+      "description": "URL of the posted tweet",
+      "title": "Tweet Url",
       "type": "string"
     },
     "output_meta": {
@@ -398,7 +320,8 @@
     }
   },
   "required": [
-    "images"
+    "tweet_id",
+    "tweet_url"
   ],
   "title": "AppOutput",
   "type": "object"

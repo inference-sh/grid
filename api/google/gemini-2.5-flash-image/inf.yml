@@ -6,14 +6,13 @@ images:
     thumbnail: ""
     banner: ""
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: none
-            ram: 4000000000
-        python: "3.10"
+secrets:
+  - key: GEMINI_API_KEY
+    description: Google API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
+kernel: python-3.11

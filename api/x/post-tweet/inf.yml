@@ -1,0 +1,21 @@
+name: post-tweet
+description: Post tweets to X.com (Twitter)
+metadata: {}
+category: social
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+
+integrations:
+  - key: x.tweet.write
+    description: Post tweets to X.com
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000

@@ -1,0 +1,43 @@
+{
+  "description": "Input schema for posting a tweet.",
+  "properties": {
+    "text": {
+      "description": "Tweet text to post (max 280 characters)",
+      "maxLength": 280,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "reply_to_tweet_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tweet ID to reply to (optional)",
+      "title": "Reply To Tweet Id"
+    },
+    "quote_tweet_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tweet ID to quote (optional)",
+      "title": "Quote Tweet Id"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
