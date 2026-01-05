@@ -1,3 +1,4 @@
+namespace: falai
 name: fabric-1-0
 description: |+
     VEED Fabric 1.0 - Turn any image into a talking video with advanced lip-sync

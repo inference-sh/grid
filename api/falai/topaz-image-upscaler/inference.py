@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -177,9 +177,24 @@ class App(BaseApp):
 
             self.logger.info(f"Image processing completed successfully")
 
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    ImageMeta(
+                        count=1,
+                        extra={
+                            "upscale_factor": input_data.upscale_factor,
+                            "model": input_data.model.value,
+                            "face_enhancement": input_data.face_enhancement,
+                        }
+                    )
+                ]
+            )
+
             # Prepare output
             return AppOutput(
-                image=File(path=image_path)
+                image=File(path=image_path),
+                output_meta=output_meta
             )
 
         except Exception as e:

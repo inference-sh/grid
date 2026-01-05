@@ -1,3 +1,4 @@
+namespace: falai
 name: seedream-v4-edit
 description: Bytedance Seedream v4 Edit - A new-generation image creation model integrating image generation and editing capabilities into a single, unified architecture.
 category: image

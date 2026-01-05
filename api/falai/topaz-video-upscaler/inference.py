@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import Field
 from typing import Optional
 import fal_client
@@ -125,9 +125,22 @@ class App(BaseApp):
 
             self.logger.info(f"Video processing completed successfully")
 
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    VideoMeta(
+                        extra={
+                            "upscale_factor": input_data.upscale_factor,
+                            "target_fps": input_data.target_fps,
+                        }
+                    )
+                ]
+            )
+
             # Prepare output
             return AppOutput(
-                video=File(path=video_path)
+                video=File(path=video_path),
+                output_meta=output_meta
             )
 
         except Exception as e:

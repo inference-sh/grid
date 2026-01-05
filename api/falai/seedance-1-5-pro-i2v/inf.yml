@@ -1,3 +1,4 @@
+namespace: falai
 name: seedance-1-5-pro-i2v
 description: Generate videos with audio from images using ByteDance's Seedance 1.5 Pro. Supports start and end frame control for seamless video transitions.
 category: video

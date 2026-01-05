@@ -1,3 +1,4 @@
+namespace: falai
 name: seedance-1-5-pro-t2v
 description: Generate videos with audio from text prompts using ByteDance's Seedance 1.5 Pro. High-quality text-to-video generation with audio synthesis.
 category: video

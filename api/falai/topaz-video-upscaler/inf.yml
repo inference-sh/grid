@@ -1,3 +1,4 @@
+namespace: falai
 name: topaz-video-upscaler
 description: Topaz Video Upscaler - Enhance and upscale videos using powerful Topaz AI models
 category: video

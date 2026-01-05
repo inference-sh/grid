@@ -1,3 +1,4 @@
+namespace: falai
 name: nano-banana
 description: Nano Banana is a model that allows you to edit an image with multiple provided source images.
 category: image

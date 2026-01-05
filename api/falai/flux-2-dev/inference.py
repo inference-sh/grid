@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from typing import Optional
 import fal_client
@@ -108,7 +108,22 @@ class App(BaseApp):
 
             self.logger.info("Image processing completed successfully")
 
-            return AppOutput(image_output=File(path=image_path))
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    ImageMeta(
+                        width=input_data.width,
+                        height=input_data.height,
+                        steps=input_data.num_inference_steps,
+                        count=1
+                    )
+                ]
+            )
+
+            return AppOutput(
+                image_output=File(path=image_path),
+                output_meta=output_meta
+            )
 
         except Exception as e:
             self.logger.error(f"Error during image generation: {e}")

@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -101,9 +101,27 @@ class App(BaseApp):
 
             self.logger.info(f"Video processing completed successfully")
 
+            # Build output metadata for pricing
+            resolution_map = {
+                "480p": VideoResolution.RES_480P,
+                "720p": VideoResolution.RES_720P,
+            }
+            # Dimensions based on resolution (assuming 16:9 aspect ratio)
+            width, height = (854, 480) if input_data.resolution == ResolutionEnum.p480 else (1280, 720)
+            output_meta = OutputMeta(
+                outputs=[
+                    VideoMeta(
+                        width=width,
+                        height=height,
+                        resolution=resolution_map.get(input_data.resolution.value, VideoResolution.RES_480P),
+                    )
+                ]
+            )
+
             # Prepare output
             return AppOutput(
-                video=File(path=video_path)
+                video=File(path=video_path),
+                output_meta=output_meta
             )
 
         except Exception as e:

@@ -1,3 +1,4 @@
+namespace: falai
 name: pixverse-lipsync
 description: Pixverse Lipsync - Generate realistic lipsync animations from audio using advanced algorithms
 category: video

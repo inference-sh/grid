@@ -1,3 +1,4 @@
+namespace: falai
 name: topaz-image-upscaler
 description: Topaz Image Upscaler - Enhance and upscale images using powerful Topaz AI models
 category: image

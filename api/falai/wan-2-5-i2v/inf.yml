@@ -1,3 +1,4 @@
+namespace: falai
 name: wan-2-5-i2v
 description: Wan 2.5 Image-to-Video - Generate high-quality videos from images using state-of-the-art AI
 category: video

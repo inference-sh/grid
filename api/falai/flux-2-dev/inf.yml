@@ -1,3 +1,4 @@
+namespace: falai
 name: flux-2-dev
 description: FLUX.2 Dev is an open-weight, guidance-distilled text-to-image model developed by Black Forest Labs for non-commercial applications
 category: image

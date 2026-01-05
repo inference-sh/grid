@@ -1,3 +1,4 @@
+namespace: falai
 name: reve
 description: Reve - Advanced image editing model that transforms existing images via text prompts
 category: image

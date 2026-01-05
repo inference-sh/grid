@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from typing import Optional, List
 from enum import Enum
@@ -162,10 +162,24 @@ class App(BaseApp):
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    ImageMeta(
+                        count=len(output_images),
+                        extra={
+                            "resolution": input_data.resolution.value,
+                            "aspect_ratio": input_data.aspect_ratio.value,
+                        }
+                    )
+                ]
+            )
+
             # Prepare output with images and description
             return AppOutput(
                 images=output_images,
-                description=description
+                description=description,
+                output_meta=output_meta
             )
 
         except Exception as e:

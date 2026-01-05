@@ -1,3 +1,4 @@
+namespace: falai
 name: omni-human-1-5
 description: |-
     Omni-Human 1.5 - Bytedance's audio-driven video generation with lip-sync and emotion correlation. Example usecases are:

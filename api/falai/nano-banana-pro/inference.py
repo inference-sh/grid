@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from enum import Enum
 import fal_client
@@ -160,9 +160,23 @@ class App(BaseApp):
             if not output_images:
                 raise RuntimeError("No images were generated")
             
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    ImageMeta(
+                        count=len(output_images),
+                        extra={
+                            "resolution": input_data.resolution.value,
+                            "aspect_ratio": input_data.aspect_ratio.value,
+                        }
+                    )
+                ]
+            )
+            
             return AppOutput(
                 image=output_images[0],
-                description=description
+                description=description,
+                output_meta=output_meta
             )
 
         except Exception as e:

@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -150,9 +150,22 @@ class App(BaseApp):
 
             self.logger.info(f"Video processing completed successfully")
 
+            # Build output metadata for pricing
+            output_meta = OutputMeta(
+                outputs=[
+                    VideoMeta(
+                        extra={
+                            "voice_id": input_data.voice_id.value if not input_data.audio else None,
+                            "has_audio_input": input_data.audio is not None,
+                        }
+                    )
+                ]
+            )
+
             # Prepare output
             return AppOutput(
-                video=File(path=video_path)
+                video=File(path=video_path),
+                output_meta=output_meta
             )
 
         except Exception as e:
