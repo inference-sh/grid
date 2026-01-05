@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "OutputFormat": {
+      "description": "Output image format.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "title": "OutputFormat",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Flux 2 Turbo image generation.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt to generate an image from.",
+      "examples": [
+        "A realistic photograph of a vintage typewriter with a sheet of paper inserted that says 'Chapter One: The Journey Begins,' sunlight falling across the desk."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Height",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Width",
+      "type": "integer"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of reference images to use for editing. When provided, uses image-to-image mode. Maximum 4 images.",
+      "title": "Reference Images"
+    },
+    "guidance_scale": {
+      "default": 2.5,
+      "description": "Guidance scale - how closely the model follows the prompt. Lower values give more creative freedom.",
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The seed for random generation. If not provided, a random seed will be used.",
+      "title": "Seed"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "The number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "enable_prompt_expansion": {
+      "default": false,
+      "description": "If set to true, the prompt will be expanded for better results.",
+      "title": "Enable Prompt Expansion",
+      "type": "boolean"
+    },
+    "enable_safety_checker": {
+      "default": true,
+      "description": "If set to true, the safety checker will be enabled.",
+      "title": "Enable Safety Checker",
+      "type": "boolean"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormat",
+      "default": "png",
+      "description": "The format of the generated image."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
