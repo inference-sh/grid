@@ -1,0 +1,18 @@
+name: exa-extract
+description: Extract and analyze web page content using Exa's advanced content retrieval
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+metadata: {}
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0
+kernel: "3.10"
+secrets:
+  - key: EXA_API_KEY
+    description: Exa API key for model access
