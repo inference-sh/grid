@@ -97,7 +97,9 @@
       "enum": [
         "png",
         "jpeg",
-        "webp"
+        "webp",
+        "heic",
+        "heif"
       ],
       "title": "OutputFormatEnum",
       "type": "string"
@@ -110,6 +112,18 @@
         "4K"
       ],
       "title": "ResolutionEnum",
+      "type": "string"
+    },
+    "SafetyToleranceEnum": {
+      "description": "Safety filter thresholds.",
+      "enum": [
+        "BLOCK_NONE",
+        "BLOCK_LOW_AND_ABOVE",
+        "BLOCK_MEDIUM_AND_ABOVE",
+        "BLOCK_ONLY_HIGH",
+        "OFF"
+      ],
+      "title": "SafetyToleranceEnum",
       "type": "string"
     }
   },
@@ -132,7 +146,7 @@
         }
       ],
       "default": null,
-      "description": "Optional list of input images for editing (up to 14 images). When provided, the model will edit these images based on the prompt. When not provided, the model will generate new images from the text prompt. Supported formats: JPEG, PNG, WebP",
+      "description": "Optional list of input images for editing (up to 14 images). Max file size: 7MB (inline). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF.",
       "title": "Images"
     },
     "num_images": {
@@ -163,6 +177,39 @@
       "description": "Enable Google Search grounding for real-time information (weather, news, etc.)",
       "title": "Enable Google Search",
       "type": "boolean"
+    },
+    "temperature": {
+      "default": 1.0,
+      "description": "Controls randomness in token selection. range: 0.0 - 2.0. Default: 1.0",
+      "maximum": 2.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "description": "Nucleus sampling probability. Range: 0.0 - 1.0. Default: 0.95",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
+    "top_k": {
+      "default": 64,
+      "description": "Top-k sampling. Fixed at 64 for this model.",
+      "title": "Top K",
+      "type": "integer"
+    },
+    "max_output_tokens": {
+      "default": 32768,
+      "description": "Maximum number of tokens to generate. Max: 32768",
+      "title": "Max Output Tokens",
+      "type": "integer"
+    },
+    "safety_tolerance": {
+      "$ref": "#/$defs/SafetyToleranceEnum",
+      "default": "BLOCK_MEDIUM_AND_ABOVE",
+      "description": "Safety filter threshold for all categories."
     }
   },
   "required": [

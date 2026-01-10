@@ -1,0 +1,19 @@
+namespace: google
+name: gemini-2-5-flash-image
+description: Gemini 2.5 Flash Image via Vertex AI - Advanced image generation model powered by Google Cloud
+category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
+    thumbnail: ""
+    banner: ""
+metadata: {}
+integrations:
+  - key: gcp.vertex_ai
+    description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
+kernel: python-3.11

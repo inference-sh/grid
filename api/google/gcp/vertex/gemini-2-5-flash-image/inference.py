@@ -17,6 +17,8 @@ class OutputFormatEnum(str, Enum):
     png = "png"
     jpeg = "jpeg"
     webp = "webp"
+    heic = "heic"
+    heif = "heif"
 
 
 class AspectRatioEnum(str, Enum):
@@ -33,6 +35,16 @@ class AspectRatioEnum(str, Enum):
     ratio_9_16 = "9:16"
 
 
+
+class SafetyToleranceEnum(str, Enum):
+    """Safety filter thresholds."""
+    block_none = "BLOCK_NONE"
+    block_low_and_above = "BLOCK_LOW_AND_ABOVE"
+    block_medium_and_above = "BLOCK_MEDIUM_AND_ABOVE"
+    block_only_high = "BLOCK_ONLY_HIGH"
+    off = "OFF"
+
+
 class ResolutionEnum(str, Enum):
     """Resolution options."""
     res_1k = "1K"
@@ -46,7 +58,7 @@ class AppInput(BaseAppInput):
     )
     images: Optional[List[File]] = Field(
         None,
-        description="Optional list of input images for editing (up to 14 images). When provided, the model will edit these images based on the prompt. When not provided, the model will generate new images from the text prompt. Supported formats: JPEG, PNG, WebP"
+        description="Optional list of input images for editing (up to 14 images). Max file size: 7MB (inline). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF."
     )
     num_images: int = Field(
         1,
@@ -70,6 +82,30 @@ class AppInput(BaseAppInput):
         default=False,
         description="Enable Google Search grounding for real-time information (weather, news, etc.)"
     )
+    temperature: float = Field(
+        default=1.0,
+        description="Controls randomness in token selection. range: 0.0 - 2.0. Default: 1.0",
+        ge=0.0,
+        le=2.0
+    )
+    top_p: float = Field(
+        default=0.95,
+        description="Nucleus sampling probability. Range: 0.0 - 1.0. Default: 0.95",
+        ge=0.0,
+        le=1.0
+    )
+    top_k: int = Field(
+        default=64,
+        description="Top-k sampling. Fixed at 64 for this model.",
+    )
+    max_output_tokens: int = Field(
+        default=32768,
+        description="Maximum number of tokens to generate. Max: 32768"
+    )
+    safety_tolerance: SafetyToleranceEnum = Field(
+        default=SafetyToleranceEnum.block_medium_and_above,
+        description="Safety filter threshold for all categories."
+    )
 
 class AppOutput(BaseAppOutput):
     images: List[File] = Field(description="The generated or edited images")
@@ -83,6 +119,32 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
         self.metadata = metadata
         self.model_id = "gemini-3-pro-image-preview"
+
+        # Get Vertex AI credentials from environment
+        access_token = os.environ.get("GCP_ACCESS_TOKEN")
+        project = os.environ.get("GCP_PROJECT_NUMBER")
+        
+        if not access_token:
+            raise RuntimeError(
+                "GCP_ACCESS_TOKEN environment variable is required for Vertex AI access."
+            )
+        if not project:
+            raise RuntimeError(
+                "GCP_PROJECT_NUMBER environment variable is required for Vertex AI access."
+            )
+
+        # Create credentials from access token
+        credentials = Credentials(token=access_token)
+        
+        # Create Vertex AI client
+        self.client = genai.Client(
+            vertexai=True,
+            project=project,
+            # location="global", # gemini-3-pro-image-preview model only supports global location?
+            credentials=credentials,
+            http_options=HttpOptions(api_version="v1")
+        )
+
         self.logger.info("Gemini 3 Pro Image Preview (Vertex AI) initialized successfully")
 
     def _get_mime_type(self, file_path: str) -> str:
@@ -93,7 +155,8 @@ class App(BaseApp):
             '.jpeg': 'image/jpeg',
             '.png': 'image/png',
             '.webp': 'image/webp',
-            '.gif': 'image/gif',
+            '.heic': 'image/heic',
+            '.heif': 'image/heif',
         }
         return mime_types.get(ext, 'image/png')
 
@@ -108,31 +171,6 @@ class App(BaseApp):
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate or edit images using Gemini 3 Pro Image Preview model via Vertex AI."""
         try:
-            # Get Vertex AI credentials from environment
-            access_token = os.environ.get("GCP_ACCESS_TOKEN")
-            project = os.environ.get("GCP_PROJECT_NUMBER")
-            
-            if not access_token:
-                raise RuntimeError(
-                    "GCP_ACCESS_TOKEN environment variable is required for Vertex AI access."
-                )
-            if not project:
-                raise RuntimeError(
-                    "GCP_PROJECT_NUMBER environment variable is required for Vertex AI access."
-                )
-
-            # Create credentials from access token
-            credentials = Credentials(token=access_token)
-            
-            # Create Vertex AI client
-            client = genai.Client(
-                vertexai=True,
-                project=project,
-                # location="global", # gemini-3-pro-image-preview model only supports global location?
-                credentials=credentials,
-                http_options=HttpOptions(api_version="v1")
-            )
-
             # Determine if this is generation or editing
             is_editing = input_data.images is not None and len(input_data.images) > 0
 
@@ -171,6 +209,21 @@ class App(BaseApp):
             config_kwargs = {
                 'response_modalities': ['TEXT', 'IMAGE'],
                 'image_config': image_config,
+                'temperature': input_data.temperature,
+                'top_p': input_data.top_p,
+                'top_k': input_data.top_k,
+                'max_output_tokens': input_data.max_output_tokens,
+                'safety_settings': [
+                    types.SafetySetting(
+                        category=category,
+                        threshold=input_data.safety_tolerance.value
+                    ) for category in [
+                        "HARM_CATEGORY_HATE_SPEECH",
+                        "HARM_CATEGORY_DANGEROUS_CONTENT",
+                        "HARM_CATEGORY_HARASSMENT",
+                        "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                    ]
+                ]
             }
 
             # Add Google Search tool if enabled
@@ -187,7 +240,7 @@ class App(BaseApp):
             for i in range(input_data.num_images):
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
 
-                response = client.models.generate_content(
+                response = self.client.models.generate_content(
                     model=self.model_id,
                     contents=contents,
                     config=config,

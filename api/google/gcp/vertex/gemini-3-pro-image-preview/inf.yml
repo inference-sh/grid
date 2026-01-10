@@ -1,4 +1,4 @@
-namespace: gcp
+namespace: google
 name: gemini-3-pro-image-preview
 description: Gemini 3 Pro Image Preview via Vertex AI - Advanced image generation model powered by Google Cloud
 category: image
