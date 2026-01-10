@@ -1,10 +1,11 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from typing import Optional, List
 from enum import Enum
 import tempfile
 import os
 import logging
+import math
 
 from google import genai
 from google.genai import types
@@ -147,6 +148,43 @@ class App(BaseApp):
 
         self.logger.info("Gemini 3 Pro Image Preview (Vertex AI) initialized successfully")
 
+    def _get_dimensions(self, aspect_ratio: str, resolution: str) -> tuple[int, int]:
+        """Estimate dimensions based on aspect ratio and resolution string."""
+        # Baseline 1K = 1024x1024 approx
+        base = 1024
+        if resolution == "2K":
+            base = 2048
+        elif resolution == "4K":
+            base = 4096
+            
+        # Aspect ratio multipliers (approximate)
+        # We assume base is the side length of a square, and we scale width/height to preserve area?
+        # Or more likely with GenAI, '1024' is the standard side for 1:1.
+        # For non-square, usually one side increases and other decreases or stays same.
+        # We will use equal-area approximation: w * h = base * base.
+        # w / h = ratio.
+        # h * ratio * h = base^2 => h^2 = base^2 / ratio => h = base / sqrt(ratio)
+        
+        ar_map = {
+            "1:1": 1.0,
+            "16:9": 16/9,
+            "21:9": 21/9,
+            "3:2": 3/2,
+            "4:3": 4/3,
+            "5:4": 5/4,
+            "4:5": 4/5,
+            "3:4": 3/4,
+            "2:3": 2/3,
+            "9:16": 9/16,
+        }
+        
+        ratio_val = ar_map.get(aspect_ratio, 1.0)
+        
+        height = int(base / math.sqrt(ratio_val))
+        width = int(height * ratio_val)
+        
+        return width, height
+
     def _get_mime_type(self, file_path: str) -> str:
         """Get MIME type based on file extension."""
         ext = os.path.splitext(file_path)[1].lower()
@@ -274,9 +312,19 @@ class App(BaseApp):
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
+            width, height = self._get_dimensions(input_data.aspect_ratio.value, input_data.resolution.value)
+            
+            output_meta_images = []
+            for _ in output_images:
+                output_meta_images.append(ImageMeta(
+                    width=width,
+                    height=height
+                ))
+
             return AppOutput(
                 images=output_images,
-                description="\n".join(descriptions) if descriptions else ""
+                description="\n".join(descriptions) if descriptions else "",
+                output_meta=OutputMeta(outputs=output_meta_images)
             )
 
         except Exception as e:
