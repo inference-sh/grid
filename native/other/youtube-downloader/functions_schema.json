@@ -1,0 +1,591 @@
+{
+  "run": {
+    "description": "Download YouTube content with specified options.\n\nJust provide a URL for a quick MP3 download, or customize all options!",
+    "input_schema": {
+      "$defs": {
+        "AudioCodec": {
+          "description": "Audio codec options",
+          "enum": [
+            "aac",
+            "opus",
+            "mp3",
+            "vorbis",
+            "flac",
+            "wav"
+          ],
+          "title": "AudioCodec",
+          "type": "string"
+        },
+        "AudioQuality": {
+          "description": "Audio quality options",
+          "enum": [
+            "best",
+            "320",
+            "192",
+            "128",
+            "64"
+          ],
+          "title": "AudioQuality",
+          "type": "string"
+        },
+        "ExportFormat": {
+          "description": "Export format options",
+          "enum": [
+            "audio_only",
+            "video_with_audio",
+            "video_only"
+          ],
+          "title": "ExportFormat",
+          "type": "string"
+        },
+        "VideoCodec": {
+          "description": "Video codec options",
+          "enum": [
+            "mp4",
+            "webm",
+            "mkv"
+          ],
+          "title": "VideoCodec",
+          "type": "string"
+        },
+        "VideoQuality": {
+          "description": "Video quality/resolution options",
+          "enum": [
+            "best",
+            "2160",
+            "1440",
+            "1080",
+            "720",
+            "480",
+            "360"
+          ],
+          "title": "VideoQuality",
+          "type": "string"
+        }
+      },
+      "description": "Input for downloading YouTube content.\n\nProvide a YouTube URL and customize export options.\nJust provide the URL for a quick MP3 download with good defaults!",
+      "properties": {
+        "url": {
+          "description": "YouTube video URL (e.g., https://www.youtube.com/watch?v=xxxxx or https://youtu.be/xxxxx)",
+          "title": "Url",
+          "type": "string"
+        },
+        "export_format": {
+          "$ref": "#/$defs/ExportFormat",
+          "default": "audio_only",
+          "description": "Export format: audio_only (default), video_with_audio, or video_only"
+        },
+        "audio_quality": {
+          "$ref": "#/$defs/AudioQuality",
+          "default": "320",
+          "description": "Audio quality/bitrate: best, 320 (default), 192, 128, 64 kbps"
+        },
+        "video_quality": {
+          "$ref": "#/$defs/VideoQuality",
+          "default": "1080",
+          "description": "Video resolution: best, 2160, 1440, 1080 (default), 720, 480, 360"
+        },
+        "audio_codec": {
+          "$ref": "#/$defs/AudioCodec",
+          "default": "aac",
+          "description": "Audio codec/format: aac (default, fastest), mp3, opus, vorbis, flac, wav"
+        },
+        "video_codec": {
+          "$ref": "#/$defs/VideoCodec",
+          "default": "mp4",
+          "description": "Video container format: mp4 (default), webm, mkv"
+        },
+        "include_thumbnail": {
+          "default": true,
+          "description": "Embed thumbnail in the output file (default: true)",
+          "title": "Include Thumbnail",
+          "type": "boolean"
+        },
+        "include_metadata": {
+          "default": true,
+          "description": "Include metadata like title, artist, etc. in the output file (default: true)",
+          "title": "Include Metadata",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoInfo": {
+          "description": "Metadata about the downloaded video/audio",
+          "properties": {
+            "title": {
+              "description": "Video title",
+              "title": "Title",
+              "type": "string"
+            },
+            "channel": {
+              "description": "Channel name",
+              "title": "Channel",
+              "type": "string"
+            },
+            "duration_seconds": {
+              "description": "Duration in seconds",
+              "title": "Duration Seconds",
+              "type": "number"
+            },
+            "view_count": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Number of views",
+              "title": "View Count"
+            },
+            "upload_date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Upload date",
+              "title": "Upload Date"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Video description (truncated)",
+              "title": "Description"
+            }
+          },
+          "required": [
+            "title",
+            "channel",
+            "duration_seconds"
+          ],
+          "title": "VideoInfo",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VideoResolution"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
+        }
+      },
+      "description": "Output from the YouTube downloader.",
+      "properties": {
+        "file": {
+          "$ref": "#/$defs/File",
+          "description": "Downloaded audio/video file"
+        },
+        "info": {
+          "$ref": "#/$defs/VideoInfo",
+          "description": "Video/audio metadata"
+        },
+        "format_downloaded": {
+          "description": "Format that was downloaded (e.g., 'audio mp3 320kbps')",
+          "title": "Format Downloaded",
+          "type": "string"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Usage metadata for pricing"
+        }
+      },
+      "required": [
+        "file",
+        "info",
+        "format_downloaded"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}

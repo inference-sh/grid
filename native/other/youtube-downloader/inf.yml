@@ -1,0 +1,24 @@
+namespace: ""
+name: youtube-downloader
+description: "Download YouTube videos and audio with customizable quality, format, and codec options. Supports audio-only extraction, video+audio, or video-only downloads."
+metadata:
+  author: inference.sh
+  version: "1.0.0"
+  features:
+    - audio-extraction
+    - video-download
+    - quality-selection
+    - codec-conversion
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
