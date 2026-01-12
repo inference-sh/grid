@@ -3,6 +3,7 @@
     "AspectRatioEnum": {
       "description": "Aspect ratio options.",
       "enum": [
+        "auto",
         "21:9",
         "16:9",
         "3:2",
@@ -160,7 +161,7 @@
     "aspect_ratio": {
       "$ref": "#/$defs/AspectRatioEnum",
       "default": "1:1",
-      "description": "Aspect ratio for the output image. Default: 1:1"
+      "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",

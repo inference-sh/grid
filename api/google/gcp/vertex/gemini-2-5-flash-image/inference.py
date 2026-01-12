@@ -6,6 +6,7 @@ import tempfile
 import os
 import logging
 import math
+from PIL import Image
 
 from google import genai
 from google.genai import types
@@ -24,6 +25,7 @@ class OutputFormatEnum(str, Enum):
 
 class AspectRatioEnum(str, Enum):
     """Aspect ratio options."""
+    auto = "auto"
     ratio_21_9 = "21:9"
     ratio_16_9 = "16:9"
     ratio_3_2 = "3:2"
@@ -34,6 +36,21 @@ class AspectRatioEnum(str, Enum):
     ratio_3_4 = "3:4"
     ratio_2_3 = "2:3"
     ratio_9_16 = "9:16"
+
+
+# Aspect ratio values for matching (excludes "auto")
+ASPECT_RATIO_VALUES = {
+    "21:9": 21/9,
+    "16:9": 16/9,
+    "3:2": 3/2,
+    "4:3": 4/3,
+    "5:4": 5/4,
+    "1:1": 1.0,
+    "4:5": 4/5,
+    "3:4": 3/4,
+    "2:3": 2/3,
+    "9:16": 9/16,
+}
 
 
 
@@ -69,7 +86,7 @@ class AppInput(BaseAppInput):
     )
     aspect_ratio: AspectRatioEnum = Field(
         default=AspectRatioEnum.ratio_1_1,
-        description="Aspect ratio for the output image. Default: 1:1"
+        description="Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.res_1k,
@@ -185,6 +202,29 @@ class App(BaseApp):
         
         return width, height
 
+    def _get_image_dimensions(self, file_path: str) -> tuple[int, int]:
+        """Get width and height of an image file using PIL."""
+        with Image.open(file_path) as img:
+            return img.size  # Returns (width, height)
+
+    def _find_closest_aspect_ratio(self, width: int, height: int) -> str:
+        """Find the closest aspect ratio enum value for given dimensions."""
+        if height == 0:
+            return "1:1"  # Fallback for invalid dimensions
+        
+        actual_ratio = width / height
+        
+        closest_ratio = "1:1"
+        min_diff = float('inf')
+        
+        for ratio_str, ratio_val in ASPECT_RATIO_VALUES.items():
+            diff = abs(actual_ratio - ratio_val)
+            if diff < min_diff:
+                min_diff = diff
+                closest_ratio = ratio_str
+        
+        return closest_ratio
+
     def _get_mime_type(self, file_path: str) -> str:
         """Get MIME type based on file extension."""
         ext = os.path.splitext(file_path)[1].lower()
@@ -226,7 +266,21 @@ class App(BaseApp):
             else:
                 self.logger.info(f"Starting image generation with prompt: {input_data.prompt[:100]}...")
 
-            self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {input_data.aspect_ratio.value}")
+            # Resolve aspect ratio (handle "auto")
+            aspect_ratio_value = input_data.aspect_ratio.value
+            if aspect_ratio_value == "auto":
+                if is_editing and len(input_data.images) > 0:
+                    # Get dimensions from first image
+                    first_image_path = input_data.images[0].path
+                    img_width, img_height = self._get_image_dimensions(first_image_path)
+                    aspect_ratio_value = self._find_closest_aspect_ratio(img_width, img_height)
+                    self.logger.info(f"Auto-detected aspect ratio: {aspect_ratio_value} (from {img_width}x{img_height})")
+                else:
+                    # No images provided, fallback to 1:1
+                    aspect_ratio_value = "1:1"
+                    self.logger.info("No input images for auto aspect ratio detection, using 1:1")
+
+            self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {aspect_ratio_value}")
             self.logger.info(f"Requesting {input_data.num_images} output image(s)")
 
             # Build content parts
@@ -240,7 +294,7 @@ class App(BaseApp):
 
             # Configure generation settings
             image_config = types.ImageConfig(
-                aspect_ratio=input_data.aspect_ratio.value,
+                aspect_ratio=aspect_ratio_value,
                 image_size=input_data.resolution.value,
             )
 
@@ -312,7 +366,7 @@ class App(BaseApp):
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
-            width, height = self._get_dimensions(input_data.aspect_ratio.value, input_data.resolution.value)
+            width, height = self._get_dimensions(aspect_ratio_value, input_data.resolution.value)
             
             output_meta_images = []
             for _ in output_images:

@@ -3,3 +3,6 @@ inferencesh # required for inference.sh
 
 # Google Gemini API
 google-genai>=1.0.0
+
+# Image processing (for auto aspect ratio detection)
+Pillow>=10.0.0

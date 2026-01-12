@@ -9,9 +9,10 @@ h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
-inferencesh==0.6.0
+inferencesh==0.6.1
 ninja==1.13.0
 packaging==25.0
+pillow==12.1.0
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pydantic==2.12.5
