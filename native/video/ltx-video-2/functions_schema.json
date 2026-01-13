@@ -1,0 +1,652 @@
+{
+  "run": {
+    "description": "Run video generation with LTX-2.\n\nUses I2V pipeline when start_frame is provided, otherwise uses T2V pipeline.\nUses long video pipeline when long_video is enabled.",
+    "input_schema": {
+      "$defs": {
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "LoraConfig": {
+          "description": "Configuration for a single LoRA adapter.",
+          "properties": {
+            "adapter_name": {
+              "description": "Name for the LoRA adapter",
+              "title": "Adapter Name",
+              "type": "string"
+            },
+            "lora_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "URL to LoRA file (.safetensors), or HuggingFace repo path (e.g. 'Lightricks/LTX-2-19b-IC-LoRA-Canny-Control')",
+              "title": "Lora Url"
+            },
+            "lora_file": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/File"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Uploaded LoRA file (.safetensors)"
+            },
+            "lora_multiplier": {
+              "default": 1.0,
+              "description": "Multiplier for the LoRA effect (0.0-2.0 typical)",
+              "title": "Lora Multiplier",
+              "type": "number"
+            },
+            "fuse": {
+              "default": false,
+              "description": "Whether to fuse the LoRA into the model for faster inference",
+              "title": "Fuse",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "adapter_name"
+          ],
+          "title": "LoraConfig",
+          "type": "object"
+        }
+      },
+      "description": "Input schema for LTX-2 video generation.\n\nSupports:\n- Text-to-Video (T2V): Just provide prompt\n- Image-to-Video (I2V): Provide start_frame + prompt\n- Long Video Generation: Enable long_video mode with multi-prompt scheduling",
+      "properties": {
+        "prompt": {
+          "description": "Text prompt to guide video generation. For long videos, use '|' to separate prompts for different segments (e.g. 'scene 1|scene 2|scene 3')",
+          "title": "Prompt",
+          "type": "string"
+        },
+        "negative_prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "shaky, glitchy, low quality, worst quality, deformed, distorted, disfigured, motion smear, motion artifacts, fused fingers, bad anatomy, weird hand, ugly, transition, static.",
+          "description": "Negative prompt to specify undesired features",
+          "title": "Negative Prompt"
+        },
+        "start_frame": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional start frame image for Image-to-Video (I2V) generation. When provided, the I2V pipeline is used instead of T2V."
+        },
+        "width": {
+          "default": 768,
+          "description": "Width of the output video frames",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 512,
+          "description": "Height of the output video frames",
+          "title": "Height",
+          "type": "integer"
+        },
+        "num_frames": {
+          "default": 121,
+          "description": "Number of frames to generate. For long videos, can be higher (e.g. 361)",
+          "title": "Num Frames",
+          "type": "integer"
+        },
+        "frame_rate": {
+          "default": 24.0,
+          "description": "Frame rate for the output video",
+          "title": "Frame Rate",
+          "type": "number"
+        },
+        "num_inference_steps": {
+          "default": 40,
+          "description": "Number of denoising steps. Use 8 for distilled models.",
+          "title": "Num Inference Steps",
+          "type": "integer"
+        },
+        "guidance_scale": {
+          "default": 4.0,
+          "description": "Scale for classifier-free guidance. Use 1.0 for distilled models.",
+          "title": "Guidance Scale",
+          "type": "number"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Random seed for reproducibility. If not provided, a random seed is used.",
+          "title": "Seed"
+        },
+        "long_video": {
+          "default": false,
+          "description": "Enable long video generation with sliding windows and multi-prompt scheduling",
+          "title": "Long Video",
+          "type": "boolean"
+        },
+        "temporal_tile_size": {
+          "default": 120,
+          "description": "Size of temporal tiles for long video generation",
+          "title": "Temporal Tile Size",
+          "type": "integer"
+        },
+        "temporal_overlap": {
+          "default": 32,
+          "description": "Overlap between temporal tiles for smooth transitions",
+          "title": "Temporal Overlap",
+          "type": "integer"
+        },
+        "adain_factor": {
+          "default": 0.25,
+          "description": "AdaIN normalization factor for color/contrast consistency across windows",
+          "title": "Adain Factor",
+          "type": "number"
+        },
+        "loras": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/LoraConfig"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "List of LoRA adapters to apply",
+          "title": "Loras"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VideoResolution"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
+        }
+      },
+      "description": "Output schema for LTX-2 video generation.",
+      "properties": {
+        "video": {
+          "$ref": "#/$defs/File",
+          "description": "Generated video file with synced audio"
+        },
+        "output_meta": {
+          "$ref": "#/$defs/OutputMeta",
+          "description": "Usage metadata for pricing"
+        }
+      },
+      "required": [
+        "video",
+        "output_meta"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}

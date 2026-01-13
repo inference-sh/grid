@@ -1,0 +1,7 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+torch
+accelerate
+git+https://github.com/huggingface/diffusers.git@3114f6a7969df367eb443970f9d31b1141782a6c
+transformers
+av

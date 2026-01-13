@@ -1,0 +1,17 @@
+namespace: infsh
+name: ltx-video-2
+description: "LTX 2.0 audio-video foundation model. Generates videos with synced audio. Supports T2V, I2V, long video generation with multi-prompt sliding windows, and LoRA adapters."
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 80  # 80GB
+        type: any
+    ram: 32  # 32GB
