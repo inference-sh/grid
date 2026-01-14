@@ -4,7 +4,7 @@ anyio==4.12.1
 av==16.1.0
 certifi==2026.1.4
 charset-normalizer==3.4.4
-diffusers @ git+https://github.com/huggingface/diffusers.git@3114f6a7969df367eb443970f9d31b1141782a6c
+diffusers @ git+https://github.com/huggingface/diffusers.git@7feb4fc791909f4a58b153d6d07c6cb8437b2e58
 filelock==3.20.3
 fsspec==2026.1.0
 h11==0.16.0

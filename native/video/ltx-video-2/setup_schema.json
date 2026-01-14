@@ -1,13 +1,6 @@
 {
   "description": "Setup configuration for LTX-2 Video Generation.\n\nLTX 2.0 uses a lot of memory; CPU offloading is enabled by default.",
-  "properties": {
-    "use_distilled": {
-      "default": false,
-      "description": "Use distilled model for faster inference (requires fewer steps)",
-      "title": "Use Distilled",
-      "type": "boolean"
-    }
-  },
+  "properties": {},
   "title": "AppSetup",
   "type": "object"
 }

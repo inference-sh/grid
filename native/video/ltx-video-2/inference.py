@@ -36,10 +36,12 @@ class AppSetup(BaseAppSetup):
     
     LTX 2.0 uses a lot of memory; CPU offloading is enabled by default.
     """
-    use_distilled: bool = Field(
-        default=False,
-        description="Use distilled model for faster inference (requires fewer steps)"
-    )
+    # TODO: Uncomment when diffusers PR #12934 is merged
+    # use_distilled: bool = Field(
+    #     default=False,
+    #     description="Use distilled model for faster inference (requires fewer steps)"
+    # )
+    pass
 
 
 class RunInput(BaseAppInput):
@@ -71,7 +73,7 @@ class RunInput(BaseAppInput):
     )
     num_frames: int = Field(
         default=121,
-        description="Number of frames to generate. For long videos, can be higher (e.g. 361)"
+        description="Number of frames to generate. Max ~20 seconds duration (e.g. 481 frames at 24fps, 1001 at 50fps). Default 121 (~5 seconds at 24fps)."
     )
     frame_rate: float = Field(
         default=24.0,
@@ -89,23 +91,25 @@ class RunInput(BaseAppInput):
         default=None,
         description="Random seed for reproducibility. If not provided, a random seed is used."
     )
-    # Long video options
-    long_video: bool = Field(
-        default=False,
-        description="Enable long video generation with sliding windows and multi-prompt scheduling"
-    )
-    temporal_tile_size: int = Field(
-        default=120,
-        description="Size of temporal tiles for long video generation"
-    )
-    temporal_overlap: int = Field(
-        default=32,
-        description="Overlap between temporal tiles for smooth transitions"
-    )
-    adain_factor: float = Field(
-        default=0.25,
-        description="AdaIN normalization factor for color/contrast consistency across windows"
-    )
+    # Long video options - NOT YET AVAILABLE FOR LTX-2
+    # The LTXI2VLongMultiPromptPipeline is for LTX-1 (0.9.8), not LTX-2
+    # TODO: Uncomment when LTX-2 long video support is added
+    # long_video: bool = Field(
+    #     default=False,
+    #     description="Enable long video generation with sliding windows and multi-prompt scheduling"
+    # )
+    # temporal_tile_size: int = Field(
+    #     default=120,
+    #     description="Size of temporal tiles for long video generation"
+    # )
+    # temporal_overlap: int = Field(
+    #     default=32,
+    #     description="Overlap between temporal tiles for smooth transitions"
+    # )
+    # adain_factor: float = Field(
+    #     default=0.25,
+    #     description="AdaIN normalization factor for color/contrast consistency across windows"
+    # )
     # LoRA options
     loras: Optional[List[LoraConfig]] = Field(
         default=None,
@@ -165,12 +169,13 @@ class App(BaseApp):
         from diffusers.pipelines.ltx2 import LTX2Pipeline, LTX2ImageToVideoPipeline
         
         # Determine model to use
-        if config.use_distilled:
-            model_id = "Lightricks/LTX-Video-0.9.8-13B-distilled"
-        else:
-            model_id = "Lightricks/LTX-2"
-        
-        self.use_distilled = config.use_distilled
+        # TODO: Uncomment when diffusers PR #12934 is merged
+        # if config.use_distilled:
+        #     model_id = "Lightricks/LTX-Video-0.9.8-13B-distilled"
+        # else:
+        #     model_id = "Lightricks/LTX-2"
+        # self.use_distilled = config.use_distilled
+        model_id = "Lightricks/LTX-2"
         
         # Load the T2V pipeline
         self.t2v_pipe = LTX2Pipeline.from_pretrained(
@@ -186,18 +191,21 @@ class App(BaseApp):
         )
         self.i2v_pipe.enable_model_cpu_offload()
         
-        # Try to load the long video pipeline (may not be available in all diffusers versions)
-        try:
-            from diffusers.pipelines.ltx import LTXI2VLongMultiPromptPipeline
-            self.long_pipe = LTXI2VLongMultiPromptPipeline.from_pretrained(
-                model_id,
-                torch_dtype=torch.bfloat16
-            )
-            self.long_pipe.enable_model_cpu_offload()
-            self.has_long_pipeline = True
-        except ImportError:
-            logger.warning("LTXI2VLongMultiPromptPipeline not available in this diffusers version")
-            self.has_long_pipeline = False
+        # Long video pipeline - NOT YET AVAILABLE FOR LTX-2
+        # The LTXI2VLongMultiPromptPipeline is for LTX-1 (0.9.8), not LTX-2
+        # TODO: Uncomment when LTX-2 long video support is added
+        # try:
+        #     from diffusers.pipelines.ltx import LTXI2VLongMultiPromptPipeline
+        #     self.long_pipe = LTXI2VLongMultiPromptPipeline.from_pretrained(
+        #         model_id,
+        #         torch_dtype=torch.bfloat16
+        #     )
+        #     self.long_pipe.enable_model_cpu_offload()
+        #     self.has_long_pipeline = True
+        # except ImportError:
+        #     logger.warning("LTXI2VLongMultiPromptPipeline not available in this diffusers version")
+        #     self.has_long_pipeline = False
+        self.has_long_pipeline = False
         
         # Track loaded LoRAs
         self.loaded_loras = {}
@@ -215,11 +223,22 @@ class App(BaseApp):
         seed = input_data.seed if input_data.seed is not None else random.randint(0, 2**32 - 1)
         generator = torch.Generator().manual_seed(seed)
         
+        # Validate num_frames (max 20 seconds)
+        max_duration_seconds = 20
+        max_frames = int(max_duration_seconds * input_data.frame_rate) + 1
+        if input_data.num_frames > max_frames:
+            raise ValueError(
+                f"num_frames ({input_data.num_frames}) exceeds maximum of {max_frames} "
+                f"frames ({max_duration_seconds} seconds at {input_data.frame_rate} fps). "
+                f"LTX-2 supports up to 20 seconds per generation."
+            )
+        
         # Determine which pipeline to use
-        if input_data.long_video and input_data.start_frame and self.has_long_pipeline:
-            pipe = self.long_pipe
-            mode = "long"
-        elif input_data.start_frame is not None:
+        # Long video mode is NOT YET AVAILABLE for LTX-2
+        # if input_data.long_video and input_data.start_frame and self.has_long_pipeline:
+        #     pipe = self.long_pipe
+        #     mode = "long"
+        if input_data.start_frame is not None:
             pipe = self.i2v_pipe
             mode = "i2v"
         else:
@@ -250,49 +269,50 @@ class App(BaseApp):
             "width": input_data.width,
             "height": input_data.height,
             "num_frames": input_data.num_frames,
-            "num_inference_steps": input_data.num_inference_steps,
             "guidance_scale": input_data.guidance_scale,
             "generator": generator,
             "output_type": "np",
             "return_dict": False,
         }
         
-        if mode == "long":
-            # Long video with multi-prompt sliding windows
-            image = Image.open(input_data.start_frame.path).convert("RGB")
-            
-            # Use distilled sigmas if using distilled model
-            if self.use_distilled:
-                sigmas = [1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0]
-            else:
-                sigmas = [1.0, 0.9937, 0.9875, 0.9812, 0.9750, 0.9094, 0.7250, 0.4219, 0.0]
-            
-            latents = pipe(
-                prompt=input_data.prompt,
-                negative_prompt=input_data.negative_prompt,
-                width=input_data.width,
-                height=input_data.height,
-                num_frames=input_data.num_frames,
-                temporal_tile_size=input_data.temporal_tile_size,
-                temporal_overlap=input_data.temporal_overlap,
-                sigmas=sigmas,
-                guidance_scale=input_data.guidance_scale,
-                cond_image=image,
-                adain_factor=input_data.adain_factor,
-                output_type="latent",
-            ).frames
-            
-            # Decode with VAE tiling
-            video_pil = pipe.vae_decode_tiled(
-                latents, 
-                decode_timestep=0.05, 
-                decode_noise_scale=0.025, 
-                output_type="np"
-            )[0]
-            video = video_pil
-            audio = None  # Long pipeline may not return audio directly
-            
-        elif mode == "i2v":
+        # TODO: Uncomment when diffusers PR #12934 is merged
+        # Distilled models require specific sigmas instead of num_inference_steps
+        # if self.use_distilled:
+        #     common_kwargs["sigmas"] = [1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0]
+        # else:
+        #     common_kwargs["num_inference_steps"] = input_data.num_inference_steps
+        common_kwargs["num_inference_steps"] = input_data.num_inference_steps
+        
+        # Long video mode is NOT YET AVAILABLE for LTX-2
+        # The code below was for LTX-1's LTXI2VLongMultiPromptPipeline
+        # if mode == "long":
+        #     # Long video with multi-prompt sliding windows
+        #     image = Image.open(input_data.start_frame.path).convert("RGB")
+        #     sigmas = [1.0, 0.9937, 0.9875, 0.9812, 0.9750, 0.9094, 0.7250, 0.4219, 0.0]
+        #     latents = pipe(
+        #         prompt=input_data.prompt,
+        #         negative_prompt=input_data.negative_prompt,
+        #         width=input_data.width,
+        #         height=input_data.height,
+        #         num_frames=input_data.num_frames,
+        #         temporal_tile_size=input_data.temporal_tile_size,
+        #         temporal_overlap=input_data.temporal_overlap,
+        #         sigmas=sigmas,
+        #         guidance_scale=input_data.guidance_scale,
+        #         cond_image=image,
+        #         adain_factor=input_data.adain_factor,
+        #         output_type="latent",
+        #     ).frames
+        #     video_pil = pipe.vae_decode_tiled(
+        #         latents, 
+        #         decode_timestep=0.05, 
+        #         decode_noise_scale=0.025, 
+        #         output_type="np"
+        #     )[0]
+        #     video = video_pil
+        #     audio = None
+        
+        if mode == "i2v":
             # Image-to-Video (I2V) mode
             image = Image.open(input_data.start_frame.path).convert("RGB")
             common_kwargs["image"] = image

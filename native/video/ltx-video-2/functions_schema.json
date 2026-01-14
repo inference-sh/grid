@@ -177,7 +177,7 @@
         },
         "num_frames": {
           "default": 121,
-          "description": "Number of frames to generate. For long videos, can be higher (e.g. 361)",
+          "description": "Number of frames to generate. Max ~20 seconds duration (e.g. 481 frames at 24fps, 1001 at 50fps). Default 121 (~5 seconds at 24fps).",
           "title": "Num Frames",
           "type": "integer"
         },
@@ -211,30 +211,6 @@
           "default": null,
           "description": "Random seed for reproducibility. If not provided, a random seed is used.",
           "title": "Seed"
-        },
-        "long_video": {
-          "default": false,
-          "description": "Enable long video generation with sliding windows and multi-prompt scheduling",
-          "title": "Long Video",
-          "type": "boolean"
-        },
-        "temporal_tile_size": {
-          "default": 120,
-          "description": "Size of temporal tiles for long video generation",
-          "title": "Temporal Tile Size",
-          "type": "integer"
-        },
-        "temporal_overlap": {
-          "default": 32,
-          "description": "Overlap between temporal tiles for smooth transitions",
-          "title": "Temporal Overlap",
-          "type": "integer"
-        },
-        "adain_factor": {
-          "default": 0.25,
-          "description": "AdaIN normalization factor for color/contrast consistency across windows",
-          "title": "Adain Factor",
-          "type": "number"
         },
         "loras": {
           "anyOf": [
