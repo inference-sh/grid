@@ -184,9 +184,18 @@ class App(BaseApp):
         )
         self.t2v_pipe.enable_model_cpu_offload()
         
-        # Load the I2V pipeline
+        # Load the I2V pipeline - share components but NOT the scheduler (it has internal state)
         self.i2v_pipe = LTX2ImageToVideoPipeline.from_pretrained(
             model_id,
+            vae=self.t2v_pipe.vae,
+            audio_vae=self.t2v_pipe.audio_vae,
+            text_encoder=self.t2v_pipe.text_encoder,
+            tokenizer=self.t2v_pipe.tokenizer,
+            connectors=self.t2v_pipe.connectors,
+            transformer=self.t2v_pipe.transformer,
+            vocoder=self.t2v_pipe.vocoder,
+            # NOTE: Don't share scheduler! It has internal state (_step_index, timesteps)
+            # that gets modified during inference. Sharing causes glitchy output.
             torch_dtype=torch.bfloat16
         )
         self.i2v_pipe.enable_model_cpu_offload()
@@ -354,6 +363,6 @@ class App(BaseApp):
         return RunOutput(
             video=File(path=output_path),
             output_meta=OutputMeta(
-                video=VideoMeta(duration_seconds=duration_seconds)
+                outputs=[VideoMeta(duration_seconds=duration_seconds)]
             )
         )
