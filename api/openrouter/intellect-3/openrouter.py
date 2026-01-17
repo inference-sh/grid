@@ -4,6 +4,7 @@ import asyncio
 from typing import List, Optional, Dict, Any, AsyncGenerator
 from inferencesh import File
 from inferencesh.models.llm import build_messages, build_tools
+from inferencesh import OutputMeta, TextMeta
 
 
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
@@ -94,6 +95,13 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
             if url and url not in state["image_urls"]:
                 state["image_urls"].append(url)
 
+    # Track usage if available
+    if hasattr(chunk, "usage") and chunk.usage:
+        if hasattr(chunk.usage, "prompt_tokens"):
+            state["input_tokens"] = chunk.usage.prompt_tokens
+        if hasattr(chunk.usage, "completion_tokens"):
+            state["output_tokens"] = chunk.usage.completion_tokens
+
     return finish_reason
 
 
@@ -108,6 +116,17 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
         out["tool_calls"] = state["tool_calls"]
     if state["image_urls"]:
         out["images"] = [File(uri=url) for url in state["image_urls"]]
+    
+    # Add output_meta with token usage
+    inputs = []
+    outputs = []
+    if state.get("input_tokens"):
+        inputs.append(TextMeta(tokens=state["input_tokens"]))
+    if state.get("output_tokens"):
+        outputs.append(TextMeta(tokens=state["output_tokens"]))
+    if inputs or outputs:
+        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+    
     return out
 
 
@@ -119,26 +138,27 @@ def create_initial_state() -> Dict[str, Any]:
         "reasoning_details": [],
         "tool_calls": [],
         "image_urls": [],
+        "input_tokens": 0,
+        "output_tokens": 0,
     }
 
 
-async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
-    """
-    Stream a completion from OpenRouter and yield output dicts.
-    
-    Handles: message building, tools, reasoning config, timeouts, error handling.
-    """
+def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
+    """Build common request parameters."""
     messages = build_messages(input_data)
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     params = {
         "model": model,
         "messages": messages,
-        "stream": True,
+        "stream": stream,
         "extra_headers": {"HTTP-Referer": "https://inference.sh", "X-Title": "inference.sh"},
         "stop": ["<end_of_turn>", "<eos>", "<|im_end|>"],
         "max_tokens": 64000,
     }
+
+    if stream:
+        params["stream_options"] = {"include_usage": True}
 
     if tools:
         params["tools"] = tools
@@ -147,6 +167,68 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     reasoning_config = get_reasoning_config(input_data)
     if reasoning_config:
         params["extra_body"] = {"reasoning": reasoning_config}
+
+    return params
+
+
+async def complete(client, input_data, model: str) -> Dict[str, Any]:
+    """
+    Non-streaming completion from OpenRouter.
+    
+    Returns the complete response as a single output dict.
+    """
+    params = _build_params(input_data, model, stream=False)
+
+    try:
+        response = await asyncio.wait_for(client.chat.completions.create(**params), timeout=120.0)
+    except asyncio.TimeoutError:
+        raise RuntimeError("OpenRouter API call timed out after 120 seconds")
+    except Exception as e:
+        raise handle_api_error(e)
+
+    state = create_initial_state()
+    message = response.choices[0].message
+
+    if message.content:
+        state["response"] = message.content
+
+    if hasattr(message, "reasoning") and message.reasoning:
+        state["reasoning"] = message.reasoning
+
+    if hasattr(message, "reasoning_details") and message.reasoning_details:
+        state["reasoning_details"] = message.reasoning_details
+
+    if message.tool_calls:
+        for tc in message.tool_calls:
+            state["tool_calls"].append({
+                "id": tc.id,
+                "type": "function",
+                "function": {"name": tc.function.name, "arguments": tc.function.arguments}
+            })
+
+    if hasattr(message, "images") and message.images:
+        for img in message.images:
+            url = img.get("image_url", {}).get("url") if isinstance(img, dict) else None
+            if url:
+                state["image_urls"].append(url)
+
+    # Track usage from response
+    if hasattr(response, "usage") and response.usage:
+        if hasattr(response.usage, "prompt_tokens"):
+            state["input_tokens"] = response.usage.prompt_tokens
+        if hasattr(response.usage, "completion_tokens"):
+            state["output_tokens"] = response.usage.completion_tokens
+
+    return build_output(state)
+
+
+async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
+    """
+    Stream a completion from OpenRouter and yield output dicts.
+    
+    Handles: message building, tools, reasoning config, timeouts, error handling.
+    """
+    params = _build_params(input_data, model, stream=True)
 
     try:
         stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
@@ -173,4 +255,3 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     finally:
         if hasattr(stream, "aclose"):
             await stream.aclose()
-

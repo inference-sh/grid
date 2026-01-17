@@ -2,7 +2,7 @@ import os
 from typing import AsyncGenerator, List, Optional
 from pydantic import Field
 
-from inferencesh import BaseApp
+from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
@@ -27,7 +27,7 @@ class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     context_size: int = Field(default=200000, description="The context size for the model.")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
+class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None
 

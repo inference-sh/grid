@@ -178,31 +178,37 @@
           "type": "string"
         }
       ]
+    },
+    "ReasoningEffortEnum": {
+      "description": "Enum for reasoning effort.",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "none"
+      ],
+      "title": "ReasoningEffortEnum",
+      "type": "string"
     }
   },
-  "description": "OpenRouter input model with reasoning and tools support.",
+  "description": "OpenRouter input model with reasoning, tools, and image support.",
   "properties": {
-    "reasoning_effort": {
-      "default": "high",
-      "description": "Reasoning effort level: 'high', 'medium', or 'low'",
-      "enum": [
-        "high",
-        "medium",
-        "low"
-      ],
-      "title": "Reasoning Effort",
-      "type": "string"
-    },
-    "reasoning_max_tokens": {
-      "default": null,
-      "description": "Maximum tokens to allocate for reasoning (overrides effort)",
-      "title": "Reasoning Max Tokens",
-      "type": "integer"
-    },
     "reasoning_exclude": {
       "default": false,
       "description": "Exclude reasoning tokens from response",
       "title": "Reasoning Exclude",
+      "type": "boolean"
+    },
+    "context_size": {
+      "default": 200000,
+      "description": "The context size for the model.",
+      "title": "Context Size",
+      "type": "integer"
+    },
+    "stream": {
+      "default": true,
+      "description": "Stream the response (True) or return complete response (False)",
+      "title": "Stream",
       "type": "boolean"
     },
     "images": {
@@ -221,6 +227,36 @@
       "description": "the images to use for the model",
       "title": "Images"
     },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "tool definitions for function calling",
+      "title": "Tools"
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the tool call id for tool role messages",
+      "title": "Tool Call Id"
+    },
     "reasoning": {
       "anyOf": [
         {
@@ -233,6 +269,24 @@
       "default": null,
       "description": "the reasoning input of the message",
       "title": "Reasoning"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none",
+      "description": "enable step-by-step reasoning"
+    },
+    "reasoning_max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the maximum number of tokens to use for reasoning",
+      "title": "Reasoning Max Tokens"
     },
     "system_prompt": {
       "default": "you are a helpful assistant that can answer questions and help with tasks.",
@@ -301,9 +355,9 @@
       "title": "Top P",
       "type": "number"
     },
-    "context_size": {
-      "default": 4096,
-      "title": "Context Size",
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
       "type": "integer"
     }
   },

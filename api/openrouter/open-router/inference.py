@@ -2,7 +2,7 @@ import os
 from typing import AsyncGenerator, List, Optional
 from pydantic import Field
 
-from inferencesh import BaseApp
+from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
@@ -18,13 +18,14 @@ from openai import AsyncOpenAI
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
+
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     model: str = Field(default="gpt-4o-mini", description="The model to use for the inference.")
     stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
+class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None
 

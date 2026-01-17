@@ -4,6 +4,7 @@ import asyncio
 from typing import List, Optional, Dict, Any, AsyncGenerator
 from inferencesh import File
 from inferencesh.models.llm import build_messages, build_tools
+from inferencesh import OutputMeta, TextMeta
 
 
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
@@ -94,6 +95,13 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
             if url and url not in state["image_urls"]:
                 state["image_urls"].append(url)
 
+    # Track usage if available
+    if hasattr(chunk, "usage") and chunk.usage:
+        if hasattr(chunk.usage, "prompt_tokens"):
+            state["input_tokens"] = chunk.usage.prompt_tokens
+        if hasattr(chunk.usage, "completion_tokens"):
+            state["output_tokens"] = chunk.usage.completion_tokens
+
     return finish_reason
 
 
@@ -108,6 +116,17 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
         out["tool_calls"] = state["tool_calls"]
     if state["image_urls"]:
         out["images"] = [File(uri=url) for url in state["image_urls"]]
+    
+    # Add output_meta with token usage
+    inputs = []
+    outputs = []
+    if state.get("input_tokens"):
+        inputs.append(TextMeta(tokens=state["input_tokens"]))
+    if state.get("output_tokens"):
+        outputs.append(TextMeta(tokens=state["output_tokens"]))
+    if inputs or outputs:
+        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+    
     return out
 
 
@@ -119,6 +138,8 @@ def create_initial_state() -> Dict[str, Any]:
         "reasoning_details": [],
         "tool_calls": [],
         "image_urls": [],
+        "input_tokens": 0,
+        "output_tokens": 0,
     }
 
 
@@ -135,6 +156,9 @@ def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
         "stop": ["<end_of_turn>", "<eos>", "<|im_end|>"],
         "max_tokens": 64000,
     }
+
+    if stream:
+        params["stream_options"] = {"include_usage": True}
 
     if tools:
         params["tools"] = tools
@@ -188,6 +212,13 @@ async def complete(client, input_data, model: str) -> Dict[str, Any]:
             if url:
                 state["image_urls"].append(url)
 
+    # Track usage from response
+    if hasattr(response, "usage") and response.usage:
+        if hasattr(response.usage, "prompt_tokens"):
+            state["input_tokens"] = response.usage.prompt_tokens
+        if hasattr(response.usage, "completion_tokens"):
+            state["output_tokens"] = response.usage.completion_tokens
+
     return build_output(state)
 
 
@@ -224,4 +255,3 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     finally:
         if hasattr(stream, "aclose"):
             await stream.aclose()
-

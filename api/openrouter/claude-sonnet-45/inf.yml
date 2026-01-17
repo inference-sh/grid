@@ -1,3 +1,4 @@
+namespace: openrouter
 name: claude-sonnet-45
 description: Claude Sonnet 4.5
 category: chat
@@ -10,16 +11,12 @@ metadata:
       - reasoning
       - image
       - file
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: none
-            ram: 0
-        python: "3.11"
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
+python: "3.11"
 secrets:
   - key: OPENROUTER_API_KEY

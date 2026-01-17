@@ -205,6 +205,12 @@
       "title": "Context Size",
       "type": "integer"
     },
+    "stream": {
+      "default": true,
+      "description": "Stream the response (True) or return complete response (False)",
+      "title": "Stream",
+      "type": "boolean"
+    },
     "tools": {
       "anyOf": [
         {
@@ -332,6 +338,11 @@
       "minimum": 0.0,
       "title": "Top P",
       "type": "number"
+    },
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
+      "type": "integer"
     }
   },
   "required": [

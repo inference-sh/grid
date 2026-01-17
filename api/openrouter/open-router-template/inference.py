@@ -2,7 +2,7 @@ import os
 from typing import AsyncGenerator, List, Optional
 from pydantic import Field
 
-from inferencesh import BaseApp
+from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
@@ -28,7 +28,7 @@ class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
+class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None
 

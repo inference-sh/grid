@@ -1,3 +1,4 @@
+namespace: openrouter
 name: glm-46
 description: GLM-4.6
 category: chat
@@ -8,16 +9,12 @@ images:
 metadata:
     capabilities:
       - reasoning
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: none
-            ram: 0
-        python: "3.11"
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
+python: "3.11"
 secrets:
   - key: OPENROUTER_API_KEY

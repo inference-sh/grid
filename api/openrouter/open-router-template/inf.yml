@@ -1,16 +1,14 @@
 namespace: openrouter
-name: gemini-3-pro-preview
-description: Gemini 3 Pro Preview
+name: model-name
+description: Model Description
 category: chat
 images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    card: ""
     thumbnail: ""
     banner: ""
 metadata:
     capabilities:
       - reasoning
-      - image
-      - file
 resources:
     gpu:
         count: 0
