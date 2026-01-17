@@ -118,10 +118,10 @@ class App(BaseApp):
                 (1024, 1024)
             )
             
-            # Use actual dimensions from response if available
-            if "width" in image_data:
+            # Use actual dimensions from response if available (check for truthy values)
+            if image_data.get("width"):
                 width = image_data["width"]
-            if "height" in image_data:
+            if image_data.get("height"):
                 height = image_data["height"]
             
             # Build output metadata for pricing
