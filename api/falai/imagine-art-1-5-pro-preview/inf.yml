@@ -1,0 +1,21 @@
+namespace: "falai"
+name: imagine-art-1-5-pro-preview
+description: "Advanced text-to-image model creating ultra-high-fidelity 4K visuals with lifelike realism and refined aesthetics."
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+      optional: false

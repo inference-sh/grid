@@ -1,0 +1,51 @@
+{
+  "$defs": {
+    "AspectRatio": {
+      "description": "Supported aspect ratios for image generation.",
+      "enum": [
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:1",
+        "1:3",
+        "3:2",
+        "2:3"
+      ],
+      "title": "AspectRatio",
+      "type": "string"
+    }
+  },
+  "description": "Input parameters for ImagineArt 1.5 Pro Preview.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image. Be descriptive for best results.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatio",
+      "default": "1:1",
+      "description": "Image aspect ratio. Choose based on your intended use case."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible generation. Leave empty for random results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
