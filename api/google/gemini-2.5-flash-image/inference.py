@@ -5,7 +5,9 @@ from enum import Enum
 import tempfile
 import os
 import logging
-import base64
+import io
+
+from PIL import Image
 
 from google import genai
 from google.genai import types
@@ -81,13 +83,33 @@ class App(BaseApp):
         }
         return mime_types.get(ext, 'image/png')
 
+    def _resize_to_max_pixels(self, file_path: str, max_pixels: int = 1_000_000) -> bytes:
+        """Resize image to max pixels (1MP default) if needed, return as bytes."""
+        with Image.open(file_path) as img:
+            # Convert to RGB if necessary (handles RGBA, P mode, etc.)
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            
+            width, height = img.size
+            current_pixels = width * height
+            
+            if current_pixels > max_pixels:
+                # Calculate scale factor to get to max_pixels
+                scale = (max_pixels / current_pixels) ** 0.5
+                new_width = int(width * scale)
+                new_height = int(height * scale)
+                img = img.resize((new_width, new_height), Image.LANCZOS)
+                self.logger.info(f"Resized image from {width}x{height} to {new_width}x{new_height}")
+            
+            # Save to bytes
+            buffer = io.BytesIO()
+            img.save(buffer, format='JPEG', quality=95)
+            return buffer.getvalue()
+
     def _load_image_as_part(self, file_path: str) -> types.Part:
-        """Load an image file and return it as a Gemini Part."""
-        with open(file_path, 'rb') as f:
-            image_data = f.read()
-        
-        mime_type = self._get_mime_type(file_path)
-        return types.Part.from_bytes(data=image_data, mime_type=mime_type)
+        """Load an image file, resize if needed, and return it as a Gemini Part."""
+        image_data = self._resize_to_max_pixels(file_path)
+        return types.Part.from_bytes(data=image_data, mime_type='image/jpeg')
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate or edit images using Gemini 2.5 Flash Image model."""
