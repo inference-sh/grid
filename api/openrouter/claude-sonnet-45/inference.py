@@ -10,6 +10,8 @@ from inferencesh.models.llm import (
     ReasoningMixin,
     ToolsCapabilityMixin,
     ToolCallsMixin,
+    ImageCapabilityMixin,
+    FileCapabilityMixin
 )
 from .openrouter import stream_completion, complete
 from openai import AsyncOpenAI
@@ -20,7 +22,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 DEFAULT_MODEL = "anthropic/claude-sonnet-4.5"
 
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
+class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin, FileCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=200000, description="The context size for the model.")

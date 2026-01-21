@@ -211,6 +211,38 @@
       "title": "Stream",
       "type": "boolean"
     },
+    "files": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the files to use for the model",
+      "title": "Files"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the images to use for the model",
+      "title": "Images"
+    },
     "tools": {
       "anyOf": [
         {
