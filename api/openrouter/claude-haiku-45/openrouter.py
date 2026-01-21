@@ -145,7 +145,19 @@ def create_initial_state() -> Dict[str, Any]:
 
 def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     """Build common request parameters."""
+    # DEBUG: Log input images and files
+    print(f"[DEBUG] input_data.images: {getattr(input_data, 'images', None)}")
+    print(f"[DEBUG] input_data.files: {getattr(input_data, 'files', None)}")
+    if hasattr(input_data, 'images') and input_data.images:
+        for i, img in enumerate(input_data.images):
+            print(f"[DEBUG] Image {i}: path={getattr(img, 'path', None)}, uri={getattr(img, 'uri', None)}")
+    
     messages = build_messages(input_data)
+    
+    # DEBUG: Log the messages being sent
+    import json
+    print(f"[DEBUG] Messages to OpenRouter: {json.dumps(messages, indent=2, default=str)[:2000]}")
+    
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     params = {
