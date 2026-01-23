@@ -1,0 +1,21 @@
+{
+  "$defs": {
+    "ModelType": {
+      "enum": [
+        "FLUX.2-klein-4B",
+        "FLUX.2-klein-9B"
+      ],
+      "title": "ModelType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "model_id": {
+      "$ref": "#/$defs/ModelType",
+      "default": "FLUX.2-klein-4B",
+      "description": "Model to load"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}

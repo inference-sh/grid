@@ -1,0 +1,18 @@
+name: flux-2-klein
+description: ""
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 40000000000
+        type: any
+    ram: 0
+secrets:
+  - key: HF_TOKEN
