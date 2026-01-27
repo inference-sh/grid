@@ -1,15 +1,19 @@
 {
   "$defs": {
     "DurationEnum": {
-      "description": "Video duration options in seconds.",
+      "description": "Video duration options in seconds (2-12s).",
       "enum": [
+        "2",
+        "3",
         "4",
         "5",
         "6",
         "7",
         "8",
         "9",
-        "10"
+        "10",
+        "11",
+        "12"
       ],
       "title": "DurationEnum",
       "type": "string"
@@ -92,6 +96,7 @@
     "ResolutionEnum": {
       "description": "Video resolution options.",
       "enum": [
+        "480p",
         "720p",
         "1080p"
       ],
@@ -124,12 +129,12 @@
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "1080p",
-      "description": "Video resolution. 1080p for higher quality, 720p for faster generation."
+      "description": "Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
     },
     "duration": {
       "$ref": "#/$defs/DurationEnum",
       "default": "5",
-      "description": "Duration of the video in seconds (4-10 seconds)."
+      "description": "Duration of the video in seconds (2-12 seconds)."
     },
     "camera_fixed": {
       "default": false,

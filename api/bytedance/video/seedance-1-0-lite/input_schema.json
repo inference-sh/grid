@@ -11,15 +11,19 @@
       "type": "string"
     },
     "DurationEnum": {
-      "description": "Video duration options in seconds.",
+      "description": "Video duration options in seconds (2-12s).",
       "enum": [
+        "2",
+        "3",
         "4",
         "5",
         "6",
         "7",
         "8",
         "9",
-        "10"
+        "10",
+        "11",
+        "12"
       ],
       "title": "DurationEnum",
       "type": "string"
@@ -98,6 +102,16 @@
           "type": "string"
         }
       ]
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
     }
   },
   "description": "Input schema for Seedance 1.0 Lite video generation.",
@@ -122,10 +136,15 @@
       "default": null,
       "description": "Optional first-frame image. If provided, uses image-to-video mode. If not, uses text-to-video mode."
     },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
+    },
     "duration": {
       "$ref": "#/$defs/DurationEnum",
       "default": "5",
-      "description": "Duration of the video in seconds (4-10 seconds)."
+      "description": "Duration of the video in seconds (2-12 seconds)."
     },
     "camera_fixed": {
       "default": false,

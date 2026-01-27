@@ -1,7 +1,7 @@
 {
   "$defs": {
     "DurationEnum": {
-      "description": "Video duration options in seconds.",
+      "description": "Video duration options in seconds (4-12s).",
       "enum": [
         "4",
         "5",
@@ -9,7 +9,9 @@
         "7",
         "8",
         "9",
-        "10"
+        "10",
+        "11",
+        "12"
       ],
       "title": "DurationEnum",
       "type": "string"
@@ -88,6 +90,16 @@
           "type": "string"
         }
       ]
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
     }
   },
   "description": "Input schema for Seedance 1.5 Pro video generation.",
@@ -112,10 +124,15 @@
       "default": null,
       "description": "Optional first-frame image for image-to-video generation. If not provided, generates from text only."
     },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080p",
+      "description": "Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
+    },
     "duration": {
       "$ref": "#/$defs/DurationEnum",
       "default": "5",
-      "description": "Duration of the video in seconds (4-10 seconds)."
+      "description": "Duration of the video in seconds (4-12 seconds)."
     },
     "camera_fixed": {
       "default": false,
