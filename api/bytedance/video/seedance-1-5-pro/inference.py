@@ -23,8 +23,15 @@ from .byteplus_helper import (
 )
 
 
+class ResolutionEnum(str, Enum):
+    """Video resolution options."""
+    p480 = "480p"
+    p720 = "720p"
+    p1080 = "1080p"
+
+
 class DurationEnum(str, Enum):
-    """Video duration options in seconds."""
+    """Video duration options in seconds (4-12s)."""
     s4 = "4"
     s5 = "5"
     s6 = "6"
@@ -32,6 +39,8 @@ class DurationEnum(str, Enum):
     s8 = "8"
     s9 = "9"
     s10 = "10"
+    s11 = "11"
+    s12 = "12"
 
 
 class AppInput(BaseAppInput):
@@ -45,9 +54,13 @@ class AppInput(BaseAppInput):
         default=None,
         description="Optional first-frame image for image-to-video generation. If not provided, generates from text only."
     )
+    resolution: ResolutionEnum = Field(
+        default=ResolutionEnum.p1080,
+        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
+    )
     duration: DurationEnum = Field(
         default=DurationEnum.s5,
-        description="Duration of the video in seconds (4-10 seconds)."
+        description="Duration of the video in seconds (4-12 seconds)."
     )
     camera_fixed: bool = Field(
         default=False,
@@ -100,6 +113,7 @@ class App(BaseApp):
         # Build text prompt with parameters
         text_content = build_text_content(
             input_data.prompt,
+            resolution=input_data.resolution.value,
             duration=input_data.duration.value,
             camerafixed=str(input_data.camera_fixed).lower(),
         )
@@ -123,7 +137,7 @@ class App(BaseApp):
             mode = "image-to-video" if input_data.image else "text-to-video"
             self.logger.info(f"Starting {mode} generation")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
-            self.logger.info(f"Duration: {input_data.duration.value}s, Camera fixed: {input_data.camera_fixed}")
+            self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration.value}s, Camera fixed: {input_data.camera_fixed}")
 
             # Build content
             content = self._build_content(input_data)
@@ -163,7 +177,7 @@ class App(BaseApp):
             # Extract metadata from response
             duration_seconds = getattr(result, 'duration', float(input_data.duration.value))
             fps = getattr(result, 'framespersecond', 24)
-            resolution_str = getattr(result, 'resolution', '720p')
+            resolution_str = getattr(result, 'resolution', input_data.resolution.value)
             seed = getattr(result, 'seed', None)
 
             # Extract token usage from response (for billing)

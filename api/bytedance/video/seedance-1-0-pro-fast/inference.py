@@ -22,8 +22,17 @@ from .byteplus_helper import (
 )
 
 
+class ResolutionEnum(str, Enum):
+    """Video resolution options."""
+    p480 = "480p"
+    p720 = "720p"
+    p1080 = "1080p"
+
+
 class DurationEnum(str, Enum):
-    """Video duration options in seconds."""
+    """Video duration options in seconds (2-12s)."""
+    s2 = "2"
+    s3 = "3"
     s4 = "4"
     s5 = "5"
     s6 = "6"
@@ -31,12 +40,8 @@ class DurationEnum(str, Enum):
     s8 = "8"
     s9 = "9"
     s10 = "10"
-
-
-class ResolutionEnum(str, Enum):
-    """Video resolution options."""
-    p720 = "720p"
-    p1080 = "1080p"
+    s11 = "11"
+    s12 = "12"
 
 
 class AppInput(BaseAppInput):
@@ -52,11 +57,11 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p1080,
-        description="Video resolution. 1080p for higher quality, 720p for faster generation."
+        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
     )
     duration: DurationEnum = Field(
         default=DurationEnum.s5,
-        description="Duration of the video in seconds (4-10 seconds)."
+        description="Duration of the video in seconds (2-12 seconds)."
     )
     camera_fixed: bool = Field(
         default=False,

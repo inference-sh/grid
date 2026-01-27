@@ -1,7 +1,7 @@
 """
 Seedance 1.0 Lite - BytePlus Video Generation
 
-Lightweight video generation at 720p. Automatically selects:
+Lightweight video generation up to 1080p. Automatically selects:
 - Image-to-video mode when an image is provided (supports watermark)
 - Text-to-video mode when no image is provided (supports aspect ratio)
 
@@ -25,8 +25,17 @@ from .byteplus_helper import (
 )
 
 
+class ResolutionEnum(str, Enum):
+    """Video resolution options."""
+    p480 = "480p"
+    p720 = "720p"
+    p1080 = "1080p"
+
+
 class DurationEnum(str, Enum):
-    """Video duration options in seconds."""
+    """Video duration options in seconds (2-12s)."""
+    s2 = "2"
+    s3 = "3"
     s4 = "4"
     s5 = "5"
     s6 = "6"
@@ -34,6 +43,8 @@ class DurationEnum(str, Enum):
     s8 = "8"
     s9 = "9"
     s10 = "10"
+    s11 = "11"
+    s12 = "12"
 
 
 class AspectRatioEnum(str, Enum):
@@ -54,9 +65,13 @@ class AppInput(BaseAppInput):
         default=None,
         description="Optional first-frame image. If provided, uses image-to-video mode. If not, uses text-to-video mode."
     )
+    resolution: ResolutionEnum = Field(
+        default=ResolutionEnum.p720,
+        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest generation."
+    )
     duration: DurationEnum = Field(
         default=DurationEnum.s5,
-        description="Duration of the video in seconds (4-10 seconds)."
+        description="Duration of the video in seconds (2-12 seconds)."
     )
     camera_fixed: bool = Field(
         default=False,
@@ -106,14 +121,27 @@ class App(BaseApp):
             cancel_task(self.client, self.current_task_id, self.logger)
         return True
 
-    def _get_dimensions(self, aspect_ratio: str) -> tuple:
-        """Get video dimensions based on aspect ratio at 720p."""
+    def _get_dimensions(self, resolution: str, aspect_ratio: str) -> tuple:
+        """Get video dimensions based on resolution and aspect ratio."""
+        # Dimensions for each resolution and aspect ratio
         dimensions = {
-            "16:9": (1280, 720),
-            "9:16": (720, 1280),
-            "1:1": (720, 720),
+            "480p": {
+                "16:9": (854, 480),
+                "9:16": (480, 854),
+                "1:1": (480, 480),
+            },
+            "720p": {
+                "16:9": (1280, 720),
+                "9:16": (720, 1280),
+                "1:1": (720, 720),
+            },
+            "1080p": {
+                "16:9": (1920, 1080),
+                "9:16": (1080, 1920),
+                "1:1": (1080, 1080),
+            },
         }
-        return dimensions.get(aspect_ratio, (1280, 720))
+        return dimensions.get(resolution, dimensions["720p"]).get(aspect_ratio, (1280, 720))
 
     def _build_content(self, input_data: AppInput, is_i2v: bool) -> list:
         """Build content list for BytePlus API."""
@@ -123,7 +151,7 @@ class App(BaseApp):
             # Image-to-video mode
             text_content = build_text_content(
                 input_data.prompt,
-                resolution="720p",
+                resolution=input_data.resolution.value,
                 duration=input_data.duration.value,
                 camerafixed=str(input_data.camera_fixed).lower(),
                 watermark=str(input_data.watermark).lower(),
@@ -139,7 +167,7 @@ class App(BaseApp):
             text_content = build_text_content(
                 input_data.prompt,
                 ratio=input_data.aspect_ratio.value,
-                resolution="720p",
+                resolution=input_data.resolution.value,
                 duration=input_data.duration.value,
                 camerafixed=str(input_data.camera_fixed).lower(),
             )
@@ -161,7 +189,7 @@ class App(BaseApp):
             self.logger.info(f"Starting {mode} generation (lite)")
             self.logger.info(f"Using model: {model_id}")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
-            self.logger.info(f"Duration: {input_data.duration.value}s")
+            self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration.value}s")
 
             content = self._build_content(input_data, is_i2v)
 
@@ -204,11 +232,21 @@ class App(BaseApp):
                 completion_tokens = getattr(usage, 'completion_tokens', None)
                 total_tokens = getattr(usage, 'total_tokens', None)
 
-            # Get dimensions based on mode
+            # Get dimensions based on resolution and mode
+            resolution_str = input_data.resolution.value
             if is_i2v:
-                width, height = (1280, 720)
+                # For i2v, use 16:9 aspect ratio at the selected resolution
+                width, height = self._get_dimensions(resolution_str, "16:9")
             else:
-                width, height = self._get_dimensions(input_data.aspect_ratio.value)
+                width, height = self._get_dimensions(resolution_str, input_data.aspect_ratio.value)
+
+            # Map resolution string to enum
+            resolution_map = {
+                '480p': VideoResolution.RES_480P,
+                '720p': VideoResolution.RES_720P,
+                '1080p': VideoResolution.RES_1080P,
+            }
+            resolution_enum = resolution_map.get(resolution_str, VideoResolution.RES_720P)
 
             # Calculate estimated tokens as fallback
             estimated_tokens = int((width * height * fps * duration_seconds) / 1024)
@@ -232,7 +270,7 @@ class App(BaseApp):
                     VideoMeta(
                         width=width,
                         height=height,
-                        resolution=VideoResolution.RES_720P,
+                        resolution=resolution_enum,
                         seconds=float(duration_seconds),
                         fps=fps,
                         extra=extra,
