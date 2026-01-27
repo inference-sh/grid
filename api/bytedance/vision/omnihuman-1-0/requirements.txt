@@ -1,0 +1,8 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+
+# BytePlus Vision SDK for OmniHuman avatar generation
+byteplus-sdk
+
+# HTTP requests for downloading generated videos
+requests

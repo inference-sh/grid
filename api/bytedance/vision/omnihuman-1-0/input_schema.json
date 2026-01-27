@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "description": "Input schema for OmniHuman 1.0  avatar video generation.",
+  "properties": {
+    "image": {
+      "$ref": "#/$defs/File",
+      "description": "Portrait image of a single person. Face should be clearly visible and front-facing. JPG format recommended. Max 5MB, max 4096x4096 pixels."
+    },
+    "audio": {
+      "$ref": "#/$defs/File",
+      "description": "Audio file to drive the avatar. Duration should be under 15 seconds for best quality. Longer audio may cause quality degradation."
+    }
+  },
+  "required": [
+    "image",
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
