@@ -1,24 +1,21 @@
 namespace: falai
 name: nano-banana-pro-edit
-description: Gemini 3 Pro Image Preview (Nano Banana Pro) - Advanced image editing model powered by Google's Gemini
+description: Gemini 3 Pro Image Preview (Nano Banana Pro) - Advanced image editing
+  model powered by Google's Gemini
 category: image
-images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kah2rcteycyxw8ffmtpq1zec.png
-    thumbnail: ""
-    banner: ""
-metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: none
-            ram: 4000000000
-        env:
-            FAL_KEY: ""
-        python: "3.10"
+kernel: python-3.10
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 4
+env:
+  FAL_KEY: ''
 secrets:
-  - key: FAL_KEY
+- key: FAL_KEY
+images:
+  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kah2rcteycyxw8ffmtpq1zec.png
+  thumbnail: ''
+  banner: ''
+metadata: {}

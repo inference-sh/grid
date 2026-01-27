@@ -1,20 +1,16 @@
 name: bagel
 description: unified model for multi-modal understanding and generation
 category: image
+kernel: python-3.11
+resources:
+  gpu:
+    count: 1
+    vram: 32
+    type: any
+  ram: 5
+env: {}
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 32000000000
-                type: any
-            ram: 5000000000
-        env: {}
-        python: "3.11"

@@ -1,33 +1,19 @@
 name: tavily-search-assistant
-description: Tavily-powered search assistant that browses the internet and returns comprehensive results. Searches the web using Tavily API with configurable depth, filters, and includes AI-generated answers, images, and detailed sources.
+description: Tavily-powered search assistant that browses the internet and returns
+  comprehensive results. Searches the web using Tavily API with configurable depth,
+  filters, and includes AI-generated answers, images, and detailed sources.
 category: text
+kernel: python-3.10
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 4
+env:
+  PYTHONPATH: /app
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+  card: ''
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: any
-            ram: 4000000000
-        env:
-            PYTHONPATH: /app
-        python: "3.10"
-    fast:
-        name: fast
-        order: 1
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: any
-            ram: 2000000000
-        env:
-            PYTHONPATH: /app
-        python: "3.10"

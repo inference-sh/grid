@@ -1,20 +1,16 @@
 name: text-to-file
 description: creates a file with the provided name and contents
 category: other
+kernel: python-3.11
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 0
+env: {}
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+  card: ''
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: ""
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: none
-            ram: 0
-        env: {}
-        python: "3.11"

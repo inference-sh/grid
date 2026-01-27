@@ -1,20 +1,16 @@
 name: numerical-switch
 description: switch between two inputs according to a numerical comparison condition
 category: other
+kernel: python-3.12
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 0
+env: {}
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: any
-            ram: 0
-        env: {}
-        python: "3.12"

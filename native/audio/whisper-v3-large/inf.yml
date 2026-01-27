@@ -1,20 +1,17 @@
 name: whisper-v3-large
-description: A large-sized Whisper model for transcription and translation of audio files.
+description: A large-sized Whisper model for transcription and translation of audio
+  files.
 category: audio
+kernel: python-3.11
+resources:
+  gpu:
+    count: 1
+    vram: 0
+    type: any
+  ram: 0
+env: {}
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00czmv27c9jx6j3vcz6kbn.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00czmv27c9jx6j3vcz6kbn.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 0
-                type: any
-            ram: 0
-        env: {}
-        python: "3.11"

@@ -1,20 +1,17 @@
 name: flux-2-dev
-description: FLUX.2 Dev is an open-weight, guidance-distilled text-to-image model developed by Black Forest Labs for non-commercial applications
+description: FLUX.2 Dev is an open-weight, guidance-distilled text-to-image model
+  developed by Black Forest Labs for non-commercial applications
 category: image
+kernel: python-3.11
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 16
+env: {}
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: F16 (Default)
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 24000000000
-                type: any
-            ram: 16000000000
-        env: {}
-        python: "3.11"

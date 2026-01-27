@@ -1,163 +1,18 @@
 name: hidream-i1-full
-description: HiDream-I1-Full is a high-quality image generative foundation model with 17B parameters that achieves state-of-the-art image generation quality with 50 inference steps.
+description: HiDream-I1-Full is a high-quality image generative foundation model with
+  17B parameters that achieves state-of-the-art image generation quality with 50 inference
+  steps.
 category: image
+kernel: python-3.12
+resources:
+  gpu:
+    count: 1
+    vram: 35
+    type: any
+  ram: 80
+env: {}
 images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/70en6ch6h3tvppf4qzwvs76jgd.jpg
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/70en6ch6h3tvppf4qzwvs76jgd.jpg
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: Full F16 (gguf)
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 35000000000
-                type: any
-            ram: 80000000000
-        env: {}
-        python: "3.12"
-    full-q2k:
-        name: Full Q2_K (gguf)
-        order: 1
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q3km:
-        name: Full Q3_K_M (gguf)
-        order: 2
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q3ks:
-        name: Full Q3_K_S (gguf)
-        order: 3
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q4km:
-        name: Full Q4_K_M (gguf)
-        order: 4
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q4ks:
-        name: Full Q4_K_S (gguf)
-        order: 5
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q5km:
-        name: Full Q5_K_M (gguf)
-        order: 6
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q5ks:
-        name: Full Q5_K_S (gguf)
-        order: 7
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q6k:
-        name: Full Q6_K (gguf)
-        order: 8
-        resources:
-            gpu:
-                count: 1
-                vram: 20000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q8:
-        name: Full Q8_0 (gguf)
-        order: 9
-        resources:
-            gpu:
-                count: 1
-                vram: 24000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q40:
-        name: Full Q4_0 (gguf)
-        order: 10
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q41:
-        name: Full Q4_1 (gguf)
-        order: 11
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q50:
-        name: Full Q5_0 (gguf)
-        order: 12
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"
-    full-q51:
-        name: Full Q5_1 (gguf)
-        order: 13
-        resources:
-            gpu:
-                count: 1
-                vram: 16000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.12"

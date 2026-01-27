@@ -1,22 +1,17 @@
 name: deepseek-ocr
 description: DeepSeek OCR model for text extraction and document conversion
 category: text
-is_public: false
+kernel: python-3.11
+resources:
+  gpu:
+    count: 1
+    vram: 24
+    type: any
+  ram: 32
+env:
+  HF_HUB_ENABLE_HF_TRANSFER: '1'
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+  card: ''
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: gundam
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 24000000000 # 24GB VRAM
-                type: any
-            ram: 32000000000 # 32GB RAM
-        env:
-            HF_HUB_ENABLE_HF_TRANSFER: "1"
-        python: "3.11"

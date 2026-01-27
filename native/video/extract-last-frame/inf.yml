@@ -1,20 +1,16 @@
 name: extract-last-frame
 description: Extract the nth last frame from a video file as a PNG image
 category: video
+kernel: python-3.12
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 0
+env: {}
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: any
-            ram: 0
-        env: {}
-        python: "3.12"

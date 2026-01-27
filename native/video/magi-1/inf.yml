@@ -1,93 +1,28 @@
 name: magi-1
-description: MAGI-1 is a world model that generates high-quality videos through autoregressive prediction of video chunks, supporting text-guided generation, temporal consistency, and real-time streaming.
+description: MAGI-1 is a world model that generates high-quality videos through autoregressive
+  prediction of video chunks, supporting text-guided generation, temporal consistency,
+  and real-time streaming.
 category: video
+kernel: python-3.11
+resources:
+  gpu:
+    count: 1
+    vram: 24
+    type: any
+  ram: 64
+env:
+  GPUS_PER_NODE: '1'
+  MASTER_ADDR: localhost
+  MASTER_PORT: '6009'
+  NNODES: '1'
+  OFFLOAD_T5_CACHE: 'true'
+  OFFLOAD_VAE_CACHE: 'true'
+  PAD_DURATION: '1'
+  PAD_HQ: '1'
+  PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+  WORLD_SIZE: '1'
 images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    24B_base:
-        name: 24B_base
-        order: 1
-        resources:
-            gpu:
-                count: 8
-                vram: 42949672960
-                type: any
-            ram: 42949672960
-        env:
-            CUDA_DEVICE_MAX_CONNECTIONS: "1"
-            NCCL_ALGO: ^NVLS
-            NCCL_IB_DISABLE: "1"
-            NCCL_P2P_DISABLE: "1"
-            NCCL_SOCKET_IFNAME: eth0
-            OFFLOAD_T5_CACHE: "false"
-            OFFLOAD_VAE_CACHE: "false"
-            PAD_DURATION: "1"
-            PAD_HQ: "1"
-            TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.11"
-    24B_distill:
-        name: 24B_distill
-        order: 2
-        resources:
-            gpu:
-                count: 8
-                vram: 640000000000
-                type: any
-            ram: 95999999999
-        env:
-            CUDA_DEVICE_MAX_CONNECTIONS: "1"
-            NCCL_ALGO: ^NVLS
-            NCCL_IB_DISABLE: "1"
-            NCCL_P2P_DISABLE: "1"
-            NCCL_SOCKET_IFNAME: eth0
-            OFFLOAD_T5_CACHE: "false"
-            OFFLOAD_VAE_CACHE: "false"
-            PAD_DURATION: "1"
-            PAD_HQ: "1"
-            TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.11"
-    24B_distill_quant:
-        name: 24B_distill_quant
-        order: 3
-        resources:
-            gpu:
-                count: 8
-                vram: 640000000000
-                type: any
-            ram: 96000000000
-        env:
-            CUDA_DEVICE_MAX_CONNECTIONS: "1"
-            NCCL_ALGO: ^NVLS
-            NCCL_IB_DISABLE: "1"
-            NCCL_P2P_DISABLE: "1"
-            NCCL_SOCKET_IFNAME: eth0
-            OFFLOAD_T5_CACHE: "false"
-            OFFLOAD_VAE_CACHE: "false"
-            PAD_DURATION: "1"
-            PAD_HQ: "1"
-            TORCH_CUDA_ARCH_LIST: 8.9;9.0
-        python: "3.11"
-    default:
-        name: 4.5B_base
-        order: 3
-        resources:
-            gpu:
-                count: 1
-                vram: 24000000000
-                type: any
-            ram: 64000000000
-        env:
-            GPUS_PER_NODE: "1"
-            MASTER_ADDR: localhost
-            MASTER_PORT: "6009"
-            NNODES: "1"
-            OFFLOAD_T5_CACHE: "true"
-            OFFLOAD_VAE_CACHE: "true"
-            PAD_DURATION: "1"
-            PAD_HQ: "1"
-            PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
-            WORLD_SIZE: "1"
-        python: "3.11"

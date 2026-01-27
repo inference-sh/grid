@@ -1,21 +1,18 @@
 name: wan-2-2-animate-v2v
-description: Alibaba WAN 2.2 Animate - Advanced video-to-video animation model for character animation and pose transfer
+description: Alibaba WAN 2.2 Animate - Advanced video-to-video animation model for
+  character animation and pose transfer
 category: video
+kernel: python-3.10
+resources:
+  gpu:
+    count: 1
+    vram: 40
+    type: any
+  ram: 64
+env:
+  HF_HUB_ENABLE_HF_TRANSFER: '1'
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 40000000000
-                type: any
-            ram: 64000000000
-        env:
-            HF_HUB_ENABLE_HF_TRANSFER: "1"
-        python: "3.10"

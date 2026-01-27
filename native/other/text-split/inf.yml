@@ -1,20 +1,17 @@
 name: text-split
-description: a simple app that allows to split text into a list of subtexts using a delimiter
+description: a simple app that allows to split text into a list of subtexts using
+  a delimiter
 category: other
+kernel: python-3.12
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 0
+env: {}
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 0
-                vram: 0
-                type: any
-            ram: 0
-        env: {}
-        python: "3.12"

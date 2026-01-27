@@ -1,31 +1,16 @@
 name: tencent-song-generation
 description: tencent's song generation model using LeVo
 category: audio
+kernel: python-3.10
+resources:
+  gpu:
+    count: 1
+    vram: 0
+    type: any
+  ram: 0
+env: {}
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1vgcfg4vcfvvydrz57rkt4r.png
-    thumbnail: ""
-    banner: ""
+  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1vgcfg4vcfvvydrz57rkt4r.png
+  thumbnail: ''
+  banner: ''
 metadata: {}
-variants:
-    default:
-        name: default
-        order: 0
-        resources:
-            gpu:
-                count: 1
-                vram: 0
-                type: any
-            ram: 0
-        env: {}
-        python: "3.10"
-    low_memory:
-        name: Low Memory
-        order: 1
-        resources:
-            gpu:
-                count: 1
-                vram: 14000000000
-                type: any
-            ram: 32000000000
-        env: {}
-        python: "3.10"
