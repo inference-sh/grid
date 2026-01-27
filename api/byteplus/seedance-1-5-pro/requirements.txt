@@ -6,5 +6,5 @@ byteplus-python-sdk-v2
 
 # HTTP requests for downloading generated videos
 requests
-httpx
+httpx>=0.24.0,<1.0.0
 sniffio
