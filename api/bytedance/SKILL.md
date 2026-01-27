@@ -63,7 +63,7 @@ BytePlus uses an async task-based pattern:
 ### Example Flow
 
 ```python
-async def run(self, input_data: AppInput, metadata) -> AppOutput:
+async def run(self, input_data: AppInput) -> AppOutput:
     # 1. Build content list
     content = [
         build_text_content(

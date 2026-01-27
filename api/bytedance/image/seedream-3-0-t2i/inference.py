@@ -60,7 +60,7 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Seedream 3.0 T2I image generation application using BytePlus ARK SDK."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the BytePlus client."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ class App(BaseApp):
 
         self.logger.info(f"Seedream 3.0 T2I initialized with model: {self.model_id}")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate image using Seedream 3.0 T2I."""
         try:
             self.logger.info("Starting text-to-image generation")

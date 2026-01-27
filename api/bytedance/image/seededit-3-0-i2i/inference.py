@@ -53,7 +53,7 @@ class App(BaseApp):
     API_URL: ClassVar[str] = "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations"
     MODEL_ID: ClassVar[str] = "seededit-3-0-i2i-250628"
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the API configuration."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class App(BaseApp):
 
         self.logger.info(f"SeedEdit 3.0 I2I initialized with model: {self.MODEL_ID}")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Edit image using SeedEdit 3.0 via direct HTTP."""
         try:
             self.logger.info("Starting image editing")

@@ -45,7 +45,7 @@ class App(BaseApp):
 
     REQ_KEY_VIDEO: ClassVar[str] = "realman_avatar_picture_omni_cv"
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the BytePlus Vision Service."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -63,7 +63,7 @@ class App(BaseApp):
         self.cancel_flag = True
         return True
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate avatar video using OmniHuman 1.0 ."""
         try:
             self.cancel_flag = False

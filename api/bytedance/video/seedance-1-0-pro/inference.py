@@ -78,7 +78,7 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Seedance 1.0 Pro video generation application using BytePlus ARK SDK."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the BytePlus client."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -120,7 +120,7 @@ class App(BaseApp):
 
         return content
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate video using Seedance 1.0 Pro."""
         try:
             self.cancel_flag = False

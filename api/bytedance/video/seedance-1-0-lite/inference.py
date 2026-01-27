@@ -100,7 +100,7 @@ class App(BaseApp):
     MODEL_I2V: ClassVar[str] = "seedance-1-0-lite-i2v-250428"
     MODEL_T2V: ClassVar[str] = "seedance-1-0-lite-t2v-250428"
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the BytePlus client."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -175,7 +175,7 @@ class App(BaseApp):
 
         return content
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate video using Seedance 1.0 Lite."""
         try:
             self.cancel_flag = False
