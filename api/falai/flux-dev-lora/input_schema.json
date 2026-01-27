@@ -1,0 +1,227 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "LoRAConfig": {
+      "description": "Configuration for a LoRA adapter.",
+      "properties": {
+        "path": {
+          "description": "URL or the path to the LoRA weights (.safetensors). Supports HuggingFace repos, Civitai URLs, or direct URLs.",
+          "title": "Path",
+          "type": "string"
+        },
+        "scale": {
+          "default": 1.0,
+          "description": "The scale of the LoRA weight. This is used to scale the LoRA weight before merging it with the base model.",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Scale",
+          "type": "number"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "LoRAConfig",
+      "type": "object"
+    },
+    "OutputFormat": {
+      "description": "Output image format.",
+      "enum": [
+        "png",
+        "jpeg"
+      ],
+      "title": "OutputFormat",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for FLUX.1 [dev] LoRA image generation.",
+  "properties": {
+    "prompt": {
+      "description": "The prompt to generate an image from.",
+      "examples": [
+        "Extreme close-up of a single tiger eye, direct frontal view. Detailed iris and pupil. Sharp focus on eye texture and color."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Height",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Width",
+      "type": "integer"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input image for image-to-image mode. When provided, the model will transform this image based on the prompt."
+    },
+    "strength": {
+      "default": 0.85,
+      "description": "How much to transform the input image (image-to-image only). 1.0 = full remake, 0.0 = preserve original.",
+      "maximum": 1.0,
+      "minimum": 0.01,
+      "title": "Strength",
+      "type": "number"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoRAConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The LoRAs to use for the image generation. You can use any number of LoRAs and they will be merged together to generate the final image.",
+      "title": "Loras"
+    },
+    "num_inference_steps": {
+      "default": 28,
+      "description": "The number of inference steps to perform.",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 3.5,
+      "description": "The CFG (Classifier Free Guidance) scale is a measure of how close you want the model to stick to your prompt when looking for a related image to show you.",
+      "maximum": 35,
+      "minimum": 0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The same seed and the same prompt given to the same version of the model will output the same image every time.",
+      "title": "Seed"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "The number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "enable_safety_checker": {
+      "default": true,
+      "description": "If set to true, the safety checker will be enabled.",
+      "title": "Enable Safety Checker",
+      "type": "boolean"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormat",
+      "default": "jpeg",
+      "description": "The format of the generated image."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

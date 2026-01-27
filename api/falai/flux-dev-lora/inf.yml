@@ -1,0 +1,22 @@
+namespace: falai
+name: flux-dev-lora
+description: "Super fast FLUX.1 [dev] with LoRA support for rapid, high-quality image generation. Enables personalization, specific styles, brand identities, and product-specific outputs."
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+
+secrets:
+  - key: FAL_KEY
+    description: fal.ai API key for model access
+    optional: false

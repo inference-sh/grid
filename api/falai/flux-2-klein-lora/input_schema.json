@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "AccelerationLevel": {
+      "description": "Acceleration level for image generation.",
+      "enum": [
+        "none",
+        "regular",
+        "high"
+      ],
+      "title": "AccelerationLevel",
+      "type": "string"
+    },
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "LoRAConfig": {
+      "description": "Configuration for a LoRA adapter.",
+      "properties": {
+        "path": {
+          "description": "URL or the path to the LoRA weights (.safetensors). Supports HuggingFace repos, Civitai URLs, or direct URLs.",
+          "title": "Path",
+          "type": "string"
+        },
+        "scale": {
+          "default": 1.0,
+          "description": "The scale of the LoRA weight. This is used to scale the LoRA weight before merging it with the base model.",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Scale",
+          "type": "number"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "LoRAConfig",
+      "type": "object"
+    },
+    "ModelSize": {
+      "description": "Model parameter size.",
+      "enum": [
+        "4b",
+        "9b"
+      ],
+      "title": "ModelSize",
+      "type": "string"
+    },
+    "OutputFormat": {
+      "description": "Output image format.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "title": "OutputFormat",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for FLUX.2 [klein] LoRA image generation.",
+  "properties": {
+    "prompt": {
+      "description": "The prompt to generate an image from.",
+      "examples": [
+        "A serene Japanese garden with cherry blossoms, koi pond, and traditional wooden bridge at golden hour"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "",
+      "description": "Negative prompt for classifier-free guidance. Describes what to avoid in the image.",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "model_size": {
+      "$ref": "#/$defs/ModelSize",
+      "default": "4b",
+      "description": "Model parameter size. 4B is faster, 9B offers higher quality."
+    },
+    "height": {
+      "default": 1024,
+      "description": "The height in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Height",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1024,
+      "description": "The width in pixels of the generated image.",
+      "maximum": 2048,
+      "minimum": 512,
+      "title": "Width",
+      "type": "integer"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of images for editing. When provided, uses image-to-image mode. Maximum 4 images.",
+      "title": "Images"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoRAConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA weights to apply (maximum 3).",
+      "title": "Loras"
+    },
+    "num_inference_steps": {
+      "default": 28,
+      "description": "The number of inference steps to perform.",
+      "maximum": 50,
+      "minimum": 4,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 5.0,
+      "description": "Guidance scale for classifier-free guidance.",
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The seed to use for the generation. If not provided, a random seed will be used.",
+      "title": "Seed"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "The number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "acceleration": {
+      "$ref": "#/$defs/AccelerationLevel",
+      "default": "regular",
+      "description": "The acceleration level to use for image generation."
+    },
+    "enable_safety_checker": {
+      "default": true,
+      "description": "If set to true, the safety checker will be enabled.",
+      "title": "Enable Safety Checker",
+      "type": "boolean"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormat",
+      "default": "png",
+      "description": "The format of the generated image."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
