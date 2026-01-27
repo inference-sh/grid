@@ -1,0 +1,35 @@
+namespace: bytedance
+name: seedream-3-0-t2i
+description: Generate cinematic quality images from text prompts with accurate text rendering using ByteDance's Seedream 3.0 T2I model via BytePlus ARK API.
+category: image
+
+kernel: python-3.11
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
+
+env: {}
+
+secrets:
+  - key: ARK_API_KEY
+    description: BytePlus ModelArk API key for Seedream image generation
+    optional: false
+
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+
+metadata:
+    provider: bytedance
+    tags:
+      - seedream
+      - image-generation
+      - text-to-image
+      - bytedance
+      - byteplus
+      - 2k

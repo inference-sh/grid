@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "SizeEnum": {
+      "description": "Image size/resolution options.",
+      "enum": [
+        "2K",
+        "4K"
+      ],
+      "title": "SizeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedream 4.0 image generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the image to generate. Be descriptive about style, composition, and details.",
+      "examples": [
+        "A majestic mountain landscape at sunset with golden light reflecting off snow-capped peaks"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional reference image for image-to-image generation. If not provided, generates from text only."
+    },
+    "size": {
+      "$ref": "#/$defs/SizeEnum",
+      "default": "2K",
+      "description": "Output image resolution. 2K (2560x1440) or 4K (4096x4096)."
+    },
+    "watermark": {
+      "default": false,
+      "description": "Whether to add a watermark to the generated image.",
+      "title": "Watermark",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

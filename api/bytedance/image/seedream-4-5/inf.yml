@@ -1,0 +1,36 @@
+namespace: bytedance
+name: seedream-4-5
+description: Generate high-quality 2K-4K images from text prompts with optional image-to-image generation using ByteDance's Seedream 4.5 model via BytePlus ARK API.
+category: image
+
+kernel: python-3.11
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
+
+env: {}
+
+secrets:
+  - key: ARK_API_KEY
+    description: BytePlus ModelArk API key for Seedream image generation
+    optional: false
+
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+
+metadata:
+    provider: bytedance
+    tags:
+      - seedream
+      - image-generation
+      - text-to-image
+      - image-to-image
+      - bytedance
+      - byteplus
+      - 4k

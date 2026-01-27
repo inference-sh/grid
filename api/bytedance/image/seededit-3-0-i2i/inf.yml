@@ -1,0 +1,34 @@
+namespace: bytedance
+name: seededit-3-0-i2i
+description: Edit and transform existing images using text prompts with precise content preservation using ByteDance's SeedEdit 3.0 model via BytePlus ARK API.
+category: image
+
+kernel: python-3.11
+
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
+
+env: {}
+
+secrets:
+  - key: ARK_API_KEY
+    description: BytePlus ModelArk API key for SeedEdit image editing
+    optional: false
+
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+
+metadata:
+    provider: bytedance
+    tags:
+      - seededit
+      - image-editing
+      - image-to-image
+      - bytedance
+      - byteplus

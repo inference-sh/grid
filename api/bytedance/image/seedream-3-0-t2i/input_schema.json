@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "SizeEnum": {
+      "description": "Image size/resolution options.",
+      "enum": [
+        "512x512",
+        "768x768",
+        "1024x1024",
+        "1536x1536",
+        "2048x2048",
+        "1024x768",
+        "1536x1024",
+        "2048x1536",
+        "768x1024",
+        "1024x1536",
+        "1536x2048"
+      ],
+      "title": "SizeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedream 3.0 T2I image generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the image to generate. Be descriptive about style, composition, and details.",
+      "examples": [
+        "A serene Japanese garden with cherry blossoms in full bloom, soft morning light, cinematic quality"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "size": {
+      "$ref": "#/$defs/SizeEnum",
+      "default": "1024x1024",
+      "description": "Output image resolution. Choose from various square and rectangular aspect ratios up to 2048x2048."
+    },
+    "watermark": {
+      "default": false,
+      "description": "Whether to add a watermark to the generated image.",
+      "title": "Watermark",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
