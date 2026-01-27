@@ -146,12 +146,10 @@ class App(BaseApp):
             )
 
             # Extract video URL from result
-            # Note: Adjust based on actual response structure
+            # Response structure: result.content.video_url
             video_url = None
-            if hasattr(result, 'data') and hasattr(result.data, 'video'):
-                video_url = result.data.video.url
-            elif hasattr(result, 'output') and isinstance(result.output, dict):
-                video_url = result.output.get('video', {}).get('url')
+            if hasattr(result, 'content') and hasattr(result.content, 'video_url'):
+                video_url = result.content.video_url
             elif hasattr(result, 'video_url'):
                 video_url = result.video_url
 
@@ -162,19 +160,55 @@ class App(BaseApp):
             # Download video
             video_path = download_video(video_url, self.logger)
 
+            # Extract metadata from response
+            duration_seconds = getattr(result, 'duration', float(input_data.duration.value))
+            fps = getattr(result, 'framespersecond', 24)
+            resolution_str = getattr(result, 'resolution', '720p')
+            seed = getattr(result, 'seed', None)
+
+            # Extract token usage from response (for billing)
+            usage = getattr(result, 'usage', None)
+            completion_tokens = None
+            total_tokens = None
+            if usage:
+                completion_tokens = getattr(usage, 'completion_tokens', None)
+                total_tokens = getattr(usage, 'total_tokens', None)
+
+            # Map resolution string to enum
+            resolution_map = {
+                '480p': VideoResolution.RES_480P,
+                '720p': VideoResolution.RES_720P,
+                '1080p': VideoResolution.RES_1080P,
+            }
+            resolution_enum = resolution_map.get(resolution_str, VideoResolution.RES_720P)
+
+            # Determine dimensions from resolution
+            width, height = (1280, 720)  # Default 720p
+            if resolution_str == '480p':
+                width, height = (854, 480)
+            elif resolution_str == '1080p':
+                width, height = (1920, 1080)
+
+            # Calculate estimated tokens as fallback
+            # Formula: Token Consumption ≈ (Width × Height × Frame Rate × Duration) / 1024
+            estimated_tokens = int((width * height * fps * duration_seconds) / 1024)
+
             # Build output metadata for pricing
-            duration_seconds = float(input_data.duration.value)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
-                        width=1280,  # Default Seedance resolution
-                        height=720,
-                        resolution=VideoResolution.RES_720P,
-                        seconds=duration_seconds,
-                        fps=24,
+                        width=width,
+                        height=height,
+                        resolution=resolution_enum,
+                        seconds=float(duration_seconds),
+                        fps=fps,
                         extra={
                             "mode": mode,
                             "camera_fixed": input_data.camera_fixed,
+                            "seed": seed,
+                            "completion_tokens": completion_tokens,
+                            "total_tokens": total_tokens,
+                            "estimated_tokens": estimated_tokens,
                         }
                     )
                 ]

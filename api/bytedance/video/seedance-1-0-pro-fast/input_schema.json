@@ -1,0 +1,146 @@
+{
+  "$defs": {
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedance 1.0 Pro Fast video generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content and motion. Be descriptive about actions and camera movements.",
+      "examples": [
+        "At breakneck speed, drones thread through intricate obstacles, delivering an immersive flying experience."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first-frame image for image-to-video generation. If not provided, generates from text only."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080p",
+      "description": "Video resolution. 1080p for higher quality, 720p for faster generation."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (4-10 seconds)."
+    },
+    "camera_fixed": {
+      "default": false,
+      "description": "Whether to fix the camera position during video generation. Set to true for static camera shots.",
+      "title": "Camera Fixed",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

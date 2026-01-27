@@ -1,6 +1,6 @@
-namespace: byteplus
-name: seedance-1-5-pro
-description: Generate high-quality videos from text prompts with optional first-frame image control using ByteDance's Seedance 1.5 Pro model via BytePlus ARK API.
+namespace: bytedance
+name: seedance-1-0-pro
+description: Generate high-quality videos up to 1080p from text prompts with optional first-frame image control using ByteDance's Seedance 1.0 Pro model.
 category: video
 
 kernel: python-3.11
@@ -31,5 +31,6 @@ metadata:
       - video-generation
       - text-to-video
       - image-to-video
+      - 1080p
       - bytedance
       - byteplus
