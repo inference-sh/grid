@@ -1,0 +1,166 @@
+{
+  "run": {
+    "description": "Generate video using Veo 2 model via Vertex AI.",
+    "input_schema": {
+      "$defs": {
+        "VideoAspectRatioEnum": {
+          "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
+          "enum": [
+            "16:9",
+            "9:16"
+          ],
+          "title": "VideoAspectRatioEnum",
+          "type": "string"
+        }
+      },
+      "description": "Input for video generation with Veo 2 (text-to-video only).",
+      "properties": {
+        "prompt": {
+          "description": "Text prompt describing the desired video content.",
+          "title": "Prompt",
+          "type": "string"
+        },
+        "negative_prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Negative prompt to describe what to avoid in the video.",
+          "title": "Negative Prompt"
+        },
+        "enhance_prompt": {
+          "default": true,
+          "description": "If true, the prompt will be improved before generating the video.",
+          "title": "Enhance Prompt",
+          "type": "boolean"
+        },
+        "aspect_ratio": {
+          "$ref": "#/$defs/VideoAspectRatioEnum",
+          "default": "16:9",
+          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+        },
+        "duration": {
+          "default": 8,
+          "description": "Video duration in seconds.",
+          "maximum": 8,
+          "minimum": 5,
+          "title": "Duration",
+          "type": "integer"
+        },
+        "num_videos": {
+          "default": 1,
+          "description": "Number of videos to generate.",
+          "maximum": 2,
+          "minimum": 1,
+          "title": "Num Videos",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "description": "Output containing generated videos.",
+      "properties": {
+        "videos": {
+          "description": "The generated video files",
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "title": "Videos",
+          "type": "array"
+        }
+      },
+      "required": [
+        "videos"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}

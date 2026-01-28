@@ -1,0 +1,6 @@
+{
+  "description": "Setup configuration for Veo 3 Fast.",
+  "properties": {},
+  "title": "AppSetup",
+  "type": "object"
+}

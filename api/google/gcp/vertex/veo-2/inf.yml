@@ -1,0 +1,20 @@
+namespace: google
+name: veo-2
+description: Veo 2 via Vertex AI - Generate high-quality realistic videos from text prompts
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+  - key: gcp.vertex_ai
+    description: Access Vertex AI models (Veo, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

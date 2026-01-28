@@ -1,0 +1,20 @@
+namespace: google
+name: veo-3-fast
+description: Veo 3 Fast via Vertex AI - Fast video generation with audio from text prompts and images
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+  - key: gcp.vertex_ai
+    description: Access Vertex AI models (Veo, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
