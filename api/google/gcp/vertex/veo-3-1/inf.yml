@@ -1,6 +1,6 @@
 namespace: google
-name: veo-3-1-preview
-description: Veo 3.1 Preview via Vertex AI - Advanced video generation with inpainting, outpainting, frame interpolation, and video extension
+name: veo-3-1
+description: Veo 3.1 via Vertex AI - Advanced video generation with frame interpolation, reference images, and audio generation
 metadata: {}
 category: video
 images:

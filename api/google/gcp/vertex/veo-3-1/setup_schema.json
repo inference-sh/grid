@@ -1,5 +1,5 @@
 {
-  "description": "Setup configuration for Veo 3.1 Preview.",
+  "description": "Setup configuration for Veo 3.1.",
   "properties": {},
   "title": "AppSetup",
   "type": "object"

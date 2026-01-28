@@ -19,12 +19,12 @@ from .vertex_helper import (
 
 
 class AppSetup(BaseAppSetup):
-    """Setup configuration for Veo 3.1 Preview."""
+    """Setup configuration for Veo 3.1."""
     pass
 
 
 class RunInput(BaseModel):
-    """Input for video generation with Veo 3.1 Preview."""
+    """Input for video generation with Veo 3.1."""
     prompt: str = Field(
         description="Text prompt describing the desired video content."
     )
@@ -75,13 +75,13 @@ class App(BaseApp):
     async def setup(self, config: AppSetup):
         """Initialize model configuration."""
         self.logger = setup_logger(__name__)
-        self.model_id = "veo-3.1-generate-preview"
+        self.model_id = "veo-3.1-generate-001"
         self.location = "us-central1"
         self.access_token, self.project = get_vertex_credentials()
-        self.logger.info("Veo 3.1 Preview (Vertex AI) initialized successfully")
+        self.logger.info("Veo 3.1 (Vertex AI) initialized successfully")
 
     async def run(self, input_data: RunInput) -> RunOutput:
-        """Generate video using Veo 3.1 Preview model via Vertex AI."""
+        """Generate video using Veo 3.1 model via Vertex AI."""
         try:
             self.logger.info(f"Starting video generation with prompt: {input_data.prompt[:100]}...")
 

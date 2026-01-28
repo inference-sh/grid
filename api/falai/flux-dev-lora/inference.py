@@ -244,7 +244,7 @@ class App(BaseApp):
 
             # Track input image for I2I mode
             inputs_meta = []
-            if image_url:
+            if input_data.image:
                 inputs_meta.append(
                     ImageMeta(
                         resolution_mp=1.0,  # Input images typically resized
@@ -266,8 +266,6 @@ class App(BaseApp):
 
             return AppOutput(
                 images=output_images,
-                seed=result["seed"],
-                prompt=result.get("prompt", input_data.prompt),
                 has_nsfw_concepts=result.get("has_nsfw_concepts", [False] * len(output_images)),
                 output_meta=output_meta
             )

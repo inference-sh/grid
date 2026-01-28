@@ -1,6 +1,6 @@
 {
   "run": {
-    "description": "Generate video using Veo 3.1 Preview model via Vertex AI.",
+    "description": "Generate video using Veo 3.1 model via Vertex AI.",
     "input_schema": {
       "$defs": {
         "File": {
@@ -97,7 +97,7 @@
           "type": "string"
         }
       },
-      "description": "Input for video generation with Veo 3.1 Preview.",
+      "description": "Input for video generation with Veo 3.1.",
       "properties": {
         "prompt": {
           "description": "Text prompt describing the desired video content.",
