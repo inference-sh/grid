@@ -85,7 +85,7 @@ class App(BaseApp):
         """Initialize model and configuration."""
         self.logger = setup_logger(__name__)
         self.metadata = metadata
-        self.model_id = "gemini-2.5-flash-preview-04-17"
+        self.model_id = "gemini-2.5-flash-image"
         self.client = create_vertex_client()
         self.logger.info("Gemini 2.5 Flash Image (Vertex AI) initialized successfully")
 
