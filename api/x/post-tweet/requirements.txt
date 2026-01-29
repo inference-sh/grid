@@ -1,3 +1,4 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 xdk # Official X.com (Twitter) API SDK with OAuth 2.0 PKCE support
+Pillow # Image processing for resizing large images

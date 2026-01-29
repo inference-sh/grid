@@ -1,4 +1,81 @@
 {
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
   "description": "Input schema for posting a tweet.",
   "properties": {
     "text": {
@@ -33,6 +110,22 @@
       "default": null,
       "description": "Tweet ID to quote (optional)",
       "title": "Quote Tweet Id"
+    },
+    "media": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/File"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Media files to attach (up to 4 images, or 1 video/GIF). Supports JPG, PNG, GIF, WEBP, MP4.",
+      "title": "Media"
     }
   },
   "required": [

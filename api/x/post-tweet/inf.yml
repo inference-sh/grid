@@ -11,7 +11,7 @@ kernel: python-3.11
 
 integrations:
   - key: x.tweet.write
-    description: Post tweets to X.com
+    description: Post tweets with text and media to X.com
 
 resources:
     gpu:
