@@ -130,9 +130,6 @@ class AppOutput(BaseAppOutput):
     """Output schema for FLUX.2 [klein] LoRA image generation."""
 
     images: List[File] = Field(description="The generated image(s).")
-    seed: int = Field(description="The seed used for generation.")
-    prompt: str = Field(description="The prompt used for generating the image.")
-    has_nsfw_concepts: List[bool] = Field(description="Whether each generated image contains NSFW concepts.")
 
 
 class App(BaseApp):
@@ -290,7 +287,7 @@ class App(BaseApp):
                 )
 
             output_meta = OutputMeta(
-                inputs=inputs_meta if inputs_meta else None,
+                inputs=inputs_meta,
                 outputs=[
                     ImageMeta(
                         width=input_data.width,
@@ -304,9 +301,6 @@ class App(BaseApp):
 
             return AppOutput(
                 images=output_images,
-                seed=result["seed"],
-                prompt=result.get("prompt", input_data.prompt),
-                has_nsfw_concepts=result.get("has_nsfw_concepts", [False] * len(output_images)),
                 output_meta=output_meta
             )
 

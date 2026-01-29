@@ -379,24 +379,6 @@
       "title": "Images",
       "type": "array"
     },
-    "seed": {
-      "description": "The seed used for generation.",
-      "title": "Seed",
-      "type": "integer"
-    },
-    "prompt": {
-      "description": "The prompt used for generating the image.",
-      "title": "Prompt",
-      "type": "string"
-    },
-    "has_nsfw_concepts": {
-      "description": "Whether each generated image contains NSFW concepts.",
-      "items": {
-        "type": "boolean"
-      },
-      "title": "Has Nsfw Concepts",
-      "type": "array"
-    },
     "output_meta": {
       "anyOf": [
         {
@@ -411,10 +393,7 @@
     }
   },
   "required": [
-    "images",
-    "seed",
-    "prompt",
-    "has_nsfw_concepts"
+    "images"
   ],
   "title": "AppOutput",
   "type": "object"
