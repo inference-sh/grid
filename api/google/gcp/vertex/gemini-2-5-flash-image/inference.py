@@ -8,14 +8,12 @@ from .vertex_helper import (
     AspectRatioAutoEnum,
     SafetyToleranceEnum,
     ResolutionEnum,
-    ASPECT_RATIO_VALUES,
     calculate_dimensions,
-    get_image_dimensions,
-    find_closest_aspect_ratio,
     load_image_as_part,
     save_image_to_temp,
     build_image_generation_config,
     setup_logger,
+    resolve_aspect_ratio,
 )
 
 
@@ -108,16 +106,11 @@ class App(BaseApp):
                 self.logger.info(f"Starting image generation with prompt: {input_data.prompt[:100]}...")
 
             # Resolve aspect ratio (handle "auto")
-            aspect_ratio_value = input_data.aspect_ratio.value
-            if aspect_ratio_value == "auto":
-                if is_editing and len(input_data.images) > 0:
-                    first_image_path = input_data.images[0].path
-                    img_width, img_height = get_image_dimensions(first_image_path)
-                    aspect_ratio_value = find_closest_aspect_ratio(img_width, img_height)
-                    self.logger.info(f"Auto-detected aspect ratio: {aspect_ratio_value} (from {img_width}x{img_height})")
-                else:
-                    aspect_ratio_value = "1:1"
-                    self.logger.info("No input images for auto aspect ratio detection, using 1:1")
+            aspect_ratio_value = resolve_aspect_ratio(
+                input_data.aspect_ratio.value,
+                input_data.images if is_editing else None,
+                self.logger
+            )
 
             self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {aspect_ratio_value}")
             self.logger.info(f"Requesting {input_data.num_images} output image(s)")
@@ -127,7 +120,7 @@ class App(BaseApp):
 
             if is_editing:
                 for image in input_data.images:
-                    image_part = load_image_as_part(image.path)
+                    image_part = load_image_as_part(image.path, logger=self.logger)
                     contents.append(image_part)
 
             # Configure generation settings

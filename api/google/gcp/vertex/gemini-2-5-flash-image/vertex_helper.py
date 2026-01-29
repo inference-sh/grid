@@ -302,19 +302,107 @@ def calculate_dimensions(aspect_ratio: str, resolution: str) -> tuple[int, int]:
     return width, height
 
 
-def load_image_as_part(file_path: str) -> types.Part:
+def resize_image_to_max_pixels(
+    file_path: str,
+    max_pixels: int = 1_000_000,
+    logger: Optional[logging.Logger] = None
+) -> bytes:
     """
-    Load an image file and return it as a Gemini Part.
+    Resize an image to fit within max_pixels while preserving aspect ratio.
 
     Args:
         file_path: Path to the image file
+        max_pixels: Maximum total pixels (default: 1MP = 1,000,000)
+        logger: Optional logger
+
+    Returns:
+        Resized image as bytes in original format
+    """
+    with Image.open(file_path) as img:
+        original_width, original_height = img.size
+        current_pixels = original_width * original_height
+
+        if current_pixels <= max_pixels:
+            # No resize needed, return original bytes
+            with open(file_path, 'rb') as f:
+                return f.read()
+
+        # Calculate scale factor to fit within max_pixels
+        scale = math.sqrt(max_pixels / current_pixels)
+        new_width = int(original_width * scale)
+        new_height = int(original_height * scale)
+
+        if logger:
+            logger.info(f"Resizing image from {original_width}x{original_height} to {new_width}x{new_height}")
+
+        # Resize the image
+        img = img.convert("RGB") if img.mode != "RGB" else img
+        resized = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+        # Save to bytes
+        output = io.BytesIO()
+        # Determine format from file extension
+        ext = os.path.splitext(file_path)[1].lower()
+        if ext in ['.jpg', '.jpeg']:
+            resized.save(output, format="JPEG", quality=95)
+        elif ext == '.webp':
+            resized.save(output, format="WEBP", quality=95)
+        else:
+            resized.save(output, format="PNG")
+
+        return output.getvalue()
+
+
+def resolve_aspect_ratio(
+    aspect_ratio_value: str,
+    images: Optional[list] = None,
+    logger: Optional[logging.Logger] = None
+) -> str:
+    """
+    Resolve aspect ratio, handling 'auto' by detecting from first image.
+
+    Args:
+        aspect_ratio_value: Aspect ratio string (may be "auto")
+        images: Optional list of image File objects
+        logger: Optional logger
+
+    Returns:
+        Resolved aspect ratio string (e.g., "16:9")
+    """
+    if aspect_ratio_value != "auto":
+        return aspect_ratio_value
+
+    if images and len(images) > 0:
+        first_image_path = images[0].path
+        img_width, img_height = get_image_dimensions(first_image_path)
+        resolved = find_closest_aspect_ratio(img_width, img_height)
+        if logger:
+            logger.info(f"Auto-detected aspect ratio: {resolved} (from {img_width}x{img_height})")
+        return resolved
+    else:
+        if logger:
+            logger.info("No input images for auto aspect ratio detection, using 1:1")
+        return "1:1"
+
+
+def load_image_as_part(
+    file_path: str,
+    max_pixels: int = 1_000_000,
+    logger: Optional[logging.Logger] = None
+) -> types.Part:
+    """
+    Load an image file and return it as a Gemini Part.
+    Resizes to max_pixels if needed.
+
+    Args:
+        file_path: Path to the image file
+        max_pixels: Maximum total pixels (default: 1MP)
+        logger: Optional logger
 
     Returns:
         Gemini types.Part with image data
     """
-    with open(file_path, 'rb') as f:
-        image_data = f.read()
-
+    image_data = resize_image_to_max_pixels(file_path, max_pixels, logger)
     mime_type = get_mime_type(file_path, default='image/png')
     return types.Part.from_bytes(data=image_data, mime_type=mime_type)
 

@@ -5,13 +5,14 @@ from typing import Optional, List
 from .vertex_helper import (
     create_vertex_client,
     OutputFormatEnum,
-    AspectRatioEnum,
+    AspectRatioAutoEnum,
     ResolutionEnum,
     calculate_dimensions,
     load_image_as_part,
     save_image_to_temp,
     build_image_generation_config,
     setup_logger,
+    resolve_aspect_ratio,
 )
 
 
@@ -29,9 +30,9 @@ class AppInput(BaseAppInput):
         ge=1,
         le=4
     )
-    aspect_ratio: AspectRatioEnum = Field(
-        default=AspectRatioEnum.ratio_1_1,
-        description="Aspect ratio for the output image. Default: 1:1"
+    aspect_ratio: AspectRatioAutoEnum = Field(
+        default=AspectRatioAutoEnum.ratio_1_1,
+        description="Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.res_1k,
@@ -79,7 +80,12 @@ class App(BaseApp):
             else:
                 self.logger.info(f"Starting image generation with prompt: {input_data.prompt[:100]}...")
 
-            aspect_ratio_value = input_data.aspect_ratio.value
+            # Resolve aspect ratio (handle "auto")
+            aspect_ratio_value = resolve_aspect_ratio(
+                input_data.aspect_ratio.value,
+                input_data.images if is_editing else None,
+                self.logger
+            )
 
             self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {aspect_ratio_value}")
             self.logger.info(f"Requesting {input_data.num_images} output image(s)")
@@ -89,7 +95,7 @@ class App(BaseApp):
 
             if is_editing:
                 for image in input_data.images:
-                    image_part = load_image_as_part(image.path)
+                    image_part = load_image_as_part(image.path, logger=self.logger)
                     contents.append(image_part)
 
             # Configure generation settings
