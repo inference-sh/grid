@@ -14,7 +14,7 @@ from typing import Optional, Literal
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
 from pydantic import Field
 from xai_sdk import Client
-import httpx
+import requests
 
 
 AspectRatioType = Literal["16:9", "4:3", "1:1", "9:16", "3:4", "3:2", "2:3"]
@@ -138,7 +138,7 @@ class App(BaseApp):
 
             self.logger.info(f"Downloading video from: {video_url}")
             with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as f:
-                video_response = httpx.get(video_url, timeout=300.0)
+                video_response = requests.get(video_url, timeout=300)
                 video_response.raise_for_status()
                 f.write(video_response.content)
                 video_path = f.name
