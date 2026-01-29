@@ -196,6 +196,9 @@ class RetryConfig:
 # Default retry configuration
 DEFAULT_RETRY_CONFIG = RetryConfig()
 
+# Module-level logger for retry operations
+_retry_logger = logging.getLogger(__name__ + ".retry")
+
 
 def is_resource_exhausted_error(error: Exception) -> bool:
     """
@@ -243,6 +246,9 @@ async def retry_on_resource_exhausted(
     if config is None:
         config = DEFAULT_RETRY_CONFIG
 
+    # Use provided logger or fall back to module-level logger
+    log = logger or _retry_logger
+
     last_exception: Optional[Exception] = None
 
     for attempt in range(1, config.max_attempts + 1):
@@ -256,18 +262,16 @@ async def retry_on_resource_exhausted(
                     delay_s = config.get_jittered_delay_s(attempt)
                     max_delay_ms = config.get_max_delay_ms(attempt)
 
-                    if logger:
-                        logger.warning(
-                            f"429 RESOURCE_EXHAUSTED on attempt {attempt}/{config.max_attempts}. "
-                            f"Retrying in {delay_s*1000:.0f}ms (max: {max_delay_ms:.0f}ms)"
-                        )
+                    log.warning(
+                        f"429 RESOURCE_EXHAUSTED on attempt {attempt}/{config.max_attempts}. "
+                        f"Retrying in {delay_s*1000:.0f}ms (max: {max_delay_ms:.0f}ms)"
+                    )
 
                     await asyncio.sleep(delay_s)
                 else:
-                    if logger:
-                        logger.error(
-                            f"429 RESOURCE_EXHAUSTED: Max retries ({config.max_attempts}) exceeded"
-                        )
+                    log.error(
+                        f"429 RESOURCE_EXHAUSTED: Max retries ({config.max_attempts}) exceeded"
+                    )
                     raise
             else:
                 # Not a 429 error, don't retry
