@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "user_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "User ID to look up",
+      "title": "User Id"
+    },
+    "username": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Username to look up (without @)",
+      "title": "Username"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

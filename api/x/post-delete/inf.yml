@@ -1,6 +1,6 @@
 namespace: x
-name: post-tweet
-description: Post tweets to X.com (Twitter)
+name: post-delete
+description: Delete a post from X.com
 metadata: {}
 category: social
 images:
@@ -12,7 +12,7 @@ kernel: python-3.11
 
 integrations:
   - key: x.tweet.write
-    description: Post tweets with text and media to X.com
+    description: Delete posts on X.com
 
 resources:
     gpu:

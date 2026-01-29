@@ -1,6 +1,6 @@
 namespace: x
-name: post-tweet
-description: Post tweets to X.com (Twitter)
+name: post-get
+description: Get a post by ID from X.com
 metadata: {}
 category: social
 images:
@@ -11,8 +11,8 @@ env: {}
 kernel: python-3.11
 
 integrations:
-  - key: x.tweet.write
-    description: Post tweets with text and media to X.com
+  - key: x.tweet.read
+    description: Read posts from X.com
 
 resources:
     gpu:

@@ -1,6 +1,6 @@
 namespace: x
-name: post-tweet
-description: Post tweets to X.com (Twitter)
+name: user-get
+description: Get a user profile from X.com by ID or username
 metadata: {}
 category: social
 images:
@@ -11,8 +11,8 @@ env: {}
 kernel: python-3.11
 
 integrations:
-  - key: x.tweet.write
-    description: Post tweets with text and media to X.com
+  - key: x.user.read
+    description: Read user profiles from X.com
 
 resources:
     gpu:

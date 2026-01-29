@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "recipient_id": {
+      "description": "User ID of the recipient",
+      "title": "Recipient Id",
+      "type": "string"
+    },
+    "text": {
+      "description": "Message text to send",
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recipient_id",
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,4 @@
+pydantic >= 2.0.0
+inferencesh
+xdk
+Pillow

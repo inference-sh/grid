@@ -1,6 +1,6 @@
 namespace: x
-name: post-tweet
-description: Post tweets to X.com (Twitter)
+name: post-retweet
+description: Retweet a post on X.com
 metadata: {}
 category: social
 images:
@@ -11,8 +11,8 @@ env: {}
 kernel: python-3.11
 
 integrations:
-  - key: x.tweet.write
-    description: Post tweets with text and media to X.com
+  - key: x.like.write
+    description: Retweet posts on X.com
 
 resources:
     gpu:

@@ -1,6 +1,6 @@
 namespace: x
-name: post-tweet
-description: Post tweets to X.com (Twitter)
+name: post-create
+description: Create posts on X.com with text and media
 metadata: {}
 category: social
 images:
@@ -12,7 +12,7 @@ kernel: python-3.11
 
 integrations:
   - key: x.tweet.write
-    description: Post tweets with text and media to X.com
+    description: Create posts with text and media on X.com
 
 resources:
     gpu:

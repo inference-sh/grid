@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "post_id": {
+      "description": "The ID of the post to like",
+      "title": "Post Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "post_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
