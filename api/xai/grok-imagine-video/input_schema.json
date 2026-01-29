@@ -1,0 +1,153 @@
+{
+  "$defs": {
+    "File": {
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "File",
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "description": "Input schema for Grok Imagine video generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content and motion.",
+      "examples": [
+        "A cat playing with a ball",
+        "A serene forest with gentle wind moving the leaves"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input image for image-to-video generation. The video will animate from this starting frame."
+    },
+    "video": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input video for video editing. The model will edit this video based on the prompt. Max 8.7 seconds."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Duration of the generated video in seconds (1-15). Not applicable for video editing.",
+      "maximum": 15,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video.",
+      "enum": [
+        "16:9",
+        "4:3",
+        "1:1",
+        "9:16",
+        "3:4",
+        "3:2",
+        "2:3"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "720p",
+      "description": "Video resolution. 720p for higher quality, 480p for faster generation.",
+      "enum": [
+        "720p",
+        "480p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

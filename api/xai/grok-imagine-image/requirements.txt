@@ -1,0 +1,4 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+xai_sdk # xAI official SDK
+httpx >= 0.25.0 # for downloading images
