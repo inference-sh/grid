@@ -1,7 +1,7 @@
 {
   "$defs": {
-    "AspectRatioEnum": {
-      "description": "Aspect ratio options.",
+    "AspectRatioAutoEnum": {
+      "description": "Aspect ratio options with auto detection.",
       "enum": [
         "auto",
         "21:9",
@@ -15,7 +15,7 @@
         "2:3",
         "9:16"
       ],
-      "title": "AspectRatioEnum",
+      "title": "AspectRatioAutoEnum",
       "type": "string"
     },
     "File": {
@@ -93,8 +93,8 @@
         }
       ]
     },
-    "OutputFormatEnum": {
-      "description": "Output format options.",
+    "OutputFormatExtendedEnum": {
+      "description": "Extended output format options (includes HEIC/HEIF).",
       "enum": [
         "png",
         "jpeg",
@@ -102,7 +102,7 @@
         "heic",
         "heif"
       ],
-      "title": "OutputFormatEnum",
+      "title": "OutputFormatExtendedEnum",
       "type": "string"
     },
     "ResolutionEnum": {
@@ -159,7 +159,7 @@
       "type": "integer"
     },
     "aspect_ratio": {
-      "$ref": "#/$defs/AspectRatioEnum",
+      "$ref": "#/$defs/AspectRatioAutoEnum",
       "default": "1:1",
       "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     },
@@ -169,7 +169,7 @@
       "description": "Output resolution. Options: 1K, 2K, 4K. Default: 1K"
     },
     "output_format": {
-      "$ref": "#/$defs/OutputFormatEnum",
+      "$ref": "#/$defs/OutputFormatExtendedEnum",
       "default": "png",
       "description": "Output format for the generated images."
     },
