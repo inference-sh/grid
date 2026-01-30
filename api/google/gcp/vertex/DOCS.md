@@ -88,14 +88,14 @@ class AppOutput(BaseAppOutput):
     images: List[File] = Field(description="...")
 
 class App(BaseApp):
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize client and model. Called once on startup."""
         self.logger = setup_logger(__name__)
         self.metadata = metadata
         self.model_id = "your-model-id"
         self.client = create_vertex_client()
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Process a single request. Called for each inference."""
         # Your generation logic here
         pass
@@ -270,7 +270,7 @@ for part in response.candidates[0].content.parts:
 ### Error Handling
 
 ```python
-async def run(self, input_data: AppInput, metadata) -> AppOutput:
+async def run(self, input_data: AppInput) -> AppOutput:
     try:
         # ... generation logic
     except Exception as e:

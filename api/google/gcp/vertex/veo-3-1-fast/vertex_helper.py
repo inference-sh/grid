@@ -725,7 +725,8 @@ async def start_long_running_operation(
     location: str,
     model_id: str,
     payload: Dict[str, Any],
-    logger: Optional[logging.Logger] = None
+    logger: Optional[logging.Logger] = None,
+    retry_config: Optional[RetryConfig] = None
 ) -> Dict[str, Any]:
     """
     Start a long-running Vertex AI operation (e.g., video generation).
@@ -737,6 +738,7 @@ async def start_long_running_operation(
         model_id: Model ID
         payload: Request payload
         logger: Optional logger
+        retry_config: Optional retry configuration for 429 errors
 
     Returns:
         Operation response with operation name
@@ -751,19 +753,38 @@ async def start_long_running_operation(
         "Authorization": f"Bearer {access_token}"
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, headers=headers, json=payload) as response:
-            if response.status == 200:
-                result = await response.json()
-                if logger:
-                    logger.info(f"Started operation: {result.get('name', 'unknown')}")
-                return result
-            else:
-                error_text = await response.text()
-                if logger:
-                    logger.error(f"Error starting operation: {response.status}")
-                    logger.error(f"Response: {error_text}")
-                raise RuntimeError(f"Failed to start operation: {response.status} - {error_text}")
+    config = retry_config or DEFAULT_RETRY_CONFIG
+    log = logger or _retry_logger
+
+    for attempt in range(1, config.max_attempts + 1):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, headers=headers, json=payload) as response:
+                if response.status == 200:
+                    result = await response.json()
+                    if logger:
+                        logger.info(f"Started operation: {result.get('name', 'unknown')}")
+                    return result
+                elif response.status == 429:
+                    error_text = await response.text()
+                    if attempt < config.max_attempts:
+                        delay_s = config.get_jittered_delay_s(attempt)
+                        max_delay_ms = config.get_max_delay_ms(attempt)
+                        log.warning(
+                            f"429 RESOURCE_EXHAUSTED on attempt {attempt}/{config.max_attempts}. "
+                            f"Retrying in {delay_s*1000:.0f}ms (max: {max_delay_ms:.0f}ms)"
+                        )
+                        await asyncio.sleep(delay_s)
+                    else:
+                        log.error(f"429 RESOURCE_EXHAUSTED: Max retries ({config.max_attempts}) exceeded")
+                        raise RuntimeError(f"Failed to start operation: {response.status} - {error_text}")
+                else:
+                    error_text = await response.text()
+                    if logger:
+                        logger.error(f"Error starting operation: {response.status}")
+                        logger.error(f"Response: {error_text}")
+                    raise RuntimeError(f"Failed to start operation: {response.status} - {error_text}")
+
+    raise RuntimeError("Unexpected state in start_long_running_operation")
 
 
 async def poll_long_running_operation(
@@ -774,7 +795,8 @@ async def poll_long_running_operation(
     operation_name: str,
     poll_interval: float = 5.0,
     max_wait_time: float = 600.0,
-    logger: Optional[logging.Logger] = None
+    logger: Optional[logging.Logger] = None,
+    retry_config: Optional[RetryConfig] = None
 ) -> Dict[str, Any]:
     """
     Poll a long-running operation until completion.
@@ -788,6 +810,7 @@ async def poll_long_running_operation(
         poll_interval: Seconds between polls (default: 5)
         max_wait_time: Maximum wait time in seconds (default: 600)
         logger: Optional logger
+        retry_config: Optional retry configuration for 429 errors on individual poll requests
 
     Returns:
         Final operation response with results
@@ -802,25 +825,43 @@ async def poll_long_running_operation(
         "Authorization": f"Bearer {access_token}"
     }
 
-    payload = {"operationName": operation_name}
+    request_payload = {"operationName": operation_name}
+    config = retry_config or DEFAULT_RETRY_CONFIG
+    log = logger or _retry_logger
 
     elapsed = 0.0
     async with aiohttp.ClientSession() as session:
         while elapsed < max_wait_time:
-            async with session.post(url, headers=headers, json=payload) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    raise RuntimeError(f"Poll failed: {response.status} - {error_text}")
+            # Retry loop for individual poll requests
+            for attempt in range(1, config.max_attempts + 1):
+                async with session.post(url, headers=headers, json=request_payload) as response:
+                    if response.status == 200:
+                        result = await response.json()
 
-                result = await response.json()
+                        if result.get("done"):
+                            if logger:
+                                logger.info("Operation completed successfully")
+                            return result
 
-                if result.get("done"):
-                    if logger:
-                        logger.info("Operation completed successfully")
-                    return result
-
-                if logger:
-                    logger.info(f"Operation in progress... (elapsed: {elapsed:.0f}s)")
+                        if logger:
+                            logger.info(f"Operation in progress... (elapsed: {elapsed:.0f}s)")
+                        break  # Success, exit retry loop
+                    elif response.status == 429:
+                        error_text = await response.text()
+                        if attempt < config.max_attempts:
+                            delay_s = config.get_jittered_delay_s(attempt)
+                            max_delay_ms = config.get_max_delay_ms(attempt)
+                            log.warning(
+                                f"429 RESOURCE_EXHAUSTED on poll attempt {attempt}/{config.max_attempts}. "
+                                f"Retrying in {delay_s*1000:.0f}ms (max: {max_delay_ms:.0f}ms)"
+                            )
+                            await asyncio.sleep(delay_s)
+                        else:
+                            log.error(f"429 RESOURCE_EXHAUSTED: Max retries ({config.max_attempts}) exceeded during poll")
+                            raise RuntimeError(f"Poll failed: {response.status} - {error_text}")
+                    else:
+                        error_text = await response.text()
+                        raise RuntimeError(f"Poll failed: {response.status} - {error_text}")
 
             await asyncio.sleep(poll_interval)
             elapsed += poll_interval

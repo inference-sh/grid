@@ -79,11 +79,10 @@ class AppOutput(BaseAppOutput):
 
 
 class App(BaseApp):
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize model and configuration."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        self.metadata = metadata
         self.model_id = "gemini-3-pro-image-preview"
         self.logger.info("Gemini 3 Pro Image Preview initialized successfully")
 
@@ -127,7 +126,7 @@ class App(BaseApp):
         image_data = self._resize_to_max_pixels(file_path)
         return types.Part.from_bytes(data=image_data, mime_type='image/jpeg')
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate or edit images using Gemini 3 Pro Image Preview model."""
         try:
             # Set up API key from environment

@@ -13,6 +13,7 @@ from .vertex_helper import (
     build_image_generation_config,
     setup_logger,
     resolve_aspect_ratio,
+    retry_on_resource_exhausted,
 )
 
 
@@ -54,15 +55,14 @@ class AppOutput(BaseAppOutput):
 
 
 class App(BaseApp):
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize model and configuration."""
         self.logger = setup_logger(__name__)
-        self.metadata = metadata
         self.model_id = "gemini-3-pro-image-preview"
         self.client = create_vertex_client()
         self.logger.info("Gemini 3 Pro Image Preview (Vertex AI) initialized successfully")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate or edit images using Gemini 3 Pro Image Preview model via Vertex AI."""
         try:
             is_editing = input_data.images is not None and len(input_data.images) > 0
@@ -112,11 +112,14 @@ class App(BaseApp):
             for i in range(input_data.num_images):
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
 
-                response = self.client.models.generate_content(
-                    model=self.model_id,
-                    contents=contents,
-                    config=config,
-                )
+                async def _generate():
+                    return self.client.models.generate_content(
+                        model=self.model_id,
+                        contents=contents,
+                        config=config,
+                    )
+
+                response = await retry_on_resource_exhausted(_generate, logger=self.logger)
 
                 # Process response parts
                 for part in response.candidates[0].content.parts:
