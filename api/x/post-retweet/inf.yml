@@ -1,6 +1,6 @@
 namespace: x
 name: post-retweet
-description: Retweet a post on X.com
+description: Retweet a post on X.com by post ID. Succeeds silently if already retweeted.
 metadata: {}
 category: social
 images:

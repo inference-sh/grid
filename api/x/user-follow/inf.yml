@@ -1,5 +1,5 @@
 name: user-follow
-description: Follow a user on X.com
+description: Follow a user on X.com by user ID. Succeeds silently if already following.
 metadata: {}
 category: social
 images:

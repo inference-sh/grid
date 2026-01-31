@@ -1,6 +1,6 @@
 namespace: x
 name: post-get
-description: Get a post by ID from X.com
+description: Get a post by ID from X.com. Returns text, author ID, creation date, and engagement metrics (likes, retweets, replies, quotes).
 metadata: {}
 category: social
 images:

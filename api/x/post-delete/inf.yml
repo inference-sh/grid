@@ -1,6 +1,6 @@
 namespace: x
 name: post-delete
-description: Delete a post from X.com
+description: Delete a post from X.com by post ID. Can only delete posts authored by the authenticated account.
 metadata: {}
 category: social
 images:

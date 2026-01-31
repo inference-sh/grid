@@ -1,6 +1,6 @@
 namespace: x
 name: post-like
-description: Like a post on X.com
+description: Like a post on X.com by post ID. Succeeds silently if already liked.
 metadata: {}
 category: social
 images:

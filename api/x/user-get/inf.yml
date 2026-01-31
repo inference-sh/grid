@@ -1,6 +1,6 @@
 namespace: x
 name: user-get
-description: Get a user profile from X.com by ID or username
+description: Get a user profile from X.com by ID or username. Returns bio, follower/following counts, tweet count, verified status, and profile image URL.
 metadata: {}
 category: social
 images:

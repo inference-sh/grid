@@ -1,6 +1,6 @@
 namespace: x
 name: dm-send
-description: Send a direct message on X.com
+description: Send a direct message on X.com. Requires the recipient's user ID (not username). Text-only messages; media attachments are not supported.
 metadata: {}
 category: social
 images:

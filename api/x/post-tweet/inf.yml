@@ -1,6 +1,6 @@
 namespace: x
 name: post-tweet
-description: Post tweets to X.com (Twitter)
+description: Post tweets to X.com with text (280 char limit) and optional media. Supports up to 4 images or 1 video/GIF. Can reply to or quote other tweets. Images over 5MB are auto-resized.
 metadata: {}
 category: social
 images:
