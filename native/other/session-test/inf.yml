@@ -1,0 +1,23 @@
+name: session-test
+description: Multi-function test app for verifying session state persistence across calls
+category: other
+kernel: python-3.12
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 0
+functions:
+  - name: set_value
+    description: Store a key-value pair in session state
+  - name: get_value
+    description: Retrieve a value by key
+  - name: increment
+    description: Increment a counter
+  - name: get_all
+    description: Return all stored state
+  - name: clear
+    description: Clear all state
+metadata:
+  session_test: true
