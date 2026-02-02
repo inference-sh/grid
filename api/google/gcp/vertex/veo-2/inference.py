@@ -4,6 +4,7 @@ from typing import Optional, List, Dict, Any
 
 from .vertex_helper import (
     get_vertex_credentials,
+    get_default_storage_uri,
     start_long_running_operation,
     poll_long_running_operation,
     download_video_from_gcs,
@@ -87,8 +88,10 @@ def build_veo2_payload(
     if negative_prompt:
         parameters["negativePrompt"] = negative_prompt
 
-    if storage_uri:
-        parameters["storageUri"] = storage_uri
+    # Use provided storage_uri or fall back to environment default
+    effective_storage_uri = storage_uri or get_default_storage_uri()
+    if effective_storage_uri:
+        parameters["storageUri"] = effective_storage_uri
 
     return {
         "instances": [instance],

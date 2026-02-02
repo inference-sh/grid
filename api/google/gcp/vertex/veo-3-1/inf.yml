@@ -8,6 +8,10 @@ images:
     thumbnail: ""
     banner: ""
 env: {}
+secrets:
+  - key: GCP_VIDEO_OUTPUT_BUCKET
+    description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
+    optional: true
 kernel: python-3.11
 integrations:
   - key: gcp.vertex_ai

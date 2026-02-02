@@ -1013,6 +1013,16 @@ def prepare_video_for_veo(file_path: str) -> Dict[str, str]:
     }
 
 
+def get_default_storage_uri() -> Optional[str]:
+    """
+    Get default GCS storage URI from environment variable.
+
+    Returns:
+        GCS URI string or None if not configured
+    """
+    return os.environ.get("GCP_VIDEO_OUTPUT_BUCKET")
+
+
 def build_veo_payload(
     prompt: str,
     aspect_ratio: str = "16:9",
@@ -1075,8 +1085,11 @@ def build_veo_payload(
         "includeRaiReason": False,
     }
 
-    if storage_uri:
-        parameters["storageUri"] = storage_uri
+    # Use provided storage_uri or fall back to environment default
+    # Video extension requires a storage URI (output is too large for base64)
+    effective_storage_uri = storage_uri or get_default_storage_uri()
+    if effective_storage_uri:
+        parameters["storageUri"] = effective_storage_uri
 
     return {
         "instances": [instance],
