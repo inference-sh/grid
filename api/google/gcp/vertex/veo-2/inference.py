@@ -11,6 +11,7 @@ from .vertex_helper import (
     save_video_to_temp,
     setup_logger,
     VideoAspectRatioEnum,
+    prepare_video_for_veo,
 )
 
 
@@ -20,9 +21,13 @@ class AppSetup(BaseAppSetup):
 
 
 class RunInput(BaseModel):
-    """Input for video generation with Veo 2 (text-to-video only)."""
+    """Input for video generation with Veo 2."""
     prompt: str = Field(
         description="Text prompt describing the desired video content."
+    )
+    video: Optional[File] = Field(
+        None,
+        description="Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
     )
     negative_prompt: Optional[str] = Field(
         None,
@@ -62,10 +67,15 @@ def build_veo2_payload(
     sample_count: int = 1,
     negative_prompt: Optional[str] = None,
     enhance_prompt: bool = True,
+    video_path: Optional[str] = None,
     storage_uri: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Build request payload for Veo 2 video generation."""
     instance: Dict[str, Any] = {"prompt": prompt}
+
+    # Add video for extension if provided
+    if video_path:
+        instance["video"] = prepare_video_for_veo(video_path)
 
     parameters: Dict[str, Any] = {
         "aspectRatio": aspect_ratio,
@@ -102,6 +112,14 @@ class App(BaseApp):
 
             aspect_ratio = input_data.aspect_ratio.value
 
+            # Validate video for extension
+            video_path = None
+            if input_data.video is not None:
+                if not input_data.video.exists():
+                    raise RuntimeError(f"Video file does not exist: {input_data.video.path}")
+                video_path = input_data.video.path
+                self.logger.info(f"Using video for extension: {video_path}")
+
             self.logger.info(f"Aspect ratio: {aspect_ratio}, Duration: {input_data.duration}s")
             self.logger.info(f"Enhance prompt: {input_data.enhance_prompt}, Num videos: {input_data.num_videos}")
             if input_data.negative_prompt:
@@ -114,6 +132,7 @@ class App(BaseApp):
                 sample_count=input_data.num_videos,
                 negative_prompt=input_data.negative_prompt,
                 enhance_prompt=input_data.enhance_prompt,
+                video_path=video_path,
             )
 
             self.logger.info("Starting video generation operation...")

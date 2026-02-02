@@ -991,6 +991,28 @@ def prepare_image_for_veo(file_path: str, aspect_ratio: str) -> Dict[str, str]:
     }
 
 
+def prepare_video_for_veo(file_path: str) -> Dict[str, str]:
+    """
+    Prepare a video file for Veo API (encode as base64).
+
+    Args:
+        file_path: Path to video file (must be MP4)
+
+    Returns:
+        Dict with bytesBase64Encoded and mimeType
+    """
+    with open(file_path, "rb") as f:
+        video_bytes = f.read()
+
+    encoded = encode_image_to_base64(video_bytes)
+    mime_type = get_mime_type(file_path, default="video/mp4")
+
+    return {
+        "bytesBase64Encoded": encoded,
+        "mimeType": mime_type
+    }
+
+
 def build_veo_payload(
     prompt: str,
     aspect_ratio: str = "16:9",
@@ -1000,6 +1022,7 @@ def build_veo_payload(
     sample_count: int = 1,
     first_frame_path: Optional[str] = None,
     last_frame_path: Optional[str] = None,
+    video_path: Optional[str] = None,
     storage_uri: Optional[str] = None,
     person_generation: str = "allow_all",
     enable_prompt_rewriting: bool = True,
@@ -1017,6 +1040,7 @@ def build_veo_payload(
         sample_count: Number of videos to generate (1-2)
         first_frame_path: Optional path to first frame image
         last_frame_path: Optional path to last frame image
+        video_path: Optional path to video file for video extension (1-30s MP4)
         storage_uri: Optional GCS URI for output (e.g., "gs://bucket/path/")
         person_generation: Person generation setting
         enable_prompt_rewriting: Whether to allow prompt rewriting
@@ -1027,13 +1051,17 @@ def build_veo_payload(
     """
     instance: Dict[str, Any] = {"prompt": prompt}
 
-    # Add first frame if provided
-    if first_frame_path:
-        instance["image"] = prepare_image_for_veo(first_frame_path, aspect_ratio)
+    # Add video for extension if provided (mutually exclusive with first/last frame)
+    if video_path:
+        instance["video"] = prepare_video_for_veo(video_path)
+    else:
+        # Add first frame if provided
+        if first_frame_path:
+            instance["image"] = prepare_image_for_veo(first_frame_path, aspect_ratio)
 
-    # Add last frame if provided
-    if last_frame_path:
-        instance["lastFrame"] = prepare_image_for_veo(last_frame_path, aspect_ratio)
+        # Add last frame if provided
+        if last_frame_path:
+            instance["lastFrame"] = prepare_image_for_veo(last_frame_path, aspect_ratio)
 
     parameters: Dict[str, Any] = {
         "aspectRatio": aspect_ratio,

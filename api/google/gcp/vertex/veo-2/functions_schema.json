@@ -3,6 +3,81 @@
     "description": "Generate video using Veo 2 model via Vertex AI.",
     "input_schema": {
       "$defs": {
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "VideoAspectRatioEnum": {
           "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
           "enum": [
@@ -13,12 +88,24 @@
           "type": "string"
         }
       },
-      "description": "Input for video generation with Veo 2 (text-to-video only).",
+      "description": "Input for video generation with Veo 2.",
       "properties": {
         "prompt": {
           "description": "Text prompt describing the desired video content.",
           "title": "Prompt",
           "type": "string"
+        },
+        "video": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
         },
         "negative_prompt": {
           "anyOf": [

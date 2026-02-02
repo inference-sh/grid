@@ -36,6 +36,10 @@ class RunInput(BaseModel):
         None,
         description="Optional last frame image for frame interpolation. Requires first frame image."
     )
+    video: Optional[File] = Field(
+        None,
+        description="Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
+    )
     aspect_ratio: VideoAspectRatioEnum = Field(
         default=VideoAspectRatioEnum.ratio_16_9,
         description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
@@ -109,6 +113,16 @@ class App(BaseApp):
                 last_frame_path = input_data.last_frame.path
                 self.logger.info("Using last frame for frame interpolation")
 
+            # Validate video for extension
+            video_path = None
+            if input_data.video is not None:
+                if not input_data.video.exists():
+                    raise RuntimeError(f"Video file does not exist: {input_data.video.path}")
+                if first_frame_path is not None or last_frame_path is not None:
+                    raise RuntimeError("Video extension cannot be combined with first/last frame images")
+                video_path = input_data.video.path
+                self.logger.info(f"Using video for extension: {video_path}")
+
             self.logger.info(f"Aspect ratio: {aspect_ratio}, Duration: {input_data.duration}s, Resolution: {input_data.resolution.value}")
             self.logger.info(f"Generate audio: {input_data.generate_audio}, Num videos: {input_data.num_videos}")
 
@@ -122,6 +136,7 @@ class App(BaseApp):
                 sample_count=input_data.num_videos,
                 first_frame_path=first_frame_path,
                 last_frame_path=last_frame_path,
+                video_path=video_path,
             )
 
             # Start the long-running operation
