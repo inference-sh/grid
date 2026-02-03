@@ -152,7 +152,12 @@ class App(BaseApp):
             return AppOutput(
                 images=output_images,
                 description="\n".join(descriptions) if descriptions else "",
-                output_meta=OutputMeta(outputs=output_meta_images)
+                output_meta=OutputMeta(
+                    outputs=output_meta_images,
+                    extra={
+                        "web_search": input_data.enable_google_search,
+                    }
+                )
             )
 
         except Exception as e:

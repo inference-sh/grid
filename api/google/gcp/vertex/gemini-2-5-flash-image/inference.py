@@ -36,10 +36,10 @@ class AppInput(BaseAppInput):
         default=AspectRatioAutoEnum.ratio_1_1,
         description="Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     )
-    resolution: ResolutionEnum = Field(
-        default=ResolutionEnum.res_1k,
-        description="Output resolution. Options: 1K, 2K, 4K. Default: 1K"
-    )
+    # resolution: ResolutionEnum = Field(
+    #     default=ResolutionEnum.res_1k,
+    #     description="Output resolution. Options: 1K, 2K, 4K. Default: 1K"
+    # )
     output_format: OutputFormatExtendedEnum = Field(
         default=OutputFormatExtendedEnum.png,
         description="Output format for the generated images."
@@ -112,7 +112,8 @@ class App(BaseApp):
                 self.logger
             )
 
-            self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {aspect_ratio_value}")
+            resolution = ResolutionEnum.res_1k
+            self.logger.info(f"Resolution: {resolution.value}, Aspect ratio: {aspect_ratio_value}")
             self.logger.info(f"Requesting {input_data.num_images} output image(s)")
 
             # Build content parts
@@ -126,7 +127,7 @@ class App(BaseApp):
             # Configure generation settings
             config = build_image_generation_config(
                 aspect_ratio=aspect_ratio_value,
-                resolution=input_data.resolution.value,
+                resolution=resolution.value,
                 temperature=input_data.temperature,
                 top_p=input_data.top_p,
                 top_k=input_data.top_k,
@@ -172,7 +173,7 @@ class App(BaseApp):
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
-            width, height = calculate_dimensions(aspect_ratio_value, input_data.resolution.value)
+            width, height = calculate_dimensions(aspect_ratio_value, resolution.value)
 
             output_meta_images = [
                 ImageMeta(width=width, height=height)

@@ -108,16 +108,6 @@
           "title": "OutputFormatExtendedEnum",
           "type": "string"
         },
-        "ResolutionEnum": {
-          "description": "Resolution options.",
-          "enum": [
-            "1K",
-            "2K",
-            "4K"
-          ],
-          "title": "ResolutionEnum",
-          "type": "string"
-        },
         "SafetyToleranceEnum": {
           "description": "Safety filter thresholds.",
           "enum": [
@@ -165,11 +155,6 @@
           "$ref": "#/$defs/AspectRatioAutoEnum",
           "default": "1:1",
           "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
-        },
-        "resolution": {
-          "$ref": "#/$defs/ResolutionEnum",
-          "default": "1K",
-          "description": "Output resolution. Options: 1K, 2K, 4K. Default: 1K"
         },
         "output_format": {
           "$ref": "#/$defs/OutputFormatExtendedEnum",
