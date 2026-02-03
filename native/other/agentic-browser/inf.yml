@@ -1,0 +1,23 @@
+name: agentic-browser
+description: Browser automation for agents. Navigate, interact with @e refs, take screenshots, execute JavaScript.
+category: other
+kernel: python-3.11
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 4
+functions:
+  - name: open
+    description: Navigate to URL and configure browser (entry point)
+  - name: snapshot
+    description: Get page state with @e refs for interactive elements
+  - name: interact
+    description: Click, fill, scroll, press keys using @e refs
+  - name: screenshot
+    description: Take page screenshot
+  - name: execute
+    description: Run JavaScript code on the page
+  - name: close
+    description: Close browser session

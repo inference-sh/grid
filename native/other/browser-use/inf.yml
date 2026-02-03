@@ -1,0 +1,23 @@
+name: browser-use
+description: Browser automation for agents to surf the web. Navigate, interact with elements, take screenshots, and execute JavaScript.
+category: other
+kernel: python-3.11
+resources:
+  gpu:
+    count: 0
+    vram: 0
+    type: none
+  ram: 4
+functions:
+  - name: open
+    description: Navigate to URL and configure browser (entry point)
+  - name: state
+    description: Get current page state with clickable elements
+  - name: interact
+    description: Click, type, scroll, hover, or send keys
+  - name: screenshot
+    description: Take page screenshot
+  - name: execute
+    description: Run JavaScript code on the page
+  - name: close
+    description: Close browser session
