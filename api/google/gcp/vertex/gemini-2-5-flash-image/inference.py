@@ -152,6 +152,14 @@ class App(BaseApp):
 
                 response = await retry_on_resource_exhausted(_generate, logger=self.logger)
 
+                # Check if response has candidates
+                if not response.candidates or len(response.candidates) == 0:
+                    self.logger.error(f"No candidates in response. Full response: {response}")
+                    block_reason = getattr(response, 'prompt_feedback', None)
+                    if block_reason:
+                        raise RuntimeError(f"Image generation blocked: {block_reason}")
+                    raise RuntimeError(f"No candidates returned from model. Response: {response}")
+
                 # Process response parts
                 for part in response.candidates[0].content.parts:
                     if hasattr(part, 'thought') and part.thought:

@@ -791,7 +791,8 @@
             "select",
             "hover",
             "back",
-            "wait"
+            "wait",
+            "goto"
           ],
           "title": "Action",
           "type": "string"
@@ -851,6 +852,19 @@
           "default": null,
           "description": "Milliseconds to wait (for wait action)",
           "title": "Wait Ms"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL to navigate to (for goto action)",
+          "title": "Url"
         }
       },
       "required": [

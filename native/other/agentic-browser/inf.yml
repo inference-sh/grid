@@ -14,7 +14,7 @@ functions:
   - name: snapshot
     description: Get page state with @e refs for interactive elements
   - name: interact
-    description: Click, fill, scroll, press keys using @e refs
+    description: Click, fill, scroll, press keys, goto URL using @e refs
   - name: screenshot
     description: Take page screenshot
   - name: execute

@@ -65,13 +65,14 @@ class SnapshotInput(BaseAppInput):
 
 class InteractInput(BaseAppInput):
     """Interact with page elements using @e refs."""
-    action: Literal["click", "type", "fill", "scroll", "press", "select", "hover", "back", "wait"] = Field(
+    action: Literal["click", "type", "fill", "scroll", "press", "select", "hover", "back", "wait", "goto"] = Field(
         description="Action to perform"
     )
     ref: Optional[str] = Field(default=None, description="Element ref from snapshot (e.g., @e1)")
     text: Optional[str] = Field(default=None, description="Text for type/fill/press/select actions")
     direction: Optional[Literal["up", "down"]] = Field(default=None, description="Scroll direction")
     wait_ms: Optional[int] = Field(default=None, description="Milliseconds to wait (for wait action)")
+    url: Optional[str] = Field(default=None, description="URL to navigate to (for goto action)")
 
 
 class ScreenshotInput(BaseAppInput):
@@ -393,6 +394,12 @@ class App(BaseApp):
             elif action == "wait":
                 wait_ms = input_data.wait_ms or 1000
                 await asyncio.sleep(wait_ms / 1000)
+
+            elif action == "goto":
+                if input_data.url is None:
+                    raise ValueError("'url' required for goto action")
+                await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
+                await asyncio.sleep(0.5)
 
             else:
                 raise ValueError(f"Unknown action: {action}")
