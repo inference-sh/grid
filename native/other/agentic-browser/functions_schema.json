@@ -1221,6 +1221,18 @@
               "title": "Title",
               "type": "string"
             },
+            "screenshot": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/File"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Page screenshot for vision agents"
+            },
             "elements": {
               "description": "Interactive elements with @e refs",
               "items": {
@@ -1234,18 +1246,6 @@
               "description": "Text summary of elements for non-vision agents",
               "title": "Elements Text",
               "type": "string"
-            },
-            "screenshot": {
-              "anyOf": [
-                {
-                  "$ref": "#/$defs/File"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Page screenshot for vision agents"
             }
           },
           "required": [
@@ -2005,6 +2005,18 @@
           "title": "Title",
           "type": "string"
         },
+        "screenshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Page screenshot for vision agents"
+        },
         "elements": {
           "description": "Interactive elements with @e refs",
           "items": {
@@ -2018,18 +2030,6 @@
           "description": "Text summary of elements for non-vision agents",
           "title": "Elements Text",
           "type": "string"
-        },
-        "screenshot": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/File"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Page screenshot for vision agents"
         }
       },
       "required": [
@@ -2575,6 +2575,18 @@
           "title": "Title",
           "type": "string"
         },
+        "screenshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Page screenshot for vision agents"
+        },
         "elements": {
           "description": "Interactive elements with @e refs",
           "items": {
@@ -2588,18 +2600,6 @@
           "description": "Text summary of elements for non-vision agents",
           "title": "Elements Text",
           "type": "string"
-        },
-        "screenshot": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/File"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Page screenshot for vision agents"
         }
       },
       "required": [
@@ -3535,6 +3535,18 @@
           "title": "Title",
           "type": "string"
         },
+        "screenshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Page screenshot for vision agents"
+        },
         "elements": {
           "description": "Interactive elements with @e refs",
           "items": {
@@ -3548,18 +3560,6 @@
           "description": "Text summary of elements for non-vision agents",
           "title": "Elements Text",
           "type": "string"
-        },
-        "screenshot": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/File"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Page screenshot for vision agents"
         }
       },
       "required": [

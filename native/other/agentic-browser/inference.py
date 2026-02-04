@@ -43,9 +43,9 @@ class PageSnapshot(BaseAppOutput):
     """Page snapshot with elements."""
     url: str = Field(description="Current page URL")
     title: str = Field(description="Page title")
+    screenshot: Optional[File] = Field(default=None, description="Page screenshot for vision agents")
     elements: list[ElementInfo] = Field(description="Interactive elements with @e refs")
     elements_text: str = Field(default="", description="Text summary of elements for non-vision agents")
-    screenshot: Optional[File] = Field(default=None, description="Page screenshot for vision agents")
 
 
 # --- Input Schemas ---
