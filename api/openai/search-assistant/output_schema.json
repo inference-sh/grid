@@ -1,0 +1,15 @@
+{
+  "description": "Output schema for the research assistant.",
+  "properties": {
+    "results": {
+      "description": "Research findings and analysis",
+      "title": "Results",
+      "type": "string"
+    }
+  },
+  "required": [
+    "results"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}
