@@ -56,6 +56,12 @@ class OpenInput(BaseAppInput):
     width: int = Field(default=1280, description="Viewport width in pixels")
     height: int = Field(default=720, description="Viewport height in pixels")
     user_agent: Optional[str] = Field(default=None, description="Custom user agent string")
+    # Video recording
+    record_video: bool = Field(default=False, description="Record video of browser session (returned on close)")
+    # Proxy support
+    proxy_url: Optional[str] = Field(default=None, description="Proxy server URL (e.g., http://proxy:8080)")
+    proxy_username: Optional[str] = Field(default=None, description="Proxy authentication username")
+    proxy_password: Optional[str] = Field(default=None, description="Proxy authentication password")
 
 
 class SnapshotInput(BaseAppInput):
@@ -65,14 +71,19 @@ class SnapshotInput(BaseAppInput):
 
 class InteractInput(BaseAppInput):
     """Interact with page elements using @e refs."""
-    action: Literal["click", "type", "fill", "scroll", "press", "select", "hover", "back", "wait", "goto"] = Field(
+    action: Literal["click", "dblclick", "type", "fill", "scroll", "press", "select", "hover", "drag", "upload", "check", "uncheck", "back", "wait", "goto"] = Field(
         description="Action to perform"
     )
     ref: Optional[str] = Field(default=None, description="Element ref from snapshot (e.g., @e1)")
     text: Optional[str] = Field(default=None, description="Text for type/fill/press/select actions")
-    direction: Optional[Literal["up", "down"]] = Field(default=None, description="Scroll direction")
+    direction: Optional[Literal["up", "down", "left", "right"]] = Field(default=None, description="Scroll direction")
+    scroll_amount: Optional[int] = Field(default=None, description="Scroll amount in pixels (default 400)")
     wait_ms: Optional[int] = Field(default=None, description="Milliseconds to wait (for wait action)")
     url: Optional[str] = Field(default=None, description="URL to navigate to (for goto action)")
+    # Drag and drop
+    target_ref: Optional[str] = Field(default=None, description="Target element ref for drag action")
+    # File upload
+    file_paths: Optional[list[str]] = Field(default=None, description="File path(s) for upload action")
 
 
 class ScreenshotInput(BaseAppInput):
@@ -128,6 +139,7 @@ class ExecuteOutput(BaseAppOutput):
 class CloseOutput(BaseAppOutput):
     """Close result."""
     success: bool = Field(description="Whether browser closed successfully")
+    video: Optional[File] = Field(default=None, description="Video recording if record_video was enabled")
 
 
 class App(BaseApp):
@@ -149,6 +161,9 @@ class App(BaseApp):
         self.elements: dict[str, dict] = {}  # Map @e refs to selectors
         self.width = 1280
         self.height = 720
+        # Video recording state
+        self.video_dir: Optional[str] = None
+        self.recording_video: bool = False
         print("[agentic-browser] Setup complete")
 
     def _parse_ref(self, ref: str) -> str:
@@ -161,7 +176,16 @@ class App(BaseApp):
 
         return self.elements[ref]['selector']
 
-    async def _ensure_context(self, width: int, height: int, user_agent: Optional[str] = None):
+    async def _ensure_context(
+        self,
+        width: int,
+        height: int,
+        user_agent: Optional[str] = None,
+        record_video: bool = False,
+        proxy_url: Optional[str] = None,
+        proxy_username: Optional[str] = None,
+        proxy_password: Optional[str] = None
+    ):
         """Ensure browser context exists with given settings."""
         if (self.context is None or self.width != width or self.height != height):
             if self.context:
@@ -173,6 +197,25 @@ class App(BaseApp):
             context_opts = {'viewport': {'width': width, 'height': height}}
             if user_agent:
                 context_opts['user_agent'] = user_agent
+
+            # Proxy configuration
+            if proxy_url:
+                proxy_opts = {'server': proxy_url}
+                if proxy_username:
+                    proxy_opts['username'] = proxy_username
+                if proxy_password:
+                    proxy_opts['password'] = proxy_password
+                context_opts['proxy'] = proxy_opts
+
+            # Video recording
+            if record_video:
+                self.video_dir = tempfile.mkdtemp(prefix='agentic-browser-video-')
+                context_opts['record_video_dir'] = self.video_dir
+                context_opts['record_video_size'] = {'width': width, 'height': height}
+                self.recording_video = True
+            else:
+                self.video_dir = None
+                self.recording_video = False
 
             self.context = await self.browser.new_context(**context_opts)
             self.page = await self.context.new_page()

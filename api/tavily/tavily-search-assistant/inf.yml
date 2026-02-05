@@ -17,3 +17,7 @@ images:
   thumbnail: ''
   banner: ''
 metadata: {}
+secrets:
+  - key: TVLY_API_KEY
+    description: Tavily API key for model access
+    optional: false
