@@ -9,33 +9,77 @@ Create inference.sh apps that wrap fal.ai model endpoints.
 
 **IMPORTANT:** Follow these steps IN ORDER. Do not skip steps.
 
+## Quick Start (Recommended)
+
+Use the scaffold script to automate Steps 0-4:
+
+```bash
+cd /home/ok/inference/grid/api/falai
+
+# For new apps (generates in current dir, move files after init)
+./fal-scaffold.sh fal-ai/MODEL_NAME
+
+# For existing apps (generates directly in app folder)
+./fal-scaffold.sh fal-ai/MODEL_NAME app-folder
+```
+
+This will:
+- Search for related endpoints (consolidation candidates)
+- Fetch OpenAPI schema
+- Fetch pricing
+- Generate MODEL.md and PRICING.md in the specified directory
+
+Then continue from Step 5.
+
+---
+
 ## Checklist
 
 ```
+[ ] Step 0: Search for related endpoints (consolidation check)
 [ ] Step 1: Fetch model OpenAPI schema
 [ ] Step 2: Write MODEL.md with schema details
 [ ] Step 3: Fetch pricing data
 [ ] Step 4: Write PRICING.md with CEL expressions
 [ ] Step 5: Run `infsh app init`
 [ ] Step 6: Implement inference.py using MODEL.md as reference
-[ ] Step 7: Test with `infsh run`
+[ ] Step 7: Test with `infsh app test`
 [ ] Step 8: Update IMPLEMENTED_MODELS.md
 [ ] Step 9: Deploy with `infsh deploy`
 ```
 
 ---
 
-## Step 1: Fetch Model OpenAPI Schema
+## Step 0: Search for Related Endpoints
 
-**STOP.** Do this first before anything else.
+**STOP.** Do this FIRST to check for consolidation opportunities.
 
+Extract the model family name and search:
 ```bash
-curl -s "https://api.fal.ai/v1/models?endpoint_id=fal-ai/MODEL_NAME&expand=openapi-3.0" | jq .
+# Example: for "fal-ai/dia-tts", search "dia"
+curl -s "https://api.fal.ai/v1/models?q=MODEL_FAMILY&limit=20"
 ```
 
-For multiple related endpoints (to potentially merge):
+Look for related endpoints that should be consolidated:
+- `model/text-to-video` + `model/image-to-video` → single app
+- `model-tts` + `model-voice-clone` → single app with mode selection
+- `model/pro` + `model/turbo` → single app with quality enum
+
+**Decision:** If related endpoints exist, decide NOW whether to:
+1. Build a single consolidated app (preferred)
+2. Build separate apps (if schemas are very different)
+
+---
+
+## Step 1: Fetch Model OpenAPI Schema
+
 ```bash
-curl -s "https://api.fal.ai/v1/models?endpoint_id=fal-ai/model/text-to-video&endpoint_id=fal-ai/model/image-to-video&expand=openapi-3.0" | jq .
+curl -s "https://api.fal.ai/v1/models?endpoint_id=fal-ai/MODEL_NAME&expand=openapi-3.0"
+```
+
+For multiple related endpoints (to merge):
+```bash
+curl -s "https://api.fal.ai/v1/models?endpoint_id=fal-ai/model/text-to-video&endpoint_id=fal-ai/model/image-to-video&expand=openapi-3.0"
 ```
 
 Save the response. You need:
@@ -164,6 +208,7 @@ With MODEL.md and PRICING.md as your reference:
 ### 6a. Update inf.yml
 
 ```yaml
+namespace: falai
 name: my-app-name
 description: [from MODEL.md description]
 category: [video|image|audio|other]
@@ -218,11 +263,13 @@ Key patterns:
 
 ```bash
 cd my-app-name
-infsh run
-# Creates example.input.json
-cp example.input.json input.json
-# Edit input.json with test values
-infsh run input.json
+
+# Generate example input file
+infsh app test --save-example
+
+# Edit input.json with test values, then run:
+export FAL_KEY=$(cat ../.fal.key)
+infsh app test --input-file input.json
 ```
 
 ---

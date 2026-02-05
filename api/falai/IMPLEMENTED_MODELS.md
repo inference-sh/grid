@@ -10,7 +10,7 @@ Each entry: `our-app-name` -> `fal-endpoint-id` (category)
 
 | Our App | fal.ai Endpoint | Category |
 |---------|-----------------|----------|
-| dia-tts | fal-ai/dia-tts | text-to-speech |
+| dia-tts | fal-ai/dia-tts, fal-ai/dia-tts/voice-clone | text-to-speech, voice-clone |
 | fabric-1-0 | fal-ai/fabric | image-to-image |
 | flux-2-dev | fal-ai/flux/dev | text-to-image |
 | flux-2-dev-turbo | fal-ai/flux/dev/turbo | text-to-image |
@@ -22,7 +22,7 @@ Each entry: `our-app-name` -> `fal-endpoint-id` (category)
 | nano-banana-pro-edit | fal-ai/nano-banana-pro/edit | image-to-image |
 | omni-human-1-5 | fal-ai/omni-human-1.5 | image-to-video |
 | pixverse-lipsync | fal-ai/pixverse/lipsync | video-lipsync |
-| reve | fal-ai/reve | text-to-image |
+| reve | fal-ai/reve/text-to-image, fal-ai/reve/edit, fal-ai/reve/remix | text-to-image, image-edit, remix |
 | seedance-1-5-pro-i2v | fal-ai/bytedance/seedance/v1.5/pro/image-to-video | image-to-video |
 | seedance-1-5-pro-t2v | fal-ai/bytedance/seedance/v1.5/pro/text-to-video | text-to-video |
 | seedream-v4-edit | fal-ai/seedream/v4/edit | image-to-image |
