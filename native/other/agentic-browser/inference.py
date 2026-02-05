@@ -17,7 +17,9 @@ Refs are invalidated after navigation - always re-snapshot after clicks that nav
 """
 
 import asyncio
+import subprocess
 import tempfile
+import time
 from pathlib import Path
 from typing import Optional, Literal
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
@@ -58,6 +60,7 @@ class OpenInput(BaseAppInput):
     user_agent: Optional[str] = Field(default=None, description="Custom user agent string")
     # Video recording
     record_video: bool = Field(default=False, description="Record video of browser session (returned on close)")
+    show_cursor: bool = Field(default=False, description="Show cursor indicator in screenshots/video")
     # Proxy support
     proxy_url: Optional[str] = Field(default=None, description="Proxy server URL (e.g., http://proxy:8080)")
     proxy_username: Optional[str] = Field(default=None, description="Proxy authentication username")
@@ -119,7 +122,7 @@ class InteractOutput(BaseAppOutput):
     action: str = Field(description="Action that was performed")
     message: Optional[str] = Field(default=None, description="Additional info or error")
     screenshot: Optional[File] = Field(default=None, description="Page screenshot after action")
-    snapshot: Optional[PageSnapshot] = Field(default=None, description="Page snapshot after action")
+    snapshot: Optional[PageSnapshot] = Field(default=None, description="Page snapshot after action (also includes screenshot)")
 
 
 class ScreenshotOutput(BaseAppOutput):
@@ -150,6 +153,19 @@ class App(BaseApp):
 
     async def setup(self):
         """Initialize Playwright browser."""
+        # Install ffmpeg for video recording (fast if already installed)
+        import sys
+        start = time.time()
+        result = subprocess.run(
+            [sys.executable, "-m", "playwright", "install", "ffmpeg"],
+            capture_output=True,
+            text=True
+        )
+        elapsed = time.time() - start
+        print(f"[agentic-browser] playwright install ffmpeg: {elapsed:.2f}s")
+        if result.returncode != 0:
+            print(f"[agentic-browser] ffmpeg install warning: {result.stderr[:200]}")
+
         self.playwright = await async_playwright().start()
         self.browser: Optional[Browser] = await self.playwright.chromium.launch(
             args=['--no-sandbox', '--disable-dev-shm-usage'],
@@ -164,6 +180,7 @@ class App(BaseApp):
         # Video recording state
         self.video_dir: Optional[str] = None
         self.recording_video: bool = False
+        self.show_cursor: bool = False
         print("[agentic-browser] Setup complete")
 
     def _parse_ref(self, ref: str) -> str:
@@ -182,6 +199,7 @@ class App(BaseApp):
         height: int,
         user_agent: Optional[str] = None,
         record_video: bool = False,
+        show_cursor: bool = False,
         proxy_url: Optional[str] = None,
         proxy_username: Optional[str] = None,
         proxy_password: Optional[str] = None
@@ -193,6 +211,7 @@ class App(BaseApp):
 
             self.width = width
             self.height = height
+            self.show_cursor = show_cursor
 
             context_opts = {'viewport': {'width': width, 'height': height}}
             if user_agent:
@@ -220,6 +239,51 @@ class App(BaseApp):
             self.context = await self.browser.new_context(**context_opts)
             self.page = await self.context.new_page()
             self.elements = {}
+
+    async def _inject_cursor(self):
+        """Inject visible cursor indicator that follows mouse movements."""
+        if not self.page or not self.show_cursor:
+            return
+
+        cursor_script = """
+        (() => {
+            if (document.getElementById('__agentic_cursor__')) return;
+
+            const cursor = document.createElement('div');
+            cursor.id = '__agentic_cursor__';
+            cursor.style.cssText = `
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0.4) 40%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 999999;
+                transform: translate(-50%, -50%);
+                transition: transform 0.05s ease-out;
+            `;
+            document.body.appendChild(cursor);
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            document.addEventListener('mousedown', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                cursor.style.background = 'radial-gradient(circle, rgba(255,100,100,1) 0%, rgba(255,0,0,0.6) 40%, transparent 70%)';
+            });
+
+            document.addEventListener('mouseup', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.background = 'radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0.4) 40%, transparent 70%)';
+            });
+        })();
+        """
+        try:
+            await self.page.evaluate(cursor_script)
+        except Exception as e:
+            print(f"[agentic-browser] Cursor injection warning: {e}")
 
     async def _get_elements(self) -> list[ElementInfo]:
         """Extract interactive elements and assign @e refs."""
@@ -369,6 +433,7 @@ class App(BaseApp):
             height=input_data.height,
             user_agent=input_data.user_agent,
             record_video=input_data.record_video,
+            show_cursor=input_data.show_cursor,
             proxy_url=input_data.proxy_url,
             proxy_username=input_data.proxy_username,
             proxy_password=input_data.proxy_password
@@ -377,6 +442,7 @@ class App(BaseApp):
         try:
             await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(0.5)
+            await self._inject_cursor()
         except Exception as e:
             raise RuntimeError(f"Failed to open URL: {e}")
 
@@ -477,6 +543,7 @@ class App(BaseApp):
             elif action == "back":
                 await self.page.go_back(wait_until='domcontentloaded')
                 await asyncio.sleep(0.3)
+                await self._inject_cursor()
 
             elif action == "wait":
                 wait_ms = input_data.wait_ms or 1000
@@ -487,6 +554,7 @@ class App(BaseApp):
                     raise ValueError("'url' required for goto action")
                 await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
                 await asyncio.sleep(0.5)
+                await self._inject_cursor()
 
             else:
                 raise ValueError(f"Unknown action: {action}")
@@ -496,7 +564,11 @@ class App(BaseApp):
             message = str(e)
 
         snap = await self._snapshot()
-        return InteractOutput(success=success, action=action, message=message, screenshot=snap.screenshot, snapshot=snap)
+        # Extract screenshot for top-level field, clear from snapshot to avoid duplicate File references
+        # TODO: Remove this workaround once engine deduplicates file processing
+        screenshot = snap.screenshot
+        snap.screenshot = None
+        return InteractOutput(success=success, action=action, message=message, screenshot=screenshot, snapshot=snap)
 
     async def screenshot(self, input_data: ScreenshotInput) -> ScreenshotOutput:
         """Take a screenshot."""

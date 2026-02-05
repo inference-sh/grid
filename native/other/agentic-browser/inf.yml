@@ -1,7 +1,8 @@
 name: agentic-browser
-description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video, execute JavaScript. Supports proxy configuration.
+description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video with cursor indicator, execute JavaScript. Supports proxy configuration.
 category: other
 kernel: python-3.11
+env: {}
 resources:
   gpu:
     count: 0

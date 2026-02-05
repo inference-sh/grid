@@ -47,6 +47,81 @@
           "title": "AudioMeta",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -309,6 +384,18 @@
           "description": "Whether browser closed successfully",
           "title": "Success",
           "type": "boolean"
+        },
+        "video": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/File"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Video recording if record_video was enabled"
         },
         "output_meta": {
           "anyOf": [
@@ -784,12 +871,17 @@
           "description": "Action to perform",
           "enum": [
             "click",
+            "dblclick",
             "type",
             "fill",
             "scroll",
             "press",
             "select",
             "hover",
+            "drag",
+            "upload",
+            "check",
+            "uncheck",
             "back",
             "wait",
             "goto"
@@ -828,7 +920,9 @@
             {
               "enum": [
                 "up",
-                "down"
+                "down",
+                "left",
+                "right"
               ],
               "type": "string"
             },
@@ -839,6 +933,19 @@
           "default": null,
           "description": "Scroll direction",
           "title": "Direction"
+        },
+        "scroll_amount": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scroll amount in pixels (default 400)",
+          "title": "Scroll Amount"
         },
         "wait_ms": {
           "anyOf": [
@@ -865,6 +972,35 @@
           "default": null,
           "description": "URL to navigate to (for goto action)",
           "title": "Url"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Target element ref for drag action",
+          "title": "Target Ref"
+        },
+        "file_paths": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "File path(s) for upload action",
+          "title": "File Paths"
         }
       },
       "required": [
@@ -1448,7 +1584,7 @@
             }
           ],
           "default": null,
-          "description": "Page snapshot after action"
+          "description": "Page snapshot after action (also includes screenshot)"
         },
         "output_meta": {
           "anyOf": [
@@ -1505,6 +1641,57 @@
           "default": null,
           "description": "Custom user agent string",
           "title": "User Agent"
+        },
+        "record_video": {
+          "default": false,
+          "description": "Record video of browser session (returned on close)",
+          "title": "Record Video",
+          "type": "boolean"
+        },
+        "show_cursor": {
+          "default": false,
+          "description": "Show cursor indicator in screenshots/video",
+          "title": "Show Cursor",
+          "type": "boolean"
+        },
+        "proxy_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy server URL (e.g., http://proxy:8080)",
+          "title": "Proxy Url"
+        },
+        "proxy_username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy authentication username",
+          "title": "Proxy Username"
+        },
+        "proxy_password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy authentication password",
+          "title": "Proxy Password"
         }
       },
       "required": [
@@ -2075,6 +2262,57 @@
           "default": null,
           "description": "Custom user agent string",
           "title": "User Agent"
+        },
+        "record_video": {
+          "default": false,
+          "description": "Record video of browser session (returned on close)",
+          "title": "Record Video",
+          "type": "boolean"
+        },
+        "show_cursor": {
+          "default": false,
+          "description": "Show cursor indicator in screenshots/video",
+          "title": "Show Cursor",
+          "type": "boolean"
+        },
+        "proxy_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy server URL (e.g., http://proxy:8080)",
+          "title": "Proxy Url"
+        },
+        "proxy_username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy authentication username",
+          "title": "Proxy Username"
+        },
+        "proxy_password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy authentication password",
+          "title": "Proxy Password"
         }
       },
       "required": [
