@@ -7,48 +7,115 @@ description: Track and compare implemented fal.ai models against available endpo
 
 Track implemented fal.ai models and compare against available endpoints.
 
-## Tracking File
+## Database File
 
-**Location:** `../../IMPLEMENTED_MODELS.md`
+**Location:** `../../models.json`
 
-This file maintains a table of all implemented fal.ai models with mappings from our app names to fal.ai endpoint IDs.
+JSON database of all fal.ai model endpoints with implementation tracking.
+
+### Schema
+
+```json
+{
+  "endpoint_id": "fal-ai/flux-1/dev",
+  "category": "text-to-image",
+  "display_name": "FLUX.1 [dev]",
+  "status": "active",
+  "implemented": true,
+  "direct": false
+}
+```
+
+- `implemented`: We have an inference.sh app for this endpoint
+- `direct`: We integrate with the provider directly (google, xai, bytedance) rather than via fal.ai
 
 ## Usage
 
 ### Check if Model is Implemented
 
-1. Read IMPLEMENTED_MODELS.md
-2. Search for the fal.ai endpoint ID in the table
-3. If found, note our app name
+```bash
+jq '.[] | select(.endpoint_id == "fal-ai/flux-1/dev") | .implemented' models.json
+```
 
 ### List All Implemented Models
 
 ```bash
-# Get current implementations
-cat ../../IMPLEMENTED_MODELS.md
+jq '[.[] | select(.implemented)] | .[].endpoint_id' models.json
 ```
 
-### Find Gaps
+### List Unimplemented Models
 
-1. Use `fal-model-search` skill to get available models
-2. Compare against IMPLEMENTED_MODELS.md
-3. Models in fal.ai but not in our list are gaps
-
-### Update Tracking File
-
-When adding a new model:
-1. Add entry to the table in IMPLEMENTED_MODELS.md
-2. Update the "Last Updated" date
-3. Include: our app name, fal endpoint ID, category
-
-## Directory Check
-
-Quick way to see implemented apps:
 ```bash
-ls -d */ | xargs -I {} basename {}
+jq '[.[] | select(.implemented == false)] | .[].endpoint_id' models.json
 ```
 
-Excludes `skills/` directory which contains these skills.
+### Filter by Category
+
+```bash
+# All text-to-image models
+jq '[.[] | select(.category == "text-to-image")]' models.json
+
+# Unimplemented video models
+jq '[.[] | select((.category | test("video")) and .implemented == false)]' models.json
+```
+
+### Direct Integrations
+
+```bash
+# List endpoints we integrate directly (not via fal.ai)
+jq '[.[] | select(.direct)] | .[].endpoint_id' models.json
+
+# Unimplemented direct integration candidates
+jq '[.[] | select(.direct and .implemented == false)]' models.json
+```
+
+### Get Stats
+
+```bash
+jq '{
+  total: length,
+  implemented: [.[] | select(.implemented)] | length,
+  by_category: (group_by(.category) | map({(.[0].category): length}) | add)
+}' models.json
+```
+
+### Mark Model as Implemented
+
+```bash
+jq '(.[] | select(.endpoint_id == "fal-ai/new-model")).implemented = true' models.json > tmp.json && mv tmp.json models.json
+```
+
+### Mark Multiple Models (by prefix)
+
+```bash
+jq '[.[] | if .endpoint_id | startswith("fal-ai/wan-pro") then .implemented = true else . end]' models.json > tmp.json && mv tmp.json models.json
+```
+
+## Updating the Database
+
+To refresh from fal.ai API:
+
+```bash
+# Fetch all pages from API
+curl -s "https://api.fal.ai/v1/models?limit=100" > page1.json
+# ... continue pagination until has_more is false
+
+# Merge preserving implemented status
+python3 << 'EOF'
+import json
+
+# Load existing
+with open('models.json') as f:
+    existing = {m['endpoint_id']: m['implemented'] for m in json.load(f)}
+
+# Load new from API
+# ... process API data ...
+
+# Preserve implemented status
+for m in new_models:
+    m['implemented'] = existing.get(m['endpoint_id'], False)
+EOF
+```
 
 ## Consolidation Strategy
 
@@ -63,16 +130,26 @@ fal.ai often has multiple functions as separate endpoints:
 
 This keeps our ecosystem clean and reduces redundancy.
 
-## Example Workflow
+## Example Workflows
 
-User asks: "Do we have flux implemented?"
+**"Do we have flux implemented?"**
 
-1. Read IMPLEMENTED_MODELS.md
-2. Search for "flux" entries
-3. Report: Yes, we have flux-2-dev, flux-2-dev-turbo, flux-2-klein-lora, flux-dev-lora
+```bash
+jq '[.[] | select(.endpoint_id | test("flux")) | {endpoint_id, implemented}]' models.json
+```
 
-User asks: "What video models are we missing?"
+**"What video models are we missing?"**
 
-1. Use fal-model-search to list all `category=image-to-video` and `category=text-to-video`
-2. Compare against IMPLEMENTED_MODELS.md video entries
-3. Report gaps
+```bash
+jq '[.[] | select((.category | test("video")) and .implemented == false)] | .[].endpoint_id' models.json
+```
+
+**"Coverage by category"**
+
+```bash
+jq 'group_by(.category) | map({
+  category: .[0].category,
+  total: length,
+  implemented: [.[] | select(.implemented)] | length
+}) | sort_by(-.total)' models.json
+```
