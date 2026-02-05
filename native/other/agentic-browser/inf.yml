@@ -1,5 +1,5 @@
 name: agentic-browser
-description: Browser automation for agents. Navigate, interact with @e refs, take screenshots, execute JavaScript.
+description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video, execute JavaScript. Supports proxy configuration.
 category: other
 kernel: python-3.11
 resources:
@@ -10,14 +10,14 @@ resources:
   ram: 4
 functions:
   - name: open
-    description: Navigate to URL and configure browser (entry point)
+    description: Navigate to URL and configure browser. Supports video recording and proxy.
   - name: snapshot
     description: Get page state with @e refs for interactive elements
   - name: interact
-    description: Click, fill, scroll, press keys, goto URL using @e refs
+    description: Click, dblclick, fill, scroll, drag, upload, check/uncheck, press keys, goto URL using @e refs
   - name: screenshot
-    description: Take page screenshot
+    description: Take page screenshot (viewport or full page)
   - name: execute
     description: Run JavaScript code on the page
   - name: close
-    description: Close browser session
+    description: Close browser session and return video if recording

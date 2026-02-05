@@ -364,7 +364,15 @@ class App(BaseApp):
 
     async def open(self, input_data: OpenInput) -> OpenOutput:
         """Navigate to URL and configure browser."""
-        await self._ensure_context(input_data.width, input_data.height, input_data.user_agent)
+        await self._ensure_context(
+            width=input_data.width,
+            height=input_data.height,
+            user_agent=input_data.user_agent,
+            record_video=input_data.record_video,
+            proxy_url=input_data.proxy_url,
+            proxy_username=input_data.proxy_username,
+            proxy_password=input_data.proxy_password
+        )
 
         try:
             await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
@@ -398,6 +406,11 @@ class App(BaseApp):
                 await self.page.click(selector, timeout=5000)
                 await asyncio.sleep(0.3)
 
+            elif action == "dblclick":
+                selector = self._parse_ref(input_data.ref)
+                await self.page.dblclick(selector, timeout=5000)
+                await asyncio.sleep(0.3)
+
             elif action == "type":
                 if input_data.text is None:
                     raise ValueError("'text' required for type action")
@@ -411,8 +424,15 @@ class App(BaseApp):
 
             elif action == "scroll":
                 direction = input_data.direction or "down"
-                delta = 400 if direction == "down" else -400
-                await self.page.mouse.wheel(0, delta)
+                amount = input_data.scroll_amount or 400
+                if direction == "down":
+                    await self.page.mouse.wheel(0, amount)
+                elif direction == "up":
+                    await self.page.mouse.wheel(0, -amount)
+                elif direction == "right":
+                    await self.page.mouse.wheel(amount, 0)
+                elif direction == "left":
+                    await self.page.mouse.wheel(-amount, 0)
                 await asyncio.sleep(0.2)
 
             elif action == "press":
@@ -429,6 +449,30 @@ class App(BaseApp):
             elif action == "hover":
                 selector = self._parse_ref(input_data.ref)
                 await self.page.hover(selector, timeout=5000)
+
+            elif action == "drag":
+                if input_data.target_ref is None:
+                    raise ValueError("'target_ref' required for drag action")
+                source_selector = self._parse_ref(input_data.ref)
+                target_selector = self._parse_ref(input_data.target_ref)
+                await self.page.drag_and_drop(source_selector, target_selector)
+                await asyncio.sleep(0.3)
+
+            elif action == "upload":
+                selector = self._parse_ref(input_data.ref)
+                if input_data.file_paths is None or len(input_data.file_paths) == 0:
+                    raise ValueError("'file_paths' required for upload action")
+                files = input_data.file_paths if len(input_data.file_paths) > 1 else input_data.file_paths[0]
+                await self.page.set_input_files(selector, files)
+                await asyncio.sleep(0.3)
+
+            elif action == "check":
+                selector = self._parse_ref(input_data.ref)
+                await self.page.check(selector, timeout=5000)
+
+            elif action == "uncheck":
+                selector = self._parse_ref(input_data.ref)
+                await self.page.uncheck(selector, timeout=5000)
 
             elif action == "back":
                 await self.page.go_back(wait_until='domcontentloaded')
@@ -483,17 +527,37 @@ class App(BaseApp):
     async def close(self, input_data: CloseInput) -> CloseOutput:
         """Close browser session."""
         success = True
+        video_file = None
+
         try:
+            # Get video path before closing (if recording)
+            video_path = None
+            if self.recording_video and self.page:
+                try:
+                    video = self.page.video
+                    if video:
+                        video_path = await video.path()
+                except Exception as e:
+                    print(f"[agentic-browser] Error getting video path: {e}")
+
             if self.context:
                 await self.context.close()
                 self.context = None
                 self.page = None
+
+            # Return video file if we were recording
+            if video_path and Path(video_path).exists():
+                video_file = File(path=video_path)
+
             self.elements = {}
+            self.recording_video = False
+            self.video_dir = None
+
         except Exception as e:
             print(f"[agentic-browser] Close error: {e}")
             success = False
 
-        return CloseOutput(success=success)
+        return CloseOutput(success=success, video=video_file)
 
     async def run(self, input_data: OpenInput) -> OpenOutput:
         """Default function - same as open."""
