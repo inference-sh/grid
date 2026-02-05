@@ -369,14 +369,11 @@
       "type": "string"
     }
   },
+  "description": "Output schema for Dia TTS.",
   "properties": {
-    "images": {
-      "description": "Generated/edited images",
-      "items": {
-        "$ref": "#/$defs/File"
-      },
-      "title": "Images",
-      "type": "array"
+    "audio": {
+      "$ref": "#/$defs/File",
+      "description": "The generated speech audio"
     },
     "output_meta": {
       "anyOf": [
@@ -392,7 +389,7 @@
     }
   },
   "required": [
-    "images"
+    "audio"
   ],
   "title": "AppOutput",
   "type": "object"

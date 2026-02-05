@@ -1,11 +1,30 @@
+"""
+Reve - Image Generation, Editing, and Remix
+
+Consolidates:
+- fal-ai/reve/text-to-image - Generate from text prompt
+- fal-ai/reve/edit - Edit existing image with prompt
+- fal-ai/reve/remix - Style remix of existing image
+"""
+
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
 from typing import Optional, List
 from enum import Enum
-import fal_client
-import tempfile
-import os
 import logging
+
+from .fal_helper import setup_fal_client, run_fal_model, download_image
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+
+class ModeEnum(str, Enum):
+    """Operation mode."""
+    auto = "auto"
+    edit = "edit"
+    remix = "remix"
+    text_to_image = "text-to-image"
+
 
 class OutputFormatEnum(str, Enum):
     """Output format options."""
@@ -13,145 +32,88 @@ class OutputFormatEnum(str, Enum):
     jpeg = "jpeg"
     webp = "webp"
 
+
 class AppInput(BaseAppInput):
-    prompt: str = Field(
-        description="The text description of how to edit the provided image. Example: 'Give him a friend'"
+    prompt: str = Field(description="Text prompt for generation or editing")
+    image: Optional[File] = Field(
+        default=None,
+        description="Input image for edit/remix modes. If not provided, uses text-to-image mode."
     )
-    image: File = Field(
-        description="The reference image to edit. Supported formats: PNG, JPEG, WebP, AVIF, and HEIF."
+    mode: ModeEnum = Field(
+        default=ModeEnum.auto,
+        description="Operation mode: auto (detect from inputs), edit, remix, or text-to-image"
     )
     output_format: OutputFormatEnum = Field(
-        OutputFormatEnum.png,
-        description="Output format for the generated image. Default: png"
+        default=OutputFormatEnum.png,
+        description="Output image format"
     )
-    sync_mode: bool = Field(
-        False,
-        description="If True, the media will be returned as a data URI and the output data won't be available in the request history."
-    )
+
 
 class AppOutput(BaseAppOutput):
-    images: List[File] = Field(description="The edited image")
+    images: List[File] = Field(description="Generated/edited images")
+
 
 class App(BaseApp):
-    async def setup(self, metadata):
-        """Initialize model and configuration."""
-        # Configure logging
-        logging.basicConfig(level=logging.INFO)
+    async def setup(self):
+        """Initialize the application."""
         self.logger = logging.getLogger(__name__)
-
-        # Store metadata for later use
-        self.metadata = metadata
-
-        # Model endpoint
-        self.model_id = "fal-ai/reve/edit"
-
-        self.logger.info("Reve Image Editor initialized successfully")
-
-    def _prepare_model_request(self, input_data: AppInput) -> dict:
-        """Prepare the request payload for model inference."""
-        # Upload image file to get URL
-
-        # Prepare request data
-        request_data = {
-            "prompt": input_data.prompt,
-            "image_url": input_data.image.uri,
-            "output_format": input_data.output_format.value,
-            "sync_mode": input_data.sync_mode,
+        self.endpoints = {
+            "text-to-image": "fal-ai/reve/text-to-image",
+            "edit": "fal-ai/reve/edit",
+            "remix": "fal-ai/reve/remix",
         }
+        self.logger.info("Reve app initialized")
 
-        return request_data
+    def _get_mode(self, input_data: AppInput) -> str:
+        """Determine operation mode."""
+        if input_data.mode != ModeEnum.auto:
+            return input_data.mode.value
+        # Auto-detect: no image = text-to-image, with image = edit
+        if input_data.image:
+            return "edit"
+        return "text-to-image"
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
-        """Edit image using Reve model."""
+    def _build_request(self, input_data: AppInput, mode: str) -> dict:
+        """Build request payload."""
+        request = {
+            "prompt": input_data.prompt,
+            "output_format": input_data.output_format.value,
+        }
+        if input_data.image and mode in ("edit", "remix"):
+            request["image_url"] = input_data.image.uri
+        return request
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Run image generation/editing."""
         try:
-            # Validate input file
-            if not input_data.image.exists():
-                raise RuntimeError(f"Input image does not exist at path: {input_data.image.path}")
+            setup_fal_client()
 
-            # Set up API key from environment
-            api_key = os.environ.get("FAL_KEY")
-            if not api_key:
-                raise RuntimeError(
-                    "FAL_KEY environment variable is required for model access."
-                )
+            mode = self._get_mode(input_data)
+            model_id = self.endpoints[mode]
 
-            # Configure client with API key
-            fal_client.api_key = api_key
+            # Validate: edit/remix need image
+            if mode in ("edit", "remix") and not input_data.image:
+                raise ValueError(f"Mode '{mode}' requires an input image")
 
-            self.logger.info(f"Starting image editing with prompt: {input_data.prompt[:100]}...")
-            self.logger.info(f"Processing input image: {input_data.image.path}")
+            self.logger.info(f"Mode: {mode}, Endpoint: {model_id}")
+            self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
 
-            # Prepare request data for model
-            request_data = self._prepare_model_request(input_data)
+            request_data = self._build_request(input_data, mode)
+            result = run_fal_model(model_id, request_data, self.logger)
 
-            self.logger.info("Initializing model inference...")
-
-            # Define progress callback
-            def on_queue_update(update):
-                if isinstance(update, fal_client.InProgress):
-                    for log in update.logs:
-                        self.logger.info(f"Model: {log['message']}")
-
-            # Run model inference with progress logging
-            result = fal_client.subscribe(
-                self.model_id,
-                arguments=request_data,
-                with_logs=True,
-                on_queue_update=on_queue_update,
-            )
-
-            self.logger.info("Image editing completed successfully")
-
-            # Process the generated images
+            # Download generated images
             output_images = []
-            for i, image_data in enumerate(result["images"]):
-                self.logger.info(f"Processing generated image {i+1}...")
+            for img_data in result.get("images", []):
+                img_path = download_image(img_data["url"], self.logger)
+                output_images.append(File(path=img_path))
 
-                # Create temporary file for the image
-                file_extension = f".{input_data.output_format.value}"
-                with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as tmp_file:
-                    image_path = tmp_file.name
-
-                # Download image content
-                import requests
-                if input_data.sync_mode and "data:" in image_data.get("url", ""):
-                    # Handle data URI format
-                    import base64
-                    data_uri = image_data["url"]
-                    header, encoded = data_uri.split(",", 1)
-                    image_bytes = base64.b64decode(encoded)
-                    with open(image_path, "wb") as f:
-                        f.write(image_bytes)
-                else:
-                    # Handle regular URL
-                    image_url = image_data["url"]
-                    response = requests.get(image_url, stream=True)
-                    response.raise_for_status()
-
-                    with open(image_path, "wb") as f:
-                        for chunk in response.iter_content(chunk_size=8192):
-                            f.write(chunk)
-
-                output_images.append(File(path=image_path))
-
-            self.logger.info(f"Image processing completed successfully")
-
-            # Build output metadata for pricing
-            output_meta = OutputMeta(
-                outputs=[
-                    ImageMeta(
-                        count=len(output_images)
-                    )
-                ]
-            )
-
-            # Prepare output
             return AppOutput(
                 images=output_images,
-                output_meta=output_meta
+                output_meta=OutputMeta(
+                    outputs=[ImageMeta(count=len(output_images))]
+                )
             )
 
         except Exception as e:
-            self.logger.error(f"Error during image editing: {e}")
-            raise RuntimeError(f"Image editing failed: {str(e)}")
-
+            self.logger.error(f"Error: {e}")
+            raise RuntimeError(f"Reve failed: {str(e)}")

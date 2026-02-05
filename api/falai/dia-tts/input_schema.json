@@ -74,36 +74,16 @@
           "type": "string"
         }
       ]
-    },
-    "ModeEnum": {
-      "description": "Operation mode.",
-      "enum": [
-        "auto",
-        "edit",
-        "remix",
-        "text-to-image"
-      ],
-      "title": "ModeEnum",
-      "type": "string"
-    },
-    "OutputFormatEnum": {
-      "description": "Output format options.",
-      "enum": [
-        "png",
-        "jpeg",
-        "webp"
-      ],
-      "title": "OutputFormatEnum",
-      "type": "string"
     }
   },
+  "description": "Input schema for Dia TTS.",
   "properties": {
-    "prompt": {
-      "description": "Text prompt for generation or editing",
-      "title": "Prompt",
+    "text": {
+      "description": "The text to convert to speech. Use [S1], [S2] for multi-speaker dialogue and (laughs), (sighs) for nonverbals.",
+      "title": "Text",
       "type": "string"
     },
-    "image": {
+    "ref_audio": {
       "anyOf": [
         {
           "$ref": "#/$defs/File"
@@ -113,21 +93,24 @@
         }
       ],
       "default": null,
-      "description": "Input image for edit/remix modes. If not provided, uses text-to-image mode."
+      "description": "Reference audio file for voice cloning. If provided, ref_text is also required."
     },
-    "mode": {
-      "$ref": "#/$defs/ModeEnum",
-      "default": "auto",
-      "description": "Operation mode: auto (detect from inputs), edit, remix, or text-to-image"
-    },
-    "output_format": {
-      "$ref": "#/$defs/OutputFormatEnum",
-      "default": "png",
-      "description": "Output image format"
+    "ref_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Transcript of the reference audio. Required when using voice cloning.",
+      "title": "Ref Text"
     }
   },
   "required": [
-    "prompt"
+    "text"
   ],
   "title": "AppInput",
   "type": "object"
