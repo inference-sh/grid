@@ -50,3 +50,4 @@ Thumbs.db
 !inference.py
 
 test
+*.fal.key
