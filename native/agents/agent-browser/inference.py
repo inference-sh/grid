@@ -162,9 +162,9 @@ class App(BaseApp):
             text=True
         )
         elapsed = time.time() - start
-        print(f"[agentic-browser] playwright install ffmpeg: {elapsed:.2f}s")
+        print(f"[agent-browser] playwright install ffmpeg: {elapsed:.2f}s")
         if result.returncode != 0:
-            print(f"[agentic-browser] ffmpeg install warning: {result.stderr[:200]}")
+            print(f"[agent-browser] ffmpeg install warning: {result.stderr[:200]}")
 
         self.playwright = await async_playwright().start()
         self.browser: Optional[Browser] = await self.playwright.chromium.launch(
@@ -181,7 +181,7 @@ class App(BaseApp):
         self.video_dir: Optional[str] = None
         self.recording_video: bool = False
         self.show_cursor: bool = False
-        print("[agentic-browser] Setup complete")
+        print("[agent-browser] Setup complete")
 
     def _parse_ref(self, ref: str) -> str:
         """Parse @e ref and return selector."""
@@ -228,7 +228,7 @@ class App(BaseApp):
 
             # Video recording
             if record_video:
-                self.video_dir = tempfile.mkdtemp(prefix='agentic-browser-video-')
+                self.video_dir = tempfile.mkdtemp(prefix='agent-browser-video-')
                 context_opts['record_video_dir'] = self.video_dir
                 context_opts['record_video_size'] = {'width': width, 'height': height}
                 self.recording_video = True
@@ -283,7 +283,7 @@ class App(BaseApp):
         try:
             await self.page.evaluate(cursor_script)
         except Exception as e:
-            print(f"[agentic-browser] Cursor injection warning: {e}")
+            print(f"[agent-browser] Cursor injection warning: {e}")
 
     async def _get_elements(self) -> list[ElementInfo]:
         """Extract interactive elements and assign @e refs."""
@@ -390,7 +390,7 @@ class App(BaseApp):
                 ))
             return result
         except Exception as e:
-            print(f"[agentic-browser] Error getting elements: {e}")
+            print(f"[agent-browser] Error getting elements: {e}")
             return []
 
     async def _screenshot(self, full_page: bool = False) -> Optional[File]:
@@ -406,7 +406,7 @@ class App(BaseApp):
             await self.page.screenshot(path=path, full_page=full_page)
             return File(path=path)
         except Exception as e:
-            print(f"[agentic-browser] Screenshot error: {e}")
+            print(f"[agent-browser] Screenshot error: {e}")
             Path(path).unlink(missing_ok=True)
             return None
 
@@ -610,7 +610,7 @@ class App(BaseApp):
                     if video:
                         video_path = await video.path()
                 except Exception as e:
-                    print(f"[agentic-browser] Error getting video path: {e}")
+                    print(f"[agent-browser] Error getting video path: {e}")
 
             if self.context:
                 await self.context.close()
@@ -626,7 +626,7 @@ class App(BaseApp):
             self.video_dir = None
 
         except Exception as e:
-            print(f"[agentic-browser] Close error: {e}")
+            print(f"[agent-browser] Close error: {e}")
             success = False
 
         return CloseOutput(success=success, video=video_file)
@@ -645,5 +645,5 @@ class App(BaseApp):
             if self.playwright:
                 await self.playwright.stop()
         except Exception as e:
-            print(f"[agentic-browser] Unload error: {e}")
-        print("[agentic-browser] Unload complete")
+            print(f"[agent-browser] Unload error: {e}")
+        print("[agent-browser] Unload complete")

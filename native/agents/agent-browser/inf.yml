@@ -1,4 +1,4 @@
-name: agentic-browser
+name: agent-browser
 description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video with cursor indicator, execute JavaScript. Supports proxy configuration.
 category: other
 kernel: python-3.11
