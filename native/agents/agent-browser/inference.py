@@ -426,6 +426,16 @@ class App(BaseApp):
             screenshot=screenshot
         )
 
+    def _normalize_url(self, url: str) -> str:
+        """Normalize URL by prepending https:// if no protocol specified."""
+        if not url:
+            return url
+        # Check if URL already has a protocol
+        if url.startswith(('http://', 'https://', 'file://', 'data:')):
+            return url
+        # Prepend https:// for URLs like "www.example.com" or "example.com"
+        return f"https://{url}"
+
     async def open(self, input_data: OpenInput) -> OpenOutput:
         """Navigate to URL and configure browser."""
         await self._ensure_context(
@@ -439,8 +449,9 @@ class App(BaseApp):
             proxy_password=input_data.proxy_password
         )
 
+        url = self._normalize_url(input_data.url)
         try:
-            await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
+            await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(0.5)
             await self._inject_cursor()
         except Exception as e:
@@ -552,7 +563,8 @@ class App(BaseApp):
             elif action == "goto":
                 if input_data.url is None:
                     raise ValueError("'url' required for goto action")
-                await self.page.goto(input_data.url, wait_until='domcontentloaded', timeout=30000)
+                url = self._normalize_url(input_data.url)
+                await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
                 await asyncio.sleep(0.5)
                 await self._inject_cursor()
 
