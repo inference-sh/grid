@@ -15,13 +15,13 @@ MAX_VIDEO_SIZE = 512 * 1024 * 1024
 
 class AppInput(BaseAppInput):
     text: str = Field(description="Post text (max 280 characters)", min_length=1, max_length=280)
-    reply_to_post_id: Optional[str] = Field(None, description="Post ID to reply to")
-    quote_post_id: Optional[str] = Field(None, description="Post ID to quote")
+    reply_to_tweet_id: Optional[str] = Field(None, description="Tweet ID to reply to")
+    quote_tweet_id: Optional[str] = Field(None, description="Tweet ID to quote")
     media: Optional[List[File]] = Field(None, description="Media files (up to 4 images, or 1 video/GIF)")
 
 
 class AppOutput(BaseAppOutput):
-    post_id: str = Field(description="ID of the created post")
+    tweet_id: str = Field(description="ID of the created tweet")
     post_url: str = Field(description="URL of the created post")
 
 
@@ -118,15 +118,15 @@ class App(BaseApp):
             payload = {"text": input_data.text}
             if media_ids:
                 payload["media"] = {"media_ids": media_ids}
-            if input_data.reply_to_post_id:
-                payload["reply"] = {"in_reply_to_tweet_id": input_data.reply_to_post_id}
-            if input_data.quote_post_id:
-                payload["quote_tweet_id"] = input_data.quote_post_id
+            if input_data.reply_to_tweet_id:
+                payload["reply"] = {"in_reply_to_tweet_id": input_data.reply_to_tweet_id}
+            if input_data.quote_tweet_id:
+                payload["quote_tweet_id"] = input_data.quote_tweet_id
 
             response = self.client.posts.create(body=payload)
-            post_id = response.data["id"]
+            tweet_id = response.data["id"]
 
-            return AppOutput(post_id=post_id, post_url=f"https://x.com/i/web/status/{post_id}")
+            return AppOutput(tweet_id=tweet_id, post_url=f"https://x.com/i/web/status/{tweet_id}")
         except ValueError:
             raise
         except Exception as e:

@@ -295,9 +295,9 @@
     }
   },
   "properties": {
-    "post_id": {
-      "description": "ID of the created post",
-      "title": "Post Id",
+    "tweet_id": {
+      "description": "ID of the created tweet",
+      "title": "Tweet Id",
       "type": "string"
     },
     "post_url": {
@@ -319,7 +319,7 @@
     }
   },
   "required": [
-    "post_id",
+    "tweet_id",
     "post_url"
   ],
   "title": "AppOutput",

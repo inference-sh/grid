@@ -87,7 +87,7 @@
           "title": "Text",
           "type": "string"
         },
-        "reply_to_post_id": {
+        "reply_to_tweet_id": {
           "anyOf": [
             {
               "type": "string"
@@ -97,10 +97,10 @@
             }
           ],
           "default": null,
-          "description": "Post ID to reply to",
-          "title": "Reply To Post Id"
+          "description": "Tweet ID to reply to",
+          "title": "Reply To Tweet Id"
         },
-        "quote_post_id": {
+        "quote_tweet_id": {
           "anyOf": [
             {
               "type": "string"
@@ -110,8 +110,8 @@
             }
           ],
           "default": null,
-          "description": "Post ID to quote",
-          "title": "Quote Post Id"
+          "description": "Tweet ID to quote",
+          "title": "Quote Tweet Id"
         },
         "media": {
           "anyOf": [
@@ -433,9 +433,9 @@
         }
       },
       "properties": {
-        "post_id": {
-          "description": "ID of the created post",
-          "title": "Post Id",
+        "tweet_id": {
+          "description": "ID of the created tweet",
+          "title": "Tweet Id",
           "type": "string"
         },
         "post_url": {
@@ -457,7 +457,7 @@
         }
       },
       "required": [
-        "post_id",
+        "tweet_id",
         "post_url"
       ],
       "title": "AppOutput",

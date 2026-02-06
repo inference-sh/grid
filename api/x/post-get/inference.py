@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class AppInput(BaseAppInput):
-    post_id: str = Field(description="The ID of the post to retrieve")
+    tweet_id: str = Field(description="The ID of the tweet to retrieve")
 
 
 class AppOutput(BaseAppOutput):
@@ -33,7 +33,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
             response = self.client.posts.get(
-                id=input_data.post_id,
+                id=input_data.tweet_id,
                 tweet_fields=["created_at", "public_metrics", "author_id"]
             )
 

@@ -300,9 +300,9 @@
       "title": "Deleted",
       "type": "boolean"
     },
-    "post_id": {
-      "description": "ID of the deleted post",
-      "title": "Post Id",
+    "tweet_id": {
+      "description": "ID of the deleted tweet",
+      "title": "Tweet Id",
       "type": "string"
     },
     "output_meta": {
@@ -320,7 +320,7 @@
   },
   "required": [
     "deleted",
-    "post_id"
+    "tweet_id"
   ],
   "title": "AppOutput",
   "type": "object"

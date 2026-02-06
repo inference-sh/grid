@@ -5,12 +5,12 @@ from pydantic import Field
 
 
 class AppInput(BaseAppInput):
-    post_id: str = Field(description="The ID of the post to like")
+    tweet_id: str = Field(description="The ID of the tweet to like")
 
 
 class AppOutput(BaseAppOutput):
     liked: bool = Field(description="Whether the post was successfully liked")
-    post_id: str = Field(description="ID of the liked post")
+    tweet_id: str = Field(description="ID of the liked tweet")
 
 
 class App(BaseApp):
@@ -24,14 +24,14 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            response = self.client.likes.create(tweet_id=input_data.post_id)
+            response = self.client.likes.create(tweet_id=input_data.tweet_id)
             liked = response.data.get("liked", True)
 
-            return AppOutput(liked=liked, post_id=input_data.post_id)
+            return AppOutput(liked=liked, tweet_id=input_data.tweet_id)
         except Exception as e:
             error_msg = str(e).lower()
             if "already liked" in error_msg:
-                return AppOutput(liked=True, post_id=input_data.post_id)
+                return AppOutput(liked=True, tweet_id=input_data.tweet_id)
             raise ValueError(f"X API error: {e}")
 
     async def unload(self):

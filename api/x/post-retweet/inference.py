@@ -5,12 +5,12 @@ from pydantic import Field
 
 
 class AppInput(BaseAppInput):
-    post_id: str = Field(description="The ID of the post to retweet")
+    tweet_id: str = Field(description="The ID of the tweet to retweet")
 
 
 class AppOutput(BaseAppOutput):
     retweeted: bool = Field(description="Whether the post was successfully retweeted")
-    post_id: str = Field(description="ID of the retweeted post")
+    tweet_id: str = Field(description="ID of the retweeted tweet")
 
 
 class App(BaseApp):
@@ -24,14 +24,14 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            response = self.client.reposts.create(tweet_id=input_data.post_id)
+            response = self.client.reposts.create(tweet_id=input_data.tweet_id)
             retweeted = response.data.get("retweeted", True)
 
-            return AppOutput(retweeted=retweeted, post_id=input_data.post_id)
+            return AppOutput(retweeted=retweeted, tweet_id=input_data.tweet_id)
         except Exception as e:
             error_msg = str(e).lower()
             if "already retweeted" in error_msg:
-                return AppOutput(retweeted=True, post_id=input_data.post_id)
+                return AppOutput(retweeted=True, tweet_id=input_data.tweet_id)
             raise ValueError(f"X API error: {e}")
 
     async def unload(self):

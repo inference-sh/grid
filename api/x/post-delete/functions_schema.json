@@ -3,14 +3,14 @@
     "description": "",
     "input_schema": {
       "properties": {
-        "post_id": {
-          "description": "The ID of the post to delete",
-          "title": "Post Id",
+        "tweet_id": {
+          "description": "The ID of the tweet to delete",
+          "title": "Tweet Id",
           "type": "string"
         }
       },
       "required": [
-        "post_id"
+        "tweet_id"
       ],
       "title": "AppInput",
       "type": "object"
@@ -317,9 +317,9 @@
           "title": "Deleted",
           "type": "boolean"
         },
-        "post_id": {
-          "description": "ID of the deleted post",
-          "title": "Post Id",
+        "tweet_id": {
+          "description": "ID of the deleted tweet",
+          "title": "Tweet Id",
           "type": "string"
         },
         "output_meta": {
@@ -337,7 +337,7 @@
       },
       "required": [
         "deleted",
-        "post_id"
+        "tweet_id"
       ],
       "title": "AppOutput",
       "type": "object"

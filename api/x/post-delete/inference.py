@@ -5,12 +5,12 @@ from pydantic import Field
 
 
 class AppInput(BaseAppInput):
-    post_id: str = Field(description="The ID of the post to delete")
+    tweet_id: str = Field(description="The ID of the tweet to delete")
 
 
 class AppOutput(BaseAppOutput):
     deleted: bool = Field(description="Whether the post was successfully deleted")
-    post_id: str = Field(description="ID of the deleted post")
+    tweet_id: str = Field(description="ID of the deleted tweet")
 
 
 class App(BaseApp):
@@ -24,10 +24,10 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            response = self.client.posts.delete(id=input_data.post_id)
+            response = self.client.posts.delete(id=input_data.tweet_id)
             deleted = response.data.get("deleted", True)
 
-            return AppOutput(deleted=deleted, post_id=input_data.post_id)
+            return AppOutput(deleted=deleted, tweet_id=input_data.tweet_id)
         except Exception as e:
             raise ValueError(f"X API error: {e}")
 

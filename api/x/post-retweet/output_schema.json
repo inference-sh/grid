@@ -300,9 +300,9 @@
       "title": "Retweeted",
       "type": "boolean"
     },
-    "post_id": {
-      "description": "ID of the retweeted post",
-      "title": "Post Id",
+    "tweet_id": {
+      "description": "ID of the retweeted tweet",
+      "title": "Tweet Id",
       "type": "string"
     },
     "output_meta": {
@@ -320,7 +320,7 @@
   },
   "required": [
     "retweeted",
-    "post_id"
+    "tweet_id"
   ],
   "title": "AppOutput",
   "type": "object"

@@ -1,13 +1,13 @@
 {
   "properties": {
-    "post_id": {
-      "description": "The ID of the post to retrieve",
-      "title": "Post Id",
+    "tweet_id": {
+      "description": "The ID of the tweet to retrieve",
+      "title": "Tweet Id",
       "type": "string"
     }
   },
   "required": [
-    "post_id"
+    "tweet_id"
   ],
   "title": "AppInput",
   "type": "object"
