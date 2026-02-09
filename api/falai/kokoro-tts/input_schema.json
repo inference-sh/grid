@@ -1,0 +1,53 @@
+{
+  "description": "Input schema for Kokoro TTS.",
+  "properties": {
+    "prompt": {
+      "description": "Text to convert to speech.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "language": {
+      "default": "american-english",
+      "description": "Language for speech generation.",
+      "enum": [
+        "american-english",
+        "british-english",
+        "french",
+        "spanish",
+        "japanese",
+        "italian",
+        "hindi",
+        "brazilian-portuguese",
+        "mandarin-chinese"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "voice": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice ID. If not set, uses the default voice for the selected language. See docs for available voices per language.",
+      "title": "Voice"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speed of the generated audio. Default is 1.0.",
+      "maximum": 5.0,
+      "minimum": 0.1,
+      "title": "Speed",
+      "type": "number"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
