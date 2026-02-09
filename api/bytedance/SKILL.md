@@ -39,7 +39,7 @@ client = Ark(
 
 ## Using the Helper Module
 
-copy the shared helper (byteplus_helper.py) into the app dir and import helper methods for common operations:
+symlink the shared helper (byteplus_helper.py) into the app dir and import helper methods for common operations:
 
 ```python
 from .byteplus_helper import (

@@ -74,7 +74,7 @@ This plan covers:
    - No polling needed (synchronous)
    - Returns image URL directly
 
-2. **Copy seedream-4-5 as template** (most feature-rich):
+2. **Symlink seedream-4-5 as template** (most feature-rich):
    - Supports both T2I and I2I modes
    - Then derive others from it
 
@@ -88,11 +88,11 @@ This plan covers:
 ./image/
 ├── seedream-4-5/
 │   ├── inference.py
-│   ├── byteplus_helper.py (copy from parent)
+│   ├── byteplus_helper.py (symlink from parent)
 │   ├── inf.yml
 │   └── requirements.txt
 ├── seedream-4-0/
-│   └── ... (copy, adjust model ID and sizes)
+│   └── ... (symlink, adjust model ID and sizes)
 ├── seededit-3-0-i2i/
 │   └── ... (image required, guidance_scale)
 └── seedream-3-0-t2i/
@@ -141,9 +141,9 @@ This plan covers:
 2. Create first model `seedream-4-5` as template:
    - Write `inference.py` with `client.images.generate()` pattern
    - Write `inf.yml` with category: image
-   - Copy `byteplus_helper.py` and `requirements.txt`
+   - Symlink `byteplus_helper.py` and `requirements.txt`
 3. Test pattern works
-4. Copy and adjust for `seedream-4-0`
+4. Derive and adjust for `seedream-4-0`
 5. Create `seededit-3-0-i2i` (image required, guidance_scale)
 6. Create `seedream-3-0-t2i` (text only)
 

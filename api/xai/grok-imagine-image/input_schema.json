@@ -101,15 +101,22 @@
     },
     "aspect_ratio": {
       "default": "1:1",
-      "description": "Aspect ratio of the generated image.",
+      "description": "Aspect ratio of the generated image. Use 'auto' to automatically match the input image's aspect ratio.",
       "enum": [
+        "auto",
         "1:1",
         "16:9",
         "9:16",
         "4:3",
         "3:4",
         "3:2",
-        "2:3"
+        "2:3",
+        "2:1",
+        "1:2",
+        "19.5:9",
+        "9:19.5",
+        "20:9",
+        "9:20"
       ],
       "title": "Aspect Ratio",
       "type": "string"

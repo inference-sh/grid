@@ -87,7 +87,7 @@ For general inference.sh development not specific to fal.ai:
 ../
 ├── .fal.key                    # fal.ai API key
 ├── IMPLEMENTED_MODELS.md       # Tracking file
-├── fal_helper.py               # Shared helper (copy to each app)
+├── fal_helper.py               # Shared helper (symlinked into each app)
 ├── _skills/                    # These skills
 │   ├── SKILL.md                # This file
 │   ├── fal-add-model/

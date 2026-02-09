@@ -7,7 +7,7 @@ This directory contains inference.sh app implementations for Google Vertex AI mo
 ```
 vertex/
 ├── DOCS.md                    # This documentation
-├── vertex_helper.py           # Shared utilities (copy into each model dir)
+├── vertex_helper.py           # Shared utilities (symlinked into each model dir)
 ├── gemini-2-5-flash-image/    # Gemini 2.5 Flash image model
 ├── gemini-3-pro-image-preview/ # Gemini 3 Pro image model
 ├── veo-3-1-fast/              # Veo 3.1 Fast video model
@@ -39,12 +39,12 @@ Each model directory needs:
 | `requirements.lock` | Locked dependency versions |
 | `__init__.py` | Empty file for Python module |
 
-### 3. Copy Helper Module
+### 3. Symlink Helper Module
 
-Copy `vertex_helper.py` into your model directory:
+Symlink `vertex_helper.py` into your model directory:
 
 ```bash
-cp ../vertex_helper.py .
+ln -s ../vertex_helper.py .
 ```
 
 Then import what you need:

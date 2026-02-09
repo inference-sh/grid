@@ -369,7 +369,7 @@
       "type": "string"
     }
   },
-  "description": "Output schema for Grok Imagine image generation.",
+  "description": "Output schema for Grok Imagine Pro image generation.",
   "properties": {
     "images": {
       "description": "The generated image files.",
