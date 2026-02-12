@@ -18,6 +18,7 @@ from .xai_helper import (
     setup_logger,
     encode_image_base64,
     get_video_dimensions,
+    retry_on_rate_limit,
 )
 
 
@@ -115,9 +116,12 @@ class App(BaseApp):
                 else:
                     raise RuntimeError("Video editing requires a publicly accessible video URL.")
 
-            # Generate video (SDK handles polling automatically)
+            # Generate video (SDK handles polling automatically, with 429 retry)
             self.logger.info("Starting video generation (SDK will poll automatically)...")
-            response = self.client.video.generate(**kwargs)
+            response = await retry_on_rate_limit(
+                lambda: self.client.video.generate(**kwargs),
+                logger=self.logger,
+            )
 
             # Download video from URL
             video_url = response.url

@@ -8,15 +8,20 @@ This module provides shared functionality for xAI model integrations:
 - Auto aspect ratio detection from input images
 """
 
+import asyncio
 import base64
 import os
 import logging
+import random
 import tempfile
 import math
-from typing import Optional, Literal
+from dataclasses import dataclass
+from typing import Optional, Literal, Callable, TypeVar
 
 from inferencesh import File
 from xai_sdk import Client
+
+T = TypeVar('T')
 
 
 # =============================================================================
@@ -110,6 +115,128 @@ VIDEO_ASPECT_DIMENSIONS = {
         "1:1": (480, 480),
     },
 }
+
+
+# =============================================================================
+# RETRY CONFIGURATION
+# =============================================================================
+
+@dataclass
+class RetryConfig:
+    """
+    Configuration for exponential backoff retry on 429 rate limit errors.
+
+    Delay schedule with defaults (base_delay_ms=300, multiplier=2, max_attempts=6):
+        Attempt 1: 0-300ms
+        Attempt 2: 0-600ms
+        Attempt 3: 0-1.2s
+        Attempt 4: 0-2.4s
+        Attempt 5: 0-4.8s
+        Attempt 6: 0-9.6s
+
+    The delay uses jitter: actual delay is random between 0 and max_delay for each attempt.
+    max_delay = base_delay_ms * (multiplier ** (attempt - 1))
+    """
+    max_attempts: int = 6
+    base_delay_ms: float = 300.0
+    multiplier: float = 2.0
+
+    def get_max_delay_ms(self, attempt: int) -> float:
+        """Calculate max delay for a given attempt number (1-indexed)."""
+        return self.base_delay_ms * (self.multiplier ** (attempt - 1))
+
+    def get_jittered_delay_s(self, attempt: int) -> float:
+        """Get a random delay between 0 and max_delay for the given attempt."""
+        max_delay_ms = self.get_max_delay_ms(attempt)
+        delay_ms = random.uniform(0, max_delay_ms)
+        return delay_ms / 1000.0
+
+
+DEFAULT_RETRY_CONFIG = RetryConfig()
+
+_retry_logger = logging.getLogger(__name__ + ".retry")
+
+
+def is_rate_limit_error(error: Exception) -> bool:
+    """
+    Check if an exception is a rate limit / resource exhausted error.
+
+    Handles both HTTP 429 errors and gRPC RESOURCE_EXHAUSTED errors
+    from the xAI SDK.
+
+    Args:
+        error: The exception to check
+
+    Returns:
+        True if it's a rate limit error
+    """
+    error_str = str(error)
+    return "429" in error_str or "RESOURCE_EXHAUSTED" in error_str
+
+
+async def retry_on_rate_limit(
+    func: Callable[[], T],
+    config: Optional[RetryConfig] = None,
+    logger: Optional[logging.Logger] = None,
+) -> T:
+    """
+    Execute a sync function with exponential backoff retry on 429 errors.
+
+    Only retries on 429 rate limit errors. All other errors are raised immediately.
+    Uses jitter: delay is random between 0 and max_delay for each attempt.
+
+    Args:
+        func: Sync callable to execute (should be a zero-argument lambda or partial)
+        config: Optional RetryConfig, uses DEFAULT_RETRY_CONFIG if not provided
+        logger: Optional logger for retry messages
+
+    Returns:
+        The result of func() on success
+
+    Raises:
+        The original exception if max retries exceeded or non-retryable error
+
+    Example:
+        result = await retry_on_rate_limit(
+            lambda: client.image.sample(model=model, prompt=prompt),
+            logger=self.logger,
+        )
+    """
+    if config is None:
+        config = DEFAULT_RETRY_CONFIG
+
+    log = logger or _retry_logger
+    last_exception: Optional[Exception] = None
+
+    for attempt in range(1, config.max_attempts + 1):
+        try:
+            return func()
+        except Exception as e:
+            if is_rate_limit_error(e):
+                last_exception = e
+
+                if attempt < config.max_attempts:
+                    delay_s = config.get_jittered_delay_s(attempt)
+                    max_delay_ms = config.get_max_delay_ms(attempt)
+
+                    log.warning(
+                        f"429 rate limited on attempt {attempt}/{config.max_attempts}. "
+                        f"Retrying in {delay_s*1000:.0f}ms (max: {max_delay_ms:.0f}ms)"
+                    )
+
+                    await asyncio.sleep(delay_s)
+                else:
+                    log.error(
+                        f"429 rate limited: Max retries ({config.max_attempts}) exceeded"
+                    )
+                    raise
+            else:
+                raise
+
+    if last_exception:
+        raise last_exception
+
+    raise RuntimeError("Unexpected state in retry_on_rate_limit")
 
 
 # =============================================================================

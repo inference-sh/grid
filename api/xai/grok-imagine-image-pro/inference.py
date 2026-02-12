@@ -18,6 +18,7 @@ from .xai_helper import (
     get_image_dimensions,
     encode_image_base64,
     save_image_from_response,
+    retry_on_rate_limit,
 )
 
 
@@ -87,14 +88,20 @@ class App(BaseApp):
             if input_data.image:
                 kwargs["image_url"] = encode_image_base64(input_data.image)
 
-            # Generate images
+            # Generate images (with 429 retry)
             output_images = []
             if input_data.n == 1:
-                response = self.client.image.sample(**kwargs)
+                response = await retry_on_rate_limit(
+                    lambda: self.client.image.sample(**kwargs),
+                    logger=self.logger,
+                )
                 output_images.append(save_image_from_response(response))
             else:
                 kwargs["n"] = input_data.n
-                responses = self.client.image.sample_batch(**kwargs)
+                responses = await retry_on_rate_limit(
+                    lambda: self.client.image.sample_batch(**kwargs),
+                    logger=self.logger,
+                )
                 for response in responses:
                     output_images.append(save_image_from_response(response))
 
