@@ -11,12 +11,12 @@ Note: This uses a DIFFERENT API and SDK than the ARK API (seedream/seedance).
 import os
 import json
 import logging
-import tempfile
 import asyncio
 from typing import Optional, List, Dict, Any
 
-import requests
 from byteplus_sdk.visual.VisualService import VisualService
+
+from .download_helper import download_file as _download_file
 
 
 def setup_vision_service(
@@ -262,33 +262,8 @@ async def poll_video_task(
 
 
 def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:
-    """
-    Download a video file from URL to a temporary location.
-
-    Args:
-        url: URL to download from.
-        logger: Optional logger for progress output.
-
-    Returns:
-        Path to the downloaded temporary file.
-    """
-    if logger:
-        logger.info(f"Downloading video from: {url}")
-
-    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp_file:
-        file_path = tmp_file.name
-
-    response = requests.get(url, stream=True, timeout=120)
-    response.raise_for_status()
-
-    with open(file_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-
-    if logger:
-        logger.info(f"Video downloaded successfully to: {file_path}")
-
-    return file_path
+    """Download a video file. Delegates to shared byteplus_helper.download_file."""
+    return _download_file(url, suffix=".mp4", logger=logger)
 
 
 def get_video_duration(video_path: str, logger: Optional[logging.Logger] = None) -> float:

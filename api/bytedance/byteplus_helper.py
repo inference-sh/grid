@@ -157,51 +157,8 @@ def cancel_task(
         return False
 
 
-def download_file(
-    url: str,
-    suffix: str = ".mp4",
-    logger: Optional[logging.Logger] = None,
-) -> str:
-    """
-    Download a file from URL to a temporary location.
-
-    Args:
-        url: URL to download from.
-        suffix: File extension for the temp file.
-        logger: Optional logger for progress output.
-
-    Returns:
-        Path to the downloaded temporary file.
-    """
-    if logger:
-        logger.info(f"Downloading file from: {url}")
-
-    # Create temporary file
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp_file:
-        file_path = tmp_file.name
-
-    # Download content
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
-
-    with open(file_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-
-    if logger:
-        logger.info(f"File downloaded successfully to: {file_path}")
-
-    return file_path
-
-
-def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:
-    """Download a video file from URL."""
-    return download_file(url, suffix=".mp4", logger=logger)
-
-
-def download_image(url: str, logger: Optional[logging.Logger] = None) -> str:
-    """Download an image file from URL."""
-    return download_file(url, suffix=".png", logger=logger)
+# Download helpers — delegated to shared download_helper module
+from .download_helper import download_file, download_video, download_image  # noqa: F401
 
 
 def build_text_content(text: str, **params) -> Dict[str, str]:
