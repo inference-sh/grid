@@ -25,7 +25,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
             response = self.client.users.follow(target_user_id=input_data.user_id)
-            following = response.data.get("following", True)
+            following = getattr(response.data, "following", True)
 
             return AppOutput(following=following, user_id=input_data.user_id)
         except Exception as e:

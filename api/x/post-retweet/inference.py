@@ -25,7 +25,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
             response = self.client.reposts.create(tweet_id=input_data.tweet_id)
-            retweeted = response.data.get("retweeted", True)
+            retweeted = getattr(response.data, "retweeted", True)
 
             return AppOutput(retweeted=retweeted, tweet_id=input_data.tweet_id)
         except Exception as e:

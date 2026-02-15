@@ -25,7 +25,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
             response = self.client.likes.create(tweet_id=input_data.tweet_id)
-            liked = response.data.get("liked", True)
+            liked = getattr(response.data, "liked", True)
 
             return AppOutput(liked=liked, tweet_id=input_data.tweet_id)
         except Exception as e:

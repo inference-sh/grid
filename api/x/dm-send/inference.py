@@ -31,7 +31,7 @@ class App(BaseApp):
                 body={"text": input_data.text}
             )
 
-            event_id = response.data.get("dm_event_id", response.data.get("id", ""))
+            event_id = getattr(response.data, "dm_event_id", None) or getattr(response.data, "id", "")
 
             return AppOutput(
                 event_id=event_id,

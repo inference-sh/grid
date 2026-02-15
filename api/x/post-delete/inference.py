@@ -25,7 +25,7 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
             response = self.client.posts.delete(id=input_data.tweet_id)
-            deleted = response.data.get("deleted", True)
+            deleted = getattr(response.data, "deleted", True)
 
             return AppOutput(deleted=deleted, tweet_id=input_data.tweet_id)
         except Exception as e:
