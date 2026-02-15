@@ -2,9 +2,6 @@
 *.infsh
 .infsh/
 
-*.claude
-.claude/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -48,8 +45,3 @@ Thumbs.db
 !requirements.txt
 !inf.yml
 !inference.py
-
-test
-*.fal.key
-
-_custom
