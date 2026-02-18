@@ -177,6 +177,10 @@ class App(BaseApp):
         self.elements: dict[str, dict] = {}  # Map @e refs to selectors
         self.width = 1280
         self.height = 720
+        # Proxy state (set at browser level)
+        self._proxy_url: Optional[str] = None
+        self._proxy_username: Optional[str] = None
+        self._proxy_password: Optional[str] = None
         # Video recording state
         self.video_dir: Optional[str] = None
         self.recording_video: bool = False
@@ -205,6 +209,37 @@ class App(BaseApp):
         proxy_password: Optional[str] = None
     ):
         """Ensure browser context exists with given settings."""
+        # Relaunch browser if proxy settings changed
+        proxy_changed = (
+            proxy_url != self._proxy_url or
+            proxy_username != self._proxy_username or
+            proxy_password != self._proxy_password
+        )
+        if proxy_changed and self.browser:
+            if self.context:
+                await self.context.close()
+                self.context = None
+                self.page = None
+            await self.browser.close()
+
+            launch_opts = {
+                'args': ['--no-sandbox', '--disable-dev-shm-usage'],
+                'headless': True,
+                'executable_path': '/usr/bin/chromium'
+            }
+            if proxy_url:
+                proxy_opts = {'server': proxy_url}
+                if proxy_username:
+                    proxy_opts['username'] = proxy_username
+                if proxy_password:
+                    proxy_opts['password'] = proxy_password
+                launch_opts['proxy'] = proxy_opts
+
+            self.browser = await self.playwright.chromium.launch(**launch_opts)
+            self._proxy_url = proxy_url
+            self._proxy_username = proxy_username
+            self._proxy_password = proxy_password
+
         if (self.context is None or self.width != width or self.height != height):
             if self.context:
                 await self.context.close()
@@ -216,15 +251,6 @@ class App(BaseApp):
             context_opts = {'viewport': {'width': width, 'height': height}}
             if user_agent:
                 context_opts['user_agent'] = user_agent
-
-            # Proxy configuration
-            if proxy_url:
-                proxy_opts = {'server': proxy_url}
-                if proxy_username:
-                    proxy_opts['username'] = proxy_username
-                if proxy_password:
-                    proxy_opts['password'] = proxy_password
-                context_opts['proxy'] = proxy_opts
 
             # Video recording
             if record_video:
