@@ -1,0 +1,37 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "markdown": {
+          "type": "string",
+          "description": "Markdown text to convert"
+        },
+        "full_page": {
+          "type": "boolean",
+          "default": false,
+          "description": "Wrap output in a full HTML page with default styles"
+        }
+      },
+      "required": [
+        "markdown"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "html": {
+          "type": "string",
+          "description": "Converted HTML string"
+        },
+        "file": {
+          "description": "HTML file"
+        }
+      },
+      "required": [
+        "html"
+      ]
+    }
+  }
+}

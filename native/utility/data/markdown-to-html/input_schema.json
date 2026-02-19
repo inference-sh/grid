@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "markdown": {
+      "type": "string",
+      "description": "Markdown text to convert"
+    },
+    "full_page": {
+      "type": "boolean",
+      "default": false,
+      "description": "Wrap output in a full HTML page with default styles"
+    }
+  },
+  "required": [
+    "markdown"
+  ]
+}

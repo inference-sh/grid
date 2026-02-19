@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "html": {
+      "type": "string",
+      "description": "Converted HTML string"
+    },
+    "file": {
+      "description": "HTML file"
+    }
+  },
+  "required": [
+    "html"
+  ]
+}
