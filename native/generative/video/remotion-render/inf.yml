@@ -1,0 +1,17 @@
+namespace: ""
+name: remotion-render
+description: "Render animated videos from text and props using Remotion"
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: node-22
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
