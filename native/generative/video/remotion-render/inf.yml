@@ -1,6 +1,6 @@
 namespace: ""
 name: remotion-render
-description: "Render animated videos from text and props using Remotion"
+description: "Render videos from React/Remotion component code — pass TSX, get MP4"
 metadata: {}
 category: video
 images:

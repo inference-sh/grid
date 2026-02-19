@@ -1,0 +1,72 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "React component TSX code. Must export default a component. Can import from 'remotion' (useCurrentFrame, useVideoConfig, spring, interpolate, AbsoluteFill, Sequence, etc.) and 'react'. Receives inputProps as component props."
+        },
+        "composition_id": {
+          "type": "string",
+          "default": "Main",
+          "description": "Composition ID to render"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {},
+          "description": "Props passed to the component"
+        },
+        "width": {
+          "type": "number",
+          "default": 1920,
+          "description": "Video width in pixels"
+        },
+        "height": {
+          "type": "number",
+          "default": 1080,
+          "description": "Video height in pixels"
+        },
+        "fps": {
+          "type": "number",
+          "default": 30,
+          "description": "Frames per second"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "default": 5,
+          "description": "Video duration in seconds"
+        },
+        "codec": {
+          "type": "string",
+          "enum": [
+            "h264",
+            "h265",
+            "vp8",
+            "vp9",
+            "gif",
+            "prores"
+          ],
+          "default": "h264",
+          "description": "Output codec"
+        }
+      },
+      "required": [
+        "code"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "video": {
+          "description": "Rendered video file"
+        }
+      },
+      "required": [
+        "video"
+      ]
+    }
+  }
+}

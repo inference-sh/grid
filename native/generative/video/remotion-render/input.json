@@ -1,7 +1,8 @@
 {
-  "title": "Hello World",
-  "subtitle": "Made with Remotion on inference.sh",
-  "background_color": "#1a1a2e",
-  "text_color": "#e94560",
-  "duration_seconds": 3
+  "code": "import React from 'react';\nimport { AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate } from 'remotion';\n\nconst Main: React.FC<{ title: string; color: string }> = ({ title = 'Hello World', color = '#e94560' }) => {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const scale = spring({ frame, fps, config: { damping: 20 } });\n  const opacity = interpolate(scale, [0, 1], [0, 1]);\n  return (\n    <AbsoluteFill style={{ backgroundColor: '#1a1a2e', justifyContent: 'center', alignItems: 'center' }}>\n      <div style={{ color, fontSize: 80, fontWeight: 700, transform: `scale(${scale})`, opacity, fontFamily: 'sans-serif' }}>\n        {title}\n      </div>\n    </AbsoluteFill>\n  );\n};\n\nexport default Main;",
+  "props": { "title": "Remotion on inference.sh", "color": "#e94560" },
+  "duration_seconds": 3,
+  "width": 1280,
+  "height": 720,
+  "fps": 30
 }

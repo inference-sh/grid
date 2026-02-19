@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "video": {
+      "description": "Rendered video file"
+    }
+  },
+  "required": [
+    "video"
+  ]
+}
