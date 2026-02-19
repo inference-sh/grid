@@ -1,0 +1,4 @@
+{
+  "markdown": "# Hello World\n\nThis is **bold** and `inline code`.\n\n```js\nconst x = 42;\nconsole.log(x);\n```\n\n## Features\n\n- GFM heading anchors\n- Syntax highlighting\n- Tables, lists, blockquotes\n\n> A blockquote for testing\n\n| Col A | Col B |\n|-------|-------|\n| 1     | 2     |",
+  "full_page": true
+}
