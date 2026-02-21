@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, TextMeta
 from pydantic import Field
 from typing import Optional, List
 from enum import Enum
@@ -11,6 +11,12 @@ from PIL import Image
 
 from google import genai
 from google.genai import types
+
+from .vertex_helper import (
+    process_image_response,
+    raise_no_images_error,
+    build_image_output_meta,
+)
 
 
 class OutputFormatEnum(str, Enum):
@@ -162,8 +168,7 @@ class App(BaseApp):
             config = types.GenerateContentConfig(**config_kwargs)
 
             # Generate images (may need multiple calls for multiple images)
-            output_images = []
-            descriptions = []
+            results = []
 
             for i in range(input_data.num_images):
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
@@ -174,33 +179,31 @@ class App(BaseApp):
                     config=config,
                 )
 
-                # Process response parts
-                for part in response.candidates[0].content.parts:
-                    if part.text is not None:
-                        descriptions.append(part.text)
-                        self.logger.info(f"Model response: {part.text[:200]}...")
-                    elif part.inline_data is not None:
-                        # Save image to temp file
-                        file_extension = f".{input_data.output_format.value}"
-                        with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as tmp_file:
-                            image_path = tmp_file.name
-                        
-                        # Decode and save image
-                        image_bytes = part.inline_data.data
-                        with open(image_path, 'wb') as f:
-                            f.write(image_bytes)
-                        
-                        output_images.append(File(path=image_path))
-                        self.logger.info(f"Saved image to {image_path}")
+                result = process_image_response(response, input_data.output_format.value, self.logger)
+                results.append(result)
+
+            # Collect all images and descriptions
+            output_images = [File(path=p) for r in results for p in r.image_paths]
+            descriptions = [d for r in results for d in r.descriptions]
 
             if not output_images:
-                raise RuntimeError("No images were generated")
+                raise_no_images_error(results)
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
+            # This model is fixed at 1K resolution
+            meta = build_image_output_meta(results, width=1024, height=1024)
+
             return AppOutput(
                 images=output_images,
-                description="\n".join(descriptions) if descriptions else ""
+                description="\n".join(descriptions) if descriptions else "",
+                output_meta=OutputMeta(
+                    inputs=[TextMeta(**m) for m in meta["inputs"]],
+                    outputs=[
+                        TextMeta(**m) if m["type"] == "text" else ImageMeta(**{k: v for k, v in m.items() if k != "type"})
+                        for m in meta["outputs"]
+                    ],
+                )
             )
 
         except Exception as e:

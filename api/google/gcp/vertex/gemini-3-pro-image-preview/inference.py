@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, TextMeta
 from pydantic import Field
 from typing import Optional, List
 
@@ -9,11 +9,13 @@ from .vertex_helper import (
     ResolutionEnum,
     calculate_dimensions,
     load_image_as_part,
-    save_image_to_temp,
     build_image_generation_config,
     setup_logger,
     resolve_aspect_ratio,
     retry_on_resource_exhausted,
+    process_image_response,
+    raise_no_images_error,
+    build_image_output_meta,
 )
 
 
@@ -106,8 +108,7 @@ class App(BaseApp):
             )
 
             # Generate images (one API call per image)
-            output_images = []
-            descriptions = []
+            results = []
 
             for i in range(input_data.num_images):
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
@@ -120,48 +121,30 @@ class App(BaseApp):
                     )
 
                 response = await retry_on_resource_exhausted(_generate, logger=self.logger)
+                result = process_image_response(response, input_data.output_format.value, self.logger)
+                results.append(result)
 
-                # Check if response has candidates
-                if not response.candidates or len(response.candidates) == 0:
-                    self.logger.error(f"No candidates in response. Full response: {response}")
-                    block_reason = getattr(response, 'prompt_feedback', None)
-                    if block_reason:
-                        raise RuntimeError(f"Image generation blocked: {block_reason}")
-                    raise RuntimeError(f"No candidates returned from model. Response: {response}")
-
-                # Process response parts
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, 'thought') and part.thought:
-                        continue
-
-                    if part.text is not None:
-                        descriptions.append(part.text)
-                        self.logger.info(f"Model response: {part.text[:200]}...")
-                    elif part.inline_data is not None:
-                        image_path = save_image_to_temp(
-                            part.inline_data.data,
-                            input_data.output_format.value
-                        )
-                        output_images.append(File(path=image_path))
-                        self.logger.info(f"Saved image to {image_path}")
+            # Collect all images and descriptions
+            output_images = [File(path=p) for r in results for p in r.image_paths]
+            descriptions = [d for r in results for d in r.descriptions]
 
             if not output_images:
-                raise RuntimeError("No images were generated")
+                raise_no_images_error(results)
 
             self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
             width, height = calculate_dimensions(aspect_ratio_value, input_data.resolution.value)
-
-            output_meta_images = [
-                ImageMeta(width=width, height=height)
-                for _ in output_images
-            ]
+            meta = build_image_output_meta(results, width, height)
 
             return AppOutput(
                 images=output_images,
                 description="\n".join(descriptions) if descriptions else "",
                 output_meta=OutputMeta(
-                    outputs=output_meta_images,
+                    inputs=[TextMeta(**m) for m in meta["inputs"]],
+                    outputs=[
+                        TextMeta(**m) if m["type"] == "text" else ImageMeta(**{k: v for k, v in m.items() if k != "type"})
+                        for m in meta["outputs"]
+                    ],
                     extra={
                         "web_search": input_data.enable_google_search,
                     }

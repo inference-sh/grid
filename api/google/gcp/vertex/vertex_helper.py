@@ -575,6 +575,177 @@ def save_image_to_temp(
 
 
 # =============================================================================
+# IMAGE RESPONSE PROCESSING
+# =============================================================================
+
+@dataclass
+class ImageResponseResult:
+    """Result from processing a Gemini image generation response."""
+    image_paths: list = field(default_factory=list)
+    descriptions: list = field(default_factory=list)
+    finish_reason: Optional[str] = None
+    finish_message: Optional[str] = None
+    usage_metadata: Optional[Any] = None
+
+
+def process_image_response(
+    response,
+    output_format: str = "png",
+    logger: Optional[logging.Logger] = None,
+) -> ImageResponseResult:
+    """
+    Process a Gemini generate_content response, extracting images and text.
+
+    Handles:
+    - Candidate validation and diagnostics logging
+    - Thinking/thought part skipping
+    - Image extraction (saved to temp files)
+    - Text collection (non-empty only)
+    - finish_reason/finish_message logging
+    - Usage metadata logging
+    - Error raising with clear diagnostics when no images are produced
+
+    Args:
+        response: The response from client.models.generate_content()
+        output_format: Image output format (png, jpeg, webp, etc.)
+        logger: Optional logger for diagnostics
+
+    Returns:
+        ImageResponseResult with extracted data
+
+    Raises:
+        RuntimeError: If no candidates in response, or if blocked by prompt feedback
+    """
+    log = logger or logging.getLogger(__name__)
+
+    # Check if response has candidates
+    if not response.candidates or len(response.candidates) == 0:
+        log.error("No candidates in response")
+        block_reason = getattr(response, 'prompt_feedback', None)
+        if block_reason:
+            raise RuntimeError(f"Image generation blocked: {block_reason}")
+        raise RuntimeError("No candidates returned from model")
+
+    candidate = response.candidates[0]
+    finish_reason = getattr(candidate, 'finish_reason', None)
+    finish_message = getattr(candidate, 'finish_message', None)
+    usage_metadata = getattr(response, 'usage_metadata', None)
+
+    log.info(f"Finish reason: {finish_reason}")
+    if finish_message:
+        log.info(f"Finish message: {finish_message}")
+    if usage_metadata:
+        log.info(f"Usage metadata: {usage_metadata}")
+
+    result = ImageResponseResult(
+        finish_reason=str(finish_reason) if finish_reason else None,
+        finish_message=finish_message,
+        usage_metadata=usage_metadata,
+    )
+
+    # Process response parts
+    for part in candidate.content.parts:
+        # Skip thinking/thought parts
+        if hasattr(part, 'thought') and part.thought:
+            continue
+
+        if part.inline_data is not None:
+            image_path = save_image_to_temp(part.inline_data.data, output_format)
+            result.image_paths.append(image_path)
+            log.info(f"Saved image to {image_path}")
+        elif part.text is not None and part.text.strip():
+            result.descriptions.append(part.text)
+            log.info(f"Model response: {part.text[:200]}...")
+
+    return result
+
+
+def raise_no_images_error(results: list) -> None:
+    """
+    Raise a descriptive RuntimeError when no images were generated.
+
+    Collects finish_reason, finish_message, and model text from all results
+    to provide clear error diagnostics.
+
+    Args:
+        results: List of ImageResponseResult from each generation attempt
+    """
+    error_parts = ["No images were generated"]
+
+    # Use the last result for finish info (most relevant)
+    if results:
+        last = results[-1]
+        if last.finish_reason:
+            error_parts.append(f"finish_reason={last.finish_reason}")
+        if last.finish_message:
+            error_parts.append(last.finish_message)
+
+        # Collect all descriptions across attempts
+        all_descs = []
+        for r in results:
+            all_descs.extend(r.descriptions)
+        desc = "\n".join(all_descs).strip()
+        if desc:
+            error_parts.append(f"Model response: {desc[:500]}")
+
+    raise RuntimeError(". ".join(error_parts))
+
+
+def build_image_output_meta(
+    results: list,
+    width: int = 0,
+    height: int = 0,
+):
+    """
+    Build OutputMeta with TextMeta for token billing and ImageMeta for images.
+
+    Uses usage_metadata from the response to populate:
+    - inputs: TextMeta with prompt_token_count
+    - outputs: TextMeta with thoughts_token_count + candidates_token_count,
+               ImageMeta for each generated image
+
+    Must be imported alongside OutputMeta, TextMeta, ImageMeta from inferencesh.
+
+    Args:
+        results: List of ImageResponseResult from each generation attempt
+        width: Image width in pixels for ImageMeta
+        height: Image height in pixels for ImageMeta
+
+    Returns:
+        Dict with 'inputs' and 'outputs' lists ready for OutputMeta constructor
+    """
+    inputs = []
+    outputs = []
+    total_images = 0
+
+    for r in results:
+        total_images += len(r.image_paths)
+
+        if r.usage_metadata:
+            um = r.usage_metadata
+            # Input tokens
+            prompt_tokens = getattr(um, 'prompt_token_count', None)
+            if prompt_tokens:
+                inputs.append({"type": "text", "tokens": prompt_tokens})
+
+            # Output thinking/reasoning tokens
+            thoughts_tokens = getattr(um, 'thoughts_token_count', None)
+            if thoughts_tokens:
+                outputs.append({"type": "text", "tokens": thoughts_tokens})
+
+            # Output candidate tokens (non-thinking text output)
+            candidates_tokens = getattr(um, 'candidates_token_count', None)
+            if candidates_tokens:
+                outputs.append({"type": "text", "tokens": candidates_tokens})
+
+    # Add ImageMeta for each generated image
+    for _ in range(total_images):
+        outputs.append({"type": "image", "width": width, "height": height})
+
+    return {"inputs": inputs, "outputs": outputs}
+
+
+# =============================================================================
 # GENERATION CONFIG BUILDERS
 # =============================================================================
 
