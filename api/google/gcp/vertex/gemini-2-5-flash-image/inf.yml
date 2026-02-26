@@ -1,6 +1,6 @@
 namespace: google
 name: gemini-2-5-flash-image
-description: Gemini 2.5 Flash Image via Vertex AI - Advanced image generation model powered by Google Cloud
+description: Gemini 2.5 Flash Image (NanoBanana) via Vertex AI - Advanced image generation model powered by Google Cloud
 category: image
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png

@@ -774,7 +774,7 @@ def build_image_generation_config(
     max_output_tokens: int = 32768,
     safety_tolerance: str = "BLOCK_MEDIUM_AND_ABOVE",
     enable_google_search: bool = False,
-    response_modalities: list = None
+    response_modalities: list = None,
 ) -> types.GenerateContentConfig:
     """
     Build a GenerateContentConfig for image generation.

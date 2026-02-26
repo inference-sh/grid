@@ -1,6 +1,6 @@
 namespace: google
-name: gemini-3-pro-image-preview
-description: Gemini 3 Pro Image Preview (NanoBanana Pro) via Vertex AI - Advanced image generation model powered by Google Cloud
+name: gemini-3-1-flash-image-preview
+description: Gemini 3.1 Flash Image Preview (NanoBanana 2) via Vertex AI - Advanced image generation model powered by Google Cloud
 category: image
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kah2rcteycyxw8ffmtpq1zec.png

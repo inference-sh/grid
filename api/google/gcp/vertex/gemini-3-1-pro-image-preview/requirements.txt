@@ -1,0 +1,11 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+
+# Google Gemini API
+google-genai>=1.0.0
+
+# Image processing (for auto aspect ratio detection)
+Pillow>=10.0.0
+
+# Async HTTP (used by vertex_helper for video models)
+aiohttp>=3.9.0
