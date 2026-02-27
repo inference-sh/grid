@@ -1,17 +1,17 @@
+namespace: infsh
 name: flux-1-kontext-dev
-description: flux.1 kontext [dev] edits images based on text instructions. it supports
-  style, character, and object references, handles multi-step edits reliably
+description: Edits existing images using text instructions, allowing for changes in style, characters, or objects, and reliably handles multiple edits while maintaining image coherence.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10w2aez7dq4axc4tyjav5az.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 16
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10w2aez7dq4axc4tyjav5az.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 6000000000
+        type: any
+    ram: 16000000000

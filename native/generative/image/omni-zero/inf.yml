@@ -1,16 +1,17 @@
+namespace: infsh
 name: omni-zero
-description: SDXL zero shot stylised portrait creation
+description: Creates stylized portraits instantly without needing specific training data.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 12
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 24000000000
+        type: any
+    ram: 12000000000

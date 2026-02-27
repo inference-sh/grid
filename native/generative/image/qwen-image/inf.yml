@@ -1,17 +1,17 @@
+namespace: infsh
 name: qwen-image
-description: Qwen-Image - Advanced image generation and editing with exceptional text
-  rendering capabilities
+description: Generates and edits images from text descriptions, excelling at rendering complex text within the image.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 48
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 4000000000
+        type: any
+    ram: 64000000000

@@ -1,20 +1,21 @@
 namespace: openrouter
 name: kimi-k2-thinking
-description: 'Kimi K2 Thinking is the latest, most capable version of open-source thinking model. Built as a thinking agent, scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls.'
-category: chat
-images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9exwzy3xspcjrb5vcsjmg63.png
-    thumbnail: ""
-    banner: ""
+description: A powerful open-source thinking agent that excels at complex, multi-step problem-solving and consistently uses tools effectively over extended operations.
 metadata:
     capabilities:
-      - reasoning
+        - reasoning
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftb49mpt4h6zvwc3sapcy.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftdfwz7cwc4qmc3g75kpm.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftc2s7nynrtfyrx2m89hr.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

@@ -1,6 +1,6 @@
-namespace: ""
+namespace: infsh
 name: markdown-to-html
-description: "Convert Markdown to HTML with syntax highlighting and GFM support"
+description: Convert Markdown to HTML with syntax highlighting and GFM support
 metadata: {}
 category: other
 images:

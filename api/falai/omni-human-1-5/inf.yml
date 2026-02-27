@@ -1,32 +1,19 @@
 namespace: falai
 name: omni-human-1-5
-description: 'Omni-Human 1.5 - Bytedance''s audio-driven video generation with lip-sync
-  and emotion correlation. Example usecases are:
-
-
-  * You have a static picture of a person and an audio file and want to make the person
-  say what''s in the audio file. This model will return a video with the person talking
-  (extrapolated from the initial image and with some animations and lipsyncing).
-
-
-  Please note that this model doesn''t directly accept text in the `audio` parameter
-  but will actually require an audio file with the text already transformed into audio;
-  for that you can use any TTS (text-to-speech) app first like Chatterbox, Voicevibe,
-  Elevenlabs, Dia, etc..'
-category: video
-kernel: python-3.10
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  FAL_KEY: ''
-secrets:
-- key: FAL_KEY
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-  thumbnail: ''
-  banner: ''
+description: Generates realistic videos from a static picture by making the person speak the words from an uploaded audio file, complete with synchronized lip movement and emotion. Requires an audio file (created using a separate text-to-speech tool) as input.
 metadata: {}
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: FAL_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

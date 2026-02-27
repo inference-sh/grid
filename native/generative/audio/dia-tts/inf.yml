@@ -1,16 +1,20 @@
+namespace: infsh
 name: dia-tts
-description: A text-to-speech app using the DIA model for generating realistic dialogue
-category: audio
-kernel: python-3.10
-resources:
-  gpu:
-    count: 1
-    vram: 8
-    type: any
-  ram: 8
-env: {}
-images:
-  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
-  thumbnail: ''
-  banner: ''
+description: Dia TTS - Generate realistic dialogue with emotion control, natural nonverbals, and voice cloning
 metadata: {}
+category: audio
+images:
+    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

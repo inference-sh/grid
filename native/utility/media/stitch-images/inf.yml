@@ -1,16 +1,17 @@
+namespace: infsh
 name: stitch-images
-description: Stitch merge two images one next to the other
+description: Combine multiple photos horizontally or vertically into a single image or collage.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

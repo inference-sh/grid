@@ -1,18 +1,18 @@
+namespace: infsh
 name: wan-2-2-s2v
-description: Speech-to-Video generation with Wan2.2-S2V-14B model, supporting quantized
-  variants for different VRAM requirements
+description: Generates video content from spoken audio, with different versions available to suit various computer specifications.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10
 resources:
-  gpu:
-    count: 1
-    vram: 32
-    type: any
-  ram: 32
-env:
-  HF_HUB_ENABLE_HF_TRANSFER: '1'
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 10000000000
+        type: any
+    ram: 16000000000

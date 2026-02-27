@@ -1,16 +1,17 @@
+namespace: infsh
 name: sdxl-controlnet
-description: Stable Diffusion XL image generator with ControlNets
+description: Generates images with high quality and precise control over the composition and structure.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

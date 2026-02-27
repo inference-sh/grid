@@ -1,17 +1,18 @@
+namespace: infsh
 name: search-assistant
-description: search assistant
+description: Helps users create and refine search queries, retrieve relevant results from various sources, and generate overviews or summaries of the information found.
+metadata: {}
 category: text
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8f03x382af840gv9h4vez.png
+    thumbnail: ""
+    banner: ""
+env:
+    PYTHONPATH: /app
 kernel: python-3.10
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  PYTHONPATH: /app
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 4000000000

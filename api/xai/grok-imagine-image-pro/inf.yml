@@ -1,34 +1,27 @@
 namespace: xai
 name: grok-imagine-image-pro
 description: Generate and edit images using xAI's Grok Imagine Pro model. Supports text-to-image and image editing with multiple aspect ratios.
-category: image
-
-kernel: python-3.11
-
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-
-env: {}
-
-secrets:
-  - key: XAI_API_KEY
-    description: xAI API key for Grok Imagine Pro access
-    optional: false
-
-images:
-  card: ""
-  thumbnail: ""
-  banner: ""
-
 metadata:
-  provider: xai
-  tags:
-    - grok
-    - image-generation
-    - text-to-image
-    - image-editing
-    - xai
+    provider: xai
+    tags:
+        - grok
+        - image-generation
+        - text-to-image
+        - image-editing
+        - xai
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19ptcdq4egzaxbsfnf60z.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19j6064krgrbkw4ga73sn.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19jhwhf5h3jxa31zzzh04.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine Pro access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

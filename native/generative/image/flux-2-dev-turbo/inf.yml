@@ -1,16 +1,20 @@
+namespace: infsh
 name: flux-2-dev-turbo
-description: ""
+description: FLUX.2 Dev Turbo is an open-weight, guidance and step distilled text-to-image model developed by Black Forest Labs for non-commercial applications
 metadata: {}
 category: other
 images:
-    card: ""
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqbqpncm04dxx2hk7s8r687.png
     thumbnail: ""
     banner: ""
 env: {}
 kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
-        count: 1
-        vram: 40000000000
-        type: any
-    ram: 0
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,22 +1,20 @@
 namespace: falai
 name: reve
 description: Reve - Image generation, editing, and style remix via text prompts
-category: image
-kernel: python-3.10
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env: {}
-
-secrets:
-  - key: FAL_KEY
-    description: fal.ai API key for model access
-    optional: false
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
-  thumbnail: ''
-  banner: ''
 metadata: {}
+category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.10
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

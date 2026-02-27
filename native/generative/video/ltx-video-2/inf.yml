@@ -1,17 +1,17 @@
 namespace: infsh
 name: ltx-video-2
-description: "LTX 2.0 audio-video foundation model. Generates videos with synced audio. Supports T2V, I2V, long video generation with multi-prompt sliding windows, and LoRA adapters."
+description: LTX 2.0 audio-video foundation model. Generates videos with synced audio. Supports T2V, I2V, long video generation with multi-prompt sliding windows, and LoRA adapters.
 metadata: {}
-category: video
+category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3ex7kw1kc10d0pry16ggr.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3evnyfjqgay5w58jda0sh.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3ekbn6jb94g1mbsc9ddgy.png
 env: {}
 kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 80  # 80GB
+        vram: 80000000000
         type: any
-    ram: 32  # 32GB
+    ram: 32000000000

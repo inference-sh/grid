@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-2-t2i-a14b
-description: text to image with wan2.2
-category: image
-kernel: python-3.11
-resources:
-  gpu:
-    count: 1
-    vram: 64
-    type: nvidia
-  ram: 34
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k22agcnb24axy5tpewqc095w.png
-  thumbnail: ''
-  banner: ''
+description: Generates images from text descriptions.
 metadata: {}
+category: image
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k22agcnb24axy5tpewqc095w.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: "3.11"
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

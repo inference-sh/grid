@@ -1,35 +1,28 @@
 namespace: xai
 name: grok-imagine-video
 description: Generate and edit videos using xAI's Grok Imagine Video model. Supports text-to-video, image-to-video, and video editing with configurable duration and resolution.
-category: video
-
-kernel: python-3.11
-
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-
-env: {}
-
-secrets:
-  - key: XAI_API_KEY
-    description: xAI API key for Grok Imagine Video access
-    optional: false
-
-images:
-  card: ""
-  thumbnail: ""
-  banner: ""
-
 metadata:
-  provider: xai
-  tags:
-    - grok
-    - video-generation
-    - text-to-video
-    - image-to-video
-    - video-editing
-    - xai
+    provider: xai
+    tags:
+        - grok
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - video-editing
+        - xai
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg5hj5p7688pac1sr0gyk3m8.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg5hj5cyszeqw8r56t8pcsbp.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg5hj58n2s2axsbsz8gwk6dc.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine Video access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

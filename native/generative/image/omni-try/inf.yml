@@ -1,19 +1,19 @@
+namespace: infsh
 name: omni-try
-description: Virtual try-on model for clothing and accessories using OmniTry (requires
-  28GB+ VRAM)
+description: Try on clothing and accessories virtually before buying.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a0cdmpka7n3npx44hgkbp0.png
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+    SAFETENSORS_FAST_GPU: "1"
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 30
-    type: any
-  ram: 32
-env:
-  HF_HUB_ENABLE_HF_TRANSFER: '1'
-  SAFETENSORS_FAST_GPU: '1'
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 30000000000
+        type: any
+    ram: 32000000000

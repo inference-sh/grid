@@ -1,19 +1,19 @@
-namespace: ""
+namespace: infsh
 name: youtube-downloader
-description: "Download YouTube videos and audio with customizable quality, format, and codec options. Supports audio-only extraction, video+audio, or video-only downloads."
+description: Download YouTube videos and audio with customizable quality, format, and codec options. Supports audio-only extraction, video+audio, or video-only downloads.
 metadata:
-  author: inference.sh
-  version: "1.0.0"
-  features:
-    - audio-extraction
-    - video-download
-    - quality-selection
-    - codec-conversion
+    author: inference.sh
+    features:
+        - audio-extraction
+        - video-download
+        - quality-selection
+        - codec-conversion
+    version: 1.0.0
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9znx4x226ftq6wc5treft.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9zmarzpbbpz3wf1mg6jpt.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9z71npzzade7skt92fpf8.png
 env: {}
 kernel: python-3.11
 resources:

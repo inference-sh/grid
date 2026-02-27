@@ -1,18 +1,17 @@
+namespace: infsh
 name: rotate-glb
-description: An app that renders GLB/GLTF 3D models with custom rotation, camera positioning,
-  lighting, and output settings. Supports wireframe rendering and customizable resolution.
-  Uses Open3D for headless rendering.
+description: Renders 3D models (GLB/GLTF) with controls for rotation, camera position, and lighting. It supports wireframe rendering and can output high-quality images at customized resolutions.
+metadata: {}
 category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 2048

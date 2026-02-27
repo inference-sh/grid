@@ -1,17 +1,17 @@
+namespace: infsh
 name: sd-inpainting
-description: Stable Diffusion Inpainting is a model that can fill in areas of an image
-  based on a text prompt and a mask.
+description: Fill in or replace masked parts of an image using a text description.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

@@ -1,17 +1,17 @@
+namespace: infsh
 name: diffrythm
-description: Blazingly Fast and Embarrassingly Simple End-to-End Full-Length Song
-  Generation with Latent Diffusion
+description: Generates complete songs quickly and simply using advanced latent diffusion technology.
+metadata: {}
 category: audio
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

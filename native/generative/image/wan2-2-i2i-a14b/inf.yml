@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-2-i2i-a14b
-description: Wan2.2 I2I A14B with latent upscaler
-category: image
-kernel: python-3.11
-resources:
-  gpu:
-    count: 1
-    vram: 48
-    type: any
-  ram: 16
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2xtsa7neh118szd75f107cw.png
-  thumbnail: ''
-  banner: ''
+description: Creates videos from images and enhances video quality using a built-in upscaler.
 metadata: {}
+category: image
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2xtsa7neh118szd75f107cw.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: "3.11"
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

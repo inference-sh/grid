@@ -1,35 +1,28 @@
 namespace: bytedance
 name: seedance-1-5-pro
 description: Generate high-quality videos from text prompts with optional first-frame image control using ByteDance's Seedance 1.5 Pro model via BytePlus ARK API.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - bytedance
+        - byteplus
 category: video
-
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqsrh145ya5e0267svj2th.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqspz95q67c4mcy9n52wmd.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqsgkesct6cx7q7nyah0d7.png
+env: {}
 kernel: python-3.11
-
+secrets:
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedance video generation
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
-
-env: {}
-
-secrets:
-  - key: ARK_API_KEY
-    description: BytePlus ModelArk API key for Seedance video generation
-    optional: false
-
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-
-metadata:
-    provider: bytedance
-    tags:
-      - seedance
-      - video-generation
-      - text-to-video
-      - image-to-video
-      - bytedance
-      - byteplus
+    ram: 4000000000

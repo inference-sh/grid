@@ -1,16 +1,17 @@
+namespace: infsh
 name: get-item-in-list
-description: a simple app to return an item at a certain position of an input list
+description: Returns a specific element from a list based on its position.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

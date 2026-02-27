@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-2-upscaler-a14b
-description: Wan2.2 Upscaler A14B (single image, resize to given width and height)
-category: image
-kernel: python-
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
+description: Upscales a single image, increasing its resolution to a specified width and height.
 metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: "3.12"
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

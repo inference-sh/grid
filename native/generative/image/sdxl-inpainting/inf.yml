@@ -1,17 +1,17 @@
+namespace: infsh
 name: sdxl-inpainting
-description: Stable Diffusion XL Inpainting is a model that can fill in areas of an
-  image based on a text prompt and a mask.
+description: Fills in missing or masked areas of an image using text instructions to guide the replacement content.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyc29tp03sd7bvt5h3rnh4.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyc29tp03sd7bvt5h3rnh4.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

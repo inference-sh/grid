@@ -1,17 +1,17 @@
+namespace: infsh
 name: flux-1-srpo-dev
-description: SRPO is a high-quality text-to-image model optimized for photorealistic
-  outputs
+description: Creates high-quality images from text descriptions, specializing in photorealistic results.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a09x7desvwgshcfs31rtmm.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 16
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 6000000000
+        type: any
+    ram: 16000000000

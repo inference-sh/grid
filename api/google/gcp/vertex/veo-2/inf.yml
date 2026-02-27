@@ -4,18 +4,18 @@ description: Veo 2 via Vertex AI - Generate high-quality realistic videos from t
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c5w1whrqtt5svngvz8dkk.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c5w06feyxpe347qvx3zk8.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c63qqthygn05ra5rbnmvc.jpeg
 env: {}
-secrets:
-  - key: GCP_VIDEO_OUTPUT_BUCKET
-    description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
-    optional: true
 kernel: python-3.11
+secrets:
+    - key: GCP_VIDEO_OUTPUT_BUCKET
+      description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
+      optional: true
 integrations:
-  - key: gcp.vertex_ai
-    description: Access Vertex AI models (Veo, etc.)
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Veo, etc.)
 resources:
     gpu:
         count: 0

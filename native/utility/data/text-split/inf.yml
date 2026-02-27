@@ -1,17 +1,17 @@
+namespace: infsh
 name: text-split
-description: a simple app that allows to split text into a list of subtexts using
-  a delimiter
+description: Splits a piece of text into smaller sections based on a specified separating character or phrase.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

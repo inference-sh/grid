@@ -1,22 +1,20 @@
 namespace: falai
 name: flux-dev-lora
-description: "Super fast FLUX.1 [dev] with LoRA support for rapid, high-quality image generation. Enables personalization, specific styles, brand identities, and product-specific outputs."
+description: Text-to-image and image-to-image generation with FLUX.1 [dev] LoRA support. Custom style adaptation and fine-tuned model variations from Black Forest Labs.
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0v0x24hk64avy0mth4327p.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0v0pwcecmq8513gevhvkxz.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0v0nz7wv0qwqjtq1cam52z.jpeg
 env: {}
 kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 4000000000
-
-secrets:
-  - key: FAL_KEY
-    description: fal.ai API key for model access
-    optional: false

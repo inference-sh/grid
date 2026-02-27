@@ -1,17 +1,17 @@
+namespace: infsh
 name: lightning-wan-2-2-i2v-a14b
-description: image to video with wan2.2 using the Lightning LoRA (non-fused) for fast
-  generation
+description: Generates videos from a single image quickly, utilizing the WAN 2.2 architecture and Lightning LoRA technology for high-speed results.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 64
-    type: nvidia
-  ram: 34
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12000000000
+        type: any
+    ram: 16000000000

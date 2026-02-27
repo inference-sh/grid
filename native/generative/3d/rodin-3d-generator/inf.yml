@@ -1,18 +1,18 @@
+namespace: infsh
 name: rodin-3d-generator
-description: Rodin 3D Generator - Generate high-quality 3D models from text prompts
-  or images
+description: Generates high-quality 3D models simply by using text descriptions or uploading an image.
+metadata: {}
 category: 3d
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
+    thumbnail: ""
+    banner: ""
+env:
+    API_KEY: ""
 kernel: python-3.10
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  API_KEY: ''
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

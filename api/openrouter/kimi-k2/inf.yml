@@ -1,20 +1,21 @@
 namespace: openrouter
 name: kimi-k2
-description: 'Kimi K2 is the latest, most capable version of open-source model from Moonshot AI. Built as a thinking agent, scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls.'
-category: chat
-images:
-    card: "https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9ex7spgw6qdmc24b30srmbe.png"
-    thumbnail: ""
-    banner: ""
+description: Kimi K2 is the latest, most capable version of open-source model from Moonshot AI. Built as a thinking agent, scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls.
 metadata:
     capabilities:
-      - reasoning
+        - reasoning
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfs6p8kdf03b1xrtz8f37e.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfsa5g7q7a3wr6cgwavwx4.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfs4cawr7pqgy446td131k.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

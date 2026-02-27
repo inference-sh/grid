@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-1-t2v-effects
-description: Text to video generation using Wan2.1 (14B) model with t2v effects
+description: Generates high-quality videos from text descriptions with dynamic motion and supports both Chinese and English language prompts at 720P resolution.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6ka2cyhpcns4z9s471cv15jp4w.jpg
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6ka2cyhpcns4z9s471cv15jp4w.jpg
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

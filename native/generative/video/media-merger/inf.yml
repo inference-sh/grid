@@ -1,17 +1,17 @@
+namespace: infsh
 name: media-merger
-description: An application that merges multiple videos and images with customizable
-  transitions
+description: Merges multiple videos and images together using customized transitions.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

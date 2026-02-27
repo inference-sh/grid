@@ -1,24 +1,19 @@
 namespace: falai
 name: fabric-1-0
-description: 'VEED Fabric 1.0 - Turn any image into a talking video with advanced
-  lip-sync
-
-
-  '
-category: video
-kernel: python-3.10
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  FAL_KEY: ''
-secrets:
-- key: FAL_KEY
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-  thumbnail: ''
-  banner: ''
+description: Creates videos where an image appears to talk using advanced lip-sync technology.
 metadata: {}
+category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: FAL_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

@@ -1,17 +1,17 @@
+namespace: infsh
 name: mask-image
-description: an app that given as input two images, a png semi-transparent mask and
-  an image to be masked returns the partially transparent masked image
+description: Combines two images—a main image and a semi-transparent mask—to selectively hide or reveal parts of the main image, creating a partially transparent result.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10we23w267w6c18nsxwz2h1.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 512
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10we23w267w6c18nsxwz2h1.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 512

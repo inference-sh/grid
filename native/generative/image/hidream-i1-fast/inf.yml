@@ -1,17 +1,17 @@
+namespace: infsh
 name: hidream-i1-fast
-description: HiDream-I1-Fast is a fast image generative foundation model with 17B
-  parameters that achieves high-quality image generation with only 16 inference steps.
+description: A rapid image generator that produces high-quality images in various styles very quickly.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 35
-    type: any
-  ram: 80
-env: {}
-images:
-  card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 16000000000
+        type: any
+    ram: 32000000000

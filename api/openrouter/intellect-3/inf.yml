@@ -1,22 +1,23 @@
 namespace: openrouter
 name: intellect-3
 description: Intellect 3
-category: chat
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
 metadata:
     capabilities:
-      - reasoning
-      - image
-      - file
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfsc1tmkzdy2kk9y7n71n1.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfsbw55aee6jakg78q9yvv.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfsh3aa0kjw9729rw6rqw8.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

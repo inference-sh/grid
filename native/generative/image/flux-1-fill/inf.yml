@@ -1,17 +1,17 @@
+namespace: infsh
 name: flux-1-fill
-description: FLUX.1 Fill [dev] is a 12 billion parameter rectified flow transformer
-  capable of filling areas in existing images based on a text description
+description: Fills designated areas in existing images based on a descriptive text input.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzz0gs81vez6qxv8qwzjc89.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzz0gs81vez6qxv8qwzjc89.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

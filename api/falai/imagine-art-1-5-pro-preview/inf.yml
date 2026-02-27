@@ -1,21 +1,20 @@
-namespace: "falai"
+namespace: falai
 name: imagine-art-1-5-pro-preview
-description: "Advanced text-to-image model creating ultra-high-fidelity 4K visuals with lifelike realism and refined aesthetics."
+description: Advanced text-to-image model creating ultra-high-fidelity 4K visuals with lifelike realism and refined aesthetics.
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xm85c0tecj2k5hgzq0rnc.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xpf1k24b25jqwa9kscdcq.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xm27qpnxdwa5zkfktdzag.png
 env: {}
 kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
-secrets:
-    - key: FAL_KEY
-      description: fal.ai API key for model access
-      optional: false
+    ram: 4000000000

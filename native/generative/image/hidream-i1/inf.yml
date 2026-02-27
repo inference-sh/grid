@@ -1,17 +1,17 @@
+namespace: infsh
 name: hidream-i1
-description: HiDream-I1 is a new open-source image generative foundation model with
-  17B parameters that achieves state-of-the-art image generation quality within seconds.
+description: An open-source tool for generating high-quality images in seconds.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 64
-    type: any
-  ram: 64
-env: {}
-images:
-  card: https://cloud.inference.sh/users/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 8000000000
+        type: any
+    ram: 32000000000

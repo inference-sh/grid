@@ -1,17 +1,17 @@
+namespace: infsh
 name: qwen-image-lightning
-description: Qwen-Image Lightning - Fast image generation with Lightning LoRA (8 steps)
-  and exceptional text rendering capabilities
+description: Generates images quickly with exceptional ability to render text accurately.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 48
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 4000000000
+        type: any
+    ram: 64000000000

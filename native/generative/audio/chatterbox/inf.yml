@@ -1,18 +1,17 @@
+namespace: infsh
 name: chatterbox
-description: Whether you're working on memes, videos, games, or AI agents, Chatterbox
-  brings your content to life. It's also the first open source TTS model to support
-  emotion exaggeration control, a powerful feature that makes your voices stand out.
+description: Converts written text into spoken audio.
+metadata: {}
 category: audio
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00s52jdk25nrwahvj93gn4.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 12
-    type: any
-  ram: 5
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00s52jdk25nrwahvj93gn4.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12884901888
+        type: any
+    ram: 5368709120

@@ -1,17 +1,17 @@
+namespace: infsh
 name: video-audio-merger
-description: An app that merges video and audio files, with an option to preserve
-  original video audio
+description: Merge video and audio files easily, with the flexibility to keep the original audio from the video.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn2h2bsv0fzsgm54ggepxa.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn2h2bsv0fzsgm54ggepxa.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

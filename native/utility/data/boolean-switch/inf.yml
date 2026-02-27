@@ -1,16 +1,17 @@
+namespace: infsh
 name: boolean-switch
-description: switch between two inputs according to a boolean comparison condition
+description: Selects one of two possible inputs based on whether a condition is true or false.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxz8jp19ybcnyhxvf00frp.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxz8jp19ybcnyhxvf00frp.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

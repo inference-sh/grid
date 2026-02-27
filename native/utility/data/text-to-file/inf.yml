@@ -1,16 +1,17 @@
+namespace: infsh
 name: text-to-file
-description: creates a file with the provided name and contents
+description: Creates a new document using the text and file name you specify.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9c6ma4gdr4y9rrphya9exrq.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

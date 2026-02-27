@@ -1,21 +1,19 @@
 namespace: falai
 name: topaz-video-upscaler
-description: Topaz Video Upscaler - Enhance and upscale videos using powerful Topaz
-  AI models
-category: video
-kernel: python-3.10
-resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  FAL_KEY: ''
-secrets:
-- key: FAL_KEY
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d758zczj7w1g2dvnj9rt29.png
-  thumbnail: ''
-  banner: ''
+description: Enhances and increases the resolution of your videos, turning lower quality footage into sharp, high-definition results.
 metadata: {}
+category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d758zczj7w1g2dvnj9rt29.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: FAL_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

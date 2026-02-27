@@ -1,23 +1,24 @@
 namespace: openrouter
 name: any-model
-description: OpenRouter
-category: chat
-images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    thumbnail: ""
-    banner: ""
+description: A unified API that provides access to hundreds of AI providers and models through a single endpoint, automatically selecting the most cost-effective option and handling backups if needed.
 metadata:
     capabilities:
-      - reasoning
-      - images
-      - files
-      - tools
+        - reasoning
+        - images
+        - files
+        - tools
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfx4z5af6najtzj0cmzf01.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfx57x1k864d5x20vbhjyw.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfx5mr4vhbbfncxt32qyad.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

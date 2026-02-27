@@ -1,22 +1,23 @@
 namespace: openrouter
 name: claude-opus-45
 description: Claude Opus 4.5
-category: chat
-images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    thumbnail: ""
-    banner: ""
 metadata:
     capabilities:
-      - reasoning
-      - image
-      - file
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvqynzr7s5fy2dxs8pat6n.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvr6bzr3n703pv8rrbp16k.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvqyk0xh336q1pa8j8m1yg.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

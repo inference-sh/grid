@@ -1,16 +1,17 @@
+namespace: infsh
 name: audio-x
-description: Diffusion Transformer for Anything-to-Audio Generation
+description: Generates audio from any input using a unified framework.
+metadata: {}
 category: audio
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 16
-    type: any
-  ram: 12
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 16000000000
+        type: any
+    ram: 12000000000

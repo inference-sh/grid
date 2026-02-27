@@ -1,17 +1,17 @@
+namespace: infsh
 name: instant-character
-description: Generate images with consistent character style using Instant Character
-  by tencent (uses Flux.1 dev with IP adapter)
+description: Generates images featuring a character with a consistent visual style across different scenes or poses.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 45
-    type: any
-  ram: 24
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 45097156608
+        type: any
+    ram: 24000000000

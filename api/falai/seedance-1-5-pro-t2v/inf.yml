@@ -1,33 +1,26 @@
 namespace: falai
 name: seedance-1-5-pro-t2v
 description: Generate videos with audio from text prompts using ByteDance's Seedance 1.5 Pro. High-quality text-to-video generation with audio synthesis.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - text-to-video
+        - audio
+        - bytedance
 category: video
-
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdnj5gr8gbe5c7mvex5q6qe2.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
-
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 4000000000
-
-env: {}
-
-secrets:
-  - key: FAL_KEY
-    description: fal.ai API key for model access
-    optional: false
-
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-
-metadata:
-    provider: bytedance
-    tags:
-      - seedance
-      - text-to-video
-      - audio
-      - bytedance

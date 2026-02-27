@@ -1,19 +1,19 @@
+namespace: infsh
 name: rife-video-interpolation
-description: RIFE-based video frame interpolation to increase frame rate with AI-generated
-  in-between frames
+description: Increases video smoothness by using AI to generate and insert extra frames, effectively raising the video's frame rate.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+    TRANSFORMERS_CACHE: /tmp/cache
 kernel: python-3.10
 resources:
-  gpu:
-    count: 1
-    vram: 16
-    type: any
-  ram: 24
-env:
-  HF_HUB_ENABLE_HF_TRANSFER: '1'
-  SAFETENSORS_FAST_GPU: '1'
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 8000000000
+        type: any
+    ram: 16000000000

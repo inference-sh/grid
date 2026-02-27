@@ -1,17 +1,18 @@
+namespace: infsh
 name: deepseek-ocr
-description: DeepSeek OCR model for text extraction and document conversion
+description: Extracts and converts text from documents, especially good at reading images, photos, handwriting, charts, and graphs.
+metadata: {}
 category: text
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 32
-env:
-  HF_HUB_ENABLE_HF_TRANSFER: '1'
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 24000000000
+        type: any
+    ram: 32000000000

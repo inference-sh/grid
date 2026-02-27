@@ -1,24 +1,17 @@
+namespace: infsh
 name: agent-browser
 description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video with cursor indicator, execute JavaScript. Supports proxy configuration.
+metadata: {}
 category: other
-kernel: python-3.11
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgjw7bnxatz3xn7q53kef6gk.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgjw77d7gnxajzxcx58f5pf3.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgjw8atdxgkrsr8a2t5peq7b.jpeg
 env: {}
+kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-functions:
-  - name: open
-    description: Navigate to URL and configure browser. Supports video recording and proxy.
-  - name: snapshot
-    description: Get page state with @e refs for interactive elements
-  - name: interact
-    description: Click, dblclick, fill, scroll, drag, upload, check/uncheck, press keys, goto URL using @e refs
-  - name: screenshot
-    description: Take page screenshot (viewport or full page)
-  - name: execute
-    description: Run JavaScript code on the page
-  - name: close
-    description: Close browser session and return video if recording
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

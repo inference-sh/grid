@@ -1,19 +1,18 @@
+namespace: infsh
 name: media-analyzer
-description: AI-powered media analyzer that can analyze images and audio files. Takes
-  a question and a list of media files (images or audio) and returns detailed analysis
-  using vision and audio AI models.
+description: Analyzes images and audio files to provide detailed insights based on your questions.
+metadata: {}
 category: multimodal
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
+    thumbnail: ""
+    banner: ""
+env:
+    PYTHONPATH: /app
 kernel: python-3.10
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env:
-  PYTHONPATH: /app
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 4000000000

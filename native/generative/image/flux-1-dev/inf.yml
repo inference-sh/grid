@@ -1,17 +1,17 @@
+namespace: infsh
 name: flux-1-dev
-description: FLUX.1 Dev is an open-weight, guidance-distilled text-to-image model
-  developed by Black Forest Labs for non-commercial applications
+description: Generates images from text descriptions for non-commercial purposes.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 16
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 6000000000
+        type: any
+    ram: 16000000000

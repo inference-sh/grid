@@ -1,16 +1,20 @@
+namespace: falai
 name: kokoro-tts
-description: Text-to-Speech application using the Kokoro-82M model
-category: audio
-kernel: python-3.12
-resources:
-  gpu:
-    count: 1
-    vram: 1
-    type: any
-  ram: 8
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00krptarq4bwm89g539aea.png
-  thumbnail: ''
-  banner: ''
+description: Kokoro TTS - Lightweight text-to-speech with multiple languages and voices
 metadata: {}
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnvg507v5kq187a2ad09.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnmvmct2qefvrysxrteg.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnhq4hh0ka7thq95ggje.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

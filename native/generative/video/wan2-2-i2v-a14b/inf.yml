@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-2-i2v-a14b
-description: image to video with wan2.2
+description: Generates high-resolution videos from single images, offering one of the fastest ways to create 720P, 24fps video clips from a still picture.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 64
-    type: nvidia
-  ram: 34
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12000000000
+        type: any
+    ram: 16000000000

@@ -1,17 +1,17 @@
+namespace: infsh
 name: bounce-repeat-videos
-description: Creates a video effect by repeating a video forward and backward for
-  a specified duration
+description: Repeats a video segment by playing it forward and then immediately backward to create a bouncing, looping effect.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxwb8hdjwey4wdd7vqk22f.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxwb8hdjwey4wdd7vqk22f.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

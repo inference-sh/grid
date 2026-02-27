@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2-2-i2v-midpoint-a14b
-description: image to video with wan2.2
+description: Creates high-quality videos from a single still image, generating smooth and detailed motion at 480p or 720p resolution.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 64
-    type: nvidia
-  ram: 34
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12000000000
+        type: any
+    ram: 16000000000

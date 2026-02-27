@@ -1,16 +1,17 @@
+namespace: infsh
 name: html-to-image
-description: Convert HTML content to PNG or JPEG images with configurable dimensions
+description: Turns web content into customizable PNG or JPEG images.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9akfjpjkwb84df4yfcmby6g.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.10
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 4
-env: {}
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 4000000000

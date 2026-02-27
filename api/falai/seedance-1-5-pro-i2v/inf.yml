@@ -1,33 +1,26 @@
 namespace: falai
 name: seedance-1-5-pro-i2v
 description: Generate videos with audio from images using ByteDance's Seedance 1.5 Pro. Supports start and end frame control for seamless video transitions.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - image-to-video
+        - audio
+        - bytedance
 category: video
-
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdnj5s9byn9hmbgdv69y4s8c.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
-
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 4000000000
-
-env: {}
-
-secrets:
-  - key: FAL_KEY
-    description: fal.ai API key for model access
-    optional: false
-
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-
-metadata:
-    provider: bytedance
-    tags:
-      - seedance
-      - image-to-video
-      - audio
-      - bytedance

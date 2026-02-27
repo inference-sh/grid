@@ -1,18 +1,20 @@
+namespace: infsh
 name: flux-2-klein
-description: ""
+description: |
+    The FLUX.2 [klein] is the fastest image models of the FLUX.2 family. It unifies generation and editing in a single compact architecture, delivering state-of-the-art quality with end-to-end inference in as low as under a second. Built for applications that require real-time image generation without sacrificing quality.
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf9s7q151y3hdpp5zqe5t.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf5kz7wq762qf6xd9zgre.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf9s7q151y3hdpp5zqe5t.png
 env: {}
 kernel: python-3.11
+secrets:
+    - key: HF_TOKEN
 resources:
     gpu:
         count: 1
         vram: 40000000000
         type: any
     ram: 0
-secrets:
-  - key: HF_TOKEN

@@ -1,16 +1,17 @@
+namespace: infsh
 name: mmaudio
-description: Generate audio for videos
+description: Transforms silent videos into immersive experiences by generating high-quality, perfectly synchronized sound effects and environmental audio based on the visual content.
+metadata: {}
 category: audio
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 20
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 8000000000
+        type: any
+    ram: 16000000000

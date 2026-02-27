@@ -1,16 +1,17 @@
+namespace: infsh
 name: sdxl
-description: Stable Diffusion XL image generator
+description: Generates and modifies images from text prompts, producing high-resolution, photorealistic results with superior detail and accuracy compared to previous versions.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy94v9rn8fggww7njp3qfb.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 12
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy94v9rn8fggww7njp3qfb.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 2000000000
+        type: any
+    ram: 32000000000

@@ -1,22 +1,20 @@
 namespace: falai
 name: flux-2-klein-lora
-description: "FLUX.2 [klein] with LoRA support in 4B and 9B parameter sizes. Custom style adaptation and fine-tuned model variations from Black Forest Labs."
+description: Text-to-image and image-to-image generation with FLUX.2 [klein] LoRA support. Available in 4B and 9B parameter sizes. Custom style adaptation and fine-tuned model variations from Black Forest Labs.
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tykgpeqv3320nff05bywe.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tykgmxpdwhnkrm9rkfdb5.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tyszntcwky0kwpgvr67wj.jpeg
 env: {}
 kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 4000000000
-
-secrets:
-  - key: FAL_KEY
-    description: fal.ai API key for model access
-    optional: false

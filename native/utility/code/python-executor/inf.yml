@@ -1,18 +1,19 @@
+namespace: infsh
 name: python-executor
-description: Python code executor
+description: Runs and executes Python programming code in a safe environment.
+metadata: {}
 category: text
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
+    thumbnail: ""
+    banner: ""
+env:
+    MPLBACKEND: Agg
+    PYTHONUNBUFFERED: "1"
 kernel: python-3.10
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 8
-env:
-  MPLBACKEND: Agg
-  PYTHONUNBUFFERED: '1'
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 8000000000

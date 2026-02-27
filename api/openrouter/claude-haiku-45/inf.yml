@@ -1,22 +1,23 @@
 namespace: openrouter
 name: claude-haiku-45
-description: Claude Haiku 4.5
-category: chat
-images:
-    card: https://cloud.inference.sh/users/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    thumbnail: ""
-    banner: ""
+description: A very fast and economical AI designed for real-time uses and everyday business and coding tasks, offering performance similar to much larger, pricier options.
 metadata:
     capabilities:
-      - reasoning
-      - image
-      - file
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftf9bppy90ndckw1yer32.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftf0wtvxxbmchd6v35h0g.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftp7hb8wby7z66fvs9asd.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

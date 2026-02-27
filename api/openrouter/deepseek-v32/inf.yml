@@ -1,22 +1,23 @@
 namespace: openrouter
 name: deepseek-v32
 description: DeepSeek V3.2
-category: chat
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
 metadata:
     capabilities:
-      - reasoning
-      - image
-      - file
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvft40e6mx1fmrqp9vpefpg.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvft3820qjk29mhx9zr2hkv.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvft2g2hkk3gnzfqp60fnac.jpeg
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-python: "3.11"
-secrets:
-  - key: OPENROUTER_API_KEY

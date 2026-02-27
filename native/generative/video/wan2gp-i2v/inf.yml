@@ -1,16 +1,17 @@
+namespace: infsh
 name: wan2gp-i2v
-description: wan2gp image to video
+description: Turns static images into dynamic, realistic videos, often including tools for advanced control over motion and video style.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: nvidia
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12000
+        type: nvidia
+    ram: 24000

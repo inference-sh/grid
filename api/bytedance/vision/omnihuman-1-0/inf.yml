@@ -1,38 +1,30 @@
 namespace: bytedance
 name: omnihuman-1-0
 description: Audio-driven avatar video generation. Takes a portrait image + audio and generates a video where the person speaks/sings in sync with the audio.
+metadata:
+    provider: bytedance
+    tags:
+        - omnihuman
+        - avatar
+        - audio-to-video
+        - lip-sync
+        - bytedance
+        - byteplus
 category: video
-
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0fazsny335g3ds8q9mxw8k.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0fazxccmawd5hra28bv3sh.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0faqbkx8tbb9axchf7wkwj.png
+env: {}
 kernel: python-3.11
-
+secrets:
+    - key: BYTEPLUS_ACCESS_KEY
+      description: BytePlus Access Key (AK) for Vision API
+    - key: BYTEPLUS_SECRET_KEY
+      description: BytePlus Secret Key (SK) for Vision API
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
-
-env: {}
-
-secrets:
-  - key: BYTEPLUS_ACCESS_KEY
-    description: BytePlus Access Key (AK) for Vision API
-    optional: false
-  - key: BYTEPLUS_SECRET_KEY
-    description: BytePlus Secret Key (SK) for Vision API
-    optional: false
-
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-
-metadata:
-    provider: bytedance
-    tags:
-      - omnihuman
-      - avatar
-      - audio-to-video
-      - lip-sync
-      - bytedance
-      - byteplus
+    ram: 4000000000

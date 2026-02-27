@@ -1,16 +1,17 @@
+namespace: infsh
 name: video-audio-extractor
-description: An app that extracts audio from videos and creates silent videos
+description: Extracts audio from video files and removes the original audio to create silent videos.
+metadata: {}
 category: other
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn53q6jw6kdzvs9tkekk2t.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn53q6jw6kdzvs9tkekk2t.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

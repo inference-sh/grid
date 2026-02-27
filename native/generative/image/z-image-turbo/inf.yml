@@ -1,17 +1,18 @@
+namespace: infsh
 name: z-image-turbo
 description: a fast and high quality image generation model
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kb7t8v75er37hbj625jppxpj.png
+    thumbnail: ""
+    banner: ""
+env:
+    TOKENIZERS_PARALLELISM: "false"
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 0
-    type: any
-  ram: 0
-env:
-  TOKENIZERS_PARALLELISM: 'false'
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 0
+        type: any
+    ram: 0

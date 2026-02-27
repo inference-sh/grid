@@ -4,18 +4,18 @@ description: Veo 3 via Vertex AI - Generate videos with audio from text prompts 
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eev70bhym4swznjydm5c1.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eevga821mwy31rn8bkx16.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eesnd44g0pv9ncmggych7.jpeg
 env: {}
-secrets:
-  - key: GCP_VIDEO_OUTPUT_BUCKET
-    description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
-    optional: true
 kernel: python-3.11
+secrets:
+    - key: GCP_VIDEO_OUTPUT_BUCKET
+      description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
+      optional: true
 integrations:
-  - key: gcp.vertex_ai
-    description: Access Vertex AI models (Veo, etc.)
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Veo, etc.)
 resources:
     gpu:
         count: 0

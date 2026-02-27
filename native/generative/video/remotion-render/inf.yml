@@ -1,12 +1,12 @@
-namespace: ""
+namespace: infsh
 name: remotion-render
-description: "Render videos from React/Remotion component code — pass TSX, get MP4"
+description: Render videos from React/Remotion component code — pass TSX, get MP4
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1d34dbybf8gajb3bw047.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1f46kzwzrwz4zasjybsz.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1f5vyrpy5njcmrs01wh7.jpeg
 env: {}
 kernel: node-22
 resources:
@@ -14,4 +14,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

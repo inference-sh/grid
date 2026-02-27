@@ -1,16 +1,17 @@
+namespace: infsh
 name: extract-last-frame
-description: Extract the nth last frame from a video file as a PNG image
+description: Save a specific frame from the end of a video as a static image file.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env: {}
-images:
-  card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 0

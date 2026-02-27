@@ -4,19 +4,17 @@ description: Get a user profile from X.com by ID or username. Returns bio, follo
 metadata: {}
 category: social
 images:
-    card: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60feh39gmsptqz5gh2vnbh.jpeg"
-    thumbnail: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fek57rq9c99mrrrs95t5.jpeg"
-    banner: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fdwr4j81gkgas45fhd25.jpeg"
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60feh39gmsptqz5gh2vnbh.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fek57rq9c99mrrrs95t5.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fdwr4j81gkgas45fhd25.jpeg
 env: {}
 kernel: python-3.11
-
 integrations:
-  - key: x.user.read
-    description: Read user profiles from X.com
-
+    - key: x.user.read
+      description: Read user profiles from X.com
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 2000
+    ram: 2000000000

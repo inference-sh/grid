@@ -1,19 +1,20 @@
 namespace: google
 name: gemini-3-pro-image-preview
 description: Gemini 3 Pro Image Preview (NanoBanana Pro) via Vertex AI - Advanced image generation model powered by Google Cloud
+metadata: {}
 category: image
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kah2rcteycyxw8ffmtpq1zec.png
     thumbnail: ""
     banner: ""
-metadata: {}
+env: {}
+kernel: python-3.11
 integrations:
-  - key: gcp.vertex_ai
-    description: Access Vertex AI models (Gemini, etc.)
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
     ram: 0
-kernel: python-3.11

@@ -1,37 +1,30 @@
 namespace: bytedance
 name: seedance-1-0-lite
 description: Lightweight 720p video generation. Automatically uses image-to-video mode when an image is provided, or text-to-video mode otherwise.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - lite
+        - 720p
+        - bytedance
+        - byteplus
 category: video
-
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzrqxdd5qhc636qpxk1pne.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzrw6g9dr4ckghyvsh81e8.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzr85d6wyjsa974s73egb6.png
+env: {}
 kernel: python-3.11
-
+secrets:
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedance video generation
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
-
-env: {}
-
-secrets:
-  - key: ARK_API_KEY
-    description: BytePlus ModelArk API key for Seedance video generation
-    optional: false
-
-images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-
-metadata:
-    provider: bytedance
-    tags:
-      - seedance
-      - video-generation
-      - text-to-video
-      - image-to-video
-      - lite
-      - 720p
-      - bytedance
-      - byteplus
+    ram: 4000000000

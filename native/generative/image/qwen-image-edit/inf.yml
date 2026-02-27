@@ -1,17 +1,17 @@
+namespace: infsh
 name: qwen-image-edit
-description: Qwen-Image-Edit - Advanced image editing with exceptional text rendering
-  capabilities for semantic and appearance editing
+description: Advanced image editing that excels at rendering and manipulating text within images, allowing for precise changes to appearance and meaning.
+metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.12
 resources:
-  gpu:
-    count: 1
-    vram: 48
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 4000000000
+        type: any
+    ram: 64000000000

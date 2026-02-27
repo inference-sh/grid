@@ -1,16 +1,17 @@
+namespace: infsh
 name: hunyuan-image-to-3d-2
-description: Image/Text to 3D generation using Hunyuan3D-2
+description: Create high-quality, photorealistic 3D models and textures from simple text prompts or 2D images.
+metadata: {}
 category: 3d
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 12
-    type: any
-  ram: 16
-env: {}
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 8000000000
+        type: any
+    ram: 16000000000

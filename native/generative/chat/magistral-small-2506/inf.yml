@@ -1,18 +1,19 @@
+namespace: infsh
 name: magistral-small-2506
-description: Magistral Small 2506
+description: A high-performance system for complex reasoning, coding, and math problems, featuring strong multilingual support.
+metadata: {}
 category: chat
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzr1ang3xvqm63cfm9d6xh.png
+    thumbnail: ""
+    banner: ""
+env:
+    CMAKE_ARGS: -DGGML_CUDA=on
+    FORCE_CMAKE: "1"
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 48
-    type: any
-  ram: 4
-env:
-  CMAKE_ARGS: -DGGML_CUDA=on
-  FORCE_CMAKE: '1'
-images:
-  card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzr1ang3xvqm63cfm9d6xh.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 1
+        vram: 12000000000
+        type: any
+    ram: 4000000000

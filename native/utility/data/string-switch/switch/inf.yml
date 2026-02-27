@@ -1,15 +1,17 @@
+namespace: infsh
 name: numerical-switch
-description: switch between two inputs according to a numerical-check condition
+description: Selects one of two inputs based on a condition involving numerical comparison.
+metadata: {}
 category: other
-is_public: false
 images:
-    card: ""
-    thumbnail:
-    banner:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.12
 resources:
     gpu:
         count: 0
         vram: 0
         type: any
-env:
-python: "3.12"
+    ram: 0

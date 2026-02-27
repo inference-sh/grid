@@ -1,16 +1,18 @@
+namespace: infsh
 name: infinitetalk-i2v
-description: InfiniteTalk - Audio-driven Video Generation for Sparse-Frame Video Dubbing
+description: Generates realistic, talking videos of unlimited length from any video or image using audio, ensuring razor-accurate lip sync and expressive full-body motion.
+metadata: {}
 category: video
+images:
+    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
+    thumbnail: ""
+    banner: ""
+env:
+    USE_CAUSVID_LORA: "true"
 kernel: python-3.11
 resources:
-  gpu:
-    count: 1
-    vram: 24
-    type: any
-  ram: 32
-env: {}
-images:
-  card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
-  thumbnail: ''
-  banner: ''
-metadata: {}
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 64000000000

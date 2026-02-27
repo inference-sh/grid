@@ -1,21 +1,19 @@
+namespace: infsh
 name: kling-v1-t2v
-description: Kling V1 Text-to-Video - Generate high-quality videos from text prompts
-  using Kling AI's V1 model
+description: Kling V1 Text-to-Video - Generate high-quality videos from text prompts using Kling AI's V1 model
+metadata:
+    api_type: text2video
+    model_name: kling-v1
 category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    vram: 0
-    type: none
-  ram: 0
-env:
-  KLING_ACCESS_KEY: ''
-  KLING_SECRET_KEY: ''
-images:
-  card: ''
-  thumbnail: ''
-  banner: ''
-metadata:
-  model_name: kling-v1
-  api_type: text2video
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
