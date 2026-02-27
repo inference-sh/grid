@@ -55,22 +55,8 @@ class VideoCodec(str, Enum):
 
 
 class AppSetup(BaseAppSetup):
-    """Setup configuration for YouTube Downloader.
-    
-    Configure default download preferences for this instance.
-    """
-    default_format: ExportFormat = Field(
-        default=ExportFormat.AUDIO_ONLY,
-        description="Default export format (audio_only, video_with_audio, video_only)"
-    )
-    default_audio_quality: AudioQuality = Field(
-        default=AudioQuality.HIGH,
-        description="Default audio quality/bitrate"
-    )
-    default_video_quality: VideoQuality = Field(
-        default=VideoQuality.FHD_1080P,
-        description="Default video resolution"
-    )
+    """Setup configuration for YouTube Downloader."""
+    pass
 
 
 class RunInput(BaseModel):
@@ -134,15 +120,8 @@ class RunOutput(BaseModel):
 class App(BaseApp):
     
     async def setup(self, config: AppSetup):
-        """Initialize the YouTube downloader with default preferences."""
-        self.default_format = config.default_format
-        self.default_audio_quality = config.default_audio_quality
-        self.default_video_quality = config.default_video_quality
-        
-        logging.info(f"YouTube Downloader initialized with:")
-        logging.info(f"  Default format: {self.default_format.value}")
-        logging.info(f"  Default audio quality: {self.default_audio_quality.value}")
-        logging.info(f"  Default video quality: {self.default_video_quality.value}")
+        """Initialize the YouTube downloader."""
+        logging.info("YouTube Downloader initialized")
 
     def _get_video_info(self, url: str) -> dict:
         """Fetch video metadata using yt-dlp Python API."""

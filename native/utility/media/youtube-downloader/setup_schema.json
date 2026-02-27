@@ -1,60 +1,6 @@
 {
-  "$defs": {
-    "AudioQuality": {
-      "description": "Audio quality options",
-      "enum": [
-        "best",
-        "320",
-        "192",
-        "128",
-        "64"
-      ],
-      "title": "AudioQuality",
-      "type": "string"
-    },
-    "ExportFormat": {
-      "description": "Export format options",
-      "enum": [
-        "audio_only",
-        "video_with_audio",
-        "video_only"
-      ],
-      "title": "ExportFormat",
-      "type": "string"
-    },
-    "VideoQuality": {
-      "description": "Video quality/resolution options",
-      "enum": [
-        "best",
-        "2160",
-        "1440",
-        "1080",
-        "720",
-        "480",
-        "360"
-      ],
-      "title": "VideoQuality",
-      "type": "string"
-    }
-  },
-  "description": "Setup configuration for YouTube Downloader.\n\nConfigure default download preferences for this instance.",
-  "properties": {
-    "default_format": {
-      "$ref": "#/$defs/ExportFormat",
-      "default": "audio_only",
-      "description": "Default export format (audio_only, video_with_audio, video_only)"
-    },
-    "default_audio_quality": {
-      "$ref": "#/$defs/AudioQuality",
-      "default": "320",
-      "description": "Default audio quality/bitrate"
-    },
-    "default_video_quality": {
-      "$ref": "#/$defs/VideoQuality",
-      "default": "1080",
-      "description": "Default video resolution"
-    }
-  },
+  "description": "Setup configuration for YouTube Downloader.",
+  "properties": {},
   "title": "AppSetup",
   "type": "object"
 }
