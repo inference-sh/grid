@@ -28,7 +28,8 @@
           "anyOf": [
             {
               "items": {
-                "$ref": "#/$defs/File"
+                "format": "file",
+                "type": "string"
               },
               "type": "array"
             },
@@ -44,7 +45,8 @@
           "anyOf": [
             {
               "items": {
-                "$ref": "#/$defs/File"
+                "format": "file",
+                "type": "string"
               },
               "type": "array"
             },
@@ -104,81 +106,6 @@
       "title": "ContextMessageRole",
       "type": "string"
     },
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "ReasoningEffortEnum": {
       "description": "Enum for reasoning effort.",
       "enum": [
@@ -215,7 +142,8 @@
       "anyOf": [
         {
           "items": {
-            "$ref": "#/$defs/File"
+            "format": "file",
+            "type": "string"
           },
           "type": "array"
         },

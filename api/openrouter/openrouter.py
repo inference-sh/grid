@@ -29,11 +29,27 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
 
 
 def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeError:
-    """Extract error message from API exception."""
+    """Extract error message from API exception, including nested provider errors."""
     if hasattr(e, "response") and e.response is not None:
         try:
+            import json
             error_data = e.response.json()
-            msg = error_data.get("error", {}).get("message", str(e))
+            error_obj = error_data.get("error", {})
+            msg = error_obj.get("message", str(e))
+
+            # Extract nested provider error from metadata.raw
+            metadata = error_obj.get("metadata", {})
+            raw = metadata.get("raw")
+            if raw:
+                try:
+                    raw_error = json.loads(raw)
+                    nested_msg = raw_error.get("error", {}).get("message")
+                    if nested_msg:
+                        provider = metadata.get("provider_name", "Provider")
+                        return RuntimeError(f"{prefix} error ({provider}): {nested_msg}")
+                except json.JSONDecodeError:
+                    pass
+
             return RuntimeError(f"{prefix} error: {msg}")
         except Exception:
             pass
