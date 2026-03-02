@@ -1,5 +1,6 @@
-name: exa-extract
-description: Extract and analyze web page content using Exa's advanced content retrieval
+namespace: exa
+name: answer
+description: Generate LLM-powered answers informed by Exa search results
 category: text
 images:
     card: ""

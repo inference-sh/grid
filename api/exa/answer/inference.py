@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta, RawMeta
 from pydantic import Field
 from typing import Optional
 import os
@@ -91,15 +91,32 @@ class App(BaseApp):
             # Format the response with citations
             formatted_response = self._format_answer(answer, citations, input_data.query)
 
-            logging.info(f"Answer generated with {len(citations)} citations")
+            num_citations = len(citations)
+            logging.info(f"Answer generated with {num_citations} citations")
             if cost_dollars:
                 logging.info(f"API cost: ${cost_dollars.get('total', 0):.6f}")
+
+            # Build output_meta for pricing using costDollars from API
+            cost_total = cost_dollars.get("total", 0) if cost_dollars else 0
+            cost_cents = cost_total * 100  # RawMeta.cost is in cents
+            output_meta = OutputMeta(
+                outputs=[
+                    RawMeta(
+                        cost=cost_cents,
+                        extra={
+                            "num_citations": num_citations,
+                            "include_full_text": input_data.include_full_text,
+                        }
+                    )
+                ]
+            )
 
             return AppOutput(
                 answer=answer,
                 citations=citations,
                 formatted_response=formatted_response,
-                cost_dollars=cost_dollars
+                cost_dollars=cost_dollars,
+                output_meta=output_meta
             )
 
         except requests.exceptions.RequestException as e:

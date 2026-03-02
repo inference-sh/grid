@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta, RawMeta
 from pydantic import Field
 from typing import Optional, Literal
 import os
@@ -152,9 +152,34 @@ class App(BaseApp):
 
             logging.info(f"Extraction completed successfully")
 
+            # Build output_meta for pricing using costDollars from API
+            cost_dollars = results.get("costDollars", {}).get("total", 0)
+            cost_cents = cost_dollars * 100  # RawMeta.cost is in cents
+
+            # Count extracted content
+            result_items = results.get("results", [])
+            num_pages = len(result_items)
+            num_subpages = sum(len(r.get("subpages", [])) for r in result_items)
+
+            output_meta = OutputMeta(
+                outputs=[
+                    RawMeta(
+                        cost=cost_cents,
+                        extra={
+                            "num_pages": num_pages,
+                            "num_subpages": num_subpages,
+                            "get_text": input_data.get_text,
+                            "get_summary": input_data.get_summary,
+                            "livecrawl": input_data.livecrawl,
+                        }
+                    )
+                ]
+            )
+
             return AppOutput(
                 results=results,
-                answer=answer
+                answer=answer,
+                output_meta=output_meta
             )
 
         except requests.exceptions.RequestException as e:

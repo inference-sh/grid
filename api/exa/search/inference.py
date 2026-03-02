@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta, RawMeta
 from pydantic import Field
 from typing import Optional, Literal
 import os
@@ -144,11 +144,32 @@ class App(BaseApp):
             # Format answer summary
             answer = self._format_results(results, input_data.query)
 
-            logging.info(f"Search completed with {len(results.get('results', []))} results")
+            num_results = len(results.get('results', []))
+            logging.info(f"Search completed with {num_results} results")
+
+            # Build output_meta for pricing using costDollars from API
+            cost_dollars = results.get("costDollars", {}).get("total", 0)
+            cost_cents = cost_dollars * 100  # RawMeta.cost is in cents
+            output_meta = OutputMeta(
+                outputs=[
+                    RawMeta(
+                        cost=cost_cents,
+                        extra={
+                            "search_type": input_data.search_type,
+                            "num_results": num_results,
+                            "requested_results": input_data.num_results,
+                            "category": input_data.category,
+                            "get_contents": input_data.get_contents,
+                            "get_summary": input_data.get_summary,
+                        }
+                    )
+                ]
+            )
 
             return AppOutput(
                 results=results,
-                answer=answer
+                answer=answer,
+                output_meta=output_meta
             )
 
         except requests.exceptions.RequestException as e:

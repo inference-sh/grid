@@ -1,5 +1,6 @@
-name: exa-answer
-description: Generate LLM-powered answers informed by Exa search results
+namespace: exa
+name: search
+description: Intelligent web search using Exa's neural and keyword search capabilities
 category: text
 images:
     card: ""

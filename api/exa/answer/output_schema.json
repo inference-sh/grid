@@ -95,7 +95,7 @@
       "type": "object"
     },
     "OutputMeta": {
-      "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+      "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
       "properties": {
         "inputs": {
           "description": "Metadata about consumed inputs",
@@ -256,14 +256,15 @@
         "resolution": {
           "anyOf": [
             {
-              "$ref": "#/$defs/VideoResolution"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
+          "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+          "title": "Resolution"
         },
         "seconds": {
           "default": 0,
@@ -280,31 +281,41 @@
       },
       "title": "VideoMeta",
       "type": "object"
-    },
-    "VideoResolution": {
-      "description": "Standard video resolution presets.",
-      "enum": [
-        "480p",
-        "720p",
-        "1080p",
-        "1440p",
-        "4k"
-      ],
-      "title": "VideoResolution",
-      "type": "string"
     }
   },
   "properties": {
-    "results": {
-      "additionalProperties": true,
-      "description": "Complete search results from Exa API",
-      "title": "Results",
-      "type": "object"
-    },
     "answer": {
-      "description": "Formatted summary of search results",
+      "description": "The generated answer based on search results",
       "title": "Answer",
       "type": "string"
+    },
+    "citations": {
+      "description": "Search results that informed the answer",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "formatted_response": {
+      "description": "Formatted markdown response with citations",
+      "title": "Formatted Response",
+      "type": "string"
+    },
+    "cost_dollars": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "API cost breakdown",
+      "title": "Cost Dollars"
     },
     "output_meta": {
       "anyOf": [
@@ -320,8 +331,9 @@
     }
   },
   "required": [
-    "results",
-    "answer"
+    "answer",
+    "citations",
+    "formatted_response"
   ],
   "title": "AppOutput",
   "type": "object"

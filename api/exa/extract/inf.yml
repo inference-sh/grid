@@ -1,5 +1,6 @@
-name: exa-search
-description: Intelligent web search using Exa's neural and keyword search capabilities
+namespace: exa
+name: extract
+description: Extract and analyze web page content using Exa's advanced content retrieval
 category: text
 images:
     card: ""
