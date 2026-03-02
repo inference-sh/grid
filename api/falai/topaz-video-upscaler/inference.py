@@ -126,9 +126,11 @@ class App(BaseApp):
             self.logger.info(f"Video processing completed successfully")
 
             # Build output metadata for pricing
+            duration = result.get("duration", 5.0)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
+                        seconds=float(duration),
                         extra={
                             "upscale_factor": input_data.upscale_factor,
                             "target_fps": input_data.target_fps,

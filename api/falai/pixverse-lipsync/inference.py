@@ -151,9 +151,11 @@ class App(BaseApp):
             self.logger.info(f"Video processing completed successfully")
 
             # Build output metadata for pricing
+            duration = result.get("duration", 5.0)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
+                        seconds=float(duration),
                         extra={
                             "voice_id": input_data.voice_id.value if not input_data.audio else None,
                             "has_audio_input": input_data.audio is not None,

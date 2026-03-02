@@ -88,7 +88,21 @@ def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
 def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
     """Process a single chunk and update state dict. Returns finish_reason if present."""
     check_chunk_error(chunk)
-    
+
+    # Track usage if available - OpenRouter sends in final chunk (may have empty choices)
+    usage_attr = getattr(chunk, "usage", None)
+    if usage_attr:
+        prompt_tokens = getattr(usage_attr, "prompt_tokens", None)
+        completion_tokens = getattr(usage_attr, "completion_tokens", None)
+        if prompt_tokens is not None:
+            state["input_tokens"] = prompt_tokens
+        if completion_tokens is not None:
+            state["output_tokens"] = completion_tokens
+
+    # Handle usage-only chunk (empty choices)
+    if not chunk.choices:
+        return None
+
     delta = chunk.choices[0].delta
     finish_reason = chunk.choices[0].finish_reason
 
@@ -110,13 +124,6 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
             url = img.get("image_url", {}).get("url") if isinstance(img, dict) else None
             if url and url not in state["image_urls"]:
                 state["image_urls"].append(url)
-
-    # Track usage if available
-    if hasattr(chunk, "usage") and chunk.usage:
-        if hasattr(chunk.usage, "prompt_tokens"):
-            state["input_tokens"] = chunk.usage.prompt_tokens
-        if hasattr(chunk.usage, "completion_tokens"):
-            state["output_tokens"] = chunk.usage.completion_tokens
 
     return finish_reason
 
@@ -142,7 +149,7 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
         outputs.append(TextMeta(tokens=state["output_tokens"]))
     if inputs or outputs:
         out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
-    
+
     return out
 
 
@@ -265,9 +272,7 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
 
             finish_reason = process_chunk(chunk, state)
             yield build_output(state)
-
-            if finish_reason:
-                break
+            # Don't break on finish_reason - OpenRouter sends usage in a subsequent chunk
     finally:
         if hasattr(stream, "aclose"):
             await stream.aclose()

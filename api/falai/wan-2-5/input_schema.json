@@ -1,80 +1,5 @@
 {
   "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "ResolutionEnum": {
       "description": "Video resolution options.",
       "enum": [
@@ -94,20 +19,24 @@
       "type": "string"
     },
     "image": {
-      "$ref": "#/$defs/File",
-      "description": "Image file to use as the first frame. Supported formats: JPEG, PNG, WebP"
+      "description": "Image file to use as the first frame. Supported formats: JPEG, PNG, WebP",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
     },
     "audio": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional audio file to use as background music. Supported formats: WAV, MP3. Duration: 3-30s, max 15MB. Audio will be truncated if longer than video duration."
+      "description": "Optional audio file to use as background music. Supported formats: WAV, MP3. Duration: 3-30s, max 15MB. Audio will be truncated if longer than video duration.",
+      "title": "Audio"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",

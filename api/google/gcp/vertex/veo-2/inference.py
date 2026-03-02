@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppSetup, File, OutputMeta, VideoMeta
+from inferencesh import BaseApp, BaseAppSetup, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 
@@ -56,7 +56,7 @@ class RunInput(BaseModel):
     )
 
 
-class RunOutput(BaseModel):
+class RunOutput(BaseAppOutput):
     """Output containing generated videos."""
     videos: List[File] = Field(description="The generated video files")
 

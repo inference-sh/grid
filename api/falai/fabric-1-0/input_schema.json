@@ -1,80 +1,5 @@
 {
   "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "ResolutionEnum": {
       "description": "Resolution options for video generation.",
       "enum": [
@@ -87,12 +12,16 @@
   },
   "properties": {
     "image": {
-      "$ref": "#/$defs/File",
-      "description": "Image to turn into a talking video. Supported formats: JPEG, PNG, WebP"
+      "description": "Image to turn into a talking video. Supported formats: JPEG, PNG, WebP",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
     },
     "audio": {
-      "$ref": "#/$defs/File",
-      "description": "Audio file for the talking video. Supported formats: WAV, MP3"
+      "description": "Audio file for the talking video. Supported formats: WAV, MP3",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",

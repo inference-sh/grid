@@ -191,12 +191,15 @@ class App(BaseApp):
                 "1080p": (1920, 1080),
             }
             width, height = dims_map.get(input_data.resolution.value, (1920, 1080))
+            # Get duration from result if available, default to 5 seconds for wan-2.5
+            duration = result.get("duration", 5.0)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
                         width=width,
                         height=height,
                         resolution=resolution_map.get(input_data.resolution.value, VideoResolution.RES_1080P),
+                        seconds=float(duration),
                     )
                 ]
             )

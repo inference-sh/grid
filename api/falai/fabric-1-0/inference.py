@@ -108,12 +108,14 @@ class App(BaseApp):
             }
             # Dimensions based on resolution (assuming 16:9 aspect ratio)
             width, height = (854, 480) if input_data.resolution == ResolutionEnum.p480 else (1280, 720)
+            duration = result.get("duration", 5.0)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
                         width=width,
                         height=height,
                         resolution=resolution_map.get(input_data.resolution.value, VideoResolution.RES_480P),
+                        seconds=float(duration),
                     )
                 ]
             )
