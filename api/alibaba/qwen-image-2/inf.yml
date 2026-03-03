@@ -4,15 +4,14 @@ description: Qwen-Image-2.0 is Alibaba's multimodal image generation model that 
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbq7wkaexek1vdqxt6csk.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbn3sb81mxndpe2z0vcq0.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbmde0jccmb4t36q04ctx.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: DASHSCOPE_API_KEY
       description: Alibaba Cloud DashScope API key
-      optional: false
 resources:
     gpu:
         count: 0

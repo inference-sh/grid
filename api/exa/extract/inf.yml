@@ -1,19 +1,20 @@
 namespace: exa
 name: extract
 description: Extract and analyze web page content using Exa's advanced content retrieval
+metadata: {}
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
-metadata: {}
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bnabf3q6qq4se5nkt6c2.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bne0q56tnqjtd9e4w5e3.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bmnxp929p3r2y3mqpy38.jpeg
+env: {}
+kernel: "3.10"
+secrets:
+    - key: EXA_API_KEY
+      description: Exa API key for model access
 resources:
     gpu:
         count: 0
         vram: 0
         type: any
     ram: 0
-kernel: "3.10"
-secrets:
-  - key: EXA_API_KEY
-    description: Exa API key for model access

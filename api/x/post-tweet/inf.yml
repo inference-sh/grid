@@ -4,9 +4,9 @@ description: Post tweets to X.com with text (280 char limit) and optional media.
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60feh39gmsptqz5gh2vnbh.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fek57rq9c99mrrrs95t5.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fdwr4j81gkgas45fhd25.jpeg
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqkhwf3ecmxbp7tv00ym2.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqf3r16gsmsjb8h5hm6qx.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqeq1tg0c64n79pchkv3h.jpeg
 env: {}
 kernel: python-3.11
 integrations:

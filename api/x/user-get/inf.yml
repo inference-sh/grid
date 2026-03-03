@@ -4,9 +4,9 @@ description: Get a user profile from X.com by ID or username. Returns bio, follo
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60feh39gmsptqz5gh2vnbh.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fek57rq9c99mrrrs95t5.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fdwr4j81gkgas45fhd25.jpeg
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsscpste4fyjf40g89q6v.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsv53zftjn6w2k7htajnh.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsqwjpf3ak22n1v05q970.jpeg
 env: {}
 kernel: python-3.11
 integrations:
