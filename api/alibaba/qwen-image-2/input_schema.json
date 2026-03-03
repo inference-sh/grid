@@ -1,0 +1,103 @@
+{
+  "description": "Input schema for Qwen-Image-2.0.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing what to generate or edit. For editing, reference images by position (e.g., 'Image 1', 'Image 2').",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for editing (1-3 images). Image 1 can be subject, Image 2 clothing/style, Image 3 pose, etc.",
+      "title": "Reference Images"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of images to generate (1-6).",
+      "maximum": 6,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "maximum": 2048,
+          "minimum": 512,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output width in pixels (512-2048). Total pixels must be between 512*512 and 2048*2048.",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "maximum": 2048,
+          "minimum": 512,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output height in pixels (512-2048). Total pixels must be between 512*512 and 2048*2048.",
+      "title": "Height"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'Qwen-Image' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "negative_prompt": {
+      "default": "",
+      "description": "Content to avoid in the generated image (max 500 characters).",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "prompt_extend": {
+      "default": true,
+      "description": "Enable prompt rewriting for more diverse content. Disable for precise control.",
+      "title": "Prompt Extend",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

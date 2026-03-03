@@ -1,0 +1,21 @@
+namespace: alibaba
+name: qwen-image-2
+description: Qwen-Image-2.0 is Alibaba's multimodal image generation model that integrates image generation and editing with enhanced text-rendering, realistic textures, and photorealistic scenes
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -24,10 +24,6 @@ wheels/
 .installed.cfg
 *.egg
 
-# Node.js
-node_modules/
-package-lock.json
-
 # Virtual Environment
 venv/
 env/
@@ -50,7 +46,5 @@ Thumbs.db
 !inf.yml
 !inference.py
 
-test
-*.fal.key
-
-_custom
+skills
+README.md

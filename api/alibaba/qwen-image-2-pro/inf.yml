@@ -1,0 +1,21 @@
+namespace: alibaba
+name: qwen-image-2-pro
+description: Qwen-Image-2.0 Pro offers enhanced text rendering, fine-grained realism, photorealistic scenes, and stronger semantic adherence for professional image generation and editing
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
