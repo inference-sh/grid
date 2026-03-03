@@ -1,0 +1,29 @@
+namespace: bytedance
+name: seedream-5-lite
+description: Generate high-quality 2K-3K images from text prompts with single or multi-image input. Supports text-to-image, image-to-image, and multi-reference image blending using ByteDance's Seedream 5 Lite model via BytePlus ARK API.
+metadata:
+    provider: bytedance
+    tags:
+        - seedream
+        - image-generation
+        - text-to-image
+        - image-to-image
+        - bytedance
+        - byteplus
+        - 2k
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedream image generation
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
