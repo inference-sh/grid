@@ -1,0 +1,89 @@
+{
+  "run": {
+    "description": "Execute a shell command.",
+    "input_schema": {
+      "description": "Command execution input.",
+      "properties": {
+        "command": {
+          "description": "Command to execute (passed to shell)",
+          "title": "Command",
+          "type": "string"
+        },
+        "cwd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Working directory (overrides default)",
+          "title": "Cwd"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Timeout in seconds (overrides default)",
+          "title": "Timeout"
+        },
+        "env": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional environment variables",
+          "title": "Env"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "description": "Command execution result.",
+      "properties": {
+        "stdout": {
+          "description": "Standard output",
+          "title": "Stdout",
+          "type": "string"
+        },
+        "stderr": {
+          "description": "Standard error",
+          "title": "Stderr",
+          "type": "string"
+        },
+        "exit_code": {
+          "description": "Exit code",
+          "title": "Exit Code",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "stdout",
+        "stderr",
+        "exit_code"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}

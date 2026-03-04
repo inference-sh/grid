@@ -1,0 +1,19 @@
+{
+  "description": "Shell app configuration.",
+  "properties": {
+    "working_dir": {
+      "default": ".",
+      "description": "Default working directory",
+      "title": "Working Dir",
+      "type": "string"
+    },
+    "timeout": {
+      "default": 30,
+      "description": "Default timeout in seconds",
+      "title": "Timeout",
+      "type": "integer"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}
