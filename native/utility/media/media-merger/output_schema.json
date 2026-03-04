@@ -283,12 +283,11 @@
       "type": "object"
     }
   },
-  "description": "Output schema for Seedance 1.0 Pro video generation.",
   "properties": {
-    "video": {
-      "description": "The generated video file.",
+    "result": {
+      "description": "The resulting merged video file with applied transitions",
       "format": "file",
-      "title": "Video",
+      "title": "Result",
       "type": "string"
     },
     "output_meta": {
@@ -305,7 +304,7 @@
     }
   },
   "required": [
-    "video"
+    "result"
   ],
   "title": "AppOutput",
   "type": "object"

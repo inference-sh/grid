@@ -6,7 +6,7 @@
       "properties": {
         "code": {
           "type": "string",
-          "description": "React component TSX code. Must export default a component. Can import from 'remotion' (useCurrentFrame, useVideoConfig, spring, interpolate, AbsoluteFill, Sequence, etc.) and 'react'. Receives inputProps as component props."
+          "description": "React component TSX code. Export a component (default or named). Can import from 'remotion' (useCurrentFrame, useVideoConfig, spring, interpolate, AbsoluteFill, Sequence, etc.) and 'react'. Receives inputProps as component props."
         },
         "composition_id": {
           "type": "string",

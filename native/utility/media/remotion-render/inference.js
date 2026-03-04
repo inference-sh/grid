@@ -15,7 +15,7 @@ export const RunInput = z.object({
   code: z
     .string()
     .describe(
-      "React component TSX code. Must export default a component. " +
+      "React component TSX code. Export a component (default or named). " +
         "Can import from 'remotion' (useCurrentFrame, useVideoConfig, spring, interpolate, AbsoluteFill, Sequence, etc.) " +
         "and 'react'. Receives inputProps as component props."
     ),
@@ -98,7 +98,27 @@ export class App {
 import { registerRoot } from "remotion";
 import React from "react";
 import { Composition } from "remotion";
-import UserComp from "./UserComp";
+import * as UserModule from "./UserComp";
+
+// Smart export detection: prefer default, fall back to first named export
+let UserComp = UserModule.default;
+if (typeof UserComp === "undefined") {
+  const namedExports = Object.keys(UserModule).filter(k => k !== "default" && typeof UserModule[k] === "function");
+  if (namedExports.length > 0) {
+    UserComp = UserModule[namedExports[0]];
+    console.log("Using named export: " + namedExports[0]);
+  }
+}
+
+if (typeof UserComp === "undefined") {
+  throw new Error(
+    "No component found. Your code must export a React component.\\n\\n" +
+    "Example:\\n" +
+    "  export const MyComponent = () => { ... }\\n" +
+    "  // or\\n" +
+    "  export default MyComponent;"
+  );
+}
 
 const Root: React.FC = () => {
   return (

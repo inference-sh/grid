@@ -242,11 +242,11 @@ class App(BaseApp):
 
             # Map resolution string to enum
             resolution_map = {
-                '480p': VideoResolution.RES_480P,
-                '720p': VideoResolution.RES_720P,
-                '1080p': VideoResolution.RES_1080P,
+                '480p': VideoResolution.VIDEO_RES480_P,
+                '720p': VideoResolution.VIDEO_RES720_P,
+                '1080p': VideoResolution.VIDEO_RES1080_P,
             }
-            resolution_enum = resolution_map.get(resolution_str, VideoResolution.RES_720P)
+            resolution_enum = resolution_map.get(resolution_str, VideoResolution.VIDEO_RES720_P)
 
             # Calculate estimated tokens as fallback
             estimated_tokens = int((width * height * fps * duration_seconds) / 1024)

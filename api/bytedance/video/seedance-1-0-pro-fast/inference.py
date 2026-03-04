@@ -174,11 +174,11 @@ class App(BaseApp):
                 total_tokens = getattr(usage, 'total_tokens', None)
 
             resolution_map = {
-                '480p': VideoResolution.RES_480P,
-                '720p': VideoResolution.RES_720P,
-                '1080p': VideoResolution.RES_1080P,
+                '480p': VideoResolution.VIDEO_RES480_P,
+                '720p': VideoResolution.VIDEO_RES720_P,
+                '1080p': VideoResolution.VIDEO_RES1080_P,
             }
-            resolution_enum = resolution_map.get(resolution_str, VideoResolution.RES_720P)
+            resolution_enum = resolution_map.get(resolution_str, VideoResolution.VIDEO_RES720_P)
 
             width, height = (1280, 720)
             if resolution_str == '480p':

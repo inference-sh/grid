@@ -30,17 +30,17 @@ class ResolutionEnum(str, Enum):
     p1080 = "1080p"
 
 
-class DurationEnum(str, Enum):
+class DurationEnum(int, Enum):
     """Video duration options in seconds (4-12s)."""
-    s4 = "4"
-    s5 = "5"
-    s6 = "6"
-    s7 = "7"
-    s8 = "8"
-    s9 = "9"
-    s10 = "10"
-    s11 = "11"
-    s12 = "12"
+    s4 = 4
+    s5 = 5
+    s6 = 6
+    s7 = 7
+    s8 = 8
+    s9 = 9
+    s10 = 10
+    s11 = 11
+    s12 = 12
 
 
 class AppInput(BaseAppInput):
@@ -114,7 +114,7 @@ class App(BaseApp):
         text_content = build_text_content(
             input_data.prompt,
             resolution=input_data.resolution.value,
-            duration=input_data.duration.value,
+            duration=str(input_data.duration.value),
             camerafixed=str(input_data.camera_fixed).lower(),
         )
         content.append(text_content)
@@ -190,11 +190,11 @@ class App(BaseApp):
 
             # Map resolution string to enum
             resolution_map = {
-                '480p': VideoResolution.RES_480P,
-                '720p': VideoResolution.RES_720P,
-                '1080p': VideoResolution.RES_1080P,
+                '480p': VideoResolution.VIDEO_RES480_P,
+                '720p': VideoResolution.VIDEO_RES720_P,
+                '1080p': VideoResolution.VIDEO_RES1080_P,
             }
-            resolution_enum = resolution_map.get(resolution_str, VideoResolution.RES_720P)
+            resolution_enum = resolution_map.get(resolution_str, VideoResolution.VIDEO_RES720_P)
 
             # Determine dimensions from resolution
             width, height = (1280, 720)  # Default 720p

@@ -3,93 +3,18 @@
     "DurationEnum": {
       "description": "Video duration options in seconds (4-12s).",
       "enum": [
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12"
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
       ],
       "title": "DurationEnum",
-      "type": "string"
-    },
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
+      "type": "integer"
     },
     "ResolutionEnum": {
       "description": "Video resolution options.",
@@ -115,14 +40,16 @@
     "image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional first-frame image for image-to-video generation. If not provided, generates from text only."
+      "description": "Optional first-frame image for image-to-video generation. If not provided, generates from text only.",
+      "title": "Image"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
@@ -131,7 +58,7 @@
     },
     "duration": {
       "$ref": "#/$defs/DurationEnum",
-      "default": "5",
+      "default": 5,
       "description": "Duration of the video in seconds (4-12 seconds)."
     },
     "camera_fixed": {
