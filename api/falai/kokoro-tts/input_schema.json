@@ -24,17 +24,32 @@
       "type": "string"
     },
     "voice": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "default": "af_heart",
+      "description": "Voice ID for the desired voice.",
+      "enum": [
+        "af_heart",
+        "af_alloy",
+        "af_aoede",
+        "af_bella",
+        "af_jessica",
+        "af_kore",
+        "af_nicole",
+        "af_nova",
+        "af_river",
+        "af_sarah",
+        "af_sky",
+        "am_adam",
+        "am_echo",
+        "am_eric",
+        "am_fenrir",
+        "am_liam",
+        "am_michael",
+        "am_onyx",
+        "am_puck",
+        "am_santa"
       ],
-      "default": null,
-      "description": "Voice ID. If not set, uses the default voice for the selected language. See docs for available voices per language.",
-      "title": "Voice"
+      "title": "Voice",
+      "type": "string"
     },
     "speed": {
       "default": 1.0,

@@ -9,7 +9,7 @@ Consolidates fal-ai/kokoro/* endpoints into a single app.
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta, AudioMeta
 from pydantic import Field
-from typing import Optional, Literal
+from typing import Literal
 import logging
 
 from .fal_helper import setup_fal_client, run_fal_model, download_file
@@ -88,9 +88,14 @@ class AppInput(BaseAppInput):
         default="american-english",
         description="Language for speech generation."
     )
-    voice: Optional[str] = Field(
-        default=None,
-        description="Voice ID. If not set, uses the default voice for the selected language. See docs for available voices per language."
+    voice: Literal[
+        "af_heart", "af_alloy", "af_aoede", "af_bella", "af_jessica", "af_kore",
+        "af_nicole", "af_nova", "af_river", "af_sarah", "af_sky",
+        "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael",
+        "am_onyx", "am_puck", "am_santa",
+    ] = Field(
+        default="af_heart",
+        description="Voice ID for the desired voice."
     )
     speed: float = Field(
         default=1.0,
@@ -118,16 +123,8 @@ class App(BaseApp):
         return LANGUAGE_ENDPOINTS[input_data.language]
 
     def _resolve_voice(self, input_data: AppInput) -> str:
-        """Resolve voice ID, validating against available voices."""
-        if input_data.voice:
-            valid_voices = LANGUAGE_VOICES[input_data.language]
-            if input_data.voice not in valid_voices:
-                raise ValueError(
-                    f"Voice '{input_data.voice}' is not available for {input_data.language}. "
-                    f"Available voices: {', '.join(valid_voices)}"
-                )
-            return input_data.voice
-        return DEFAULT_VOICES[input_data.language]
+        """Return the voice ID."""
+        return input_data.voice
 
     def _build_request(self, input_data: AppInput) -> dict:
         """Build request payload for fal.ai."""
