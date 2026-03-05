@@ -34,11 +34,23 @@
         "ResolutionEnum": {
           "description": "Resolution options.",
           "enum": [
+            "512",
             "1K",
             "2K",
             "4K"
           ],
           "title": "ResolutionEnum",
+          "type": "string"
+        },
+        "SafetyToleranceEnum": {
+          "description": "Safety filter thresholds.",
+          "enum": [
+            "BLOCK_NONE",
+            "BLOCK_LOW_AND_ABOVE",
+            "BLOCK_MEDIUM_AND_ABOVE",
+            "BLOCK_ONLY_HIGH"
+          ],
+          "title": "SafetyToleranceEnum",
           "type": "string"
         }
       },
@@ -93,6 +105,11 @@
           "description": "Enable Google Search grounding for real-time information (weather, news, etc.)",
           "title": "Enable Google Search",
           "type": "boolean"
+        },
+        "safety_tolerance": {
+          "$ref": "#/$defs/SafetyToleranceEnum",
+          "default": "BLOCK_NONE",
+          "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
         }
       },
       "required": [

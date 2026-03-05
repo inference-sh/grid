@@ -1,44 +1,43 @@
 {
   "run": {
-    "description": "Generate video using Veo 3.1 Fast model via Vertex AI.",
+    "description": "Run TTS or VC inference.",
     "input_schema": {
       "$defs": {
-        "PersonGenerationEnum": {
-          "description": "Person generation settings for video.",
+        "Mode": {
           "enum": [
-            "allow_adult",
-            "disallow"
+            "tts",
+            "vc"
           ],
-          "title": "PersonGenerationEnum",
+          "title": "Mode",
           "type": "string"
         },
-        "VideoAspectRatioEnum": {
-          "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
+        "Model": {
           "enum": [
-            "16:9",
-            "9:16"
+            "turbo",
+            "multilingual",
+            "original"
           ],
-          "title": "VideoAspectRatioEnum",
-          "type": "string"
-        },
-        "VideoResolutionEnum": {
-          "description": "Resolution options for video.",
-          "enum": [
-            "720p",
-            "1080p"
-          ],
-          "title": "VideoResolutionEnum",
+          "title": "Model",
           "type": "string"
         }
       },
-      "description": "Input for video generation.",
       "properties": {
-        "prompt": {
-          "description": "Text prompt describing the desired video content.",
-          "title": "Prompt",
+        "model": {
+          "$ref": "#/$defs/Model",
+          "default": "original",
+          "description": "Model to use: 'original' (works without voice ref), 'turbo' (fastest, requires voice ref, supports [laugh] tags), or 'multilingual' (23+ languages)"
+        },
+        "mode": {
+          "$ref": "#/$defs/Mode",
+          "default": "tts",
+          "description": "Mode of operation: 'tts' (Text-to-Speech) or 'vc' (Voice Conversion, original model only)"
+        },
+        "text": {
+          "description": "Text to convert to speech. Turbo model supports tags like [laugh], [cough], [chuckle]",
+          "title": "Text",
           "type": "string"
         },
-        "image": {
+        "voice_reference": {
           "anyOf": [
             {
               "format": "file",
@@ -49,10 +48,16 @@
             }
           ],
           "default": null,
-          "description": "Optional first frame image. When provided, the video will start from this image.",
-          "title": "Image"
+          "description": "Reference audio file for voice cloning. Required for turbo model.",
+          "title": "Voice Reference"
         },
-        "last_frame": {
+        "language": {
+          "default": "en",
+          "description": "Language code for multilingual model (ar, da, de, el, en, es, fi, fr, he, hi, it, ja, ko, ms, nl, no, pl, pt, ru, sv, sw, tr, zh)",
+          "title": "Language",
+          "type": "string"
+        },
+        "source_audio": {
           "anyOf": [
             {
               "format": "file",
@@ -63,10 +68,10 @@
             }
           ],
           "default": null,
-          "description": "Optional last frame image for frame interpolation. Requires first frame image.",
-          "title": "Last Frame"
+          "description": "Source audio for voice conversion (VC mode with original model only)",
+          "title": "Source Audio"
         },
-        "video": {
+        "target_voice_style": {
           "anyOf": [
             {
               "format": "file",
@@ -77,51 +82,26 @@
             }
           ],
           "default": null,
-          "description": "Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds.",
-          "title": "Video"
+          "description": "Target voice style for voice conversion (VC mode with original model only)",
+          "title": "Target Voice Style"
         },
-        "aspect_ratio": {
-          "$ref": "#/$defs/VideoAspectRatioEnum",
-          "default": "16:9",
-          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+        "exaggeration": {
+          "default": 0.5,
+          "description": "Expressiveness control (original/multilingual). Higher (0.7+) = dramatic, lower (0.3-) = neutral",
+          "title": "Exaggeration",
+          "type": "number"
         },
-        "duration": {
-          "default": 8,
-          "description": "Video duration in seconds.",
-          "maximum": 8,
-          "minimum": 5,
-          "title": "Duration",
-          "type": "integer"
-        },
-        "resolution": {
-          "$ref": "#/$defs/VideoResolutionEnum",
-          "default": "720p",
-          "description": "Output video resolution."
-        },
-        "generate_audio": {
-          "default": false,
-          "description": "Whether to generate audio for the video.",
-          "title": "Generate Audio",
-          "type": "boolean"
-        },
-        "num_videos": {
-          "default": 1,
-          "description": "Number of videos to generate.",
-          "maximum": 2,
-          "minimum": 1,
-          "title": "Num Videos",
-          "type": "integer"
-        },
-        "person_generation": {
-          "$ref": "#/$defs/PersonGenerationEnum",
-          "default": "allow_adult",
-          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
+        "cfg_weight": {
+          "default": 0.5,
+          "description": "Voice matching strength (original/multilingual). Lower (0.3) = natural variation, higher (0.7+) = closer match",
+          "title": "Cfg Weight",
+          "type": "number"
         }
       },
       "required": [
-        "prompt"
+        "text"
       ],
-      "title": "RunInput",
+      "title": "AppInput",
       "type": "object"
     },
     "output_schema": {
@@ -409,16 +389,12 @@
           "type": "object"
         }
       },
-      "description": "Output containing generated videos.",
       "properties": {
-        "videos": {
-          "description": "The generated video files",
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "title": "Videos",
-          "type": "array"
+        "audio_output": {
+          "description": "Generated audio file",
+          "format": "file",
+          "title": "Audio Output",
+          "type": "string"
         },
         "output_meta": {
           "anyOf": [
@@ -434,9 +410,9 @@
         }
       },
       "required": [
-        "videos"
+        "audio_output"
       ],
-      "title": "RunOutput",
+      "title": "AppOutput",
       "type": "object"
     }
   }

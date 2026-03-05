@@ -1,80 +1,5 @@
 {
   "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "Mode": {
       "enum": [
         "tts",
@@ -82,64 +7,90 @@
       ],
       "title": "Mode",
       "type": "string"
+    },
+    "Model": {
+      "enum": [
+        "turbo",
+        "multilingual",
+        "original"
+      ],
+      "title": "Model",
+      "type": "string"
     }
   },
   "properties": {
+    "model": {
+      "$ref": "#/$defs/Model",
+      "default": "original",
+      "description": "Model to use: 'original' (works without voice ref), 'turbo' (fastest, requires voice ref, supports [laugh] tags), or 'multilingual' (23+ languages)"
+    },
     "mode": {
       "$ref": "#/$defs/Mode",
       "default": "tts",
-      "description": "Mode of operation: 'tts' (Text-to-Speech with optional voice cloning) or 'vc' (Voice Conversion between two speakers)"
+      "description": "Mode of operation: 'tts' (Text-to-Speech) or 'vc' (Voice Conversion, original model only)"
     },
     "text": {
-      "description": "The text content to be converted to speech (used in TTS mode)",
+      "description": "Text to convert to speech. Turbo model supports tags like [laugh], [cough], [chuckle]",
       "title": "Text",
       "type": "string"
     },
     "voice_reference": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Reference audio file containing the desired voice style for TTS. The generated speech will mimic this voice's characteristics"
+      "description": "Reference audio file for voice cloning. Required for turbo model.",
+      "title": "Voice Reference"
+    },
+    "language": {
+      "default": "en",
+      "description": "Language code for multilingual model (ar, da, de, el, en, es, fi, fr, he, hi, it, ja, ko, ms, nl, no, pl, pt, ru, sv, sw, tr, zh)",
+      "title": "Language",
+      "type": "string"
     },
     "source_audio": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Source audio file containing the speech to be converted in voice conversion (VC) mode. This is the 'what is being said'"
+      "description": "Source audio for voice conversion (VC mode with original model only)",
+      "title": "Source Audio"
     },
     "target_voice_style": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Reference audio file containing the target voice style for voice conversion. The source_audio will be converted to match this voice's characteristics"
+      "description": "Target voice style for voice conversion (VC mode with original model only)",
+      "title": "Target Voice Style"
     },
     "exaggeration": {
       "default": 0.5,
-      "description": "Controls the expressiveness of the generated speech. Higher values (0.7+) create more dramatic speech, lower values (0.3-) create more neutral speech",
+      "description": "Expressiveness control (original/multilingual). Higher (0.7+) = dramatic, lower (0.3-) = neutral",
       "title": "Exaggeration",
       "type": "number"
     },
     "cfg_weight": {
       "default": 0.5,
-      "description": "Controls how closely the output follows the reference voice style. Lower values (0.3-) allow more natural variation, higher values (0.7+) enforce closer matching",
+      "description": "Voice matching strength (original/multilingual). Lower (0.3) = natural variation, higher (0.7+) = closer match",
       "title": "Cfg Weight",
       "type": "number"
     }

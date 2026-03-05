@@ -36,8 +36,7 @@
         "BLOCK_NONE",
         "BLOCK_LOW_AND_ABOVE",
         "BLOCK_MEDIUM_AND_ABOVE",
-        "BLOCK_ONLY_HIGH",
-        "OFF"
+        "BLOCK_ONLY_HIGH"
       ],
       "title": "SafetyToleranceEnum",
       "type": "string"
@@ -120,8 +119,8 @@
     },
     "safety_tolerance": {
       "$ref": "#/$defs/SafetyToleranceEnum",
-      "default": "BLOCK_MEDIUM_AND_ABOVE",
-      "description": "Safety filter threshold for all categories."
+      "default": "BLOCK_NONE",
+      "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
     }
   },
   "required": [

@@ -71,8 +71,8 @@ class AppInput(BaseAppInput):
         description="Maximum number of tokens to generate. Max: 32768"
     )
     safety_tolerance: SafetyToleranceEnum = Field(
-        default=SafetyToleranceEnum.block_medium_and_above,
-        description="Safety filter threshold for all categories."
+        default=SafetyToleranceEnum.block_none,
+        description="Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
     )
 
 

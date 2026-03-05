@@ -12,6 +12,7 @@ from .vertex_helper import (
     save_video_to_temp,
     setup_logger,
     VideoAspectRatioEnum,
+    PersonGenerationEnum,
     prepare_video_for_veo,
 )
 
@@ -54,6 +55,10 @@ class RunInput(BaseModel):
         ge=1,
         le=2
     )
+    person_generation: PersonGenerationEnum = Field(
+        default=PersonGenerationEnum.allow_adult,
+        description="Person generation setting. allow_adult: only adults, disallow: no people/faces."
+    )
 
 
 class RunOutput(BaseAppOutput):
@@ -70,6 +75,7 @@ def build_veo2_payload(
     enhance_prompt: bool = True,
     video_path: Optional[str] = None,
     storage_uri: Optional[str] = None,
+    person_generation: str = "allow_adult",
 ) -> Dict[str, Any]:
     """Build request payload for Veo 2 video generation."""
     instance: Dict[str, Any] = {"prompt": prompt}
@@ -83,6 +89,7 @@ def build_veo2_payload(
         "sampleCount": sample_count,
         "durationSeconds": str(duration_seconds),
         "enhancePrompt": enhance_prompt,
+        "personGeneration": person_generation,
     }
 
     if negative_prompt:
@@ -136,6 +143,7 @@ class App(BaseApp):
                 negative_prompt=input_data.negative_prompt,
                 enhance_prompt=input_data.enhance_prompt,
                 video_path=video_path,
+                person_generation=input_data.person_generation.value,
             )
 
             self.logger.info("Starting video generation operation...")

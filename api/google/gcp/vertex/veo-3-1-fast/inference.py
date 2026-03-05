@@ -15,6 +15,7 @@ from .vertex_helper import (
     setup_logger,
     VideoAspectRatioEnum,
     VideoResolutionEnum,
+    PersonGenerationEnum,
 )
 
 
@@ -63,6 +64,10 @@ class RunInput(BaseModel):
         description="Number of videos to generate.",
         ge=1,
         le=2
+    )
+    person_generation: PersonGenerationEnum = Field(
+        default=PersonGenerationEnum.allow_adult,
+        description="Person generation setting. allow_adult: only adults, disallow: no people/faces."
     )
 
 
@@ -137,6 +142,7 @@ class App(BaseApp):
                 first_frame_path=first_frame_path,
                 last_frame_path=last_frame_path,
                 video_path=video_path,
+                person_generation=input_data.person_generation.value,
             )
 
             # Start the long-running operation

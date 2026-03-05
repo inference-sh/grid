@@ -7,6 +7,7 @@ from .vertex_helper import (
     OutputFormatEnum,
     AspectRatioAutoEnum,
     ResolutionEnum,
+    SafetyToleranceEnum,
     calculate_dimensions,
     load_image_as_part,
     build_image_generation_config,
@@ -48,6 +49,10 @@ class AppInput(BaseAppInput):
     enable_google_search: bool = Field(
         default=False,
         description="Enable Google Search grounding for real-time information (weather, news, etc.)"
+    )
+    safety_tolerance: SafetyToleranceEnum = Field(
+        default=SafetyToleranceEnum.block_none,
+        description="Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
     )
 
 
@@ -105,6 +110,7 @@ class App(BaseApp):
                 aspect_ratio=aspect_ratio_value,
                 resolution=input_data.resolution.value,
                 enable_google_search=input_data.enable_google_search,
+                safety_tolerance=input_data.safety_tolerance.value,
             )
 
             # Generate images (one API call per image)

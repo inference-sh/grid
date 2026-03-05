@@ -3,6 +3,15 @@
     "description": "Generate video using Veo 3 model via Vertex AI.",
     "input_schema": {
       "$defs": {
+        "PersonGenerationEnum": {
+          "description": "Person generation settings for video.",
+          "enum": [
+            "allow_adult",
+            "disallow"
+          ],
+          "title": "PersonGenerationEnum",
+          "type": "string"
+        },
         "VideoAspectRatioEnum": {
           "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
           "enum": [
@@ -102,6 +111,11 @@
           "minimum": 1,
           "title": "Num Videos",
           "type": "integer"
+        },
+        "person_generation": {
+          "$ref": "#/$defs/PersonGenerationEnum",
+          "default": "allow_adult",
+          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
         }
       },
       "required": [

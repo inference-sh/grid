@@ -85,11 +85,11 @@ class SafetyToleranceEnum(str, Enum):
     block_low_and_above = "BLOCK_LOW_AND_ABOVE"
     block_medium_and_above = "BLOCK_MEDIUM_AND_ABOVE"
     block_only_high = "BLOCK_ONLY_HIGH"
-    off = "OFF"
 
 
 class ResolutionEnum(str, Enum):
     """Resolution options."""
+    res_512 = "512"
     res_1k = "1K"
     res_2k = "2K"
     res_4k = "4K"
@@ -105,6 +105,12 @@ class VideoResolutionEnum(str, Enum):
     """Resolution options for video."""
     res_720p = "720p"
     res_1080p = "1080p"
+
+
+class PersonGenerationEnum(str, Enum):
+    """Person generation settings for video."""
+    allow_adult = "allow_adult"
+    disallow = "disallow"
 
 
 # =============================================================================
@@ -417,7 +423,9 @@ def calculate_dimensions(aspect_ratio: str, resolution: str) -> tuple[int, int]:
         Tuple of (width, height)
     """
     base = 1024
-    if resolution == "2K":
+    if resolution == "512":
+        base = 512
+    elif resolution == "2K":
         base = 2048
     elif resolution == "4K":
         base = 4096
@@ -643,8 +651,9 @@ def process_image_response(
         usage_metadata=usage_metadata,
     )
 
-    # Process response parts
-    for part in candidate.content.parts:
+    # Process response parts (may be None if blocked)
+    parts = getattr(candidate.content, 'parts', None) if candidate.content else None
+    for part in (parts or []):
         # Skip thinking/thought parts
         if hasattr(part, 'thought') and part.thought:
             continue
@@ -1205,7 +1214,7 @@ def build_veo_payload(
     last_frame_path: Optional[str] = None,
     video_path: Optional[str] = None,
     storage_uri: Optional[str] = None,
-    person_generation: str = "allow_all",
+    person_generation: str = "allow_adult",
     enable_prompt_rewriting: bool = True,
     add_watermark: bool = False,
 ) -> Dict[str, Any]:
