@@ -54,14 +54,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Grok Imagine Pro image generation application using xAI SDK."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the xAI client."""
         self.logger = setup_logger(__name__)
         self.client = create_xai_client()
         self.model = "grok-imagine-image-pro"
         self.logger.info(f"Grok Imagine Image Pro initialized with model: {self.model}")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate or edit images using Grok Imagine Pro."""
         try:
             mode = "image-edit" if input_data.image else "text-to-image"

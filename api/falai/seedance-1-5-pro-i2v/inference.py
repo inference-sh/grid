@@ -171,8 +171,8 @@ class App(BaseApp):
             
             # Build output metadata for pricing
             resolution_map = {
-                "480p": VideoResolution.RES_480P,
-                "720p": VideoResolution.RES_720P,
+                "480p": VideoResolution.VIDEO_RES480_P,
+                "720p": VideoResolution.VIDEO_RES720_P,
             }
             width, height = VIDEO_DIMENSIONS.get(
                 (input_data.resolution.value, input_data.aspect_ratio.value),

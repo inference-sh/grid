@@ -184,9 +184,9 @@ class App(BaseApp):
 
             # Build output metadata for pricing
             resolution_map = {
-                "480p": VideoResolution.RES_480P,
-                "720p": VideoResolution.RES_720P,
-                "1080p": VideoResolution.RES_1080P,
+                "480p": VideoResolution.VIDEO_RES480_P,
+                "720p": VideoResolution.VIDEO_RES720_P,
+                "1080p": VideoResolution.VIDEO_RES1080_P,
             }
             # Dimensions based on resolution (16:9 aspect ratio)
             dims_map = {
@@ -201,7 +201,7 @@ class App(BaseApp):
                     VideoMeta(
                         width=width,
                         height=height,
-                        resolution=resolution_map.get(input_data.resolution.value, VideoResolution.RES_1080P),
+                        resolution=resolution_map.get(input_data.resolution.value, VideoResolution.VIDEO_RES1080_P),
                         seconds=float(duration),
                     )
                 ]

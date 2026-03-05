@@ -65,14 +65,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Grok Imagine video generation application using xAI SDK."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the xAI client."""
         self.logger = setup_logger(__name__)
         self.client = create_xai_client()
         self.model = "grok-imagine-video"
         self.logger.info(f"Grok Imagine Video initialized with model: {self.model}")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate or edit video using Grok Imagine Video."""
         try:
             # Determine mode
@@ -140,10 +140,10 @@ class App(BaseApp):
 
             # Map resolution to enum and get dimensions
             resolution_enum_map = {
-                "480p": VideoResolution.RES_480P,
-                "720p": VideoResolution.RES_720P,
+                "480p": VideoResolution.VIDEO_RES480_P,
+                "720p": VideoResolution.VIDEO_RES720_P,
             }
-            resolution_enum = resolution_enum_map.get(input_data.resolution, VideoResolution.RES_720P)
+            resolution_enum = resolution_enum_map.get(input_data.resolution, VideoResolution.VIDEO_RES720_P)
             width, height = get_video_dimensions(input_data.aspect_ratio, input_data.resolution)
 
             output_meta = OutputMeta(

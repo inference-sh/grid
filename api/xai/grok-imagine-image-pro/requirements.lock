@@ -4,7 +4,7 @@ aiosignal==1.4.0
 annotated-types==0.7.0
 anyio==4.12.1
 attrs==25.4.0
-certifi==2026.1.4
+certifi==2026.2.25
 charset-normalizer==3.4.4
 frozenlist==1.8.0
 googleapis-common-protos==1.72.0
@@ -14,12 +14,12 @@ httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
 importlib-metadata==8.7.1
-inferencesh==0.6.13
+inferencesh==0.6.20
 multidict==6.7.1
 ninja==1.13.0
-opentelemetry-api==1.39.1
-opentelemetry-sdk==1.39.1
-opentelemetry-semantic-conventions==0.60b1
+opentelemetry-api==1.40.0
+opentelemetry-sdk==1.40.0
+opentelemetry-semantic-conventions==0.61b0
 packaging==25.0
 propcache==0.4.1
 protobuf==6.33.5
@@ -32,6 +32,6 @@ tqdm==4.67.3
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 urllib3==2.6.3
-xai-sdk==1.6.1
-yarl==1.22.0
+xai-sdk==1.8.0
+yarl==1.23.0
 zipp==3.23.0

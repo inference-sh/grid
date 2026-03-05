@@ -103,8 +103,8 @@ class App(BaseApp):
 
             # Build output metadata for pricing
             resolution_map = {
-                "480p": VideoResolution.RES_480P,
-                "720p": VideoResolution.RES_720P,
+                "480p": VideoResolution.VIDEO_RES480_P,
+                "720p": VideoResolution.VIDEO_RES720_P,
             }
             # Dimensions based on resolution (assuming 16:9 aspect ratio)
             width, height = (854, 480) if input_data.resolution == ResolutionEnum.p480 else (1280, 720)
@@ -114,7 +114,7 @@ class App(BaseApp):
                     VideoMeta(
                         width=width,
                         height=height,
-                        resolution=resolution_map.get(input_data.resolution.value, VideoResolution.RES_480P),
+                        resolution=resolution_map.get(input_data.resolution.value, VideoResolution.VIDEO_RES480_P),
                         seconds=float(duration),
                     )
                 ]

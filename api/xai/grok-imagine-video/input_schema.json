@@ -1,81 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    }
-  },
   "description": "Input schema for Grok Imagine video generation.",
   "properties": {
     "prompt": {
@@ -90,26 +13,30 @@
     "image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional input image for image-to-video generation. The video will animate from this starting frame."
+      "description": "Optional input image for image-to-video generation. The video will animate from this starting frame.",
+      "title": "Image"
     },
     "video": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional input video for video editing. The model will edit this video based on the prompt. Max 8.7 seconds."
+      "description": "Optional input video for video editing. The model will edit this video based on the prompt. Max 8.7 seconds.",
+      "title": "Video"
     },
     "duration": {
       "default": 5,

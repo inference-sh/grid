@@ -29,81 +29,6 @@
       "title": "DurationEnum",
       "type": "string"
     },
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "ResolutionEnum": {
       "description": "Video resolution options.",
       "enum": [
@@ -125,20 +50,24 @@
       "type": "string"
     },
     "image": {
-      "$ref": "#/$defs/File",
-      "description": "The starting image for video generation. Supported formats: JPEG, PNG, WebP."
+      "description": "The starting image for video generation. Supported formats: JPEG, PNG, WebP.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
     },
     "end_image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional ending image for the video. Creates a transition between start and end frames."
+      "description": "Optional ending image for the video. Creates a transition between start and end frames.",
+      "title": "End Image"
     },
     "aspect_ratio": {
       "$ref": "#/$defs/AspectRatioEnum",

@@ -1,81 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    }
-  },
   "description": "Input schema for Grok Imagine Pro image generation.",
   "properties": {
     "prompt": {
@@ -90,14 +13,16 @@
     "image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Optional input image for image editing. When provided, the model will edit this image based on the prompt."
+      "description": "Optional input image for image editing. When provided, the model will edit this image based on the prompt.",
+      "title": "Image"
     },
     "aspect_ratio": {
       "default": "1:1",
