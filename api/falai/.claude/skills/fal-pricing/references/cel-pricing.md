@@ -4,11 +4,106 @@ Complete reference for CEL (Common Expression Language) pricing expressions.
 
 ## Table of Contents
 
-1. [Context Variables](#context-variables)
-2. [Output Metadata Types](#output-metadata-types)
-3. [Pricing Patterns by Category](#pricing-patterns-by-category)
-4. [Description Templates](#description-templates)
-5. [Advanced Patterns](#advanced-patterns)
+1. [Helper Functions](#helper-functions)
+2. [Context Variables](#context-variables)
+3. [Output Metadata Types](#output-metadata-types)
+4. [Pricing Patterns by Category](#pricing-patterns-by-category)
+5. [Description Templates](#description-templates)
+6. [Advanced Patterns](#advanced-patterns)
+
+## Helper Functions
+
+Custom functions available in all pricing expressions.
+
+### Conversion Helpers
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `to_cents(x)` | Convert microcents to cents (÷1,000,000) | `to_cents(prices.per_image)` → `3.9` |
+| `to_dollars(x)` | Convert microcents to dollars (÷100,000,000) | `to_dollars(prices.per_image)` → `0.039` |
+
+### Math Helpers
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `ceil(x)` | Ceiling (round up) | `ceil(1.2)` → `2.0` |
+| `floor(x)` | Floor (round down) | `floor(1.8)` → `1.0` |
+| `min(a, b)` | Minimum of two values | `min(price, 1000000)` |
+| `max(a, b)` | Maximum of two values | `max(price, prices.minimum)` |
+
+### Dimension Helpers
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `megapixels(w, h)` | Calculate megapixels | `megapixels(1920, 1080)` → `2.0736` |
+| `pixels(w, h)` | Calculate total pixels | `pixels(1920, 1080)` → `2073600` |
+| `resolution(w, h)` | Get resolution tier | `resolution(1920, 1080)` → `"1080p"` |
+
+Resolution tiers: `"480p"`, `"720p"`, `"1080p"`, `"1440p"`, `"4k"`
+
+### List Helpers
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `sum(list)` | Sum numbers in a list | `sum([1, 2, 3])` → `6` |
+| `count_type(list, type)` | Count items by type | `count_type(outputs, "image")` → `2` |
+| `first(list, type)` | First item of type (or null) | `first(outputs, "video").seconds` |
+| `text_tokens(list)` | Sum tokens from text items | `text_tokens(outputs)` → `1500` |
+| `image_count(list)` | Count images (respects count field) | `image_count(outputs)` → `4` |
+
+### Safe Access Helpers
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `get(map, key, default)` | Get map value with default | `get(task_inputs, "duration", 8)` |
+| `get_extra(item, key, default)` | Get extra field with default | `get_extra(outputs[0], "generate_audio", false)` |
+
+### Before/After Examples
+
+```cel
+// BEFORE: Ceiling for megapixel rounding
+(double(outputs[0].resolution_mp) - double(int(double(outputs[0].resolution_mp))) > 0.0
+  ? double(int(double(outputs[0].resolution_mp))) + 1.0
+  : double(int(double(outputs[0].resolution_mp)))) * double(prices.per_megapixel)
+
+// AFTER:
+ceil(outputs[0].resolution_mp) * prices.per_megapixel
+```
+
+```cel
+// BEFORE: Safe input access with fallback
+has(task_inputs.duration) ? task_inputs.duration : 8
+
+// AFTER: get() safely returns default when key is missing
+get(task_inputs, "duration", 8)
+```
+
+```cel
+// BEFORE: Check extra field with multiple has() calls
+has(outputs[0].extra) && has(outputs[0].extra.generate_audio) && outputs[0].extra.generate_audio == true
+  ? prices.with_audio : prices.video_only
+
+// AFTER: get_extra() handles all the safety checks
+get_extra(outputs[0], "generate_audio", false) ? prices.with_audio : prices.video_only
+```
+
+```cel
+// BEFORE: Token pricing with safety checks
+(size(outputs) > 0 && outputs[0].type == "text"
+  ? (double(outputs[0].tokens) / 1000000.0) * double(prices.per_million_output)
+  : 0.0)
+
+// AFTER:
+text_tokens(outputs) / 1000000.0 * prices.per_million_output
+```
+
+```cel
+// BEFORE: Description template with conversion
+"$" + string(double(prices.per_image) / 100000000.0) + " per image"
+
+// AFTER:
+"$" + string(to_dollars(prices.per_image)) + " per image"
+```
 
 ## Context Variables
 
