@@ -50,6 +50,7 @@ Resolution tiers: `"480p"`, `"720p"`, `"1080p"`, `"1440p"`, `"4k"`
 | `first(list, type)` | First item of type (or null) | `first(outputs, "video").seconds` |
 | `text_tokens(list)` | Sum tokens from text items | `text_tokens(outputs)` → `1500` |
 | `image_count(list)` | Count images (respects count field) | `image_count(outputs)` → `4` |
+| `video_seconds(list)` | Sum seconds from video items | `video_seconds(outputs)` → `15.5` |
 
 ### Safe Access Helpers
 
