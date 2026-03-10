@@ -32,7 +32,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            response = self.client.posts.get(
+            response = self.client.posts.get_by_id(
                 id=input_data.tweet_id,
                 tweet_fields=["created_at", "public_metrics", "author_id"]
             )
