@@ -13,21 +13,37 @@ class ResolutionEnum(str, Enum):
     p720 = "720p"
     p1080 = "1080p"
 
+class AspectRatioEnum(str, Enum):
+    """Video aspect ratio options."""
+    landscape = "16:9"
+    portrait = "9:16"
+    square = "1:1"
+
+class DurationEnum(str, Enum):
+    """Video duration options."""
+    short = "5"
+    long = "10"
+
 class AppInput(BaseAppInput):
     prompt: str = Field(
-        description="The text prompt describing the desired video motion. Max 800 characters.",
+        description="The text prompt for video generation. Supports Chinese and English, max 800 characters.",
         max_length=800
-    )
-    image: File = Field(
-        description="Image file to use as the first frame. Supported formats: JPEG, PNG, WebP"
     )
     audio: Optional[File] = Field(
         None,
         description="Optional audio file to use as background music. Supported formats: WAV, MP3. Duration: 3-30s, max 15MB. Audio will be truncated if longer than video duration."
     )
+    aspect_ratio: AspectRatioEnum = Field(
+        AspectRatioEnum.landscape,
+        description="The aspect ratio of the generated video."
+    )
     resolution: ResolutionEnum = Field(
         ResolutionEnum.p1080,
         description="Video resolution. Higher resolutions provide better quality but take longer to generate."
+    )
+    duration: DurationEnum = Field(
+        DurationEnum.short,
+        description="Duration of the generated video in seconds. Choose between 5 or 10 seconds."
     )
     negative_prompt: Optional[str] = Field(
         None,
@@ -41,10 +57,6 @@ class AppInput(BaseAppInput):
     seed: Optional[int] = Field(
         None,
         description="Random seed for reproducibility. If None, a random seed is chosen."
-    )
-    fal_api_key: Optional[str] = Field(
-        None,
-        description="fal.ai API key. If not provided, will look for FAL_KEY environment variable."
     )
 
 class AppOutput(BaseAppOutput):
@@ -93,17 +105,18 @@ class App(BaseApp):
         self.metadata = metadata
 
         # fal.ai model endpoint
-        self.model_id = "fal-ai/wan-25-preview/image-to-video"
+        self.model_id = "fal-ai/wan-25-preview/text-to-video"
 
-        self.logger.info(f"Wan 2.5 Image-to-Video app initialized with model: {self.model_id}")
+        self.logger.info(f"Wan 2.5 Text-to-Video app initialized with model: {self.model_id}")
 
     def _prepare_fal_request(self, input_data: AppInput) -> dict:
         """Prepare the request payload for fal.ai API."""
         # Prepare base request
         request_data = {
             "prompt": input_data.prompt,
-            "image_url": input_data.image.uri,
+            "aspect_ratio": input_data.aspect_ratio.value,
             "resolution": input_data.resolution.value,
+            "duration": input_data.duration.value,
             "enable_prompt_expansion": input_data.enable_prompt_expansion,
         }
 
@@ -123,17 +136,14 @@ class App(BaseApp):
         """Generate video using fal.ai Wan 2.5 model."""
         try:
             # Validate input files
-            if not input_data.image.exists():
-                raise RuntimeError(f"Input image does not exist at path: {input_data.image.path}")
-
             if input_data.audio and not input_data.audio.exists():
                 raise RuntimeError(f"Input audio does not exist at path: {input_data.audio.path}")
 
             # Set up fal.ai API key
-            api_key = input_data.fal_api_key or os.environ.get("FAL_KEY")
+            api_key = os.environ.get("FAL_KEY")
             if not api_key:
                 raise RuntimeError(
-                    "fal.ai API key is required. Either provide it in the request or set the FAL_KEY environment variable."
+                    "FAL_KEY environment variable is required for model access."
                 )
 
             # Configure fal_client with API key
@@ -188,14 +198,23 @@ class App(BaseApp):
                 "720p": VideoResolution.VIDEO_RES720_P,
                 "1080p": VideoResolution.VIDEO_RES1080_P,
             }
-            # Dimensions based on resolution (16:9 aspect ratio)
+            # Dimensions based on resolution and aspect ratio
             dims_map = {
-                "480p": (854, 480),
-                "720p": (1280, 720),
-                "1080p": (1920, 1080),
+                ("480p", "16:9"): (854, 480),
+                ("480p", "9:16"): (480, 854),
+                ("480p", "1:1"): (480, 480),
+                ("720p", "16:9"): (1280, 720),
+                ("720p", "9:16"): (720, 1280),
+                ("720p", "1:1"): (720, 720),
+                ("1080p", "16:9"): (1920, 1080),
+                ("1080p", "9:16"): (1080, 1920),
+                ("1080p", "1:1"): (1080, 1080),
             }
-            width, height = dims_map.get(input_data.resolution.value, (1920, 1080))
-            duration = result.get("duration", 5.0)
+            width, height = dims_map.get(
+                (input_data.resolution.value, input_data.aspect_ratio.value),
+                (1920, 1080)
+            )
+            duration = float(input_data.duration.value)
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(

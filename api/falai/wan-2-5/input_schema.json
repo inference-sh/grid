@@ -1,5 +1,24 @@
 {
   "$defs": {
+    "AspectRatioEnum": {
+      "description": "Video aspect ratio options.",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "description": "Video duration options.",
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
     "ResolutionEnum": {
       "description": "Video resolution options.",
       "enum": [
@@ -13,15 +32,9 @@
   },
   "properties": {
     "prompt": {
-      "description": "The text prompt describing the desired video motion. Max 800 characters.",
+      "description": "The text prompt for video generation. Supports Chinese and English, max 800 characters.",
       "maxLength": 800,
       "title": "Prompt",
-      "type": "string"
-    },
-    "image": {
-      "description": "Image file to use as the first frame. Supported formats: JPEG, PNG, WebP",
-      "format": "file",
-      "title": "Image",
       "type": "string"
     },
     "audio": {
@@ -38,10 +51,20 @@
       "description": "Optional audio file to use as background music. Supported formats: WAV, MP3. Duration: 3-30s, max 15MB. Audio will be truncated if longer than video duration.",
       "title": "Audio"
     },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "The aspect ratio of the generated video."
+    },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "1080p",
       "description": "Video resolution. Higher resolutions provide better quality but take longer to generate."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the generated video in seconds. Choose between 5 or 10 seconds."
     },
     "negative_prompt": {
       "anyOf": [
@@ -75,24 +98,10 @@
       "default": null,
       "description": "Random seed for reproducibility. If None, a random seed is chosen.",
       "title": "Seed"
-    },
-    "fal_api_key": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "fal.ai API key. If not provided, will look for FAL_KEY environment variable.",
-      "title": "Fal Api Key"
     }
   },
   "required": [
-    "prompt",
-    "image"
+    "prompt"
   ],
   "title": "AppInput",
   "type": "object"
