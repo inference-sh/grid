@@ -177,7 +177,13 @@ class App(BaseApp):
             response_data = result.get("response", {})
             videos = response_data.get("videos", [])
 
+            self.logger.info(f"Full operation result keys: {result.keys()}")
+            self.logger.info(f"Response data keys: {response_data.keys() if response_data else 'empty'}")
+            self.logger.info(f"Number of videos in response: {len(videos)}")
+
             if not videos:
+                # Log full result for debugging
+                self.logger.error(f"Full result: {result}")
                 # Check for error
                 error = result.get("error")
                 if error:
