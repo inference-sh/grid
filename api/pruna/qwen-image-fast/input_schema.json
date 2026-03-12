@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "custom"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio."
+    },
+    "width": {
+      "anyOf": [
+        {
+          "maximum": 1440,
+          "minimum": 256,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Width (custom aspect_ratio only, multiple of 16).",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "maximum": 1440,
+          "minimum": 256,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Height (custom aspect_ratio only, multiple of 16).",
+      "title": "Height"
+    },
+    "creativity": {
+      "default": 0.62,
+      "description": "Creativity level (higher = more diverse).",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Creativity",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

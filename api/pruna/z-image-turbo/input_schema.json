@@ -1,0 +1,89 @@
+{
+  "$defs": {
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Width of the generated image.",
+      "maximum": 2048,
+      "minimum": 64,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Height of the generated image.",
+      "maximum": 2048,
+      "minimum": 64,
+      "title": "Height",
+      "type": "integer"
+    },
+    "num_inference_steps": {
+      "default": 8,
+      "description": "Number of inference steps.",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance_scale": {
+      "default": 0.0,
+      "description": "Guidance scale (0 for Turbo models).",
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Guidance Scale",
+      "type": "number"
+    },
+    "go_fast": {
+      "default": false,
+      "description": "Apply additional optimizations.",
+      "title": "Go Fast",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

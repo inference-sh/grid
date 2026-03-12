@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "enhance_prompt": {
+      "default": false,
+      "description": "Auto-enhance prompt for better results.",
+      "title": "Enhance Prompt",
+      "type": "boolean"
+    },
+    "go_fast": {
+      "default": true,
+      "description": "Run faster with optimizations.",
+      "title": "Go Fast",
+      "type": "boolean"
+    },
+    "guidance": {
+      "default": 3.0,
+      "description": "How closely to follow the prompt.",
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Guidance",
+      "type": "number"
+    },
+    "negative_prompt": {
+      "default": "",
+      "description": "Things to avoid (e.g., 'blurry, low quality').",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "num_inference_steps": {
+      "default": 30,
+      "description": "Number of denoising steps.",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for img2img mode.",
+      "title": "Image"
+    },
+    "strength": {
+      "default": 0.9,
+      "description": "Strength for img2img.",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Strength",
+      "type": "number"
+    },
+    "lora_weights": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "URL to LoRA weights file.",
+      "title": "Lora Weights"
+    },
+    "lora_scale": {
+      "default": 1.0,
+      "description": "LoRA application strength.",
+      "title": "Lora Scale",
+      "type": "number"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio."
+    },
+    "image_size": {
+      "default": "optimize_for_quality",
+      "description": "'optimize_for_quality' or 'optimize_for_speed'.",
+      "title": "Image Size",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

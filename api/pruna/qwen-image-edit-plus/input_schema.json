@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "match_input_image",
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "webp",
+        "jpg",
+        "png"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the desired edit.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "description": "1-2 images for editing/composition.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "go_fast": {
+      "default": true,
+      "description": "Run faster with optimizations.",
+      "title": "Go Fast",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "match_input_image",
+      "description": "Output aspect ratio."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "webp",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 95,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt",
+    "images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

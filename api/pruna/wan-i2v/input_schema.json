@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for WAN-I2V.",
+  "properties": {
+    "prompt": {
+      "description": "Text description for video generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "Input image for image-to-video generation.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "480p",
+      "description": "Video resolution: 480p or 720p."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (1-10).",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

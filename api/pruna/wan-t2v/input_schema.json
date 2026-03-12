@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for WAN-T2V.",
+  "properties": {
+    "prompt": {
+      "description": "Text description for video generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "480p",
+      "description": "Video resolution: 480p or 720p."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio for the video."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (1-10).",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

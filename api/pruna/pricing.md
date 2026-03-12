@@ -2,7 +2,9 @@
 
 Source: Pruna Developer Portal (2026-03)
 
-## Image Models
+## P-Series Models
+
+### Image Generation
 
 | Model               | Price               | Rate Limit    |
 |---------------------|---------------------|---------------|
@@ -11,7 +13,7 @@ Source: Pruna Developer Portal (2026-03)
 | P-Image-Edit        | $0.010 / image      | 500 req/min   |
 | P-Image-Edit-LoRA   | $0.010 / image      | 250 req/min   |
 
-## Video Model (P-Video)
+### Video Generation (P-Video)
 
 | Resolution | Draft Mode | Price per Second |
 |------------|------------|------------------|
@@ -22,7 +24,59 @@ Source: Pruna Developer Portal (2026-03)
 
 Rate Limit: 250 req/min
 
-Example: 5-second 720p video (draft off) = 5 × $0.02 = $0.10
+## FLUX Models
+
+| Model          | Price          | Rate Limit    |
+|----------------|----------------|---------------|
+| flux-dev       | $0.005 / image | 150 req/min   |
+| flux-dev-lora  | $0.01 / image  | 150 req/min   |
+| flux-klein-4b  | $0.0001 / image| 150 req/min   |
+
+## Qwen Models
+
+| Model               | Price          | Rate Limit    |
+|---------------------|----------------|---------------|
+| qwen-image          | $0.025 / image | 150 req/min   |
+| qwen-image-fast     | $0.005 / image | 150 req/min   |
+| qwen-image-edit-plus| $0.03 / image  | 150 req/min   |
+
+## Z-Image Models
+
+| Model             | Price          | Rate Limit    |
+|-------------------|----------------|---------------|
+| z-image-turbo     | $0.005 / image | 150 req/min   |
+| z-image-turbo-lora| $0.008 / image | 150 req/min   |
+
+## WAN Models
+
+| Model           | Price          | Rate Limit    |
+|-----------------|----------------|---------------|
+| wan-image-small | $0.005 / image | 150 req/min   |
+
+### wan-t2v (text-to-video)
+
+| Resolution | Price / video |
+|------------|---------------|
+| 480p       | $0.05         |
+| 720p       | $0.10         |
+
+Rate Limit: 30 req/min
+
+### wan-i2v (image-to-video)
+
+| Resolution | Price / video |
+|------------|---------------|
+| 480p       | $0.05         |
+| 720p       | $0.11         |
+
+Rate Limit: 30 req/min
+
+## VACE (Video with Character Consistency)
+
+Supports 480p (480x832, 832x480) and 720p (720x1280, 1280x720).
+Up to 81 frames, multiple speed modes.
+
+(Price not listed in docs - TBD)
 
 ## Trainer Models (Not Implemented)
 
@@ -34,5 +88,5 @@ Example: 5-second 720p video (draft off) = 5 × $0.02 = $0.10
 ## Notes
 
 - Inference Providers can benefit from preferential prices - contact Pruna
-- LoRA models have lower rate limits (250 vs 500 req/min)
-- Video pricing varies significantly with resolution and draft mode
+- WAN video pricing is per video (not per second)
+- flux-klein-4b is extremely cheap at $0.0001/image

@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "21:9",
+        "3:2",
+        "2:3",
+        "4:5",
+        "5:4",
+        "3:4",
+        "4:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "SpeedModeEnum": {
+      "enum": [
+        "Lightly Juiced \ud83c\udf4a (more consistent)",
+        "Juiced \ud83d\udd25 (default)",
+        "Extra Juiced \ud83d\udd25 (more speed)",
+        "Blink of an eye \ud83d\udc41\ufe0f"
+      ],
+      "title": "SpeedModeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1",
+      "description": "Aspect ratio of output."
+    },
+    "speed_mode": {
+      "$ref": "#/$defs/SpeedModeEnum",
+      "default": "Extra Juiced \ud83d\udd25 (more speed)",
+      "description": "Speed optimization level."
+    },
+    "num_inference_steps": {
+      "default": 28,
+      "description": "Number of inference steps.",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance": {
+      "default": 3.5,
+      "description": "How closely to follow the prompt.",
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Guidance",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed (-1 for random).",
+      "title": "Seed"
+    },
+    "image_size": {
+      "default": 1024,
+      "description": "Base size for longest side.",
+      "title": "Image Size",
+      "type": "integer"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Output Quality",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

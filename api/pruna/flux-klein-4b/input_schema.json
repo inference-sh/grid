@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "21:9",
+        "3:2",
+        "2:3",
+        "4:5",
+        "5:4",
+        "3:4",
+        "4:3",
+        "9:16",
+        "9:21",
+        "match_input_image"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1",
+      "description": "Aspect ratio."
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input images for img2img (max 5).",
+      "title": "Images"
+    },
+    "output_megapixels": {
+      "default": "1",
+      "description": "Resolution: '0.25', '0.5', '1', '2', '4'.",
+      "title": "Output Megapixels",
+      "type": "string"
+    },
+    "go_fast": {
+      "default": false,
+      "description": "Run faster with optimizations.",
+      "title": "Go Fast",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 95,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

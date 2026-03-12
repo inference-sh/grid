@@ -1,0 +1,20 @@
+namespace: pruna
+name: qwen-image-fast
+description: Pruna Qwen-Image-Fast for rapid image generation
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

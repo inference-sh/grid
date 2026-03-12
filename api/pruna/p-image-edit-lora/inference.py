@@ -174,8 +174,26 @@ class App(BaseApp):
 
             image_path = download_image(generation_url, logger=self.logger)
 
+            # Calculate dimensions from aspect ratio
+            base_size = 1024
+            aspect_ratios = {
+                "1:1": (1, 1), "16:9": (16, 9), "9:16": (9, 16),
+                "4:3": (4, 3), "3:4": (3, 4), "3:2": (3, 2), "2:3": (2, 3),
+            }
+            ar = input_data.aspect_ratio.value
+            if ar == "match_input_image":
+                width, height = base_size, base_size  # fallback for input match
+            else:
+                w_ratio, h_ratio = aspect_ratios.get(ar, (1, 1))
+                if w_ratio >= h_ratio:
+                    width = base_size
+                    height = int(base_size * h_ratio / w_ratio)
+                else:
+                    height = base_size
+                    width = int(base_size * w_ratio / h_ratio)
+
             output_meta = OutputMeta(
-                outputs=[ImageMeta(width=1024, height=1024, count=1)]
+                outputs=[ImageMeta(width=width, height=height, count=1)]
             )
 
             self.logger.info("Image edited successfully")

@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "21:9",
+        "custom"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Image aspect ratio."
+    },
+    "width": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Width (only when aspect_ratio=custom, multiple of 16).",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Height (only when aspect_ratio=custom, multiple of 16).",
+      "title": "Height"
+    },
+    "juiced": {
+      "default": false,
+      "description": "Enable faster generation mode.",
+      "title": "Juiced",
+      "type": "boolean"
+    },
+    "num_outputs": {
+      "default": 1,
+      "description": "Number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Outputs",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

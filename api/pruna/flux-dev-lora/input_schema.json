@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "21:9",
+        "3:2",
+        "2:3",
+        "4:5",
+        "5:4",
+        "3:4",
+        "4:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "SpeedModeEnum": {
+      "enum": [
+        "Base Model (compiled)",
+        "Lightly Juiced \ud83c\udf4a",
+        "Juiced \ud83e\uddc3",
+        "Extra Juiced \ud83d\udd25"
+      ],
+      "title": "SpeedModeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description of the desired output.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "lora": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "HuggingFace LoRA URL (e.g., 'owner/model-name').",
+      "title": "Lora"
+    },
+    "lora_scale": {
+      "default": 1.0,
+      "description": "LoRA application strength.",
+      "maximum": 3,
+      "minimum": -1,
+      "title": "Lora Scale",
+      "type": "number"
+    },
+    "extra_lora": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Second LoRA URL for combining styles.",
+      "title": "Extra Lora"
+    },
+    "extra_lora_scale": {
+      "default": 1.0,
+      "description": "Second LoRA strength.",
+      "maximum": 3,
+      "minimum": -1,
+      "title": "Extra Lora Scale",
+      "type": "number"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for img2img mode.",
+      "title": "Image"
+    },
+    "prompt_strength": {
+      "default": 0.8,
+      "description": "How much to transform input image.",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Prompt Strength",
+      "type": "number"
+    },
+    "num_outputs": {
+      "default": 1,
+      "description": "Number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Outputs",
+      "type": "integer"
+    },
+    "num_inference_steps": {
+      "default": 28,
+      "description": "Number of denoising steps.",
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "guidance": {
+      "default": 3.0,
+      "description": "Guidance scale.",
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Guidance",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed.",
+      "title": "Seed"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1",
+      "description": "Aspect ratio."
+    },
+    "megapixels": {
+      "default": "1",
+      "description": "Output resolution: '1' or '0.25'.",
+      "title": "Megapixels",
+      "type": "string"
+    },
+    "speed_mode": {
+      "$ref": "#/$defs/SpeedModeEnum",
+      "default": "Juiced \ud83e\uddc3",
+      "description": "Speed optimization."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

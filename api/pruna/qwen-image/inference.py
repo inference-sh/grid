@@ -1,0 +1,105 @@
+"""
+Qwen-Image - Advanced text-to-image generation with LoRA and prompt enhancement
+"""
+
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
+from pydantic import Field
+from typing import Optional, List
+from enum import Enum
+import logging
+
+from .pruna_helper import run_prediction, download_image, upload_file
+
+
+class AspectRatioEnum(str, Enum):
+    square = "1:1"
+    landscape_16_9 = "16:9"
+    portrait_9_16 = "9:16"
+    landscape_4_3 = "4:3"
+    portrait_3_4 = "3:4"
+    photo_landscape = "3:2"
+    photo_portrait = "2:3"
+
+
+class AppInput(BaseAppInput):
+    prompt: str = Field(description="Text description of the image to generate.")
+    enhance_prompt: bool = Field(default=False, description="Auto-enhance prompt for better results.")
+    go_fast: bool = Field(default=True, description="Run faster with optimizations.")
+    guidance: float = Field(default=3.0, ge=0, le=10, description="How closely to follow the prompt.")
+    negative_prompt: str = Field(default="", description="Things to avoid (e.g., 'blurry, low quality').")
+    num_inference_steps: int = Field(default=30, ge=1, le=50, description="Number of denoising steps.")
+    seed: Optional[int] = Field(default=None, description="Random seed.")
+    disable_safety_checker: bool = Field(default=False, description="Disable safety checker.")
+    image: Optional[File] = Field(default=None, description="Input image for img2img mode.")
+    strength: float = Field(default=0.9, ge=0, le=1, description="Strength for img2img.")
+    lora_weights: Optional[str] = Field(default=None, description="URL to LoRA weights file.")
+    lora_scale: float = Field(default=1.0, description="LoRA application strength.")
+    aspect_ratio: AspectRatioEnum = Field(default=AspectRatioEnum.landscape_16_9, description="Aspect ratio.")
+    image_size: str = Field(default="optimize_for_quality", description="'optimize_for_quality' or 'optimize_for_speed'.")
+
+
+class AppOutput(BaseAppOutput):
+    image: File = Field(description="Generated image file.")
+
+
+class App(BaseApp):
+    async def setup(self, metadata):
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+        self.model = "qwen-image"
+
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+        try:
+            self.logger.info(f"Generating: {input_data.prompt[:100]}...")
+            request_data = {
+                "prompt": input_data.prompt,
+                "enhance_prompt": input_data.enhance_prompt,
+                "go_fast": input_data.go_fast,
+                "guidance": input_data.guidance,
+                "num_inference_steps": input_data.num_inference_steps,
+                "aspect_ratio": input_data.aspect_ratio.value,
+                "image_size": input_data.image_size,
+                "disable_safety_checker": input_data.disable_safety_checker,
+            }
+            if input_data.negative_prompt:
+                request_data["negative_prompt"] = input_data.negative_prompt
+            if input_data.seed is not None:
+                request_data["seed"] = input_data.seed
+            if input_data.lora_weights:
+                request_data["lora_weights"] = input_data.lora_weights
+                request_data["lora_scale"] = input_data.lora_scale
+            if input_data.image:
+                if input_data.image.uri and input_data.image.uri.startswith("http"):
+                    request_data["image"] = input_data.image.uri
+                else:
+                    upload_result = upload_file(input_data.image.path, logger=self.logger)
+                    request_data["image"] = upload_result.get("urls", {}).get("get")
+                request_data["strength"] = input_data.strength
+
+            result = await run_prediction(model=self.model, input_data=request_data, use_sync=True, logger=self.logger)
+            generation_url = result.get("generation_url")
+            if not generation_url:
+                raise RuntimeError("No generation_url in response")
+            if generation_url.startswith("/"):
+                generation_url = f"https://api.pruna.ai{generation_url}"
+
+            image_path = download_image(generation_url, logger=self.logger)
+
+            # Calculate dimensions from aspect ratio
+            base_size = 1024
+            aspect_ratios = {
+                "1:1": (1, 1), "16:9": (16, 9), "9:16": (9, 16),
+                "4:3": (4, 3), "3:4": (3, 4), "3:2": (3, 2), "2:3": (2, 3),
+            }
+            w_ratio, h_ratio = aspect_ratios.get(input_data.aspect_ratio.value, (1, 1))
+            if w_ratio >= h_ratio:
+                width = base_size
+                height = int(base_size * h_ratio / w_ratio)
+            else:
+                height = base_size
+                width = int(base_size * w_ratio / h_ratio)
+
+            return AppOutput(image=File(path=image_path), output_meta=OutputMeta(outputs=[ImageMeta(width=width, height=height, count=1)]))
+        except Exception as e:
+            self.logger.error(f"Error: {e}")
+            raise RuntimeError(f"Generation failed: {str(e)}")
