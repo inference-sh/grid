@@ -5,8 +5,8 @@ metadata: {}
 category: image
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a0cdmpka7n3npx44hgkbp0.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a0cdmpka7n3npx44hgkbp0.png
+    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a0cdmpka7n3npx44hgkbp0.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     SAFETENSORS_FAST_GPU: "1"

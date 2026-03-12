@@ -17,8 +17,8 @@ metadata:
 category: audio
 images:
     card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
+    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
 env:
     CUDA_LAUNCH_BLOCKING: "1"
     TORCH_DTYPE: bfloat16

@@ -5,8 +5,8 @@ metadata: {}
 category: video
 images:
     card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
+    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
 env:
     USE_CAUSVID_LORA: "true"
 kernel: python-3.11

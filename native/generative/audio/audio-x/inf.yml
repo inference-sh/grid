@@ -5,8 +5,8 @@ metadata: {}
 category: audio
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
+    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
 env: {}
 kernel: python-3.11
 resources:

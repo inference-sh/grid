@@ -7,8 +7,8 @@ metadata:
 category: chat
 images:
     card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
 env: {}
 kernel: ""
 secrets:

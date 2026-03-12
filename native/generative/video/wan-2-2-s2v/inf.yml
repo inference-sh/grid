@@ -5,8 +5,8 @@ metadata: {}
 category: video
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
+    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

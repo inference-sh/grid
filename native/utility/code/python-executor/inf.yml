@@ -5,8 +5,8 @@ metadata: {}
 category: text
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
+    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
 env:
     MPLBACKEND: Agg
     PYTHONUNBUFFERED: "1"

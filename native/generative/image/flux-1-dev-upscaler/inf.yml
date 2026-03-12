@@ -5,15 +5,13 @@ metadata: {}
 category: image
 images:
     card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
+    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
 env: {}
-kernel: python-3.11
+kernel: python-3.12
 resources:
     gpu:
         count: 1
         vram: 0
         type: any
     ram: 0
-secrets:
-    - key: HF_TOKEN

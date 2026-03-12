@@ -5,8 +5,8 @@ metadata: {}
 category: multimodal
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
+    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
 env:
     PYTHONPATH: /app
 kernel: python-3.10

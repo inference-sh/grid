@@ -5,8 +5,8 @@ metadata: {}
 category: other
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
+    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
 env: {}
 kernel: python-3.12
 resources:

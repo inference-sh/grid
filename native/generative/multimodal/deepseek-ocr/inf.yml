@@ -5,8 +5,8 @@ metadata: {}
 category: text
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
+    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.11

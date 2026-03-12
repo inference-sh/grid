@@ -1,12 +1,12 @@
-namespace: ""
+namespace: infsh
 name: shell
-description: "Execute shell commands in a sandboxed environment. Run grep, sed, ls, find, and other CLI tools with configurable working directory and timeout."
+description: Execute shell commands in a sandboxed environment. Run grep, sed, ls, find, and other CLI tools with configurable working directory and timeout.
 metadata: {}
 category: utilities
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfk09jw642y8ksj09hs851.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfk9qfw0g3byfbcfp14yg6.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfkhbhfbb0apz89eqa455t.jpeg
 env: {}
 kernel: python-3.11
 resources:

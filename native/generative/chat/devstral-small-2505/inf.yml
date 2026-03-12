@@ -5,8 +5,8 @@ metadata: {}
 category: chat
 images:
     card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz008wnv226d2x18hxvb2wzh.png
-    thumbnail: ""
-    banner: ""
+    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz008wnv226d2x18hxvb2wzh.png
+    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz008wnv226d2x18hxvb2wzh.png
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
     FORCE_CMAKE: "1"
