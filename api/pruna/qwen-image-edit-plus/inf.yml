@@ -1,6 +1,6 @@
 namespace: pruna
 name: qwen-image-edit-plus
-description: Pruna Qwen-Image-Edit-Plus for image editing and pose transfer
+description: Edit images using text instructions with multi-image support and pose transfer
 metadata: {}
 category: image
 images:

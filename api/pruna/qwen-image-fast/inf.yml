@@ -1,6 +1,6 @@
 namespace: pruna
 name: qwen-image-fast
-description: Pruna Qwen-Image-Fast for rapid image generation
+description: Fast Qwen-based image generation with creativity control
 metadata: {}
 category: image
 images:

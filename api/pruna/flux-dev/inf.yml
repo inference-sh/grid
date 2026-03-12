@@ -1,6 +1,6 @@
 namespace: pruna
 name: flux-dev
-description: Pruna FLUX-Dev text-to-image generation with speed modes
+description: Advanced text-to-image generation with multiple aspect ratios, speed optimizations, and high-quality outputs
 metadata: {}
 category: image
 images:

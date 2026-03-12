@@ -1,6 +1,6 @@
 namespace: pruna
 name: z-image-turbo-lora
-description: Pruna Z-Image-Turbo with multi-LoRA support
+description: Fast generation with LoRA support for unique styles and personalized outputs
 metadata: {}
 category: image
 images:

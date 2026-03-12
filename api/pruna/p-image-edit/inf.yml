@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-image-edit
-description: Pruna P-Image-Edit for image editing and transformation using reference images
+description: Fast image editing with text instructions and multi-image support
 metadata: {}
 category: image
 images:

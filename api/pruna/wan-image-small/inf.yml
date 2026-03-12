@@ -1,6 +1,6 @@
 namespace: pruna
 name: wan-image-small
-description: Pruna WAN-Image-Small fast text-to-image generation
+description: Fast, efficient text-to-image optimized for rapid prototyping and batch generation
 metadata: {}
 category: image
 images:

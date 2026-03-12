@@ -1,6 +1,6 @@
 namespace: pruna
 name: flux-dev-lora
-description: Pruna FLUX-Dev with LoRA support for custom styles
+description: Text-to-image and image-to-image generation with custom LoRA weights from HuggingFace
 metadata: {}
 category: image
 images:

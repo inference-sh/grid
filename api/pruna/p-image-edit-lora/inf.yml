@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-image-edit-lora
-description: Pruna P-Image-Edit with LoRA adapter support for customized image editing
+description: Fast image editing with custom LoRA styles for unique transformations
 metadata: {}
 category: image
 images:

@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-image
-description: Pruna P-Image text-to-image generation with fast inference and multiple aspect ratios
+description: Pruna's flagship fast text-to-image with multiple aspect ratios and prompt enhancement
 metadata: {}
 category: image
 images:

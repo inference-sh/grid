@@ -1,6 +1,6 @@
 namespace: pruna
 name: wan-t2v
-description: Pruna WAN-T2V text-to-video generation
+description: Generate videos directly from text descriptions in 480p or 720p
 metadata: {}
 category: video
 images:

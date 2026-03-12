@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-image-lora
-description: Pruna P-Image with LoRA adapter support for customized image generation
+description: Pruna's flagship fast text-to-image with custom LoRA style support
 metadata: {}
 category: image
 images:

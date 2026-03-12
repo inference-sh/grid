@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-video
-description: Pruna P-Video for text-to-video generation with 5-second video output
+description: Fast text-to-video and image-to-video in 720p/1080p with audio support
 metadata: {}
 category: video
 images:

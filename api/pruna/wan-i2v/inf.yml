@@ -1,6 +1,6 @@
 namespace: pruna
 name: wan-i2v
-description: Pruna WAN-I2V image-to-video generation
+description: Transform static images into animated videos with text prompts
 metadata: {}
 category: video
 images:

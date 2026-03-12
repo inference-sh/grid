@@ -1,6 +1,6 @@
 namespace: pruna
 name: qwen-image
-description: Pruna Qwen-Image text-to-image generation with LoRA support
+description: Advanced text-to-image generation with optional LoRA weights and prompt enhancement
 metadata: {}
 category: image
 images:

@@ -1,6 +1,6 @@
 namespace: pruna
 name: z-image-turbo
-description: Pruna Z-Image-Turbo ultra-fast text-to-image generation
+description: Ultra-fast turbo image generation with minimal latency
 metadata: {}
 category: image
 images:

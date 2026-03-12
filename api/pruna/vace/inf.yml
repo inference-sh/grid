@@ -1,6 +1,6 @@
 namespace: pruna
 name: vace
-description: Pruna VACE video generation with character consistency
+description: AI-powered video generation with character animation and scene editing
 metadata: {}
 category: video
 images:
