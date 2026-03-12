@@ -71,13 +71,6 @@ Rate Limit: 30 req/min
 
 Rate Limit: 30 req/min
 
-## VACE (Video with Character Consistency)
-
-Supports 480p (480x832, 832x480) and 720p (720x1280, 1280x720).
-Up to 81 frames, multiple speed modes.
-
-(Price not listed in docs - TBD)
-
 ## Trainer Models (Not Implemented)
 
 | Model               | Price               |
