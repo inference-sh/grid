@@ -4,9 +4,9 @@ description: Pruna FLUX-Dev text-to-image generation with speed modes
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh9630x1ednpr98gy2hdtek.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh962qqvczgq2v2x34ssbjr.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh97hakr8gpmm8bf0h6yrt3.jpeg
 env: {}
 kernel: python-3.11
 secrets:

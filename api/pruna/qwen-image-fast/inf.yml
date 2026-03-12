@@ -4,9 +4,9 @@ description: Pruna Qwen-Image-Fast for rapid image generation
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh97nx9t6wzhrby9bw2s7pn.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh967cqrgkknzgp818pd2gf.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96gn59rhfg5s77cnmv2js.jpeg
 env: {}
 kernel: python-3.11
 secrets:

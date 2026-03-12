@@ -4,9 +4,9 @@ description: Pruna Z-Image-Turbo ultra-fast text-to-image generation
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh977hqn07na1pc9ace36zw.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96jt422sv4ewxyjerxxte.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96m17t5gp2e99mmhyzknf.jpeg
 env: {}
 kernel: python-3.11
 secrets:

@@ -4,9 +4,9 @@ description: Pruna P-Image-Edit for image editing and transformation using refer
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymft0hdtnkjej88c1932j.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym8s5dyj7r825hxbp8j44.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym5jmb8mxefc7gq0ne60x.jpeg
 env: {}
 kernel: python-3.11
 secrets:

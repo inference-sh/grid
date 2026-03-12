@@ -4,9 +4,9 @@ description: Pruna FLUX-Dev with LoRA support for custom styles
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh95ygs51719sk67cqz99w3.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh968nrw1hzdebehx06vhne.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh960qqkv74xww0kraeppcb.jpeg
 env: {}
 kernel: python-3.11
 secrets:

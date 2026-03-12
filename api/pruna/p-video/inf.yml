@@ -4,9 +4,9 @@ description: Pruna P-Video for text-to-video generation with 5-second video outp
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymcjx9g2tv51m602jssn3.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymajjz11shs1atqjyc80p.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym8f6tvtncmzfvxmtj617.jpeg
 env: {}
 kernel: python-3.11
 secrets:

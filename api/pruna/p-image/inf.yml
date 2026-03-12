@@ -4,9 +4,9 @@ description: Pruna P-Image text-to-image generation with fast inference and mult
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym0yqys16pqrg9h8ctk2y.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym1ykdz562f140pxqmbp2.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym5rgz63ezjgnajv1vws9.jpeg
 env: {}
 kernel: python-3.11
 secrets:

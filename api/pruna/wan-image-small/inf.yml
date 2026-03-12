@@ -4,9 +4,9 @@ description: Pruna WAN-Image-Small fast text-to-image generation
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99sja3y4y0zg35qc1sfha.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99bs0kk3kprc10j10t585.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99bva1z2ahtqf4mdqw7bv.jpeg
 env: {}
 kernel: python-3.11
 secrets:

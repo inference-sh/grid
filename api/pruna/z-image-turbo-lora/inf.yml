@@ -4,9 +4,9 @@ description: Pruna Z-Image-Turbo with multi-LoRA support
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96bntx00t73zbfcae8e65.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96aj0mh6yp9rraj7ange8.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96hgs45pfy6w3r5tg21ed.jpeg
 env: {}
 kernel: python-3.11
 secrets:

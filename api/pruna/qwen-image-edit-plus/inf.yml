@@ -4,9 +4,9 @@ description: Pruna Qwen-Image-Edit-Plus for image editing and pose transfer
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh97hdw25nj221bkkcqwa9k.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96xbeemzcssrsgpzyzg3y.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96tashce8scghvqb8qyvj.jpeg
 env: {}
 kernel: python-3.11
 secrets:

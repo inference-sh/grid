@@ -4,9 +4,9 @@ description: Pruna FLUX-Klein-4B efficient text-to-image generation
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96cnn71sqzyhreddd4x9b.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh9734gcv1fesm1f7dqam3q.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96gmxyjg87pgx8kb7mbxm.jpeg
 env: {}
 kernel: python-3.11
 secrets:

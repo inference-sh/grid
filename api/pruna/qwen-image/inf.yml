@@ -4,9 +4,9 @@ description: Pruna Qwen-Image text-to-image generation with LoRA support
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh992h68dn9dyq5aax74nrv.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99skp2qbmdz6rh9vz1cdg.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh992mx1qg62rv1awhtc3hc.jpeg
 env: {}
 kernel: python-3.11
 secrets:

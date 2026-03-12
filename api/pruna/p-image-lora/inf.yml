@@ -4,9 +4,9 @@ description: Pruna P-Image with LoRA adapter support for customized image genera
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym8005r200f6rmk9mq0hj.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymxcj8vh8njkj662wr5c1.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymb47tpxja1pyh09f7qdb.jpeg
 env: {}
 kernel: python-3.11
 secrets:

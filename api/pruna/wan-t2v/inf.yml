@@ -4,9 +4,9 @@ description: Pruna WAN-T2V text-to-video generation
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh995dq0yaafhgtxcxxkh89.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh98zgfqmmgs99fdtkbrr4j.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99htcy5dgt5k7fmrfvzwe.jpeg
 env: {}
 kernel: python-3.11
 secrets:
