@@ -12,6 +12,7 @@ kernel: python-3.11
 secrets:
     - key: FAL_KEY
       description: fal.ai API key for model access
+    - key: HF_TOKEN
 resources:
     gpu:
         count: 0

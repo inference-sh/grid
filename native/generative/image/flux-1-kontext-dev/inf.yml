@@ -15,3 +15,5 @@ resources:
         vram: 6000000000
         type: any
     ram: 16000000000
+secrets:
+    - key: HF_TOKEN

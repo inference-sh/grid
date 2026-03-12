@@ -1,0 +1,20 @@
+namespace: pruna
+name: p-image-edit-lora
+description: Pruna P-Image-Edit with LoRA adapter support for customized image editing
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

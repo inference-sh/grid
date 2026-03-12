@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "FpsEnum": {
+      "enum": [
+        24,
+        48
+      ],
+      "title": "FpsEnum",
+      "type": "integer"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Video.",
+  "properties": {
+    "prompt": {
+      "description": "Text description for video generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for image-to-video. When provided, aspect_ratio is ignored.",
+      "title": "Image"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for audio-conditioned video. When provided, duration is ignored. Supports flac, mp3, wav.",
+      "title": "Audio"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (1-10). Ignored if audio is provided.",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution: 720p or 1080p."
+    },
+    "fps": {
+      "$ref": "#/$defs/FpsEnum",
+      "default": 24,
+      "description": "Frames per second: 24 or 48."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Ignored when input image is provided."
+    },
+    "draft": {
+      "default": false,
+      "description": "Draft mode for cheaper, lower-quality previews.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "save_audio": {
+      "default": true,
+      "description": "Include audio in output video.",
+      "title": "Save Audio",
+      "type": "boolean"
+    },
+    "prompt_upsampling": {
+      "default": true,
+      "description": "Enhance prompt with LLM.",
+      "title": "Prompt Upsampling",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "disable_safety_filter": {
+      "default": true,
+      "description": "Disable safety filter for prompts and input images.",
+      "title": "Disable Safety Filter",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

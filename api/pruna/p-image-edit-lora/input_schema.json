@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "match_input_image",
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "LoraPresetEnum": {
+      "description": "Pre-trained edit LoRA styles available on HuggingFace.",
+      "enum": [
+        "dotted-illustration",
+        "photo-enhancement",
+        "skin-retouching",
+        "photo-to-anime",
+        "next-scene",
+        "photo-upscaler",
+        "enhance",
+        "user-generated-content"
+      ],
+      "title": "LoraPresetEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Image-Edit-LoRA.",
+  "properties": {
+    "prompt": {
+      "description": "Text instruction describing the edit. Refer to images as 'image 1', 'image 2', etc.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "description": "Reference images for editing (main image first).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "lora_preset": {
+      "$ref": "#/$defs/LoraPresetEnum",
+      "default": "photo-enhancement",
+      "description": "Pre-trained edit LoRA style."
+    },
+    "lora_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom LoRA URL (overrides preset). Format: huggingface.co/owner/repo/file.safetensors",
+      "title": "Lora Url"
+    },
+    "lora_scale": {
+      "default": 1.0,
+      "description": "LoRA strength (-1 to 3).",
+      "maximum": 3,
+      "minimum": -1,
+      "title": "Lora Scale",
+      "type": "number"
+    },
+    "hf_api_token": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "HuggingFace API token for private LoRAs.",
+      "title": "Hf Api Token"
+    },
+    "turbo": {
+      "default": true,
+      "description": "Fast mode. Set false for complex tasks requiring more precision.",
+      "title": "Turbo",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "match_input_image",
+      "description": "Output aspect ratio."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker for generated images.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt",
+    "images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

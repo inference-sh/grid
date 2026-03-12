@@ -1,73 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "properties": {
     "prompt": {
       "description": "Text prompt describing what to fill the masked area with",
@@ -75,12 +6,16 @@
       "type": "string"
     },
     "image": {
-      "$ref": "#/$defs/File",
-      "description": "Input image file to be filled"
+      "description": "Input image file to be filled",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
     },
     "mask": {
-      "$ref": "#/$defs/File",
-      "description": "Mask image file indicating the area to be filled"
+      "description": "Mask image file indicating the area to be filled",
+      "format": "file",
+      "title": "Mask",
+      "type": "string"
     },
     "guidance_scale": {
       "default": 30.0,

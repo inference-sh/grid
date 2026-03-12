@@ -15,3 +15,5 @@ resources:
         vram: 0
         type: any
     ram: 0
+secrets:
+    - key: HF_TOKEN

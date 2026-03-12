@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "match_input_image",
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Image-Edit.",
+  "properties": {
+    "prompt": {
+      "description": "Text instruction describing the desired edit or composition.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "description": "1-5 reference images for editing.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "turbo": {
+      "default": true,
+      "description": "Fast mode. Set false for complex tasks requiring more precision.",
+      "title": "Turbo",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "match_input_image",
+      "description": "Output aspect ratio."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker for generated images.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt",
+    "images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

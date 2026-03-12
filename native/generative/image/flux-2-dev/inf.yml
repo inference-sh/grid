@@ -15,3 +15,5 @@ images:
   thumbnail: ''
   banner: ''
 metadata: {}
+secrets:
+    - key: HF_TOKEN

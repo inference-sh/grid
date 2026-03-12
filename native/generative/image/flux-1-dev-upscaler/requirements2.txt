@@ -1,0 +1,1 @@
+git+https://github.com/inference-sh/Real-ESRGAN.git
