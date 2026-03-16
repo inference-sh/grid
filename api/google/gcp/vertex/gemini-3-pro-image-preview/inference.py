@@ -2,11 +2,12 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, 
 from pydantic import Field
 from typing import Optional, List
 
+from enum import Enum
+
 from .vertex_helper import (
     create_vertex_client,
     OutputFormatEnum,
     AspectRatioAutoEnum,
-    ResolutionEnum,
     SafetyToleranceEnum,
     calculate_dimensions,
     load_image_as_part,
@@ -18,6 +19,13 @@ from .vertex_helper import (
     raise_no_images_error,
     build_image_output_meta,
 )
+
+
+class ResolutionEnum(str, Enum):
+    """Resolution options for Gemini 3 Pro (512 not supported)."""
+    res_1k = "1K"
+    res_2k = "2K"
+    res_4k = "4K"
 
 
 class AppInput(BaseAppInput):

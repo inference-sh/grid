@@ -733,6 +733,7 @@ def build_image_output_meta(
         usage_metadata = getattr(r, 'usage_metadata', None)
         if usage_metadata:
             um = usage_metadata
+            print(um)
             # Input tokens
             prompt_tokens = getattr(um, 'prompt_token_count', None)
             if prompt_tokens:
