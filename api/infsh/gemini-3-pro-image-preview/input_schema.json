@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "AspectRatioAutoEnum": {
+      "description": "Aspect ratio options with auto detection.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "3:2",
+        "4:3",
+        "5:4",
+        "1:1",
+        "4:5",
+        "3:4",
+        "2:3",
+        "9:16"
+      ],
+      "title": "AspectRatioAutoEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "description": "Output format options for images.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "description": "Resolution options.",
+      "enum": [
+        "512",
+        "1K",
+        "2K",
+        "4K"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    },
+    "SafetyToleranceEnum": {
+      "description": "Safety filter thresholds.",
+      "enum": [
+        "BLOCK_NONE",
+        "BLOCK_LOW_AND_ABOVE",
+        "BLOCK_MEDIUM_AND_ABOVE",
+        "BLOCK_ONLY_HIGH"
+      ],
+      "title": "SafetyToleranceEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "The prompt for image generation or editing.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input images for editing (up to 14). Supported formats: JPEG, PNG, WebP",
+      "title": "Images"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioAutoEnum",
+      "default": "1:1",
+      "description": "Aspect ratio. Use 'auto' to match input image."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1K",
+      "description": "Output resolution: 1K, 2K, 4K."
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "png",
+      "description": "Output format."
+    },
+    "enable_google_search": {
+      "default": false,
+      "description": "Enable Google Search grounding.",
+      "title": "Enable Google Search",
+      "type": "boolean"
+    },
+    "safety_tolerance": {
+      "$ref": "#/$defs/SafetyToleranceEnum",
+      "default": "BLOCK_NONE",
+      "description": "Safety filter threshold."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

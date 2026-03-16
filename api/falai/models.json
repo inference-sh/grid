@@ -6122,7 +6122,7 @@
   {
     "endpoint_id": "fal-ai/pixart-sigma",
     "category": "text-to-image",
-    "display_name": "PixArt-\u03a3",
+    "display_name": "PixArt-Σ",
     "status": "active",
     "implemented": false,
     "direct": false

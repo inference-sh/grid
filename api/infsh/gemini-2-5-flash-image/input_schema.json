@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "AspectRatioAutoEnum": {
+      "description": "Aspect ratio options with auto detection.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "3:2",
+        "4:3",
+        "5:4",
+        "1:1",
+        "4:5",
+        "3:4",
+        "2:3",
+        "9:16"
+      ],
+      "title": "AspectRatioAutoEnum",
+      "type": "string"
+    },
+    "OutputFormatExtendedEnum": {
+      "description": "Extended output format options (includes HEIC/HEIF).",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp",
+        "heic",
+        "heif"
+      ],
+      "title": "OutputFormatExtendedEnum",
+      "type": "string"
+    },
+    "SafetyToleranceEnum": {
+      "description": "Safety filter thresholds.",
+      "enum": [
+        "BLOCK_NONE",
+        "BLOCK_LOW_AND_ABOVE",
+        "BLOCK_MEDIUM_AND_ABOVE",
+        "BLOCK_ONLY_HIGH"
+      ],
+      "title": "SafetyToleranceEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "The prompt for image generation or editing. Describe what you want to create or change.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional list of input images for editing (up to 14 images). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF.",
+      "title": "Images"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioAutoEnum",
+      "default": "1:1",
+      "description": "Aspect ratio for the output image. Use 'auto' to match input image. Default: 1:1"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatExtendedEnum",
+      "default": "png",
+      "description": "Output format for the generated images."
+    },
+    "enable_google_search": {
+      "default": false,
+      "description": "Enable Google Search grounding for real-time information.",
+      "title": "Enable Google Search",
+      "type": "boolean"
+    },
+    "safety_tolerance": {
+      "$ref": "#/$defs/SafetyToleranceEnum",
+      "default": "BLOCK_NONE",
+      "description": "Safety filter threshold."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

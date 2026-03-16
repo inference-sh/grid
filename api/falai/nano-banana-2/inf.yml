@@ -1,0 +1,17 @@
+namespace: falai
+name: nano-banana-2
+description: Google's state-of-the-art fast image generation and editing model. Supports text-to-image and image editing modes.
+metadata: {}
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

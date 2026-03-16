@@ -730,8 +730,9 @@ def build_image_output_meta(
     for r in results:
         total_images += len(r.image_paths)
 
-        if r.usage_metadata:
-            um = r.usage_metadata
+        usage_metadata = getattr(r, 'usage_metadata', None)
+        if usage_metadata:
+            um = usage_metadata
             # Input tokens
             prompt_tokens = getattr(um, 'prompt_token_count', None)
             if prompt_tokens:
