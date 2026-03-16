@@ -1,0 +1,22 @@
+{
+  "description": "Input schema for ElevenLabs Forced Alignment.",
+  "properties": {
+    "audio": {
+      "description": "Audio file to align text to.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "text": {
+      "description": "Text that matches the audio content.",
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audio",
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+namespace: elevenlabs
+name: forced-alignment
+description: ElevenLabs Forced Alignment - Align text to audio with word timestamps
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

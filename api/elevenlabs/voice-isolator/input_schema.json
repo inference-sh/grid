@@ -1,0 +1,16 @@
+{
+  "description": "Input schema for ElevenLabs Voice Isolator.",
+  "properties": {
+    "audio": {
+      "description": "Audio file to process (WAV, MP3, FLAC, OGG, AAC). Max 500MB/1 hour.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

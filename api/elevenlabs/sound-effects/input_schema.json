@@ -1,0 +1,39 @@
+{
+  "description": "Input schema for ElevenLabs Sound Effects.",
+  "properties": {
+    "text": {
+      "description": "Description of the sound effect to generate (e.g., 'Cinematic Braam, Horror').",
+      "maxLength": 1000,
+      "title": "Text",
+      "type": "string"
+    },
+    "duration_seconds": {
+      "anyOf": [
+        {
+          "maximum": 22.0,
+          "minimum": 0.5,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Duration in seconds (0.5-22). Leave empty for automatic duration.",
+      "title": "Duration Seconds"
+    },
+    "prompt_influence": {
+      "default": 0.3,
+      "description": "How much the prompt influences generation (0-1). Higher = more literal interpretation.",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Prompt Influence",
+      "type": "number"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

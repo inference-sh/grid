@@ -1,0 +1,21 @@
+namespace: elevenlabs
+name: text-to-dialogue
+description: ElevenLabs Text to Dialogue - Generate immersive multi-voice dialogue
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

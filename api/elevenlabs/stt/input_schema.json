@@ -1,0 +1,51 @@
+{
+  "description": "Input schema for ElevenLabs STT.",
+  "properties": {
+    "audio": {
+      "description": "Audio file to transcribe (MP3, WAV, FLAC, OGG, AAC, M4A).",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "model": {
+      "default": "scribe_v2",
+      "description": "Model version. scribe_v2 is latest with improved accuracy.",
+      "enum": [
+        "scribe_v1",
+        "scribe_v2"
+      ],
+      "title": "Model",
+      "type": "string"
+    },
+    "language_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Language code (e.g., 'eng', 'spa', 'fra'). Leave empty for auto-detection.",
+      "title": "Language Code"
+    },
+    "diarize": {
+      "default": false,
+      "description": "Enable speaker diarization to identify who is speaking.",
+      "title": "Diarize",
+      "type": "boolean"
+    },
+    "tag_audio_events": {
+      "default": false,
+      "description": "Tag audio events like laughter, applause, music, etc.",
+      "title": "Tag Audio Events",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

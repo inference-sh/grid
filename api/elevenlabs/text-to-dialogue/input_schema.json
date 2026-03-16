@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "DialogueSegment": {
+      "description": "A single dialogue segment with text and voice.",
+      "properties": {
+        "text": {
+          "description": "Text to speak, can include directions like [cheerfully]",
+          "title": "Text",
+          "type": "string"
+        },
+        "voice": {
+          "description": "Voice for this segment",
+          "enum": [
+            "adam",
+            "alice",
+            "aria",
+            "bella",
+            "bill",
+            "brian",
+            "callum",
+            "charlie",
+            "chris",
+            "daniel",
+            "eric",
+            "george",
+            "harry",
+            "jessica",
+            "laura",
+            "liam",
+            "lily",
+            "matilda",
+            "river",
+            "roger",
+            "sarah",
+            "will"
+          ],
+          "title": "Voice",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "voice"
+      ],
+      "title": "DialogueSegment",
+      "type": "object"
+    }
+  },
+  "description": "Input schema for ElevenLabs Text to Dialogue.",
+  "properties": {
+    "segments": {
+      "description": "List of dialogue segments, each with text and voice_id.",
+      "items": {
+        "$ref": "#/$defs/DialogueSegment"
+      },
+      "minItems": 1,
+      "title": "Segments",
+      "type": "array"
+    }
+  },
+  "required": [
+    "segments"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

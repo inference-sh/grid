@@ -1,0 +1,21 @@
+namespace: elevenlabs
+name: sound-effects
+description: ElevenLabs Sound Effects - Generate custom sound effects from text
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

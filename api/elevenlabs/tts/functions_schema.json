@@ -1,118 +1,103 @@
 {
   "run": {
-    "description": "Generate or edit images using Gemini 3 Pro Image Preview model via Vertex AI.",
+    "description": "Generate speech from text.",
     "input_schema": {
-      "$defs": {
-        "AspectRatioAutoEnum": {
-          "description": "Aspect ratio options with auto detection.",
-          "enum": [
-            "auto",
-            "21:9",
-            "16:9",
-            "3:2",
-            "4:3",
-            "5:4",
-            "1:1",
-            "4:5",
-            "3:4",
-            "2:3",
-            "9:16"
-          ],
-          "title": "AspectRatioAutoEnum",
-          "type": "string"
-        },
-        "OutputFormatEnum": {
-          "description": "Output format options for images.",
-          "enum": [
-            "png",
-            "jpeg",
-            "webp"
-          ],
-          "title": "OutputFormatEnum",
-          "type": "string"
-        },
-        "ResolutionEnum": {
-          "description": "Resolution options for Gemini 3 Pro (512 not supported).",
-          "enum": [
-            "1K",
-            "2K",
-            "4K"
-          ],
-          "title": "ResolutionEnum",
-          "type": "string"
-        },
-        "SafetyToleranceEnum": {
-          "description": "Safety filter thresholds.",
-          "enum": [
-            "BLOCK_NONE",
-            "BLOCK_LOW_AND_ABOVE",
-            "BLOCK_MEDIUM_AND_ABOVE",
-            "BLOCK_ONLY_HIGH"
-          ],
-          "title": "SafetyToleranceEnum",
-          "type": "string"
-        }
-      },
+      "description": "Input schema for ElevenLabs TTS.",
       "properties": {
-        "prompt": {
-          "description": "The prompt for image generation or editing. Describe what you want to create or change.",
-          "title": "Prompt",
+        "text": {
+          "description": "Text to convert to speech (max 40,000 characters).",
+          "maxLength": 40000,
+          "title": "Text",
           "type": "string"
         },
-        "images": {
-          "anyOf": [
-            {
-              "items": {
-                "format": "file",
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
+        "voice": {
+          "default": "george",
+          "description": "Voice to use for speech generation.",
+          "enum": [
+            "adam",
+            "alice",
+            "aria",
+            "bella",
+            "bill",
+            "brian",
+            "callum",
+            "charlie",
+            "chris",
+            "daniel",
+            "eric",
+            "george",
+            "harry",
+            "jessica",
+            "laura",
+            "liam",
+            "lily",
+            "matilda",
+            "river",
+            "roger",
+            "sarah",
+            "will"
           ],
-          "default": null,
-          "description": "Optional list of input images for editing (up to 14 images). When provided, the model will edit these images based on the prompt. When not provided, the model will generate new images from the text prompt. Supported formats: JPEG, PNG, WebP",
-          "title": "Images"
+          "title": "Voice",
+          "type": "string"
         },
-        "num_images": {
-          "default": 1,
-          "description": "Number of images to generate.",
-          "maximum": 4,
-          "minimum": 1,
-          "title": "Num Images",
-          "type": "integer"
-        },
-        "aspect_ratio": {
-          "$ref": "#/$defs/AspectRatioAutoEnum",
-          "default": "1:1",
-          "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
-        },
-        "resolution": {
-          "$ref": "#/$defs/ResolutionEnum",
-          "default": "1K",
-          "description": "Output resolution. Options: 1K, 2K, 4K. Default: 1K"
+        "model": {
+          "default": "eleven_multilingual_v2",
+          "description": "Model to use. multilingual_v2 is highest quality, turbo/flash are faster with lower latency.",
+          "enum": [
+            "eleven_multilingual_v2",
+            "eleven_turbo_v2_5",
+            "eleven_flash_v2_5"
+          ],
+          "title": "Model",
+          "type": "string"
         },
         "output_format": {
-          "$ref": "#/$defs/OutputFormatEnum",
-          "default": "png",
-          "description": "Output format for the generated images."
+          "default": "mp3_44100_128",
+          "description": "Audio output format. mp3_44100_128 is standard quality MP3.",
+          "enum": [
+            "mp3_44100_128",
+            "mp3_44100_192",
+            "pcm_16000",
+            "pcm_22050",
+            "pcm_24000",
+            "pcm_44100"
+          ],
+          "title": "Output Format",
+          "type": "string"
         },
-        "enable_google_search": {
-          "default": false,
-          "description": "Enable Google Search grounding for real-time information (weather, news, etc.)",
-          "title": "Enable Google Search",
+        "stability": {
+          "default": 0.5,
+          "description": "Voice stability (0-1). Higher = more consistent, lower = more expressive.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Stability",
+          "type": "number"
+        },
+        "similarity_boost": {
+          "default": 0.75,
+          "description": "Similarity boost (0-1). Higher = closer to original voice.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Similarity Boost",
+          "type": "number"
+        },
+        "style": {
+          "default": 0.0,
+          "description": "Style exaggeration (0-1). Increases expressiveness but may reduce stability.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Style",
+          "type": "number"
+        },
+        "use_speaker_boost": {
+          "default": true,
+          "description": "Enable speaker boost for enhanced clarity.",
+          "title": "Use Speaker Boost",
           "type": "boolean"
-        },
-        "safety_tolerance": {
-          "$ref": "#/$defs/SafetyToleranceEnum",
-          "default": "BLOCK_NONE",
-          "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
         }
       },
       "required": [
-        "prompt"
+        "text"
       ],
       "title": "AppInput",
       "type": "object"
@@ -402,20 +387,12 @@
           "type": "object"
         }
       },
+      "description": "Output schema for ElevenLabs TTS.",
       "properties": {
-        "images": {
-          "description": "The generated or edited images",
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "title": "Images",
-          "type": "array"
-        },
-        "description": {
-          "default": "",
-          "description": "Text description or response from the model",
-          "title": "Description",
+        "audio": {
+          "description": "Generated speech audio file",
+          "format": "file",
+          "title": "Audio",
           "type": "string"
         },
         "output_meta": {
@@ -432,7 +409,7 @@
         }
       },
       "required": [
-        "images"
+        "audio"
       ],
       "title": "AppOutput",
       "type": "object"

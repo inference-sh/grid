@@ -1,0 +1,66 @@
+{
+  "description": "Input schema for ElevenLabs Dubbing.",
+  "properties": {
+    "audio": {
+      "description": "Audio or video file to dub (MP3, MP4, WAV, MOV).",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "target_lang": {
+      "default": "es",
+      "description": "Target language code (e.g., 'es' for Spanish, 'fr' for French).",
+      "enum": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "it",
+        "pt",
+        "pl",
+        "hi",
+        "ar",
+        "zh",
+        "ja",
+        "ko",
+        "ru",
+        "tr",
+        "nl",
+        "sv",
+        "da",
+        "fi",
+        "no",
+        "cs",
+        "el",
+        "he",
+        "hu",
+        "id",
+        "ms",
+        "ro",
+        "th",
+        "uk",
+        "vi"
+      ],
+      "title": "Target Lang",
+      "type": "string"
+    },
+    "source_lang": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source language code. Leave empty for auto-detection.",
+      "title": "Source Lang"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

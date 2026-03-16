@@ -1,0 +1,24 @@
+{
+  "description": "Input schema for ElevenLabs Music.",
+  "properties": {
+    "prompt": {
+      "description": "Description of the music to generate (genre, mood, instruments, tempo, etc.).",
+      "maxLength": 2000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "duration_seconds": {
+      "default": 30,
+      "description": "Duration in seconds (5-600, max 10 minutes).",
+      "maximum": 600,
+      "minimum": 5,
+      "title": "Duration Seconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

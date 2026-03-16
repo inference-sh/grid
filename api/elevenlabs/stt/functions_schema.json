@@ -1,118 +1,53 @@
 {
   "run": {
-    "description": "Generate or edit images using Gemini 3 Pro Image Preview model via Vertex AI.",
+    "description": "Transcribe audio to text.",
     "input_schema": {
-      "$defs": {
-        "AspectRatioAutoEnum": {
-          "description": "Aspect ratio options with auto detection.",
-          "enum": [
-            "auto",
-            "21:9",
-            "16:9",
-            "3:2",
-            "4:3",
-            "5:4",
-            "1:1",
-            "4:5",
-            "3:4",
-            "2:3",
-            "9:16"
-          ],
-          "title": "AspectRatioAutoEnum",
-          "type": "string"
-        },
-        "OutputFormatEnum": {
-          "description": "Output format options for images.",
-          "enum": [
-            "png",
-            "jpeg",
-            "webp"
-          ],
-          "title": "OutputFormatEnum",
-          "type": "string"
-        },
-        "ResolutionEnum": {
-          "description": "Resolution options for Gemini 3 Pro (512 not supported).",
-          "enum": [
-            "1K",
-            "2K",
-            "4K"
-          ],
-          "title": "ResolutionEnum",
-          "type": "string"
-        },
-        "SafetyToleranceEnum": {
-          "description": "Safety filter thresholds.",
-          "enum": [
-            "BLOCK_NONE",
-            "BLOCK_LOW_AND_ABOVE",
-            "BLOCK_MEDIUM_AND_ABOVE",
-            "BLOCK_ONLY_HIGH"
-          ],
-          "title": "SafetyToleranceEnum",
-          "type": "string"
-        }
-      },
+      "description": "Input schema for ElevenLabs STT.",
       "properties": {
-        "prompt": {
-          "description": "The prompt for image generation or editing. Describe what you want to create or change.",
-          "title": "Prompt",
+        "audio": {
+          "description": "Audio file to transcribe (MP3, WAV, FLAC, OGG, AAC, M4A).",
+          "format": "file",
+          "title": "Audio",
           "type": "string"
         },
-        "images": {
+        "model": {
+          "default": "scribe_v2",
+          "description": "Model version. scribe_v2 is latest with improved accuracy.",
+          "enum": [
+            "scribe_v1",
+            "scribe_v2"
+          ],
+          "title": "Model",
+          "type": "string"
+        },
+        "language_code": {
           "anyOf": [
             {
-              "items": {
-                "format": "file",
-                "type": "string"
-              },
-              "type": "array"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Optional list of input images for editing (up to 14 images). When provided, the model will edit these images based on the prompt. When not provided, the model will generate new images from the text prompt. Supported formats: JPEG, PNG, WebP",
-          "title": "Images"
+          "description": "Language code (e.g., 'eng', 'spa', 'fra'). Leave empty for auto-detection.",
+          "title": "Language Code"
         },
-        "num_images": {
-          "default": 1,
-          "description": "Number of images to generate.",
-          "maximum": 4,
-          "minimum": 1,
-          "title": "Num Images",
-          "type": "integer"
-        },
-        "aspect_ratio": {
-          "$ref": "#/$defs/AspectRatioAutoEnum",
-          "default": "1:1",
-          "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
-        },
-        "resolution": {
-          "$ref": "#/$defs/ResolutionEnum",
-          "default": "1K",
-          "description": "Output resolution. Options: 1K, 2K, 4K. Default: 1K"
-        },
-        "output_format": {
-          "$ref": "#/$defs/OutputFormatEnum",
-          "default": "png",
-          "description": "Output format for the generated images."
-        },
-        "enable_google_search": {
+        "diarize": {
           "default": false,
-          "description": "Enable Google Search grounding for real-time information (weather, news, etc.)",
-          "title": "Enable Google Search",
+          "description": "Enable speaker diarization to identify who is speaking.",
+          "title": "Diarize",
           "type": "boolean"
         },
-        "safety_tolerance": {
-          "$ref": "#/$defs/SafetyToleranceEnum",
-          "default": "BLOCK_NONE",
-          "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+        "tag_audio_events": {
+          "default": false,
+          "description": "Tag audio events like laughter, applause, music, etc.",
+          "title": "Tag Audio Events",
+          "type": "boolean"
         }
       },
       "required": [
-        "prompt"
+        "audio"
       ],
       "title": "AppInput",
       "type": "object"
@@ -402,21 +337,55 @@
           "type": "object"
         }
       },
+      "description": "Output schema for ElevenLabs STT.",
       "properties": {
-        "images": {
-          "description": "The generated or edited images",
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "title": "Images",
-          "type": "array"
-        },
-        "description": {
-          "default": "",
-          "description": "Text description or response from the model",
-          "title": "Description",
+        "text": {
+          "description": "Full transcription text",
+          "title": "Text",
           "type": "string"
+        },
+        "language_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Detected language code",
+          "title": "Language Code"
+        },
+        "language_probability": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Language detection confidence",
+          "title": "Language Probability"
+        },
+        "words": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Word-level timestamps and speaker info",
+          "title": "Words"
         },
         "output_meta": {
           "anyOf": [
@@ -432,7 +401,7 @@
         }
       },
       "required": [
-        "images"
+        "text"
       ],
       "title": "AppOutput",
       "type": "object"

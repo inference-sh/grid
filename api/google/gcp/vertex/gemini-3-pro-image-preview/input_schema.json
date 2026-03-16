@@ -29,9 +29,8 @@
       "type": "string"
     },
     "ResolutionEnum": {
-      "description": "Resolution options.",
+      "description": "Resolution options for Gemini 3 Pro (512 not supported).",
       "enum": [
-        "512",
         "1K",
         "2K",
         "4K"
