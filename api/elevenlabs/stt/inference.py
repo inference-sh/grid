@@ -84,7 +84,10 @@ class App(BaseApp):
             language_probability=result.get("language_probability"),
             words=words,
             output_meta=OutputMeta(
-                inputs=[AudioMeta(seconds=duration_seconds)],
+                inputs=[AudioMeta(
+                    seconds=duration_seconds,
+                    extra={"model": input_data.model}
+                )],
                 outputs=[]
             )
         )

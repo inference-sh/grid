@@ -6,32 +6,36 @@ Based on Starter plan pricing (we charge at this tier).
 
 | Model | Price per 1K chars |
 |-------|-------------------|
-| Flash / Turbo | $0.08 |
-| Multilingual v2 / v3 | $0.17 |
+| Flash / Turbo | $0.15 |
+| Multilingual v2 / v3 | $0.30 |
 
-- Flash: `eleven_flash_v2_5` - Ultra-low latency (~75ms), 32 languages
-- Turbo: `eleven_turbo_v2_5` - Low latency
-- Multilingual v2: `eleven_multilingual_v2` - Highest quality, ~250-300ms
+Models:
+- `eleven_flash_v2_5` - Ultra-low latency (~75ms), Flash tier
+- `eleven_flash_v2` - Flash tier
+- `eleven_turbo_v2_5` - Low latency, Turbo tier
+- `eleven_turbo_v2` - Turbo tier
+- `eleven_multilingual_v2` - Highest quality, ~250-300ms
+- `eleven_v3` - Latest multilingual model
 - 40,000 character limit per request
 
 ## Speech to Text (Scribe)
 
 | Model | Price per hour |
 |-------|---------------|
-| Scribe v1/v2 | $0.40 |
-| Scribe v2 Realtime | $0.48 |
+| scribe_v1 | $0.48 |
+| scribe_v2 | $0.48 |
 
 - 98%+ transcription accuracy
 - 90+ languages
-- Optional: keyterm prompting, entity detection, diarization
-- Keyterm prompting: +$0.12/hour
-- Entity detection: +$0.08/hour
+- Optional add-ons:
+  - Keyterm prompting: +$0.070/hour
+  - Entity detection: +$0.105/hour
 
 ## Music Generation
 
 | Service | Price |
 |---------|-------|
-| Music compose | $0.35 per minute |
+| Music compose | $0.48 per minute |
 
 - Max 5 minute duration per request
 - Commercial licensing included on Starter+
@@ -41,7 +45,7 @@ Based on Starter plan pricing (we charge at this tier).
 
 | Service | Price |
 |---------|-------|
-| Audio isolation | $0.22 per minute |
+| Audio isolation | $0.30 per minute |
 
 - Removes ambient sounds, reverb, interference
 - WAV, MP3, FLAC, OGG, AAC inputs
@@ -49,9 +53,10 @@ Based on Starter plan pricing (we charge at this tier).
 
 ## Voice Changer (Speech to Speech)
 
-| Service | Price |
-|---------|-------|
-| Voice transformation | $0.22 per minute |
+| Model | Price |
+|-------|-------|
+| eleven_multilingual_sts_v2 | $0.30 per minute |
+| eleven_english_sts_v2 | $0.30 per minute |
 
 - Real-time processing
 - 10,000+ human-like voices
@@ -61,7 +66,7 @@ Based on Starter plan pricing (we charge at this tier).
 
 | Service | Price |
 |---------|-------|
-| Sound generation | $0.13 per generation |
+| Sound generation | $0.18 per generation |
 
 - Text-to-sound-effect
 - Royalty-free
@@ -71,18 +76,17 @@ Based on Starter plan pricing (we charge at this tier).
 
 | Model | Price per 1K chars |
 |-------|-------------------|
-| Flash / Turbo | $0.08 |
-| Multilingual v2 | $0.17 |
+| eleven_v3 | $0.30 |
 
-- Same pricing as TTS (per character across all dialogue lines)
+- Same pricing as Multilingual TTS (per character across all dialogue lines)
 - Multi-speaker dialogue in single request
-- Total character count = sum of all text fields in script
+- Total character count = sum of all text fields
 
 ## Forced Alignment
 
 | Service | Price per hour |
 |---------|---------------|
-| Forced alignment | $0.40 |
+| Forced alignment | $0.48 |
 
 - Same pricing as STT
 - Word-level and character-level timestamps
@@ -92,7 +96,7 @@ Based on Starter plan pricing (we charge at this tier).
 
 | Service | Price (with watermark) | Price (no watermark) |
 |---------|----------------------|---------------------|
-| Dubbing v1 | $0.44/min | $0.67/min |
+| Dubbing v1 | $0.60/min | $0.90/min |
 
 - Automatic speaker detection
 - 29 languages
@@ -103,28 +107,49 @@ Based on Starter plan pricing (we charge at this tier).
 ## Price Variables (microcents)
 
 ```
-TTS Flash/Turbo: per_1k_characters = 8_000_000  ($0.08)
-TTS Multilingual: per_1k_characters = 17_000_000 ($0.17)
-Text-to-Dialogue: same as TTS (per 1K chars total)
-STT: per_hour = 40_000_000 ($0.40)
-Forced Alignment: per_hour = 40_000_000 ($0.40)
-Music: per_minute = 35_000_000 ($0.35)
-Voice Isolator: per_minute = 22_000_000 ($0.22)
-Voice Changer: per_minute = 22_000_000 ($0.22)
-Sound Effects: per_generation = 13_000_000 ($0.13)
-Dubbing (watermark): per_minute = 44_000_000 ($0.44)
-Dubbing (no watermark): per_minute = 67_000_000 ($0.67)
+# TTS - per 1K characters
+TTS_FLASH_TURBO = 15_000_000      # $0.15 - eleven_flash_v2, eleven_flash_v2_5, eleven_turbo_v2, eleven_turbo_v2_5
+TTS_MULTILINGUAL = 30_000_000     # $0.30 - eleven_multilingual_v2, eleven_v3
+
+# Text-to-Dialogue - per 1K characters
+DIALOGUE = 30_000_000             # $0.30 - eleven_v3 only
+
+# STT - per hour
+STT = 48_000_000                  # $0.48 - scribe_v1, scribe_v2
+
+# Forced Alignment - per hour
+FORCED_ALIGNMENT = 48_000_000     # $0.48
+
+# Music - per minute
+MUSIC = 48_000_000                # $0.48
+
+# Voice Isolator - per minute
+VOICE_ISOLATOR = 30_000_000       # $0.30
+
+# Voice Changer - per minute
+VOICE_CHANGER = 30_000_000        # $0.30 - eleven_multilingual_sts_v2, eleven_english_sts_v2
+
+# Sound Effects - per generation
+SOUND_EFFECTS = 18_000_000        # $0.18
+
+# Dubbing - per minute
+DUBBING_WATERMARK = 60_000_000    # $0.60
+DUBBING_NO_WATERMARK = 90_000_000 # $0.90
 ```
 
 ## CEL Expression Examples
 
-### TTS (per 1K characters)
+### TTS (per 1K characters, model-based pricing)
 ```cel
-(double(size(inputs[0].text)) / 1000.0) * double(prices.per_1k_characters)
+// outputs[0].extra.characters contains char count
+// outputs[0].extra.model contains model name
+(double(outputs[0].extra.characters) / 1000.0) * double(prices.per_1k_characters)
 ```
 
-### STT (per hour)
+### STT (per hour, model in extra)
 ```cel
+// inputs[0].seconds contains duration
+// inputs[0].extra.model contains model name
 (double(inputs[0].seconds) / 3600.0) * double(prices.per_hour)
 ```
 
@@ -140,7 +165,16 @@ double(prices.per_generation)
 
 ### Text to Dialogue (per 1K total characters)
 ```cel
-(double(inputs[0].characters) / 1000.0) * double(prices.per_1k_characters)
+// outputs[0].extra.characters contains total char count
+// outputs[0].extra.model contains model name
+(double(outputs[0].extra.characters) / 1000.0) * double(prices.per_1k_characters)
+```
+
+### Voice Changer (per minute, model in extra)
+```cel
+// inputs[0].seconds contains duration
+// inputs[0].extra.model contains model name
+(double(inputs[0].seconds) / 60.0) * double(prices.per_minute)
 ```
 
 ### Forced Alignment (per hour of audio)

@@ -5,7 +5,7 @@ Generate immersive, natural-sounding dialogue from text with multiple voices.
 Each segment can have its own voice and performance directions.
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta, AudioMeta
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
 from pydantic import Field, BaseModel
 from typing import List, Literal
 import logging
@@ -72,7 +72,10 @@ class App(BaseApp):
         return AppOutput(
             audio=File(path=audio_path),
             output_meta=OutputMeta(
-                inputs=[TextMeta(text="x" * total_chars)],  # Track character count
-                outputs=[AudioMeta(seconds=duration)]
+                inputs=[],
+                outputs=[AudioMeta(
+                    seconds=duration,
+                    extra={"characters": total_chars}
+                )]
             )
         )

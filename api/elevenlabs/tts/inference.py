@@ -5,7 +5,7 @@ High-quality text-to-speech using ElevenLabs multilingual models.
 Supports 32 languages with natural-sounding voices.
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta, AudioMeta
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
 from pydantic import Field
 from typing import Literal
 import logging
@@ -128,7 +128,10 @@ class App(BaseApp):
         return AppOutput(
             audio=File(path=audio_path),
             output_meta=OutputMeta(
-                inputs=[TextMeta(text=input_data.text)],
-                outputs=[AudioMeta(seconds=0.0)]
+                inputs=[],
+                outputs=[AudioMeta(
+                    seconds=0.0,
+                    extra={"characters": len(input_data.text), "model": input_data.model}
+                )]
             )
         )

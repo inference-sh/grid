@@ -79,7 +79,10 @@ class App(BaseApp):
         return AppOutput(
             audio=File(path=audio_path),
             output_meta=OutputMeta(
-                inputs=[AudioMeta(seconds=input_duration)],
+                inputs=[AudioMeta(
+                    seconds=input_duration,
+                    extra={"model": input_data.model}
+                )],
                 outputs=[AudioMeta(seconds=input_duration)]
             )
         )
