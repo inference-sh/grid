@@ -3,12 +3,14 @@
     "description": "Generate or edit images using Gemini 3.1 Flash Image Preview model via Vertex AI.",
     "input_schema": {
       "$defs": {
-        "AspectRatioAutoEnum": {
-          "description": "Aspect ratio options with auto detection.",
+        "ExtendedAspectRatioAutoEnum": {
+          "description": "Aspect ratios for Gemini 3.1 Flash (includes extreme ratios 1:4, 4:1, 1:8, 8:1).",
           "enum": [
             "auto",
             "21:9",
             "16:9",
+            "8:1",
+            "4:1",
             "3:2",
             "4:3",
             "5:4",
@@ -16,9 +18,11 @@
             "4:5",
             "3:4",
             "2:3",
+            "1:4",
+            "1:8",
             "9:16"
           ],
-          "title": "AspectRatioAutoEnum",
+          "title": "ExtendedAspectRatioAutoEnum",
           "type": "string"
         },
         "OutputFormatEnum": {
@@ -86,9 +90,9 @@
           "type": "integer"
         },
         "aspect_ratio": {
-          "$ref": "#/$defs/AspectRatioAutoEnum",
+          "$ref": "#/$defs/ExtendedAspectRatioAutoEnum",
           "default": "1:1",
-          "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
+          "description": "Aspect ratio for the output image. Supports extreme ratios like 1:4, 4:1, 1:8, 8:1. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
         },
         "resolution": {
           "$ref": "#/$defs/ResolutionEnum",

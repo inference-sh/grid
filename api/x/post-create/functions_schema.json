@@ -1,84 +1,8 @@
 {
   "run": {
-    "description": "",
+    "description": "Create a post on X.com.",
     "input_schema": {
-      "$defs": {
-        "File": {
-          "$id": "/schemas/File",
-          "oneOf": [
-            {
-              "description": "A class representing a file in the inference.sh ecosystem.",
-              "properties": {
-                "uri": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "title": "Uri"
-                },
-                "path": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "title": "Path"
-                },
-                "content_type": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "title": "Content Type"
-                },
-                "size": {
-                  "anyOf": [
-                    {
-                      "type": "integer"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "title": "Size"
-                },
-                "filename": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "title": "Filename"
-                }
-              },
-              "title": "File",
-              "type": "object"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        }
-      },
+      "description": "Input schema for creating a post.",
       "properties": {
         "text": {
           "description": "Post text (max 280 characters)",
@@ -97,7 +21,7 @@
             }
           ],
           "default": null,
-          "description": "Tweet ID to reply to",
+          "description": "Tweet ID to reply to (optional)",
           "title": "Reply To Tweet Id"
         },
         "quote_tweet_id": {
@@ -110,14 +34,15 @@
             }
           ],
           "default": null,
-          "description": "Tweet ID to quote",
+          "description": "Tweet ID to quote (optional)",
           "title": "Quote Tweet Id"
         },
         "media": {
           "anyOf": [
             {
               "items": {
-                "$ref": "#/$defs/File"
+                "format": "file",
+                "type": "string"
               },
               "type": "array"
             },
@@ -126,7 +51,7 @@
             }
           ],
           "default": null,
-          "description": "Media files (up to 4 images, or 1 video/GIF)",
+          "description": "Media files to attach (up to 4 images, or 1 video/GIF). Supports JPG, PNG, GIF, WEBP, MP4.",
           "title": "Media"
         }
       },
@@ -233,7 +158,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -394,14 +319,15 @@
             "resolution": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/VideoResolution"
+                  "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
             },
             "seconds": {
               "default": 0,
@@ -418,29 +344,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
-        },
-        "VideoResolution": {
-          "description": "Standard video resolution presets.",
-          "enum": [
-            "480p",
-            "720p",
-            "1080p",
-            "1440p",
-            "4k"
-          ],
-          "title": "VideoResolution",
-          "type": "string"
         }
       },
+      "description": "Output schema for created post.",
       "properties": {
         "tweet_id": {
-          "description": "ID of the created tweet",
+          "description": "ID of the created post",
           "title": "Tweet Id",
           "type": "string"
         },
-        "post_url": {
+        "tweet_url": {
           "description": "URL of the created post",
-          "title": "Post Url",
+          "title": "Tweet Url",
           "type": "string"
         },
         "output_meta": {
@@ -458,7 +373,7 @@
       },
       "required": [
         "tweet_id",
-        "post_url"
+        "tweet_url"
       ],
       "title": "AppOutput",
       "type": "object"

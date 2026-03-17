@@ -119,8 +119,10 @@ class PersonGenerationEnum(str, Enum):
 
 # Aspect ratio numeric values for matching
 ASPECT_RATIO_VALUES = {
+    "8:1": 8/1,
     "21:9": 21/9,
     "16:9": 16/9,
+    "4:1": 4/1,
     "3:2": 3/2,
     "4:3": 4/3,
     "5:4": 5/4,
@@ -128,7 +130,9 @@ ASPECT_RATIO_VALUES = {
     "4:5": 4/5,
     "3:4": 3/4,
     "2:3": 2/3,
+    "1:4": 1/4,
     "9:16": 9/16,
+    "1:8": 1/8,
 }
 
 # MIME types for image formats

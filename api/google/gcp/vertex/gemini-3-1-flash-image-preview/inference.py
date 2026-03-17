@@ -1,3 +1,4 @@
+from enum import Enum
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, TextMeta
 from pydantic import Field
 from typing import Optional, List
@@ -5,7 +6,6 @@ from typing import Optional, List
 from .vertex_helper import (
     create_vertex_client,
     OutputFormatEnum,
-    AspectRatioAutoEnum,
     ResolutionEnum,
     SafetyToleranceEnum,
     calculate_dimensions,
@@ -18,6 +18,25 @@ from .vertex_helper import (
     raise_no_images_error,
     build_image_output_meta,
 )
+
+
+class ExtendedAspectRatioAutoEnum(str, Enum):
+    """Aspect ratios for Gemini 3.1 Flash (includes extreme ratios 1:4, 4:1, 1:8, 8:1)."""
+    auto = "auto"
+    ratio_21_9 = "21:9"
+    ratio_16_9 = "16:9"
+    ratio_8_1 = "8:1"
+    ratio_4_1 = "4:1"
+    ratio_3_2 = "3:2"
+    ratio_4_3 = "4:3"
+    ratio_5_4 = "5:4"
+    ratio_1_1 = "1:1"
+    ratio_4_5 = "4:5"
+    ratio_3_4 = "3:4"
+    ratio_2_3 = "2:3"
+    ratio_1_4 = "1:4"
+    ratio_1_8 = "1:8"
+    ratio_9_16 = "9:16"
 
 
 class AppInput(BaseAppInput):
@@ -34,9 +53,9 @@ class AppInput(BaseAppInput):
         ge=1,
         le=4
     )
-    aspect_ratio: AspectRatioAutoEnum = Field(
-        default=AspectRatioAutoEnum.ratio_1_1,
-        description="Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
+    aspect_ratio: ExtendedAspectRatioAutoEnum = Field(
+        default=ExtendedAspectRatioAutoEnum.ratio_1_1,
+        description="Aspect ratio for the output image. Supports extreme ratios like 1:4, 4:1, 1:8, 8:1. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.res_1k,

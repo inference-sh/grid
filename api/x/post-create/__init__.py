@@ -1,1 +1,1 @@
-from .inference import App
+from .inference import App, AppInput, AppOutput
