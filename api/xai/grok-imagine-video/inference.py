@@ -14,6 +14,7 @@ import requests
 
 from .xai_helper import (
     VideoAspectRatioType,
+    XAIError,
     create_xai_client,
     setup_logger,
     encode_image_base64,
@@ -169,6 +170,8 @@ class App(BaseApp):
                 output_meta=output_meta,
             )
 
+        except XAIError:
+            raise
         except Exception as e:
             self.logger.error(f"Error during video generation: {e}")
             raise RuntimeError(f"Video generation failed: {str(e)}")

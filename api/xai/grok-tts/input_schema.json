@@ -1,0 +1,88 @@
+{
+  "description": "Input schema for xAI Text to Speech.",
+  "properties": {
+    "text": {
+      "description": "Text to convert to speech (max 15,000 characters). Supports inline speech tags: [pause], [laugh], [sigh], etc. and wrapping tags: <soft>, <whisper>, <loud>, <singing>, etc.",
+      "examples": [
+        "Hello, this is a text-to-speech test from xAI."
+      ],
+      "maxLength": 15000,
+      "title": "Text",
+      "type": "string"
+    },
+    "voice": {
+      "default": "eve",
+      "description": "Voice to use. Options: eve, ara, rex, sal, leo.",
+      "enum": [
+        "eve",
+        "ara",
+        "rex",
+        "sal",
+        "leo"
+      ],
+      "title": "Voice",
+      "type": "string"
+    },
+    "language": {
+      "default": "auto",
+      "description": "BCP-47 language code or 'auto' for automatic detection.",
+      "enum": [
+        "auto",
+        "en",
+        "ar-EG",
+        "ar-SA",
+        "ar-AE",
+        "bn",
+        "zh",
+        "fr",
+        "de",
+        "hi",
+        "id",
+        "it",
+        "ja",
+        "ko",
+        "pt-BR",
+        "pt-PT",
+        "ru",
+        "es-MX",
+        "es-ES",
+        "tr",
+        "vi"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "codec": {
+      "default": "mp3",
+      "description": "Audio output format.",
+      "enum": [
+        "mp3",
+        "wav",
+        "pcm",
+        "mulaw",
+        "alaw"
+      ],
+      "title": "Codec",
+      "type": "string"
+    },
+    "sample_rate": {
+      "default": 24000,
+      "description": "Sample rate in Hz.",
+      "enum": [
+        8000,
+        16000,
+        22050,
+        24000,
+        44100,
+        48000
+      ],
+      "title": "Sample Rate",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

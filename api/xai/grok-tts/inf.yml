@@ -1,0 +1,27 @@
+namespace: xai
+name: grok-tts
+description: Convert text into natural speech using xAI's Text to Speech API. Supports multiple voices, expressive speech tags, and MP3/WAV/PCM output formats.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - text-to-speech
+        - tts
+        - audio
+        - xai
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Text to Speech access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

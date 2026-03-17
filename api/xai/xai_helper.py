@@ -231,7 +231,7 @@ async def retry_on_rate_limit(
                     )
                     raise
             else:
-                raise
+                raise classify_xai_error(e) from e
 
     if last_exception:
         raise last_exception
@@ -404,9 +404,60 @@ def encode_image_base64(image: File) -> str:
     return f"data:{content_type};base64,{base64_string}"
 
 
-class ContentModerationError(RuntimeError):
+class XAIError(RuntimeError):
+    """Base error for xAI API failures with user-friendly messages."""
+    pass
+
+
+class ContentModerationError(XAIError):
     """Raised when xAI refuses to generate an image due to content moderation."""
     pass
+
+
+class XAIGenerationError(XAIError):
+    """Raised when xAI's server fails to generate the image."""
+    pass
+
+
+class XAIUnavailableError(XAIError):
+    """Raised when the xAI service is unavailable."""
+    pass
+
+
+def classify_xai_error(error: Exception) -> Exception:
+    """
+    Inspect a raw xAI/gRPC exception and return a user-friendly error.
+
+    Returns the original exception if it doesn't match any known pattern.
+    """
+    error_str = str(error)
+
+    # gRPC INTERNAL — server-side generation failure
+    if "INTERNAL" in error_str and "generation failed" in error_str.lower():
+        return XAIGenerationError(
+            "xAI's image generation service failed internally. "
+            "This is a server-side issue — try again shortly or simplify your prompt."
+        )
+
+    # gRPC UNAVAILABLE
+    if "UNAVAILABLE" in error_str:
+        return XAIUnavailableError(
+            "xAI's image generation service is currently unavailable. Try again later."
+        )
+
+    # gRPC INVALID_ARGUMENT — usually a bad prompt or param
+    if "INVALID_ARGUMENT" in error_str:
+        return XAIGenerationError(
+            f"xAI rejected the request — check your prompt or parameters. Detail: {error_str}"
+        )
+
+    # gRPC PERMISSION_DENIED / UNAUTHENTICATED
+    if "PERMISSION_DENIED" in error_str or "UNAUTHENTICATED" in error_str:
+        return XAIError(
+            "xAI authentication failed. The API key may be invalid or expired."
+        )
+
+    return error
 
 
 def save_image_from_response(response) -> File:

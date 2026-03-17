@@ -12,6 +12,7 @@ from pydantic import Field
 
 from .xai_helper import (
     AspectRatioAutoType,
+    XAIError,
     ContentModerationError,
     create_xai_client,
     setup_logger,
@@ -133,7 +134,7 @@ class App(BaseApp):
                 output_meta=output_meta,
             )
 
-        except ContentModerationError:
+        except XAIError:
             raise
         except Exception as e:
             self.logger.error(f"Error during image generation: {e}")
