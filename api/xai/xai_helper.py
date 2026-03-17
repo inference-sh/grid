@@ -404,6 +404,11 @@ def encode_image_base64(image: File) -> str:
     return f"data:{content_type};base64,{base64_string}"
 
 
+class ContentModerationError(RuntimeError):
+    """Raised when xAI refuses to generate an image due to content moderation."""
+    pass
+
+
 def save_image_from_response(response) -> File:
     """
     Save an xAI SDK image response to a temporary file.
@@ -417,8 +422,19 @@ def save_image_from_response(response) -> File:
         File object pointing to the saved image
 
     Raises:
+        ContentModerationError: If the image was blocked by content moderation
         RuntimeError: If the response format is unexpected
     """
+    # Check moderation before attempting to download
+    if hasattr(response, 'respect_moderation') and not response.respect_moderation:
+        raw_url = getattr(response._image, 'url', None) if hasattr(response, '_image') else None
+        logger = logging.getLogger(__name__)
+        logger.warning(f"xAI content moderation triggered (respect_moderation=False, url={raw_url})")
+        raise ContentModerationError(
+            "Image generation was blocked by content moderation. "
+            "The prompt or input image may violate xAI's content policy."
+        )
+
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
         if hasattr(response, 'image') and response.image:
             f.write(response.image)
