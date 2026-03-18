@@ -15,6 +15,7 @@ from .vertex_helper import (
     setup_logger,
     resolve_aspect_ratio,
     retry_on_resource_exhausted,
+    RetryConfig,
     process_image_response,
     raise_no_images_error,
     build_image_output_meta,
@@ -61,6 +62,12 @@ class AppInput(BaseAppInput):
     safety_tolerance: SafetyToleranceEnum = Field(
         default=SafetyToleranceEnum.block_none,
         description="Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+    )
+    retry_count: int = Field(
+        default=2,
+        ge=0,
+        le=5,
+        description="Number of automatic retries on 429 rate limit errors using exponential backoff with jitter. Set to 0 to disable retries. Example: retry_count=2 means up to 3 total attempts (1 initial + 2 retries)."
     )
 
 
@@ -123,6 +130,7 @@ class App(BaseApp):
 
             # Generate images (one API call per image)
             results = []
+            retry_config = RetryConfig(max_attempts=input_data.retry_count + 1)
 
             for i in range(input_data.num_images):
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
@@ -134,7 +142,7 @@ class App(BaseApp):
                         config=config,
                     )
 
-                response = await retry_on_resource_exhausted(_generate, logger=self.logger)
+                response = await retry_on_resource_exhausted(_generate, config=retry_config, logger=self.logger)
                 result = process_image_response(response, input_data.output_format.value, self.logger)
                 results.append(result)
 

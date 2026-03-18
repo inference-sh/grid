@@ -121,6 +121,14 @@
       "$ref": "#/$defs/SafetyToleranceEnum",
       "default": "BLOCK_NONE",
       "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+    },
+    "retry_count": {
+      "default": 2,
+      "description": "Number of automatic retries on 429 rate limit errors using exponential backoff with jitter. Set to 0 to disable retries. Example: retry_count=2 means up to 3 total attempts (1 initial + 2 retries).",
+      "maximum": 5,
+      "minimum": 0,
+      "title": "Retry Count",
+      "type": "integer"
     }
   },
   "required": [
