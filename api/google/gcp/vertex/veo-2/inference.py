@@ -184,6 +184,10 @@ class App(BaseApp):
                 error = result.get("error")
                 if error:
                     raise RuntimeError(f"Video generation failed: {error}")
+                rai_reasons = response_data.get("raiMediaFilteredReasons", [])
+                rai_count = response_data.get("raiMediaFilteredCount", 0)
+                if rai_reasons:
+                    raise RuntimeError(f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}")
                 raise RuntimeError("No videos in response")
 
             output_videos = []

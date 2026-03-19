@@ -182,12 +182,15 @@ class App(BaseApp):
             self.logger.info(f"Number of videos in response: {len(videos)}")
 
             if not videos:
-                # Log full result for debugging
                 self.logger.error(f"Full result: {result}")
-                # Check for error
                 error = result.get("error")
                 if error:
                     raise RuntimeError(f"Video generation failed: {error}")
+                # Check for RAI content filtering
+                rai_reasons = response_data.get("raiMediaFilteredReasons", [])
+                rai_count = response_data.get("raiMediaFilteredCount", 0)
+                if rai_reasons:
+                    raise RuntimeError(f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}")
                 raise RuntimeError("No videos in response")
 
             output_videos = []

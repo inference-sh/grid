@@ -1268,7 +1268,7 @@ def build_veo_payload(
         "personGeneration": person_generation,
         "enablePromptRewriting": enable_prompt_rewriting,
         "addWatermark": add_watermark,
-        "includeRaiReason": False,
+        "includeRaiReason": True,
     }
 
     # Use provided storage_uri or fall back to environment default
