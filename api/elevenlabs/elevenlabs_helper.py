@@ -18,6 +18,7 @@ from typing import Optional, Dict, Any, List
 from io import BytesIO
 
 from elevenlabs.client import ElevenLabs
+from elevenlabs.core.api_error import ApiError
 from elevenlabs.types import VoiceSettings
 
 
@@ -76,12 +77,29 @@ def save_audio_bytes(audio_bytes: bytes, suffix: str = ".mp3") -> str:
         return tmp.name
 
 
+def _parse_api_error(e: ApiError) -> str:
+    """Extract a readable message from an ElevenLabs ApiError."""
+    detail = getattr(e, "body", {})
+    if isinstance(detail, dict):
+        detail = detail.get("detail", detail)
+    if isinstance(detail, dict):
+        msg = detail.get("message", str(e))
+        suggestion = (detail.get("data") or {}).get("prompt_suggestion")
+        if suggestion:
+            return f"{msg}\n\nSuggested prompt: {suggestion}"
+        return msg
+    return str(e)
+
+
 def save_audio_generator(audio_gen, suffix: str = ".mp3") -> str:
     """Save audio generator to a temporary file."""
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        for chunk in audio_gen:
-            tmp.write(chunk)
-        return tmp.name
+    try:
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            for chunk in audio_gen:
+                tmp.write(chunk)
+            return tmp.name
+    except ApiError as e:
+        raise RuntimeError(_parse_api_error(e)) from e
 
 
 def get_audio_duration(file_path: str, logger: Optional[logging.Logger] = None) -> float:
