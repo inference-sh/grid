@@ -216,7 +216,7 @@ class App(BaseApp):
                 else:
                     width, height = 720, 1280
 
-                output_meta_videos.append(VideoMeta(width=width, height=height, duration=input_data.duration))
+                output_meta_videos.append(VideoMeta(width=width, height=height, seconds=input_data.duration))
 
             if not output_videos:
                 raise RuntimeError("No videos were successfully processed")

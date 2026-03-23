@@ -235,7 +235,9 @@ class App(BaseApp):
                 output_meta_videos.append(VideoMeta(
                     width=width,
                     height=height,
-                    duration=input_data.duration
+                    seconds=input_data.duration,
+                    resolution=input_data.resolution.value,
+                    extra={"generate_audio": input_data.generate_audio}
                 ))
 
             if not output_videos:
