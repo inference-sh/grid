@@ -189,6 +189,32 @@ async def poll_prediction_status(
     raise RuntimeError(f"Prediction timed out after {max_attempts * poll_interval} seconds")
 
 
+def get_generation_url(result: Dict[str, Any]) -> str:
+    """
+    Extract and normalize generation_url from a prediction result.
+
+    Handles the API returning either a string or a list of strings,
+    and resolves relative URLs to absolute Pruna API URLs.
+
+    Args:
+        result: Prediction result dictionary.
+
+    Returns:
+        Absolute URL string.
+
+    Raises:
+        RuntimeError: If no generation_url found.
+    """
+    generation_url = result.get("generation_url")
+    if not generation_url:
+        raise RuntimeError("No generation_url in response")
+    if isinstance(generation_url, list):
+        generation_url = generation_url[0]
+    if generation_url.startswith("/"):
+        generation_url = f"https://api.pruna.ai{generation_url}"
+    return generation_url
+
+
 def download_result(
     generation_url: str,
     suffix: str = ".jpg",

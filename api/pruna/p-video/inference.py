@@ -8,7 +8,7 @@ from typing import Optional
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, download_video, upload_file
+from .pruna_helper import run_prediction, get_generation_url, download_video, upload_file
 
 
 class ResolutionEnum(str, Enum):
@@ -163,12 +163,7 @@ class App(BaseApp):
             )
 
             # Download result
-            generation_url = result.get("generation_url")
-            if not generation_url:
-                raise RuntimeError("No generation_url in response")
-
-            if generation_url.startswith("/"):
-                generation_url = f"https://api.pruna.ai{generation_url}"
+            generation_url = get_generation_url(result)
 
             video_path = download_video(generation_url, logger=self.logger)
 

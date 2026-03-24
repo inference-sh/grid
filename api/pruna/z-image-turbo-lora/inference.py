@@ -8,7 +8,7 @@ from typing import Optional, List
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, download_image
+from .pruna_helper import run_prediction, get_generation_url, download_image
 
 
 class OutputFormatEnum(str, Enum):
@@ -60,11 +60,7 @@ class App(BaseApp):
                     request_data["lora_scales"] = input_data.lora_scales
 
             result = await run_prediction(model=self.model, input_data=request_data, use_sync=True, logger=self.logger)
-            generation_url = result.get("generation_url")
-            if not generation_url:
-                raise RuntimeError("No generation_url in response")
-            if generation_url.startswith("/"):
-                generation_url = f"https://api.pruna.ai{generation_url}"
+            generation_url = get_generation_url(result)
 
             image_path = download_image(generation_url, logger=self.logger)
             return AppOutput(image=File(path=image_path), output_meta=OutputMeta(outputs=[ImageMeta(width=input_data.width, height=input_data.height, count=1)]))

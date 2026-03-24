@@ -8,7 +8,7 @@ from typing import Optional, List
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, download_image, upload_file
+from .pruna_helper import run_prediction, get_generation_url, download_image, upload_file
 
 
 class LoraPresetEnum(str, Enum):
@@ -165,12 +165,7 @@ class App(BaseApp):
             )
 
             # Download result
-            generation_url = result.get("generation_url")
-            if not generation_url:
-                raise RuntimeError("No generation_url in response")
-
-            if generation_url.startswith("/"):
-                generation_url = f"https://api.pruna.ai{generation_url}"
+            generation_url = get_generation_url(result)
 
             image_path = download_image(generation_url, logger=self.logger)
 

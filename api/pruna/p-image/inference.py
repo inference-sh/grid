@@ -8,7 +8,7 @@ from typing import Optional, Literal
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, download_image
+from .pruna_helper import run_prediction, get_generation_url, download_image
 
 
 class AspectRatioEnum(str, Enum):
@@ -128,14 +128,7 @@ class App(BaseApp):
                 logger=self.logger,
             )
 
-            # Download result
-            generation_url = result.get("generation_url")
-            if not generation_url:
-                raise RuntimeError("No generation_url in response")
-
-            # Handle relative URLs
-            if generation_url.startswith("/"):
-                generation_url = f"https://api.pruna.ai{generation_url}"
+            generation_url = get_generation_url(result)
 
             image_path = download_image(generation_url, logger=self.logger)
 
