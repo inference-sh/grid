@@ -1,0 +1,26 @@
+namespace: xai
+name: grok-extend-video
+description: Extend existing videos using xAI's Grok Imagine Video model. Takes an existing video and generates additional frames to continue it with prompt guidance.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - video-extension
+        - video-generation
+        - xai
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine Video access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

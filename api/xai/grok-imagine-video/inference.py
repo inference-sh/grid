@@ -8,7 +8,7 @@ Supports text-to-video, image-to-video, and video editing.
 from typing import Optional, Literal
 import tempfile
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution, ImageMeta
 from pydantic import Field
 import requests
 
@@ -147,7 +147,32 @@ class App(BaseApp):
             resolution_enum = resolution_enum_map.get(input_data.resolution, VideoResolution.VIDEO_RES720_P)
             width, height = get_video_dimensions(input_data.aspect_ratio, input_data.resolution)
 
+            # Track inputs for billing
+            input_metas = []
+            if input_data.image:
+                # Image input: $0.002
+                input_metas.append(ImageMeta(width=0, height=0, count=1, extra={"type": "image_input"}))
+            if input_data.video:
+                # Video input: $0.01/s — probe duration
+                input_video_seconds = 0.0
+                if input_data.video.exists():
+                    try:
+                        import subprocess
+                        result = subprocess.run(
+                            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                             "-of", "default=noprint_wrappers=1:nokey=1", input_data.video.path],
+                            capture_output=True, text=True, timeout=10
+                        )
+                        input_video_seconds = float(result.stdout.strip())
+                    except Exception as e:
+                        self.logger.warning(f"Could not determine input video duration: {e}")
+                input_metas.append(VideoMeta(
+                    width=0, height=0, resolution=VideoResolution.VIDEO_RES480_P,
+                    seconds=input_video_seconds, fps=24, extra={"type": "video_input"}
+                ))
+
             output_meta = OutputMeta(
+                inputs=input_metas,
                 outputs=[
                     VideoMeta(
                         width=width,

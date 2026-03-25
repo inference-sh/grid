@@ -1,0 +1,7 @@
+{
+  "prompt": "A person walking through a city in the style of the reference images",
+  "reference_images": ["https://example.com/reference1.jpg"],
+  "duration": 5,
+  "aspect_ratio": "16:9",
+  "resolution": "720p"
+}

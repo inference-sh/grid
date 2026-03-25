@@ -1,0 +1,62 @@
+{
+  "description": "Input schema for Grok reference-to-video generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content and motion.",
+      "examples": [
+        "A person walking through a city in the style of the reference images"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "description": "Reference images for style/content guidance. The generated video will use these images as visual references.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Duration of the generated video in seconds (1-15).",
+      "maximum": 15,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video.",
+      "enum": [
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "1:1"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "720p",
+      "description": "Video resolution. 720p for higher quality, 480p for faster generation.",
+      "enum": [
+        "720p",
+        "480p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt",
+    "reference_images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

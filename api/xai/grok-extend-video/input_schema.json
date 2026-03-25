@@ -1,0 +1,41 @@
+{
+  "description": "Input schema for Grok video extension.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing what should happen in the extended portion of the video.",
+      "examples": [
+        "The camera continues to pan across the landscape",
+        "The person turns and walks away"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "video": {
+      "description": "Input video to extend. Must be a publicly accessible URL.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 15,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Duration of the extended video in seconds (1-15). If not specified, defaults to model's default.",
+      "title": "Duration"
+    }
+  },
+  "required": [
+    "prompt",
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
