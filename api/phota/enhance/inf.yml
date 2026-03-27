@@ -1,0 +1,21 @@
+namespace: phota
+name: enhance
+description: Automatically enhance photo quality — lighting, composition, color, and sharpness
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PHOTA_KEY
+      description: Phota API key from platform.photalabs.com
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

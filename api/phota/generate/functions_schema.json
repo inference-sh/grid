@@ -1,0 +1,83 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "properties": {
+        "prompt": {
+          "description": "Text prompt describing the image to generate. Use [[profile_id]] to reference trained profiles.",
+          "title": "Prompt",
+          "type": "string"
+        },
+        "num_output_images": {
+          "default": 1,
+          "description": "Number of output images (1-4)",
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Num Output Images",
+          "type": "integer"
+        },
+        "aspect_ratio": {
+          "default": "auto",
+          "description": "Output aspect ratio",
+          "enum": [
+            "auto",
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9"
+          ],
+          "title": "Aspect Ratio",
+          "type": "string"
+        },
+        "resolution": {
+          "default": "1K",
+          "description": "Output resolution",
+          "enum": [
+            "1K",
+            "4K"
+          ],
+          "title": "Resolution",
+          "type": "string"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "properties": {
+        "images": {
+          "description": "Generated output images",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Images",
+          "type": "array"
+        },
+        "known_subjects": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mapping of profile_id to generation count",
+          "title": "Known Subjects"
+        }
+      },
+      "required": [
+        "images"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+namespace: phota
+name: generate
+description: Generate images from text prompts with identity-preserved subjects via [[profile_id]] syntax
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PHOTA_KEY
+      description: Phota API key from platform.photalabs.com
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

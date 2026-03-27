@@ -1,0 +1,76 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "properties": {
+        "image": {
+          "description": "Image to enhance",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "profile_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Profile IDs for identity preservation. Only pass profiles relevant to this end-user.",
+          "title": "Profile Ids"
+        },
+        "num_output_images": {
+          "default": 1,
+          "description": "Number of output images (1-4)",
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Num Output Images",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "RunInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "properties": {
+        "images": {
+          "description": "Enhanced output images",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Images",
+          "type": "array"
+        },
+        "known_subjects": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mapping of profile_id to generation count",
+          "title": "Known Subjects"
+        }
+      },
+      "required": [
+        "images"
+      ],
+      "title": "RunOutput",
+      "type": "object"
+    }
+  }
+}
