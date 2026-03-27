@@ -9,9 +9,9 @@ pydantic==2.12.5
 pydantic-core==2.41.5
 requests==2.33.0
 setuptools==82.0.1
-setuptools-scm==10.0.3
+setuptools-scm==10.0.5
 tqdm==4.67.3
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 urllib3==2.6.3
-vcs-versioning==1.0.1
+vcs-versioning==1.1.0

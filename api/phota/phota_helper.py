@@ -26,20 +26,34 @@ def phota_request(endpoint: str, payload: dict, logger: logging.Logger) -> dict:
     url = f"{BASE_URL}/{endpoint}"
     logger.info(f"POST {url}")
 
-    resp = requests.post(url, json=payload, headers=get_headers(), timeout=300)
+    try:
+        resp = requests.post(url, json=payload, headers=get_headers(), timeout=300)
+    except requests.exceptions.Timeout:
+        raise RuntimeError("Phota API timed out after 300s — their server may be overloaded, please retry")
+    except requests.exceptions.ConnectionError:
+        raise RuntimeError("Failed to connect to Phota API — their server may be down")
 
     if resp.status_code == 401:
         raise RuntimeError("Invalid or missing PHOTA_KEY")
     if resp.status_code == 402:
         raise RuntimeError("Insufficient Phota credit balance")
     if resp.status_code == 404:
-        data = resp.json()
+        try:
+            data = resp.json()
+        except (ValueError, requests.exceptions.JSONDecodeError):
+            raise RuntimeError(f"NOT_FOUND: {resp.text or 'Resource not found'}")
         raise RuntimeError(f"{data.get('code', 'NOT_FOUND')}: {data.get('detail', 'Resource not found')}")
     if resp.status_code == 400:
-        data = resp.json()
+        try:
+            data = resp.json()
+        except (ValueError, requests.exceptions.JSONDecodeError):
+            raise RuntimeError(f"BAD_REQUEST: {resp.text or 'Invalid request'}")
         raise RuntimeError(f"{data.get('code', 'BAD_REQUEST')}: {data.get('detail', 'Invalid request')}")
     if resp.status_code >= 500:
-        data = resp.json()
+        try:
+            data = resp.json()
+        except (ValueError, requests.exceptions.JSONDecodeError):
+            raise RuntimeError(f"Phota server error ({resp.status_code}): {resp.text or 'empty response'}")
         raise RuntimeError(f"Phota server error: {data.get('detail', resp.text)}")
 
     resp.raise_for_status()
