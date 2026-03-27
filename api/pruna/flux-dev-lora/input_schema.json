@@ -17,6 +17,23 @@
       "title": "AspectRatioEnum",
       "type": "string"
     },
+    "MegapixelsEnum": {
+      "enum": [
+        "1",
+        "0.25"
+      ],
+      "title": "MegapixelsEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
     "SpeedModeEnum": {
       "enum": [
         "Base Model (compiled)",
@@ -141,15 +158,27 @@
       "description": "Aspect ratio."
     },
     "megapixels": {
+      "$ref": "#/$defs/MegapixelsEnum",
       "default": "1",
-      "description": "Output resolution: '1' or '0.25'.",
-      "title": "Megapixels",
-      "type": "string"
+      "description": "Output resolution in megapixels."
     },
     "speed_mode": {
       "$ref": "#/$defs/SpeedModeEnum",
       "default": "Juiced \ud83e\uddc3",
       "description": "Speed optimization."
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Output Quality",
+      "type": "integer"
     }
   },
   "required": [

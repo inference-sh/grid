@@ -32,11 +32,19 @@ class OutputFormatEnum(str, Enum):
     webp = "webp"
 
 
+class MegapixelsEnum(str, Enum):
+    quarter = "0.25"
+    half = "0.5"
+    one = "1"
+    two = "2"
+    four = "4"
+
+
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text description of the image to generate.")
     aspect_ratio: AspectRatioEnum = Field(default=AspectRatioEnum.square, description="Aspect ratio.")
     images: Optional[List[File]] = Field(default=None, description="Input images for img2img (max 5).")
-    output_megapixels: str = Field(default="1", description="Resolution: '0.25', '0.5', '1', '2', '4'.")
+    output_megapixels: MegapixelsEnum = Field(default=MegapixelsEnum.one, description="Output resolution in megapixels.")
     go_fast: bool = Field(default=False, description="Run faster with optimizations.")
     seed: Optional[int] = Field(default=None, description="Random seed.")
     output_format: OutputFormatEnum = Field(default=OutputFormatEnum.jpg, description="Output format.")
@@ -60,7 +68,7 @@ class App(BaseApp):
             request_data = {
                 "prompt": input_data.prompt,
                 "aspect_ratio": input_data.aspect_ratio.value,
-                "output_megapixels": input_data.output_megapixels,
+                "output_megapixels": input_data.output_megapixels.value,
                 "go_fast": input_data.go_fast,
                 "output_format": input_data.output_format.value,
                 "output_quality": input_data.output_quality,
@@ -85,7 +93,7 @@ class App(BaseApp):
 
             # Calculate dimensions from aspect ratio and megapixels
             mp_sizes = {"0.25": 512, "0.5": 724, "1": 1024, "2": 1448, "4": 2048}
-            base_size = mp_sizes.get(input_data.output_megapixels, 1024)
+            base_size = mp_sizes.get(input_data.output_megapixels.value, 1024)
             aspect_ratios = {
                 "1:1": (1, 1), "16:9": (16, 9), "9:16": (9, 16),
                 "21:9": (21, 9), "9:21": (9, 21), "3:2": (3, 2), "2:3": (2, 3),

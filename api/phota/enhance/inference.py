@@ -1,10 +1,10 @@
 import logging
 from typing import List, Optional
 
-from inferencesh import BaseApp, File, OutputMeta, ImageMeta
-from pydantic import BaseModel, Field
+from inferencesh import BaseApp, BaseAppOutput, File, OutputMeta, ImageMeta
+from pydantic import Field
 
-from .phota_helper import get_api_key, phota_request, save_base64_images, resolve_image_input
+from .phota_helper import get_api_key, phota_request, save_base64_images, resolve_image_input, get_png_dimensions
 
 
 class RunInput(BaseModel):
@@ -13,7 +13,7 @@ class RunInput(BaseModel):
     num_output_images: int = Field(default=1, ge=1, le=4, description="Number of output images (1-4)")
 
 
-class RunOutput(BaseModel):
+class RunOutput(BaseAppOutput):
     images: List[File] = Field(description="Enhanced output images")
     known_subjects: Optional[dict] = Field(None, description="Mapping of profile_id to generation count")
 
@@ -37,10 +37,15 @@ class App(BaseApp):
         paths = save_base64_images(result["images"], self.logger)
         output_files = [File(path=p) for p in paths]
 
+        width, height = get_png_dimensions(paths[0])
         return RunOutput(
             images=output_files,
             known_subjects=result.get("known_subjects", {}).get("counts"),
             output_meta=OutputMeta(
-                outputs=[ImageMeta(count=len(output_files))]
+                outputs=[ImageMeta(
+                    width=width,
+                    height=height,
+                    count=len(output_files),
+                )]
             ),
         )

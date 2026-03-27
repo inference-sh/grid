@@ -1,5 +1,6 @@
 import os
 import base64
+import struct
 import tempfile
 import logging
 import requests
@@ -61,6 +62,17 @@ def save_base64_images(b64_images: list[str], logger: logging.Logger) -> list[st
 def file_to_base64(file_path: str) -> str:
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
+
+
+def get_png_dimensions(path: str) -> tuple[int, int]:
+    """Read width and height from a PNG file header."""
+    with open(path, "rb") as f:
+        f.read(8)  # skip PNG signature
+        f.read(4)  # skip IHDR chunk length
+        f.read(4)  # skip IHDR chunk type
+        width = struct.unpack(">I", f.read(4))[0]
+        height = struct.unpack(">I", f.read(4))[0]
+    return width, height
 
 
 def resolve_image_input(image_input) -> str:

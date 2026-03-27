@@ -18,6 +18,17 @@
       "title": "AspectRatioEnum",
       "type": "string"
     },
+    "MegapixelsEnum": {
+      "enum": [
+        "0.25",
+        "0.5",
+        "1",
+        "2",
+        "4"
+      ],
+      "title": "MegapixelsEnum",
+      "type": "string"
+    },
     "OutputFormatEnum": {
       "enum": [
         "jpg",
@@ -57,10 +68,9 @@
       "title": "Images"
     },
     "output_megapixels": {
+      "$ref": "#/$defs/MegapixelsEnum",
       "default": "1",
-      "description": "Resolution: '0.25', '0.5', '1', '2', '4'.",
-      "title": "Output Megapixels",
-      "type": "string"
+      "description": "Output resolution in megapixels."
     },
     "go_fast": {
       "default": false,

@@ -21,6 +21,17 @@ class AspectRatioEnum(str, Enum):
     photo_portrait = "2:3"
 
 
+class ImageSizeEnum(str, Enum):
+    quality = "optimize_for_quality"
+    speed = "optimize_for_speed"
+
+
+class OutputFormatEnum(str, Enum):
+    webp = "webp"
+    jpg = "jpg"
+    png = "png"
+
+
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text description of the image to generate.")
     enhance_prompt: bool = Field(default=False, description="Auto-enhance prompt for better results.")
@@ -35,7 +46,9 @@ class AppInput(BaseAppInput):
     lora_weights: Optional[str] = Field(default=None, description="URL to LoRA weights file.")
     lora_scale: float = Field(default=1.0, description="LoRA application strength.")
     aspect_ratio: AspectRatioEnum = Field(default=AspectRatioEnum.landscape_16_9, description="Aspect ratio.")
-    image_size: str = Field(default="optimize_for_quality", description="'optimize_for_quality' or 'optimize_for_speed'.")
+    image_size: ImageSizeEnum = Field(default=ImageSizeEnum.quality, description="Optimize for quality or speed.")
+    output_format: OutputFormatEnum = Field(default=OutputFormatEnum.webp, description="Output format.")
+    output_quality: int = Field(default=80, ge=0, le=100, description="Quality for jpg/webp.")
 
 
 class AppOutput(BaseAppOutput):
@@ -58,7 +71,9 @@ class App(BaseApp):
                 "guidance": input_data.guidance,
                 "num_inference_steps": input_data.num_inference_steps,
                 "aspect_ratio": input_data.aspect_ratio.value,
-                "image_size": input_data.image_size,
+                "image_size": input_data.image_size.value,
+                "output_format": input_data.output_format.value,
+                "output_quality": input_data.output_quality,
                 "disable_safety_checker": input_data.disable_safety_checker,
             }
             if input_data.negative_prompt:

@@ -12,6 +12,23 @@
       ],
       "title": "AspectRatioEnum",
       "type": "string"
+    },
+    "ImageSizeEnum": {
+      "enum": [
+        "optimize_for_quality",
+        "optimize_for_speed"
+      ],
+      "title": "ImageSizeEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "webp",
+        "jpg",
+        "png"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
     }
   },
   "properties": {
@@ -120,10 +137,22 @@
       "description": "Aspect ratio."
     },
     "image_size": {
+      "$ref": "#/$defs/ImageSizeEnum",
       "default": "optimize_for_quality",
-      "description": "'optimize_for_quality' or 'optimize_for_speed'.",
-      "title": "Image Size",
-      "type": "string"
+      "description": "Optimize for quality or speed."
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "webp",
+      "description": "Output format."
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Quality for jpg/webp.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
     }
   },
   "required": [

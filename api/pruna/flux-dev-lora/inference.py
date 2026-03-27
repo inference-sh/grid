@@ -32,6 +32,17 @@ class AspectRatioEnum(str, Enum):
     portrait_9_21 = "9:21"
 
 
+class MegapixelsEnum(str, Enum):
+    one = "1"
+    quarter = "0.25"
+
+
+class OutputFormatEnum(str, Enum):
+    jpg = "jpg"
+    png = "png"
+    webp = "webp"
+
+
 class AppInput(BaseAppInput):
     prompt: str = Field(description="Text description of the desired output.")
     lora: Optional[str] = Field(default=None, description="HuggingFace LoRA URL (e.g., 'owner/model-name').")
@@ -45,8 +56,10 @@ class AppInput(BaseAppInput):
     guidance: float = Field(default=3.0, ge=0, le=10, description="Guidance scale.")
     seed: Optional[int] = Field(default=None, description="Random seed.")
     aspect_ratio: AspectRatioEnum = Field(default=AspectRatioEnum.square, description="Aspect ratio.")
-    megapixels: str = Field(default="1", description="Output resolution: '1' or '0.25'.")
+    megapixels: MegapixelsEnum = Field(default=MegapixelsEnum.one, description="Output resolution in megapixels.")
     speed_mode: SpeedModeEnum = Field(default=SpeedModeEnum.juiced, description="Speed optimization.")
+    output_format: OutputFormatEnum = Field(default=OutputFormatEnum.jpg, description="Output format.")
+    output_quality: int = Field(default=80, ge=1, le=100, description="Quality for jpg/webp.")
 
 
 class AppOutput(BaseAppOutput):
@@ -69,7 +82,9 @@ class App(BaseApp):
                 "num_inference_steps": input_data.num_inference_steps,
                 "guidance": input_data.guidance,
                 "aspect_ratio": input_data.aspect_ratio.value,
-                "megapixels": input_data.megapixels,
+                "megapixels": input_data.megapixels.value,
+                "output_format": input_data.output_format.value,
+                "output_quality": input_data.output_quality,
                 "speed_mode": input_data.speed_mode.value,
             }
             if input_data.lora:
@@ -93,7 +108,7 @@ class App(BaseApp):
             image_path = download_image(generation_url, logger=self.logger)
 
             # Calculate dimensions from aspect ratio and megapixels
-            base_size = 1024 if input_data.megapixels == "1" else 512
+            base_size = 1024 if input_data.megapixels.value == "1" else 512
             aspect_ratios = {
                 "1:1": (1, 1), "16:9": (16, 9), "9:16": (9, 16),
                 "21:9": (21, 9), "9:21": (9, 21), "3:2": (3, 2), "2:3": (2, 3),
