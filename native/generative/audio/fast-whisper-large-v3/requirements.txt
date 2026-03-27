@@ -11,6 +11,7 @@ huggingface_hub==0.25.0
 hf-transfer==0.1.9
 sentencepiece
 soundfile
+onnxruntime
 scipy
 librosa
 https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

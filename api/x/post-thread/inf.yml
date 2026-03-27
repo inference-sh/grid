@@ -1,0 +1,20 @@
+namespace: x
+name: post-thread
+description: Create threaded posts on X.com. Provide 2-25 tweets that are posted sequentially as a reply chain. Each tweet supports text (280 char limit) and optional media (up to 4 images or 1 video/GIF). Images over 5MB are auto-resized.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqrs66am9whb3592myf03j.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr0rg7qgf2k2c5ra3sbs0.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr6mnx6zg6a6ky8mbdj48.jpeg
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.write
+      description: Create threaded posts with text and media on X.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000
