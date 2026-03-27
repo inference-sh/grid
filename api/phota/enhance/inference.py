@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 from inferencesh import BaseApp, BaseAppOutput, File, OutputMeta, ImageMeta
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from .phota_helper import get_api_key, phota_request, save_base64_images, resolve_image_input, get_png_dimensions
 
@@ -25,6 +25,7 @@ class App(BaseApp):
         self.logger.info("Phota Enhance app initialized")
 
     async def run(self, input_data: RunInput) -> RunOutput:
+        self.logger.info(f"Starting enhance: {input_data.num_output_images} image(s)")
         payload = {
             "image": resolve_image_input(input_data.image),
             "num_output_images": input_data.num_output_images,
@@ -33,6 +34,7 @@ class App(BaseApp):
             payload["profile_ids"] = input_data.profile_ids
 
         result = phota_request("enhance", payload, self.logger)
+        self.logger.info(f"Enhance complete, received {len(result['images'])} image(s)")
 
         paths = save_base64_images(result["images"], self.logger)
         output_files = [File(path=p) for p in paths]

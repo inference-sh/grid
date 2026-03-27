@@ -2,7 +2,7 @@ import logging
 from typing import List, Literal, Optional
 
 from inferencesh import BaseApp, BaseAppOutput, File, OutputMeta, ImageMeta
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from .phota_helper import get_api_key, phota_request, save_base64_images, get_png_dimensions
 
@@ -26,6 +26,7 @@ class App(BaseApp):
         self.logger.info("Phota Generate app initialized")
 
     async def run(self, input_data: RunInput) -> RunOutput:
+        self.logger.info(f"Starting generate: {input_data.num_output_images} image(s), {input_data.resolution}, {input_data.aspect_ratio}")
         payload = {
             "prompt": input_data.prompt,
             "num_output_images": input_data.num_output_images,
@@ -34,6 +35,7 @@ class App(BaseApp):
         }
 
         result = phota_request("generate", payload, self.logger)
+        self.logger.info(f"Generate complete, received {len(result['images'])} image(s)")
 
         paths = save_base64_images(result["images"], self.logger)
         output_files = [File(path=p) for p in paths]

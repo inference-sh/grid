@@ -28,6 +28,7 @@ class App(BaseApp):
         self.logger.info("Phota Edit app initialized")
 
     async def run(self, input_data: RunInput) -> RunOutput:
+        self.logger.info(f"Starting edit: {len(input_data.images)} image(s), {input_data.resolution}, {input_data.aspect_ratio}")
         image_strings = [resolve_image_input(img) for img in input_data.images]
 
         payload = {
@@ -41,6 +42,7 @@ class App(BaseApp):
             payload["profile_ids"] = input_data.profile_ids
 
         result = phota_request("edit", payload, self.logger)
+        self.logger.info(f"Edit complete, received {len(result['images'])} image(s)")
 
         paths = save_base64_images(result["images"], self.logger)
         output_files = [File(path=p) for p in paths]
