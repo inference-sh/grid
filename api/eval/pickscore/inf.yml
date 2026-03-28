@@ -1,0 +1,17 @@
+namespace: eval
+name: pickscore
+description: PickScore v1 — scores how well an image matches a text prompt (CLIP-H finetuned on Pick-a-Pic)
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 8
+        type: nvidia
+    ram: 16

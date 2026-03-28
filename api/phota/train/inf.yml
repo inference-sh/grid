@@ -1,0 +1,21 @@
+namespace: phota
+name: train
+description: Train a Phota identity profile from 30-50 face images, poll status, list and delete profiles
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PHOTA_KEY
+      description: Phota API key from platform.photalabs.com
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
