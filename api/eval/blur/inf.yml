@@ -1,0 +1,17 @@
+namespace: eval
+name: blur
+description: Degrade images with blur, noise, and compression for benchmark testing
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

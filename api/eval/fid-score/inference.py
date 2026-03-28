@@ -17,6 +17,16 @@ class RunOutput(BaseAppOutput):
     generated_count: int = Field(description="Number of generated images processed")
 
 
+class CompareInput(BaseAppInput):
+    image_a: File = Field(description="First image")
+    image_b: File = Field(description="Second image")
+
+
+class CompareOutput(BaseAppOutput):
+    cosine_similarity: float = Field(description="Cosine similarity in InceptionV3 feature space (-1 to 1)")
+    l2_distance: float = Field(description="L2 distance in InceptionV3 feature space")
+
+
 class App(BaseApp):
     async def setup(self, config):
         import torch
@@ -79,3 +89,16 @@ class App(BaseApp):
             reference_count=len(input_data.reference_images),
             generated_count=len(input_data.generated_images),
         )
+
+    async def compare(self, input_data: CompareInput) -> CompareOutput:
+        self.logger.info("Computing perceptual similarity between two images")
+
+        act = self._get_activations([input_data.image_a, input_data.image_b])
+        a, b = act[0], act[1]
+
+        cosine = float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+        l2 = float(np.linalg.norm(a - b))
+
+        self.logger.info(f"Cosine similarity: {cosine:.4f}, L2 distance: {l2:.4f}")
+
+        return CompareOutput(cosine_similarity=cosine, l2_distance=l2)

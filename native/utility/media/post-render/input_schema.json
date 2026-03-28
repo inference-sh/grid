@@ -1,0 +1,94 @@
+{
+  "type": "object",
+  "properties": {
+    "text": {
+      "type": "string",
+      "description": "Post text content"
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "username": {
+          "type": "string",
+          "description": "Handle without @"
+        },
+        "profile_image_url": {
+          "type": "string",
+          "description": "Avatar URL"
+        },
+        "verified": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "profile_image_url"
+      ],
+      "description": "Author info from x/user-get"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Post timestamp ISO string"
+    },
+    "like_count": {
+      "type": "number",
+      "default": 0
+    },
+    "retweet_count": {
+      "type": "number",
+      "default": 0
+    },
+    "reply_count": {
+      "type": "number",
+      "default": 0
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0
+    },
+    "bookmark_count": {
+      "type": "number",
+      "default": 0
+    },
+    "media_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Image URLs embedded in the post"
+    },
+    "theme": {
+      "type": "string",
+      "enum": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    },
+    "width": {
+      "type": "number",
+      "default": 600,
+      "description": "Card width in pixels"
+    },
+    "padding": {
+      "type": "number",
+      "default": 32,
+      "description": "Outer padding around the card"
+    },
+    "background_color": {
+      "type": "string",
+      "description": "Outer background color (defaults to match theme)"
+    }
+  },
+  "required": [
+    "text",
+    "author"
+  ]
+}

@@ -1,0 +1,17 @@
+namespace: eval
+name: clipscore
+description: CLIPScore — cosine similarity between CLIP text and image embeddings for prompt adherence
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 8
+        type: nvidia
+    ram: 16

@@ -1,18 +1,109 @@
 {
-  "delete": {
+  "bar_chart": {
     "description": "",
     "input_schema": {
+      "description": "Simple bar chart \u2014 horizontal or vertical.",
       "properties": {
-        "profile_id": {
-          "description": "Profile ID to delete",
-          "title": "Profile Id",
+        "title": {
+          "description": "Chart title",
+          "title": "Title",
           "type": "string"
+        },
+        "labels": {
+          "description": "Category labels",
+          "items": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "array"
+        },
+        "values": {
+          "description": "Values for each bar",
+          "items": {
+            "type": "number"
+          },
+          "title": "Values",
+          "type": "array"
+        },
+        "colors": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bar colors (hex or named)",
+          "title": "Colors"
+        },
+        "xlabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "X-axis label",
+          "title": "Xlabel"
+        },
+        "ylabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Y-axis label",
+          "title": "Ylabel"
+        },
+        "horizontal": {
+          "default": false,
+          "description": "Horizontal bars",
+          "title": "Horizontal",
+          "type": "boolean"
+        },
+        "value_labels": {
+          "default": true,
+          "description": "Show value on each bar",
+          "title": "Value Labels",
+          "type": "boolean"
+        },
+        "width": {
+          "default": 800,
+          "description": "Image width in pixels",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 500,
+          "description": "Image height in pixels",
+          "title": "Height",
+          "type": "integer"
+        },
+        "highlight_max": {
+          "default": true,
+          "description": "Bold the highest bar",
+          "title": "Highlight Max",
+          "type": "boolean"
         }
       },
       "required": [
-        "profile_id"
+        "title",
+        "labels",
+        "values"
       ],
-      "title": "DeleteInput",
+      "title": "BarChartInput",
       "type": "object"
     },
     "output_schema": {
@@ -301,14 +392,10 @@
         }
       },
       "properties": {
-        "profile_id": {
-          "description": "Deleted profile identifier",
-          "title": "Profile Id",
-          "type": "string"
-        },
-        "status": {
-          "description": "Result status",
-          "title": "Status",
+        "image": {
+          "description": "Chart image (PNG)",
+          "format": "file",
+          "title": "Image",
           "type": "string"
         },
         "output_meta": {
@@ -325,47 +412,777 @@
         }
       },
       "required": [
-        "profile_id",
-        "status"
+        "image"
       ],
-      "title": "DeleteOutput",
+      "title": "BarChartOutput",
+      "type": "object"
+    }
+  },
+  "grouped_bar": {
+    "description": "",
+    "input_schema": {
+      "description": "Grouped bar chart \u2014 multiple series per category.",
+      "properties": {
+        "title": {
+          "description": "Chart title",
+          "title": "Title",
+          "type": "string"
+        },
+        "categories": {
+          "description": "Category labels (x-axis groups)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "series": {
+          "description": "List of {name, values, color?} dicts",
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Series",
+          "type": "array"
+        },
+        "xlabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "X-axis label",
+          "title": "Xlabel"
+        },
+        "ylabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Y-axis label",
+          "title": "Ylabel"
+        },
+        "value_labels": {
+          "default": true,
+          "description": "Show value on each bar",
+          "title": "Value Labels",
+          "type": "boolean"
+        },
+        "width": {
+          "default": 900,
+          "description": "Image width in pixels",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 500,
+          "description": "Image height in pixels",
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "title",
+        "categories",
+        "series"
+      ],
+      "title": "GroupedBarInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "image": {
+          "description": "Chart image (PNG)",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "GroupedBarOutput",
       "type": "object"
     }
   },
   "run": {
     "description": "",
     "input_schema": {
-      "properties": {
-        "images": {
-          "description": "30-50 face images of the subject",
-          "items": {
-            "format": "file",
-            "type": "string"
+      "properties": {},
+      "title": "BaseAppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
           },
-          "maxItems": 50,
-          "minItems": 30,
-          "title": "Images",
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "BaseAppOutput",
+      "type": "object"
+    }
+  },
+  "scatter": {
+    "description": "",
+    "input_schema": {
+      "description": "Scatter plot with optional color grouping.",
+      "properties": {
+        "title": {
+          "description": "Chart title",
+          "title": "Title",
+          "type": "string"
+        },
+        "series": {
+          "description": "List of {name, x, y, color?} dicts. x and y are lists of floats.",
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Series",
           "type": "array"
         },
-        "wait": {
-          "default": true,
-          "description": "Wait for training to complete (polls status)",
-          "title": "Wait",
-          "type": "boolean"
+        "xlabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "X-axis label",
+          "title": "Xlabel"
         },
-        "poll_interval": {
-          "default": 10,
-          "description": "Seconds between status polls (if wait=True)",
-          "maximum": 60,
-          "minimum": 5,
-          "title": "Poll Interval",
+        "ylabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Y-axis label",
+          "title": "Ylabel"
+        },
+        "width": {
+          "default": 800,
+          "description": "Image width in pixels",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 600,
+          "description": "Image height in pixels",
+          "title": "Height",
           "type": "integer"
         }
       },
       "required": [
-        "images"
+        "title",
+        "series"
       ],
-      "title": "TrainInput",
+      "title": "ScatterInput",
       "type": "object"
     },
     "output_schema": {
@@ -654,28 +1471,11 @@
         }
       },
       "properties": {
-        "profile_id": {
-          "description": "Unique profile identifier \u2014 always returned, even on error",
-          "title": "Profile Id",
+        "image": {
+          "description": "Chart image (PNG)",
+          "format": "file",
+          "title": "Image",
           "type": "string"
-        },
-        "status": {
-          "description": "Final profile status (READY, SUBMITTED, ERROR, etc.)",
-          "title": "Status",
-          "type": "string"
-        },
-        "error": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Error message if training failed",
-          "title": "Error"
         },
         "output_meta": {
           "anyOf": [
@@ -691,356 +1491,9 @@
         }
       },
       "required": [
-        "profile_id",
-        "status"
+        "image"
       ],
-      "title": "TrainOutput",
-      "type": "object"
-    }
-  },
-  "status": {
-    "description": "",
-    "input_schema": {
-      "properties": {
-        "profile_id": {
-          "description": "Profile ID to check",
-          "title": "Profile Id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "profile_id"
-      ],
-      "title": "StatusInput",
-      "type": "object"
-    },
-    "output_schema": {
-      "$defs": {
-        "AudioMeta": {
-          "description": "Metadata for audio inputs/outputs.",
-          "properties": {
-            "type": {
-              "default": "audio",
-              "title": "Type",
-              "type": "string"
-            },
-            "extra": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "App-specific key-value pairs for custom pricing factors",
-              "title": "Extra"
-            },
-            "seconds": {
-              "default": 0,
-              "description": "Duration in seconds",
-              "title": "Seconds",
-              "type": "number"
-            },
-            "sample_rate": {
-              "default": 0,
-              "description": "Sample rate in Hz",
-              "title": "Sample Rate",
-              "type": "integer"
-            }
-          },
-          "title": "AudioMeta",
-          "type": "object"
-        },
-        "ImageMeta": {
-          "description": "Metadata for image inputs/outputs.",
-          "properties": {
-            "type": {
-              "default": "image",
-              "title": "Type",
-              "type": "string"
-            },
-            "extra": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "App-specific key-value pairs for custom pricing factors",
-              "title": "Extra"
-            },
-            "width": {
-              "default": 0,
-              "description": "Image width in pixels",
-              "title": "Width",
-              "type": "integer"
-            },
-            "height": {
-              "default": 0,
-              "description": "Image height in pixels",
-              "title": "Height",
-              "type": "integer"
-            },
-            "resolution_mp": {
-              "default": 0,
-              "description": "Resolution in megapixels (width * height / 1_000_000)",
-              "title": "Resolution Mp",
-              "type": "number"
-            },
-            "steps": {
-              "default": 0,
-              "description": "Number of diffusion steps",
-              "title": "Steps",
-              "type": "integer"
-            },
-            "count": {
-              "default": 1,
-              "description": "Number of images",
-              "title": "Count",
-              "type": "integer"
-            }
-          },
-          "title": "ImageMeta",
-          "type": "object"
-        },
-        "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
-          "properties": {
-            "inputs": {
-              "description": "Metadata about consumed inputs",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/$defs/TextMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/ImageMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/VideoMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/AudioMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/RawMeta"
-                  }
-                ]
-              },
-              "title": "Inputs",
-              "type": "array"
-            },
-            "outputs": {
-              "description": "Metadata about produced outputs",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/$defs/TextMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/ImageMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/VideoMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/AudioMeta"
-                  },
-                  {
-                    "$ref": "#/$defs/RawMeta"
-                  }
-                ]
-              },
-              "title": "Outputs",
-              "type": "array"
-            }
-          },
-          "title": "OutputMeta",
-          "type": "object"
-        },
-        "RawMeta": {
-          "description": "Metadata for raw inputs/outputs used for custom pricing.",
-          "properties": {
-            "type": {
-              "default": "raw",
-              "title": "Type",
-              "type": "string"
-            },
-            "extra": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "App-specific key-value pairs for custom pricing factors",
-              "title": "Extra"
-            },
-            "cost": {
-              "default": 0,
-              "description": "Cost in dollar cents",
-              "title": "Cost",
-              "type": "number"
-            }
-          },
-          "title": "RawMeta",
-          "type": "object"
-        },
-        "TextMeta": {
-          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
-          "properties": {
-            "type": {
-              "default": "text",
-              "title": "Type",
-              "type": "string"
-            },
-            "extra": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "App-specific key-value pairs for custom pricing factors",
-              "title": "Extra"
-            },
-            "tokens": {
-              "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
-              "title": "Tokens",
-              "type": "integer"
-            }
-          },
-          "title": "TextMeta",
-          "type": "object"
-        },
-        "VideoMeta": {
-          "description": "Metadata for video inputs/outputs.",
-          "properties": {
-            "type": {
-              "default": "video",
-              "title": "Type",
-              "type": "string"
-            },
-            "extra": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "App-specific key-value pairs for custom pricing factors",
-              "title": "Extra"
-            },
-            "width": {
-              "default": 0,
-              "description": "Video width in pixels",
-              "title": "Width",
-              "type": "integer"
-            },
-            "height": {
-              "default": 0,
-              "description": "Video height in pixels",
-              "title": "Height",
-              "type": "integer"
-            },
-            "resolution_mp": {
-              "default": 0,
-              "description": "Resolution in megapixels per frame",
-              "title": "Resolution Mp",
-              "type": "number"
-            },
-            "resolution": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
-            },
-            "seconds": {
-              "default": 0,
-              "description": "Duration in seconds",
-              "title": "Seconds",
-              "type": "number"
-            },
-            "fps": {
-              "default": 0,
-              "description": "Frames per second",
-              "title": "Fps",
-              "type": "integer"
-            }
-          },
-          "title": "VideoMeta",
-          "type": "object"
-        }
-      },
-      "properties": {
-        "profile_id": {
-          "description": "Profile identifier",
-          "title": "Profile Id",
-          "type": "string"
-        },
-        "status": {
-          "description": "Current status: VALIDATING, QUEUING, IN_PROGRESS, READY, ERROR, INACTIVE",
-          "title": "Status",
-          "type": "string"
-        },
-        "message": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Error message if status is ERROR",
-          "title": "Message"
-        },
-        "output_meta": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/OutputMeta"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Structured metadata about inputs/outputs for pricing calculation"
-        }
-      },
-      "required": [
-        "profile_id",
-        "status"
-      ],
-      "title": "StatusOutput",
+      "title": "ScatterOutput",
       "type": "object"
     }
   }

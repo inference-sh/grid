@@ -1,0 +1,17 @@
+namespace: eval
+name: resize
+description: Crop and resize images — center crop to square, face-aware crop, or custom resize
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

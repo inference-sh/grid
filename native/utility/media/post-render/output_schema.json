@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "image": {
+      "description": "Rendered post card PNG"
+    }
+  },
+  "required": [
+    "image"
+  ]
+}

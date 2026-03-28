@@ -1,0 +1,13 @@
+{
+  "title": "example",
+  "labels": [],
+  "values": [],
+  "colors": [],
+  "xlabel": "example",
+  "ylabel": "example",
+  "horizontal": false,
+  "value_labels": true,
+  "width": 800,
+  "height": 500,
+  "highlight_max": true
+}

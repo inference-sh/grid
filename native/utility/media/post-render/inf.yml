@@ -1,0 +1,17 @@
+namespace: x
+name: post-render
+description: Render X/Twitter post cards as PNG images — dark/light theme, profile picture, engagement metrics
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: node-22
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000
