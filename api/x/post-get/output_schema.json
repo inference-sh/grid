@@ -38,6 +38,70 @@
       "title": "AudioMeta",
       "type": "object"
     },
+    "AuthorInfo": {
+      "properties": {
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
+        "id": {
+          "description": "Author user ID",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "description": "Display name",
+          "title": "Name",
+          "type": "string"
+        },
+        "username": {
+          "default": "",
+          "description": "Handle without @",
+          "title": "Username",
+          "type": "string"
+        },
+        "profile_image_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Avatar URL",
+          "title": "Profile Image Url"
+        },
+        "verified": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Verified status",
+          "title": "Verified"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "AuthorInfo",
+      "type": "object"
+    },
     "ImageMeta": {
       "description": "Metadata for image inputs/outputs.",
       "properties": {
@@ -299,6 +363,18 @@
       "title": "Author Id",
       "type": "string"
     },
+    "author": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AuthorInfo"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Author profile (when include_author=true)"
+    },
     "created_at": {
       "anyOf": [
         {
@@ -363,6 +439,22 @@
       "default": null,
       "description": "Number of quotes",
       "title": "Quote Count"
+    },
+    "media_urls": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Media attachment URLs (when include_media=true)",
+      "title": "Media Urls"
     },
     "post_url": {
       "description": "URL of the post",

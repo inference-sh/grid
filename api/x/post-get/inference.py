@@ -44,7 +44,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            tweet_fields = ["created_at", "public_metrics", "author_id"]
+            tweet_fields = ["created_at", "public_metrics", "author_id", "note_tweet"]
             if input_data.include_media:
                 tweet_fields.append("attachments")
 
@@ -93,9 +93,13 @@ class App(BaseApp):
                     if m.get("url") or m.get("preview_image_url")
                 ]
 
+            # note_tweet contains the full untruncated text for tweets > 280 chars
+            note_tweet = data.get("note_tweet", {})
+            full_text = note_tweet.get("text", data.get("text", ""))
+
             return AppOutput(
                 id=data["id"],
-                text=data.get("text", ""),
+                text=full_text,
                 author_id=data.get("author_id", ""),
                 author=author,
                 created_at=data.get("created_at"),

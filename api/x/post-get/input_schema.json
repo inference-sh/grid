@@ -4,6 +4,18 @@
       "description": "The ID of the tweet to retrieve",
       "title": "Tweet Id",
       "type": "string"
+    },
+    "include_author": {
+      "default": false,
+      "description": "Include author profile info (name, avatar, verified)",
+      "title": "Include Author",
+      "type": "boolean"
+    },
+    "include_media": {
+      "default": false,
+      "description": "Include media attachment URLs",
+      "title": "Include Media",
+      "type": "boolean"
     }
   },
   "required": [
