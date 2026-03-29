@@ -1,0 +1,20 @@
+namespace: google
+name: docs
+description: Read, create, and edit Google Docs documents
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: google.docs
+      description: Full Google Docs access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

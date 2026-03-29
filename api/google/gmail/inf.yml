@@ -1,0 +1,20 @@
+namespace: google
+name: gmail
+description: Read, send, draft, and organize Gmail messages
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: google.gmail.send
+      description: Full Gmail access for reading, sending, and organizing emails
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

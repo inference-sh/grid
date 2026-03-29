@@ -1,0 +1,20 @@
+namespace: google
+name: slides
+description: Read, create, and edit Google Slides presentations
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: google.slides
+      description: Full Google Slides access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

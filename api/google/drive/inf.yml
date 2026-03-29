@@ -1,0 +1,20 @@
+namespace: google
+name: drive
+description: List, upload, download, and manage Google Drive files
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: google.drive
+      description: Full Google Drive access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
