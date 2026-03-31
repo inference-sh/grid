@@ -21,14 +21,13 @@
           "title": "VideoAspectRatioEnum",
           "type": "string"
         },
-        "VideoResolutionEnum": {
-          "description": "Resolution options for video.",
+        "VideoResolutionLiteEnum": {
+          "description": "Resolution options for Veo 3.1 Lite (4k not supported).",
           "enum": [
             "720p",
-            "1080p",
-            "4k"
+            "1080p"
           ],
-          "title": "VideoResolutionEnum",
+          "title": "VideoResolutionLiteEnum",
           "type": "string"
         }
       },
@@ -67,9 +66,9 @@
           "type": "integer"
         },
         "resolution": {
-          "$ref": "#/$defs/VideoResolutionEnum",
+          "$ref": "#/$defs/VideoResolutionLiteEnum",
           "default": "720p",
-          "description": "Output video resolution."
+          "description": "Output video resolution. 720p or 1080p (4k not supported)."
         },
         "generate_audio": {
           "default": false,

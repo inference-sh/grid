@@ -639,12 +639,16 @@ async def generate_video_with_polling(
         resized = resize_image_for_video(image_bytes, aspect_ratio)
         image = types.Image(image_bytes=resized, mime_type="image/jpeg")
 
-    config = types.GenerateVideosConfig(
-        aspect_ratio=aspect_ratio,
-        duration_seconds=duration_seconds,
-        generate_audio=generate_audio,
-        person_generation=person_generation,
-    )
+    config_kwargs = {
+        "aspect_ratio": aspect_ratio,
+        "duration_seconds": duration_seconds,
+    }
+    if person_generation and person_generation != "allow_adult":
+        config_kwargs["person_generation"] = person_generation
+    if generate_audio:
+        config_kwargs["generate_audio"] = True
+
+    config = types.GenerateVideosConfig(**config_kwargs)
 
     log.info(f"Starting video generation: model={model_id}, aspect_ratio={aspect_ratio}, duration={duration_seconds}s, audio={generate_audio}")
 

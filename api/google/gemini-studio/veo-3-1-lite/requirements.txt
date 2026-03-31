@@ -6,3 +6,6 @@ google-genai>=1.0.0
 
 # Image processing
 Pillow>=10.0.0
+
+# HTTP client for video download
+httpx>=0.28.0

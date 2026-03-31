@@ -2,6 +2,8 @@ from inferencesh import BaseApp, BaseAppSetup, BaseAppOutput, File, OutputMeta, 
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
+from enum import Enum
+
 from .gemini_helper import (
     create_gemini_client,
     get_image_dimensions,
@@ -10,9 +12,14 @@ from .gemini_helper import (
     save_video_to_temp,
     setup_logger,
     VideoAspectRatioEnum,
-    VideoResolutionEnum,
     PersonGenerationEnum,
 )
+
+
+class VideoResolutionLiteEnum(str, Enum):
+    """Resolution options for Veo 3.1 Lite (4k not supported)."""
+    res_720p = "720p"
+    res_1080p = "1080p"
 
 
 class AppSetup(BaseAppSetup):
@@ -39,9 +46,9 @@ class RunInput(BaseModel):
         ge=4,
         le=8
     )
-    resolution: VideoResolutionEnum = Field(
-        default=VideoResolutionEnum.res_720p,
-        description="Output video resolution."
+    resolution: VideoResolutionLiteEnum = Field(
+        default=VideoResolutionLiteEnum.res_720p,
+        description="Output video resolution. 720p or 1080p (4k not supported)."
     )
     generate_audio: bool = Field(
         default=False,
@@ -99,27 +106,38 @@ class App(BaseApp):
             output_videos = []
             output_meta_videos = []
 
-            for i, video in enumerate(generated_videos):
+            for i, gv in enumerate(generated_videos):
                 self.logger.info(f"Processing video {i+1}/{len(generated_videos)}...")
 
-                video_bytes = video.video.video_bytes
-                video_path = save_video_to_temp(video_bytes, "mp4")
+                video_obj = gv.video
+                video_bytes = getattr(video_obj, 'video_bytes', None)
+                gcs_uri = getattr(video_obj, 'gcs_uri', None)
+                uri = getattr(video_obj, 'uri', None)
+
+                if video_bytes:
+                    video_path = save_video_to_temp(video_bytes, "mp4")
+                elif uri:
+                    # Download from URI (follow redirects, pass API key)
+                    import httpx
+                    import os
+                    api_key = os.environ.get("GEMINI_API_KEY", "")
+                    separator = "&" if "?" in uri else "?"
+                    download_url = f"{uri}{separator}key={api_key}"
+                    async with httpx.AsyncClient(timeout=120, follow_redirects=True) as http:
+                        resp = await http.get(download_url)
+                        resp.raise_for_status()
+                        video_path = save_video_to_temp(resp.content, "mp4")
+                elif gcs_uri:
+                    raise RuntimeError(f"Video returned as GCS URI ({gcs_uri}) but no GCP credentials available for Gemini API mode")
+                else:
+                    raise RuntimeError(f"No video data in response for video {i+1}")
+
                 output_videos.append(File(path=video_path))
 
                 if aspect_ratio == "16:9":
-                    if input_data.resolution.value == "4k":
-                        width, height = 3840, 2160
-                    elif input_data.resolution.value == "1080p":
-                        width, height = 1920, 1080
-                    else:
-                        width, height = 1280, 720
+                    width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
                 else:
-                    if input_data.resolution.value == "4k":
-                        width, height = 2160, 3840
-                    elif input_data.resolution.value == "1080p":
-                        width, height = 1080, 1920
-                    else:
-                        width, height = 720, 1280
+                    width, height = (1080, 1920) if input_data.resolution.value == "1080p" else (720, 1280)
 
                 output_meta_videos.append(VideoMeta(
                     width=width,
