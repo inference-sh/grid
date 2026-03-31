@@ -1,0 +1,20 @@
+namespace: google
+name: veo-3-1-lite
+description: Veo 3.1 Lite via Gemini API - Lightweight video generation with text and image input, audio support
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: GEMINI_API_KEY
+      description: Google API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

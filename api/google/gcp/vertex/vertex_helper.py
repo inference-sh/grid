@@ -105,6 +105,7 @@ class VideoResolutionEnum(str, Enum):
     """Resolution options for video."""
     res_720p = "720p"
     res_1080p = "1080p"
+    res_4k = "4k"
 
 
 class PersonGenerationEnum(str, Enum):

@@ -20,12 +20,12 @@ from .vertex_helper import (
 
 
 class AppSetup(BaseAppSetup):
-    """Setup configuration for Veo 3."""
+    """Setup configuration for Veo 3.1 Lite."""
     pass
 
 
 class RunInput(BaseModel):
-    """Input for video generation with Veo 3."""
+    """Input for video generation with Veo 3.1 Lite."""
     prompt: str = Field(
         description="Text prompt describing the desired video content."
     )
@@ -33,22 +33,14 @@ class RunInput(BaseModel):
         None,
         description="Optional first frame image for image-to-video generation."
     )
-    last_frame: Optional[File] = Field(
-        None,
-        description="Optional last frame image for frame interpolation. Requires first frame image."
-    )
-    video: Optional[File] = Field(
-        None,
-        description="Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
-    )
     aspect_ratio: VideoAspectRatioEnum = Field(
         default=VideoAspectRatioEnum.ratio_16_9,
         description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
     )
     duration: int = Field(
         default=8,
-        description="Video duration in seconds.",
-        ge=5,
+        description="Video duration in seconds (4, 6, or 8).",
+        ge=4,
         le=8
     )
     resolution: VideoResolutionEnum = Field(
@@ -59,12 +51,6 @@ class RunInput(BaseModel):
         default=False,
         description="Whether to generate audio for the video."
     )
-    num_videos: int = Field(
-        default=1,
-        description="Number of videos to generate.",
-        ge=1,
-        le=2
-    )
     person_generation: PersonGenerationEnum = Field(
         default=PersonGenerationEnum.allow_adult,
         description="Person generation setting. allow_adult: only adults, disallow: no people/faces."
@@ -72,25 +58,22 @@ class RunInput(BaseModel):
 
 
 class RunOutput(BaseAppOutput):
-    """Output containing generated videos."""
+    """Output containing the generated video."""
     videos: List[File] = Field(description="The generated video files")
-    warning: str = Field(default="DEPRECATED: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).", description="Deprecation warning")
 
 
 class App(BaseApp):
     async def setup(self, config: AppSetup):
         """Initialize model configuration."""
         self.logger = setup_logger(__name__)
-        self.model_id = "veo-3.0-generate-001"
+        self.model_id = "veo-3.1-lite-generate-preview"
         self.location = "us-central1"
         self.access_token, self.project = get_vertex_credentials()
-        self.logger.info("Veo 3 (Vertex AI) initialized successfully")
-        self.logger.warning("DEPRECATION: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
+        self.logger.info("Veo 3.1 Lite (Vertex AI) initialized successfully")
 
     async def run(self, input_data: RunInput) -> RunOutput:
-        """Generate video using Veo 3 model via Vertex AI."""
+        """Generate video using Veo 3.1 Lite model via Vertex AI."""
         try:
-            self.logger.warning("DEPRECATION: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
             self.logger.info(f"Starting video generation with prompt: {input_data.prompt[:100]}...")
 
             aspect_ratio = input_data.aspect_ratio.value
@@ -104,24 +87,6 @@ class App(BaseApp):
                 aspect_ratio = detect_video_aspect_ratio(img_width, img_height)
                 self.logger.info(f"Detected aspect ratio from image: {img_width}x{img_height} -> {aspect_ratio}")
 
-            last_frame_path = None
-            if input_data.last_frame is not None:
-                if first_frame_path is None:
-                    raise RuntimeError("Last frame requires first frame image to be provided")
-                if not input_data.last_frame.exists():
-                    raise RuntimeError(f"Last frame image does not exist: {input_data.last_frame.path}")
-                last_frame_path = input_data.last_frame.path
-                self.logger.info("Using last frame for frame interpolation")
-
-            video_path = None
-            if input_data.video is not None:
-                if not input_data.video.exists():
-                    raise RuntimeError(f"Video file does not exist: {input_data.video.path}")
-                if first_frame_path is not None or last_frame_path is not None:
-                    raise RuntimeError("Video extension cannot be combined with first/last frame images")
-                video_path = input_data.video.path
-                self.logger.info(f"Using video for extension: {video_path}")
-
             self.logger.info(f"Aspect ratio: {aspect_ratio}, Duration: {input_data.duration}s, Resolution: {input_data.resolution.value}")
 
             payload = build_veo_payload(
@@ -130,10 +95,8 @@ class App(BaseApp):
                 duration_seconds=input_data.duration,
                 resolution=input_data.resolution.value,
                 generate_audio=input_data.generate_audio,
-                sample_count=input_data.num_videos,
+                sample_count=1,
                 first_frame_path=first_frame_path,
-                last_frame_path=last_frame_path,
-                video_path=video_path,
                 person_generation=input_data.person_generation.value,
             )
 
@@ -202,9 +165,19 @@ class App(BaseApp):
                 output_videos.append(File(path=video_path))
 
                 if aspect_ratio == "16:9":
-                    width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
+                    if input_data.resolution.value == "4k":
+                        width, height = 3840, 2160
+                    elif input_data.resolution.value == "1080p":
+                        width, height = 1920, 1080
+                    else:
+                        width, height = 1280, 720
                 else:
-                    width, height = (1080, 1920) if input_data.resolution.value == "1080p" else (720, 1280)
+                    if input_data.resolution.value == "4k":
+                        width, height = 2160, 3840
+                    elif input_data.resolution.value == "1080p":
+                        width, height = 1080, 1920
+                    else:
+                        width, height = 720, 1280
 
                 output_meta_videos.append(VideoMeta(width=width, height=height, seconds=input_data.duration, resolution=input_data.resolution.value, extra={"generate_audio": input_data.generate_audio}))
 

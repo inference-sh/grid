@@ -1,127 +1,143 @@
 {
   "run": {
-    "description": "Generate video using Veo 3 Fast model via Vertex AI.",
+    "description": "Generate or edit images using Gemini 2.5 Flash Image model.",
     "input_schema": {
       "$defs": {
-        "PersonGenerationEnum": {
-          "description": "Person generation settings for video.",
+        "AspectRatioAutoEnum": {
+          "description": "Aspect ratio options with auto detection.",
           "enum": [
-            "allow_adult",
-            "disallow"
-          ],
-          "title": "PersonGenerationEnum",
-          "type": "string"
-        },
-        "VideoAspectRatioEnum": {
-          "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
-          "enum": [
+            "auto",
+            "21:9",
             "16:9",
+            "3:2",
+            "4:3",
+            "5:4",
+            "1:1",
+            "4:5",
+            "3:4",
+            "2:3",
             "9:16"
           ],
-          "title": "VideoAspectRatioEnum",
+          "title": "AspectRatioAutoEnum",
           "type": "string"
         },
-        "VideoResolutionEnum": {
-          "description": "Resolution options for video.",
+        "OutputFormatExtendedEnum": {
+          "description": "Extended output format options (includes HEIC/HEIF).",
           "enum": [
-            "720p",
-            "1080p"
+            "png",
+            "jpeg",
+            "webp",
+            "heic",
+            "heif"
           ],
-          "title": "VideoResolutionEnum",
+          "title": "OutputFormatExtendedEnum",
+          "type": "string"
+        },
+        "SafetyToleranceEnum": {
+          "description": "Safety filter thresholds.",
+          "enum": [
+            "BLOCK_NONE",
+            "BLOCK_LOW_AND_ABOVE",
+            "BLOCK_MEDIUM_AND_ABOVE",
+            "BLOCK_ONLY_HIGH"
+          ],
+          "title": "SafetyToleranceEnum",
           "type": "string"
         }
       },
-      "description": "Input for video generation with Veo 3 Fast.",
       "properties": {
         "prompt": {
-          "description": "Text prompt describing the desired video content.",
+          "description": "The prompt for image generation or editing. Describe what you want to create or change.",
           "title": "Prompt",
           "type": "string"
         },
-        "image": {
+        "images": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Optional first frame image for image-to-video generation.",
-          "title": "Image"
+          "description": "Optional list of input images for editing (up to 14 images). Max file size: 7MB (inline). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF.",
+          "title": "Images"
         },
-        "last_frame": {
-          "anyOf": [
-            {
-              "format": "file",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional last frame image for frame interpolation. Requires first frame image.",
-          "title": "Last Frame"
-        },
-        "video": {
-          "anyOf": [
-            {
-              "format": "file",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds.",
-          "title": "Video"
+        "num_images": {
+          "default": 1,
+          "description": "Number of images to generate.",
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Num Images",
+          "type": "integer"
         },
         "aspect_ratio": {
-          "$ref": "#/$defs/VideoAspectRatioEnum",
-          "default": "16:9",
-          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+          "$ref": "#/$defs/AspectRatioAutoEnum",
+          "default": "1:1",
+          "description": "Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
         },
-        "duration": {
-          "default": 8,
-          "description": "Video duration in seconds.",
-          "maximum": 8,
-          "minimum": 5,
-          "title": "Duration",
-          "type": "integer"
+        "output_format": {
+          "$ref": "#/$defs/OutputFormatExtendedEnum",
+          "default": "png",
+          "description": "Output format for the generated images."
         },
-        "resolution": {
-          "$ref": "#/$defs/VideoResolutionEnum",
-          "default": "720p",
-          "description": "Output video resolution."
-        },
-        "generate_audio": {
+        "enable_google_search": {
           "default": false,
-          "description": "Whether to generate audio for the video.",
-          "title": "Generate Audio",
+          "description": "Enable Google Search grounding for real-time information (weather, news, etc.)",
+          "title": "Enable Google Search",
           "type": "boolean"
         },
-        "num_videos": {
-          "default": 1,
-          "description": "Number of videos to generate.",
-          "maximum": 2,
-          "minimum": 1,
-          "title": "Num Videos",
+        "temperature": {
+          "default": 1.0,
+          "description": "Controls randomness in token selection. Range: 0.0 - 2.0. Default: 1.0",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "top_p": {
+          "default": 0.95,
+          "description": "Nucleus sampling probability. Range: 0.0 - 1.0. Default: 0.95",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Top P",
+          "type": "number"
+        },
+        "top_k": {
+          "default": 64,
+          "description": "Top-k sampling. Fixed at 64 for this model.",
+          "title": "Top K",
           "type": "integer"
         },
-        "person_generation": {
-          "$ref": "#/$defs/PersonGenerationEnum",
-          "default": "allow_adult",
-          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
+        "max_output_tokens": {
+          "default": 32768,
+          "description": "Maximum number of tokens to generate. Max: 32768",
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "safety_tolerance": {
+          "$ref": "#/$defs/SafetyToleranceEnum",
+          "default": "BLOCK_NONE",
+          "description": "Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+        },
+        "retry_count": {
+          "default": 2,
+          "description": "Number of automatic retries on 429 rate limit errors using exponential backoff with jitter. Set to 0 to disable retries. Example: retry_count=2 means up to 3 total attempts (1 initial + 2 retries).",
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Retry Count",
+          "type": "integer"
         }
       },
       "required": [
         "prompt"
       ],
-      "title": "RunInput",
+      "title": "AppInput",
       "type": "object"
     },
     "output_schema": {
@@ -409,21 +425,20 @@
           "type": "object"
         }
       },
-      "description": "Output containing generated videos.",
       "properties": {
-        "videos": {
-          "description": "The generated video files",
+        "images": {
+          "description": "The generated or edited images",
           "items": {
             "format": "file",
             "type": "string"
           },
-          "title": "Videos",
+          "title": "Images",
           "type": "array"
         },
-        "warning": {
-          "default": "DEPRECATED: veo-3.0-fast-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1-fast (veo-3.1-fast-generate-001).",
-          "description": "Deprecation warning",
-          "title": "Warning",
+        "description": {
+          "default": "",
+          "description": "Text description or response from the model",
+          "title": "Description",
           "type": "string"
         },
         "output_meta": {
@@ -440,9 +455,9 @@
         }
       },
       "required": [
-        "videos"
+        "images"
       ],
-      "title": "RunOutput",
+      "title": "AppOutput",
       "type": "object"
     }
   }

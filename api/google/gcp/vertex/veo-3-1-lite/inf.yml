@@ -1,0 +1,24 @@
+namespace: google
+name: veo-3-1-lite
+description: Veo 3.1 Lite via Vertex AI - Lightweight video generation with text and image input, audio support
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: GCP_VIDEO_OUTPUT_BUCKET
+      description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
+      optional: true
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Veo, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

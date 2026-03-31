@@ -41,14 +41,18 @@ class RunInput(BaseModel):
         None,
         description="Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
     )
+    reference_images: Optional[List[File]] = Field(
+        None,
+        description="Optional reference asset images to guide video content (preview). Style reference images are not supported."
+    )
     aspect_ratio: VideoAspectRatioEnum = Field(
         default=VideoAspectRatioEnum.ratio_16_9,
         description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
     )
     duration: int = Field(
         default=8,
-        description="Video duration in seconds.",
-        ge=5,
+        description="Video duration in seconds (4, 6, or 8). Reference image to video only supports 8.",
+        ge=4,
         le=8
     )
     resolution: VideoResolutionEnum = Field(
@@ -63,7 +67,7 @@ class RunInput(BaseModel):
         default=1,
         description="Number of videos to generate.",
         ge=1,
-        le=2
+        le=4
     )
     person_generation: PersonGenerationEnum = Field(
         default=PersonGenerationEnum.allow_adult,
@@ -222,12 +226,16 @@ class App(BaseApp):
 
                 # Calculate dimensions for metadata
                 if aspect_ratio == "16:9":
-                    if input_data.resolution.value == "1080p":
+                    if input_data.resolution.value == "4k":
+                        width, height = 3840, 2160
+                    elif input_data.resolution.value == "1080p":
                         width, height = 1920, 1080
                     else:
                         width, height = 1280, 720
                 else:  # 9:16
-                    if input_data.resolution.value == "1080p":
+                    if input_data.resolution.value == "4k":
+                        width, height = 2160, 3840
+                    elif input_data.resolution.value == "1080p":
                         width, height = 1080, 1920
                     else:
                         width, height = 720, 1280

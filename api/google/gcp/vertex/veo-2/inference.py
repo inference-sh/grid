@@ -64,6 +64,7 @@ class RunInput(BaseModel):
 class RunOutput(BaseAppOutput):
     """Output containing generated videos."""
     videos: List[File] = Field(description="The generated video files")
+    warning: str = Field(default="DEPRECATED: veo-2.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).", description="Deprecation warning")
 
 
 def build_veo2_payload(
@@ -114,10 +115,12 @@ class App(BaseApp):
         self.location = "us-central1"
         self.access_token, self.project = get_vertex_credentials()
         self.logger.info("Veo 2 (Vertex AI) initialized successfully")
+        self.logger.warning("DEPRECATION: veo-2.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
 
     async def run(self, input_data: RunInput) -> RunOutput:
         """Generate video using Veo 2 model via Vertex AI."""
         try:
+            self.logger.warning("DEPRECATION: veo-2.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
             self.logger.info(f"Starting video generation with prompt: {input_data.prompt[:100]}...")
 
             aspect_ratio = input_data.aspect_ratio.value
