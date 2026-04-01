@@ -1,0 +1,20 @@
+namespace: alibaba
+name: wan-2-7-image
+description: Wan 2.7 Image is Alibaba's fast image generation model supporting text-to-image, image editing, and multi-reference image generation with up to 2K resolution
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

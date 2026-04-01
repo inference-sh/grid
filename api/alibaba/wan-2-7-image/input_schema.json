@@ -1,0 +1,79 @@
+{
+  "description": "Input schema for Wan 2.7 Image.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing what to generate or edit. Supports Chinese and English, up to 5000 characters. For editing, provide reference images.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for editing (0-9 images). Order in array defines image order.",
+      "title": "Reference Images"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of images to generate (1-4). When image set mode is enabled, max is 12.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "size": {
+      "default": "2K",
+      "description": "Output resolution: '1K' (1024x1024), '2K' (2048x2048, default). Or specify pixel dimensions like '1024*768'.",
+      "title": "Size",
+      "type": "string"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'AI Generated' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "thinking_mode": {
+      "default": true,
+      "description": "Enable thinking mode for better quality. Only effective for text-to-image without image input or image set mode.",
+      "title": "Thinking Mode",
+      "type": "boolean"
+    },
+    "enable_sequential": {
+      "default": false,
+      "description": "Enable image set output mode for generating consistent multi-image sets (e.g., same character in different scenes).",
+      "title": "Enable Sequential",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647). Same seed yields similar outputs.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
