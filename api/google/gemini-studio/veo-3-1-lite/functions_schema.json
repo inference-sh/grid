@@ -1,17 +1,8 @@
 {
   "run": {
-    "description": "Generate video using Veo 3.1 Lite model via Gemini API.",
+    "description": "Generate video with audio using Veo 3.1 Lite model via Gemini API.",
     "input_schema": {
       "$defs": {
-        "PersonGenerationEnum": {
-          "description": "Person generation settings for video.",
-          "enum": [
-            "allow_adult",
-            "disallow"
-          ],
-          "title": "PersonGenerationEnum",
-          "type": "string"
-        },
         "VideoAspectRatioEnum": {
           "description": "Aspect ratio options for video (16:9 and 9:16).",
           "enum": [
@@ -34,7 +25,7 @@
       "description": "Input for video generation with Veo 3.1 Lite.",
       "properties": {
         "prompt": {
-          "description": "Text prompt describing the desired video content.",
+          "description": "Text prompt describing the desired video content. Audio is generated automatically.",
           "title": "Prompt",
           "type": "string"
         },
@@ -52,6 +43,20 @@
           "description": "Optional first frame image for image-to-video generation.",
           "title": "Image"
         },
+        "last_frame": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional last frame image for frame interpolation. Requires first frame image.",
+          "title": "Last Frame"
+        },
         "aspect_ratio": {
           "$ref": "#/$defs/VideoAspectRatioEnum",
           "default": "16:9",
@@ -59,7 +64,7 @@
         },
         "duration": {
           "default": 8,
-          "description": "Video duration in seconds (4, 6, or 8).",
+          "description": "Video duration in seconds (4, 6, or 8). Must be 8 for 1080p resolution.",
           "maximum": 8,
           "minimum": 4,
           "title": "Duration",
@@ -68,18 +73,20 @@
         "resolution": {
           "$ref": "#/$defs/VideoResolutionLiteEnum",
           "default": "720p",
-          "description": "Output video resolution. 720p or 1080p (4k not supported)."
+          "description": "Output video resolution. 720p or 1080p (1080p requires duration=8)."
         },
-        "generate_audio": {
-          "default": false,
-          "description": "Whether to generate audio for the video.",
-          "title": "Generate Audio",
-          "type": "boolean"
-        },
-        "person_generation": {
-          "$ref": "#/$defs/PersonGenerationEnum",
-          "default": "allow_adult",
-          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
+        "negative_prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Describe elements you don't want in the video. Use descriptive language, not 'no' or 'don't'.",
+          "title": "Negative Prompt"
         }
       },
       "required": [
@@ -373,10 +380,10 @@
           "type": "object"
         }
       },
-      "description": "Output containing the generated video.",
+      "description": "Output containing the generated video with audio.",
       "properties": {
         "videos": {
-          "description": "The generated video files",
+          "description": "The generated video files (with audio)",
           "items": {
             "format": "file",
             "type": "string"

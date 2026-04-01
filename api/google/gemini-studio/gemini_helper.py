@@ -600,38 +600,28 @@ async def generate_video_with_polling(
     model_id: str,
     prompt: str,
     image_path: Optional[str] = None,
+    last_frame_path: Optional[str] = None,
     aspect_ratio: str = "16:9",
     duration_seconds: int = 8,
-    generate_audio: bool = False,
-    person_generation: str = "allow_adult",
+    resolution: Optional[str] = None,
+    person_generation: Optional[str] = None,
+    negative_prompt: Optional[str] = None,
     poll_interval: float = 5.0,
     max_wait_time: float = 600.0,
     logger: Optional[logging.Logger] = None,
 ) -> list:
     """
-    Generate video using google-genai SDK with polling.
+    Generate video using google-genai SDK with polling and download.
 
     Uses client.models.generate_videos() and polls the operation until complete.
-
-    Args:
-        client: Gemini API client
-        model_id: Model ID (e.g., "veo-3.1-lite-generate-preview")
-        prompt: Text prompt
-        image_path: Optional first frame image path
-        aspect_ratio: "16:9" or "9:16"
-        duration_seconds: Video duration
-        generate_audio: Whether to generate audio
-        person_generation: Person generation setting
-        poll_interval: Seconds between polls
-        max_wait_time: Max wait time in seconds
-        logger: Optional logger
+    Downloads videos via client.files.download() and saves to temp files.
 
     Returns:
-        List of generated video objects from the API response
+        List of temp file paths for the generated videos.
     """
     log = logger or logging.getLogger(__name__)
 
-    # Build the image if provided
+    # Build the first frame image if provided
     image = None
     if image_path:
         with open(image_path, "rb") as f:
@@ -639,18 +629,28 @@ async def generate_video_with_polling(
         resized = resize_image_for_video(image_bytes, aspect_ratio)
         image = types.Image(image_bytes=resized, mime_type="image/jpeg")
 
+    # Build config
     config_kwargs = {
         "aspect_ratio": aspect_ratio,
         "duration_seconds": duration_seconds,
     }
-    if person_generation and person_generation != "allow_adult":
+    if resolution:
+        config_kwargs["resolution"] = resolution
+    if person_generation:
         config_kwargs["person_generation"] = person_generation
-    if generate_audio:
-        config_kwargs["generate_audio"] = True
+    if negative_prompt:
+        config_kwargs["negative_prompt"] = negative_prompt
+
+    # Build last frame for interpolation
+    if last_frame_path:
+        with open(last_frame_path, "rb") as f:
+            lf_bytes = f.read()
+        lf_resized = resize_image_for_video(lf_bytes, aspect_ratio)
+        config_kwargs["last_frame"] = types.Image(image_bytes=lf_resized, mime_type="image/jpeg")
 
     config = types.GenerateVideosConfig(**config_kwargs)
 
-    log.info(f"Starting video generation: model={model_id}, aspect_ratio={aspect_ratio}, duration={duration_seconds}s, audio={generate_audio}")
+    log.info(f"Starting video generation: model={model_id}, aspect_ratio={aspect_ratio}, duration={duration_seconds}s, resolution={resolution}")
 
     # Start the operation
     operation = client.models.generate_videos(
@@ -676,9 +676,29 @@ async def generate_video_with_polling(
     if operation.error:
         raise RuntimeError(f"Video generation failed: {operation.error}")
 
-    result = operation.result
+    result = operation.response
     if not result or not result.generated_videos:
-        raise RuntimeError("No videos in response")
+        # Log full response for diagnostics
+        log.error(f"No videos in response. Full response: {result}")
+        if result:
+            rai_reason = getattr(result, 'rai_media_filtered_reason', None)
+            rai_reasons = getattr(result, 'rai_media_filtered_reasons', None)
+            rai_count = getattr(result, 'rai_media_filtered_count', None)
+            if rai_reason or rai_reasons:
+                reasons = rai_reasons or [rai_reason]
+                raise RuntimeError(f"Video blocked by content filtering ({rai_count or 0} filtered): {'; '.join(str(r) for r in reasons)}")
+        raise RuntimeError("No videos in response. The video may have been blocked by safety filters or failed to generate audio.")
 
     log.info(f"Video generation complete: {len(result.generated_videos)} video(s)")
-    return result.generated_videos
+
+    # Download and save each video
+    video_paths = []
+    for i, gv in enumerate(result.generated_videos):
+        log.info(f"Downloading video {i+1}/{len(result.generated_videos)}...")
+        client.files.download(file=gv.video)
+        video_path = save_video_to_temp(b"", "mp4")  # create temp file
+        gv.video.save(video_path)
+        log.info(f"Saved video to {video_path}")
+        video_paths.append(video_path)
+
+    return video_paths
