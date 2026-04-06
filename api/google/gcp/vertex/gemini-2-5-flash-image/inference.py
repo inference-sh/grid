@@ -137,6 +137,7 @@ class App(BaseApp):
             config = build_image_generation_config(
                 aspect_ratio=aspect_ratio_value,
                 resolution=resolution.value,
+                output_format=input_data.output_format.value,
                 temperature=input_data.temperature,
                 top_p=input_data.top_p,
                 top_k=input_data.top_k,

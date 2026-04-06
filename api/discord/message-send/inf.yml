@@ -1,0 +1,20 @@
+namespace: discord
+name: message-send
+description: Send a message to a Discord channel with text (2000 char limit) and optional rich embeds. Supports title, description, URL, color, and image embeds. Requires a bot with Send Messages permission in the target channel.
+metadata: {}
+category: social
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: discord.bot
+      description: Send messages to Discord channels via bot
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

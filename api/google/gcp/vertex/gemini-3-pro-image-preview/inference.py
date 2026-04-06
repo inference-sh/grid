@@ -124,6 +124,7 @@ class App(BaseApp):
             config = build_image_generation_config(
                 aspect_ratio=aspect_ratio_value,
                 resolution=input_data.resolution.value,
+                output_format=input_data.output_format.value,
                 enable_google_search=input_data.enable_google_search,
                 safety_tolerance=input_data.safety_tolerance.value,
             )

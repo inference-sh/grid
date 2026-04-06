@@ -781,9 +781,19 @@ def build_safety_settings(tolerance: str) -> list:
     ]
 
 
+FORMAT_TO_MIME = {
+    "png": "image/png",
+    "jpeg": "image/jpeg",
+    "webp": "image/webp",
+    "heic": "image/heic",
+    "heif": "image/heif",
+}
+
+
 def build_image_generation_config(
     aspect_ratio: str,
     resolution: str,
+    output_format: str = "png",
     temperature: float = 1.0,
     top_p: float = 0.95,
     top_k: int = 64,
@@ -798,6 +808,7 @@ def build_image_generation_config(
     Args:
         aspect_ratio: Output aspect ratio
         resolution: Output resolution (1K, 2K, 4K)
+        output_format: Output image format (png, jpeg, webp, heic, heif)
         temperature: Sampling temperature
         top_p: Nucleus sampling probability
         top_k: Top-k sampling parameter
@@ -812,10 +823,20 @@ def build_image_generation_config(
     if response_modalities is None:
         response_modalities = ['TEXT', 'IMAGE']
 
-    image_config = types.ImageConfig(
-        aspect_ratio=aspect_ratio,
-        image_size=resolution,
-    )
+    output_mime_type = FORMAT_TO_MIME.get(output_format, "image/png")
+
+    image_config_kwargs = {
+        'aspect_ratio': aspect_ratio,
+        'image_size': resolution,
+        'output_mime_type': output_mime_type,
+    }
+
+    # output_compression_quality applies to lossy formats (JPEG, WebP)
+    # 100 = highest quality / least compression
+    if output_format in ("jpeg", "webp", "heic", "heif"):
+        image_config_kwargs['output_compression_quality'] = 100
+
+    image_config = types.ImageConfig(**image_config_kwargs)
 
     config_kwargs = {
         'response_modalities': response_modalities,
