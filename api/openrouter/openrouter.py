@@ -37,6 +37,12 @@ def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeErr
             error_obj = error_data.get("error", {})
             msg = error_obj.get("message", str(e))
 
+            # Grab request/generation IDs from headers for debugging
+            headers = e.response.headers if hasattr(e.response, "headers") else {}
+            request_id = headers.get("x-request-id", "")
+            gen_id = headers.get("x-generation-id", "")
+            provider = headers.get("x-provider", "")
+
             # Extract nested provider error from metadata.raw
             metadata = error_obj.get("metadata", {})
             raw = metadata.get("raw")
@@ -45,12 +51,16 @@ def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeErr
                     raw_error = json.loads(raw)
                     nested_msg = raw_error.get("error", {}).get("message")
                     if nested_msg:
-                        provider = metadata.get("provider_name", "Provider")
-                        return RuntimeError(f"{prefix} error ({provider}): {nested_msg}")
+                        provider_name = metadata.get("provider_name", provider or "Provider")
+                        return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id}]")
                 except json.JSONDecodeError:
                     pass
 
-            return RuntimeError(f"{prefix} error: {msg}")
+            # Log full error details for debugging opaque 500s
+            import logging
+            logging.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
+
+            return RuntimeError(f"{prefix} error: {msg} [req:{request_id}]")
         except Exception:
             pass
     return RuntimeError(f"{prefix} error: {str(e)}")
@@ -87,6 +97,12 @@ def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
 
 def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
     """Process a single chunk and update state dict. Returns finish_reason if present."""
+    # Log debug echo if present
+    debug = getattr(chunk, "debug", None)
+    if debug:
+        import logging, json
+        logging.warning(f"OpenRouter debug upstream body: {json.dumps(debug) if isinstance(debug, dict) else debug}")
+
     check_chunk_error(chunk)
 
     # Track usage if available - OpenRouter sends in final chunk (may have empty choices)
@@ -168,7 +184,7 @@ def create_initial_state() -> Dict[str, Any]:
 
 def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     """Build common request parameters."""
-    messages = build_messages(input_data)
+    messages = build_messages(input_data, file_mode="url", image_mode="url")
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     params = {
@@ -187,9 +203,13 @@ def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
         params["tools"] = tools
         params["tool_choice"] = "auto"
 
+    extra_body = {}
     reasoning_config = get_reasoning_config(input_data)
     if reasoning_config:
-        params["extra_body"] = {"reasoning": reasoning_config}
+        extra_body["reasoning"] = reasoning_config
+
+    if extra_body:
+        params["extra_body"] = extra_body
 
     return params
 

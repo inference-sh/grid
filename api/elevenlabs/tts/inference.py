@@ -10,7 +10,7 @@ from pydantic import Field
 from typing import Literal
 import logging
 
-from .elevenlabs_helper import text_to_speech, get_api_key, get_voice_id
+from .elevenlabs_helper import text_to_speech, get_api_key, get_voice_id, get_audio_duration
 
 
 class AppInput(BaseAppInput):
@@ -125,12 +125,14 @@ class App(BaseApp):
             logger=self.logger,
         )
 
+        duration = get_audio_duration(audio_path, self.logger)
+
         return AppOutput(
             audio=File(path=audio_path),
             output_meta=OutputMeta(
                 inputs=[],
                 outputs=[AudioMeta(
-                    seconds=0.0,
+                    seconds=duration,
                     extra={"characters": len(input_data.text), "model": input_data.model}
                 )]
             )
