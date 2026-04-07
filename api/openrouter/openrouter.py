@@ -3,7 +3,7 @@
 import asyncio
 from typing import List, Optional, Dict, Any, AsyncGenerator
 from inferencesh import File
-from inferencesh.models.llm import build_messages, build_tools
+from inferencesh.models.llm import build_openai_messages, build_tools
 from inferencesh import OutputMeta, TextMeta
 
 
@@ -184,7 +184,7 @@ def create_initial_state() -> Dict[str, Any]:
 
 def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     """Build common request parameters."""
-    messages = build_messages(input_data, file_mode="url", image_mode="url")
+    messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     params = {

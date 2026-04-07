@@ -1,0 +1,23 @@
+namespace: opper
+name: claude-sonnet-46
+description: Claude Sonnet 4.6 via Opper API. Anthropic's latest Sonnet model with improved coding, instruction following, and agentic capabilities.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPPER_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

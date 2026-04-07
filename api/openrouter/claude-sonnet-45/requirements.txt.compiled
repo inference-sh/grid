@@ -26,7 +26,7 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.6.29
+inferencesh==0.6.30
     # via -r requirements.txt
 jiter==0.13.0
     # via openai

@@ -9,7 +9,7 @@ from inferencesh.models.llm import (
     ReasoningMixin,
     ToolsCapabilityMixin,
     ToolCallsMixin,
-    build_messages,
+    build_openai_messages,
     stream_generate,
     ResponseTransformer
 )
@@ -143,7 +143,7 @@ class App(BaseApp):
                 return f"{text}/nothink"
             return text
             
-        messages = build_messages(input_data, transform_user_message=transform_message)
+        messages = build_openai_messages(input_data, transform_user_message=transform_message)
 
         # Create transformer instance with our output class
         transformer = ResponseTransformer(output_cls=AppOutput)

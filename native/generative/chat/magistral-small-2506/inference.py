@@ -8,7 +8,7 @@ from inferencesh.models.llm import (
     ImageCapabilityMixin,
     ReasoningCapabilityMixin,
     ToolsCapabilityMixin,
-    build_messages,
+    build_openai_messages,
     stream_generate,
     ResponseTransformer
 )
@@ -137,7 +137,7 @@ class App(BaseApp):
             )     
 
         # Build messages using SDK helper
-        messages = build_messages(input_data)
+        messages = build_openai_messages(input_data)
 
         # Create transformer instance with our output class
         transformer = ResponseTransformer(output_cls=AppOutput)
