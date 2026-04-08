@@ -23,7 +23,7 @@ VIDEO_SYNTHESIS_URL = f"{BASE_URL}/services/aigc/video-generation/video-synthesi
 TASK_URL = f"{BASE_URL}/tasks"
 
 POLL_INTERVAL = 15  # seconds between status checks
-MAX_POLL_TIME = 600  # 10 minutes max wait
+MAX_POLL_TIME = 3600  # 1 hour max wait
 
 
 def get_api_key() -> str:

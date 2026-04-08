@@ -1,0 +1,9 @@
+{
+  "image": null,
+  "target": 4,
+  "output_format": "jpg",
+  "output_quality": 80,
+  "enhance_details": false,
+  "enhance_realism": false,
+  "disable_safety_checker": false
+}

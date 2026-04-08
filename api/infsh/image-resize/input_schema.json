@@ -1,0 +1,107 @@
+{
+  "description": "Input schema for Image Resize.",
+  "properties": {
+    "image": {
+      "description": "Input image to resize.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "width": {
+      "anyOf": [
+        {
+          "maximum": 16384,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target width in pixels. If only width is set, height is calculated to preserve aspect ratio.",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "maximum": 16384,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target height in pixels. If only height is set, width is calculated to preserve aspect ratio.",
+      "title": "Height"
+    },
+    "scale": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Scale factor (e.g. 0.5 = half size, 2.0 = double). Overridden by width/height if set.",
+      "title": "Scale"
+    },
+    "megapixels": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target resolution in megapixels, preserving aspect ratio. Overridden by width/height/scale.",
+      "title": "Megapixels"
+    },
+    "resample": {
+      "default": "lanczos",
+      "description": "Resampling filter.",
+      "enum": [
+        "lanczos",
+        "bicubic",
+        "bilinear",
+        "nearest"
+      ],
+      "title": "Resample",
+      "type": "string"
+    },
+    "output_format": {
+      "default": "jpg",
+      "description": "Output image format.",
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_quality": {
+      "default": 85,
+      "description": "Output quality (0-100). Not relevant for PNG.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

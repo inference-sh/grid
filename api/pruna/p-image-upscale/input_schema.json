@@ -1,0 +1,61 @@
+{
+  "description": "Input schema for P-Image-Upscale.",
+  "properties": {
+    "image": {
+      "description": "Input image to upscale.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "megapixels": {
+      "default": 4,
+      "description": "Target resolution in megapixels (1-8). Output is capped at 8 MP.",
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Megapixels",
+      "type": "integer"
+    },
+    "output_format": {
+      "default": "jpg",
+      "description": "Format of the output image.",
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Quality when saving the output image (0-100). Not relevant for PNG.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    },
+    "enhance_details": {
+      "default": false,
+      "description": "Enhance fine textures and small details. May increase contrast and introduce minor deviations.",
+      "title": "Enhance Details",
+      "type": "boolean"
+    },
+    "enhance_realism": {
+      "default": false,
+      "description": "Improve realism. May deviate more from the original. Recommended for AI-generated images.",
+      "title": "Enhance Realism",
+      "type": "boolean"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker for generated images.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
