@@ -283,10 +283,10 @@
       "type": "object"
     }
   },
-  "description": "Output schema for OmniHuman 1.0  avatar video generation.",
+  "description": "Output schema for Wan 2.7 Image-to-Video.",
   "properties": {
     "video": {
-      "description": "The generated avatar video file (MP4, 30 FPS).",
+      "description": "Generated video in MP4 format.",
       "format": "file",
       "title": "Video",
       "type": "string"

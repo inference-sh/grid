@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "AudioSettingEnum": {
+      "enum": [
+        "auto",
+        "origin"
+      ],
+      "title": "AudioSettingEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Wan 2.7 Video Edit.",
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Editing instruction describing what to change. Up to 5000 characters. E.g., 'Convert the scene to claymation style' or 'Replace the clothes with the ones from the reference image'.",
+      "title": "Prompt"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Content to exclude from the video. Up to 500 characters.",
+      "title": "Negative Prompt"
+    },
+    "video": {
+      "description": "Video to edit. MP4/MOV, 2-10s, 240-4096px, up to 100MB.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for editing (e.g., clothing to apply). Up to 4 images. JPEG/JPG/PNG/BMP/WEBP, 240-8000px, up to 20MB each.",
+      "title": "Reference Images"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Output resolution: 720P or 1080P (default)."
+    },
+    "ratio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AspectRatioEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output aspect ratio. If omitted, matches input video ratio."
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 10,
+          "minimum": 2,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Truncate video to this duration (seconds). Omit or 0 to keep original duration.",
+      "title": "Duration"
+    },
+    "audio_setting": {
+      "$ref": "#/$defs/AudioSettingEnum",
+      "default": "auto",
+      "description": "Audio handling: 'auto' (model decides based on prompt) or 'origin' (keep original audio)."
+    },
+    "prompt_extend": {
+      "default": true,
+      "description": "Enable prompt rewriting via LLM for better results.",
+      "title": "Prompt Extend",
+      "type": "boolean"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'AI Generated' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Wan 2.7 Reference-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video scene. Use 'Image 1', 'Image 2' to reference images and 'Video 1', 'Video 2' to reference videos in order of the media arrays. Up to 5000 characters.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Content to exclude from the video. Up to 500 characters.",
+      "title": "Negative Prompt"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for characters/objects/scenes. Each must contain a single subject. Images + videos <= 5 total.",
+      "title": "Reference Images"
+    },
+    "reference_videos": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference videos for characters and voice timbre. MP4/MOV, 1-30s, up to 100MB each. Avoid empty-scene videos.",
+      "title": "Reference Videos"
+    },
+    "first_frame": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image for precise scene composition. Max 1.",
+      "title": "First Frame"
+    },
+    "reference_voice": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio for voice timbre reference. WAV/MP3, 1-10s, up to 15MB. Overrides reference video audio.",
+      "title": "Reference Voice"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Video resolution: 720P or 1080P (default)."
+    },
+    "ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Ignored if first_frame is provided (uses frame ratio instead)."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds. 2-10 if reference videos provided, 2-15 otherwise.",
+      "maximum": 15,
+      "minimum": 2,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "prompt_extend": {
+      "default": true,
+      "description": "Enable prompt rewriting via LLM for better results.",
+      "title": "Prompt Extend",
+      "type": "boolean"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'AI Generated' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

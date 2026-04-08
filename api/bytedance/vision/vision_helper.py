@@ -12,6 +12,7 @@ import os
 import json
 import logging
 import asyncio
+import time
 from typing import Optional, List, Dict, Any
 
 from byteplus_sdk.visual.VisualService import VisualService
@@ -82,10 +83,23 @@ def detect_subjects(
         "image_url": image_url,
     }
 
-    resp = visual_service.cv_process(form)
+    max_retries = 5
+    for retry in range(max_retries):
+        resp = visual_service.cv_process(form)
 
-    if resp.get("code") != 10000:
+        if resp.get("code") == 10000:
+            break
+
         error_msg = resp.get("message", "Unknown error")
+
+        # Retry on concurrency limit errors
+        if "Concurrency Limit" in error_msg and retry < max_retries - 1:
+            wait = 2 ** retry * 3  # 3, 6, 12, 24, 48 seconds
+            if logger:
+                logger.warning(f"Concurrency limit hit, retrying in {wait}s (attempt {retry + 1}/{max_retries})...")
+            time.sleep(wait)
+            continue
+
         if logger:
             logger.error(f"Subject detection failed: {error_msg}")
         raise RuntimeError(f"Subject detection failed: {error_msg}")
@@ -154,10 +168,23 @@ def submit_video_task(
     if mask_url:
         form["mask_url"] = mask_url
 
-    resp = visual_service.cv_submit_task(form)
+    max_retries = 5
+    for retry in range(max_retries):
+        resp = visual_service.cv_submit_task(form)
 
-    if resp.get("code") != 10000:
+        if resp.get("code") == 10000:
+            break
+
         error_msg = resp.get("message", "Unknown error")
+
+        # Retry on concurrency limit errors
+        if "Concurrency Limit" in error_msg and retry < max_retries - 1:
+            wait = 2 ** retry * 3
+            if logger:
+                logger.warning(f"Concurrency limit hit, retrying in {wait}s (attempt {retry + 1}/{max_retries})...")
+            time.sleep(wait)
+            continue
+
         if logger:
             logger.error(f"Task submission failed: {error_msg}")
         raise RuntimeError(f"Task submission failed: {error_msg}")
@@ -180,7 +207,7 @@ async def poll_video_task(
     task_id: str,
     logger: Optional[logging.Logger] = None,
     poll_interval: float = 3.0,
-    max_attempts: int = 200,
+    max_attempts: int = 1200,
     cancel_flag_getter: Optional[callable] = None,
 ) -> Dict[str, Any]:
     """

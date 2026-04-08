@@ -1,0 +1,20 @@
+namespace: alibaba
+name: wan-2-7-r2v
+description: Wan 2.7 Reference-to-Video generates videos featuring characters from reference images and videos, supporting multi-character interaction, voice timbre cloning, and first-frame control
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

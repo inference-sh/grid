@@ -1,0 +1,20 @@
+namespace: alibaba
+name: wan-2-7-videoedit
+description: Wan 2.7 Video Edit performs instruction-based video editing and style transfer using multimodal inputs (text, images, video) via DashScope API with 720P/1080P output
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

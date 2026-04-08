@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Wan 2.7 Text-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video to generate. Supports Chinese and English, up to 5000 characters.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Content to exclude from the video. Up to 500 characters.",
+      "title": "Negative Prompt"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Video resolution: 720P or 1080P (default)."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (2-15).",
+      "maximum": 15,
+      "minimum": 2,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "prompt_extend": {
+      "default": true,
+      "description": "Enable prompt rewriting via LLM for better results. Increases processing time.",
+      "title": "Prompt Extend",
+      "type": "boolean"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'AI Generated' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

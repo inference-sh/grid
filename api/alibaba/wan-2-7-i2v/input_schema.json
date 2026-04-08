@@ -1,0 +1,139 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Wan 2.7 Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text prompt describing video content. Supports Chinese and English, up to 5000 characters.",
+      "title": "Prompt"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Content to exclude from the video. Up to 500 characters.",
+      "title": "Negative Prompt"
+    },
+    "first_frame": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image. Formats: JPEG, JPG, PNG, BMP, WEBP. Resolution: 240-8000px. Up to 20MB.",
+      "title": "First Frame"
+    },
+    "last_frame": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last frame image for first+last frame generation. Same format limits as first_frame.",
+      "title": "Last Frame"
+    },
+    "driving_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for driving video generation (lip-sync, action timing). WAV/MP3, 2-30s, up to 15MB.",
+      "title": "Driving Audio"
+    },
+    "first_clip": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video clip for continuation. MP4/MOV, 2-10s, 240-4096px, up to 100MB.",
+      "title": "First Clip"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Video resolution: 720P or 1080P (default)."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (2-15). For continuation, total output length including input clip.",
+      "maximum": 15,
+      "minimum": 2,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "prompt_extend": {
+      "default": true,
+      "description": "Enable prompt rewriting via LLM for better results.",
+      "title": "Prompt Extend",
+      "type": "boolean"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'AI Generated' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}
