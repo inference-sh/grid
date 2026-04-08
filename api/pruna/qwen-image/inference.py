@@ -96,6 +96,14 @@ class App(BaseApp):
 
             image_path = download_image(generation_url, logger=self.logger)
 
+            # Read input image dimensions if provided
+            input_metas = []
+            if input_data.image and input_data.image.path:
+                from PIL import Image
+                with Image.open(input_data.image.path) as pil_img:
+                    in_w, in_h = pil_img.size
+                input_metas.append(ImageMeta(width=in_w, height=in_h, count=1))
+
             # Calculate dimensions from aspect ratio
             base_size = 1024
             aspect_ratios = {
@@ -110,7 +118,7 @@ class App(BaseApp):
                 height = base_size
                 width = int(base_size * w_ratio / h_ratio)
 
-            return AppOutput(image=File(path=image_path), output_meta=OutputMeta(outputs=[ImageMeta(width=width, height=height, count=1)]))
+            return AppOutput(image=File(path=image_path), output_meta=OutputMeta(inputs=input_metas, outputs=[ImageMeta(width=width, height=height, count=1)]))
         except Exception as e:
             self.logger.error(f"Error: {e}")
             raise RuntimeError(f"Generation failed: {str(e)}")

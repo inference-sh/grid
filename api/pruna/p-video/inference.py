@@ -2,7 +2,7 @@
 P-Video - Premium AI video generation from text, images, and audio by Pruna
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, VideoMeta, VideoResolution
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -196,7 +196,16 @@ class App(BaseApp):
                 (1280, 720)
             )
 
+            # Read input file dimensions if provided
+            input_metas = []
+            if input_data.image and input_data.image.path:
+                from PIL import Image
+                with Image.open(input_data.image.path) as pil_img:
+                    in_w, in_h = pil_img.size
+                input_metas.append(ImageMeta(width=in_w, height=in_h, count=1))
+
             output_meta = OutputMeta(
+                inputs=input_metas,
                 outputs=[
                     VideoMeta(
                         width=width,
@@ -204,7 +213,7 @@ class App(BaseApp):
                         resolution=resolution_map.get(input_data.resolution.value, VideoResolution.VIDEO_RES720_P),
                         seconds=float(input_data.duration),
                     )
-                ]
+                ],
             )
 
             self.logger.info("Video generated successfully")

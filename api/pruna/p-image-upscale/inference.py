@@ -105,15 +105,20 @@ class App(BaseApp):
             suffix = f".{input_data.output_format}"
             image_path = download_result(generation_url, suffix=suffix, logger=self.logger)
 
-            # Read actual dimensions
+            # Read input dimensions
             from PIL import Image
-            with Image.open(image_path) as img:
-                width, height = img.size
+            with Image.open(input_data.image.path) as img:
+                in_w, in_h = img.size
 
-            self.logger.info(f"Upscaled to {width}x{height}")
+            # Read output dimensions
+            with Image.open(image_path) as img:
+                out_w, out_h = img.size
+
+            self.logger.info(f"Upscaled {in_w}x{in_h} -> {out_w}x{out_h}")
 
             output_meta = OutputMeta(
-                outputs=[ImageMeta(width=width, height=height, count=1)]
+                inputs=[ImageMeta(width=in_w, height=in_h, count=1)],
+                outputs=[ImageMeta(width=out_w, height=out_h, count=1)],
             )
 
             return AppOutput(

@@ -80,25 +80,19 @@ class App(BaseApp):
 
             image_path = download_image(generation_url, logger=self.logger)
 
-            # Calculate dimensions from aspect ratio
-            base_size = 1024
-            aspect_ratios = {
-                "1:1": (1, 1), "16:9": (16, 9), "9:16": (9, 16),
-                "4:3": (4, 3), "3:4": (3, 4),
-            }
-            ar = input_data.aspect_ratio.value
-            if ar == "match_input_image":
-                width, height = base_size, base_size  # fallback for input match
-            else:
-                w_ratio, h_ratio = aspect_ratios.get(ar, (1, 1))
-                if w_ratio >= h_ratio:
-                    width = base_size
-                    height = int(base_size * h_ratio / w_ratio)
-                else:
-                    height = base_size
-                    width = int(base_size * w_ratio / h_ratio)
+            # Read input image dimensions
+            from PIL import Image
+            input_metas = []
+            for img in input_data.images:
+                with Image.open(img.path) as pil_img:
+                    w, h = pil_img.size
+                input_metas.append(ImageMeta(width=w, height=h, count=1))
 
-            return AppOutput(image=File(path=image_path), output_meta=OutputMeta(outputs=[ImageMeta(width=width, height=height, count=1)]))
+            # Read output dimensions
+            with Image.open(image_path) as pil_img:
+                width, height = pil_img.size
+
+            return AppOutput(image=File(path=image_path), output_meta=OutputMeta(inputs=input_metas, outputs=[ImageMeta(width=width, height=height, count=1)]))
         except Exception as e:
             self.logger.error(f"Error: {e}")
             raise RuntimeError(f"Editing failed: {str(e)}")

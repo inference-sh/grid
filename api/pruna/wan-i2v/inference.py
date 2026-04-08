@@ -2,7 +2,7 @@
 WAN-I2V - Image-to-video generation by Pruna
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, VideoMeta, VideoResolution
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -101,13 +101,17 @@ class App(BaseApp):
 
             video_path = download_video(generation_url, logger=self.logger)
 
+            # Read input image dimensions
+            from PIL import Image as PILImage
+            with PILImage.open(input_data.image.path) as pil_img:
+                in_w, in_h = pil_img.size
+
             # Build output metadata for pricing
             resolution_map = {
                 "480p": VideoResolution.VIDEO_RES480_P,
                 "720p": VideoResolution.VIDEO_RES720_P,
             }
 
-            # Default to 16:9 for i2v (aspect from input image)
             dims_map = {
                 "480p": (854, 480),
                 "720p": (1280, 720),
@@ -116,6 +120,7 @@ class App(BaseApp):
             width, height = dims_map.get(input_data.resolution.value, (854, 480))
 
             output_meta = OutputMeta(
+                inputs=[ImageMeta(width=in_w, height=in_h, count=1)],
                 outputs=[
                     VideoMeta(
                         width=width,
@@ -123,7 +128,7 @@ class App(BaseApp):
                         resolution=resolution_map.get(input_data.resolution.value, VideoResolution.VIDEO_RES480_P),
                         seconds=float(input_data.duration),
                     )
-                ]
+                ],
             )
 
             self.logger.info("Video generated successfully")
