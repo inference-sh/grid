@@ -133,7 +133,7 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Seedance 2.0 Image-to-Video application."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Seedance 2.0 I2V initialized")
 
@@ -152,7 +152,7 @@ class App(BaseApp):
             request["seed"] = input_data.seed
         return request
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         try:
             if not input_data.image.exists():
                 raise RuntimeError(f"Input image does not exist at path: {input_data.image.path}")

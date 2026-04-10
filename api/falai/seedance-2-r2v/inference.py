@@ -139,7 +139,7 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Seedance 2.0 Reference-to-Video application."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Seedance 2.0 Ref2V initialized")
 
@@ -173,7 +173,7 @@ class App(BaseApp):
             request["seed"] = input_data.seed
         return request
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         try:
             # Validate that referenced files actually exist locally after resolution
             for label, files in (

@@ -129,7 +129,7 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """Seedance 2.0 Text-to-Video application."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Seedance 2.0 T2V initialized")
 
@@ -145,7 +145,7 @@ class App(BaseApp):
             request["seed"] = input_data.seed
         return request
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         try:
             setup_fal_client()
 
