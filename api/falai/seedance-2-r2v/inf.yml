@@ -1,0 +1,27 @@
+namespace: falai
+name: seedance-2-r2v
+description: Generate videos from reference images, videos, and audio using ByteDance's Seedance 2.0. Reference inputs as @Image1, @Video1, @Audio1 in the prompt. Supports quality and fast modes.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - seedance-2
+        - reference-to-video
+        - audio
+        - bytedance
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

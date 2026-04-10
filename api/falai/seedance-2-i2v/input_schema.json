@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "description": "Video aspect ratio options.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "auto",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "description": "Generation mode \u2014 quality uses the full model, fast is ~20% cheaper and quicker.",
+      "enum": [
+        "quality",
+        "fast"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "480p",
+        "720p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedance 2.0 Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the desired motion and action for the video.",
+      "examples": [
+        "A man is crying and he says \"I shouldn't have done it. I regret everything\""
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "Starting frame image to animate. Supported formats: JPEG, PNG, WebP. Max 30 MB.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional ending frame. The video will transition from the starting image to this image.",
+      "title": "End Image"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "quality",
+      "description": "quality uses the full Seedance 2.0 model. fast is ~20% cheaper and quicker with slightly lower fidelity."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution. 480p for faster generation, 720p for balanced quality."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "auto",
+      "description": "Duration of the video in seconds (4-15). Use auto to let the model decide based on the prompt."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "auto",
+      "description": "Aspect ratio of the generated video. Use auto to infer from the input image."
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate synchronized audio (sound effects, ambient, lip-synced speech). Cost is the same regardless.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation. Use None for random.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

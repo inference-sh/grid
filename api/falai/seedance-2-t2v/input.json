@@ -1,0 +1,9 @@
+{
+  "prompt": "example",
+  "mode": "quality",
+  "resolution": "720p",
+  "duration": "auto",
+  "aspect_ratio": "auto",
+  "generate_audio": true,
+  "seed": 0
+}

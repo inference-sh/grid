@@ -1,0 +1,27 @@
+namespace: falai
+name: seedance-2-i2v
+description: Generate videos with synchronized audio from images using ByteDance's Seedance 2.0. Supports start/end frame control and quality/fast modes.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - seedance-2
+        - image-to-video
+        - audio
+        - bytedance
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
