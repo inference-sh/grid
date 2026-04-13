@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "Mode": {
+      "enum": [
+        "voice_cloning",
+        "voice_design",
+        "auto"
+      ],
+      "title": "Mode",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "text": {
+      "description": "Text to convert to speech. Supports non-verbal tags like [laughter], [sigh], and pronunciation control.",
+      "title": "Text",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/Mode",
+      "default": "auto",
+      "description": "Generation mode: 'voice_cloning' (clone from reference audio), 'voice_design' (describe voice attributes), or 'auto' (model picks a voice)"
+    },
+    "ref_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference audio for voice cloning (3-10 seconds recommended). Required for voice_cloning mode.",
+      "title": "Ref Audio"
+    },
+    "ref_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Transcription of the reference audio. If omitted, Whisper ASR auto-transcribes it.",
+      "title": "Ref Text"
+    },
+    "instruct": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice design attributes for voice_design mode. Comma-separated: e.g. 'female, low pitch, british accent'. Supports gender, age, pitch, accent, whisper.",
+      "title": "Instruct"
+    },
+    "num_step": {
+      "default": 32,
+      "description": "Number of diffusion steps. Lower (16) = faster, higher (32) = better quality.",
+      "maximum": 64,
+      "minimum": 4,
+      "title": "Num Step",
+      "type": "integer"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speaking speed factor. >1.0 = faster, <1.0 = slower.",
+      "maximum": 4.0,
+      "minimum": 0.25,
+      "title": "Speed",
+      "type": "number"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 120.0,
+          "minimum": 0.5,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fixed output duration in seconds. Overrides speed if set.",
+      "title": "Duration"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

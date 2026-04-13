@@ -1,0 +1,18 @@
+namespace: infsh
+name: omnivoice
+description: Zero-shot text-to-speech with voice cloning for 600+ languages.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 24
+        type: any
+    ram: 32

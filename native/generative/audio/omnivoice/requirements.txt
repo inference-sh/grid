@@ -1,0 +1,6 @@
+pydantic >= 2.0.0
+inferencesh
+omnivoice
+torch
+soundfile
+hf_transfer
