@@ -2,7 +2,9 @@
 Shared helper module for fal.ai client operations.
 Provides common utilities for video/image generation apps using fal.ai API.
 
-Copy this file into your app folder for deployment.
+Symlink this file from each app folder (e.g. `ln -sr fal_helper.py my-app/fal_helper.py`).
+`infsh app deploy` resolves symlinks when packaging, so the shared helper deploys correctly
+and stays in a single place. Do not copy this file into individual app directories.
 """
 
 import os

@@ -263,6 +263,6 @@ if [[ "$OUTPUT_DIR" == "." ]]; then
     echo "  1. Review related endpoints above - consolidate if needed"
     echo "  2. Run: infsh app init <app-name>"
     echo "  3. Move files: mv MODEL.md PRICING.md <app-dir>/"
-    echo "  4. Copy helper: cp fal_helper.py <app-dir>/"
+    echo "  4. Symlink helper: ln -sr fal_helper.py <app-dir>/fal_helper.py"
     echo "  5. Implement inference.py"
 fi
