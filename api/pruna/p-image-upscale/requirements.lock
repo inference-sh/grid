@@ -2,12 +2,12 @@ annotated-types==0.7.0
 certifi==2026.2.25
 charset-normalizer==3.4.7
 idna==3.11
-inferencesh==0.6.30
+inferencesh==0.6.31
 ninja==1.13.0
 packaging==26.0
 pillow==12.2.0
-pydantic==2.12.5
-pydantic-core==2.41.5
+pydantic==2.13.0
+pydantic-core==2.46.0
 requests==2.33.1
 setuptools==82.0.1
 setuptools-scm==10.0.5
