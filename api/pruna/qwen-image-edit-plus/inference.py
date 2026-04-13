@@ -42,12 +42,12 @@ class AppOutput(BaseAppOutput):
 
 
 class App(BaseApp):
-    async def setup(self, metadata):
+    async def setup(self):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "qwen-image-edit-plus"
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         try:
             self.logger.info(f"Editing: {input_data.prompt[:100]}...")
             

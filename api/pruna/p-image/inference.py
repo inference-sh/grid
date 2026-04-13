@@ -82,14 +82,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """P-Image text-to-image generation."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the application."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "p-image"
         self.logger.info("P-Image initialized")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate an image using P-Image."""
         try:
             self.logger.info(f"Generating image: {input_data.prompt[:100]}...")

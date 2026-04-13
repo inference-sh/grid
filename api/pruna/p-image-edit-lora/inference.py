@@ -104,14 +104,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """P-Image-Edit-LoRA for image editing with custom LoRA."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the application."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "p-image-edit-lora"
         self.logger.info("P-Image-Edit-LoRA initialized")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Edit images using P-Image-Edit-LoRA."""
         try:
             # Resolve LoRA URL (custom url overrides preset)

@@ -58,14 +58,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """WAN-T2V text-to-video generation."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the application."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "wan-t2v"
         self.logger.info("WAN-T2V initialized")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate video using WAN-T2V."""
         try:
             self.logger.info(f"Generating video: {input_data.prompt[:100]}...")

@@ -95,14 +95,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """P-Video for AI video generation."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the application."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "p-video"
         self.logger.info("P-Video initialized")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Generate video using P-Video."""
         try:
             self.logger.info(f"Generating video: {input_data.prompt[:100]}...")

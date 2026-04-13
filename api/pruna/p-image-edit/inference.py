@@ -61,14 +61,14 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     """P-Image-Edit for image editing and composition."""
 
-    async def setup(self, metadata):
+    async def setup(self):
         """Initialize the application."""
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.model = "p-image-edit"
         self.logger.info("P-Image-Edit initialized")
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+    async def run(self, input_data: AppInput) -> AppOutput:
         """Edit/compose images using P-Image-Edit."""
         try:
             self.logger.info(f"Editing {len(input_data.images)} image(s)")
