@@ -1,0 +1,29 @@
+namespace: falai
+name: patina-extract-material
+description: Extracts a seamlessly tiling texture plus PBR material maps from a region of a source image described by a text prompt, via fal.ai PATINA.
+metadata:
+    provider: fal-ai
+    tags:
+        - patina
+        - pbr
+        - material
+        - tileable
+        - extraction
+        - image-to-material
+        - image-to-image
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "OutputFormatEnum": {
+      "enum": [
+        "jpeg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "image": {
+      "description": "Input image (photograph or render) to derive PBR maps from. JPEG, PNG, or WebP.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "basecolor": {
+      "default": true,
+      "description": "Predict the basecolor (albedo) map.",
+      "title": "Basecolor",
+      "type": "boolean"
+    },
+    "normal": {
+      "default": true,
+      "description": "Predict the normal map.",
+      "title": "Normal",
+      "type": "boolean"
+    },
+    "roughness": {
+      "default": true,
+      "description": "Predict the roughness map.",
+      "title": "Roughness",
+      "type": "boolean"
+    },
+    "metalness": {
+      "default": true,
+      "description": "Predict the metalness map.",
+      "title": "Metalness",
+      "type": "boolean"
+    },
+    "height": {
+      "default": true,
+      "description": "Predict the height (displacement) map.",
+      "title": "Height",
+      "type": "boolean"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "png",
+      "description": "Output image format for the predicted maps."
+    },
+    "enable_safety_checker": {
+      "default": true,
+      "description": "Enable the fal.ai safety checker on the input image.",
+      "title": "Enable Safety Checker",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible denoising. Leave unset for a random seed.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

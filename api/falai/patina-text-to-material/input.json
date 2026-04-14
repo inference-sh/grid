@@ -1,0 +1,22 @@
+{
+  "prompt": "mossy stone wall",
+  "image_size": "square_hd",
+  "num_inference_steps": 8,
+  "seed": 42,
+  "num_images": 1,
+  "enable_prompt_expansion": true,
+  "enable_safety_checker": true,
+  "tiling_mode": "both",
+  "tile_size": 128,
+  "tile_stride": 64,
+  "image": null,
+  "mask": null,
+  "strength": 0.75,
+  "basecolor": true,
+  "normal": true,
+  "roughness": true,
+  "metalness": true,
+  "height": true,
+  "upscale_factor": 0,
+  "output_format": "png"
+}

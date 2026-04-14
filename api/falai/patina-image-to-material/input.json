@@ -1,0 +1,11 @@
+{
+  "image": "https://storage.googleapis.com/falserverless/gallery/patina-blog-hero-render.png",
+  "basecolor": true,
+  "normal": true,
+  "roughness": true,
+  "metalness": true,
+  "height": true,
+  "output_format": "png",
+  "enable_safety_checker": true,
+  "seed": 42
+}

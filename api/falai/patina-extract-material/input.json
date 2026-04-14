@@ -1,0 +1,21 @@
+{
+  "prompt": "the wall",
+  "image": "https://v3b.fal.media/files/b/0a95600b/IVhCXWN-sE1xj1SpYAGpL_31b6f371-90ae-4835-851e-23cd809cfb86.png",
+  "image_size": "square_hd",
+  "num_inference_steps": 8,
+  "seed": 42,
+  "num_images": 1,
+  "enable_prompt_expansion": true,
+  "enable_safety_checker": true,
+  "tiling_mode": "both",
+  "tile_size": 128,
+  "tile_stride": 64,
+  "strength": 0.75,
+  "basecolor": true,
+  "normal": true,
+  "roughness": true,
+  "metalness": true,
+  "height": true,
+  "upscale_factor": 0,
+  "output_format": "png"
+}

@@ -1,0 +1,201 @@
+{
+  "$defs": {
+    "ImageSizeEnum": {
+      "enum": [
+        "square_hd",
+        "square",
+        "portrait_4_3",
+        "portrait_16_9",
+        "landscape_4_3",
+        "landscape_16_9"
+      ],
+      "title": "ImageSizeEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "jpeg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "TilingModeEnum": {
+      "enum": [
+        "both",
+        "horizontal",
+        "vertical"
+      ],
+      "title": "TilingModeEnum",
+      "type": "string"
+    },
+    "UpscaleFactorEnum": {
+      "enum": [
+        0,
+        2,
+        4
+      ],
+      "title": "UpscaleFactorEnum",
+      "type": "integer"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the material/texture to generate.",
+      "examples": [
+        "mossy stone wall"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image_size": {
+      "$ref": "#/$defs/ImageSizeEnum",
+      "default": "square_hd",
+      "description": "Output texture dimensions preset."
+    },
+    "num_inference_steps": {
+      "default": 8,
+      "description": "Number of denoising steps for texture generation.",
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Num Inference Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of texture images to generate.",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "enable_prompt_expansion": {
+      "default": true,
+      "description": "Expand prompt with an LLM for richer detail (adds a small cost).",
+      "title": "Enable Prompt Expansion",
+      "type": "boolean"
+    },
+    "enable_safety_checker": {
+      "default": true,
+      "description": "Enable the safety checker for generated images.",
+      "title": "Enable Safety Checker",
+      "type": "boolean"
+    },
+    "tiling_mode": {
+      "$ref": "#/$defs/TilingModeEnum",
+      "default": "both",
+      "description": "Tiling direction: 'both' (omnidirectional), 'horizontal', or 'vertical'."
+    },
+    "tile_size": {
+      "default": 128,
+      "description": "Tile size in latent space (64 = 512px, 128 = 1024px).",
+      "maximum": 256,
+      "minimum": 32,
+      "title": "Tile Size",
+      "type": "integer"
+    },
+    "tile_stride": {
+      "default": 64,
+      "description": "Tile stride in latent space.",
+      "maximum": 128,
+      "minimum": 16,
+      "title": "Tile Stride",
+      "type": "integer"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input image for image-to-image (or inpainting when mask is provided).",
+      "title": "Image"
+    },
+    "mask": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional mask image for inpainting. White regions are regenerated, black preserved. Requires image.",
+      "title": "Mask"
+    },
+    "strength": {
+      "default": 0.75,
+      "description": "How much to transform the input image. Only used when image is provided.",
+      "exclusiveMinimum": 0.0,
+      "maximum": 1.0,
+      "title": "Strength",
+      "type": "number"
+    },
+    "basecolor": {
+      "default": true,
+      "description": "Predict the basecolor (albedo) map.",
+      "title": "Basecolor",
+      "type": "boolean"
+    },
+    "normal": {
+      "default": true,
+      "description": "Predict the normal map.",
+      "title": "Normal",
+      "type": "boolean"
+    },
+    "roughness": {
+      "default": true,
+      "description": "Predict the roughness map.",
+      "title": "Roughness",
+      "type": "boolean"
+    },
+    "metalness": {
+      "default": true,
+      "description": "Predict the metalness map.",
+      "title": "Metalness",
+      "type": "boolean"
+    },
+    "height": {
+      "default": true,
+      "description": "Predict the height (displacement) map.",
+      "title": "Height",
+      "type": "boolean"
+    },
+    "upscale_factor": {
+      "$ref": "#/$defs/UpscaleFactorEnum",
+      "default": 0,
+      "description": "Upscale factor for PBR maps via SeedVR seamless upscaling. Base texture is not upscaled."
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "png",
+      "description": "Output image format for textures and PBR maps."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
