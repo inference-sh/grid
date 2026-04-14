@@ -1,16 +1,17 @@
 import logging
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from inferencesh import BaseApp, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import BaseModel, Field
 
-from .phota_helper import get_api_key, phota_request, save_base64_images, resolve_image_input, get_png_dimensions
+from .phota_helper import get_api_key, phota_request, save_output_images, resolve_image_input, get_image_dimensions
 
 
 class RunInput(BaseModel):
     image: File = Field(description="Image to enhance")
     profile_ids: Optional[List[str]] = Field(None, description="Profile IDs for identity preservation. Only pass profiles relevant to this end-user.")
     num_output_images: int = Field(default=1, ge=1, le=4, description="Number of output images (1-4)")
+    output_format: Literal["png", "jpg"] = Field(default="png", description="Output image format")
 
 
 class RunOutput(BaseAppOutput):
@@ -29,17 +30,19 @@ class App(BaseApp):
         payload = {
             "image": resolve_image_input(input_data.image),
             "num_output_images": input_data.num_output_images,
+            "output_format": input_data.output_format,
+            "response_mode": "urls",
         }
         if input_data.profile_ids:
             payload["profile_ids"] = input_data.profile_ids
 
         result = phota_request("enhance", payload, self.logger)
-        self.logger.info(f"Enhance complete, received {len(result['images'])} image(s)")
+        self.logger.info(f"Enhance complete, received {len(result.get('download_urls') or result.get('images') or [])} image(s)")
 
-        paths = save_base64_images(result["images"], self.logger)
+        paths = save_output_images(result, input_data.output_format, self.logger)
         output_files = [File(path=p) for p in paths]
 
-        width, height = get_png_dimensions(paths[0])
+        width, height = get_image_dimensions(paths[0])
         return RunOutput(
             images=output_files,
             known_subjects=result.get("known_subjects", {}).get("counts"),

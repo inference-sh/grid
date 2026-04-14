@@ -32,6 +32,16 @@
           "minimum": 1,
           "title": "Num Output Images",
           "type": "integer"
+        },
+        "output_format": {
+          "default": "png",
+          "description": "Output image format",
+          "enum": [
+            "png",
+            "jpg"
+          ],
+          "title": "Output Format",
+          "type": "string"
         }
       },
       "required": [

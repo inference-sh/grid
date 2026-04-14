@@ -4,7 +4,7 @@ from typing import List, Literal, Optional
 from inferencesh import BaseApp, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import BaseModel, Field
 
-from .phota_helper import get_api_key, phota_request, save_base64_images, resolve_image_input, get_png_dimensions
+from .phota_helper import get_api_key, phota_request, save_output_images, resolve_image_input, get_image_dimensions
 
 
 class RunInput(BaseModel):
@@ -14,6 +14,7 @@ class RunInput(BaseModel):
     num_output_images: int = Field(default=1, ge=1, le=4, description="Number of output images (1-4)")
     aspect_ratio: Literal["auto", "1:1", "3:4", "4:3", "9:16", "16:9"] = Field(default="auto", description="Output aspect ratio")
     resolution: Literal["1K", "4K"] = Field(default="1K", description="Output resolution")
+    output_format: Literal["png", "jpg"] = Field(default="png", description="Output image format")
 
 
 class RunOutput(BaseAppOutput):
@@ -37,17 +38,19 @@ class App(BaseApp):
             "num_output_images": input_data.num_output_images,
             "aspect_ratio": input_data.aspect_ratio,
             "resolution": input_data.resolution,
+            "output_format": input_data.output_format,
+            "response_mode": "urls",
         }
         if input_data.profile_ids:
             payload["profile_ids"] = input_data.profile_ids
 
         result = phota_request("edit", payload, self.logger)
-        self.logger.info(f"Edit complete, received {len(result['images'])} image(s)")
+        self.logger.info(f"Edit complete, received {len(result.get('download_urls') or result.get('images') or [])} image(s)")
 
-        paths = save_base64_images(result["images"], self.logger)
+        paths = save_output_images(result, input_data.output_format, self.logger)
         output_files = [File(path=p) for p in paths]
 
-        width, height = get_png_dimensions(paths[0])
+        width, height = get_image_dimensions(paths[0])
         return RunOutput(
             images=output_files,
             known_subjects=result.get("known_subjects", {}).get("counts"),

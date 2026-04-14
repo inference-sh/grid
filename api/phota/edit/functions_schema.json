@@ -64,6 +64,16 @@
           ],
           "title": "Resolution",
           "type": "string"
+        },
+        "output_format": {
+          "default": "png",
+          "description": "Output image format",
+          "enum": [
+            "png",
+            "jpg"
+          ],
+          "title": "Output Format",
+          "type": "string"
         }
       },
       "required": [

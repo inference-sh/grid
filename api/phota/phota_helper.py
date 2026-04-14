@@ -1,9 +1,9 @@
 import os
 import base64
-import struct
 import tempfile
 import logging
 import requests
+from PIL import Image
 
 BASE_URL = "https://api.photalabs.com/v1/phota"
 
@@ -27,9 +27,9 @@ def phota_request(endpoint: str, payload: dict, logger: logging.Logger) -> dict:
     logger.info(f"POST {url}")
 
     try:
-        resp = requests.post(url, json=payload, headers=get_headers(), timeout=300)
+        resp = requests.post(url, json=payload, headers=get_headers(), timeout=600)
     except requests.exceptions.Timeout:
-        raise RuntimeError("Phota API timed out after 300s — their server may be overloaded, please retry")
+        raise RuntimeError("Phota API timed out after 600s — their server may be overloaded, please retry")
     except requests.exceptions.ConnectionError:
         raise RuntimeError("Failed to connect to Phota API — their server may be down")
 
@@ -38,39 +38,62 @@ def phota_request(endpoint: str, payload: dict, logger: logging.Logger) -> dict:
     if resp.status_code == 402:
         raise RuntimeError("Insufficient Phota credit balance")
     if resp.status_code == 404:
-        try:
-            data = resp.json()
-        except (ValueError, requests.exceptions.JSONDecodeError):
-            raise RuntimeError(f"NOT_FOUND: {resp.text or 'Resource not found'}")
-        raise RuntimeError(f"{data.get('code', 'NOT_FOUND')}: {data.get('detail', 'Resource not found')}")
+        raise RuntimeError(_format_error(resp, "NOT_FOUND", "Resource not found"))
     if resp.status_code == 400:
-        try:
-            data = resp.json()
-        except (ValueError, requests.exceptions.JSONDecodeError):
-            raise RuntimeError(f"BAD_REQUEST: {resp.text or 'Invalid request'}")
-        raise RuntimeError(f"{data.get('code', 'BAD_REQUEST')}: {data.get('detail', 'Invalid request')}")
+        raise RuntimeError(_format_error(resp, "BAD_REQUEST", "Invalid request"))
     if resp.status_code >= 500:
         try:
             data = resp.json()
         except (ValueError, requests.exceptions.JSONDecodeError):
-            raise RuntimeError(f"Phota server error ({resp.status_code}): {resp.text or 'empty response'}")
-        raise RuntimeError(f"Phota server error: {data.get('detail', resp.text)}")
+            raise RuntimeError(f"Phota server error ({resp.status_code}) [req={resp.headers.get('X-Request-Id', '?')}]: {resp.text or 'empty response'}")
+        raise RuntimeError(f"Phota server error [req={data.get('request_id', resp.headers.get('X-Request-Id', '?'))}]: {data.get('detail', resp.text)}")
 
     resp.raise_for_status()
     return resp.json()
 
 
-def save_base64_images(b64_images: list[str], logger: logging.Logger) -> list[str]:
-    paths = []
-    for i, b64 in enumerate(b64_images):
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
-            path = tmp.name
-        image_bytes = base64.b64decode(b64)
-        with open(path, "wb") as f:
-            f.write(image_bytes)
-        logger.info(f"Saved image {i+1} ({len(image_bytes)} bytes) to {path}")
-        paths.append(path)
+def _format_error(resp: requests.Response, default_code: str, default_detail: str) -> str:
+    req_id = resp.headers.get("X-Request-Id", "?")
+    try:
+        data = resp.json()
+    except (ValueError, requests.exceptions.JSONDecodeError):
+        return f"{default_code} [req={req_id}]: {resp.text or default_detail}"
+    req_id = data.get("request_id", req_id)
+    return f"{data.get('code', default_code)} [req={req_id}]: {data.get('detail', default_detail)}"
+
+
+def save_output_images(result: dict, output_format: str, logger: logging.Logger) -> list[str]:
+    """Save images from a response (bytes or urls mode) to temp files."""
+    ext = "jpg" if output_format == "jpg" else "png"
+    paths: list[str] = []
+
+    urls = result.get("download_urls") or []
+    images = result.get("images") or []
+
+    if urls:
+        for i, url in enumerate(urls):
+            path = _tempfile_path(ext)
+            r = requests.get(url, timeout=120)
+            r.raise_for_status()
+            with open(path, "wb") as f:
+                f.write(r.content)
+            logger.info(f"Downloaded image {i+1} ({len(r.content)} bytes) to {path}")
+            paths.append(path)
+    else:
+        for i, b64 in enumerate(images):
+            path = _tempfile_path(ext)
+            image_bytes = base64.b64decode(b64)
+            with open(path, "wb") as f:
+                f.write(image_bytes)
+            logger.info(f"Saved image {i+1} ({len(image_bytes)} bytes) to {path}")
+            paths.append(path)
+
     return paths
+
+
+def _tempfile_path(ext: str) -> str:
+    with tempfile.NamedTemporaryFile(suffix=f".{ext}", delete=False) as tmp:
+        return tmp.name
 
 
 def file_to_base64(file_path: str) -> str:
@@ -78,15 +101,9 @@ def file_to_base64(file_path: str) -> str:
         return base64.b64encode(f.read()).decode("utf-8")
 
 
-def get_png_dimensions(path: str) -> tuple[int, int]:
-    """Read width and height from a PNG file header."""
-    with open(path, "rb") as f:
-        f.read(8)  # skip PNG signature
-        f.read(4)  # skip IHDR chunk length
-        f.read(4)  # skip IHDR chunk type
-        width = struct.unpack(">I", f.read(4))[0]
-        height = struct.unpack(">I", f.read(4))[0]
-    return width, height
+def get_image_dimensions(path: str) -> tuple[int, int]:
+    with Image.open(path) as img:
+        return img.size
 
 
 def resolve_image_input(image_input) -> str:
