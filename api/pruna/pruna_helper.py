@@ -139,17 +139,17 @@ def create_prediction(
 async def poll_prediction_status(
     prediction_id: str,
     logger: Optional[logging.Logger] = None,
-    poll_interval: float = 2.0,
-    max_attempts: int = 300,
+    max_wait: float = 600.0,
 ) -> Dict[str, Any]:
     """
-    Poll a prediction until completion.
+    Poll a prediction until completion with adaptive intervals.
+
+    Polling schedule: 1s for first 10s, 2s for next 10s, 5s for next 30s, then 10s.
 
     Args:
         prediction_id: Prediction ID to poll.
         logger: Optional logger for progress output.
-        poll_interval: Seconds between poll attempts.
-        max_attempts: Maximum number of poll attempts.
+        max_wait: Maximum total wait time in seconds.
 
     Returns:
         The completed prediction result.
@@ -163,7 +163,8 @@ async def poll_prediction_status(
     url = f"{PRUNA_BASE_URL}/predictions/status/{prediction_id}"
     headers = {"apikey": get_api_key()}
 
-    for attempt in range(max_attempts):
+    elapsed = 0.0
+    while elapsed < max_wait:
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
@@ -181,12 +182,24 @@ async def poll_prediction_status(
             if logger:
                 logger.error(f"Prediction failed: {error_msg}")
             raise RuntimeError(f"Prediction failed: {error_msg}")
-        else:
-            if logger and attempt % 5 == 0:
-                logger.info(f"Status: {status}, waiting...")
-            await asyncio.sleep(poll_interval)
 
-    raise RuntimeError(f"Prediction timed out after {max_attempts * poll_interval} seconds")
+        # Adaptive polling interval
+        if elapsed < 10:
+            interval = 1.0
+        elif elapsed < 20:
+            interval = 2.0
+        elif elapsed < 50:
+            interval = 5.0
+        else:
+            interval = 10.0
+
+        if logger and int(elapsed) % 10 == 0:
+            logger.info(f"Status: {status}, waiting... ({int(elapsed)}s)")
+
+        await asyncio.sleep(interval)
+        elapsed += interval
+
+    raise RuntimeError(f"Prediction timed out after {int(elapsed)} seconds")
 
 
 def get_generation_url(result: Dict[str, Any]) -> str:
@@ -265,19 +278,18 @@ def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:
 async def run_prediction(
     model: str,
     input_data: Dict[str, Any],
-    use_sync: bool = True,
+    use_sync: bool = False,
     logger: Optional[logging.Logger] = None,
 ) -> Dict[str, Any]:
     """
-    Run a prediction, handling both sync and async modes.
+    Run a prediction with async polling.
 
-    For sync mode, attempts synchronous request first.
-    For async mode (or if sync times out), polls until complete.
+    Submits the request and polls until complete using adaptive intervals.
 
     Args:
         model: Model name.
         input_data: Input parameters.
-        use_sync: Whether to try sync mode first.
+        use_sync: Ignored, kept for backwards compatibility.
         logger: Optional logger.
 
     Returns:
@@ -286,15 +298,11 @@ async def run_prediction(
     result = create_prediction(
         model=model,
         input_data=input_data,
-        try_sync=use_sync,
+        try_sync=False,
         logger=logger,
     )
 
-    # Check if sync mode returned a completed result
-    if result.get("status") == "succeeded":
-        return result
-
-    # Otherwise, poll for completion
+    # Poll for completion
     prediction_id = result.get("id")
     if not prediction_id:
         raise RuntimeError("No prediction ID in response")
