@@ -1,0 +1,25 @@
+namespace: falai
+name: kling-video-v2-i2v
+description: Generate videos from a starting image using Kling v2.0 Master model.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - kling-v2
+        - image-to-video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

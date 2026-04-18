@@ -1,0 +1,22 @@
+namespace: falai
+name: kling-video-v2-6-i2v
+description: Generate videos from images using Kling Video v2.6 Pro model.
+metadata:
+    provider: kling
+    tags: [kling, kling-v2-6, image-to-video]
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

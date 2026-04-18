@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ShotTypeEnum": {
+      "description": "Shot type for camera control.",
+      "enum": [
+        "customize",
+        "intelligent"
+      ],
+      "title": "ShotTypeEnum",
+      "type": "string"
+    },
+    "TierEnum": {
+      "description": "Generation tier \u2014 pro for highest quality, standard for faster/cheaper.",
+      "enum": [
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling Video V3 Image-to-Video.",
+  "properties": {
+    "image": {
+      "description": "Starting frame image to animate.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text prompt for motion guidance.",
+      "examples": [
+        "A woman slowly turns her head and smiles"
+      ],
+      "title": "Prompt"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional ending frame. The video will transition from the starting image to this image.",
+      "title": "End Image"
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "pro",
+      "description": "Generation tier. Pro for highest quality, standard for faster generation."
+    },
+    "shot_type": {
+      "$ref": "#/$defs/ShotTypeEnum",
+      "default": "customize",
+      "description": "Shot type for camera control. Use intelligent to let the model decide."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (3-15)."
+    },
+    "cfg_scale": {
+      "default": 0.5,
+      "description": "Classifier-free guidance scale.",
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "negative_prompt": {
+      "default": "blur, distort, and low quality",
+      "description": "Negative prompt to avoid unwanted artifacts.",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate synchronized audio.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

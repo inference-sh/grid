@@ -1,0 +1,25 @@
+namespace: falai
+name: kling-video-to-audio
+description: Add sound effects and background music to videos using Kling's audio generation model.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - video-to-audio
+        - audio
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

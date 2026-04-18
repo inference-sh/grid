@@ -1,0 +1,27 @@
+namespace: falai
+name: kling-ai-avatar-v2
+description: Generate AI avatar videos from a face image and driving audio using Kling's avatar model. Supports pro and standard quality tiers.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - ai-avatar
+        - avatar
+        - lip-sync
+        - video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

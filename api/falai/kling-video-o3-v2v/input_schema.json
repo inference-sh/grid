@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "enum": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "edit",
+        "reference"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    },
+    "TierEnum": {
+      "enum": [
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling O3 Video-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the desired transformation.",
+      "examples": [
+        "Transform the scene into a watercolor painting style"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "video": {
+      "description": "Input video to transform. Supported formats: MP4, MOV.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "edit",
+      "description": "Video-to-video mode. 'edit' modifies the input video, 'reference' uses it as style reference."
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "pro",
+      "description": "Model tier. Pro offers higher quality, standard is faster and cheaper."
+    },
+    "image_urls": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional reference images for style guidance.",
+      "title": "Image Urls"
+    },
+    "keep_audio": {
+      "default": true,
+      "description": "Whether to keep the original audio from the input video.",
+      "title": "Keep Audio",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AspectRatioEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Aspect ratio for the output video. Only used in reference mode."
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DurationEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Duration of the output video in seconds (3-15). Only used in reference mode."
+    }
+  },
+  "required": [
+    "prompt",
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Input schema for Kling Create Voice.",
+  "properties": {
+    "voice": {
+      "description": "Audio (.mp3/.wav) or video (.mp4/.mov) sample for voice cloning. Must be 10-300 seconds, max 100MB.",
+      "format": "file",
+      "title": "Voice",
+      "type": "string"
+    }
+  },
+  "required": [
+    "voice"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

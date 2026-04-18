@@ -1,0 +1,34 @@
+{
+  "description": "Input schema for Kling Video-to-Audio.",
+  "properties": {
+    "video": {
+      "description": "Input video to add audio to. Supported formats: MP4, MOV.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "sound_effect_prompt": {
+      "default": "Car tires screech, engine revving loudly, gravel crunching under wheels",
+      "description": "Prompt describing the sound effects to generate for the video.",
+      "title": "Sound Effect Prompt",
+      "type": "string"
+    },
+    "background_music_prompt": {
+      "default": "intense car race",
+      "description": "Prompt describing the background music style.",
+      "title": "Background Music Prompt",
+      "type": "string"
+    },
+    "asmr_mode": {
+      "default": false,
+      "description": "Enable ASMR mode for softer, more intimate audio generation.",
+      "title": "Asmr Mode",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

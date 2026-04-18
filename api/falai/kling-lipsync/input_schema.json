@@ -1,0 +1,158 @@
+{
+  "$defs": {
+    "ModeEnum": {
+      "description": "Lip-sync mode \u2014 audio drives from an audio file, text uses TTS.",
+      "enum": [
+        "audio",
+        "text"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    },
+    "VoiceIdEnum": {
+      "description": "Available voice IDs for text-to-video mode.",
+      "enum": [
+        "genshin_vindi2",
+        "zhinen_xuesheng",
+        "AOT",
+        "ai_shatang",
+        "genshin_klee2",
+        "genshin_kirara",
+        "ai_kaiya",
+        "oversea_male1",
+        "ai_chenjiahao_712",
+        "girlfriend_4_speech02",
+        "chat1_female_new-3",
+        "chat_0407_5-1",
+        "cartoon-boy-07",
+        "uk_boy1",
+        "cartoon-girl-01",
+        "PeppaPig_platform",
+        "ai_huangzhong_712",
+        "ai_huangyaoshi_712",
+        "ai_laoguowang_712",
+        "chengshu_jiejie",
+        "you_pingjing",
+        "calm_story1",
+        "uk_man2",
+        "laopopo_speech02",
+        "heainainai_speech02",
+        "reader_en_m-v1",
+        "commercial_lady_en_f-v1",
+        "tiyuxi_xuedi",
+        "tiexin_nanyou",
+        "girlfriend_1_speech02",
+        "girlfriend_2_speech02",
+        "zhuxi_speech02",
+        "uk_oldman3",
+        "dongbeilaotie_speech02",
+        "chongqingxiaohuo_speech02",
+        "chuanmeizi_speech02",
+        "chaoshandashu_speech02",
+        "ai_taiwan_man2_speech02",
+        "xianzhanggui_speech02",
+        "tianjinjiejie_speech02",
+        "diyinnansang_DB_CN_M_04-v2",
+        "yizhipiannan-v1",
+        "guanxiaofang-v2",
+        "tianmeixuemei-v1",
+        "daopianyansang-v1",
+        "mengwa-v1"
+      ],
+      "title": "VoiceIdEnum",
+      "type": "string"
+    },
+    "VoiceLanguageEnum": {
+      "description": "Language for TTS voice.",
+      "enum": [
+        "zh",
+        "en"
+      ],
+      "title": "VoiceLanguageEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling Lip-Sync.",
+  "properties": {
+    "video": {
+      "description": "Source video to lip-sync. The model will modify lip movements to match the audio or text.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "audio",
+      "description": "Lip-sync mode. Audio mode uses an audio file to drive lip movements, text mode uses TTS."
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Driving audio file for audio mode. Must be 2-120 seconds long.",
+      "title": "Audio"
+    },
+    "text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text input for text mode. Maximum 120 characters.",
+      "title": "Text"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VoiceIdEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice ID for text mode TTS. Required when mode is text."
+    },
+    "voice_language": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VoiceLanguageEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Language for TTS voice (zh or en)."
+    },
+    "voice_speed": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 1.0,
+      "description": "Speech rate for TTS voice. 1.0 is normal speed.",
+      "title": "Voice Speed"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

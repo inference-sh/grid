@@ -1,0 +1,26 @@
+namespace: falai
+name: kling-video-v3-t2v
+description: Generate videos from text prompts using Kling Video V3. Supports pro and standard tiers with 3-15s duration and native audio.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - kling-v3
+        - text-to-video
+        - audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

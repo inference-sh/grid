@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "TierEnum": {
+      "description": "Quality tier \u2014 master is highest quality, pro is balanced, standard is fastest.",
+      "enum": [
+        "master",
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling Video v2.1 Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the desired motion and scene.",
+      "examples": [
+        "The camera slowly zooms in as the subject smiles and waves."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "The source image to animate.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "cfg_scale": {
+      "default": 0.5,
+      "description": "Classifier-free guidance scale. Higher values follow the prompt more strictly.",
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "negative_prompt": {
+      "default": "blur, distort, and low quality",
+      "description": "Negative prompt to guide what to avoid in generation.",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds."
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "master",
+      "description": "Quality tier. Master is highest quality, pro is balanced, standard is fastest."
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

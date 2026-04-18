@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling v2.0 Master Text-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the video to generate.",
+      "examples": [
+        "A golden retriever running through a field of sunflowers at sunset"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (5 or 10)."
+    },
+    "cfg_scale": {
+      "default": 0.5,
+      "description": "Classifier-free guidance scale. Controls how closely the video follows the prompt.",
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Negative prompt to guide generation away from unwanted content.",
+      "title": "Negative Prompt"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

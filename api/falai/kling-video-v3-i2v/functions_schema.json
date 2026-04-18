@@ -1,0 +1,449 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "$defs": {
+        "DurationEnum": {
+          "description": "Video duration options in seconds.",
+          "enum": [
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+          ],
+          "title": "DurationEnum",
+          "type": "string"
+        },
+        "ShotTypeEnum": {
+          "description": "Shot type for camera control.",
+          "enum": [
+            "customize",
+            "intelligent"
+          ],
+          "title": "ShotTypeEnum",
+          "type": "string"
+        },
+        "TierEnum": {
+          "description": "Generation tier \u2014 pro for highest quality, standard for faster/cheaper.",
+          "enum": [
+            "pro",
+            "standard"
+          ],
+          "title": "TierEnum",
+          "type": "string"
+        }
+      },
+      "description": "Input schema for Kling Video V3 Image-to-Video.",
+      "properties": {
+        "image": {
+          "description": "Starting frame image to animate.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Text prompt for motion guidance.",
+          "examples": [
+            "A woman slowly turns her head and smiles"
+          ],
+          "title": "Prompt"
+        },
+        "end_image": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional ending frame. The video will transition from the starting image to this image.",
+          "title": "End Image"
+        },
+        "tier": {
+          "$ref": "#/$defs/TierEnum",
+          "default": "pro",
+          "description": "Generation tier. Pro for highest quality, standard for faster generation."
+        },
+        "shot_type": {
+          "$ref": "#/$defs/ShotTypeEnum",
+          "default": "customize",
+          "description": "Shot type for camera control. Use intelligent to let the model decide."
+        },
+        "duration": {
+          "$ref": "#/$defs/DurationEnum",
+          "default": "5",
+          "description": "Duration of the video in seconds (3-15)."
+        },
+        "cfg_scale": {
+          "default": 0.5,
+          "description": "Classifier-free guidance scale.",
+          "title": "Cfg Scale",
+          "type": "number"
+        },
+        "negative_prompt": {
+          "default": "blur, distort, and low quality",
+          "description": "Negative prompt to avoid unwanted artifacts.",
+          "title": "Negative Prompt",
+          "type": "string"
+        },
+        "generate_audio": {
+          "default": true,
+          "description": "Whether to generate synchronized audio.",
+          "title": "Generate Audio",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "AppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "description": "Output schema for Kling Video V3 Image-to-Video.",
+      "properties": {
+        "video": {
+          "description": "The generated video file.",
+          "format": "file",
+          "title": "Video",
+          "type": "string"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The seed used for generation.",
+          "title": "Seed"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "video"
+      ],
+      "title": "AppOutput",
+      "type": "object"
+    }
+  }
+}

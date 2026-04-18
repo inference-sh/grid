@@ -1,0 +1,25 @@
+namespace: falai
+name: kling-video-o3-i2v
+description: Generate videos from a starting image using Kling O3 model. Supports pro and standard tiers.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - kling-o3
+        - image-to-video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

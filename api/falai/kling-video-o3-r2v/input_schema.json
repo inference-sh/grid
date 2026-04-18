@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "enum": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "TierEnum": {
+      "enum": [
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling O3 Reference-to-Video.",
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The text prompt describing the video. Reference style images as @Image1, @Image2, etc.",
+      "examples": [
+        "A woman in the style of @Image1 walks through a garden"
+      ],
+      "title": "Prompt"
+    },
+    "start_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional starting frame image for the video.",
+      "title": "Start Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional ending frame image. The video will transition toward this image.",
+      "title": "End Image"
+    },
+    "image_urls": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Style reference images. Referenced in the prompt as @Image1, @Image2, etc.",
+      "title": "Image Urls"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (3-15)."
+    },
+    "generate_audio": {
+      "default": false,
+      "description": "Whether to generate audio for the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "pro",
+      "description": "Model tier. Pro offers higher quality, standard is faster and cheaper."
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,45 @@
+{
+  "$defs": {
+    "TierEnum": {
+      "description": "Quality tier \u2014 pro uses the full model, standard is faster and cheaper.",
+      "enum": [
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling AI Avatar v2.",
+  "properties": {
+    "image": {
+      "description": "Avatar face image. The model will animate this face to match the audio.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "audio": {
+      "description": "Driving audio. The avatar will lip-sync and move to this audio.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "prompt": {
+      "default": ".",
+      "description": "Generation prompt to guide the avatar's appearance and behavior.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "pro",
+      "description": "Quality tier. Pro gives higher fidelity, standard is faster and cheaper."
+    }
+  },
+  "required": [
+    "image",
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

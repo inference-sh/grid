@@ -1,0 +1,25 @@
+namespace: falai
+name: kling-create-voice
+description: Clone a voice from an audio or video sample using Kling's voice creation API. Returns a voice ID for use with lip-sync text mode.
+metadata:
+    provider: kling
+    tags:
+        - kling
+        - voice-cloning
+        - tts
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

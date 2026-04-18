@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "DurationEnum": {
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling v2.0 Master Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt describing the desired motion and action for the video.",
+      "examples": [
+        "The woman slowly turns her head and smiles at the camera"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "Starting frame image to animate. Supported formats: JPEG, PNG, WebP.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (5 or 10)."
+    },
+    "cfg_scale": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Classifier-free guidance scale. Controls how closely the video follows the prompt.",
+      "title": "Cfg Scale"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Negative prompt to guide generation away from unwanted content.",
+      "title": "Negative Prompt"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

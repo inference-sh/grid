@@ -1,0 +1,22 @@
+namespace: falai
+name: kling-video-v2-6-motion
+description: Generate videos with motion control from reference image and video using Kling Video v2.6.
+metadata:
+    provider: kling
+    tags: [kling, kling-v2-6, motion-control]
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

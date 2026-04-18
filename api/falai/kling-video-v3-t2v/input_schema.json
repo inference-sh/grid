@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "description": "Video aspect ratio options.",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "description": "Video duration options in seconds.",
+      "enum": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ShotTypeEnum": {
+      "description": "Multi-shot type options.",
+      "enum": [
+        "customize",
+        "intelligent"
+      ],
+      "title": "ShotTypeEnum",
+      "type": "string"
+    },
+    "TierEnum": {
+      "description": "Generation tier \u2014 pro for highest quality, standard for faster/cheaper.",
+      "enum": [
+        "pro",
+        "standard"
+      ],
+      "title": "TierEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Kling Video V3 Text-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "The text prompt used to generate the video. Describe the scene, subject, and motion.",
+      "examples": [
+        "A golden retriever running through a sunlit meadow with butterflies, cinematic slow motion."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "tier": {
+      "$ref": "#/$defs/TierEnum",
+      "default": "pro",
+      "description": "pro for highest quality generation, standard for faster results."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Duration of the video in seconds (3-15)."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "The aspect ratio of the generated video."
+    },
+    "shot_type": {
+      "$ref": "#/$defs/ShotTypeEnum",
+      "default": "intelligent",
+      "description": "Multi-shot type. Use intelligent for automatic shot composition or customize for manual control."
+    },
+    "cfg_scale": {
+      "default": 0.5,
+      "description": "Classifier free guidance scale. Higher values follow the prompt more closely.",
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "negative_prompt": {
+      "default": "blur, distort, and low quality",
+      "description": "Negative prompt to guide what to avoid in the generated video.",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate native synchronized audio for the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "multi_prompt": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of prompts for multi-shot generation. Used when shot_type is customize.",
+      "title": "Multi Prompt"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation. Use None for random.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
