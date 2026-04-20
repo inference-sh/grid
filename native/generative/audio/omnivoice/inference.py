@@ -66,8 +66,11 @@ class App(BaseApp):
         dtype = torch.float16 if self.device.type == "cuda" else torch.float32
         print(f"Loading OmniVoice on {self.device} with {dtype}")
 
-        self.model = OmniVoice.from_pretrained("k2-fsa/OmniVoice")
-        self.model = self.model.to(device=self.device, dtype=dtype)
+        self.model = OmniVoice.from_pretrained(
+            "k2-fsa/OmniVoice",
+            device_map=str(self.device),
+            dtype=dtype,
+        )
         print("OmniVoice model loaded")
 
     async def run(self, input_data: AppInput) -> AppOutput:
