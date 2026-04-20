@@ -1,5 +1,6 @@
 pydantic >= 2.0.0
 inferencesh
+accelerate
 omnivoice
 torch
 soundfile

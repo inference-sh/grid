@@ -58,17 +58,16 @@ class AppOutput(BaseAppOutput):
 class App(BaseApp):
     async def setup(self):
         import torch
+        from accelerate import Accelerator
         from omnivoice import OmniVoice
 
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-        print(f"Loading OmniVoice on {device} with {dtype}")
+        accelerator = Accelerator()
+        self.device = accelerator.device
+        dtype = torch.float16 if self.device.type == "cuda" else torch.float32
+        print(f"Loading OmniVoice on {self.device} with {dtype}")
 
-        self.model = OmniVoice.from_pretrained(
-            "k2-fsa/OmniVoice",
-            device_map=device,
-            dtype=dtype,
-        )
+        self.model = OmniVoice.from_pretrained("k2-fsa/OmniVoice")
+        self.model = self.model.to(device=self.device, dtype=dtype)
         print("OmniVoice model loaded")
 
     async def run(self, input_data: AppInput) -> AppOutput:
