@@ -1,0 +1,27 @@
+namespace: openai
+name: gpt-image-2
+description: Generate and edit images using OpenAI's GPT Image 2 model. Supports text-to-image, image editing with reference images, and mask-based inpainting.
+metadata:
+    provider: openai
+    tags:
+        - openai
+        - image-generation
+        - text-to-image
+        - image-editing
+        - gpt-image-2
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key for GPT Image 2 access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

@@ -1,0 +1,111 @@
+{
+  "description": "Input schema for GPT Image 2 generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image.",
+      "examples": [
+        "A cat wearing a tiny top hat, oil painting style"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional reference image(s) for editing. When a mask is provided, it applies to the first image.",
+      "title": "Images"
+    },
+    "mask": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional mask image indicating areas to edit (requires input images). Transparent areas in the mask indicate where the image should be edited. Applied to the first image.",
+      "title": "Mask"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Output image width in pixels. Must be a multiple of 16.",
+      "maximum": 3840,
+      "minimum": 256,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Output image height in pixels. Must be a multiple of 16.",
+      "maximum": 3840,
+      "minimum": 256,
+      "title": "Height",
+      "type": "integer"
+    },
+    "quality": {
+      "default": "auto",
+      "description": "Rendering quality. 'low' for fast drafts, 'high' for final assets.",
+      "enum": [
+        "auto",
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images to generate (1-10).",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    },
+    "output_format": {
+      "default": "png",
+      "description": "Output file format.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_compression": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Compression level for jpeg/webp (0-100). Ignored for png.",
+      "title": "Output Compression"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
