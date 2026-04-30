@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for HappyHorse 1.0 Reference-to-Video.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video scene. Use '[Image 1]', '[Image 2]' etc. to reference images in order. You must specify the object from the reference image, e.g. 'the woman in a red qipao in [Image 1]'. Up to 5000 non-Chinese characters.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "description": "Reference images for characters/objects/scenes. 1-9 images. Formats: JPEG, JPG, PNG, WEBP. Shortest side at least 400px (720P+ recommended). Up to 10MB each.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Video resolution: 720P or 1080P (default)."
+    },
+    "ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio of the generated video."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-15).",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'HappyHorse' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "reference_images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,20 @@
+namespace: alibaba
+name: happyhorse-1-0-r2v
+description: HappyHorse 1.0 Reference-to-Video generates videos preserving subject characters from up to 9 reference images, with enhanced stability in subject and scene referencing via DashScope API
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: DASHSCOPE_API_KEY
+      description: Alibaba Cloud DashScope API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,0 +1,17 @@
+annotated-types==0.7.0
+certifi==2026.4.22
+charset-normalizer==3.4.7
+idna==3.13
+inferencesh==0.6.31
+ninja==1.13.0
+packaging==26.2
+pydantic==2.13.3
+pydantic-core==2.46.3
+requests==2.33.1
+setuptools==82.0.1
+setuptools-scm==10.0.5
+tqdm==4.67.3
+typing-extensions==4.15.0
+typing-inspection==0.4.2
+urllib3==2.6.3
+vcs-versioning==1.1.1

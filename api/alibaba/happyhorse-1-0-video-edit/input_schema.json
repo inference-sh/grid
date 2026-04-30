@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "AudioSettingEnum": {
+      "enum": [
+        "auto",
+        "origin"
+      ],
+      "title": "AudioSettingEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for HappyHorse 1.0 Video Edit.",
+  "properties": {
+    "prompt": {
+      "description": "Editing instruction describing what to change. Up to 5000 non-Chinese characters. E.g., 'Make the character wear the striped sweater from the image'.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "video": {
+      "description": "Video to edit. MP4/MOV (H.264 recommended). Duration: 3-60s. Resolution: longer side <= 2160px, shorter side >= 320px. Aspect ratio: 1:2.5 to 2.5:1. Up to 100MB. Frame rate > 8fps.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for editing (e.g., clothing to apply). Up to 5 images. JPEG/JPG/PNG/WEBP, width and height at least 300px. Up to 10MB each.",
+      "title": "Reference Images"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Output resolution: 720P or 1080P (default)."
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'HappyHorse' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "audio_setting": {
+      "$ref": "#/$defs/AudioSettingEnum",
+      "default": "auto",
+      "description": "Audio handling: 'auto' (model decides) or 'origin' (keep original audio)."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

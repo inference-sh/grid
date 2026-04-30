@@ -1,0 +1,20 @@
+namespace: pruna
+name: p-video-avatar
+description: Generate talking head videos from a portrait image with text or audio-driven speech
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

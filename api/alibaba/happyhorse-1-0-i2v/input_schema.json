@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "720P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for HappyHorse 1.0 Image-to-Video.",
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text description of the video to generate. Up to 5000 non-Chinese characters or 2500 Chinese characters.",
+      "title": "Prompt"
+    },
+    "first_frame": {
+      "description": "First frame image. Formats: JPEG, JPG, PNG, WEBP. Resolution: width and height at least 300px. Aspect ratio: 1:2.5 to 2.5:1. Up to 10MB.",
+      "format": "file",
+      "title": "First Frame",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Video resolution: 720P or 1080P (default). Output aspect ratio follows the input image."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-15).",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add 'HappyHorse' watermark to bottom-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducibility (0-2147483647).",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "first_frame"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
