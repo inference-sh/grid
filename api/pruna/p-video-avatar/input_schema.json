@@ -62,6 +62,18 @@
     }
   },
   "description": "Input schema for P-Video-Avatar.",
+  "oneOf": [
+    {
+      "required": [
+        "voice_script"
+      ]
+    },
+    {
+      "required": [
+        "audio"
+      ]
+    }
+  ],
   "properties": {
     "image": {
       "description": "Portrait image (first frame). Supports jpg, jpeg, png, webp.",
@@ -80,7 +92,8 @@
       ],
       "default": null,
       "description": "Script for the person to say. Required if no audio provided.",
-      "title": "Voice Script"
+      "title": "Voice Script",
+      "x-promoted": true
     },
     "audio": {
       "anyOf": [
@@ -94,7 +107,8 @@
       ],
       "default": null,
       "description": "Audio file to drive speech. If both audio and voice_script are provided, audio is used.",
-      "title": "Audio"
+      "title": "Audio",
+      "x-promoted": true
     },
     "voice": {
       "$ref": "#/$defs/VoiceEnum",
