@@ -61,19 +61,27 @@
       "type": "string"
     }
   },
-  "description": "Input schema for P-Video-Avatar.",
-  "oneOf": [
+  "anyOf": [
     {
-      "required": [
-        "voice_script"
-      ]
+      "properties": {
+        "voice_script": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
     },
     {
-      "required": [
-        "audio"
-      ]
+      "properties": {
+        "audio": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
     }
   ],
+  "description": "Input schema for P-Video-Avatar.",
   "properties": {
     "image": {
       "description": "Portrait image (first frame). Supports jpg, jpeg, png, webp.",

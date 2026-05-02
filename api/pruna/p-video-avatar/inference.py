@@ -81,9 +81,9 @@ class AppInput(BaseAppInput):
 
     model_config = {
         "json_schema_extra": {
-            "oneOf": [
-                {"required": ["voice_script"]},
-                {"required": ["audio"]}
+            "anyOf": [
+                {"properties": {"voice_script": {"not": {"type": "null"}}}},
+                {"properties": {"audio": {"not": {"type": "null"}}}}
             ]
         }
     }
