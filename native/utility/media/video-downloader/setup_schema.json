@@ -1,5 +1,5 @@
 {
-  "description": "Setup configuration for YouTube Downloader.",
+  "description": "Setup configuration for Video Downloader.",
   "properties": {},
   "title": "AppSetup",
   "type": "object"

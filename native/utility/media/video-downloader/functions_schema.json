@@ -1,6 +1,6 @@
 {
   "run": {
-    "description": "Download YouTube content with specified options.\n\nJust provide a URL for a quick MP3 download, or customize all options!",
+    "description": "Download video/audio content with specified options.\n\nSupports YouTube, Instagram, Twitter/X, TikTok, and 1000+ sites.\nJust provide a URL for a quick download, or customize all options!",
     "input_schema": {
       "$defs": {
         "AudioCodec": {
@@ -63,10 +63,10 @@
           "type": "string"
         }
       },
-      "description": "Input for downloading YouTube content.\n\nProvide a YouTube URL and customize export options.\nJust provide the URL for a quick MP3 download with good defaults!",
+      "description": "Input for downloading video/audio content.\n\nProvide a URL from YouTube, Instagram, Twitter/X, TikTok, or 1000+ supported sites.\nJust provide the URL for a quick download with good defaults!",
       "properties": {
         "url": {
-          "description": "YouTube video URL (e.g., https://www.youtube.com/watch?v=xxxxx or https://youtu.be/xxxxx)",
+          "description": "Video URL (YouTube, Instagram, Twitter/X, TikTok, and 1000+ sites supported)",
           "title": "Url",
           "type": "string"
         },
@@ -106,6 +106,41 @@
           "description": "Include metadata like title, artist, etc. in the output file (default: true)",
           "title": "Include Metadata",
           "type": "boolean"
+        },
+        "include_transcript": {
+          "default": false,
+          "description": "Include transcript/subtitles if available (default: false). Returns auto-generated or manual captions.",
+          "title": "Include Transcript",
+          "type": "boolean"
+        },
+        "transcript_langs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preferred transcript languages in order of priority (e.g. ['en', 'es']). Defaults to ['en'] if not specified.",
+          "title": "Transcript Langs"
+        },
+        "proxy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proxy URL for downloading (e.g. http://user:pass@host:port or socks5://host:port)",
+          "title": "Proxy"
         }
       },
       "required": [
@@ -329,6 +364,33 @@
           "title": "TextMeta",
           "type": "object"
         },
+        "TranscriptSegment": {
+          "description": "A single transcript/subtitle segment",
+          "properties": {
+            "start": {
+              "description": "Start time in seconds",
+              "title": "Start",
+              "type": "number"
+            },
+            "end": {
+              "description": "End time in seconds",
+              "title": "End",
+              "type": "number"
+            },
+            "text": {
+              "description": "Transcript text",
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "text"
+          ],
+          "title": "TranscriptSegment",
+          "type": "object"
+        },
         "VideoInfo": {
           "description": "Metadata about the downloaded video/audio",
           "properties": {
@@ -338,7 +400,7 @@
               "type": "string"
             },
             "channel": {
-              "description": "Channel name",
+              "description": "Channel/uploader name",
               "title": "Channel",
               "type": "string"
             },
@@ -385,6 +447,19 @@
               "default": null,
               "description": "Video description (truncated)",
               "title": "Description"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Source platform (e.g. youtube, instagram, twitter)",
+              "title": "Source"
             }
           },
           "required": [
@@ -465,7 +540,7 @@
           "type": "object"
         }
       },
-      "description": "Output from the YouTube downloader.",
+      "description": "Output from the video downloader.",
       "properties": {
         "file": {
           "description": "Downloaded audio/video file",
@@ -481,6 +556,35 @@
           "description": "Format that was downloaded (e.g., 'audio mp3 320kbps')",
           "title": "Format Downloaded",
           "type": "string"
+        },
+        "transcript": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/TranscriptSegment"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Transcript segments with timestamps, if requested and available",
+          "title": "Transcript"
+        },
+        "transcript_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Full transcript as plain text, if requested and available",
+          "title": "Transcript Text"
         },
         "output_meta": {
           "anyOf": [

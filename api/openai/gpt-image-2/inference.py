@@ -5,7 +5,7 @@ Generate and edit images using OpenAI's gpt-image-2 model.
 Supports text-to-image generation, image editing with reference images, and mask-based editing.
 """
 
-from typing import Optional
+from typing import Literal, Optional
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
 from pydantic import Field
@@ -19,6 +19,8 @@ from .openai_helper import (
     make_size_string,
     save_base64_image,
 )
+
+ModerationLevel = Literal["auto", "low"]
 
 
 class AppInput(BaseAppInput):
@@ -68,6 +70,10 @@ class AppInput(BaseAppInput):
         ge=0,
         le=100,
         description="Compression level for jpeg/webp (0-100). Ignored for png.",
+    )
+    moderation: ModerationLevel = Field(
+        default="auto",
+        description="Content moderation strictness. 'auto' applies standard filtering; 'low' is less restrictive.",
     )
 
 
@@ -158,6 +164,7 @@ class App(BaseApp):
             "size": size_str,
             "quality": input_data.quality,
             "output_format": input_data.output_format,
+            "moderation": input_data.moderation,
         }
         if input_data.output_compression is not None and input_data.output_format != "png":
             kwargs["output_compression"] = input_data.output_compression
@@ -189,7 +196,10 @@ class App(BaseApp):
                 open_files.append(mask_f)
                 kwargs["mask"] = mask_f
 
-            response = await self.client.images.edit(**kwargs)
+            response = await self.client.images.edit(
+                **kwargs,
+                extra_body={"moderation": input_data.moderation},
+            )
             return [img.b64_json for img in response.data]
         finally:
             for f in open_files:

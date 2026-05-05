@@ -1,6 +1,6 @@
-# YouTube Downloader
+# Video Downloader
 
-Download audio and video from YouTube.
+Download audio and video from YouTube, Instagram, Twitter/X, TikTok, and 1000+ sites.
 
 ## Features
 
@@ -8,6 +8,8 @@ Download audio and video from YouTube.
 - Video with audio (MP4, WebM)
 - Quality selection
 - Metadata embedding
+- Transcript extraction (when available)
+- Proxy support
 
 ## Usage
 
@@ -15,7 +17,17 @@ Download audio and video from YouTube.
 {
   "url": "https://youtube.com/watch?v=...",
   "export_format": "audio_only",
-  "audio_format": "mp3"
+  "audio_codec": "mp3"
+}
+```
+
+With proxy and transcript:
+```json
+{
+  "url": "https://instagram.com/reel/...",
+  "export_format": "video_with_audio",
+  "include_transcript": true,
+  "proxy": "http://user:pass@host:port"
 }
 ```
 

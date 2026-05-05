@@ -101,6 +101,16 @@
       "default": null,
       "description": "Compression level for jpeg/webp (0-100). Ignored for png.",
       "title": "Output Compression"
+    },
+    "moderation": {
+      "default": "auto",
+      "description": "Content moderation strictness. 'auto' applies standard filtering; 'low' is less restrictive.",
+      "enum": [
+        "auto",
+        "low"
+      ],
+      "title": "Moderation",
+      "type": "string"
     }
   },
   "required": [

@@ -2,59 +2,28 @@
 #    uv pip compile --python-version 3.11 --index-strategy unsafe-best-match --prerelease allow requirements.txt -o requirements.txt.compiled
 annotated-types==0.7.0
     # via pydantic
-anyio==4.13.0
-    # via
-    #   httpx
-    #   openai
-certifi==2026.2.25
-    # via
-    #   httpcore
-    #   httpx
-    #   requests
+certifi==2026.4.22
+    # via requests
 charset-normalizer==3.4.7
     # via requests
-distro==1.9.0
-    # via openai
-h11==0.16.0
-    # via httpcore
-httpcore==1.0.9
-    # via httpx
-httpx==0.28.1
-    # via
-    #   -r requirements.txt
-    #   openai
-idna==3.12
-    # via
-    #   anyio
-    #   httpx
-    #   requests
-inferencesh==0.6.31
+idna==3.13
+    # via requests
+inferencesh==0.6.32
     # via -r requirements.txt
-jiter==0.14.0
-    # via openai
-openai==2.34.0
-    # via -r requirements.txt
-pillow==12.2.0
+mutagen==1.47.0
     # via -r requirements.txt
 pydantic==2.13.3
     # via
     #   -r requirements.txt
     #   inferencesh
-    #   openai
 pydantic-core==2.46.3
     # via pydantic
 requests==2.33.1
     # via inferencesh
-sniffio==1.3.1
-    # via openai
 tqdm==4.67.3
-    # via
-    #   inferencesh
-    #   openai
+    # via inferencesh
 typing-extensions==4.15.0
     # via
-    #   anyio
-    #   openai
     #   pydantic
     #   pydantic-core
     #   typing-inspection
@@ -62,3 +31,5 @@ typing-inspection==0.4.2
     # via pydantic
 urllib3==2.6.3
     # via requests
+yt-dlp==2026.4.30.234007.dev0
+    # via -r requirements.txt

@@ -1,6 +1,6 @@
 namespace: infsh
-name: youtube-downloader
-description: Download YouTube videos and audio with customizable quality, format, and codec options. Supports audio-only extraction, video+audio, or video-only downloads.
+name: video-downloader
+description: Download videos and audio from YouTube, Instagram, Twitter/X, TikTok and 1000+ sites. Supports audio-only extraction, video+audio, or video-only with customizable quality, codec, and proxy options.
 metadata:
     author: inference.sh
     features:
