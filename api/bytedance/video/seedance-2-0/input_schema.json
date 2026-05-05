@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "RatioEnum": {
+      "description": "Aspect ratio options.",
+      "enum": [
+        "adaptive",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "description": "Video resolution options.",
+      "enum": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedance 2.0 video generation.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_image/reference_video/reference_audio",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+      "examples": [
+        "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First-frame image for image-to-video generation. Mutually exclusive with reference_image/reference_video/reference_audio.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last-frame image for first+last frame video generation. Requires image to be set as the first frame.",
+      "title": "End Image"
+    },
+    "reference_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference image for multimodal reference-to-video. Use prompt to describe how to use it.",
+      "title": "Reference Image"
+    },
+    "reference_image_2": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Second reference image for multimodal reference-to-video.",
+      "title": "Reference Image 2"
+    },
+    "reference_image_3": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Third reference image for multimodal reference-to-video.",
+      "title": "Reference Image 3"
+    },
+    "reference_video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference video for multimodal generation. Max 15s, formats: mp4/mov.",
+      "title": "Reference Video"
+    },
+    "reference_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference audio for multimodal generation. Max 15s, formats: wav/mp3. Requires at least one image or video.",
+      "title": "Reference Audio"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest."
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "adaptive",
+      "description": "Aspect ratio. 'adaptive' auto-selects based on input content."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Duration in seconds (4-15), or -1 for auto-select.",
+      "title": "Duration",
+      "type": "integer"
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate synchronized audio with the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Seed for reproducibility (-1 for random).",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Whether to add watermark to the output video.",
+      "title": "Watermark",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

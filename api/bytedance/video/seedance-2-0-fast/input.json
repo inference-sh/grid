@@ -1,0 +1,9 @@
+{
+    "prompt": "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains.",
+    "resolution": "720p",
+    "ratio": "16:9",
+    "duration": 5,
+    "generate_audio": true,
+    "seed": -1,
+    "watermark": false
+}

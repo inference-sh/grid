@@ -44,6 +44,7 @@ def create_content_task(
     model: str,
     content: List[Dict[str, Any]],
     logger: Optional[logging.Logger] = None,
+    **kwargs,
 ) -> str:
     """
     Create a content generation task (video/image).
@@ -53,6 +54,8 @@ def create_content_task(
         model: Model ID (e.g., "seedance-1-5-pro-251215").
         content: List of content items (text prompts, images, etc.).
         logger: Optional logger for output.
+        **kwargs: Additional parameters passed to the API (e.g. generate_audio,
+            resolution, ratio, duration, seed, watermark).
 
     Returns:
         Task ID for polling.
@@ -63,6 +66,7 @@ def create_content_task(
     result = client.content_generation.tasks.create(
         model=model,
         content=content,
+        **kwargs,
     )
 
     task_id = result.id
@@ -185,19 +189,63 @@ def build_text_content(text: str, **params) -> Dict[str, str]:
     }
 
 
-def build_image_content(image_url: str) -> Dict[str, Any]:
+def build_image_content(image_url: str, role: Optional[str] = None) -> Dict[str, Any]:
     """
     Build an image content item for BytePlus API.
 
     Args:
         image_url: URL of the image (first frame, reference image, etc.)
+        role: Optional role (first_frame, last_frame, reference_image).
+
+    Returns:
+        Content dict for the API.
+    """
+    item: Dict[str, Any] = {
+        "type": "image_url",
+        "image_url": {
+            "url": image_url,
+        },
+    }
+    if role:
+        item["role"] = role
+    return item
+
+
+def build_video_content(video_url: str, role: str = "reference_video") -> Dict[str, Any]:
+    """
+    Build a video content item for BytePlus API (Seedance 2.0+).
+
+    Args:
+        video_url: Public URL of the video.
+        role: Role of the video (reference_video).
 
     Returns:
         Content dict for the API.
     """
     return {
-        "type": "image_url",
-        "image_url": {
-            "url": image_url,
+        "type": "video_url",
+        "video_url": {
+            "url": video_url,
         },
+        "role": role,
+    }
+
+
+def build_audio_content(audio_url: str, role: str = "reference_audio") -> Dict[str, Any]:
+    """
+    Build an audio content item for BytePlus API (Seedance 2.0+).
+
+    Args:
+        audio_url: Public URL or base64 of the audio.
+        role: Role of the audio (reference_audio).
+
+    Returns:
+        Content dict for the API.
+    """
+    return {
+        "type": "audio_url",
+        "audio_url": {
+            "url": audio_url,
+        },
+        "role": role,
     }
