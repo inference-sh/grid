@@ -1,0 +1,12 @@
+anyio==4.13.0
+certifi==2026.4.22
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.13
+ninja==1.13.0
+packaging==26.2
+setuptools==82.0.1
+setuptools-scm==10.0.5
+typing-extensions==4.15.0
+vcs-versioning==1.1.1

@@ -1,0 +1,21 @@
+namespace: bria
+name: rmbg
+description: Remove image backgrounds with natural edge blending using Bria RMBG-2.0
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

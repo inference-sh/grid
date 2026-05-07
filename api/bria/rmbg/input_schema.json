@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "image": {
+      "description": "Image to remove background from (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "preserve_alpha": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain partially transparent areas from the input",
+      "title": "Preserve Alpha"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

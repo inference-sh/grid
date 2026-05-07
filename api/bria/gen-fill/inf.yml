@@ -1,0 +1,21 @@
+namespace: bria
+name: gen-fill
+description: Generative fill — replace masked regions with AI-generated content guided by a text prompt
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

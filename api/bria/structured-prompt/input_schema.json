@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text prompt to convert to structured format",
+      "title": "Prompt"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images to analyze",
+      "title": "Images"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

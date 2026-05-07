@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "image": {
+      "description": "Old or degraded image to restore (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

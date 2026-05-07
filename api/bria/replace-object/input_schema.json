@@ -1,0 +1,66 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "instruction": {
+      "description": "Text description of the replacement object",
+      "title": "Instruction",
+      "type": "string"
+    },
+    "object_to_replace": {
+      "description": "Text description of the object to replace",
+      "title": "Object To Replace",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text specifying unwanted elements",
+      "title": "Negative Prompt"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    },
+    "prompt_content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Return 422 if prompt fails moderation. Default: true",
+      "title": "Prompt Content Moderation"
+    }
+  },
+  "required": [
+    "image",
+    "instruction",
+    "object_to_replace"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

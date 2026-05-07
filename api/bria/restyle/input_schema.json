@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "style": {
+      "description": "Style preset ID: render_3d, cubism, oil_painting, anime, cartoon, coloring_book, retro_ad, pop_art_halftone, vector_art, story_board, art_nouveau, cross_etching, wood_cut",
+      "title": "Style",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "style"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

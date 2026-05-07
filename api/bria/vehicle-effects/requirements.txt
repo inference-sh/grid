@@ -1,0 +1,2 @@
+httpx<1.0
+Pillow

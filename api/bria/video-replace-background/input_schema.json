@@ -1,0 +1,57 @@
+{
+  "properties": {
+    "video_url": {
+      "description": "URL of the input video (MP4, MOV, WebM, AVI, GIF). Max 60s, up to 16K.",
+      "title": "Video Url",
+      "type": "string"
+    },
+    "background_url": {
+      "description": "URL of the replacement background (image: JPG/PNG/WebP/GIF, or video: MP4/MOV/WebM/AVI/GIF). Max 60s, up to 16K.",
+      "title": "Background Url",
+      "type": "string"
+    },
+    "output_container_and_codec": {
+      "anyOf": [
+        {
+          "enum": [
+            "mp4_h264",
+            "mp4_h265",
+            "webm_vp9",
+            "mov_h265",
+            "mov_proresks",
+            "mkv_h264",
+            "mkv_h265",
+            "mkv_vp9",
+            "gif"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output format preset (default: mp4_h264)",
+      "title": "Output Container And Codec"
+    },
+    "preserve_audio": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain foreground audio track (default: true)",
+      "title": "Preserve Audio"
+    }
+  },
+  "required": [
+    "video_url",
+    "background_url"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "instruction": {
+      "description": "Text instruction describing the desired edit",
+      "title": "Instruction",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "instruction"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

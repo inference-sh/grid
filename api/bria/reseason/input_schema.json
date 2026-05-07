@@ -1,0 +1,40 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "season": {
+      "description": "Target season to apply",
+      "enum": [
+        "spring",
+        "summer",
+        "autumn",
+        "winter"
+      ],
+      "title": "Season",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "season"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

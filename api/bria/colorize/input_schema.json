@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "image": {
+      "description": "Black and white or grayscale image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "color": {
+      "description": "Color style: 'color_contemporary' (natural), 'decolorize' (remove color), 'sepia_vintage' (aged look)",
+      "enum": [
+        "color_contemporary",
+        "decolorize",
+        "sepia_vintage"
+      ],
+      "title": "Color",
+      "type": "string"
+    }
+  },
+  "required": [
+    "image",
+    "color"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

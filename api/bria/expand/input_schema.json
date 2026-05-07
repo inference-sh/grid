@@ -1,0 +1,128 @@
+{
+  "properties": {
+    "image": {
+      "description": "Image to expand (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target aspect ratio: predefined ('1:1', '2:3', '3:2', '4:3', '3:4', '16:9', '9:16') or custom float 0.5-3.0. Centers image and expands edges.",
+      "title": "Aspect Ratio"
+    },
+    "canvas_size": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output dimensions [width, height] in pixels (max 5000x5000)",
+      "title": "Canvas Size"
+    },
+    "original_image_size": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Desired input size [width, height]. Required when not using aspect_ratio.",
+      "title": "Original Image Size"
+    },
+    "original_image_location": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Top-left corner position [x, y] in pixels. Required when not using aspect_ratio.",
+      "title": "Original Image Location"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "English text guidance for the expanded area",
+      "title": "Prompt"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "English text specifying unwanted elements",
+      "title": "Negative Prompt"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results",
+      "title": "Seed"
+    },
+    "preserve_alpha": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain alpha channel transparency",
+      "title": "Preserve Alpha"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

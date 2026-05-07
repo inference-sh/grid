@@ -1,0 +1,126 @@
+{
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text instruction for image generation",
+      "title": "Prompt"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for guided generation",
+      "title": "Images"
+    },
+    "num_results": {
+      "default": 1,
+      "description": "Number of images to generate",
+      "title": "Num Results",
+      "type": "integer"
+    },
+    "sync": {
+      "default": false,
+      "description": "Wait for result synchronously",
+      "title": "Sync",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output aspect ratio (e.g. 1:1, 16:9)",
+      "title": "Aspect Ratio"
+    },
+    "resolution": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output resolution: 1MP or 4MP",
+      "title": "Resolution"
+    },
+    "guidance_scale": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How closely to follow prompt (3-5)",
+      "title": "Guidance Scale"
+    },
+    "steps_num": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Diffusion iterations (1-50)",
+      "title": "Steps Num"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducibility (0-2147483647)",
+      "title": "Seed"
+    },
+    "output_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output format: png or jpeg",
+      "title": "Output Type"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

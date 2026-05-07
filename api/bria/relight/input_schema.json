@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "light_type": {
+      "description": "Lighting style: 'midday', 'blue hour light', 'low-angle sunlight', 'sunrise light', 'spotlight on subject', 'overcast light', 'soft overcast daylight lighting', 'cloud-filtered lighting', 'fog-diffused lighting', 'side lighting', 'moonlight lighting', 'starlight nighttime', 'soft bokeh lighting', 'harsh studio lighting'",
+      "title": "Light Type",
+      "type": "string"
+    },
+    "light_direction": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Light direction: front, side, bottom, top_down",
+      "title": "Light Direction"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "light_type"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

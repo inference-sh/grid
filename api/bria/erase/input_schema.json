@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "mask": {
+      "description": "Binary mask defining erasure region (white=erase, black=keep). Must match image aspect ratio.",
+      "format": "file",
+      "title": "Mask",
+      "type": "string"
+    },
+    "mask_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "manual",
+            "automatic"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mask type: 'manual' (user-drawn) or 'automatic' (algorithm-generated)",
+      "title": "Mask Type"
+    },
+    "preserve_alpha": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain alpha channel transparency",
+      "title": "Preserve Alpha"
+    }
+  },
+  "required": [
+    "image",
+    "mask"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,117 @@
+{
+  "properties": {
+    "image": {
+      "description": "Product image or cutout (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "scene_image": {
+      "description": "Reference scene image to place the product in",
+      "format": "file",
+      "title": "Scene Image",
+      "type": "string"
+    },
+    "placement_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How to place the product: 'original' (keep size/position), 'automatic' (auto-fit), or 'manual_placement'",
+      "title": "Placement Type"
+    },
+    "manual_padding": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Manual padding when placement_type='manual_placement': {'left': int, 'right': int, 'top': int, 'bottom': int}",
+      "title": "Manual Padding"
+    },
+    "shot_size": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output dimensions [width, height] in pixels",
+      "title": "Shot Size"
+    },
+    "num_results": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Number of result images to generate (1-4)",
+      "title": "Num Results"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results",
+      "title": "Seed"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    },
+    "force_rmbg": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Force background removal even if image has alpha channel",
+      "title": "Force Rmbg"
+    }
+  },
+  "required": [
+    "image",
+    "scene_image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,54 @@
+{
+  "properties": {
+    "image": {
+      "description": "Product image or cutout (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "background_color": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Background hex color (e.g. '#FFFFFF') or 'transparent'",
+      "title": "Background Color"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    },
+    "force_rmbg": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Force background removal even if image has alpha channel",
+      "title": "Force Rmbg"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,126 @@
+{
+  "properties": {
+    "image": {
+      "description": "Product cutout image (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "shadow_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "regular",
+            "float"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shadow type: 'regular' (natural drop) or 'float' (floating elliptical)",
+      "title": "Shadow Type"
+    },
+    "shadow_color": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shadow color as hex code (e.g. '#000000')",
+      "title": "Shadow Color"
+    },
+    "shadow_intensity": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shadow strength from 0 to 100 (default 60)",
+      "title": "Shadow Intensity"
+    },
+    "shadow_offset": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shadow position offset [x, y] in pixels (default [0, 15])",
+      "title": "Shadow Offset"
+    },
+    "shadow_height": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "For float shadows: height of elliptical shadow in pixels (default 70)",
+      "title": "Shadow Height"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    },
+    "force_rmbg": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Force background removal even if image has alpha channel",
+      "title": "Force Rmbg"
+    },
+    "preserve_alpha": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain input alpha channel transparency in output",
+      "title": "Preserve Alpha"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

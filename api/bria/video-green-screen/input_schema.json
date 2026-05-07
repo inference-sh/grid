@@ -1,0 +1,69 @@
+{
+  "properties": {
+    "video_url": {
+      "description": "URL of the input video (MP4, MOV, WebM, AVI, GIF). Max 60s, up to 16K.",
+      "title": "Video Url",
+      "type": "string"
+    },
+    "green_shade": {
+      "anyOf": [
+        {
+          "enum": [
+            "broadcast_green",
+            "chroma_green",
+            "blue_screen"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Screen color: broadcast_green (#00B140), chroma_green (#00FF00), or blue_screen (#0000FF). Default: broadcast_green.",
+      "title": "Green Shade"
+    },
+    "output_container_and_codec": {
+      "anyOf": [
+        {
+          "enum": [
+            "mp4_h264",
+            "mp4_h265",
+            "webm_vp9",
+            "mov_h265",
+            "mov_proresks",
+            "mkv_h264",
+            "mkv_h265",
+            "mkv_vp9",
+            "gif"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output format preset (default: mp4_h264)",
+      "title": "Output Container And Codec"
+    },
+    "preserve_audio": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Retain audio track from input video (default: true)",
+      "title": "Preserve Audio"
+    }
+  },
+  "required": [
+    "video_url"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

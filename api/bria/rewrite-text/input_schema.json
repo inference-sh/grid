@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image containing text (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "new_text": {
+      "description": "The new text to write in the image, replacing existing text",
+      "title": "New Text",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "new_text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

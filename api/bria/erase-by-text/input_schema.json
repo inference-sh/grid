@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "image": {
+      "description": "Source image (JPEG, PNG, WEBP)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "object_name": {
+      "description": "Text description of the object to erase",
+      "title": "Object Name",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results (0-2147483647)",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "object_name"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
