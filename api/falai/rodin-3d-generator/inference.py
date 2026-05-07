@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, RawMeta
 from pydantic import Field
 from typing import Optional, List
 from enum import Enum
@@ -35,9 +35,9 @@ class AppInput(BaseAppInput):
         None,
         description="Text guidance for 3D model generation (e.g., 'A futuristic robot with sleek metallic design')"
     )
-    input_images: Optional[List[File]] = Field(
-        None,
-        description="Up to 5 reference images for 3D generation (optional if prompt is provided)"
+    input_images: List[File] = Field(
+        description="Up to 5 reference images for 3D generation (at least one required)",
+        min_length=1
     )
     geometry_file_format: GeometryFormatEnum = Field(
         GeometryFormatEnum.glb,
@@ -112,34 +112,28 @@ class App(BaseApp):
         if input_data.seed is not None:
             request_data["seed"] = input_data.seed
 
-        # Upload and add input images if provided
-        if input_data.input_images:
-            image_urls = []
-            for img_file in input_data.input_images[:5]:  # Max 5 images
-                image_url = self._upload_file_to_url(img_file.path)
-                image_urls.append(image_url)
-            request_data["input_image_urls"] = image_urls
+        # Upload input images
+        image_urls = []
+        for img_file in input_data.input_images[:5]:  # Max 5 images
+            image_url = self._upload_file_to_url(img_file.path)
+            image_urls.append(image_url)
+        request_data["input_image_urls"] = image_urls
 
         return request_data
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate 3D model using Rodin."""
         try:
-            # Validate input - need either prompt or images
-            if not input_data.prompt and not input_data.input_images:
-                raise RuntimeError("Either prompt or input images must be provided")
-
-            # Validate input files if provided
-            if input_data.input_images:
-                for img in input_data.input_images:
-                    if not img.exists():
-                        raise RuntimeError(f"Input image does not exist at path: {img.path}")
+            # Validate input files
+            for img in input_data.input_images:
+                if not img.exists():
+                    raise RuntimeError(f"Input image does not exist at path: {img.path}")
 
             # Set up API key from environment
-            api_key = os.environ.get("API_KEY")
+            api_key = os.environ.get("FAL_KEY")
             if not api_key:
                 raise RuntimeError(
-                    "API_KEY environment variable is required for model access."
+                    "FAL_KEY environment variable is required for model access."
                 )
 
             fal_client.api_key = api_key
@@ -218,11 +212,24 @@ class App(BaseApp):
 
             self.logger.info(f"3D model and {len(texture_files)} textures processed successfully")
 
+            output_meta = OutputMeta(
+                outputs=[
+                    RawMeta(
+                        extra={
+                            "format": input_data.geometry_file_format.value,
+                            "quality": input_data.quality_mesh_option.value,
+                            "textures": len(texture_files),
+                        }
+                    )
+                ]
+            )
+
             # Prepare output
             return AppOutput(
                 model_mesh=File(path=model_path),
                 textures=texture_files,
-                seed=result.get("seed", input_data.seed or 0)
+                seed=result.get("seed", input_data.seed or 0),
+                output_meta=output_meta
             )
 
         except Exception as e:

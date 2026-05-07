@@ -1,0 +1,10 @@
+{
+  "geometry_file_format": "glb",
+  "input_images": ["/tmp/test_image.png"],
+  "material": "All",
+  "preview_render": false,
+  "prompt": "A 3D ant model",
+  "quality_mesh_option": "500K Triangle",
+  "seed": 0,
+  "use_original_alpha": false
+}

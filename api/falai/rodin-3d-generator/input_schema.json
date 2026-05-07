@@ -1,80 +1,5 @@
 {
   "$defs": {
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
     "GeometryFormatEnum": {
       "description": "Output geometry file format options.",
       "enum": [
@@ -126,20 +51,14 @@
       "title": "Prompt"
     },
     "input_images": {
-      "anyOf": [
-        {
-          "items": {
-            "$ref": "#/$defs/File"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Up to 5 reference images for 3D generation (optional if prompt is provided)",
-      "title": "Input Images"
+      "description": "Up to 5 reference images for 3D generation (at least one required)",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Input Images",
+      "type": "array"
     },
     "geometry_file_format": {
       "$ref": "#/$defs/GeometryFormatEnum",
@@ -182,6 +101,9 @@
       "type": "boolean"
     }
   },
+  "required": [
+    "input_images"
+  ],
   "title": "AppInput",
   "type": "object"
 }
