@@ -1,0 +1,84 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "html": {
+          "type": "string",
+          "description": "HTML content to render to video. Can include inline CSS, JS, GSAP animations, CSS animations, Web Animations API. Scripts are executed before capture begins."
+        },
+        "width": {
+          "type": "number",
+          "default": 1920,
+          "description": "Video width in pixels"
+        },
+        "height": {
+          "type": "number",
+          "default": 1080,
+          "description": "Video height in pixels"
+        },
+        "fps": {
+          "type": "number",
+          "default": 30,
+          "description": "Frames per second"
+        },
+        "duration": {
+          "type": "number",
+          "default": 5,
+          "description": "Video duration in seconds"
+        },
+        "codec": {
+          "type": "string",
+          "enum": [
+            "h264",
+            "h265",
+            "vp8",
+            "vp9",
+            "gif",
+            "prores"
+          ],
+          "default": "h264",
+          "description": "Output codec"
+        },
+        "scale_factor": {
+          "type": "number",
+          "default": 1,
+          "description": "Device scale factor (2 for retina-quality output)"
+        },
+        "start_frame": {
+          "type": "number",
+          "default": 0,
+          "description": "First frame to render (0-indexed, for preview subsets)"
+        },
+        "end_frame": {
+          "type": "number",
+          "description": "Last frame to render (inclusive). Omit for full duration."
+        },
+        "transparent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Render with alpha channel (only works with vp8/vp9/prores codecs)"
+        },
+        "audio_url": {
+          "type": "string",
+          "description": "URL to an audio file to mux into the output"
+        }
+      },
+      "required": [
+        "html"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "video": {
+          "description": "Rendered video file"
+        }
+      },
+      "required": [
+        "video"
+      ]
+    }
+  }
+}

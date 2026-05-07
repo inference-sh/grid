@@ -1,0 +1,17 @@
+namespace: infsh
+name: html-to-video
+description: Render HTML/CSS/JS animations to video — supports GSAP timelines, CSS animations, Web Animations API
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: node-22
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

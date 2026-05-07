@@ -1,0 +1,75 @@
+{
+  "run": {
+    "description": "",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "html": {
+          "type": "string",
+          "description": "Hyperframes HTML composition. Use class='clip' with data-start, data-duration, data-track-index attributes. Register GSAP timelines on window.__timelines (paused)."
+        },
+        "width": {
+          "type": "number",
+          "default": 1920,
+          "description": "Video width in pixels"
+        },
+        "height": {
+          "type": "number",
+          "default": 1080,
+          "description": "Video height in pixels"
+        },
+        "fps": {
+          "type": "number",
+          "default": 30,
+          "description": "Frames per second"
+        },
+        "duration": {
+          "type": "number",
+          "default": 0,
+          "description": "Video duration in seconds. 0 = auto-detect from clip data-start + data-duration attributes."
+        },
+        "codec": {
+          "type": "string",
+          "enum": [
+            "h264",
+            "h265",
+            "vp8",
+            "vp9",
+            "gif",
+            "prores"
+          ],
+          "default": "h264",
+          "description": "Output codec"
+        },
+        "scale_factor": {
+          "type": "number",
+          "default": 1,
+          "description": "Device scale factor (2 for retina-quality output)"
+        },
+        "transparent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Render with alpha channel (only works with vp8/vp9/prores codecs)"
+        },
+        "audio_url": {
+          "type": "string",
+          "description": "URL to an audio file to mux into the output"
+        }
+      },
+      "required": [
+        "html"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "video": {
+          "description": "Rendered video file"
+        }
+      },
+      "required": [
+        "video"
+      ]
+    }
+  }
+}

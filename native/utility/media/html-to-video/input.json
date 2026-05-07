@@ -1,0 +1,11 @@
+{
+  "html": "<!DOCTYPE html><html><head><style>body{margin:0;background:#1a1a2e;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden}h1{font-family:system-ui;font-size:80px;color:#e94560;opacity:0;transform:translateY(40px)}.circle{width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,#0f3460,#e94560);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0)}</style><script src=\"https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js\"></script></head><body><div class=\"circle\"></div><h1>HTML to Video</h1><script>window.__timelines={};const tl=gsap.timeline({paused:true});tl.to('.circle',{scale:1,duration:1,ease:'elastic.out(1,0.5)'}).to('h1',{opacity:1,y:0,duration:0.8,ease:'power3.out'},'-=0.3').to('.circle',{rotation:360,duration:2,ease:'power1.inOut'});window.__timelines.main=tl;</script></body></html>",
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "duration": 4,
+  "codec": "h264",
+  "scale_factor": 1,
+  "start_frame": 0,
+  "transparent": false
+}
