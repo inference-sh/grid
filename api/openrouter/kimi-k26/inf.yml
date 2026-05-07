@@ -1,0 +1,22 @@
+namespace: openrouter
+name: kimi-k26
+description: Kimi K2.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

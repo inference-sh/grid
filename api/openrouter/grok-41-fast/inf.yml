@@ -1,0 +1,23 @@
+namespace: openrouter
+name: grok-41-fast
+description: Grok 4.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

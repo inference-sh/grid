@@ -1,0 +1,21 @@
+namespace: openrouter
+name: hy3-preview
+description: Hy3 preview is a high-efficiency Mixture-of-Experts model from Tencent designed for agentic workflows and production use.
+metadata:
+    capabilities:
+        - reasoning
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

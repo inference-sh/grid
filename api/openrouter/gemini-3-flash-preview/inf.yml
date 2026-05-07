@@ -1,0 +1,23 @@
+namespace: openrouter
+name: gemini-3-flash-preview
+description: Gemini 3 Flash Preview is a high speed, high value thinking model designed for agentic workflows, multi turn chat, and coding assistance.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
