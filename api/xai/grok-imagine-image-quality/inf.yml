@@ -1,0 +1,28 @@
+namespace: xai
+name: grok-imagine-image-quality
+description: Generate and edit high-quality images using xAI's Grok Imagine Quality model. Supports 1K and 2K output resolutions with text-to-image and image editing.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - image-generation
+        - text-to-image
+        - image-editing
+        - xai
+        - high-quality
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine Quality access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

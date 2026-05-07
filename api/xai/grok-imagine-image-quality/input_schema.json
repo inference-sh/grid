@@ -1,0 +1,73 @@
+{
+  "description": "Input schema for Grok Imagine Quality image generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image content.",
+      "examples": [
+        "A cat in a tree",
+        "A futuristic cityscape at sunset"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input image for image editing. When provided, the model will edit this image based on the prompt.",
+      "title": "Image"
+    },
+    "aspect_ratio": {
+      "default": "1:1",
+      "description": "Aspect ratio of the generated image. Use 'auto' to automatically match the input image's aspect ratio.",
+      "enum": [
+        "auto",
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "2:1",
+        "1:2",
+        "19.5:9",
+        "9:19.5",
+        "20:9",
+        "9:20"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "1k",
+      "description": "Output resolution. '1k' = 1024x1024 base ($0.05/image), '2k' = 2048x2048 base ($0.07/image).",
+      "enum": [
+        "1k",
+        "2k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images to generate (1-10).",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
