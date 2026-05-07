@@ -38,7 +38,7 @@ class App(BaseApp):
         logger.info("Requesting product cutout")
         result = await bria_helper.call_endpoint(self.client, "cutout", payload, base_url=PRODUCT_BASE)
 
-        image_url = result["result"]["image_url"]
+        image_url = bria_helper.get_result_url(result)
         path = await bria_helper.download_image(self.client, image_url)
         logger.info(f"Downloaded cutout to {path}")
 

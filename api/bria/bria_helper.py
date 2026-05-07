@@ -63,7 +63,7 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
         status = poll_data.get("status", "")
 
         if status == "COMPLETED":
-            logger.info(f"Request {request_id} completed in {elapsed:.1f}s")
+            logger.info(f"Request {request_id} completed in {elapsed:.1f}s: {list(poll_data.keys())}")
             return poll_data
         elif status in ("ERROR", "UNKNOWN"):
             error = poll_data.get("error", {})
@@ -72,6 +72,17 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
             )
 
     raise TimeoutError(f"Bria request {request_id} timed out after {MAX_POLL_TIME}s")
+
+
+def get_result_url(data: dict) -> str:
+    """Extract result URL from v1 or v2 response shape."""
+    if "result_url" in data:
+        return data["result_url"]
+    if "result" in data and isinstance(data["result"], dict):
+        return data["result"].get("image_url") or data["result"].get("video_url")
+    if "result" in data and isinstance(data["result"], list):
+        return data["result"][0]
+    return data.get("image_url") or data.get("video_url", "")
 
 
 async def download_image(client: httpx.AsyncClient, image_url: str, suffix: str = ".png") -> str:

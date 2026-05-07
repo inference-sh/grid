@@ -43,7 +43,7 @@ class App(BaseApp):
         logger.info("Requesting vehicle shot by text")
         result = await bria_helper.call_endpoint(self.client, "vehicle/shot_by_text", payload, base_url=PRODUCT_BASE)
 
-        image_url = result["result"][0] if isinstance(result["result"], list) else result["result"]["image_url"]
+        image_url = bria_helper.get_result_url(result)
         path = await bria_helper.download_image(self.client, image_url)
         logger.info(f"Downloaded vehicle shot to {path}")
 
