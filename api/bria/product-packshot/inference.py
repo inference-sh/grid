@@ -28,7 +28,7 @@ class App(BaseApp):
         logger.info("Bria Product Packshot ready")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        payload = {"image": input_data.image.uri}
+        payload = {"image_url": input_data.image.uri}
 
         for key in ("background_color", "content_moderation", "force_rmbg"):
             val = getattr(input_data, key)

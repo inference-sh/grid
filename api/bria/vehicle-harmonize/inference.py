@@ -26,7 +26,7 @@ class App(BaseApp):
         logger.info("Bria Vehicle Harmonize ready")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        payload = {"image": input_data.image.uri}
+        payload = {"image_url": input_data.image.uri}
 
         if input_data.content_moderation is not None:
             payload["content_moderation"] = input_data.content_moderation

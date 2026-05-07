@@ -37,7 +37,7 @@ class App(BaseApp):
         logger.info("Requesting video foreground mask")
         result = await bria_helper.call_endpoint(
             self.client, "foreground_mask", payload,
-            base_url="https://engine.prod.bria-api.com/v1/video",
+            base_url="https://engine.prod.bria-api.com/v1/video/edit",
         )
 
         video_url = result["result"]["video_url"]

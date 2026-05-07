@@ -33,7 +33,7 @@ class App(BaseApp):
         logger.info("Bria Product Shadow ready")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        payload = {"image": input_data.image.uri}
+        payload = {"image_url": input_data.image.uri}
 
         for key in ("shadow_type", "shadow_color", "shadow_intensity", "shadow_offset", "shadow_height", "content_moderation", "force_rmbg", "preserve_alpha"):
             val = getattr(input_data, key)

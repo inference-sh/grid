@@ -47,7 +47,7 @@ class App(BaseApp):
         logger.info(f"Requesting video mask by {len(input_data.key_points)} key points")
         result = await bria_helper.call_endpoint(
             self.client, "mask_by_key_points", payload,
-            base_url="https://engine.prod.bria-api.com/v1/video",
+            base_url="https://engine.prod.bria-api.com/v1/video/edit",
         )
 
         video_url = result["result"]["video_url"]

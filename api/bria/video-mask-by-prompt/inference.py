@@ -41,7 +41,7 @@ class App(BaseApp):
         logger.info(f"Requesting video mask by prompt: {input_data.prompt}")
         result = await bria_helper.call_endpoint(
             self.client, "mask_by_prompt", payload,
-            base_url="https://engine.prod.bria-api.com/v1/video",
+            base_url="https://engine.prod.bria-api.com/v1/video/edit",
         )
 
         video_url = result["result"]["video_url"]

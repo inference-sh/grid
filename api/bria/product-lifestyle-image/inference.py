@@ -34,7 +34,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         payload = {
-            "image": input_data.image.uri,
+            "image_url": input_data.image.uri,
             "scene_image": input_data.scene_image.uri,
         }
 

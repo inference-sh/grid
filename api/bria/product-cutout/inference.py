@@ -28,7 +28,7 @@ class App(BaseApp):
         logger.info("Bria Product Cutout ready")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        payload = {"image": input_data.image.uri}
+        payload = {"image_url": input_data.image.uri}
 
         for key in ("content_moderation", "force_rmbg", "preserve_alpha"):
             val = getattr(input_data, key)
