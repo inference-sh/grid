@@ -1,0 +1,21 @@
+namespace: inworld
+name: speech-to-text
+description: Inworld Speech to Text - Multi-provider speech transcription with word timestamps
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: INWORLD_KEY
+      description: Inworld API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

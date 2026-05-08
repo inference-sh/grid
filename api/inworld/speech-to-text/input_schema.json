@@ -1,0 +1,35 @@
+{
+  "description": "Input schema for Inworld STT.",
+  "properties": {
+    "audio": {
+      "description": "Audio file to transcribe (MP3, WAV, FLAC, OGG, PCM).",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "BCP-47 language code (e.g. 'en-US', 'ja-JP'). Auto-detected if omitted.",
+      "title": "Language"
+    },
+    "include_word_timestamps": {
+      "default": false,
+      "description": "Include per-word timing information in the output.",
+      "title": "Include Word Timestamps",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

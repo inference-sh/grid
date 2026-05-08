@@ -1,0 +1,21 @@
+namespace: inworld
+name: text-to-speech-1-5-max
+description: Inworld TTS 1.5 Max - Low-latency text-to-speech with 15 languages (<200ms P50)
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: INWORLD_KEY
+      description: Inworld API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

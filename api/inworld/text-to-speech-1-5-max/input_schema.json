@@ -1,0 +1,72 @@
+{
+  "description": "Input schema for Inworld TTS 1.5 Max.",
+  "properties": {
+    "text": {
+      "description": "Text to convert to speech (max 2,000 characters).",
+      "maxLength": 2000,
+      "title": "Text",
+      "type": "string"
+    },
+    "voice_id": {
+      "description": "Voice ID to use. List available voices via the Inworld platform.",
+      "title": "Voice Id",
+      "type": "string"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "BCP-47 language tag (e.g. 'en-US', 'fr-FR', 'ja-JP'). Auto-detected if omitted. 15 languages supported.",
+      "title": "Language"
+    },
+    "temperature": {
+      "default": 1.0,
+      "description": "Controls variability (0-2). Lower = more consistent, higher = more varied.",
+      "exclusiveMinimum": 0.0,
+      "maximum": 2.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "audio_encoding": {
+      "default": "MP3",
+      "description": "Audio output format.",
+      "enum": [
+        "MP3",
+        "WAV",
+        "OGG_OPUS",
+        "FLAC",
+        "LINEAR16",
+        "ALAW",
+        "MULAW"
+      ],
+      "title": "Audio Encoding",
+      "type": "string"
+    },
+    "sample_rate_hertz": {
+      "default": 44100,
+      "description": "Audio sample rate in Hz. Supported: 8000, 16000, 22050, 24000, 32000, 44100, 48000.",
+      "title": "Sample Rate Hertz",
+      "type": "integer"
+    },
+    "speaking_rate": {
+      "default": 1.0,
+      "description": "Speaking rate multiplier (0.5-1.5).",
+      "maximum": 1.5,
+      "minimum": 0.5,
+      "title": "Speaking Rate",
+      "type": "number"
+    }
+  },
+  "required": [
+    "text",
+    "voice_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

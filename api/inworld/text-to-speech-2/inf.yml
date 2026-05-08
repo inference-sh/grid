@@ -1,0 +1,21 @@
+namespace: inworld
+name: text-to-speech-2
+description: Inworld TTS-2 - High-quality multilingual text-to-speech with 100+ languages and natural-language steering
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: INWORLD_KEY
+      description: Inworld API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
