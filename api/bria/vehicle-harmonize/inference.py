@@ -13,6 +13,7 @@ PRODUCT_BASE = "https://engine.prod.bria-api.com/v1/product"
 
 class AppInput(BaseAppInput):
     image: File = Field(description="Vehicle composite image to harmonize lighting (JPEG, PNG, WEBP, max 12MB)")
+    preset: str = Field(description="Harmonization preset: 'warm day', 'cold day', 'warm night', 'cold night'")
     content_moderation: Optional[bool] = Field(default=None, description="Apply content moderation to input and output images")
 
 
@@ -26,15 +27,18 @@ class App(BaseApp):
         logger.info("Bria Vehicle Harmonize ready")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        payload = {"image_url": input_data.image.uri}
-
+        payload = {
+            "image_url": input_data.image.uri,
+            "preset": input_data.preset,
+        }
         if input_data.content_moderation is not None:
             payload["content_moderation"] = input_data.content_moderation
 
         logger.info("Requesting vehicle harmonization")
         result = await bria_helper.call_endpoint(self.client, "vehicle/harmonize", payload, base_url=PRODUCT_BASE)
 
-        image_url = bria_helper.get_result_url(result) if isinstance(result["result"], dict) else result["result"]
+        r = result.get("result_url") or result.get("result")
+        image_url = r[0] if isinstance(r, list) else (r.get("image_url") if isinstance(r, dict) else r)
         path = await bria_helper.download_image(self.client, image_url)
         logger.info(f"Downloaded harmonized image to {path}")
 

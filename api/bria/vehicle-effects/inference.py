@@ -13,8 +13,8 @@ PRODUCT_BASE = "https://engine.prod.bria-api.com/v1/product"
 
 class AppInput(BaseAppInput):
     image: File = Field(description="Vehicle image to apply effects to (JPEG, PNG, WEBP, max 12MB)")
-    effect: Literal["dust", "snow", "fog", "rain", "smoke", "puddle", "wet_road"] = Field(
-        description="Effect to apply: dust, snow, fog, rain, smoke, puddle, or wet_road"
+    effect: Literal["fog", "snow", "dust", "sand", "lens flare", "light leaks"] = Field(
+        description="Effect to apply: fog, snow, dust, sand, 'lens flare', or 'light leaks'"
     )
     intensity: Optional[float] = Field(default=None, description="Effect intensity from 0.0 to 1.0")
     content_moderation: Optional[bool] = Field(default=None, description="Apply content moderation to input and output images")
@@ -43,7 +43,8 @@ class App(BaseApp):
         logger.info(f"Requesting vehicle effect: {input_data.effect}")
         result = await bria_helper.call_endpoint(self.client, "vehicle/apply_effect", payload, base_url=PRODUCT_BASE)
 
-        image_url = bria_helper.get_result_url(result) if isinstance(result["result"], dict) else result["result"]
+        r = result.get("result_url") or result.get("result")
+        image_url = r[0] if isinstance(r, list) else (r.get("image_url") if isinstance(r, dict) else r)
         path = await bria_helper.download_image(self.client, image_url)
         logger.info(f"Downloaded effects image to {path}")
 

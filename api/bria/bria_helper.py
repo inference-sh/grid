@@ -88,17 +88,19 @@ def get_result_url(data: dict) -> str:
 
 async def download_image(client: httpx.AsyncClient, image_url: str, suffix: str = ".png") -> str:
     """Download result image to a temp file, return the path."""
-    resp = await client.get(image_url)
-    resp.raise_for_status()
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
-        f.write(resp.content)
-        return f.name
+    async with httpx.AsyncClient(timeout=120) as dl:
+        resp = await dl.get(image_url)
+        resp.raise_for_status()
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
+            f.write(resp.content)
+            return f.name
 
 
 async def download_video(client: httpx.AsyncClient, video_url: str, suffix: str = ".mp4") -> str:
     """Download result video to a temp file, return the path."""
-    resp = await client.get(video_url)
-    resp.raise_for_status()
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
-        f.write(resp.content)
-        return f.name
+    async with httpx.AsyncClient(timeout=120) as dl:
+        resp = await dl.get(video_url)
+        resp.raise_for_status()
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
+            f.write(resp.content)
+            return f.name

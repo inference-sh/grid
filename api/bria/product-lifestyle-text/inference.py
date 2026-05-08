@@ -47,8 +47,10 @@ class App(BaseApp):
         logger.info("Requesting lifestyle shot by text")
         result = await bria_helper.call_endpoint(self.client, "lifestyle_shot_by_text", payload, base_url=PRODUCT_BASE)
 
-        # v1 returns {"result": [url, seed, id]}
+        # v1 returns {"result": [[url, seed, id]]} or {"result": [url, seed, id]}
         r = result["result"]
+        if isinstance(r, list) and len(r) > 0 and isinstance(r[0], list):
+            r = r[0]
         image_url = r[0] if isinstance(r, list) else r.get("image_url", r)
         path = await bria_helper.download_image(self.client, image_url)
         logger.info(f"Downloaded lifestyle image to {path}")

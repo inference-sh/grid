@@ -7,15 +7,14 @@
       "type": "string"
     },
     "effect": {
-      "description": "Effect to apply: dust, snow, fog, rain, smoke, puddle, or wet_road",
+      "description": "Effect to apply: fog, snow, dust, sand, 'lens flare', or 'light leaks'",
       "enum": [
-        "dust",
-        "snow",
         "fog",
-        "rain",
-        "smoke",
-        "puddle",
-        "wet_road"
+        "snow",
+        "dust",
+        "sand",
+        "lens flare",
+        "light leaks"
       ],
       "title": "Effect",
       "type": "string"

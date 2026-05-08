@@ -9,6 +9,11 @@
           "title": "Image",
           "type": "string"
         },
+        "preset": {
+          "description": "Harmonization preset: 'warm day', 'cold day', 'warm night', 'cold night'",
+          "title": "Preset",
+          "type": "string"
+        },
         "content_moderation": {
           "anyOf": [
             {
@@ -24,7 +29,8 @@
         }
       },
       "required": [
-        "image"
+        "image",
+        "preset"
       ],
       "title": "AppInput",
       "type": "object"
