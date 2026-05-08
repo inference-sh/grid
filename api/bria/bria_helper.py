@@ -77,7 +77,8 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
 def get_result_url(data: dict) -> str:
     """Extract result URL from v1 or v2 response shape."""
     if "result_url" in data:
-        return data["result_url"]
+        val = data["result_url"]
+        return val[0] if isinstance(val, list) else val
     if "result" in data and isinstance(data["result"], dict):
         return data["result"].get("image_url") or data["result"].get("video_url")
     if "result" in data and isinstance(data["result"], list):
