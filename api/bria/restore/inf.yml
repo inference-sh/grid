@@ -1,6 +1,6 @@
 namespace: bria
 name: restore
-description: Restore old or degraded images to improved quality
+description: Restore old or degraded photographs by removing noise, scratches, and blur. Chain with colorize to add color to restored B&W photos, or with increase-resolution to upscale afterward.
 metadata: {}
 category: image
 images:

@@ -1,6 +1,6 @@
 namespace: bria
 name: colorize
-description: Colorize black and white images with natural or stylized colors
+description: Add color to B&W photos (color_contemporary, sepia_vintage) or convert color photos to grayscale (decolorize). Chain with restore first to clean up old photos before colorizing.
 metadata: {}
 category: image
 images:

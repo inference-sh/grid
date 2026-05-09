@@ -1,6 +1,6 @@
 namespace: bria
 name: rmbg
-description: Remove image backgrounds with natural edge blending using Bria RMBG-2.0
+description: Remove the background from an image, producing a transparent cutout. The general-purpose background removal — for product-specific cutouts, use product-cutout instead. Output can be passed to replace-background, blur-background, or any editing app.
 metadata: {}
 category: image
 images:

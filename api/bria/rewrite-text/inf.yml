@@ -1,6 +1,6 @@
 namespace: bria
 name: rewrite-text
-description: Rewrite text within images while preserving the visual style
+description: Modify or replace text in an image while preserving the visual style, font, and layout. Detects text regions automatically and replaces with the new text you provide.
 metadata: {}
 category: image
 images:

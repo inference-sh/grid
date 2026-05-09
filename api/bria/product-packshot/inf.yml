@@ -1,6 +1,6 @@
 namespace: bria
 name: product-packshot
-description: Generate professional 2000x2000 product packshot images
+description: Create a precise product cutout cropped and centered on a clean background. Outputs a professional packshot ready for e-commerce listings. Pairs well with product-shadow to add shadows afterward.
 metadata: {}
 category: image
 images:

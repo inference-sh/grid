@@ -1,6 +1,6 @@
 namespace: bria
 name: video-replace-background
-description: Replace video background with an image or another video
+description: Replace a video's background with a static image or another video (up to 60s, 16K). Provide the foreground video and a background URL — no need to run video-rmbg first, background removal is automatic.
 metadata: {}
 category: video
 images:

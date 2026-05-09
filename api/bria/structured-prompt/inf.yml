@@ -1,6 +1,6 @@
 namespace: bria
 name: structured-prompt
-description: Generate structured prompt JSON from text or images using Bria
+description: Analyze an image and generate a structured prompt JSON describing its composition, objects, lighting, and aesthetics. Use the output as a structured prompt input to generate or generate-lite for controlled image generation.
 metadata: {}
 category: text
 images:

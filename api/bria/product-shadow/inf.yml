@@ -1,6 +1,6 @@
 namespace: bria
 name: product-shadow
-description: Add realistic shadows to product cutout images
+description: Add customizable shadows to a product cutout image. Input should be a cutout with transparent background — use product-cutout first if needed. Supports regular drop shadows and floating elliptical shadows.
 metadata: {}
 category: image
 images:

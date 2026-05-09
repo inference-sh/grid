@@ -1,6 +1,6 @@
 namespace: bria
 name: crop-foreground
-description: Automatically detect and crop the foreground object from an image
+description: Automatically detect and tightly crop the foreground object from an image. The inverse of erase-foreground — this keeps the subject and discards the background.
 metadata: {}
 category: image
 images:

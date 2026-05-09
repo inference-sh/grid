@@ -1,6 +1,6 @@
 namespace: bria
 name: generate-lite
-description: Fast image generation from text prompts using Bria Fibo Lite
+description: Low-latency image generation using Bria's lightweight Fibo Lite model. Faster than generate but lower quality — good for previews and iterations. Output can be refined with enhance or any editing app.
 metadata: {}
 category: image
 images:

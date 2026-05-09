@@ -1,6 +1,6 @@
 namespace: bria
 name: enhance
-description: Enhance image quality with up to 2x resolution increase and added detail
+description: Upscale an image with AI-enhanced detail, sharpening textures and enriching quality at 2x resolution. For pure upscaling without detail changes, use increase-resolution instead. Good as a final step after editing or generation.
 metadata: {}
 category: image
 images:

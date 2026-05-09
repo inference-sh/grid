@@ -1,6 +1,6 @@
 namespace: bria
 name: product-cutout
-description: Cut out product from image with transparent background
+description: Extract a clean product cutout with transparent background. Use as the first step before product-shadow, product-packshot, product-lifestyle-text, product-lifestyle-image, or product-embed.
 metadata: {}
 category: image
 images:

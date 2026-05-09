@@ -1,6 +1,6 @@
 namespace: bria
 name: replace-object
-description: Replace an object in an image with AI-generated content from a text description
+description: Replace an existing object in an image with something new, described in text. The AI locates the target object and swaps it while maintaining scene coherence. For background replacement, use replace-background instead.
 metadata: {}
 category: image
 images:

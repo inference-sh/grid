@@ -1,6 +1,6 @@
 namespace: bria
 name: video-green-screen
-description: Apply green or blue screen effect to video foreground
+description: Replace a video's background with a green or blue screen for chroma keying in post-production. Supports broadcast green (#00B140), chroma green (#00FF00), and blue screen (#0000FF). Use video-rmbg first if you need transparency instead.
 metadata: {}
 category: video
 images:

@@ -1,6 +1,6 @@
 namespace: bria
 name: add-object
-description: Add an object to an image using a text description
+description: Insert a new object into an image using a text description. The AI determines placement and integrates it naturally. For precise placement, use product-embed or gen-fill with a mask instead.
 metadata: {}
 category: image
 images:

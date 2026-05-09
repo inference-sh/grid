@@ -1,6 +1,6 @@
 namespace: bria
 name: erase-by-text
-description: Erase objects from images by describing them in text
+description: Erase objects from an image by naming them in text — no mask needed. The AI locates and removes the described object, reconstructing the background. For mask-based erasing, use erase instead.
 metadata: {}
 category: image
 images:

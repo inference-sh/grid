@@ -1,6 +1,6 @@
 namespace: bria
 name: generate
-description: Generate images from text prompts using Bria Fibo
+description: Generate images from text prompts using Bria's Fibo model. Supports 1MP and 4MP output, configurable aspect ratios, and structured prompts. Output can be refined with any editing app — edit, restyle, relight, enhance, expand, etc. For faster generation at lower quality, use generate-lite.
 metadata: {}
 category: image
 images:

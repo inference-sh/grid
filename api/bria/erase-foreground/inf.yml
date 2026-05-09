@@ -1,6 +1,6 @@
 namespace: bria
 name: erase-foreground
-description: Erase the foreground object from an image while preserving the background
+description: Erase the foreground object and reconstruct the background behind it. The inverse of crop-foreground — this keeps the scene and removes the subject. Useful for extracting clean backgrounds from photos.
 metadata: {}
 category: image
 images:

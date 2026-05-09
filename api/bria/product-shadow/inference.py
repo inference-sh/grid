@@ -12,7 +12,7 @@ PRODUCT_BASE = "https://engine.prod.bria-api.com/v1/product"
 
 
 class AppInput(BaseAppInput):
-    image: File = Field(description="Product cutout image (JPEG, PNG, WEBP, max 12MB)")
+    image: File = Field(description="Product cutout with transparent background — use product-cutout first if needed (JPEG, PNG, WEBP, max 12MB)")
     shadow_type: Optional[Literal["regular", "float"]] = Field(default=None, description="Shadow type: 'regular' (natural drop) or 'float' (floating elliptical)")
     shadow_color: Optional[str] = Field(default=None, description="Shadow color as hex code (e.g. '#000000')")
     shadow_intensity: Optional[int] = Field(default=None, description="Shadow strength from 0 to 100 (default 60)")

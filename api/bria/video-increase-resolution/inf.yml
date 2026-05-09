@@ -1,6 +1,6 @@
 namespace: bria
 name: video-increase-resolution
-description: Upscale video resolution up to 8K using AI super-resolution
+description: Upscale video resolution 2x or 4x (up to 8K) while preserving original content. Good as a final step after other video editing operations like video-rmbg, video-eraser, or video-replace-background.
 metadata: {}
 category: video
 images:

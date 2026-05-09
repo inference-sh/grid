@@ -1,6 +1,6 @@
 namespace: bria
 name: replace-background
-description: Replace image background with AI-generated content from a text prompt or reference image
+description: Replace an image's background using a text prompt or reference image. Auto-detects and removes the existing background — no need to run rmbg first. Supports base, high_control, and fast generation modes.
 metadata: {}
 category: image
 images:

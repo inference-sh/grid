@@ -1,6 +1,6 @@
 namespace: bria
 name: relight
-description: Change the lighting of an image using a text description
+description: Modify the lighting setup of an image — direction and atmosphere. Choose a light type (sunset, studio, neon, spotlight on subject, etc.) and optional direction (front, side, top-down). For vehicle-specific lighting, use vehicle-harmonize instead.
 metadata: {}
 category: image
 images:

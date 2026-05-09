@@ -1,6 +1,6 @@
 namespace: bria
 name: increase-resolution
-description: Upscale images 2x or 4x (max 8192x8192) while preserving original content
+description: Upscale image resolution 2x or 4x (up to 8K) while preserving original content faithfully. For upscaling with AI-enhanced detail, use enhance instead. Good as a final step after editing or generation.
 metadata: {}
 category: image
 images:

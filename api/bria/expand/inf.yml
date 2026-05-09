@@ -1,6 +1,6 @@
 namespace: bria
 name: expand
-description: Expand image canvas with AI-generated content matching the original scene
+description: Generatively expand an image to fit new aspect ratios or larger dimensions (up to 5000x5000). AI fills new canvas areas with content matching the original scene. Supports predefined ratios or custom dimensions with optional text guidance.
 metadata: {}
 category: image
 images:

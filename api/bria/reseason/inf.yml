@@ -1,6 +1,6 @@
 namespace: bria
 name: reseason
-description: Change the season of an image (spring, summer, autumn, winter)
+description: Transform a scene's weather and season (spring, summer, autumn, winter) while preserving structure and composition. Also accepts custom text descriptions for specific weather conditions.
 metadata: {}
 category: image
 images:

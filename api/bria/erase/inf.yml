@@ -1,6 +1,6 @@
 namespace: bria
 name: erase
-description: Remove objects from images using mask-based inpainting while preserving quality
+description: Remove objects from an image using a mask (white=erase, black=keep). For text-based removal without a mask, use erase-by-text instead. To fill the erased region with new content, use gen-fill.
 metadata: {}
 category: image
 images:

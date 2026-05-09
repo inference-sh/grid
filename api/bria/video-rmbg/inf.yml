@@ -1,6 +1,6 @@
 namespace: bria
 name: video-rmbg
-description: Remove background from videos with optional color replacement
+description: Remove the background from a video, producing a transparent or solid-color background. Use before video-replace-background to swap in a new background, or video-green-screen for chroma keying. Supports multiple output codecs including alpha-capable formats.
 metadata: {}
 category: video
 images:

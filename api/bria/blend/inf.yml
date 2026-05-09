@@ -1,6 +1,6 @@
 namespace: bria
 name: blend
-description: Seamlessly blend a foreground image onto a background image
+description: Merge objects, apply textures, or rearrange items within an image using natural language instructions. Use to composite elements together seamlessly — e.g. "place the art on the shirt" or "apply the texture to the wall".
 metadata: {}
 category: image
 images:

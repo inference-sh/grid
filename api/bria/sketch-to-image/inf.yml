@@ -1,6 +1,6 @@
 namespace: bria
 name: sketch-to-image
-description: Convert a sketch into a fully colored image
+description: Convert a line drawing or rough sketch into a photorealistic colored image. Use as a starting point for further editing — output can be refined with edit, restyle, or enhance.
 metadata: {}
 category: image
 images:

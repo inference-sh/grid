@@ -1,6 +1,6 @@
 namespace: bria
 name: restyle
-description: Restyle an image using a text description of the desired visual style
+description: Transform the artistic style of an image using a preset (e.g. oil_painting, anime) or custom text description. Preserves composition while changing the visual aesthetic.
 metadata: {}
 category: image
 images:

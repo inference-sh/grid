@@ -12,7 +12,7 @@ PRODUCT_BASE = "https://engine.prod.bria-api.com/v1/product"
 
 
 class AppInput(BaseAppInput):
-    image: File = Field(description="Product image or cutout (JPEG, PNG, WEBP, max 12MB)")
+    image: File = Field(description="Product image on any background — will be extracted and centered automatically (JPEG, PNG, WEBP, max 12MB)")
     background_color: Optional[str] = Field(default=None, description="Background hex color (e.g. '#FFFFFF') or 'transparent'")
     content_moderation: Optional[bool] = Field(default=None, description="Apply content moderation to input and output images")
     force_rmbg: Optional[bool] = Field(default=None, description="Force background removal even if image has alpha channel")

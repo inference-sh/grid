@@ -1,6 +1,6 @@
 namespace: bria
 name: video-eraser
-description: Erase objects from video using a mask with inpainting
+description: Remove objects from a video using coordinate key points to define the mask area (max 5s, 750p). Specify positive points to include in the mask and negative points to exclude. For text-based object targeting, use video-mask-by-prompt to generate the mask first.
 metadata: {}
 category: video
 images:

@@ -1,6 +1,6 @@
 namespace: bria
 name: gen-fill
-description: Generative fill — replace masked regions with AI-generated content guided by a text prompt
+description: Fill a masked region with AI-generated content guided by a text prompt (white=fill, black=keep). Unlike erase which just removes, gen-fill replaces with new content. Combine with expand to add canvas space first.
 metadata: {}
 category: image
 images:

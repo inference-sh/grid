@@ -12,14 +12,14 @@ PRODUCT_BASE = "https://engine.prod.bria-api.com/v1/product"
 
 
 class AppInput(BaseAppInput):
-    image: File = Field(description="Product image to cut out (JPEG, PNG, WEBP, max 12MB)")
+    image: File = Field(description="Product image to extract — can be on any background (JPEG, PNG, WEBP, max 12MB)")
     content_moderation: Optional[bool] = Field(default=None, description="Apply content moderation to input and output images")
     force_rmbg: Optional[bool] = Field(default=None, description="Force background removal even if image has alpha channel")
     preserve_alpha: Optional[bool] = Field(default=None, description="Retain input alpha channel transparency in output")
 
 
 class AppOutput(BaseAppOutput):
-    image: File = Field(description="Product cutout image with transparent background")
+    image: File = Field(description="Product cutout with transparent background — use as input to product-shadow, product-lifestyle-text, product-lifestyle-image, or product-embed")
 
 
 class App(BaseApp):

@@ -1,6 +1,6 @@
 namespace: bria
 name: blur-background
-description: Automatically detect and blur image background while keeping foreground sharp
+description: Automatically detect and blur the background while keeping the foreground sharp. Creates a depth-of-field / bokeh effect. No mask needed — foreground detection is automatic.
 metadata: {}
 category: image
 images:

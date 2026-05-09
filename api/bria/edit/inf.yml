@@ -1,6 +1,6 @@
 namespace: bria
 name: edit
-description: Edit an image using natural language text instructions
+description: General-purpose image editing using natural language instructions (Fibo model). For specific operations like adding, erasing, or replacing objects, prefer the dedicated apps — this is best for complex or compound edits described in free text.
 metadata: {}
 category: image
 images:
