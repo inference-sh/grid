@@ -1,0 +1,21 @@
+namespace: bria
+name: video-mask-by-prompt
+description: Generate a video segmentation mask by describing the target object in text. Use the output mask with video-eraser to remove the detected object, or for any other mask-based video editing workflow.
+metadata: {}
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

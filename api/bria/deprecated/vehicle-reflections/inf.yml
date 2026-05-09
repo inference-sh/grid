@@ -1,0 +1,21 @@
+namespace: bria
+name: vehicle-reflections
+description: Add realistic paint and surface reflections to a vehicle image. Part of the automotive post-processing pipeline — use after vehicle-shot-text to add reflections to a placed vehicle, or combine with vehicle-harmonize and vehicle-tires for a full retouch.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

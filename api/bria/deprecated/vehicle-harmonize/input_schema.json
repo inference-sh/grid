@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "image": {
+      "description": "Vehicle composite image to harmonize lighting (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "preset": {
+      "description": "Harmonization preset: 'warm day', 'cold day', 'warm night', 'cold night'",
+      "title": "Preset",
+      "type": "string"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    }
+  },
+  "required": [
+    "image",
+    "preset"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+namespace: bria
+name: product-embed
+description: Place a product into a scene image at precise coordinates with natural blending. Provide a product cutout and a scene image with x/y/width/height placement. Use product-cutout first to extract the product.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

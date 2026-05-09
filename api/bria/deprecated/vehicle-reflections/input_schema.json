@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "image": {
+      "description": "Vehicle image to add reflections to (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

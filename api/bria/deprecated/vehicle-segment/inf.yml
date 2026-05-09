@@ -1,0 +1,21 @@
+namespace: bria
+name: vehicle-segment
+description: Segment a vehicle image into labeled parts (windows, wheels, body, etc.). Useful for targeted edits — use the segmentation mask with vehicle-reflections, vehicle-tires, or vehicle-effects to apply changes to specific parts.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

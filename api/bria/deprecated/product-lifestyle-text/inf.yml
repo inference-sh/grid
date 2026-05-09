@@ -1,0 +1,21 @@
+namespace: bria
+name: product-lifestyle-text
+description: Place a product into a lifestyle scene generated from a text description. Accepts a product photo or cutout — auto-removes background if needed. Use after product-cutout for best results, or chain with enhance/increase-resolution to upscale the output.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

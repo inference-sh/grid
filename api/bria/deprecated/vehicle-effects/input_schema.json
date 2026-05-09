@@ -1,0 +1,55 @@
+{
+  "properties": {
+    "image": {
+      "description": "Vehicle image to apply effects to (JPEG, PNG, WEBP, max 12MB)",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "effect": {
+      "description": "Effect to apply: fog, snow, dust, sand, 'lens flare', or 'light leaks'",
+      "enum": [
+        "fog",
+        "snow",
+        "dust",
+        "sand",
+        "lens flare",
+        "light leaks"
+      ],
+      "title": "Effect",
+      "type": "string"
+    },
+    "intensity": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Effect intensity from 0.0 to 1.0",
+      "title": "Intensity"
+    },
+    "content_moderation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Apply content moderation to input and output images",
+      "title": "Content Moderation"
+    }
+  },
+  "required": [
+    "image",
+    "effect"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

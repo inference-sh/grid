@@ -1,0 +1,21 @@
+namespace: bria
+name: vehicle-tires
+description: Enhance and refine tire appearance in a vehicle image. Part of the automotive post-processing pipeline — combine with vehicle-reflections and vehicle-harmonize for a full vehicle retouch.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: BRIA_KEY
+      description: Bria API token
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
