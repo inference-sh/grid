@@ -1,0 +1,43 @@
+{
+  "properties": {
+    "texts": {
+      "description": "Texts to embed",
+      "items": {
+        "type": "string"
+      },
+      "title": "Texts",
+      "type": "array"
+    },
+    "instruction": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Task instruction for queries (e.g. 'Given a web search query, retrieve relevant passages that answer the query'). Only needed for query-side encoding, not for documents.",
+      "title": "Instruction"
+    },
+    "prompt_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Pre-configured prompt name (e.g. 'web_search_query', 'sts_query', 'bitext_query'). Alternative to providing a custom instruction.",
+      "title": "Prompt Name"
+    }
+  },
+  "required": [
+    "texts"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

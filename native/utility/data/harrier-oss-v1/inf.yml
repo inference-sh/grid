@@ -1,0 +1,13 @@
+namespace: infsh
+name: harrier-oss-v1
+description: Multilingual text embedding using Microsoft's Harrier OSS v1 models. Supports retrieval, clustering, semantic similarity, classification, and reranking with state-of-the-art MTEB v2 scores.
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 80
+        type: any
+    ram: 64

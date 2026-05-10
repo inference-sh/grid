@@ -1,0 +1,7 @@
+{
+    "texts": [
+        "how much protein should a female eat",
+        "As a general guideline, the CDC's average requirement of protein for women ages 19 to 70 is 46 grams per day."
+    ],
+    "instruction": "Given a web search query, retrieve relevant passages that answer the query"
+}

@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "model_id": {
+      "default": "microsoft/harrier-oss-v1-0.6b",
+      "description": "Model variant to load: microsoft/harrier-oss-v1-270m (270M params, 640d), microsoft/harrier-oss-v1-0.6b (0.6B params, 1024d), or microsoft/harrier-oss-v1-27b (27B params, 5376d)",
+      "title": "Model Id",
+      "type": "string"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}
