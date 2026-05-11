@@ -285,10 +285,13 @@
   },
   "properties": {
     "embeddings": {
-      "description": "JSON file containing embedding vectors",
-      "format": "file",
+      "description": "JSON files containing embeddings, one per input text",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
       "title": "Embeddings",
-      "type": "string"
+      "type": "array"
     },
     "dimension": {
       "description": "Embedding dimension",
@@ -296,7 +299,7 @@
       "type": "integer"
     },
     "count": {
-      "description": "Number of embeddings",
+      "description": "Total number of embeddings across all files",
       "title": "Count",
       "type": "integer"
     },

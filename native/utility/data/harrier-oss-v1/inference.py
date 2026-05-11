@@ -2,11 +2,14 @@ import json
 import logging
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
 from pydantic import Field
-from typing import List, Optional
+from typing import List, Literal, Optional
+
+from .embedding_utils import resolve_texts, chunk_text
 
 logger = logging.getLogger(__name__)
 
-# Pre-configured prompts matching config_sentence_transformers.json
+MODEL_MAX_TOKENS = 32768
+
 PROMPT_TEMPLATES = {
     "web_search_query": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: ",
     "sts_query": "Instruct: Retrieve semantically similar text\nQuery: ",
@@ -22,7 +25,24 @@ class AppSetup(BaseAppInput):
 
 
 class AppInput(BaseAppInput):
-    texts: List[str] = Field(description="Texts to embed")
+    texts: Optional[List[str]] = Field(
+        default=None,
+        json_schema_extra={"x-promoted": True},
+        description="Texts to embed (one embedding per text).",
+    )
+    files: Optional[List[File]] = Field(
+        default=None,
+        json_schema_extra={"x-promoted": True},
+        description="Files containing texts to embed. Supports .txt (one text per line), .jsonl (one JSON string per line), or .json (array of strings).",
+    )
+    model_config = {
+        "json_schema_extra": {
+            "anyOf": [
+                {"properties": {"texts": {"not": {"type": "null"}}}},
+                {"properties": {"files": {"not": {"type": "null"}}}}
+            ]
+        }
+    }
     instruction: Optional[str] = Field(
         default=None,
         description="Task instruction for queries (e.g. 'Given a web search query, retrieve relevant passages that answer the query'). Only needed for query-side encoding, not for documents.",
@@ -31,12 +51,24 @@ class AppInput(BaseAppInput):
         default=None,
         description="Pre-configured prompt name (e.g. 'web_search_query', 'sts_query', 'bitext_query'). Alternative to providing a custom instruction.",
     )
+    chunk_strategy: Optional[Literal["fixed", "recursive"]] = Field(
+        default=None,
+        description="Chunking strategy. 'fixed': split by token count. 'recursive': split at paragraph/sentence/word boundaries within token budget. None: no chunking.",
+    )
+    chunk_size: int = Field(
+        default=512,
+        description="Target chunk size in tokens. Clamped to model max (32768). Only used when chunk_strategy is set.",
+    )
+    chunk_overlap: int = Field(
+        default=50,
+        description="Overlap between chunks in tokens. Only used when chunk_strategy is set.",
+    )
 
 
 class AppOutput(BaseAppOutput):
-    embeddings: File = Field(description="JSON file containing embedding vectors")
+    embeddings: List[File] = Field(description="JSON files containing embeddings, one per input text")
     dimension: int = Field(description="Embedding dimension")
-    count: int = Field(description="Number of embeddings")
+    count: int = Field(description="Total number of embeddings across all files")
 
 
 class App(BaseApp):
@@ -61,6 +93,7 @@ class App(BaseApp):
                 device=str(self._device),
                 model_kwargs={"dtype": "auto"},
             )
+            self._tok = self.model.tokenizer
         except Exception as e:
             if "image processor" not in str(e).lower() and "image_processor" not in str(e).lower():
                 raise
@@ -68,6 +101,7 @@ class App(BaseApp):
             self._use_raw = True
             from transformers import AutoTokenizer, AutoModel
             self._tokenizer = AutoTokenizer.from_pretrained(config.model_id)
+            self._tok = self._tokenizer
             self._raw_model = AutoModel.from_pretrained(config.model_id, torch_dtype=torch.bfloat16)
             self._raw_model.eval()
             self._raw_model.to(self._device)
@@ -75,63 +109,91 @@ class App(BaseApp):
         logger.info("Model loaded")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        logger.info(f"Encoding {len(input_data.texts)} texts")
+        texts = resolve_texts(input_data.texts, input_data.files)
+        chunk_size = min(input_data.chunk_size, MODEL_MAX_TOKENS)
+        overlap = min(input_data.chunk_overlap, chunk_size // 2)
 
-        if self._use_raw:
-            embedding_list = self._run_raw(input_data)
-        else:
-            embedding_list = self._run_st(input_data)
+        logger.info(f"Encoding {len(texts)} texts (chunk_strategy={input_data.chunk_strategy}, chunk_size={chunk_size})")
 
-        dimension = len(embedding_list[0])
-        count = len(embedding_list)
-        total_tokens = sum(len(t.split()) for t in input_data.texts)
+        output_files = []
+        total_count = 0
+        total_tokens = 0
+        dimension = None
 
-        # Write embeddings to JSON file instead of inline response
-        output_path = "/tmp/embeddings.json"
-        with open(output_path, "w") as f:
-            json.dump(embedding_list, f)
+        for i, text in enumerate(texts):
+            if input_data.chunk_strategy:
+                chunks = chunk_text(text, input_data.chunk_strategy, chunk_size, overlap, self._tok)
+            else:
+                chunks = chunk_text(text, "none", chunk_size, overlap, self._tok)
 
-        logger.info(f"Encoded {count} texts, dimension={dimension}")
+            chunk_texts = [c["text"] for c in chunks]
+            total_tokens += sum(c["end_token"] - c["start_token"] for c in chunks)
+
+            embeddings = self._embed(chunk_texts, input_data.instruction, input_data.prompt_name)
+            dimension = len(embeddings[0])
+            total_count += len(embeddings)
+
+            file_data = {"embeddings": embeddings}
+            if input_data.chunk_strategy:
+                file_data["chunks"] = [{
+                    "index": j,
+                    "text": c["text"],
+                    "start_token": c["start_token"],
+                    "end_token": c["end_token"],
+                    "start_char": c["start_char"],
+                    "end_char": c["end_char"],
+                } for j, c in enumerate(chunks)]
+
+            path = f"/tmp/embeddings_{i}.json"
+            with open(path, "w") as f:
+                json.dump(file_data, f)
+            output_files.append(File(path=path))
+
+        logger.info(f"Encoded {total_count} embeddings across {len(output_files)} files, dimension={dimension}")
 
         return AppOutput(
-            embeddings=File(path=output_path),
+            embeddings=output_files,
             dimension=dimension,
-            count=count,
+            count=total_count,
             output_meta=OutputMeta(
                 inputs=[TextMeta(tokens=total_tokens)],
             ),
         )
 
-    def _run_st(self, input_data: AppInput) -> list:
+    def _embed(self, texts: List[str], instruction: Optional[str], prompt_name: Optional[str]) -> list:
+        if self._use_raw:
+            return self._embed_raw(texts, instruction, prompt_name)
+        return self._embed_st(texts, instruction, prompt_name)
+
+    def _embed_st(self, texts: List[str], instruction: Optional[str], prompt_name: Optional[str]) -> list:
         encode_kwargs = {}
-        if input_data.prompt_name:
-            encode_kwargs["prompt_name"] = input_data.prompt_name
-        elif input_data.instruction:
-            encode_kwargs["prompt"] = f"Instruct: {input_data.instruction}\nQuery: "
+        if prompt_name:
+            encode_kwargs["prompt_name"] = prompt_name
+        elif instruction:
+            encode_kwargs["prompt"] = f"Instruct: {instruction}\nQuery: "
 
         embeddings = self.model.encode(
-            input_data.texts,
+            texts,
             normalize_embeddings=True,
             convert_to_numpy=True,
             **encode_kwargs,
         )
         return embeddings.tolist()
 
-    def _run_raw(self, input_data: AppInput) -> list:
+    def _embed_raw(self, texts: List[str], instruction: Optional[str], prompt_name: Optional[str]) -> list:
         import torch
         import torch.nn.functional as F
 
-        # Apply instruction prefix if provided
-        texts = list(input_data.texts)
-        if input_data.prompt_name and input_data.prompt_name in PROMPT_TEMPLATES:
-            prefix = PROMPT_TEMPLATES[input_data.prompt_name]
-            texts = [prefix + t for t in texts]
-        elif input_data.instruction:
-            prefix = f"Instruct: {input_data.instruction}\nQuery: "
-            texts = [prefix + t for t in texts]
+        processed = list(texts)
+        if prompt_name and prompt_name in PROMPT_TEMPLATES:
+            prefix = PROMPT_TEMPLATES[prompt_name]
+            processed = [prefix + t for t in processed]
+        elif instruction:
+            prefix = f"Instruct: {instruction}\nQuery: "
+            processed = [prefix + t for t in processed]
 
         batch_dict = self._tokenizer(
-            texts, max_length=32768, padding=True, truncation=True, return_tensors="pt",
+            processed, max_length=MODEL_MAX_TOKENS, padding=True, truncation=True, return_tensors="pt",
         )
         batch_dict = {k: v.to(self._device) for k, v in batch_dict.items()}
 

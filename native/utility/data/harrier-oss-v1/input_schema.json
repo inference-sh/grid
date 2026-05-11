@@ -1,12 +1,59 @@
 {
+  "anyOf": [
+    {
+      "properties": {
+        "texts": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "files": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
   "properties": {
     "texts": {
-      "description": "Texts to embed",
-      "items": {
-        "type": "string"
-      },
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Texts to embed (one embedding per text).",
       "title": "Texts",
-      "type": "array"
+      "x-promoted": true
+    },
+    "files": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Files containing texts to embed. Supports .txt (one text per line), .jsonl (one JSON string per line), or .json (array of strings).",
+      "title": "Files",
+      "x-promoted": true
     },
     "instruction": {
       "anyOf": [
@@ -33,11 +80,37 @@
       "default": null,
       "description": "Pre-configured prompt name (e.g. 'web_search_query', 'sts_query', 'bitext_query'). Alternative to providing a custom instruction.",
       "title": "Prompt Name"
+    },
+    "chunk_strategy": {
+      "anyOf": [
+        {
+          "enum": [
+            "fixed",
+            "recursive"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Chunking strategy. 'fixed': split by token count. 'recursive': split at paragraph/sentence/word boundaries within token budget. None: no chunking.",
+      "title": "Chunk Strategy"
+    },
+    "chunk_size": {
+      "default": 512,
+      "description": "Target chunk size in tokens. Clamped to model max (32768). Only used when chunk_strategy is set.",
+      "title": "Chunk Size",
+      "type": "integer"
+    },
+    "chunk_overlap": {
+      "default": 50,
+      "description": "Overlap between chunks in tokens. Only used when chunk_strategy is set.",
+      "title": "Chunk Overlap",
+      "type": "integer"
     }
   },
-  "required": [
-    "texts"
-  ],
   "title": "AppInput",
   "type": "object"
 }
