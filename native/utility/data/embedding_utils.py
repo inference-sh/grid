@@ -1,4 +1,23 @@
-"""Shared utilities for embedding apps — chunking, text resolution, file parsing."""
+"""Shared utilities for embedding apps — chunking, text resolution, file parsing.
+
+Usage:
+    Symlink into each embedding app directory and import with relative import:
+        ln -s ../embedding_utils.py my-app/embedding_utils.py
+        # in inference.py: from .embedding_utils import resolve_texts, chunk_text
+    Requires __init__.py in the app dir (from .inference import App).
+
+Tokenizer contract:
+    chunk_text() accepts any HuggingFace PreTrainedTokenizer. It uses:
+        - tokenizer(text, return_offsets_mapping=True, add_special_tokens=False)
+        - tokenizer.encode(text)
+    Any model with a standard HF tokenizer works.
+
+Output contract:
+    All embedding apps should return List[File] with JSON files containing:
+        {"embeddings": [[float, ...], ...]}                    # no chunking
+        {"embeddings": [...], "chunks": [{text, start_token,   # with chunking
+          end_token, start_char, end_char, index}, ...]}
+"""
 
 import json
 import logging
