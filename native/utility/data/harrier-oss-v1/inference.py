@@ -18,9 +18,13 @@ PROMPT_TEMPLATES = {
 
 
 class AppSetup(BaseAppInput):
-    model_id: str = Field(
+    model_id: Literal[
+        "microsoft/harrier-oss-v1-270m",
+        "microsoft/harrier-oss-v1-0.6b",
+        "microsoft/harrier-oss-v1-27b",
+    ] = Field(
         default="microsoft/harrier-oss-v1-0.6b",
-        description="Model variant to load: microsoft/harrier-oss-v1-270m (270M params, 640d), microsoft/harrier-oss-v1-0.6b (0.6B params, 1024d), or microsoft/harrier-oss-v1-27b (27B params, 5376d)",
+        description="Model variant: 270m (640d), 0.6b (1024d), or 27b (5376d)",
     )
 
 
