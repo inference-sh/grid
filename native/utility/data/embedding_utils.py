@@ -40,7 +40,13 @@ def resolve_texts(texts: Optional[List[str]], files: Optional[list]) -> List[str
 
 
 def _read_text_file(path: str) -> List[str]:
-    """Read texts from a file. Supports .json (array), .jsonl (one per line), .txt (one per line)."""
+    """Read texts from a file.
+
+    - .json: array of strings, each is a separate text
+    - .jsonl: one JSON string per line, each is a separate text
+    - Everything else (.txt, .md, etc.): entire file is ONE text
+      Use chunk_strategy to split documents into chunks.
+    """
     with open(path, "r") as f:
         content = f.read()
 
@@ -53,8 +59,8 @@ def _read_text_file(path: str) -> List[str]:
     if path.endswith(".jsonl"):
         return [str(json.loads(line)) for line in content.strip().splitlines() if line.strip()]
 
-    # Default: plain text, one text per line
-    return [line for line in content.strip().splitlines() if line.strip()]
+    # Whole file is one text — use chunking to split if needed
+    return [content.strip()]
 
 
 def chunk_text(text: str, strategy: str, chunk_size: int, overlap: int, tokenizer) -> list:
