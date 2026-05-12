@@ -1,0 +1,21 @@
+namespace: inworld
+name: voice-design
+description: Design a custom voice from a text description using Inworld AI. Describe the voice you want and get up to 3 previews. Publish the one you like to use with any Inworld TTS model.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: INWORLD_KEY
+      description: Inworld API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

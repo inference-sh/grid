@@ -11,7 +11,25 @@ from pydantic import Field
 from typing import Optional, Literal
 import logging
 
-from .inworld_helper import text_to_speech, get_api_key, get_audio_duration
+from .inworld_helper import text_to_speech, list_voices, get_api_key, get_audio_duration
+
+
+class VoicesInput(BaseAppInput):
+    """Input for listing available voices."""
+    language: Optional[str] = Field(
+        default=None,
+        description="Filter by language code (e.g. EN_US, FR_FR, JA_JP, ES_ES). Returns all languages if omitted.",
+    )
+    gender: Optional[str] = Field(
+        default=None,
+        description="Filter by gender (e.g. MALE, FEMALE). Returns all if omitted.",
+    )
+
+
+class VoicesOutput(BaseAppOutput):
+    """Output for voice listing."""
+    voices: list = Field(description="List of available voices with voiceId, displayName, langCode, gender, and tags")
+    total: int = Field(description="Total number of voices returned")
 
 
 class AppInput(BaseAppInput):
@@ -22,7 +40,8 @@ class AppInput(BaseAppInput):
         max_length=2000,
     )
     voice_id: str = Field(
-        description="Voice ID to use. List available voices via the Inworld platform.",
+        default="Sarah",
+        description="Voice ID — built-in (e.g. Sarah, Alex, Ashley, Dennis, Hana, Blake, Luna, Clive) or custom cloned/designed voice ID. 271+ built-in voices across 15 languages.",
     )
     language: Optional[str] = Field(
         default=None,
@@ -66,6 +85,30 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
         get_api_key()
         self.logger.info("Inworld TTS-2 app initialized")
+
+    async def voices(self, input_data: VoicesInput) -> VoicesOutput:
+        """List available voices. Use to discover voice IDs for TTS."""
+        self.logger.info(f"Listing voices (language={input_data.language}, gender={input_data.gender})")
+
+        all_voices = await list_voices(
+            language=input_data.language,
+            gender=input_data.gender,
+            source="SYSTEM",
+            logger=self.logger,
+        )
+
+        voices = [
+            {
+                "voiceId": v.get("voiceId"),
+                "displayName": v.get("displayName"),
+                "langCode": v.get("langCode"),
+                "gender": v.get("gender"),
+                "tags": v.get("tags", []),
+            }
+            for v in all_voices
+        ]
+
+        return VoicesOutput(voices=voices, total=len(voices))
 
     async def run(self, input_data: AppInput) -> AppOutput:
         self.logger.info(f"Generating speech: {len(input_data.text)} characters")

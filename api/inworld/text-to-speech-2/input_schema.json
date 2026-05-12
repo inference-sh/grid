@@ -8,7 +8,8 @@
       "type": "string"
     },
     "voice_id": {
-      "description": "Voice ID to use. List available voices via the Inworld platform.",
+      "default": "Sarah",
+      "description": "Voice ID \u2014 built-in (e.g. Sarah, Alex, Ashley, Dennis, Hana, Blake, Luna, Clive) or custom cloned/designed voice ID. 271+ built-in voices across 15 languages.",
       "title": "Voice Id",
       "type": "string"
     },
@@ -67,8 +68,7 @@
     }
   },
   "required": [
-    "text",
-    "voice_id"
+    "text"
   ],
   "title": "AppInput",
   "type": "object"

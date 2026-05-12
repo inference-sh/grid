@@ -1,0 +1,79 @@
+{
+  "description": "Input schema for voice cloning.",
+  "properties": {
+    "audio": {
+      "description": "Audio sample of the voice to clone (WAV or MP3, 5-15 seconds). Longer clips are cut off at 15s.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "display_name": {
+      "description": "Name for the cloned voice (e.g. 'My Custom Voice').",
+      "title": "Display Name",
+      "type": "string"
+    },
+    "language": {
+      "default": "EN_US",
+      "description": "Language of the voice sample.",
+      "enum": [
+        "EN_US",
+        "ZH_CN",
+        "KO_KR",
+        "JA_JP",
+        "RU_RU",
+        "AUTO",
+        "IT_IT",
+        "ES_ES",
+        "PT_BR",
+        "DE_DE",
+        "FR_FR",
+        "AR_SA",
+        "PL_PL",
+        "NL_NL",
+        "HI_IN",
+        "HE_IL"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional description of the voice (e.g. 'Warm female narrator with British accent').",
+      "title": "Description"
+    },
+    "remove_background_noise": {
+      "default": true,
+      "description": "Remove background noise from the audio sample before cloning.",
+      "title": "Remove Background Noise",
+      "type": "boolean"
+    },
+    "preview_text": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional text to generate a preview with the cloned voice. If provided, returns a preview audio file.",
+      "title": "Preview Text"
+    }
+  },
+  "required": [
+    "audio",
+    "display_name"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

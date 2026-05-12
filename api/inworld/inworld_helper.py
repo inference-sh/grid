@@ -18,6 +18,7 @@ import httpx
 
 TTS_BASE_URL = "https://api.inworld.ai/tts/v1"
 STT_BASE_URL = "https://api.inworld.ai/stt/v1"
+VOICES_BASE_URL = "https://api.inworld.ai/voices/v1"
 
 
 def get_api_key() -> str:
@@ -51,6 +52,187 @@ def get_audio_duration(file_path: str, logger: Optional[logging.Logger] = None) 
         if logger:
             logger.warning(f"Could not get audio duration: {e}")
     return 0.0
+
+
+async def list_voices(
+    language: Optional[str] = None,
+    gender: Optional[str] = None,
+    source: Optional[str] = None,
+    page_size: int = 2000,
+    logger: Optional[logging.Logger] = None,
+) -> list:
+    """List available voices from Inworld Voices API.
+
+    Returns list of voice dicts with voiceId, displayName, langCode, source, etc.
+    """
+    if logger:
+        logger.info("Listing available voices")
+
+    params: Dict[str, Any] = {"pageSize": page_size}
+
+    filters = []
+    if language:
+        filters.append(f'langCode="{language}"')
+    if gender:
+        filters.append(f'gender="{gender}"')
+    if source:
+        filters.append(f'source="{source}"')
+    if filters:
+        params["filter"] = " AND ".join(filters)
+
+    all_voices = []
+    async with httpx.AsyncClient(timeout=60) as client:
+        while True:
+            response = await client.get(
+                f"{VOICES_BASE_URL}/voices",
+                headers={
+                    "Authorization": get_auth_header(),
+                    "Content-Type": "application/json",
+                },
+                params=params,
+            )
+            response.raise_for_status()
+            data = response.json()
+            all_voices.extend(data.get("voices", []))
+            next_token = data.get("nextPageToken")
+            if not next_token:
+                break
+            params["pageToken"] = next_token
+
+    if logger:
+        logger.info(f"Found {len(all_voices)} voices")
+
+    return all_voices
+
+
+async def design_voice(
+    design_prompt: str,
+    preview_text: str,
+    lang_code: str = "EN_US",
+    number_of_samples: int = 3,
+    logger: Optional[logging.Logger] = None,
+) -> Dict[str, Any]:
+    """Design a voice from a text description using Inworld Voice Design API.
+
+    Returns up to 3 preview voices with audio samples.
+    """
+    if logger:
+        logger.info(f"Designing voice: {design_prompt[:80]}")
+
+    body: Dict[str, Any] = {
+        "langCode": lang_code,
+        "designPrompt": design_prompt,
+        "previewText": preview_text,
+        "voiceDesignConfig": {
+            "numberOfSamples": number_of_samples,
+        },
+    }
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        response = await client.post(
+            f"{VOICES_BASE_URL}/voices:design",
+            headers={
+                "Authorization": get_auth_header(),
+                "Content-Type": "application/json",
+            },
+            json=body,
+        )
+        response.raise_for_status()
+
+    result = response.json()
+    previews = result.get("previewVoices", [])
+
+    if logger:
+        logger.info(f"Generated {len(previews)} voice previews")
+
+    return result
+
+
+async def publish_voice(
+    voice_id: str,
+    display_name: str,
+    description: Optional[str] = None,
+    tags: Optional[list] = None,
+    logger: Optional[logging.Logger] = None,
+) -> Dict[str, Any]:
+    """Publish a designed/cloned voice to make it permanently available.
+
+    Returns the published voice resource.
+    """
+    if logger:
+        logger.info(f"Publishing voice: {voice_id} as {display_name}")
+
+    body: Dict[str, Any] = {"displayName": display_name}
+    if description:
+        body["description"] = description
+    if tags:
+        body["tags"] = tags
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        response = await client.post(
+            f"{VOICES_BASE_URL}/voices/{voice_id}:publish",
+            headers={
+                "Authorization": get_auth_header(),
+                "Content-Type": "application/json",
+            },
+            json=body,
+        )
+        response.raise_for_status()
+
+    result = response.json()
+
+    if logger:
+        logger.info(f"Voice published: {result.get('voiceId')}")
+
+    return result
+
+
+async def clone_voice(
+    display_name: str,
+    audio_data: bytes,
+    lang_code: str = "EN_US",
+    description: Optional[str] = None,
+    remove_background_noise: bool = True,
+    logger: Optional[logging.Logger] = None,
+) -> Dict[str, Any]:
+    """Clone a voice from an audio sample using Inworld Voice Cloning API.
+
+    Returns the voice dict with voiceId and metadata.
+    """
+    if logger:
+        logger.info(f"Cloning voice: {display_name}, lang: {lang_code}")
+
+    audio_b64 = base64.b64encode(audio_data).decode()
+
+    body: Dict[str, Any] = {
+        "displayName": display_name,
+        "langCode": lang_code,
+        "voiceSamples": [{"audioData": audio_b64}],
+        "audioProcessingConfig": {
+            "removeBackgroundNoise": remove_background_noise,
+        },
+    }
+    if description:
+        body["description"] = description
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        response = await client.post(
+            f"{VOICES_BASE_URL}/voices:clone",
+            headers={
+                "Authorization": get_auth_header(),
+                "Content-Type": "application/json",
+            },
+            json=body,
+        )
+        response.raise_for_status()
+
+    result = response.json()
+    voice = result.get("voice", {})
+
+    if logger:
+        logger.info(f"Voice cloned: {voice.get('voiceId')} ({voice.get('displayName')})")
+
+    return result
 
 
 async def text_to_speech(

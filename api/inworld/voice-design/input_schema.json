@@ -1,0 +1,55 @@
+{
+  "description": "Input schema for voice design.",
+  "properties": {
+    "design_prompt": {
+      "description": "Text description of the desired voice (30-250 characters, English). Include age, gender, accent, tone, pitch, and personality. Example: 'A warm, friendly mid-30s female voice with a slight British accent, conversational and upbeat tone.'",
+      "maxLength": 250,
+      "minLength": 30,
+      "title": "Design Prompt",
+      "type": "string"
+    },
+    "preview_text": {
+      "description": "Text the generated voice will speak in the preview (should result in 1-15 seconds of audio).",
+      "title": "Preview Text",
+      "type": "string"
+    },
+    "language": {
+      "default": "EN_US",
+      "description": "Language for the designed voice.",
+      "enum": [
+        "EN_US",
+        "ZH_CN",
+        "KO_KR",
+        "JA_JP",
+        "RU_RU",
+        "AUTO",
+        "IT_IT",
+        "ES_ES",
+        "PT_BR",
+        "DE_DE",
+        "FR_FR",
+        "AR_SA",
+        "PL_PL",
+        "NL_NL",
+        "HI_IN",
+        "HE_IL"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "number_of_samples": {
+      "default": 3,
+      "description": "Number of voice previews to generate (1-3). More samples = more options to choose from.",
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Number Of Samples",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "design_prompt",
+    "preview_text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

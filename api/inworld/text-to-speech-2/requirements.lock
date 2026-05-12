@@ -5,13 +5,13 @@ charset-normalizer==3.4.7
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
-idna==3.13
-inferencesh==0.6.33
+idna==3.14
+inferencesh==0.6.34
 ninja==1.13.0
 packaging==26.2
 pydantic==2.13.4
 pydantic-core==2.46.4
-requests==2.33.1
+requests==2.34.0
 setuptools==82.0.1
 setuptools-scm==10.0.5
 tqdm==4.67.3

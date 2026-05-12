@@ -1,0 +1,21 @@
+namespace: inworld
+name: voice-cloning
+description: Clone a voice from 5-15 seconds of audio using Inworld instant voice cloning. Use the cloned voice ID with any Inworld TTS model.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: INWORLD_KEY
+      description: Inworld API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
