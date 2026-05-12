@@ -54,6 +54,7 @@ class AppOutput(BaseAppOutput):
     """Output schema for voice design."""
     previews: List[VoicePreview] = Field(description="Generated voice previews — listen and pick the best one, then publish it")
     total: int = Field(description="Number of previews generated")
+    hint: str = Field(description="Usage instructions")
 
 
 class PublishInput(BaseAppInput):
@@ -114,7 +115,11 @@ class App(BaseApp):
                 audio=File(path=audio_path),
             ))
 
-        return AppOutput(previews=previews, total=len(previews))
+        return AppOutput(
+            previews=previews,
+            total=len(previews),
+            hint="These are temporary previews. To use a voice with TTS, publish it first: belt app run inworld/voice-design --function publish --input '{\"voice_id\": \"<voice_id>\", \"display_name\": \"My Voice\"}'",
+        )
 
     async def publish(self, input_data: PublishInput) -> PublishOutput:
         """Publish a designed voice preview to make it permanently available."""

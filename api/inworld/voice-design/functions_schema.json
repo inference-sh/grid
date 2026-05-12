@@ -744,6 +744,11 @@
           "title": "Total",
           "type": "integer"
         },
+        "hint": {
+          "description": "Usage instructions",
+          "title": "Hint",
+          "type": "string"
+        },
         "output_meta": {
           "anyOf": [
             {
@@ -759,7 +764,8 @@
       },
       "required": [
         "previews",
-        "total"
+        "total",
+        "hint"
       ],
       "title": "AppOutput",
       "type": "object"
