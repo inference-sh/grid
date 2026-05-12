@@ -118,7 +118,7 @@ class App(BaseApp):
         return AppOutput(
             previews=previews,
             total=len(previews),
-            hint="These are temporary previews. To use a voice with TTS, publish it first: belt app run inworld/voice-design --function publish --input '{\"voice_id\": \"<voice_id>\", \"display_name\": \"My Voice\"}'",
+            hint="These are temporary previews. To use a voice with TTS, publish it first using the publish function on this app with the voice_id you want to keep.",
         )
 
     async def publish(self, input_data: PublishInput) -> PublishOutput:
