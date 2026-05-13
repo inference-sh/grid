@@ -24,7 +24,7 @@
       "type": "string"
     }
   },
-  "description": "Input schema for Seedance 2.0 Studio Fast video generation.\n\nSame as Seedance 2.0 Fast, but images are automatically uploaded to the\nprivate virtual portrait library for enhanced character consistency.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_image/reference_video/reference_audio",
+  "description": "Input schema for Seedance 2.0 Studio Fast video generation.\n\nSame as Seedance 2.0 Fast, but images are automatically uploaded to the\nprivate virtual portrait library for enhanced character consistency.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios",
   "properties": {
     "prompt": {
       "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
@@ -45,7 +45,7 @@
         }
       ],
       "default": null,
-      "description": "First-frame image for image-to-video generation. Mutually exclusive with reference_image/reference_video/reference_audio.",
+      "description": "First-frame image for image-to-video generation. Mutually exclusive with reference inputs.",
       "title": "Image"
     },
     "end_image": {
@@ -62,75 +62,38 @@
       "description": "Last-frame image for first+last frame video generation. Requires image to be set as the first frame.",
       "title": "End Image"
     },
-    "reference_image": {
-      "anyOf": [
-        {
-          "format": "file",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Reference image for multimodal reference-to-video. Use prompt to describe how to use it.",
-      "title": "Reference Image"
+    "reference_images": {
+      "default": [],
+      "description": "Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 9,
+      "title": "Reference Images",
+      "type": "array"
     },
-    "reference_image_2": {
-      "anyOf": [
-        {
-          "format": "file",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Second reference image for multimodal reference-to-video.",
-      "title": "Reference Image 2"
+    "reference_videos": {
+      "default": [],
+      "description": "Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov. Mutually exclusive with image/end_image.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Videos",
+      "type": "array"
     },
-    "reference_image_3": {
-      "anyOf": [
-        {
-          "format": "file",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Third reference image for multimodal reference-to-video.",
-      "title": "Reference Image 3"
-    },
-    "reference_video": {
-      "anyOf": [
-        {
-          "format": "file",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Reference video for multimodal generation. Max 15s, formats: mp4/mov.",
-      "title": "Reference Video"
-    },
-    "reference_audio": {
-      "anyOf": [
-        {
-          "format": "file",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Reference audio for multimodal generation. Max 15s, formats: wav/mp3. Requires at least one image or video.",
-      "title": "Reference Audio"
+    "reference_audios": {
+      "default": [],
+      "description": "Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Audios",
+      "type": "array"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
@@ -165,6 +128,19 @@
       "description": "Whether to add watermark to the output video.",
       "title": "Watermark",
       "type": "boolean"
+    },
+    "safety_identifier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email. Also used to namespace asset groups.",
+      "title": "Safety Identifier"
     }
   },
   "required": [

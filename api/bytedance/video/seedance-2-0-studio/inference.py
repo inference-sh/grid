@@ -8,7 +8,7 @@ Uses asset:// URIs instead of direct image URLs for trusted asset generation.
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
 from pydantic import Field
-from typing import Optional
+from typing import List, Optional
 from enum import Enum
 import logging
 
@@ -79,7 +79,7 @@ class AppInput(BaseAppInput):
     - Text-to-video: provide prompt only
     - Image-to-video (first frame): provide prompt + image
     - Image-to-video (first + last frame): provide prompt + image + end_image
-    - Multimodal reference: provide prompt + reference_image/reference_video/reference_audio
+    - Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios
     """
 
     prompt: str = Field(
@@ -88,31 +88,26 @@ class AppInput(BaseAppInput):
     )
     image: Optional[File] = Field(
         default=None,
-        description="First-frame image for image-to-video generation. Mutually exclusive with reference_image/reference_video/reference_audio."
+        description="First-frame image for image-to-video generation. Mutually exclusive with reference inputs."
     )
     end_image: Optional[File] = Field(
         default=None,
         description="Last-frame image for first+last frame video generation. Requires image to be set as the first frame."
     )
-    reference_image: Optional[File] = Field(
-        default=None,
-        description="Reference image for multimodal reference-to-video. Use prompt to describe how to use it."
+    reference_images: List[File] = Field(
+        default=[],
+        max_length=9,
+        description="Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image."
     )
-    reference_image_2: Optional[File] = Field(
-        default=None,
-        description="Second reference image for multimodal reference-to-video."
+    reference_videos: List[File] = Field(
+        default=[],
+        max_length=3,
+        description="Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov. Mutually exclusive with image/end_image."
     )
-    reference_image_3: Optional[File] = Field(
-        default=None,
-        description="Third reference image for multimodal reference-to-video."
-    )
-    reference_video: Optional[File] = Field(
-        default=None,
-        description="Reference video for multimodal generation. Max 15s, formats: mp4/mov."
-    )
-    reference_audio: Optional[File] = Field(
-        default=None,
-        description="Reference audio for multimodal generation. Max 15s, formats: wav/mp3. Requires at least one image or video."
+    reference_audios: List[File] = Field(
+        default=[],
+        max_length=3,
+        description="Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video."
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
@@ -137,6 +132,10 @@ class AppInput(BaseAppInput):
     watermark: bool = Field(
         default=False,
         description="Whether to add watermark to the output video."
+    )
+    safety_identifier: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email. Also used to namespace asset groups."
     )
 
 
@@ -173,12 +172,13 @@ class App(BaseApp):
             cancel_task(self.client, self.current_task_id, self.logger)
         return True
 
-    async def _ensure_asset_group(self):
-        """Create asset group on first use."""
+    async def _ensure_asset_group(self, safety_identifier: Optional[str] = None):
+        """Create asset group, namespaced by safety_identifier if provided."""
         if self.asset_group_id is None:
+            group_name = f"seedance-studio-{safety_identifier}" if safety_identifier else "seedance-studio-assets"
             self.asset_group_id = create_asset_group(
                 self.asset_client,
-                name="seedance-studio-assets",
+                name=group_name,
                 description="Auto-managed asset group for Seedance 2.0 Studio",
                 logger=self.logger,
             )
@@ -200,11 +200,9 @@ class App(BaseApp):
 
     def _determine_mode(self, input_data: AppInput) -> str:
         """Determine the generation mode from input."""
-        has_ref_images = any([input_data.reference_image, input_data.reference_image_2, input_data.reference_image_3])
-        has_ref_video = input_data.reference_video is not None
-        has_ref_audio = input_data.reference_audio is not None
+        has_refs = input_data.reference_images or input_data.reference_videos or input_data.reference_audios
 
-        if has_ref_images or has_ref_video or has_ref_audio:
+        if has_refs:
             return "multimodal-reference"
         elif input_data.image and input_data.end_image:
             return "first-last-frame"
@@ -231,23 +229,22 @@ class App(BaseApp):
             content.append(build_image_content(first_uri, role="first_frame"))
 
         elif mode == "multimodal-reference":
-            for ref_img in [input_data.reference_image, input_data.reference_image_2, input_data.reference_image_3]:
-                if ref_img and ref_img.exists():
+            for ref_img in input_data.reference_images:
+                if ref_img.exists():
                     asset_uri = await self._upload_image_asset(ref_img)
                     content.append(build_image_content(asset_uri, role="reference_image"))
 
-            if input_data.reference_video and input_data.reference_video.exists():
-                content.append(build_video_content(input_data.reference_video.uri))
+            for ref_vid in input_data.reference_videos:
+                if ref_vid.exists():
+                    content.append(build_video_content(ref_vid.uri))
 
-            if input_data.reference_audio:
-                has_visual = any([
-                    input_data.reference_image, input_data.reference_image_2,
-                    input_data.reference_image_3, input_data.reference_video,
-                ])
+            if input_data.reference_audios:
+                has_visual = input_data.reference_images or input_data.reference_videos
                 if not has_visual:
                     raise RuntimeError("Audio reference requires at least one image or video reference.")
-                if input_data.reference_audio.exists():
-                    content.append(build_audio_content(input_data.reference_audio.uri))
+                for ref_aud in input_data.reference_audios:
+                    if ref_aud.exists():
+                        content.append(build_audio_content(ref_aud.uri))
 
         return content
 
@@ -307,6 +304,9 @@ class App(BaseApp):
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
             self.logger.info(f"Resolution: {input_data.resolution.value}, Ratio: {input_data.ratio.value}, Duration: {input_data.duration}s, Audio: {input_data.generate_audio}")
 
+            # Ensure asset group is namespaced by safety_identifier
+            await self._ensure_asset_group(input_data.safety_identifier)
+
             content = await self._build_content(input_data, mode)
 
             api_params = {
@@ -317,6 +317,8 @@ class App(BaseApp):
                 "seed": input_data.seed,
                 "watermark": input_data.watermark,
             }
+            if input_data.safety_identifier:
+                api_params["safety_identifier"] = input_data.safety_identifier
 
             self.current_task_id = create_content_task(
                 self.client,
