@@ -1,0 +1,16 @@
+{
+  "prompt": "example",
+  "image": null,
+  "end_image": null,
+  "reference_image": null,
+  "reference_image_2": null,
+  "reference_image_3": null,
+  "reference_video": null,
+  "reference_audio": null,
+  "resolution": "720p",
+  "ratio": "adaptive",
+  "duration": 5,
+  "generate_audio": true,
+  "seed": -1,
+  "watermark": false
+}
