@@ -133,6 +133,10 @@ class AppInput(BaseAppInput):
         default=False,
         description="Whether to add watermark to the output video."
     )
+    safety_filter: bool = Field(
+        default=True,
+        description="Enable input safety filtering. Set to false to disable NSFW content filtering on inputs."
+    )
     safety_identifier: Optional[str] = Field(
         default=None,
         description="Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email. Also used to namespace asset groups."
@@ -157,6 +161,7 @@ class App(BaseApp):
         self.client = setup_byteplus_client()
         self.asset_client = setup_asset_client()
         self.model_id = "dreamina-seedance-2-0-260128"
+        self.unfiltered_model_id = "ep-20260514173157-ppqhm"
         self.asset_group_id = None
 
         self.cancel_flag = False
@@ -320,9 +325,11 @@ class App(BaseApp):
             if input_data.safety_identifier:
                 api_params["safety_identifier"] = input_data.safety_identifier
 
+            model = self.model_id if input_data.safety_filter else self.unfiltered_model_id
+
             self.current_task_id = create_content_task(
                 self.client,
-                model=self.model_id,
+                model=model,
                 content=content,
                 logger=self.logger,
                 **api_params,

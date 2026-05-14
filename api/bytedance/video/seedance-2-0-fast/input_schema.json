@@ -129,6 +129,12 @@
       "title": "Watermark",
       "type": "boolean"
     },
+    "safety_filter": {
+      "default": true,
+      "description": "Enable input safety filtering. Set to false to disable NSFW content filtering on inputs.",
+      "title": "Safety Filter",
+      "type": "boolean"
+    },
     "safety_identifier": {
       "anyOf": [
         {

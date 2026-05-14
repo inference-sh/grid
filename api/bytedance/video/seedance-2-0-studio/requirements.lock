@@ -13,7 +13,7 @@ packaging==26.2
 pydantic==2.13.4
 pydantic-core==2.46.4
 python-dateutil==2.9.0.post0
-requests==2.34.0
+requests==2.34.1
 setuptools==82.0.1
 setuptools-scm==10.0.5
 six==1.17.0
