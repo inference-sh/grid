@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling Avatar - digital human from a photo.\n\nProvide a face image and either text+voice_id or audio.",
+  "properties": {
+    "image": {
+      "description": "Face image for the avatar. Single clear front-facing face, good lighting. Formats: jpg, jpeg, png. Max 10MB.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text for the avatar to speak. Requires voice_id.",
+      "title": "Text"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for the avatar to lip-sync to. Alternative to text+voice_id.",
+      "title": "Audio"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "TTS voice ID. Required when using text input.",
+      "title": "Voice Id"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "std",
+      "description": "Quality mode. 'pro' for higher quality ($0.112/sec), 'std' for cheaper ($0.056/sec)."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Output video aspect ratio."
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

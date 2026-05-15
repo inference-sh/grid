@@ -1,0 +1,27 @@
+namespace: klingai
+name: video-v3
+description: Kling V3.0 - latest and most capable video generation model. Native 4K output, multi-shot generation, flexible 3-15s duration billed per second, element control, motion control, and synchronized audio.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - 4k
+        - audio
+        - v3
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

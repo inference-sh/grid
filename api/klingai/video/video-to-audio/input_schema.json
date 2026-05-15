@@ -1,0 +1,29 @@
+{
+  "description": "Kling Video-to-Audio.\n\nProvide a video (3-20s) and optionally describe the audio you want.",
+  "properties": {
+    "video": {
+      "description": "Video to add audio to. 3-20 seconds duration. Formats: mp4, mov.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Description of desired audio. E.g. 'Ocean waves, seagulls, gentle wind' or 'Upbeat electronic background music'.",
+      "title": "Prompt"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

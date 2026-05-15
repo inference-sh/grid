@@ -1,0 +1,26 @@
+namespace: klingai
+name: video-v2-5
+description: Kling V2.5 Turbo - fast video generation from text and images. Supports start/end frame interpolation in pro mode. Optimized for speed while maintaining high quality at up to 1080p.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - turbo
+        - fast
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

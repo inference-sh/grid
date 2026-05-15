@@ -1,0 +1,26 @@
+namespace: klingai
+name: video-o1
+description: Kling Video O1 (Omni) - unified video generation with text, image references, start/end frames, element references, and video references for editing and style transfer. The most capable Kling model.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - video-editing
+        - omni
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

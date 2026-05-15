@@ -1,0 +1,26 @@
+namespace: klingai
+name: video-v2-6
+description: Kling V2.6 video generation with native sound and voice control. Supports text-to-video and image-to-video with start/end frames, synchronized audio generation, and voice-driven character animation.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - audio
+        - voice
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

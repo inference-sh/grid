@@ -1,0 +1,56 @@
+{
+  "description": "Kling Lip Sync.\n\nProvide a video and either text+voice_id or audio to drive lip movements.",
+  "properties": {
+    "video": {
+      "description": "Source video with a visible face. Formats: mp4, mov.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text for the character to speak. Requires voice_id.",
+      "title": "Text"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file to drive lip sync. Alternative to text+voice_id.",
+      "title": "Audio"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "TTS voice ID. Required when using text input.",
+      "title": "Voice Id"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -34,7 +34,10 @@ class VideoModel(str, Enum):
     KLING_V2_1_MASTER = "kling-v2-1-master"
     KLING_V2_5_TURBO = "kling-v2-5-turbo"
     KLING_V2_6 = "kling-v2-6"
+    KLING_V3 = "kling-v3"
+    KLING_V3_OMNI = "kling-v3-omni"
     KLING_VIDEO_O1 = "kling-video-o1"  # Omni model
+    KLING_VIDEO_3O = "kling-video-3o"  # Video 3O model
 
 # Image Models
 class ImageModel(str, Enum):
@@ -302,6 +305,9 @@ class KlingClient:
         self.image2video = Image2VideoAPI(self)
         self.omni_video = OmniVideoAPI(self)
         self.images = ImageGenerationAPI(self)
+        self.lip_sync = LipSyncAPI(self)
+        self.avatar = AvatarAPI(self)
+        self.video_to_audio = VideoToAudioAPI(self)
 
     def _generate_token(self) -> str:
         """Generate JWT token for API authentication"""
@@ -847,6 +853,215 @@ class ImageGenerationAPI:
             created_at=task_data.get("created_at"),
             updated_at=task_data.get("updated_at"),
             images=images,
+        )
+
+
+# =============================================================================
+# Lip Sync API
+# =============================================================================
+
+class LipSyncAPI:
+    """Lip Sync API endpoints"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        video_url: str,
+        text: Optional[str] = None,
+        audio_url: Optional[str] = None,
+        voice_id: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        """
+        Create a lip sync task.
+
+        Either text + voice_id OR audio_url must be provided.
+        """
+        payload = {"video_url": video_url}
+
+        if text:
+            payload["text"] = text
+        if audio_url:
+            payload["audio_url"] = audio_url
+        if voice_id:
+            payload["voice_id"] = voice_id
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/videos/lip-sync", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/videos/lip-sync/{task_id}")
+        return self._parse_task_result(data)
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+        videos = None
+        if "task_result" in task_data and "videos" in task_data["task_result"]:
+            videos = [
+                VideoResult(
+                    id=v.get("id", ""),
+                    url=v.get("url", ""),
+                    duration=v.get("duration", ""),
+                )
+                for v in task_data["task_result"]["videos"]
+            ]
+        task_info = task_data.get("task_info", {})
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            videos=videos,
+        )
+
+
+# =============================================================================
+# Avatar API
+# =============================================================================
+
+class AvatarAPI:
+    """Avatar (digital human) API endpoints"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        image: str,
+        text: Optional[str] = None,
+        audio_url: Optional[str] = None,
+        voice_id: Optional[str] = None,
+        mode: str = "std",
+        aspect_ratio: str = "16:9",
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        """
+        Create an avatar video task.
+
+        Either text + voice_id OR audio_url must be provided.
+        """
+        payload = {"image": image, "mode": mode, "aspect_ratio": aspect_ratio}
+
+        if text:
+            payload["text"] = text
+        if audio_url:
+            payload["audio_url"] = audio_url
+        if voice_id:
+            payload["voice_id"] = voice_id
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/videos/avatar", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/videos/avatar/{task_id}")
+        return self._parse_task_result(data)
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+        videos = None
+        if "task_result" in task_data and "videos" in task_data["task_result"]:
+            videos = [
+                VideoResult(
+                    id=v.get("id", ""),
+                    url=v.get("url", ""),
+                    duration=v.get("duration", ""),
+                )
+                for v in task_data["task_result"]["videos"]
+            ]
+        task_info = task_data.get("task_info", {})
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            videos=videos,
+        )
+
+
+# =============================================================================
+# Video to Audio API
+# =============================================================================
+
+class VideoToAudioAPI:
+    """Video to Audio API endpoints"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        video_url: str,
+        prompt: Optional[str] = None,
+        audio_type: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        """
+        Create a video-to-audio task. Adds sound to a video.
+
+        Args:
+            video_url: Video URL (3-20s duration)
+            prompt: Description of desired audio
+            audio_type: Type of audio to generate
+        """
+        payload = {"video_url": video_url}
+
+        if prompt:
+            payload["prompt"] = prompt
+        if audio_type:
+            payload["audio_type"] = audio_type
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/videos/video-to-audio", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/videos/video-to-audio/{task_id}")
+        return self._parse_task_result(data)
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+        videos = None
+        if "task_result" in task_data and "videos" in task_data["task_result"]:
+            videos = [
+                VideoResult(
+                    id=v.get("id", ""),
+                    url=v.get("url", ""),
+                    duration=v.get("duration", ""),
+                )
+                for v in task_data["task_result"]["videos"]
+            ]
+        task_info = task_data.get("task_info", {})
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            videos=videos,
         )
 
 

@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling V2.5 Turbo - fast video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image (pro mode only)",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Max 2500 chars.",
+      "examples": [
+        "A majestic eagle soaring over snow-capped mountains at sunrise"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End frame image (pro mode only). Requires image to be set as start frame.",
+      "title": "End Image"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "pro",
+      "description": "Generation mode. 'pro' for higher quality + start/end frame support, 'std' for faster/cheaper."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Video duration: 5 or 10 seconds."
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid in the video. Max 2500 chars.",
+      "title": "Negative Prompt"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

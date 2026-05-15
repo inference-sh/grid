@@ -1,0 +1,24 @@
+namespace: klingai
+name: avatar
+description: Kling Avatar - generate digital human broadcast-style talking head videos from a single face photo. Provide text or audio for the avatar to speak.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - avatar
+        - digital-human
+        - talking-head
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

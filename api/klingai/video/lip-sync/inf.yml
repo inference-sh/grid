@@ -1,0 +1,24 @@
+namespace: klingai
+name: lip-sync
+description: Kling Lip Sync - drive mouth movements in videos using text or audio. Ideal for dubbing, adding speech to silent videos, or replacing dialogue.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - lip-sync
+        - dubbing
+        - video-editing
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

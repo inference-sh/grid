@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling Video O1 (Omni) - unified video generation with references.\n\nModes determined by inputs:\n- Text-to-video: prompt only (aspect_ratio required)\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image\n- Reference generation: prompt + reference_images / reference_video",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video. Use <<<image_1>>>, <<<element_1>>>, <<<video_1>>> to reference inputs. Max 2500 chars.",
+      "examples": [
+        "A serene lake at sunset with birds flying overhead"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First-frame reference image. Sets the opening frame of the video.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End-frame reference image. Requires image (first frame) to be set.",
+      "title": "End Image"
+    },
+    "reference_images": {
+      "default": [],
+      "description": "Reference images for style, character, or scene consistency. Referenced in prompt as <<<image_1>>>, <<<image_2>>>, etc. Max 7 without video, max 4 with video.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 7,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "reference_video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference video for camera style, motion, or editing. Referenced in prompt as <<<video_1>>>.",
+      "title": "Reference Video"
+    },
+    "reference_video_type": {
+      "default": "feature",
+      "description": "How to use reference video: 'feature' for style/motion reference, 'base' for direct editing/transformation.",
+      "title": "Reference Video Type",
+      "type": "string"
+    },
+    "keep_original_sound": {
+      "default": true,
+      "description": "Keep original sound from reference video (only applies when reference_video is set).",
+      "title": "Keep Original Sound",
+      "type": "boolean"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "pro",
+      "description": "Generation quality. 'pro' for highest quality, 'std' for faster/cheaper."
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AspectRatioEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video aspect ratio. Required for text-to-video and reference generation (not needed when using first-frame image or video editing)."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-10). For video editing, output matches input video duration.",
+      "maximum": 10,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add watermark to the output video.",
+      "title": "Watermark",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

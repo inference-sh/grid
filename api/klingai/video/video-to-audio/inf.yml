@@ -1,0 +1,24 @@
+namespace: klingai
+name: video-to-audio
+description: Kling Video-to-Audio - add generated sound effects, ambient audio, or music to any video. Works with Kling-generated and user-uploaded videos (3-20s).
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - audio
+        - sound-effects
+        - video-editing
+category: audio
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling V3.0 - latest video generation with native 4K.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Max 2500 chars.",
+      "examples": [
+        "A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End frame image. Requires image to be set as start frame.",
+      "title": "End Image"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "pro",
+      "description": "Generation mode. 'pro' for higher quality, 'std' for faster/cheaper."
+    },
+    "sound": {
+      "default": true,
+      "description": "Generate synchronized audio with the video.",
+      "title": "Sound",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-15). Billed per second.",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid in the video. Max 2500 chars.",
+      "title": "Negative Prompt"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

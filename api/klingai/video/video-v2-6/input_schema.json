@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "DurationEnum": {
+      "enum": [
+        "5",
+        "10"
+      ],
+      "title": "DurationEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "std",
+        "pro"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling V2.6 video generation with sound and voice support.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image (pro only, no audio)\n- Voice control: prompt with <<<voice_1>>> + image + voice_id (pro only)",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. For voice control, include <<<voice_1>>> where the character speaks. Max 2500 chars.",
+      "examples": [
+        "Ocean waves crashing on rocky shore at golden hour"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End frame image (pro mode only, disables audio). Requires image to be set.",
+      "title": "End Image"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice ID for voice-driven animation (pro mode only). Use <<<voice_1>>> in prompt to mark speech.",
+      "title": "Voice Id"
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "pro",
+      "description": "Generation mode. 'pro' for higher quality + sound/voice support, 'std' for faster/cheaper (no audio in std)."
+    },
+    "sound": {
+      "default": true,
+      "description": "Generate synchronized audio. Only works in pro mode. Disabled when using start/end frames.",
+      "title": "Sound",
+      "type": "boolean"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio."
+    },
+    "duration": {
+      "$ref": "#/$defs/DurationEnum",
+      "default": "5",
+      "description": "Video duration: 5 or 10 seconds."
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid in the video. Max 2500 chars. Note: not supported on V2.x models.",
+      "title": "Negative Prompt"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
