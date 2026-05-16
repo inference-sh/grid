@@ -1,0 +1,50 @@
+{
+  "properties": {
+    "subreddit": {
+      "description": "Subreddit to scan (without r/ prefix)",
+      "title": "Subreddit",
+      "type": "string"
+    },
+    "max_posts": {
+      "default": 100,
+      "description": "Maximum number of posts to fetch (max 1000)",
+      "title": "Max Posts",
+      "type": "integer"
+    },
+    "include_comments": {
+      "default": true,
+      "description": "Fetch comments for each post",
+      "title": "Include Comments",
+      "type": "boolean"
+    },
+    "min_words": {
+      "default": 5,
+      "description": "Minimum words to include in parsed output",
+      "title": "Min Words",
+      "type": "integer"
+    },
+    "max_words": {
+      "default": 10000,
+      "description": "Maximum words to include in parsed output",
+      "title": "Max Words",
+      "type": "integer"
+    },
+    "sort": {
+      "default": "new",
+      "description": "Sort order: new, hot, top, rising",
+      "title": "Sort",
+      "type": "string"
+    },
+    "time_filter": {
+      "default": "all",
+      "description": "Time filter for top sort: hour, day, week, month, year, all",
+      "title": "Time Filter",
+      "type": "string"
+    }
+  },
+  "required": [
+    "subreddit"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
