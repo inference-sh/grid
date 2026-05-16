@@ -285,7 +285,7 @@
   },
   "properties": {
     "image": {
-      "description": "The generated image file.",
+      "description": "Generated image.",
       "format": "file",
       "title": "Image",
       "type": "string"

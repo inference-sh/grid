@@ -21,23 +21,12 @@
       ],
       "title": "ReferenceTypeEnum",
       "type": "string"
-    },
-    "ResolutionEnum": {
-      "enum": [
-        "1k",
-        "2k"
-      ],
-      "title": "ResolutionEnum",
-      "type": "string"
     }
   },
-  "description": "Kling image generation.\n\nModes:\n- Text-to-image: prompt only\n- Image-to-image: prompt + image + image_reference (subject or face)",
+  "description": "Kolors V1.5 - text-to-image with subject/face reference.\n\n- subject: preserves character features (body, clothing style)\n- face: preserves facial appearance only (single face required)",
   "properties": {
     "prompt": {
-      "description": "Text description of the image to generate. Max 2500 chars.",
-      "examples": [
-        "A futuristic cityscape at night with neon lights and flying cars"
-      ],
+      "description": "Text description. Max 2500 chars.",
       "title": "Prompt",
       "type": "string"
     },
@@ -52,7 +41,7 @@
         }
       ],
       "default": null,
-      "description": "Reference image for image-to-image generation. Requires image_reference to be set.",
+      "description": "Reference image for subject/face consistency.",
       "title": "Image"
     },
     "image_reference": {
@@ -65,11 +54,11 @@
         }
       ],
       "default": null,
-      "description": "How to use the reference image: 'subject' for character features, 'face' for facial appearance."
+      "description": "Reference type: 'subject' for character features, 'face' for facial appearance."
     },
     "image_fidelity": {
       "default": 0.5,
-      "description": "Reference image strength [0-1]. Higher = closer to reference.",
+      "description": "Reference strength [0-1].",
       "maximum": 1.0,
       "minimum": 0.0,
       "title": "Image Fidelity",
@@ -77,7 +66,7 @@
     },
     "human_fidelity": {
       "default": 0.45,
-      "description": "Facial similarity [0-1]. Only used with 'subject' reference type.",
+      "description": "Facial similarity [0-1]. Only for 'subject' type.",
       "maximum": 1.0,
       "minimum": 0.0,
       "title": "Human Fidelity",
@@ -93,7 +82,7 @@
         }
       ],
       "default": null,
-      "description": "What to avoid in the image. Not supported with image reference.",
+      "description": "What to avoid. Not supported with image reference.",
       "title": "Negative Prompt"
     },
     "aspect_ratio": {
@@ -101,14 +90,9 @@
       "default": "16:9",
       "description": "Output aspect ratio."
     },
-    "resolution": {
-      "$ref": "#/$defs/ResolutionEnum",
-      "default": "1k",
-      "description": "Output resolution. 2k only supported by kling-v2."
-    },
     "n": {
       "default": 1,
-      "description": "Number of images to generate (1-9). Each counts as one concurrency slot.",
+      "description": "Number of images (1-9).",
       "maximum": 9,
       "minimum": 1,
       "title": "N",

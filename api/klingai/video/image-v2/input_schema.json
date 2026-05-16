@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "1k",
+        "2k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kolors V2.0 - text-to-image, multi-image reference, and restyle.\n\n- Text-to-image: prompt only (supports 2K)\n- Restyle: prompt + image (output matches input resolution)\n- Multi-image: prompt + image reference",
+  "properties": {
+    "prompt": {
+      "description": "Text description. Max 2500 chars.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference image for restyle or multi-image generation. Restyle output matches input resolution.",
+      "title": "Image"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid.",
+      "title": "Negative Prompt"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Output aspect ratio."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1k",
+      "description": "Output resolution. 2K supported for text-to-image."
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images (1-9).",
+      "maximum": 9,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

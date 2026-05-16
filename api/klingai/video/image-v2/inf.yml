@@ -1,14 +1,14 @@
 namespace: klingai
-name: image-gen
-description: Kling image generation using Kolors models. Text-to-image and image-to-image with subject/face reference. Up to 2K resolution, multiple aspect ratios, batch generation up to 9 images.
+name: image-v2
+description: Kling Image V2 (Kolors V2.0) - text-to-image with 2K resolution, multi-image reference, and restyle. Restyle output matches input resolution.
 metadata:
     provider: klingai
     tags:
         - kling
         - kolors
         - image-generation
-        - text-to-image
-        - image-to-image
+        - restyle
+        - 2k
 category: image
 env: {}
 kernel: python-3.11

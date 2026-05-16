@@ -1,0 +1,25 @@
+namespace: klingai
+name: image-v3
+description: Kling Image V3 (Kolors V3.0) - latest image generation model with 1K/2K resolution support. Highest quality text-to-image.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - 2k
+        - text-to-image
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

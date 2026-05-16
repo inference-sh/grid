@@ -1,0 +1,24 @@
+namespace: klingai
+name: image-v2-1
+description: Kling Image V2.1 (Kolors V2.1) - text-to-image and multi-image reference generation. Combine multiple images for complex compositions.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - multi-image
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

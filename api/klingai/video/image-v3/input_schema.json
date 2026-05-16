@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "1k",
+        "2k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kolors V3.0 - latest image generation with 2K support.",
+  "properties": {
+    "prompt": {
+      "description": "Text description. Max 2500 chars.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid.",
+      "title": "Negative Prompt"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Output aspect ratio."
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1k",
+      "description": "Output resolution. 2k doubles the cost."
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images (1-9).",
+      "maximum": 9,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

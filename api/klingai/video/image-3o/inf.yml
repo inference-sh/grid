@@ -1,0 +1,26 @@
+namespace: klingai
+name: image-3o
+description: Kling Image 3O (Kolors Image-3O) - most capable image model with native 4K, series-image generation, and element control. $0.028/image (4K $0.056).
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - 4k
+        - series
+        - omni
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

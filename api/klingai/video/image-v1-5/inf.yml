@@ -1,0 +1,25 @@
+namespace: klingai
+name: image-v1-5
+description: Kling Image V1.5 (Kolors V1.5) - text-to-image with subject and face reference for character consistency. Generate images preserving a person's appearance.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - face-reference
+        - character-consistency
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,0 +1,25 @@
+namespace: klingai
+name: image-o1
+description: Kling Image O1 (Kolors Image-O1) - omni image generation with element control. Text-to-image and image-to-image at 1K/2K. $0.028/image.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - omni
+        - element-control
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

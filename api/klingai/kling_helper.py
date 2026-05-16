@@ -309,6 +309,7 @@ class KlingClient:
         self.avatar = AvatarAPI(self)
         self.video_to_audio = VideoToAudioAPI(self)
         self.virtual_tryon = VirtualTryOnAPI(self)
+        self.omni_image = OmniImageAPI(self)
 
     def _generate_token(self) -> str:
         """Generate JWT token for API authentication"""
@@ -1117,6 +1118,93 @@ class VideoToAudioAPI:
             created_at=task_data.get("created_at"),
             updated_at=task_data.get("updated_at"),
             videos=videos,
+        )
+
+
+# =============================================================================
+# Omni Image API
+# =============================================================================
+
+class OmniImageAPI:
+    """Omni Image API - for kling-image-o1 and kling-v3-omni models"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        prompt: str,
+        model_name: str = "kling-image-o1",
+        image_list: Optional[List[Dict[str, str]]] = None,
+        element_list: Optional[List[Dict[str, int]]] = None,
+        resolution: str = "1k",
+        result_type: str = "single",
+        n: int = 1,
+        aspect_ratio: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        """
+        Create an omni-image generation task.
+
+        Args:
+            prompt: Text prompt (max 2500 chars). Use <<<image_1>>> for refs.
+            model_name: kling-image-o1 or kling-v3-omni
+            image_list: Reference images [{"image": "url"}]
+            element_list: Element refs [{"element_id": 123}]
+            resolution: 1k, 2k, or 4k (4k only for kling-v3-omni)
+            result_type: single or series (series only for kling-v3-omni)
+            n: Number of images [1-9]
+            aspect_ratio: Output ratio
+        """
+        payload = {
+            "model_name": model_name,
+            "prompt": prompt,
+            "resolution": resolution,
+            "n": n,
+        }
+
+        if image_list:
+            payload["image_list"] = image_list
+        if element_list:
+            payload["element_list"] = element_list
+        if result_type != "single":
+            payload["result_type"] = result_type
+        if aspect_ratio:
+            payload["aspect_ratio"] = aspect_ratio
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/images/omni-image", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/images/omni-image/{task_id}")
+        return self._parse_task_result(data)
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+        images = None
+        if "task_result" in task_data and "images" in task_data["task_result"]:
+            images = [
+                ImageResult(
+                    index=img.get("index", 0),
+                    url=img.get("url", ""),
+                )
+                for img in task_data["task_result"]["images"]
+            ]
+        task_info = task_data.get("task_info", {})
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            images=images,
         )
 
 

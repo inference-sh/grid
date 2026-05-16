@@ -1,0 +1,24 @@
+namespace: klingai
+name: image-v1
+description: Kling Image V1 (Kolors V1.0) - basic text-to-image and image-to-image generation. Cheapest option at $0.0035/image.
+metadata:
+    provider: klingai
+    tags:
+        - kling
+        - kolors
+        - image-generation
+        - text-to-image
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
