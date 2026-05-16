@@ -1,5 +1,6 @@
 import csv
 import io
+import logging
 import os
 import re
 from typing import Optional
@@ -7,6 +8,8 @@ from typing import Optional
 import asyncpraw
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
 from pydantic import Field
+
+logger = logging.getLogger(__name__)
 
 
 class AppInput(BaseAppInput):
@@ -102,7 +105,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         max_posts = min(input_data.max_posts, 1000)
-        self.logger.info(f"Scanning r/{input_data.subreddit} for up to {max_posts} posts (sort={input_data.sort})")
+        logger.info(f"Scanning r/{input_data.subreddit} for up to {max_posts} posts (sort={input_data.sort})")
 
         reddit = asyncpraw.Reddit(
             client_id=self.client_id,
@@ -160,7 +163,7 @@ class App(BaseApp):
 
             # Fetch comments
             if input_data.include_comments and post.num_comments > 0:
-                self.logger.info(f"Fetching comments for post {post.id} ({post.num_comments} comments)")
+                logger.info(f"Fetching comments for post {post.id} ({post.num_comments} comments)")
                 try:
                     post.comment_sort = "best"
                     await post.load()
@@ -182,12 +185,12 @@ class App(BaseApp):
                                 seen_content.add(sanitized_c)
                                 parsed_lines.append(sanitized_c)
                 except Exception as e:
-                    self.logger.warning(f"Error fetching comments for {post.id}: {e}")
+                    logger.warning(f"Error fetching comments for {post.id}: {e}")
 
             if total_posts % 25 == 0:
-                self.logger.info(f"Progress: {total_posts}/{max_posts} posts, {total_comments} comments")
+                logger.info(f"Progress: {total_posts}/{max_posts} posts, {total_comments} comments")
 
-        self.logger.info(f"Done: {total_posts} posts, {total_comments} comments, {len(parsed_lines)} parsed entries")
+        logger.info(f"Done: {total_posts} posts, {total_comments} comments, {len(parsed_lines)} parsed entries")
 
         csv_path = "/tmp/reddit_scan.csv"
         with open(csv_path, "w") as f:
