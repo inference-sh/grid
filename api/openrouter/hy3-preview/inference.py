@@ -18,7 +18,7 @@ from openai import AsyncOpenAI
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-DEFAULT_MODEL = "tencent/hy3-preview:free"
+DEFAULT_MODEL = "tencent/hy3-preview"
 
 
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
