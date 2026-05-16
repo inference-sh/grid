@@ -308,6 +308,7 @@ class KlingClient:
         self.lip_sync = LipSyncAPI(self)
         self.avatar = AvatarAPI(self)
         self.video_to_audio = VideoToAudioAPI(self)
+        self.virtual_tryon = VirtualTryOnAPI(self)
 
     def _generate_token(self) -> str:
         """Generate JWT token for API authentication"""
@@ -861,43 +862,81 @@ class ImageGenerationAPI:
 # =============================================================================
 
 class LipSyncAPI:
-    """Lip Sync API endpoints"""
+    """Lip Sync API endpoints (advanced lip-sync with face recognition)"""
 
     def __init__(self, client: KlingClient):
         self._client = client
 
+    async def identify_face(self, video_url: str) -> Dict[str, Any]:
+        """
+        Identify faces in a video. Returns session_id and face data.
+        Must be called before create() to get session_id and face_id.
+        """
+        data = await self._client._request(
+            "POST", "/v1/videos/identify-face",
+            json_data={"video_url": video_url},
+        )
+        return data.get("data", {})
+
     async def create(
         self,
-        video_url: str,
-        text: Optional[str] = None,
-        audio_url: Optional[str] = None,
-        voice_id: Optional[str] = None,
+        session_id: str,
+        face_id: str,
+        sound_file: Optional[str] = None,
+        audio_id: Optional[str] = None,
+        sound_start_time: int = 0,
+        sound_end_time: Optional[int] = None,
+        sound_insert_time: int = 0,
+        sound_volume: int = 2,
+        original_audio_volume: int = 2,
         callback_url: Optional[str] = None,
         external_task_id: Optional[str] = None,
     ) -> TaskResult:
         """
-        Create a lip sync task.
+        Create an advanced lip sync task.
 
-        Either text + voice_id OR audio_url must be provided.
+        Requires session_id from identify_face() call.
+        Either audio_id or sound_file must be provided.
+
+        Args:
+            session_id: From identify_face response
+            face_id: Face ID from identify_face response
+            sound_file: Audio URL or base64 (mp3/wav/m4a/aac, max 5MB, 2-60s)
+            audio_id: TTS audio ID
+            sound_start_time: Audio crop start (ms, default 0)
+            sound_end_time: Audio crop end (ms)
+            sound_insert_time: When to insert audio in video (ms)
+            sound_volume: Audio volume (0-10, default 2)
+            original_audio_volume: Original video audio volume (0-10, default 2)
         """
-        payload = {"video_url": video_url}
+        face_config = {
+            "face_id": face_id,
+            "sound_insert_time": sound_insert_time,
+            "sound_start_time": sound_start_time,
+            "sound_volume": sound_volume,
+            "original_audio_volume": original_audio_volume,
+        }
+        if sound_end_time is not None:
+            face_config["sound_end_time"] = sound_end_time
+        if sound_file:
+            face_config["sound_file"] = sound_file
+        if audio_id:
+            face_config["audio_id"] = audio_id
 
-        if text:
-            payload["text"] = text
-        if audio_url:
-            payload["audio_url"] = audio_url
-        if voice_id:
-            payload["voice_id"] = voice_id
+        payload = {
+            "session_id": session_id,
+            "face_choose": [face_config],
+        }
         if callback_url:
             payload["callback_url"] = callback_url
         if external_task_id:
             payload["external_task_id"] = external_task_id
 
-        data = await self._client._request("POST", "/v1/videos/lip-sync", json_data=payload)
+        data = await self._client._request("POST", "/v1/videos/advanced-lip-sync", json_data=payload)
         return self._parse_task_result(data)
 
     async def get(self, task_id: str) -> TaskResult:
-        data = await self._client._request("GET", f"/v1/videos/lip-sync/{task_id}")
+        data = await self._client._request("GET", f"/v1/videos/advanced-lip-sync/{task_id}")
         return self._parse_task_result(data)
 
     def _parse_task_result(self, data: Dict) -> TaskResult:
@@ -938,37 +977,43 @@ class AvatarAPI:
     async def create(
         self,
         image: str,
-        text: Optional[str] = None,
-        audio_url: Optional[str] = None,
-        voice_id: Optional[str] = None,
+        sound_file: Optional[str] = None,
+        audio_id: Optional[str] = None,
+        prompt: Optional[str] = None,
         mode: str = "std",
-        aspect_ratio: str = "16:9",
         callback_url: Optional[str] = None,
         external_task_id: Optional[str] = None,
     ) -> TaskResult:
         """
         Create an avatar video task.
 
-        Either text + voice_id OR audio_url must be provided.
-        """
-        payload = {"image": image, "mode": mode, "aspect_ratio": aspect_ratio}
+        Either audio_id OR sound_file must be provided.
 
-        if text:
-            payload["text"] = text
-        if audio_url:
-            payload["audio_url"] = audio_url
-        if voice_id:
-            payload["voice_id"] = voice_id
+        Args:
+            image: Face image (URL or base64, no data: prefix)
+            sound_file: Audio URL or base64 (mp3/wav/m4a/aac, max 5MB, 2-300s)
+            audio_id: TTS audio ID (from Kling TTS API)
+            prompt: Action/emotion prompt for avatar (max 2500 chars)
+            mode: std or pro
+        """
+        payload = {"image": image, "mode": mode}
+
+        if sound_file:
+            payload["sound_file"] = sound_file
+        if audio_id:
+            payload["audio_id"] = audio_id
+        if prompt:
+            payload["prompt"] = prompt
         if callback_url:
             payload["callback_url"] = callback_url
         if external_task_id:
             payload["external_task_id"] = external_task_id
 
-        data = await self._client._request("POST", "/v1/videos/avatar", json_data=payload)
+        data = await self._client._request("POST", "/v1/videos/avatar/image2video", json_data=payload)
         return self._parse_task_result(data)
 
     async def get(self, task_id: str) -> TaskResult:
-        data = await self._client._request("GET", f"/v1/videos/avatar/{task_id}")
+        data = await self._client._request("GET", f"/v1/videos/avatar/image2video/{task_id}")
         return self._parse_task_result(data)
 
     def _parse_task_result(self, data: Dict) -> TaskResult:
@@ -1008,9 +1053,11 @@ class VideoToAudioAPI:
 
     async def create(
         self,
-        video_url: str,
-        prompt: Optional[str] = None,
-        audio_type: Optional[str] = None,
+        video_url: Optional[str] = None,
+        video_id: Optional[str] = None,
+        sound_effect_prompt: Optional[str] = None,
+        bgm_prompt: Optional[str] = None,
+        asmr_mode: bool = False,
         callback_url: Optional[str] = None,
         external_task_id: Optional[str] = None,
     ) -> TaskResult:
@@ -1018,26 +1065,34 @@ class VideoToAudioAPI:
         Create a video-to-audio task. Adds sound to a video.
 
         Args:
-            video_url: Video URL (3-20s duration)
-            prompt: Description of desired audio
-            audio_type: Type of audio to generate
+            video_url: Video URL (3-20s, mp4/mov, max 100MB)
+            video_id: Kling video ID (alternative to video_url)
+            sound_effect_prompt: Sound effect description (max 200 chars)
+            bgm_prompt: Background music description (max 200 chars)
+            asmr_mode: Enable ASMR mode for enhanced detail sounds
         """
-        payload = {"video_url": video_url}
+        payload = {}
 
-        if prompt:
-            payload["prompt"] = prompt
-        if audio_type:
-            payload["audio_type"] = audio_type
+        if video_url:
+            payload["video_url"] = video_url
+        if video_id:
+            payload["video_id"] = video_id
+        if sound_effect_prompt:
+            payload["sound_effect_prompt"] = sound_effect_prompt
+        if bgm_prompt:
+            payload["bgm_prompt"] = bgm_prompt
+        if asmr_mode:
+            payload["asmr_mode"] = True
         if callback_url:
             payload["callback_url"] = callback_url
         if external_task_id:
             payload["external_task_id"] = external_task_id
 
-        data = await self._client._request("POST", "/v1/videos/video-to-audio", json_data=payload)
+        data = await self._client._request("POST", "/v1/audio/video-to-audio", json_data=payload)
         return self._parse_task_result(data)
 
     async def get(self, task_id: str) -> TaskResult:
-        data = await self._client._request("GET", f"/v1/videos/video-to-audio/{task_id}")
+        data = await self._client._request("GET", f"/v1/audio/video-to-audio/{task_id}")
         return self._parse_task_result(data)
 
     def _parse_task_result(self, data: Dict) -> TaskResult:
@@ -1062,6 +1117,74 @@ class VideoToAudioAPI:
             created_at=task_data.get("created_at"),
             updated_at=task_data.get("updated_at"),
             videos=videos,
+        )
+
+
+# =============================================================================
+# Virtual Try-On API
+# =============================================================================
+
+class VirtualTryOnAPI:
+    """Virtual Try-On API endpoints"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        human_image: str,
+        cloth_image: str,
+        model_name: str = "kolors-virtual-try-on-v1-5",
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        """
+        Create a virtual try-on task.
+
+        Args:
+            human_image: Person image (URL or base64, no data: prefix)
+            cloth_image: Clothing image (URL or base64, product photo or white bg)
+            model_name: kolors-virtual-try-on-v1 or kolors-virtual-try-on-v1-5
+        """
+        payload = {
+            "model_name": model_name,
+            "human_image": human_image,
+            "cloth_image": cloth_image,
+        }
+
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/images/kolors-virtual-try-on", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/images/kolors-virtual-try-on/{task_id}")
+        return self._parse_task_result(data)
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+        images = None
+        if "task_result" in task_data and "images" in task_data["task_result"]:
+            images = [
+                ImageResult(
+                    index=img.get("index", 0),
+                    url=img.get("url", ""),
+                )
+                for img in task_data["task_result"]["images"]
+            ]
+        task_info = task_data.get("task_info", {})
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            images=images,
         )
 
 

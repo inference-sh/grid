@@ -1,8 +1,8 @@
 """
-Kling Lip Sync - Drive Mouth Movements with Text or Audio
+Kling Lip Sync - Drive Mouth Movements with Audio
 
-Modify existing videos to make characters' lips match new audio or text.
-Ideal for dubbing, adding speech to silent videos, or replacing dialogue.
+Advanced lip-sync: identifies faces in a video, then drives mouth movements
+with provided audio. Two-step process handled automatically.
 """
 
 import os
@@ -23,23 +23,31 @@ from .download_helper import download_video
 class AppInput(BaseAppInput):
     """Kling Lip Sync.
 
-    Provide a video and either text+voice_id or audio to drive lip movements.
+    Provide a video with a visible face and an audio file.
+    The app automatically identifies faces and applies lip-sync.
     """
 
     video: File = Field(
         description="Source video with a visible face. Formats: mp4, mov.",
     )
-    text: Optional[str] = Field(
-        default=None,
-        description="Text for the character to speak. Requires voice_id.",
+    audio: File = Field(
+        description="Audio file to drive lip sync. Formats: mp3, wav, m4a, aac. Max 5MB, 2-60 seconds.",
     )
-    audio: Optional[File] = Field(
-        default=None,
-        description="Audio file to drive lip sync. Alternative to text+voice_id.",
+    sound_volume: float = Field(
+        default=2.0,
+        ge=0.0,
+        le=2.0,
+        description="Volume of the lip-sync audio (0-2, default 2).",
     )
-    voice_id: Optional[str] = Field(
+    original_audio_volume: float = Field(
+        default=2.0,
+        ge=0.0,
+        le=2.0,
+        description="Volume of the original video audio (0-2, default 2). Set to 0 to mute original.",
+    )
+    sound_end_time: Optional[int] = Field(
         default=None,
-        description="TTS voice ID. Required when using text input.",
+        description="Audio crop end point in milliseconds. The cropped audio must not exceed video duration. If not set, uses the video duration.",
     )
 
 
@@ -67,19 +75,32 @@ class App(BaseApp):
         return True
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        if not input_data.text and not input_data.audio:
-            raise RuntimeError("Either text+voice_id or audio must be provided")
-        if input_data.text and not input_data.voice_id:
-            raise RuntimeError("voice_id is required when using text input")
+        # Step 1: Identify faces in the video
+        self.logger.info("Step 1: Identifying faces in video...")
+        face_data = await self.client.lip_sync.identify_face(input_data.video.uri)
 
-        mode = "text" if input_data.text else "audio"
-        self.logger.info(f"Mode: {mode}-driven lip sync")
+        session_id = face_data.get("session_id", "")
+        faces = face_data.get("face_data", []) or face_data.get("face_list", [])
+        if not session_id or not faces:
+            raise RuntimeError(f"No faces detected in video. Response: {face_data}")
+
+        face_id = faces[0].get("face_id", "0")
+        face_end = faces[0].get("end_time", 5000)
+        self.logger.info(f"Found {len(faces)} face(s), face_id={face_id}, session={session_id}, face_end={face_end}ms")
+
+        # Step 2: Create lip-sync task
+        # sound_end_time = how much of the audio to use (ms from audio start)
+        # The cropped audio length must not exceed video duration
+        sound_end = input_data.sound_end_time if input_data.sound_end_time else face_end
+        self.logger.info(f"Step 2: Creating lip-sync task, sound_end_time={sound_end}ms")
 
         task = await self.client.lip_sync.create(
-            video_url=input_data.video.uri,
-            text=input_data.text,
-            audio_url=input_data.audio.uri if input_data.audio else None,
-            voice_id=input_data.voice_id,
+            session_id=session_id,
+            face_id=face_id,
+            sound_file=input_data.audio.uri,
+            sound_end_time=sound_end,
+            sound_volume=input_data.sound_volume,
+            original_audio_volume=input_data.original_audio_volume,
         )
 
         self.logger.info(f"Task created: {task.task_id}")
@@ -104,7 +125,7 @@ class App(BaseApp):
             outputs=[
                 VideoMeta(
                     seconds=video_duration,
-                    extra={"mode": mode, "model": "kling-lip-sync"},
+                    extra={"model": "kling-advanced-lip-sync"},
                 )
             ]
         )

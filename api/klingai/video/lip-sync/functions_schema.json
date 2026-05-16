@@ -2,7 +2,7 @@
   "run": {
     "description": "",
     "input_schema": {
-      "description": "Kling Lip Sync.\n\nProvide a video and either text+voice_id or audio to drive lip movements.",
+      "description": "Kling Lip Sync.\n\nProvide a video with a visible face and an audio file.\nThe app automatically identifies faces and applies lip-sync.",
       "properties": {
         "video": {
           "description": "Source video with a visible face. Formats: mp4, mov.",
@@ -10,49 +10,45 @@
           "title": "Video",
           "type": "string"
         },
-        "text": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Text for the character to speak. Requires voice_id.",
-          "title": "Text"
-        },
         "audio": {
-          "anyOf": [
-            {
-              "format": "file",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Audio file to drive lip sync. Alternative to text+voice_id.",
-          "title": "Audio"
+          "description": "Audio file to drive lip sync. Formats: mp3, wav, m4a, aac. Max 5MB, 2-60 seconds.",
+          "format": "file",
+          "title": "Audio",
+          "type": "string"
         },
-        "voice_id": {
+        "sound_volume": {
+          "default": 2.0,
+          "description": "Volume of the lip-sync audio (0-2, default 2).",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Sound Volume",
+          "type": "number"
+        },
+        "original_audio_volume": {
+          "default": 2.0,
+          "description": "Volume of the original video audio (0-2, default 2). Set to 0 to mute original.",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Original Audio Volume",
+          "type": "number"
+        },
+        "sound_end_time": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "integer"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "TTS voice ID. Required when using text input.",
-          "title": "Voice Id"
+          "description": "Audio crop end point in milliseconds. The cropped audio must not exceed video duration. If not set, uses the video duration.",
+          "title": "Sound End Time"
         }
       },
       "required": [
-        "video"
+        "video",
+        "audio"
       ],
       "title": "AppInput",
       "type": "object"

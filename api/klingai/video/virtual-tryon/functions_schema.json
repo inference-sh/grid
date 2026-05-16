@@ -3,72 +3,38 @@
     "description": "",
     "input_schema": {
       "$defs": {
-        "AspectRatioEnum": {
+        "ModelEnum": {
           "enum": [
-            "16:9",
-            "9:16",
-            "1:1"
+            "kolors-virtual-try-on-v1",
+            "kolors-virtual-try-on-v1-5"
           ],
-          "title": "AspectRatioEnum",
-          "type": "string"
-        },
-        "ModeEnum": {
-          "enum": [
-            "std",
-            "pro"
-          ],
-          "title": "ModeEnum",
+          "title": "ModelEnum",
           "type": "string"
         }
       },
-      "description": "Kling Avatar - digital human from a photo.\n\nProvide a face image and an audio file for the avatar to speak.",
+      "description": "Kling Virtual Try-On.\n\nProvide a person image and a clothing image to generate a try-on result.\nV1.5 supports upper+lower combo images on white background.",
       "properties": {
-        "image": {
-          "description": "Face image for the avatar. Single clear front-facing face, good lighting. Formats: jpg, jpeg, png. Max 10MB.",
+        "human_image": {
+          "description": "Person photo to try clothes on. Clear full/half body shot. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
           "format": "file",
-          "title": "Image",
+          "title": "Human Image",
           "type": "string"
         },
-        "audio": {
-          "anyOf": [
-            {
-              "format": "file",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Audio file for the avatar to speak (mp3/wav/m4a/aac, max 5MB, 2-300s).",
-          "title": "Audio"
+        "cloth_image": {
+          "description": "Clothing image - product photo or white background. Formats: jpg, jpeg, png. Max 10MB, min 300px. V1.5 supports upper+lower combos merged into one image.",
+          "format": "file",
+          "title": "Cloth Image",
+          "type": "string"
         },
-        "prompt": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Action/emotion prompt for the avatar. E.g. 'While talking, excitedly shaking head'. Max 2500 chars.",
-          "title": "Prompt"
-        },
-        "mode": {
-          "$ref": "#/$defs/ModeEnum",
-          "default": "std",
-          "description": "Quality mode. 'pro' for higher quality ($0.112/sec), 'std' for cheaper ($0.056/sec)."
-        },
-        "aspect_ratio": {
-          "$ref": "#/$defs/AspectRatioEnum",
-          "default": "16:9",
-          "description": "Output video aspect ratio."
+        "model": {
+          "$ref": "#/$defs/ModelEnum",
+          "default": "kolors-virtual-try-on-v1-5",
+          "description": "Model version. V1.5 supports upper+lower clothing combos."
         }
       },
       "required": [
-        "image"
+        "human_image",
+        "cloth_image"
       ],
       "title": "AppInput",
       "type": "object"
@@ -359,10 +325,10 @@
         }
       },
       "properties": {
-        "video": {
-          "description": "The generated avatar video.",
+        "image": {
+          "description": "The try-on result image.",
           "format": "file",
-          "title": "Video",
+          "title": "Image",
           "type": "string"
         },
         "output_meta": {
@@ -379,7 +345,7 @@
         }
       },
       "required": [
-        "video"
+        "image"
       ],
       "title": "AppOutput",
       "type": "object"

@@ -29,9 +29,17 @@ class AppInput(BaseAppInput):
     video: File = Field(
         description="Video to add audio to. 3-20 seconds duration. Formats: mp4, mov.",
     )
-    prompt: Optional[str] = Field(
+    sound_effect_prompt: Optional[str] = Field(
         default=None,
-        description="Description of desired audio. E.g. 'Ocean waves, seagulls, gentle wind' or 'Upbeat electronic background music'.",
+        description="Sound effect description. E.g. 'Ocean waves, seagulls, gentle wind'. Max 200 chars.",
+    )
+    bgm_prompt: Optional[str] = Field(
+        default=None,
+        description="Background music description. E.g. 'Upbeat electronic background music'. Max 200 chars.",
+    )
+    asmr_mode: bool = Field(
+        default=False,
+        description="Enable ASMR mode for enhanced detailed sound effects. Good for immersive content.",
     )
 
 
@@ -59,11 +67,13 @@ class App(BaseApp):
         return True
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        self.logger.info(f"Adding audio to video, prompt: {input_data.prompt[:100] if input_data.prompt else 'auto'}")
+        self.logger.info(f"Adding audio to video, sfx: {input_data.sound_effect_prompt or 'auto'}, bgm: {input_data.bgm_prompt or 'none'}, asmr: {input_data.asmr_mode}")
 
         task = await self.client.video_to_audio.create(
             video_url=input_data.video.uri,
-            prompt=input_data.prompt,
+            sound_effect_prompt=input_data.sound_effect_prompt,
+            bgm_prompt=input_data.bgm_prompt,
+            asmr_mode=input_data.asmr_mode,
         )
 
         self.logger.info(f"Task created: {task.task_id}")

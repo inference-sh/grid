@@ -10,7 +10,7 @@
           "title": "Video",
           "type": "string"
         },
-        "prompt": {
+        "sound_effect_prompt": {
           "anyOf": [
             {
               "type": "string"
@@ -20,8 +20,27 @@
             }
           ],
           "default": null,
-          "description": "Description of desired audio. E.g. 'Ocean waves, seagulls, gentle wind' or 'Upbeat electronic background music'.",
-          "title": "Prompt"
+          "description": "Sound effect description. E.g. 'Ocean waves, seagulls, gentle wind'. Max 200 chars.",
+          "title": "Sound Effect Prompt"
+        },
+        "bgm_prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Background music description. E.g. 'Upbeat electronic background music'. Max 200 chars.",
+          "title": "Bgm Prompt"
+        },
+        "asmr_mode": {
+          "default": false,
+          "description": "Enable ASMR mode for enhanced detailed sound effects. Good for immersive content.",
+          "title": "Asmr Mode",
+          "type": "boolean"
         }
       },
       "required": [

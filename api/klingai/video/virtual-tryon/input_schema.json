@@ -1,0 +1,38 @@
+{
+  "$defs": {
+    "ModelEnum": {
+      "enum": [
+        "kolors-virtual-try-on-v1",
+        "kolors-virtual-try-on-v1-5"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling Virtual Try-On.\n\nProvide a person image and a clothing image to generate a try-on result.\nV1.5 supports upper+lower combo images on white background.",
+  "properties": {
+    "human_image": {
+      "description": "Person photo to try clothes on. Clear full/half body shot. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
+      "format": "file",
+      "title": "Human Image",
+      "type": "string"
+    },
+    "cloth_image": {
+      "description": "Clothing image - product photo or white background. Formats: jpg, jpeg, png. Max 10MB, min 300px. V1.5 supports upper+lower combos merged into one image.",
+      "format": "file",
+      "title": "Cloth Image",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "kolors-virtual-try-on-v1-5",
+      "description": "Model version. V1.5 supports upper+lower clothing combos."
+    }
+  },
+  "required": [
+    "human_image",
+    "cloth_image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -35,23 +35,19 @@ class AspectRatioEnum(str, Enum):
 class AppInput(BaseAppInput):
     """Kling Avatar - digital human from a photo.
 
-    Provide a face image and either text+voice_id or audio.
+    Provide a face image and an audio file for the avatar to speak.
     """
 
     image: File = Field(
         description="Face image for the avatar. Single clear front-facing face, good lighting. Formats: jpg, jpeg, png. Max 10MB.",
     )
-    text: Optional[str] = Field(
-        default=None,
-        description="Text for the avatar to speak. Requires voice_id.",
-    )
     audio: Optional[File] = Field(
         default=None,
-        description="Audio file for the avatar to lip-sync to. Alternative to text+voice_id.",
+        description="Audio file for the avatar to speak (mp3/wav/m4a/aac, max 5MB, 2-300s).",
     )
-    voice_id: Optional[str] = Field(
+    prompt: Optional[str] = Field(
         default=None,
-        description="TTS voice ID. Required when using text input.",
+        description="Action/emotion prompt for the avatar. E.g. 'While talking, excitedly shaking head'. Max 2500 chars.",
     )
     mode: ModeEnum = Field(
         default=ModeEnum.std,
@@ -87,21 +83,16 @@ class App(BaseApp):
         return True
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        if not input_data.text and not input_data.audio:
-            raise RuntimeError("Either text+voice_id or audio must be provided")
-        if input_data.text and not input_data.voice_id:
-            raise RuntimeError("voice_id is required when using text input")
+        if not input_data.audio:
+            raise RuntimeError("Audio file is required for avatar generation")
 
-        mode = "text" if input_data.text else "audio"
-        self.logger.info(f"Mode: {mode}-driven avatar, quality: {input_data.mode.value}")
+        self.logger.info(f"Creating avatar video, quality: {input_data.mode.value}")
 
         task = await self.client.avatar.create(
             image=input_data.image.uri,
-            text=input_data.text,
-            audio_url=input_data.audio.uri if input_data.audio else None,
-            voice_id=input_data.voice_id,
+            sound_file=input_data.audio.uri,
+            prompt=input_data.prompt,
             mode=input_data.mode.value,
-            aspect_ratio=input_data.aspect_ratio.value,
         )
 
         self.logger.info(f"Task created: {task.task_id}")
@@ -127,7 +118,6 @@ class App(BaseApp):
                 VideoMeta(
                     seconds=video_duration,
                     extra={
-                        "mode": mode,
                         "quality": input_data.mode.value,
                         "model": "kling-avatar",
                     },
