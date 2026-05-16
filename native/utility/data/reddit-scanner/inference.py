@@ -5,8 +5,7 @@ import re
 from typing import Optional
 
 import asyncpraw
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
-from inferencesh.models.usage import OutputMeta, TextMeta
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
 from pydantic import Field
 
 
