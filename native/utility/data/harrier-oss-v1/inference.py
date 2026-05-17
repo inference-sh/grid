@@ -70,7 +70,8 @@ class AppInput(BaseAppInput):
 
 
 class AppOutput(BaseAppOutput):
-    embeddings: List[File] = Field(description="JSON files containing embeddings, one per input text")
+    embeddings: List[File] = Field(default_factory=list, description="JSON files containing embeddings, one per input text")
+    inline_embeddings: Optional[List[dict]] = Field(default=None, description="Inline embeddings when output is small enough to skip file upload")
     dimension: int = Field(description="Embedding dimension")
     count: int = Field(description="Total number of embeddings across all files")
 
@@ -124,6 +125,9 @@ class App(BaseApp):
         total_tokens = 0
         dimension = None
 
+        INLINE_THRESHOLD = 64 * 1024  # 64KB — skip file upload for small outputs
+
+        all_results = []
         for i, text in enumerate(texts):
             if input_data.chunk_strategy:
                 chunks = chunk_text(text, input_data.chunk_strategy, chunk_size, overlap, self._tok)
@@ -148,13 +152,28 @@ class App(BaseApp):
                     "end_char": c["end_char"],
                 } for j, c in enumerate(chunks)]
 
+            all_results.append(file_data)
+
+        # Return inline when small enough, otherwise upload files
+        estimated_size = len(json.dumps(all_results))
+        if estimated_size <= INLINE_THRESHOLD:
+            logger.info(f"Encoded {total_count} embeddings inline ({estimated_size} bytes), dimension={dimension}")
+            return AppOutput(
+                inline_embeddings=all_results,
+                dimension=dimension,
+                count=total_count,
+                output_meta=OutputMeta(
+                    inputs=[TextMeta(tokens=total_tokens)],
+                ),
+            )
+
+        for i, file_data in enumerate(all_results):
             path = f"/tmp/embeddings_{i}.json"
             with open(path, "w") as f:
                 json.dump(file_data, f)
             output_files.append(File(path=path))
 
         logger.info(f"Encoded {total_count} embeddings across {len(output_files)} files, dimension={dimension}")
-
         return AppOutput(
             embeddings=output_files,
             dimension=dimension,
