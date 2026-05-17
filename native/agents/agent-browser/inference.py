@@ -528,14 +528,55 @@ class App(BaseApp):
             elif action == "scroll":
                 direction = input_data.direction or "down"
                 amount = input_data.scroll_amount or 400
-                if direction == "down":
-                    await self.page.mouse.wheel(0, amount)
-                elif direction == "up":
-                    await self.page.mouse.wheel(0, -amount)
-                elif direction == "right":
-                    await self.page.mouse.wheel(amount, 0)
-                elif direction == "left":
-                    await self.page.mouse.wheel(-amount, 0)
+                if input_data.ref:
+                    # Scroll a specific element into view
+                    selector = self._parse_ref(input_data.ref)
+                    await self.page.evaluate(f"document.querySelector('{selector}')?.scrollIntoView({{behavior: 'smooth', block: 'center'}})")
+                else:
+                    # Find the actual scroll container (many sites use overflow-y-auto on a child, not body)
+                    dx = amount if direction == "right" else (-amount if direction == "left" else 0)
+                    dy = amount if direction == "down" else (-amount if direction == "up" else 0)
+                    scrolled = await self.page.evaluate(f"""(() => {{
+                        function findScrollContainer(el) {{
+                            while (el && el !== document.documentElement) {{
+                                const style = getComputedStyle(el);
+                                const overflowY = style.overflowY;
+                                if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {{
+                                    return el;
+                                }}
+                                el = el.parentElement;
+                            }}
+                            return null;
+                        }}
+                        // Check body children for scroll containers (common in SPA layouts)
+                        let container = null;
+                        for (const child of document.body.querySelectorAll('*')) {{
+                            const style = getComputedStyle(child);
+                            if ((style.overflowY === 'auto' || style.overflowY === 'scroll') && child.scrollHeight > child.clientHeight) {{
+                                container = child;
+                                break;
+                            }}
+                        }}
+                        if (container) {{
+                            const before = container.scrollTop;
+                            container.scrollBy({{ left: {dx}, top: {dy}, behavior: 'instant' }});
+                            return container.scrollTop !== before;
+                        }}
+                        // Fallback to window scroll
+                        const before = window.scrollY;
+                        window.scrollBy({{ left: {dx}, top: {dy}, behavior: 'instant' }});
+                        return window.scrollY !== before;
+                    }})()""")
+                    if not scrolled:
+                        # Last resort: mouse.wheel (works when JS scroll can't find container)
+                        if direction == "down":
+                            await self.page.mouse.wheel(0, amount)
+                        elif direction == "up":
+                            await self.page.mouse.wheel(0, -amount)
+                        elif direction == "right":
+                            await self.page.mouse.wheel(amount, 0)
+                        elif direction == "left":
+                            await self.page.mouse.wheel(-amount, 0)
                 await asyncio.sleep(0.2)
 
             elif action == "press":
