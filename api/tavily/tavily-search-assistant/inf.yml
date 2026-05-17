@@ -1,4 +1,6 @@
-name: tavily-search-assistant
+name: search-assistant
+namespace: tavily
+# Note: directory is named "tavily-search-assistant" but app is "tavily/search-assistant"
 description: Tavily-powered search assistant that browses the internet and returns
   comprehensive results. Searches the web using Tavily API with configurable depth,
   filters, and includes AI-generated answers, images, and detailed sources.

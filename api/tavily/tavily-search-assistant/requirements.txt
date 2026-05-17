@@ -5,5 +5,9 @@ inferencesh
 # Tavily search API
 tavily-python>=0.3.0
 
+# HTTP client — pin to stable; uv resolves >=0.23 to httpx 1.0.dev3 (prerelease)
+# which removed AsyncClient (merged into Client), breaking tavily-python
+httpx>=0.23.0,<1.0
+
 # Utility libraries
 requests>=2.25.0
