@@ -71,12 +71,11 @@ class App(BaseApp):
             self.logger.info(f"Generating video: {input_data.prompt[:100]}...")
             self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration}s")
 
-            # Build request
+            # Build request (duration removed — Pruna upstream no longer accepts it for wan-t2v)
             request_data = {
                 "prompt": input_data.prompt,
                 "resolution": input_data.resolution.value,
                 "aspect_ratio": input_data.aspect_ratio.value,
-                "duration": input_data.duration,
             }
 
             if input_data.seed is not None:

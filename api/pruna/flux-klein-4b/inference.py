@@ -60,7 +60,7 @@ class App(BaseApp):
     async def setup(self):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        self.model = "flux-klein-4b"
+        self.model = "flux-2-klein-4b"
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:

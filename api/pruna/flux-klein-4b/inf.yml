@@ -1,5 +1,5 @@
 namespace: pruna
-name: flux-klein-4b
+name: flux-2-klein-4b
 description: Lightweight 4B parameter model with excellent speed-to-quality ratio
 metadata: {}
 category: image
