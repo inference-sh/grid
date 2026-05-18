@@ -61,7 +61,7 @@ def create_content_task(
         Task ID for polling.
     """
     if logger:
-        logger.info(f"Creating content generation task with model: {model}")
+        logger.info(f"Creating task — model: {model}, params: {kwargs}")
 
     result = client.content_generation.tasks.create(
         model=model,
@@ -81,30 +81,31 @@ async def poll_task_status(
     task_id: str,
     logger: Optional[logging.Logger] = None,
     poll_interval: float = 2.0,
-    max_attempts: int = 300,
     cancel_flag_getter: Optional[callable] = None,
 ) -> Dict[str, Any]:
     """
     Poll a content generation task until completion.
+
+    Polls indefinitely until the task succeeds, fails, or is cancelled.
 
     Args:
         client: The BytePlus ARK client.
         task_id: Task ID to poll.
         logger: Optional logger for progress output.
         poll_interval: Seconds between poll attempts.
-        max_attempts: Maximum number of poll attempts.
         cancel_flag_getter: Optional callable that returns True if cancelled.
 
     Returns:
         The completed task result.
 
     Raises:
-        RuntimeError: If task fails or times out.
+        RuntimeError: If task fails or is cancelled.
     """
     if logger:
         logger.info(f"Polling task status for: {task_id}")
 
-    for attempt in range(max_attempts):
+    attempt = 0
+    while True:
         # Check for cancellation
         if cancel_flag_getter and cancel_flag_getter():
             if logger:
@@ -124,11 +125,11 @@ async def poll_task_status(
                 logger.error(f"Task failed: {error_msg}")
             raise RuntimeError(f"Content generation failed: {error_msg}")
         else:
-            if logger and attempt % 5 == 0:  # Log every 5th attempt to reduce noise
-                logger.info(f"Task status: {status}, waiting...")
+            if logger and attempt % 5 == 0:
+                elapsed = attempt * poll_interval
+                logger.info(f"Task status: {status}, elapsed: {elapsed:.0f}s, waiting...")
             await asyncio.sleep(poll_interval)
-
-    raise RuntimeError(f"Task timed out after {max_attempts * poll_interval} seconds")
+            attempt += 1
 
 
 def cancel_task(
