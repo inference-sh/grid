@@ -87,11 +87,13 @@ class App(BaseApp):
 
         logger.info(f"Loading model {config.model_id} on {self._device}")
 
-        # Try SentenceTransformer first (works for 270m, 0.6b).
-        # Falls back to raw transformers for 27b where AutoProcessor
-        # fails because gemma3_text inherits gemma3's Gemma3Processor
-        # which requires an image_processor that doesn't exist.
-        try:
+        # 27b is gemma3_text architecture — SentenceTransformer fails on it because
+        # Gemma3Processor requires an image_processor that doesn't exist for text-only.
+        # Loading 27B params only to fail wastes ~90s, so skip straight to raw transformers.
+        # 270m and 0.6b are qwen3 and work fine with SentenceTransformer.
+        use_raw = "27b" in config.model_id
+
+        if not use_raw:
             from sentence_transformers import SentenceTransformer
             self.model = SentenceTransformer(
                 config.model_id,
@@ -99,10 +101,7 @@ class App(BaseApp):
                 model_kwargs={"dtype": "auto"},
             )
             self._tok = self.model.tokenizer
-        except Exception as e:
-            if "image processor" not in str(e).lower() and "image_processor" not in str(e).lower():
-                raise
-            logger.info(f"SentenceTransformer failed ({e}), falling back to raw transformers")
+        else:
             self._use_raw = True
             from transformers import AutoTokenizer, AutoModel
             self._tokenizer = AutoTokenizer.from_pretrained(config.model_id)
