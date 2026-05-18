@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "model_id": {
+      "default": "microsoft/harrier-oss-v1-0.6b",
+      "description": "Model variant: 270m (640d), 0.6b (1024d), or 27b (5376d)",
+      "enum": [
+        "microsoft/harrier-oss-v1-270m",
+        "microsoft/harrier-oss-v1-0.6b",
+        "microsoft/harrier-oss-v1-27b"
+      ],
+      "title": "Model Id",
+      "type": "string"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}
