@@ -106,9 +106,8 @@ class App(BaseApp):
             from transformers import AutoTokenizer, AutoModel
             self._tokenizer = AutoTokenizer.from_pretrained(config.model_id)
             self._tok = self._tokenizer
-            self._raw_model = AutoModel.from_pretrained(config.model_id, torch_dtype=torch.bfloat16)
+            self._raw_model = AutoModel.from_pretrained(config.model_id, torch_dtype=torch.bfloat16, device_map=str(self._device))
             self._raw_model.eval()
-            self._raw_model.to(self._device)
 
         logger.info("Model loaded")
 
