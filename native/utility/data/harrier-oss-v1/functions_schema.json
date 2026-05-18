@@ -412,6 +412,23 @@
           "title": "Embeddings",
           "type": "array"
         },
+        "inline_embeddings": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inline embeddings when output is small enough to skip file upload",
+          "title": "Inline Embeddings"
+        },
         "dimension": {
           "description": "Embedding dimension",
           "title": "Dimension",
@@ -436,7 +453,6 @@
         }
       },
       "required": [
-        "embeddings",
         "dimension",
         "count"
       ],
