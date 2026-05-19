@@ -1,0 +1,27 @@
+namespace: heygen
+name: lipsync
+description: Re-sync video lip movements to new audio using HeyGen's lipsync technology. Supports speed and precision modes with optional captioning.
+metadata:
+    provider: heygen
+    tags:
+        - lipsync
+        - lip-sync
+        - audio-sync
+        - video-editing
+        - heygen
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

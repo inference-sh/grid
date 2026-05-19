@@ -1,0 +1,139 @@
+{
+  "description": "Input for photo video generation.",
+  "properties": {
+    "image": {
+      "description": "Portrait image to animate. Should be a clear face photo.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "script": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text for the animated image to speak.",
+      "examples": [
+        "Hi there! Thanks for checking out this demo."
+      ],
+      "title": "Script"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice ID for speech. Required if script is provided.",
+      "title": "Voice Id"
+    },
+    "audio_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "URL to an audio file for the avatar to lip-sync to. Alternative to script+voice_id.",
+      "title": "Audio Url"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Title for the video.",
+      "title": "Title"
+    },
+    "resolution": {
+      "default": "1080p",
+      "description": "Video resolution.",
+      "enum": [
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Video aspect ratio.",
+      "enum": [
+        "16:9",
+        "9:16"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "expressiveness": {
+      "default": "high",
+      "description": "Expressiveness of the animated image.",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Expressiveness",
+      "type": "string"
+    },
+    "motion_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Natural language description of desired motion (e.g., 'nodding slowly').",
+      "title": "Motion Prompt"
+    },
+    "remove_background": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Remove the video background.",
+      "title": "Remove Background"
+    },
+    "output_format": {
+      "default": "mp4",
+      "description": "Output video format.",
+      "enum": [
+        "mp4",
+        "webm"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

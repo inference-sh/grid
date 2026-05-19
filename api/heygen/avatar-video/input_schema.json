@@ -1,0 +1,125 @@
+{
+  "description": "Input for avatar video generation.",
+  "properties": {
+    "avatar_id": {
+      "description": "HeyGen avatar ID. Use the HeyGen dashboard or API to find available avatars.",
+      "title": "Avatar Id",
+      "type": "string"
+    },
+    "script": {
+      "description": "Text for the avatar to speak.",
+      "examples": [
+        "Hello! Welcome to our product demo. Let me show you how it works."
+      ],
+      "title": "Script",
+      "type": "string"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Voice ID for the avatar. If not set, the avatar's default voice is used.",
+      "title": "Voice Id"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Title for the video.",
+      "title": "Title"
+    },
+    "resolution": {
+      "default": "1080p",
+      "description": "Video resolution.",
+      "enum": [
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Video aspect ratio.",
+      "enum": [
+        "16:9",
+        "9:16"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "expressiveness": {
+      "anyOf": [
+        {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Avatar expressiveness level. Only applies to photo avatars.",
+      "title": "Expressiveness"
+    },
+    "motion_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Natural language description of avatar motion. Only applies to photo avatars.",
+      "title": "Motion Prompt"
+    },
+    "remove_background": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Remove the video background.",
+      "title": "Remove Background"
+    },
+    "output_format": {
+      "default": "mp4",
+      "description": "Output video format.",
+      "enum": [
+        "mp4",
+        "webm"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    }
+  },
+  "required": [
+    "avatar_id",
+    "script"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

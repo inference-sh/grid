@@ -1,0 +1,215 @@
+{
+  "$defs": {
+    "LanguageEnum": {
+      "description": "Source audio language. Improves transcription accuracy. Auto-detects if omitted.",
+      "enum": [
+        "af-ZA",
+        "am-ET",
+        "ar-AE",
+        "ar-EG",
+        "ar-SA",
+        "bg-BG",
+        "bs-BA",
+        "ca-ES",
+        "cs-CZ",
+        "cy-GB",
+        "da-DK",
+        "de-DE",
+        "el-GR",
+        "en-AU",
+        "en-GB",
+        "en-IN",
+        "en-US",
+        "es-ES",
+        "es-MX",
+        "es-US",
+        "et-EE",
+        "fa-IR",
+        "fi-FI",
+        "fil-PH",
+        "fr-CA",
+        "fr-FR",
+        "he-IL",
+        "hi-Latn-IN",
+        "hr-HR",
+        "hu-HU",
+        "hy-AM",
+        "id-ID",
+        "is-IS",
+        "it-IT",
+        "ja-JP",
+        "ka-GE",
+        "kk-KZ",
+        "ko-KR",
+        "lt-LT",
+        "lv-LV",
+        "mk-MK",
+        "mn-MN",
+        "ms-MY",
+        "nb-NO",
+        "nl-NL",
+        "pl-PL",
+        "pt-BR",
+        "pt-PT",
+        "ro-RO",
+        "ru-RU",
+        "sk-SK",
+        "sl-SI",
+        "sq-AL",
+        "sr-RS",
+        "sv-SE",
+        "sw-KE",
+        "th-TH",
+        "tr-TR",
+        "uk-UA",
+        "ur-PK",
+        "uz-UZ",
+        "vi-VN",
+        "zh",
+        "zh-HK",
+        "zh-TW",
+        "zu-ZA"
+      ],
+      "title": "LanguageEnum",
+      "type": "string"
+    },
+    "PositionEnum": {
+      "description": "Vertical position of subtitles on screen.",
+      "enum": [
+        "top",
+        "center",
+        "bottom"
+      ],
+      "title": "PositionEnum",
+      "type": "string"
+    },
+    "PresetEnum": {
+      "description": "Subtitle style preset. Dynamic presets have richer animations; basic presets are lightweight.",
+      "enum": [
+        "glass",
+        "whisper",
+        "glide2",
+        "fusion",
+        "glide",
+        "terminal",
+        "handwritten",
+        "simple",
+        "plain",
+        "beans",
+        "corpo",
+        "boo",
+        "shadeplay",
+        "casper",
+        "capri",
+        "lowkey",
+        "vinta",
+        "diego",
+        "ali",
+        "slay",
+        "kitty",
+        "hustle",
+        "karl",
+        "sprout",
+        "flex",
+        "mint",
+        "rizz",
+        "vegas"
+      ],
+      "title": "PresetEnum",
+      "type": "string"
+    },
+    "ShadowEnum": {
+      "description": "Shadow intensity behind subtitle text.",
+      "enum": [
+        "none",
+        "min",
+        "mid",
+        "max"
+      ],
+      "title": "ShadowEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for VEED Subtitles.",
+  "properties": {
+    "video": {
+      "description": "Video to add subtitles to.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "preset": {
+      "$ref": "#/$defs/PresetEnum",
+      "default": "simple",
+      "description": "Subtitle style preset. Dynamic presets (glass, whisper, glide2, fusion, glide, terminal, handwritten) have richer animations. Basic presets are lightweight and predictable."
+    },
+    "language": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LanguageEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source audio language. Improves transcription accuracy. Leave empty for auto-detection."
+    },
+    "srt_file": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom .srt subtitle file. When provided, transcription is skipped.",
+      "title": "Srt File"
+    },
+    "srt_content": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Raw SRT subtitle text. Alternative to srt_file. When provided, transcription is skipped.",
+      "title": "Srt Content"
+    },
+    "position": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PositionEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override vertical position of subtitles. Uses preset default if omitted."
+    },
+    "shadow": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ShadowEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override shadow intensity behind text. Uses preset default if omitted."
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,27 @@
+namespace: heygen
+name: text-to-speech
+description: Generate natural speech audio from text using HeyGen's Starfish TTS engine. Supports configurable voice, speed, SSML input, and multiple languages.
+metadata:
+    provider: heygen
+    tags:
+        - tts
+        - text-to-speech
+        - voice
+        - audio
+        - heygen
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

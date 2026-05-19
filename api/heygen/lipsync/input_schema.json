@@ -1,0 +1,90 @@
+{
+  "description": "Input for lipsync generation.",
+  "properties": {
+    "video": {
+      "description": "Source video to re-sync. Must be a publicly accessible URL.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "audio": {
+      "description": "Audio file to sync lips to. Must be a publicly accessible URL.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Title for the lipsync job.",
+      "title": "Title"
+    },
+    "mode": {
+      "default": "speed",
+      "description": "Lipsync mode. 'speed' is faster, 'precision' is higher quality.",
+      "enum": [
+        "speed",
+        "precision"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "enable_caption": {
+      "default": false,
+      "description": "Generate captions for the output video.",
+      "title": "Enable Caption",
+      "type": "boolean"
+    },
+    "enable_dynamic_duration": {
+      "default": true,
+      "description": "Allow dynamic duration adjustment.",
+      "title": "Enable Dynamic Duration",
+      "type": "boolean"
+    },
+    "disable_music_track": {
+      "default": false,
+      "description": "Remove background music from the output.",
+      "title": "Disable Music Track",
+      "type": "boolean"
+    },
+    "start_time": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start time in seconds for partial lipsync.",
+      "title": "Start Time"
+    },
+    "end_time": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End time in seconds for partial lipsync.",
+      "title": "End Time"
+    }
+  },
+  "required": [
+    "video",
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

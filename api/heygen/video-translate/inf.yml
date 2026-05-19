@@ -1,0 +1,27 @@
+namespace: heygen
+name: video-translate
+description: Translate videos into 30+ languages with voice cloning and lip-sync using HeyGen. Supports speed and precision modes with optional captioning.
+metadata:
+    provider: heygen
+    tags:
+        - video-translation
+        - lip-sync
+        - voice-cloning
+        - localization
+        - heygen
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

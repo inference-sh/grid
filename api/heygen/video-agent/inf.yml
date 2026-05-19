@@ -1,0 +1,26 @@
+namespace: heygen
+name: video-agent
+description: Generate complete videos from natural language prompts using HeyGen's AI video agent. The agent handles avatar selection, scripting, and production automatically.
+metadata:
+    provider: heygen
+    tags:
+        - video-agent
+        - prompt-to-video
+        - ai-video
+        - heygen
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

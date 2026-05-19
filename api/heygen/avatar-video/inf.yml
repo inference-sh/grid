@@ -1,0 +1,27 @@
+namespace: heygen
+name: avatar-video
+description: Generate talking avatar videos using HeyGen's digital and photo avatars with configurable voice, resolution up to 4K, and expressiveness.
+metadata:
+    provider: heygen
+    tags:
+        - avatar
+        - talking-head
+        - video-generation
+        - text-to-speech
+        - heygen
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,0 +1,27 @@
+namespace: heygen
+name: photo-video
+description: Animate portrait photos into talking videos using HeyGen. Upload a face image and add speech with configurable voice, motion prompts, and expressiveness.
+metadata:
+    provider: heygen
+    tags:
+        - photo-avatar
+        - image-to-video
+        - talking-head
+        - animation
+        - heygen
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
