@@ -38,4 +38,4 @@ see [LICENSE](./LICENSE) for full terms.
 - [documentation](https://inference.sh/docs) — getting started
 - [app store](https://app.inference.sh) — browse all apps
 - [blog](https://inference.sh/blog) — tutorials and guides
-- [discord](https://discord.gg/RM77SWSbyT) — community
+- [discord](https://discord.gg/inference) — community
