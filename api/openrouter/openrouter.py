@@ -22,12 +22,20 @@ PROVIDER_MIN_UPTIME_5M = 90.0
 # Re-check provider health every 5 minutes.
 PROVIDER_HEALTH_TTL = 300
 
-# Cached per-model unhealthy provider sets: {model: (expiry_ts, set_of_names)}
-_unhealthy_cache: Dict[str, tuple] = {}
 
 
-async def _fetch_unhealthy_providers(model: str) -> Set[str]:
-    """Query OpenRouter endpoints API and return provider names with low uptime."""
+def _slug_from_tag(tag: str) -> str:
+    """Extract provider slug from endpoint tag (e.g. 'deepinfra/fp8' -> 'deepinfra')."""
+    return tag.split("/")[0] if "/" in tag else tag
+
+
+async def _fetch_provider_health(model: str) -> Dict[str, Any]:
+    """Query OpenRouter endpoints API and return routing config.
+
+    Returns {"ignore": [...slugs...], "order": [...slugs...]} based on
+    live uptime data. Slugs come from the endpoint tag field, which is
+    what OpenRouter's provider routing actually matches on.
+    """
     import httpx
     try:
         async with httpx.AsyncClient(timeout=10) as http:
@@ -36,42 +44,53 @@ async def _fetch_unhealthy_providers(model: str) -> Set[str]:
             )
             if resp.status_code != 200:
                 logger.warning(f"Provider health check for {model}: HTTP {resp.status_code}")
-                return set()
+                return {}
             endpoints = resp.json().get("data", {}).get("endpoints", [])
             healthy = []
-            unhealthy = set()
+            unhealthy = []
             for ep in endpoints:
                 name = ep.get("provider_name", "")
+                tag = ep.get("tag", "")
+                slug = _slug_from_tag(tag)
                 uptime = ep.get("uptime_last_5m")
                 status = ep.get("status", 0)
                 up_str = f"{uptime:.1f}%" if uptime is not None else "n/a"
-                # status < 0 means OpenRouter already flagged it as degraded/down
                 if status < 0 or (uptime is not None and uptime < PROVIDER_MIN_UPTIME_5M):
-                    unhealthy.add(name)
-                    print(f"  SKIP {name}: status={status} uptime_5m={up_str}")
+                    unhealthy.append(slug)
+                    print(f"  SKIP {name} ({slug}): status={status} uptime_5m={up_str}")
                 else:
-                    healthy.append(name)
-                    print(f"  OK   {name}: status={status} uptime_5m={up_str}")
-            print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded ({', '.join(sorted(unhealthy)) if unhealthy else 'none'})")
-            return unhealthy
+                    healthy.append(slug)
+                    print(f"  OK   {name} ({slug}): status={status} uptime_5m={up_str}")
+            print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded")
+
+            result: Dict[str, Any] = {}
+            if unhealthy:
+                result["ignore"] = unhealthy
+            if healthy:
+                result["order"] = healthy
+            return result
     except Exception as e:
         logger.warning(f"Failed to fetch provider health for {model}: {e}")
-        return set()
+        return {}
 
 
-async def get_unhealthy_providers(model: str) -> List[str]:
-    """Return list of provider names to ignore, with a TTL cache."""
+# Cached per-model provider config: {model: (expiry_ts, config_dict)}
+_health_cache: Dict[str, tuple] = {}
+
+
+async def get_provider_config(model: str) -> Dict[str, Any]:
+    """Return provider routing config with ignore + order, TTL cached."""
     now = time.monotonic()
-    cached = _unhealthy_cache.get(model)
+    cached = _health_cache.get(model)
     if cached and cached[0] > now:
         ttl_left = int(cached[0] - now)
-        excluded = sorted(cached[1]) if cached[1] else []
-        print(f"Provider health for {model}: cached ({ttl_left}s ttl), excluding {excluded or 'none'}")
-        return list(cached[1])
+        cfg = cached[1]
+        print(f"Provider health for {model}: cached ({ttl_left}s ttl) order={cfg.get('order', [])} ignore={cfg.get('ignore', [])}")
+        return cfg
     print(f"Provider health for {model}: checking endpoints...")
-    unhealthy = await _fetch_unhealthy_providers(model)
-    _unhealthy_cache[model] = (now + PROVIDER_HEALTH_TTL, unhealthy)
-    return list(unhealthy)
+    cfg = await _fetch_provider_health(model)
+    _health_cache[model] = (now + PROVIDER_HEALTH_TTL, cfg)
+    return cfg
 
 
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
@@ -279,7 +298,7 @@ def create_initial_state() -> Dict[str, Any]:
     }
 
 
-def _build_params(input_data, model: str, stream: bool, ignore_providers: Optional[List[str]] = None) -> Dict[str, Any]:
+def _build_params(input_data, model: str, stream: bool, provider_routing: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Build common request parameters."""
     messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
     tools = build_tools(input_data.tools) if input_data.tools else None
@@ -305,15 +324,11 @@ def _build_params(input_data, model: str, stream: bool, ignore_providers: Option
     if reasoning_config:
         extra_body["reasoning"] = reasoning_config
 
-    # Provider routing: auto-exclude unhealthy providers, prefer reliable
-    # paid-tier providers. Groq uses OpenRouter's shared API key which has
-    # unpredictable rate limits — deprioritize behind paid providers.
-    provider_config: Dict[str, Any] = {
-        "order": ["DeepInfra", "Nebius", "AtlasCloud", "Groq"],
-        "allow_fallbacks": True,
-    }
-    if ignore_providers:
-        provider_config["ignore"] = ignore_providers
+    # Provider routing: built dynamically from live endpoint health data.
+    # order/ignore use provider slugs from the endpoints API tag field.
+    provider_config: Dict[str, Any] = {"allow_fallbacks": True}
+    if provider_routing:
+        provider_config.update(provider_routing)
     extra_body["provider"] = provider_config
 
     params["extra_body"] = extra_body
@@ -332,13 +347,13 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     server-side (and you get billed) but the response is lost — there is no way to
     recover it. See: https://openrouter.ai/docs/api/reference/streaming
     """
-    ignore = await get_unhealthy_providers(model)
-    params = _build_params(input_data, model, stream=True, ignore_providers=ignore)
+    routing = await get_provider_config(model)
+    params = _build_params(input_data, model, stream=True, provider_routing=routing)
 
     # Enable upstream debug echo so we can see what OpenRouter actually sent
     params["extra_body"]["debug"] = {"echo_upstream_body": True}
 
-    print(f"Calling OpenRouter model={model} ignore={ignore or 'none'}")
+    print(f"Calling OpenRouter model={model} provider={params['extra_body'].get('provider', {})}")
 
     try:
         stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
