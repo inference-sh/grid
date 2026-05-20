@@ -35,17 +35,24 @@ async def _fetch_unhealthy_providers(model: str) -> Set[str]:
                 f"https://openrouter.ai/api/v1/models/{model}/endpoints",
             )
             if resp.status_code != 200:
+                logger.warning(f"Provider health check for {model}: HTTP {resp.status_code}")
                 return set()
             endpoints = resp.json().get("data", {}).get("endpoints", [])
+            healthy = []
             unhealthy = set()
             for ep in endpoints:
                 name = ep.get("provider_name", "")
                 uptime = ep.get("uptime_last_5m")
                 status = ep.get("status", 0)
+                up_str = f"{uptime:.1f}%" if uptime is not None else "n/a"
                 # status < 0 means OpenRouter already flagged it as degraded/down
                 if status < 0 or (uptime is not None and uptime < PROVIDER_MIN_UPTIME_5M):
                     unhealthy.add(name)
-                    logger.info(f"Excluding provider {name} for {model}: status={status} uptime_5m={uptime}")
+                    print(f"  SKIP {name}: status={status} uptime_5m={up_str}")
+                else:
+                    healthy.append(name)
+                    print(f"  OK   {name}: status={status} uptime_5m={up_str}")
+            print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded ({', '.join(sorted(unhealthy)) if unhealthy else 'none'})")
             return unhealthy
     except Exception as e:
         logger.warning(f"Failed to fetch provider health for {model}: {e}")
@@ -57,11 +64,13 @@ async def get_unhealthy_providers(model: str) -> List[str]:
     now = time.monotonic()
     cached = _unhealthy_cache.get(model)
     if cached and cached[0] > now:
+        ttl_left = int(cached[0] - now)
+        excluded = sorted(cached[1]) if cached[1] else []
+        print(f"Provider health for {model}: cached ({ttl_left}s ttl), excluding {excluded or 'none'}")
         return list(cached[1])
+    print(f"Provider health for {model}: checking endpoints...")
     unhealthy = await _fetch_unhealthy_providers(model)
     _unhealthy_cache[model] = (now + PROVIDER_HEALTH_TTL, unhealthy)
-    if unhealthy:
-        logger.info(f"Unhealthy providers for {model}: {unhealthy}")
     return list(unhealthy)
 
 
@@ -327,6 +336,8 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     # Enable upstream debug echo so we can see what OpenRouter actually sent
     params["extra_body"]["debug"] = {"echo_upstream_body": True}
 
+    print(f"Calling OpenRouter model={model} ignore={ignore or 'none'} sort=throughput")
+
     try:
         stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
     except asyncio.TimeoutError:
@@ -339,8 +350,7 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     raw_response = getattr(stream, "response", None)
     if raw_response and hasattr(raw_response, "headers"):
         generation_id = raw_response.headers.get("x-generation-id")
-        if generation_id:
-            logger.info(f"OpenRouter generation_id={generation_id} model={model}")
+    print(f"Stream opened gen={generation_id or 'unknown'} model={model}")
 
     state = create_initial_state()
     chunks_received = 0
@@ -380,6 +390,11 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
             finish_reason = process_chunk(chunk, state)
             yield build_output(state)
             # Don't break on finish_reason - OpenRouter sends usage in a subsequent chunk
+        print(
+            f"Stream complete gen={generation_id or 'unknown'} "
+            f"chunks={chunks_received} "
+            f"in={state.get('input_tokens', 0)} out={state.get('output_tokens', 0)}"
+        )
     except RuntimeError:
         raise
     except Exception as e:
