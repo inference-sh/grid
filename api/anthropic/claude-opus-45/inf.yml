@@ -1,0 +1,22 @@
+namespace: anthropic
+name: claude-opus-45
+description: Claude Opus 4.5 — Legacy Opus model. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
