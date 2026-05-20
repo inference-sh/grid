@@ -1,10 +1,68 @@
 """OpenRouter stream processing helpers for LLM inference."""
 
 import asyncio
-from typing import List, Optional, Dict, Any, AsyncGenerator
+import logging
+import os
+import time
+from typing import List, Optional, Dict, Any, AsyncGenerator, Set
 from inferencesh import File
 from inferencesh.models.llm import build_openai_messages, build_tools
 from inferencesh import OutputMeta, TextMeta
+
+logger = logging.getLogger(__name__)
+
+# Seconds of silence (no chunks AND no keep-alive) before we give up on a stream.
+# OpenRouter sends `: OPENROUTER PROCESSING` keep-alives, so if we see nothing at
+# all for this long the connection is dead — not just slow.
+STREAM_SILENCE_TIMEOUT = 30
+
+# Provider health: exclude providers with 5-minute uptime below this threshold.
+PROVIDER_MIN_UPTIME_5M = 90.0
+
+# Re-check provider health every 5 minutes.
+PROVIDER_HEALTH_TTL = 300
+
+# Cached per-model unhealthy provider sets: {model: (expiry_ts, set_of_names)}
+_unhealthy_cache: Dict[str, tuple] = {}
+
+
+async def _fetch_unhealthy_providers(model: str) -> Set[str]:
+    """Query OpenRouter endpoints API and return provider names with low uptime."""
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10) as http:
+            resp = await http.get(
+                f"https://openrouter.ai/api/v1/models/{model}/endpoints",
+            )
+            if resp.status_code != 200:
+                return set()
+            endpoints = resp.json().get("data", {}).get("endpoints", [])
+            unhealthy = set()
+            for ep in endpoints:
+                name = ep.get("provider_name", "")
+                uptime = ep.get("uptime_last_5m")
+                status = ep.get("status", 0)
+                # status < 0 means OpenRouter already flagged it as degraded/down
+                if status < 0 or (uptime is not None and uptime < PROVIDER_MIN_UPTIME_5M):
+                    unhealthy.add(name)
+                    logger.info(f"Excluding provider {name} for {model}: status={status} uptime_5m={uptime}")
+            return unhealthy
+    except Exception as e:
+        logger.warning(f"Failed to fetch provider health for {model}: {e}")
+        return set()
+
+
+async def get_unhealthy_providers(model: str) -> List[str]:
+    """Return list of provider names to ignore, with a TTL cache."""
+    now = time.monotonic()
+    cached = _unhealthy_cache.get(model)
+    if cached and cached[0] > now:
+        return list(cached[1])
+    unhealthy = await _fetch_unhealthy_providers(model)
+    _unhealthy_cache[model] = (now + PROVIDER_HEALTH_TTL, unhealthy)
+    if unhealthy:
+        logger.info(f"Unhealthy providers for {model}: {unhealthy}")
+    return list(unhealthy)
 
 
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
@@ -26,6 +84,22 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
         return None
     
     return reasoning_config
+
+
+async def lookup_generation(api_key: str, generation_id: str) -> Optional[Dict[str, Any]]:
+    """Query OpenRouter generation API to check if a generation completed server-side."""
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10) as http:
+            resp = await http.get(
+                f"https://openrouter.ai/api/v1/generation?id={generation_id}",
+                headers={"Authorization": f"Bearer {api_key}"},
+            )
+            if resp.status_code == 200:
+                return resp.json()
+    except Exception as e:
+        logger.warning(f"Generation lookup failed for {generation_id}: {e}")
+    return None
 
 
 def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeError:
@@ -52,15 +126,14 @@ def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeErr
                     nested_msg = raw_error.get("error", {}).get("message")
                     if nested_msg:
                         provider_name = metadata.get("provider_name", provider or "Provider")
-                        return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id}]")
+                        return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id} gen:{gen_id}]")
                 except json.JSONDecodeError:
                     pass
 
             # Log full error details for debugging opaque 500s
-            import logging
-            logging.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
+            logger.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
 
-            return RuntimeError(f"{prefix} error: {msg} [req:{request_id}]")
+            return RuntimeError(f"{prefix} error: {msg} [req:{request_id} gen:{gen_id}]")
         except Exception:
             pass
     return RuntimeError(f"{prefix} error: {str(e)}")
@@ -69,12 +142,27 @@ def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeErr
 def check_chunk_error(chunk, prefix: str = "OpenRouter") -> None:
     """Raise if chunk contains an error."""
     if hasattr(chunk, "error") and chunk.error:
-        msg = chunk.error.get("message", "Unknown error") if isinstance(chunk.error, dict) else str(chunk.error)
-        raise RuntimeError(f"{prefix} mid-stream error: {msg}")
-    
+        err = chunk.error
+        if isinstance(err, dict):
+            code = err.get("code", "")
+            msg = err.get("message", "Unknown error")
+            metadata = err.get("metadata", {})
+            provider = metadata.get("provider_name", "")
+            raw = metadata.get("raw", "")
+            detail = f"{msg}"
+            if code:
+                detail = f"[{code}] {detail}"
+            if provider:
+                detail += f" (provider: {provider})"
+            if raw:
+                logger.warning(f"{prefix} raw upstream error: {raw}")
+        else:
+            detail = str(err)
+        raise RuntimeError(f"{prefix} mid-stream error: {detail}")
+
     if chunk.choices and len(chunk.choices) > 0:
         if getattr(chunk.choices[0], "finish_reason", None) == "error":
-            raise RuntimeError(f"{prefix} stream terminated due to error")
+            raise RuntimeError(f"{prefix} stream terminated with finish_reason=error")
 
 
 def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
@@ -182,7 +270,7 @@ def create_initial_state() -> Dict[str, Any]:
     }
 
 
-def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
+def _build_params(input_data, model: str, stream: bool, ignore_providers: Optional[List[str]] = None) -> Dict[str, Any]:
     """Build common request parameters."""
     messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
     tools = build_tools(input_data.tools) if input_data.tools else None
@@ -208,8 +296,16 @@ def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     if reasoning_config:
         extra_body["reasoning"] = reasoning_config
 
-    if extra_body:
-        params["extra_body"] = extra_body
+    # Provider routing: sort by throughput, auto-exclude unhealthy providers.
+    provider_config: Dict[str, Any] = {
+        "sort": "throughput",
+        "allow_fallbacks": True,
+    }
+    if ignore_providers:
+        provider_config["ignore"] = ignore_providers
+    extra_body["provider"] = provider_config
+
+    params["extra_body"] = extra_body
 
     return params
 
@@ -225,7 +321,11 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     server-side (and you get billed) but the response is lost — there is no way to
     recover it. See: https://openrouter.ai/docs/api/reference/streaming
     """
-    params = _build_params(input_data, model, stream=True)
+    ignore = await get_unhealthy_providers(model)
+    params = _build_params(input_data, model, stream=True, ignore_providers=ignore)
+
+    # Enable upstream debug echo so we can see what OpenRouter actually sent
+    params["extra_body"]["debug"] = {"echo_upstream_body": True}
 
     try:
         stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
@@ -234,19 +334,60 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     except Exception as e:
         raise handle_api_error(e)
 
+    # Grab generation ID from response headers for post-hoc debugging
+    generation_id = None
+    raw_response = getattr(stream, "response", None)
+    if raw_response and hasattr(raw_response, "headers"):
+        generation_id = raw_response.headers.get("x-generation-id")
+        if generation_id:
+            logger.info(f"OpenRouter generation_id={generation_id} model={model}")
+
     state = create_initial_state()
-    last_chunk_time = asyncio.get_event_loop().time()
+    chunks_received = 0
+
+    async def _iter_with_timeout():
+        """Wrap the stream iterator with a per-chunk deadline so we detect
+        silence even when no chunks arrive at all (async-for blocks forever)."""
+        nonlocal chunks_received
+        aiter = stream.__aiter__()
+        while True:
+            try:
+                chunk = await asyncio.wait_for(aiter.__anext__(), timeout=STREAM_SILENCE_TIMEOUT)
+                chunks_received += 1
+                yield chunk
+            except StopAsyncIteration:
+                break
+            except asyncio.TimeoutError:
+                detail = f"no data for {STREAM_SILENCE_TIMEOUT}s after {chunks_received} chunks"
+                if generation_id:
+                    detail += f" [gen:{generation_id}]"
+                    api_key = client.api_key
+                    gen_data = await lookup_generation(api_key, generation_id)
+                    if gen_data:
+                        finish = gen_data.get("finish_reason", "unknown")
+                        provider = gen_data.get("provider_name", "unknown")
+                        tokens_out = gen_data.get("tokens_completion", 0)
+                        logger.warning(
+                            f"Stream timeout but generation {generation_id} has "
+                            f"finish_reason={finish} provider={provider} "
+                            f"tokens_completion={tokens_out}"
+                        )
+                        detail += f" server_status={finish} provider={provider}"
+                raise RuntimeError(f"Stream timed out — {detail}")
 
     try:
-        async for chunk in stream:
-            now = asyncio.get_event_loop().time()
-            if now - last_chunk_time > 120.0:
-                raise RuntimeError("Stream timed out - no chunks received for 120 seconds")
-            last_chunk_time = now
-
+        async for chunk in _iter_with_timeout():
             finish_reason = process_chunk(chunk, state)
             yield build_output(state)
             # Don't break on finish_reason - OpenRouter sends usage in a subsequent chunk
+    except RuntimeError:
+        raise
+    except Exception as e:
+        detail = f"after {chunks_received} chunks"
+        if generation_id:
+            detail += f" [gen:{generation_id}]"
+        logger.error(f"Stream error {detail}: {e}")
+        raise
     finally:
         if hasattr(stream, "aclose"):
             await stream.aclose()
