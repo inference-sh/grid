@@ -305,9 +305,11 @@ def _build_params(input_data, model: str, stream: bool, ignore_providers: Option
     if reasoning_config:
         extra_body["reasoning"] = reasoning_config
 
-    # Provider routing: sort by throughput, auto-exclude unhealthy providers.
+    # Provider routing: auto-exclude unhealthy providers, prefer reliable
+    # paid-tier providers. Groq uses OpenRouter's shared API key which has
+    # unpredictable rate limits — deprioritize behind paid providers.
     provider_config: Dict[str, Any] = {
-        "sort": "throughput",
+        "order": ["DeepInfra", "Nebius", "AtlasCloud", "Groq"],
         "allow_fallbacks": True,
     }
     if ignore_providers:
@@ -336,7 +338,7 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     # Enable upstream debug echo so we can see what OpenRouter actually sent
     params["extra_body"]["debug"] = {"echo_upstream_body": True}
 
-    print(f"Calling OpenRouter model={model} ignore={ignore or 'none'} sort=throughput")
+    print(f"Calling OpenRouter model={model} ignore={ignore or 'none'}")
 
     try:
         stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
