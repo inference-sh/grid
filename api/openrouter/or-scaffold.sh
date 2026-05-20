@@ -148,7 +148,7 @@ from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     {import_block}
 )
-from .openrouter import stream_completion, complete
+from .openrouter import stream_completion
 from openai import AsyncOpenAI
 
 # OpenRouter configuration
@@ -162,7 +162,6 @@ class AppInput({mixin_str}):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default={context_length}, description="The context size for the model.")
-    stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
@@ -185,11 +184,7 @@ class App(BaseApp):
         if not self.client:
             raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
 
-        if input_data.stream:
-            async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
-                yield AppOutput(**output)
-        else:
-            output = await complete(self.client, input_data, DEFAULT_MODEL)
+        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
             yield AppOutput(**output)
 
     async def unload(self):

@@ -1,0 +1,21 @@
+namespace: openrouter
+name: qwen3-8b
+description: Qwen3 8B - efficient dense language model with reasoning and tool use capabilities via OpenRouter
+metadata:
+    capabilities:
+        - reasoning
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

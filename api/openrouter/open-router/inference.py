@@ -11,7 +11,7 @@ from inferencesh.models.llm import (
     ToolsCapabilityMixin,
     ToolCallsMixin,
 )
-from .openrouter import stream_completion, complete
+from .openrouter import stream_completion
 from openai import AsyncOpenAI
 
 # OpenRouter configuration
@@ -22,7 +22,6 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     model: str = Field(default="gpt-4o-mini", description="The model to use for the inference.")
-    stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
@@ -45,11 +44,7 @@ class App(BaseApp):
         if not self.client:
             raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
         
-        if input_data.stream:
-            async for output in stream_completion(self.client, input_data, input_data.model):
-                yield AppOutput(**output)
-        else:
-            output = await complete(self.client, input_data, input_data.model)
+        async for output in stream_completion(self.client, input_data, input_data.model):
             yield AppOutput(**output)
 
     async def unload(self):

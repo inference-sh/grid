@@ -214,62 +214,16 @@ def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     return params
 
 
-async def complete(client, input_data, model: str) -> Dict[str, Any]:
-    """
-    Non-streaming completion from OpenRouter.
-    
-    Returns the complete response as a single output dict.
-    """
-    params = _build_params(input_data, model, stream=False)
-
-    try:
-        response = await asyncio.wait_for(client.chat.completions.create(**params), timeout=120.0)
-    except asyncio.TimeoutError:
-        raise RuntimeError("OpenRouter API call timed out after 120 seconds")
-    except Exception as e:
-        raise handle_api_error(e)
-
-    state = create_initial_state()
-    message = response.choices[0].message
-
-    if message.content:
-        state["response"] = message.content
-
-    if hasattr(message, "reasoning") and message.reasoning:
-        state["reasoning"] = message.reasoning
-
-    if hasattr(message, "reasoning_details") and message.reasoning_details:
-        state["reasoning_details"] = message.reasoning_details
-
-    if message.tool_calls:
-        for tc in message.tool_calls:
-            state["tool_calls"].append({
-                "id": tc.id,
-                "type": "function",
-                "function": {"name": tc.function.name, "arguments": tc.function.arguments}
-            })
-
-    if hasattr(message, "images") and message.images:
-        for img in message.images:
-            url = img.get("image_url", {}).get("url") if isinstance(img, dict) else None
-            if url:
-                state["image_urls"].append(url)
-
-    # Track usage from response
-    if hasattr(response, "usage") and response.usage:
-        if hasattr(response.usage, "prompt_tokens"):
-            state["input_tokens"] = response.usage.prompt_tokens
-        if hasattr(response.usage, "completion_tokens"):
-            state["output_tokens"] = response.usage.completion_tokens
-
-    return build_output(state)
-
-
 async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
     """
     Stream a completion from OpenRouter and yield output dicts.
-    
-    Handles: message building, tools, reasoning config, timeouts, error handling.
+
+    Always streams, even when the caller wants a single response. OpenRouter sends
+    `: OPENROUTER PROCESSING` SSE keep-alive comments during streaming to prevent
+    connection drops, but has NO keep-alive for non-streaming requests. If a
+    non-streaming HTTP call times out client-side, the generation still completes
+    server-side (and you get billed) but the response is lost — there is no way to
+    recover it. See: https://openrouter.ai/docs/api/reference/streaming
     """
     params = _build_params(input_data, model, stream=True)
 

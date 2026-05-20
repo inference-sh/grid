@@ -126,12 +126,6 @@
       "title": "Model",
       "type": "string"
     },
-    "stream": {
-      "default": true,
-      "description": "Stream the response (True) or return complete response (False)",
-      "title": "Stream",
-      "type": "boolean"
-    },
     "tools": {
       "anyOf": [
         {
