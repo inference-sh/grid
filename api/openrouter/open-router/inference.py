@@ -12,10 +12,7 @@ from inferencesh.models.llm import (
     ToolCallsMixin,
 )
 from .openrouter import stream_completion
-from openai import AsyncOpenAI
 
-# OpenRouter configuration
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
@@ -30,22 +27,14 @@ class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
 
 
 class App(BaseApp):
-    def __init__(self):
-        super().__init__()
-        self.client = None
-
     async def setup(self, metadata):
         if not OPENROUTER_API_KEY:
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
-        self.client = AsyncOpenAI(base_url=OPENROUTER_BASE_URL, api_key=OPENROUTER_API_KEY)
-        print("OpenRouter client initialization complete!")
+        print("OpenRouter ready")
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        if not self.client:
-            raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
-        
-        async for output in stream_completion(self.client, input_data, input_data.model):
+        async for output in stream_completion(OPENROUTER_API_KEY, input_data, input_data.model):
             yield AppOutput(**output)
 
     async def unload(self):
-        self.client = None
+        pass

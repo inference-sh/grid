@@ -1,29 +1,43 @@
-"""OpenRouter stream processing helpers for LLM inference."""
+"""OpenRouter stream processing helpers — raw httpx SSE, no OpenAI SDK.
+
+Uses direct HTTP + SSE parsing so we get all OpenRouter-specific fields
+(provider, cost, cost_details, reasoning_tokens) that the OpenAI SDK strips.
+"""
 
 import asyncio
+import json
 import logging
 import os
 import time
-from typing import List, Optional, Dict, Any, AsyncGenerator, Set
-from inferencesh import File
+from typing import List, Optional, Dict, Any, AsyncGenerator
+
+import httpx
+
+from inferencesh import File, OutputMeta, TextMeta
 from inferencesh.models.llm import build_openai_messages, build_tools
-from inferencesh import OutputMeta, TextMeta
 from inferencesh.models.output_meta import RawMeta
 
 logger = logging.getLogger(__name__)
 
-# Seconds of silence (no chunks AND no keep-alive) before we give up on a stream.
-# OpenRouter sends `: OPENROUTER PROCESSING` keep-alives, so if we see nothing at
-# all for this long the connection is dead — not just slow.
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+# Seconds of silence (no chunks AND no keep-alive) before we give up.
+# OpenRouter sends `: OPENROUTER PROCESSING` keep-alives, so true silence
+# means the connection is dead.
 STREAM_SILENCE_TIMEOUT = 30
 
-# Provider health: exclude providers with 5-minute uptime below this threshold.
+# Provider health: exclude providers with 5-minute uptime below this.
 PROVIDER_MIN_UPTIME_5M = 90.0
 
 # Re-check provider health every 5 minutes.
 PROVIDER_HEALTH_TTL = 300
 
+MAX_PROVIDER_RETRIES = 3
 
+
+# ---------------------------------------------------------------------------
+# Provider health
+# ---------------------------------------------------------------------------
 
 def _slug_from_tag(tag: str) -> str:
     """Extract provider slug from endpoint tag (e.g. 'deepinfra/fp8' -> 'deepinfra')."""
@@ -31,24 +45,15 @@ def _slug_from_tag(tag: str) -> str:
 
 
 async def _fetch_provider_health(model: str) -> Dict[str, Any]:
-    """Query OpenRouter endpoints API and return routing config.
-
-    Returns {"ignore": [...slugs...], "order": [...slugs...]} based on
-    live uptime data. Slugs come from the endpoint tag field, which is
-    what OpenRouter's provider routing actually matches on.
-    """
-    import httpx
+    """Query OpenRouter endpoints API and return routing config."""
     try:
         async with httpx.AsyncClient(timeout=10) as http:
-            resp = await http.get(
-                f"https://openrouter.ai/api/v1/models/{model}/endpoints",
-            )
+            resp = await http.get(f"{OPENROUTER_BASE_URL}/models/{model}/endpoints")
             if resp.status_code != 200:
-                logger.warning(f"Provider health check for {model}: HTTP {resp.status_code}")
+                print(f"Provider health check for {model}: HTTP {resp.status_code}")
                 return {}
             endpoints = resp.json().get("data", {}).get("endpoints", [])
-            healthy = []
-            unhealthy = []
+            healthy, unhealthy = [], []
             name_to_slug = {}
             for ep in endpoints:
                 name = ep.get("provider_name", "")
@@ -65,7 +70,6 @@ async def _fetch_provider_health(model: str) -> Dict[str, Any]:
                     healthy.append(slug)
                     print(f"  OK   {name} ({slug}): status={status} uptime_5m={up_str}")
             print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded")
-
             result: Dict[str, Any] = {"_name_to_slug": name_to_slug}
             if unhealthy:
                 result["ignore"] = unhealthy
@@ -73,11 +77,10 @@ async def _fetch_provider_health(model: str) -> Dict[str, Any]:
                 result["order"] = healthy
             return result
     except Exception as e:
-        logger.warning(f"Failed to fetch provider health for {model}: {e}")
+        print(f"Failed to fetch provider health for {model}: {e}")
         return {}
 
 
-# Cached per-model provider config: {model: (expiry_ts, config_dict)}
 _health_cache: Dict[str, tuple] = {}
 
 
@@ -96,26 +99,32 @@ async def get_provider_config(model: str) -> Dict[str, Any]:
     return cfg
 
 
+# ---------------------------------------------------------------------------
+# Reasoning config
+# ---------------------------------------------------------------------------
+
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
     """Build reasoning config for OpenRouter API."""
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
     reasoning_max_tokens = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_exclude = getattr(input_data, "reasoning_exclude", False)
-    
+
     if reasoning_effort == "none" and not reasoning_max_tokens:
         return None
-    
+
     reasoning_config = {"exclude": reasoning_exclude}
-    
     if reasoning_max_tokens is not None and reasoning_max_tokens > 0:
         reasoning_config["max_tokens"] = reasoning_max_tokens
     elif reasoning_effort and reasoning_effort != "none":
         reasoning_config["effort"] = reasoning_effort
     else:
         return None
-    
     return reasoning_config
 
+
+# ---------------------------------------------------------------------------
+# Error handling
+# ---------------------------------------------------------------------------
 
 class ProviderRateLimited(RuntimeError):
     """A specific upstream provider returned 429. Retryable by excluding it."""
@@ -124,126 +133,160 @@ class ProviderRateLimited(RuntimeError):
         self.provider_slug = provider_slug
 
 
-async def lookup_generation(
-    api_key: str, generation_id: str, retries: int = 3, delay: float = 2.0,
-) -> Optional[Dict[str, Any]]:
-    """Query OpenRouter generation API, retrying on 404 (generation not yet indexed)."""
-    import httpx
-    for attempt in range(retries):
-        try:
-            if attempt > 0:
-                await asyncio.sleep(delay)
-            async with httpx.AsyncClient(timeout=10) as http:
-                resp = await http.get(
-                    f"https://openrouter.ai/api/v1/generation?id={generation_id}",
-                    headers={"Authorization": f"Bearer {api_key}"},
-                )
-                if resp.status_code == 200:
-                    return resp.json()
-                if resp.status_code != 404:
-                    print(f"Generation lookup {generation_id}: HTTP {resp.status_code}")
-                    return None
-                # 404 — not indexed yet, retry
-        except Exception as e:
-            print(f"Generation lookup {generation_id} failed: {e}")
-            return None
-    return None
-
-
 def _provider_name_to_slug(name: str, name_to_slug: Dict[str, str]) -> Optional[str]:
     """Convert a provider display name to its routing slug."""
-    # Try exact match from cached endpoint data first
     if name in name_to_slug:
         return name_to_slug[name]
-    # Fallback: lowercase, remove spaces (covers Groq->groq, DeepInfra->deepinfra)
     return name.lower().replace(" ", "")
 
 
-def handle_api_error(
-    e: Exception,
-    prefix: str = "OpenRouter API",
+def _handle_error_response(
+    status_code: int,
+    body: Dict[str, Any],
+    headers: Dict[str, str],
     name_to_slug: Optional[Dict[str, str]] = None,
+    prefix: str = "OpenRouter API",
 ) -> RuntimeError:
-    """Extract error message from API exception, including nested provider errors.
+    """Build a descriptive error from an OpenRouter error response."""
+    error_obj = body.get("error", {})
+    code = error_obj.get("code", status_code)
+    msg = error_obj.get("message", f"HTTP {status_code}")
+    request_id = headers.get("x-request-id", "")
+    gen_id = headers.get("x-generation-id", "")
+    provider = headers.get("x-provider", "")
 
-    For 429s with a provider_name in metadata, raises ProviderRateLimited so the
-    caller can retry with that provider excluded.
-    """
-    if hasattr(e, "response") and e.response is not None:
+    metadata = error_obj.get("metadata", {})
+    provider_name = metadata.get("provider_name", provider or "")
+
+    print(f"{prefix} error: code={code} msg={msg} provider={provider_name} req={request_id} gen={gen_id}")
+
+    # 429 with a known provider → retryable
+    if code == 429 and provider_name:
+        slug = _provider_name_to_slug(provider_name, name_to_slug or {})
+        if slug:
+            return ProviderRateLimited(
+                f"{prefix} 429 from {provider_name} ({slug}): {msg} [req:{request_id} gen:{gen_id}]",
+                provider_slug=slug,
+            )
+
+    # Nested provider error
+    raw = metadata.get("raw")
+    if raw:
         try:
-            import json
-            error_data = e.response.json()
-            error_obj = error_data.get("error", {})
-            code = error_obj.get("code", getattr(e.response, "status_code", 0))
-            msg = error_obj.get("message", str(e))
-
-            # Grab request/generation IDs from headers for debugging
-            headers = e.response.headers if hasattr(e.response, "headers") else {}
-            request_id = headers.get("x-request-id", "")
-            gen_id = headers.get("x-generation-id", "")
-            provider = headers.get("x-provider", "")
-
-            metadata = error_obj.get("metadata", {})
-            provider_name = metadata.get("provider_name", provider or "")
-
-            # Log full error details for debugging
-            logger.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
-
-            # 429 with a known provider → retryable by excluding that provider
-            if code == 429 and provider_name:
-                slug = _provider_name_to_slug(provider_name, name_to_slug or {})
-                if slug:
-                    return ProviderRateLimited(
-                        f"{prefix} 429 from {provider_name} ({slug}): {msg} [req:{request_id} gen:{gen_id}]",
-                        provider_slug=slug,
-                    )
-
-            # Extract nested provider error from metadata.raw
-            raw = metadata.get("raw")
-            if raw:
-                try:
-                    raw_error = json.loads(raw)
-                    nested_msg = raw_error.get("error", {}).get("message")
-                    if nested_msg:
-                        return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id} gen:{gen_id}]")
-                except json.JSONDecodeError:
-                    pass
-
-            return RuntimeError(f"{prefix} error: {msg} [req:{request_id} gen:{gen_id}]")
-        except Exception:
+            raw_error = json.loads(raw)
+            nested_msg = raw_error.get("error", {}).get("message")
+            if nested_msg:
+                return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id} gen:{gen_id}]")
+        except (json.JSONDecodeError, AttributeError):
             pass
-    return RuntimeError(f"{prefix} error: {str(e)}")
+
+    return RuntimeError(f"{prefix} error: {msg} [req:{request_id} gen:{gen_id}]")
 
 
-def check_chunk_error(chunk, prefix: str = "OpenRouter") -> None:
-    """Raise if chunk contains an error."""
-    if hasattr(chunk, "error") and chunk.error:
-        err = chunk.error
-        if isinstance(err, dict):
-            code = err.get("code", "")
-            msg = err.get("message", "Unknown error")
-            metadata = err.get("metadata", {})
-            provider = metadata.get("provider_name", "")
-            raw = metadata.get("raw", "")
-            detail = f"{msg}"
-            if code:
-                detail = f"[{code}] {detail}"
-            if provider:
-                detail += f" (provider: {provider})"
-            if raw:
-                logger.warning(f"{prefix} raw upstream error: {raw}")
+# ---------------------------------------------------------------------------
+# SSE parsing
+# ---------------------------------------------------------------------------
+
+def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[str]:
+    """Process a parsed SSE data object and update state. Returns finish_reason if present."""
+
+    # Capture generation_id from chunk id
+    chunk_id = data.get("id")
+    if chunk_id and not state.get("generation_id"):
+        state["generation_id"] = chunk_id
+
+    # Capture provider (OpenRouter sends this on every chunk)
+    provider = data.get("provider")
+    if provider:
+        state["provider"] = provider
+
+    # Actual versioned model (e.g. qwen/qwen3-32b-04-28 vs requested qwen/qwen3-32b)
+    actual_model = data.get("model")
+    if actual_model and not state.get("actual_model"):
+        state["actual_model"] = actual_model
+
+    # Check for error in chunk
+    error = data.get("error")
+    if error:
+        if isinstance(error, dict):
+            code = error.get("code", "")
+            msg = error.get("message", "Unknown error")
+            provider_name = error.get("metadata", {}).get("provider_name", "")
+            detail = f"[{code}] {msg}" if code else msg
+            if provider_name:
+                detail += f" (provider: {provider_name})"
         else:
-            detail = str(err)
-        raise RuntimeError(f"{prefix} mid-stream error: {detail}")
+            detail = str(error)
+        raise RuntimeError(f"OpenRouter mid-stream error: {detail}")
 
-    if chunk.choices and len(chunk.choices) > 0:
-        if getattr(chunk.choices[0], "finish_reason", None) == "error":
-            raise RuntimeError(f"{prefix} stream terminated with finish_reason=error")
+    # Usage (OpenRouter sends in final chunk, includes cost + cost_details)
+    usage = data.get("usage")
+    if usage:
+        if usage.get("prompt_tokens") is not None:
+            state["input_tokens"] = usage["prompt_tokens"]
+        if usage.get("completion_tokens") is not None:
+            state["output_tokens"] = usage["completion_tokens"]
+        if usage.get("cost") is not None:
+            state["cost_usd"] = usage["cost"]
+        cost_details = usage.get("cost_details")
+        if cost_details:
+            state["cost_details"] = cost_details
+        prompt_details = usage.get("prompt_tokens_details")
+        if prompt_details:
+            cached = prompt_details.get("cached_tokens")
+            if cached:
+                state["cached_tokens"] = cached
+        completion_details = usage.get("completion_tokens_details")
+        if completion_details:
+            reasoning_tokens = completion_details.get("reasoning_tokens")
+            if reasoning_tokens is not None:
+                state["reasoning_tokens"] = reasoning_tokens
+
+    # Choices
+    choices = data.get("choices", [])
+    if not choices:
+        return None
+
+    choice = choices[0]
+    finish_reason = choice.get("finish_reason")
+    native_finish = choice.get("native_finish_reason")
+    if native_finish and native_finish != finish_reason:
+        state["native_finish_reason"] = native_finish
+    delta = choice.get("delta", {})
+
+    content = delta.get("content")
+    if content:
+        state["response"] += content
+
+    reasoning = delta.get("reasoning")
+    if reasoning:
+        state["reasoning"] += reasoning
+
+    reasoning_details = delta.get("reasoning_details")
+    if reasoning_details:
+        state["reasoning_details"].extend(reasoning_details)
+
+    tool_calls = delta.get("tool_calls")
+    if tool_calls:
+        for tc in tool_calls:
+            _process_tool_call_delta(tc, state["tool_calls"])
+
+    images = delta.get("images")
+    if images:
+        for img in images:
+            url = img.get("image_url", {}).get("url") if isinstance(img, dict) else None
+            if url and url not in state["image_urls"]:
+                state["image_urls"].append(url)
+
+    if finish_reason == "error":
+        raise RuntimeError("OpenRouter stream terminated with finish_reason=error")
+
+    return finish_reason
 
 
-def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
-    """Process a tool call delta and update the tool_calls list in place."""
-    tool_id = delta.id
+def _process_tool_call_delta(tc: Dict[str, Any], tool_calls: List[Dict[str, Any]]) -> None:
+    """Process a tool call delta dict and update tool_calls list in place."""
+    tool_id = tc.get("id")
     if tool_id:
         current = next((t for t in tool_calls if t["id"] == tool_id), None)
         if not current:
@@ -252,104 +295,19 @@ def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
     else:
         current = tool_calls[-1] if tool_calls else None
 
-    if current and delta.function:
-        if delta.function.name:
-            current["function"]["name"] = delta.function.name
-        if delta.function.arguments:
-            current["function"]["arguments"] += delta.function.arguments
+    fn = tc.get("function", {})
+    if current and fn:
+        if fn.get("name"):
+            current["function"]["name"] = fn["name"]
+        if fn.get("arguments"):
+            current["function"]["arguments"] += fn["arguments"]
 
 
-def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
-    """Process a single chunk and update state dict. Returns finish_reason if present."""
-    # Log debug echo if present
-    debug = getattr(chunk, "debug", None)
-    if debug:
-        import logging, json
-        logging.warning(f"OpenRouter debug upstream body: {json.dumps(debug) if isinstance(debug, dict) else debug}")
+# ---------------------------------------------------------------------------
+# Output building
+# ---------------------------------------------------------------------------
 
-    check_chunk_error(chunk)
-
-    # Capture the chunk id — OpenRouter returns the generation ID here
-    chunk_id = getattr(chunk, "id", None)
-    if chunk_id and not state.get("_chunk_id"):
-        state["_chunk_id"] = chunk_id
-
-    # Track usage if available - OpenRouter sends in final chunk (may have empty choices)
-    usage_attr = getattr(chunk, "usage", None)
-    if usage_attr:
-        prompt_tokens = getattr(usage_attr, "prompt_tokens", None)
-        completion_tokens = getattr(usage_attr, "completion_tokens", None)
-        if prompt_tokens is not None:
-            state["input_tokens"] = prompt_tokens
-        if completion_tokens is not None:
-            state["output_tokens"] = completion_tokens
-
-    # Handle usage-only chunk (empty choices)
-    if not chunk.choices:
-        return None
-
-    delta = chunk.choices[0].delta
-    finish_reason = chunk.choices[0].finish_reason
-
-    if delta.content:
-        state["response"] += delta.content
-
-    if hasattr(delta, "reasoning") and delta.reasoning:
-        state["reasoning"] += delta.reasoning
-
-    if hasattr(delta, "reasoning_details") and delta.reasoning_details:
-        state["reasoning_details"].extend(delta.reasoning_details)
-
-    if delta.tool_calls:
-        for tc in delta.tool_calls:
-            process_tool_call_delta(tc, state["tool_calls"])
-
-    if hasattr(delta, "images") and delta.images:
-        for img in delta.images:
-            url = img.get("image_url", {}).get("url") if isinstance(img, dict) else None
-            if url and url not in state["image_urls"]:
-                state["image_urls"].append(url)
-
-    return finish_reason
-
-
-def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
-    """Build output dict from accumulated state."""
-    out = {"response": state["response"]}
-    if state["reasoning"]:
-        out["reasoning"] = state["reasoning"]
-    if state["reasoning_details"]:
-        out["reasoning_details"] = state["reasoning_details"]
-    if state["tool_calls"]:
-        out["tool_calls"] = state["tool_calls"]
-    if state["image_urls"]:
-        out["images"] = [File(uri=url) for url in state["image_urls"]]
-    
-    # Add output_meta with token usage, upstream cost, and provider
-    inputs = []
-    outputs = []
-    if state.get("input_tokens"):
-        inputs.append(TextMeta(tokens=state["input_tokens"]))
-    if state.get("output_tokens"):
-        outputs.append(TextMeta(tokens=state["output_tokens"]))
-    # Upstream cost/provider from OpenRouter generation API
-    gen_extra = {}
-    if state.get("generation_id"):
-        gen_extra["generation_id"] = state["generation_id"]
-    if state.get("provider"):
-        gen_extra["provider"] = state["provider"]
-    cost_usd = state.get("cost_usd")
-    if gen_extra or cost_usd is not None:
-        cost_cents = (cost_usd * 100) if cost_usd is not None else 0
-        inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
-    if inputs or outputs:
-        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
-
-    return out
-
-
-def create_initial_state() -> Dict[str, Any]:
-    """Create initial state dict for stream processing."""
+def _create_initial_state() -> Dict[str, Any]:
     return {
         "response": "",
         "reasoning": "",
@@ -361,148 +319,202 @@ def create_initial_state() -> Dict[str, Any]:
     }
 
 
-def _build_params(input_data, model: str, stream: bool, provider_routing: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """Build common request parameters."""
+def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
+    """Build output dict from accumulated state."""
+    out = {"response": state["response"]}
+    if state["reasoning"]:
+        out["reasoning"] = state["reasoning"]
+    if state["reasoning_details"]:
+        out["reasoning_details"] = state["reasoning_details"]
+    if state["tool_calls"]:
+        out["tool_calls"] = state["tool_calls"]
+    if state["image_urls"]:
+        out["images"] = [File(uri=url) for url in state["image_urls"]]
+
+    # output_meta: token usage + upstream cost from stream
+    inputs, outputs = [], []
+    if state.get("input_tokens"):
+        inputs.append(TextMeta(tokens=state["input_tokens"]))
+    if state.get("output_tokens"):
+        outputs.append(TextMeta(tokens=state["output_tokens"]))
+
+    gen_extra = {}
+    if state.get("generation_id"):
+        gen_extra["generation_id"] = state["generation_id"]
+    if state.get("provider"):
+        gen_extra["provider"] = state["provider"]
+    if state.get("actual_model"):
+        gen_extra["actual_model"] = state["actual_model"]
+    if state.get("cost_details"):
+        gen_extra["cost_details"] = state["cost_details"]
+    if state.get("reasoning_tokens"):
+        gen_extra["reasoning_tokens"] = state["reasoning_tokens"]
+    if state.get("cached_tokens"):
+        gen_extra["cached_tokens"] = state["cached_tokens"]
+
+    cost_usd = state.get("cost_usd")
+    if gen_extra or cost_usd is not None:
+        # RawMeta.cost is in dollar cents (e.g. $0.05 = 5.0 cents)
+        cost_cents = (cost_usd * 100) if cost_usd else 0
+        inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
+
+    if inputs or outputs:
+        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Request building
+# ---------------------------------------------------------------------------
+
+def _build_request_body(
+    input_data,
+    model: str,
+    provider_routing: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Build the JSON body for an OpenRouter chat completion request."""
     messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
     tools = build_tools(input_data.tools) if input_data.tools else None
 
-    params = {
+    body: Dict[str, Any] = {
         "model": model,
         "messages": messages,
-        "stream": stream,
-        "extra_headers": {"HTTP-Referer": "https://inference.sh", "X-Title": "inference.sh"},
+        "stream": True,
+        "stream_options": {"include_usage": True},
         "stop": ["<end_of_turn>", "<eos>", "<|im_end|>"],
         "max_tokens": 32768,
     }
 
-    if stream:
-        params["stream_options"] = {"include_usage": True}
-
     if tools:
-        params["tools"] = tools
-        params["tool_choice"] = "auto"
+        body["tools"] = tools
+        body["tool_choice"] = "auto"
 
-    extra_body = {}
     reasoning_config = get_reasoning_config(input_data)
     if reasoning_config:
-        extra_body["reasoning"] = reasoning_config
+        body["reasoning"] = reasoning_config
 
-    # Provider routing: built dynamically from live endpoint health data.
-    # order/ignore use provider slugs from the endpoints API tag field.
+    # Provider routing from live health data
     provider_config: Dict[str, Any] = {"allow_fallbacks": True}
     if provider_routing:
-        # Filter out internal keys (prefixed with _)
         provider_config.update({k: v for k, v in provider_routing.items() if not k.startswith("_")})
-    extra_body["provider"] = provider_config
+    body["provider"] = provider_config
 
-    params["extra_body"] = extra_body
-
-    return params
+    return body
 
 
-MAX_PROVIDER_RETRIES = 3
+# ---------------------------------------------------------------------------
+# Main streaming function
+# ---------------------------------------------------------------------------
 
-
-async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
+async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
     """
-    Stream a completion from OpenRouter and yield output dicts.
+    Stream a completion from OpenRouter via raw httpx SSE.
 
-    Always streams, even when the caller wants a single response. OpenRouter sends
-    `: OPENROUTER PROCESSING` SSE keep-alive comments during streaming to prevent
-    connection drops, but has NO keep-alive for non-streaming requests. If a
-    non-streaming HTTP call times out client-side, the generation still completes
-    server-side (and you get billed) but the response is lost — there is no way to
-    recover it. See: https://openrouter.ai/docs/api/reference/streaming
+    Uses direct HTTP so we get all OpenRouter-specific fields (provider, cost,
+    cost_details) that the OpenAI SDK strips. Always streams — OpenRouter has
+    no keep-alive for non-streaming requests.
     """
     routing = await get_provider_config(model)
     name_to_slug = routing.pop("_name_to_slug", {})
 
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://inference.sh",
+        "X-Title": "inference.sh",
+    }
+
     # Retry loop: on 429 from a specific provider, exclude it and retry
     excluded_slugs: List[str] = []
-    for attempt in range(1, MAX_PROVIDER_RETRIES + 1):
-        retry_routing = dict(routing)
-        if excluded_slugs:
-            ignore = list(set(retry_routing.get("ignore", []) + excluded_slugs))
-            order = [s for s in retry_routing.get("order", []) if s not in excluded_slugs]
-            retry_routing["ignore"] = ignore
-            if order:
-                retry_routing["order"] = order
+    resp = None
 
-        params = _build_params(input_data, model, stream=True, provider_routing=retry_routing)
-        params["extra_body"]["debug"] = {"echo_upstream_body": True}
+    async with httpx.AsyncClient(timeout=httpx.Timeout(connect=10, read=STREAM_SILENCE_TIMEOUT, write=10, pool=10)) as http:
+        for attempt in range(1, MAX_PROVIDER_RETRIES + 1):
+            retry_routing = dict(routing)
+            if excluded_slugs:
+                ignore = list(set(retry_routing.get("ignore", []) + excluded_slugs))
+                order = [s for s in retry_routing.get("order", []) if s not in excluded_slugs]
+                retry_routing["ignore"] = ignore
+                if order:
+                    retry_routing["order"] = order
 
-        print(f"Calling OpenRouter model={model} attempt={attempt} provider={params['extra_body'].get('provider', {})}")
+            body = _build_request_body(input_data, model, provider_routing=retry_routing)
+            print(f"Calling OpenRouter model={model} attempt={attempt} provider={body.get('provider', {})}")
+
+            try:
+                req = http.build_request("POST", f"{OPENROUTER_BASE_URL}/chat/completions", json=body, headers=headers)
+                resp = await asyncio.wait_for(http.send(req, stream=True), timeout=15.0)
+            except asyncio.TimeoutError:
+                raise RuntimeError("OpenRouter API call timed out after 15 seconds")
+
+            if resp.status_code != 200:
+                error_body = json.loads(await resp.aread())
+                resp_headers = dict(resp.headers)
+                err = _handle_error_response(resp.status_code, error_body, resp_headers, name_to_slug)
+                if isinstance(err, ProviderRateLimited) and attempt < MAX_PROVIDER_RETRIES:
+                    print(f"  429 from {err.provider_slug}, retrying without it (attempt {attempt}/{MAX_PROVIDER_RETRIES})")
+                    excluded_slugs.append(err.provider_slug)
+                    await resp.aclose()
+                    continue
+                await resp.aclose()
+                raise err
+            break  # success
+
+        generation_id = resp.headers.get("x-generation-id")
+        print(f"Stream opened gen={generation_id or 'unknown'} model={model}")
+
+        state = _create_initial_state()
+        if generation_id:
+            state["generation_id"] = generation_id
+        chunks_received = 0
+        last_data_time = time.monotonic()
 
         try:
-            stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
-            break  # success — proceed to streaming
-        except asyncio.TimeoutError:
-            raise RuntimeError("OpenRouter API call timed out after 15 seconds")
-        except Exception as e:
-            err = handle_api_error(e, name_to_slug=name_to_slug)
-            if isinstance(err, ProviderRateLimited) and attempt < MAX_PROVIDER_RETRIES:
-                print(f"  429 from {err.provider_slug}, retrying without it (attempt {attempt}/{MAX_PROVIDER_RETRIES})")
-                excluded_slugs.append(err.provider_slug)
-                continue
-            raise err
+            async for line in resp.aiter_lines():
+                now = time.monotonic()
 
-    # Grab generation ID from response headers for post-hoc debugging
-    generation_id = None
-    raw_response = getattr(stream, "response", None)
-    if raw_response and hasattr(raw_response, "headers"):
-        generation_id = raw_response.headers.get("x-generation-id")
-    print(f"Stream opened gen={generation_id or 'unknown'} model={model}")
+                # SSE keep-alive comment — reset timer but don't process
+                if line.startswith(":"):
+                    last_data_time = now
+                    continue
 
-    state = create_initial_state()
-    chunks_received = 0
+                if not line.startswith("data: "):
+                    continue
 
-    async def _iter_with_timeout():
-        """Wrap the stream iterator with a per-chunk deadline so we detect
-        silence even when no chunks arrive at all (async-for blocks forever)."""
-        nonlocal chunks_received
-        aiter = stream.__aiter__()
-        while True:
-            try:
-                chunk = await asyncio.wait_for(aiter.__anext__(), timeout=STREAM_SILENCE_TIMEOUT)
+                data_str = line[6:]
+                if data_str.strip() == "[DONE]":
+                    nfr = state.get("native_finish_reason")
+                    nfr_str = f" native_finish={nfr}" if nfr else ""
+                    cached = state.get("cached_tokens")
+                    cached_str = f" cached_tokens={cached}" if cached else ""
+                    print(
+                        f"Stream done gen={generation_id} chunks={chunks_received}"
+                        f" provider={state.get('provider', '?')}"
+                        f" model={state.get('actual_model', '?')}"
+                        f" in={state.get('input_tokens', 0)} out={state.get('output_tokens', 0)}"
+                        f" reasoning={state.get('reasoning_tokens', 0)}"
+                        f" cost_usd={state.get('cost_usd', 'n/a')}"
+                        f"{cached_str}{nfr_str}"
+                    )
+                    break
+
+                try:
+                    data = json.loads(data_str)
+                except json.JSONDecodeError:
+                    print(f"  Bad SSE JSON: {data_str[:200]}")
+                    continue
+
+                last_data_time = now
                 chunks_received += 1
-                yield chunk
-            except StopAsyncIteration:
-                break
-            except asyncio.TimeoutError:
-                detail = f"no data for {STREAM_SILENCE_TIMEOUT}s after {chunks_received} chunks"
-                if generation_id:
-                    detail += f" [gen:{generation_id}]"
-                    api_key = client.api_key
-                    gen_data = await lookup_generation(api_key, generation_id)
-                    if gen_data:
-                        finish = gen_data.get("finish_reason", "unknown")
-                        provider = gen_data.get("provider_name", "unknown")
-                        tokens_out = gen_data.get("tokens_completion", 0)
-                        logger.warning(
-                            f"Stream timeout but generation {generation_id} has "
-                            f"finish_reason={finish} provider={provider} "
-                            f"tokens_completion={tokens_out}"
-                        )
-                        detail += f" server_status={finish} provider={provider}"
-                raise RuntimeError(f"Stream timed out — {detail}")
 
-    try:
-        async for chunk in _iter_with_timeout():
-            finish_reason = process_chunk(chunk, state)
-            # Use chunk id as generation_id (OpenRouter puts it there)
-            gen_id = generation_id or state.get("_chunk_id")
-            if gen_id:
-                state["generation_id"] = gen_id
+                finish_reason = _parse_sse_chunk(data, state)
+                yield _build_output(state)
 
-            yield build_output(state)
-    except RuntimeError:
-        raise
-    except Exception as e:
-        detail = f"after {chunks_received} chunks"
-        if generation_id:
-            detail += f" [gen:{generation_id}]"
-        logger.error(f"Stream error {detail}: {e}")
-        raise
-    finally:
-        if hasattr(stream, "aclose"):
-            await stream.aclose()
+        except httpx.ReadTimeout:
+            detail = f"no data for {STREAM_SILENCE_TIMEOUT}s after {chunks_received} chunks"
+            if generation_id:
+                detail += f" [gen:{generation_id}]"
+            raise RuntimeError(f"Stream timed out — {detail}")
+        finally:
+            await resp.aclose()

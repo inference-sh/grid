@@ -13,10 +13,7 @@ from inferencesh.models.llm import (
     ImageCapabilityMixin,
 )
 from .openrouter import stream_completion
-from openai import AsyncOpenAI
 
-# Configuration
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 DEFAULT_MODEL = "google/gemini-3-pro-image-preview"
 
@@ -33,23 +30,14 @@ class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
 
 
 class App(BaseApp):
-    def __init__(self):
-        super().__init__()
-        self.client = None
-
     async def setup(self, metadata):
-        api_key = os.getenv("OPENROUTER_API_KEY")
-        if not api_key:
+        if not OPENROUTER_API_KEY:
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
-        self.client = AsyncOpenAI(base_url=OPENROUTER_BASE_URL, api_key=api_key)
-        print("OpenRouter client initialization complete!")
+        print("OpenRouter ready")
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        if not self.client:
-            raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
-        
-        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
+        async for output in stream_completion(OPENROUTER_API_KEY, input_data, DEFAULT_MODEL):
             yield AppOutput(**output)
 
     async def unload(self):
-        self.client = None
+        pass
