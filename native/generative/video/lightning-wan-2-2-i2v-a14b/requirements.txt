@@ -4,7 +4,7 @@ inferencesh
 torch==2.9.1
 torchvision>=0.20.0
 torchaudio==2.9.1
-diffusers==0.35.2
+diffusers>=0.38.0
 transformers==4.57.1
 tokenizers==0.22.1
 torchaudio==2.9.1

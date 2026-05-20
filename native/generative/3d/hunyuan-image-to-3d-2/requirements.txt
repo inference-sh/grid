@@ -3,7 +3,7 @@ inferencesh
 hf-transfer==0.1.8
 huggingface_hub>=0.20.0
 accelerate==1.3.0
-diffusers==0.32.2
+diffusers>=0.38.0
 einops==0.8.0
 ninja==1.11.1.3
 numpy>=1.24,<2.0
