@@ -8,6 +8,7 @@ from typing import List, Optional, Dict, Any, AsyncGenerator, Set
 from inferencesh import File
 from inferencesh.models.llm import build_openai_messages, build_tools
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.models.output_meta import RawMeta
 
 logger = logging.getLogger(__name__)
 
@@ -123,19 +124,29 @@ class ProviderRateLimited(RuntimeError):
         self.provider_slug = provider_slug
 
 
-async def lookup_generation(api_key: str, generation_id: str) -> Optional[Dict[str, Any]]:
-    """Query OpenRouter generation API to check if a generation completed server-side."""
+async def lookup_generation(
+    api_key: str, generation_id: str, retries: int = 3, delay: float = 2.0,
+) -> Optional[Dict[str, Any]]:
+    """Query OpenRouter generation API, retrying on 404 (generation not yet indexed)."""
     import httpx
-    try:
-        async with httpx.AsyncClient(timeout=10) as http:
-            resp = await http.get(
-                f"https://openrouter.ai/api/v1/generation?id={generation_id}",
-                headers={"Authorization": f"Bearer {api_key}"},
-            )
-            if resp.status_code == 200:
-                return resp.json()
-    except Exception as e:
-        logger.warning(f"Generation lookup failed for {generation_id}: {e}")
+    for attempt in range(retries):
+        try:
+            if attempt > 0:
+                await asyncio.sleep(delay)
+            async with httpx.AsyncClient(timeout=10) as http:
+                resp = await http.get(
+                    f"https://openrouter.ai/api/v1/generation?id={generation_id}",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                )
+                if resp.status_code == 200:
+                    return resp.json()
+                if resp.status_code != 404:
+                    print(f"Generation lookup {generation_id}: HTTP {resp.status_code}")
+                    return None
+                # 404 — not indexed yet, retry
+        except Exception as e:
+            print(f"Generation lookup {generation_id} failed: {e}")
+            return None
     return None
 
 
@@ -258,6 +269,11 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
 
     check_chunk_error(chunk)
 
+    # Capture the chunk id — OpenRouter returns the generation ID here
+    chunk_id = getattr(chunk, "id", None)
+    if chunk_id and not state.get("_chunk_id"):
+        state["_chunk_id"] = chunk_id
+
     # Track usage if available - OpenRouter sends in final chunk (may have empty choices)
     usage_attr = getattr(chunk, "usage", None)
     if usage_attr:
@@ -309,13 +325,23 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["image_urls"]:
         out["images"] = [File(uri=url) for url in state["image_urls"]]
     
-    # Add output_meta with token usage
+    # Add output_meta with token usage, upstream cost, and provider
     inputs = []
     outputs = []
     if state.get("input_tokens"):
         inputs.append(TextMeta(tokens=state["input_tokens"]))
     if state.get("output_tokens"):
         outputs.append(TextMeta(tokens=state["output_tokens"]))
+    # Upstream cost/provider from OpenRouter generation API
+    gen_extra = {}
+    if state.get("generation_id"):
+        gen_extra["generation_id"] = state["generation_id"]
+    if state.get("provider"):
+        gen_extra["provider"] = state["provider"]
+    cost_usd = state.get("cost_usd")
+    if gen_extra or cost_usd is not None:
+        cost_cents = (cost_usd * 100) if cost_usd is not None else 0
+        inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
     if inputs or outputs:
         out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
 
@@ -463,13 +489,12 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     try:
         async for chunk in _iter_with_timeout():
             finish_reason = process_chunk(chunk, state)
+            # Use chunk id as generation_id (OpenRouter puts it there)
+            gen_id = generation_id or state.get("_chunk_id")
+            if gen_id:
+                state["generation_id"] = gen_id
+
             yield build_output(state)
-            # Don't break on finish_reason - OpenRouter sends usage in a subsequent chunk
-        print(
-            f"Stream complete gen={generation_id or 'unknown'} "
-            f"chunks={chunks_received} "
-            f"in={state.get('input_tokens', 0)} out={state.get('output_tokens', 0)}"
-        )
     except RuntimeError:
         raise
     except Exception as e:
