@@ -40,12 +40,13 @@ All pricing is per-second of output duration. Billed against prepaid USD wallet 
 |--------|-----------------|
 | Starfish | $0.00067 |
 
-## Avatar Creation (not included in grid apps)
+## Avatar Creation (create-avatar)
 
 | Type | Price per call |
 |------|---------------|
 | Digital Twin | $1.00 |
 | Photo Avatar | $1.00 |
+| Prompt-to-Avatar | $1.00 |
 
 ## Billing Rules
 

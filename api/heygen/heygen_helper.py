@@ -156,6 +156,30 @@ async def list_voices(client: httpx.AsyncClient, limit: int = 20, engine: str = 
     return data.get("voices", data.get("items", []))
 
 
+async def get_look(client: httpx.AsyncClient, look_id: str) -> dict:
+    """Fetch a single avatar look — use to check supported_api_engines."""
+    return await get_endpoint(client, f"/v3/avatars/looks/{look_id}")
+
+
+async def poll_avatar(client: httpx.AsyncClient, look_id: str) -> dict:
+    """Poll GET /v3/avatars/looks/{look_id} until status is completed or failed."""
+    elapsed = 0.0
+    while elapsed < MAX_POLL_TIME:
+        data = await get_look(client, look_id)
+        status = data.get("status", "completed")  # public avatars may not have status
+        logger.info(f"Avatar {look_id} status: {status} ({elapsed:.0f}s)")
+
+        if status == "completed":
+            return data
+        elif status == "failed":
+            raise RuntimeError(f"Avatar creation failed for {look_id}")
+
+        await asyncio.sleep(POLL_INTERVAL)
+        elapsed += POLL_INTERVAL
+
+    raise TimeoutError(f"Avatar {look_id} timed out after {MAX_POLL_TIME}s")
+
+
 def build_asset_ref(file_obj) -> dict:
     """Build a HeyGen asset reference from an inferencesh File object.
 

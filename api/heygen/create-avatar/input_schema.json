@@ -1,0 +1,69 @@
+{
+  "description": "Create a new HeyGen avatar.",
+  "properties": {
+    "type": {
+      "description": "Avatar creation method. 'digital_twin' from video, 'photo' from image, 'prompt' from text description.",
+      "enum": [
+        "digital_twin",
+        "photo",
+        "prompt"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "name": {
+      "description": "Display name for the avatar.",
+      "title": "Name",
+      "type": "string"
+    },
+    "file": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video file (digital_twin) or image file (photo). Required for digital_twin and photo types.",
+      "title": "File"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text description of the avatar to generate. Required for prompt type.",
+      "examples": [
+        "A professional woman in her 30s with short dark hair, wearing a navy blazer, in a modern office setting"
+      ],
+      "title": "Prompt"
+    },
+    "avatar_group_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Attach this look to an existing avatar group/character identity.",
+      "title": "Avatar Group Id"
+    }
+  },
+  "required": [
+    "type",
+    "name"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

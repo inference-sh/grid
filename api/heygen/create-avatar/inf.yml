@@ -1,13 +1,13 @@
 namespace: heygen
-name: avatar-video
-description: Generate talking avatar videos using HeyGen's digital and photo avatars with Avatar IV or V engines, configurable voice, resolution up to 4K, and expressiveness.
+name: create-avatar
+description: Create HeyGen avatars from video footage (digital twin), a photo (photo avatar), or a text prompt (AI-generated). Returns a look ID for use with avatar-video.
 metadata:
     provider: heygen
     tags:
         - avatar
-        - talking-head
-        - video-generation
-        - text-to-speech
+        - avatar-creation
+        - digital-twin
+        - photo-avatar
         - heygen
 category: video
 images:

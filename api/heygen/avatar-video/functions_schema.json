@@ -222,7 +222,7 @@
               "title": "Name",
               "type": "string"
             },
-            "extra": {
+            "avatar_type": {
               "anyOf": [
                 {
                   "type": "string"
@@ -232,8 +232,24 @@
                 }
               ],
               "default": null,
-              "description": "Additional info",
-              "title": "Extra"
+              "description": "Avatar type or voice language",
+              "title": "Avatar Type"
+            },
+            "supported_engines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Supported rendering engines (e.g. avatar_iv, avatar_v)",
+              "title": "Supported Engines"
             }
           },
           "required": [
@@ -395,6 +411,16 @@
             "Hello! Welcome to our product demo. Let me show you how it works."
           ],
           "title": "Script",
+          "type": "string"
+        },
+        "engine": {
+          "default": "avatar_iv",
+          "description": "Rendering engine. Avatar V offers more natural motion and lip-sync but requires eligible avatar looks. Avatar IV is the default.",
+          "enum": [
+            "avatar_iv",
+            "avatar_v"
+          ],
+          "title": "Engine",
           "type": "string"
         },
         "voice_id": {

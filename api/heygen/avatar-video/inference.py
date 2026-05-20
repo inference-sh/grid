@@ -21,9 +21,11 @@ from .heygen_helper import (
     download_file,
     list_avatars,
     list_voices,
+    get_look,
 )
 
 
+EngineType = Literal["avatar_iv", "avatar_v"]
 ExpressivenessType = Literal["high", "medium", "low"]
 ResolutionType = Literal["720p", "1080p", "4k"]
 AspectRatioType = Literal["16:9", "9:16"]
@@ -39,6 +41,10 @@ class AppInput(BaseAppInput):
     script: str = Field(
         description="Text for the avatar to speak.",
         examples=["Hello! Welcome to our product demo. Let me show you how it works."],
+    )
+    engine: EngineType = Field(
+        default="avatar_iv",
+        description="Rendering engine. Avatar V offers more natural motion and lip-sync but requires eligible avatar looks. Avatar IV is the default.",
     )
     voice_id: Optional[str] = Field(
         default=None,
@@ -92,29 +98,52 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        self.logger.info(f"Creating avatar video: {input_data.script[:100]}...")
-
-        payload = {
-            "type": "avatar",
-            "avatar_id": input_data.avatar_id,
-            "script": input_data.script,
-            "aspect_ratio": input_data.aspect_ratio,
-            "resolution": input_data.resolution,
-            "output_format": input_data.output_format,
-        }
-
-        if input_data.voice_id:
-            payload["voice_id"] = input_data.voice_id
-        if input_data.title:
-            payload["title"] = input_data.title
-        if input_data.expressiveness:
-            payload["expressiveness"] = input_data.expressiveness
-        if input_data.motion_prompt:
-            payload["motion_prompt"] = input_data.motion_prompt
-        if input_data.remove_background is not None:
-            payload["remove_background"] = input_data.remove_background
+        self.logger.info(f"Creating avatar video ({input_data.engine}): {input_data.script[:100]}...")
 
         async with get_client() as client:
+            # Fetch look metadata for eligibility check and pricing
+            look = await get_look(client, input_data.avatar_id)
+            avatar_type = look.get("avatar_type", "unknown")
+            self.logger.info(f"Avatar type: {avatar_type}")
+
+            # Avatar V eligibility check
+            if input_data.engine == "avatar_v":
+                engines = look.get("supported_api_engines", [])
+                if "avatar_v" not in engines:
+                    raise RuntimeError(
+                        f"Avatar look {input_data.avatar_id} does not support Avatar V. "
+                        f"Supported engines: {engines}"
+                    )
+                self.logger.info(f"Avatar V eligibility confirmed for {input_data.avatar_id}")
+
+            payload = {
+                "type": "avatar",
+                "avatar_id": input_data.avatar_id,
+                "script": input_data.script,
+                "aspect_ratio": input_data.aspect_ratio,
+                "resolution": input_data.resolution,
+                "output_format": input_data.output_format,
+            }
+
+            if input_data.engine == "avatar_v":
+                payload["engine"] = {"type": "avatar_v"}
+                if input_data.motion_prompt:
+                    self.logger.warning("motion_prompt is not supported with Avatar V, ignoring")
+                if input_data.expressiveness:
+                    self.logger.warning("expressiveness is not supported with Avatar V, ignoring")
+            else:
+                if input_data.expressiveness:
+                    payload["expressiveness"] = input_data.expressiveness
+                if input_data.motion_prompt:
+                    payload["motion_prompt"] = input_data.motion_prompt
+
+            if input_data.voice_id:
+                payload["voice_id"] = input_data.voice_id
+            if input_data.title:
+                payload["title"] = input_data.title
+            if input_data.remove_background is not None:
+                payload["remove_background"] = input_data.remove_background
+
             result = await post_endpoint(client, "/v3/videos", payload)
             video_id = result["video_id"]
             self.logger.info(f"Video created: {video_id}, polling...")
@@ -137,6 +166,7 @@ class App(BaseApp):
                     height=dims[1],
                     seconds=float(duration),
                     fps=24,
+                    extra={"avatar_type": avatar_type},
                 )
             ]
         )
@@ -153,10 +183,12 @@ class App(BaseApp):
             if input_data.resource_type in ("avatars", "both"):
                 raw = await list_avatars(client, input_data.limit)
                 for a in raw:
+                    engines = a.get("supported_api_engines", [])
                     avatars_out.append(ResourceItem(
                         id=a.get("avatar_look_id", a.get("id", "")),
                         name=a.get("name", ""),
-                        extra=a.get("avatar_id", None),
+                        avatar_type=a.get("avatar_type", None),
+                        supported_engines=engines if engines else None,
                     ))
 
             if input_data.resource_type in ("voices", "both"):
@@ -165,7 +197,7 @@ class App(BaseApp):
                     voices_out.append(ResourceItem(
                         id=v.get("voice_id", ""),
                         name=v.get("name", ""),
-                        extra=v.get("language", None),
+                        avatar_type=v.get("language", None),
                     ))
 
         return ListResourcesOutput(avatars=avatars_out, voices=voices_out)
@@ -182,7 +214,8 @@ class ListResourcesInput(BaseAppInput):
 class ResourceItem(BaseModel):
     id: str = Field(description="Resource ID")
     name: str = Field(description="Resource name")
-    extra: Optional[str] = Field(default=None, description="Additional info")
+    avatar_type: Optional[str] = Field(default=None, description="Avatar type or voice language")
+    supported_engines: Optional[List[str]] = Field(default=None, description="Supported rendering engines (e.g. avatar_iv, avatar_v)")
 
 
 class ListResourcesOutput(BaseAppOutput):
