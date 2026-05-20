@@ -42,7 +42,12 @@ async def post_endpoint(client: httpx.AsyncClient, path: str, payload: dict) -> 
     resp = await client.post(url, json=payload)
     if resp.status_code >= 400:
         logger.error(f"HeyGen API {resp.status_code}: {resp.text}")
-    resp.raise_for_status()
+        try:
+            err = resp.json().get("error", {})
+            msg = err.get("message", resp.text)
+            raise RuntimeError(f"HeyGen API error ({resp.status_code}): {msg}")
+        except (ValueError, AttributeError):
+            resp.raise_for_status()
     data = resp.json()
     return data.get("data", data)
 
@@ -130,6 +135,25 @@ async def download_file(url: str, suffix: str = ".mp4") -> str:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
             f.write(resp.content)
             return f.name
+
+
+async def list_avatars(client: httpx.AsyncClient, limit: int = 20) -> list:
+    """List available avatar looks."""
+    data = await get_endpoint(client, f"/v3/avatars/looks?limit={limit}")
+    if isinstance(data, list):
+        return data
+    return data.get("avatar_looks", data.get("items", []))
+
+
+async def list_voices(client: httpx.AsyncClient, limit: int = 20, engine: str = None) -> list:
+    """List available voices, optionally filtered by engine."""
+    url = f"/v3/voices?limit={limit}"
+    if engine:
+        url += f"&engine={engine}"
+    data = await get_endpoint(client, url)
+    if isinstance(data, list):
+        return data
+    return data.get("voices", data.get("items", []))
 
 
 def build_asset_ref(file_obj) -> dict:

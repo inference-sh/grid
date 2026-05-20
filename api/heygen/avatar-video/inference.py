@@ -11,11 +11,16 @@ from typing import Optional, Literal
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import Field
 
+from pydantic import BaseModel
+from typing import List
+
 from .heygen_helper import (
     get_client,
     post_endpoint,
     poll_video,
     download_file,
+    list_avatars,
+    list_voices,
 )
 
 
@@ -138,3 +143,48 @@ class App(BaseApp):
 
         self.logger.info(f"Avatar video complete: {duration}s")
         return AppOutput(video=File(path=video_path), output_meta=output_meta)
+
+    async def list_resources(self, input_data: "ListResourcesInput") -> "ListResourcesOutput":
+        """List available HeyGen avatars and voices."""
+        avatars_out = []
+        voices_out = []
+
+        async with get_client() as client:
+            if input_data.resource_type in ("avatars", "both"):
+                raw = await list_avatars(client, input_data.limit)
+                for a in raw:
+                    avatars_out.append(ResourceItem(
+                        id=a.get("avatar_look_id", a.get("id", "")),
+                        name=a.get("name", ""),
+                        extra=a.get("avatar_id", None),
+                    ))
+
+            if input_data.resource_type in ("voices", "both"):
+                raw = await list_voices(client, input_data.limit, engine="starfish")
+                for v in raw:
+                    voices_out.append(ResourceItem(
+                        id=v.get("voice_id", ""),
+                        name=v.get("name", ""),
+                        extra=v.get("language", None),
+                    ))
+
+        return ListResourcesOutput(avatars=avatars_out, voices=voices_out)
+
+
+class ListResourcesInput(BaseAppInput):
+    """List available avatars and voices."""
+    resource_type: Literal["avatars", "voices", "both"] = Field(
+        default="both", description="Which resources to list."
+    )
+    limit: int = Field(default=10, ge=1, le=100, description="Max results per type.")
+
+
+class ResourceItem(BaseModel):
+    id: str = Field(description="Resource ID")
+    name: str = Field(description="Resource name")
+    extra: Optional[str] = Field(default=None, description="Additional info")
+
+
+class ListResourcesOutput(BaseAppOutput):
+    avatars: List[ResourceItem] = Field(default_factory=list, description="Available avatars")
+    voices: List[ResourceItem] = Field(default_factory=list, description="Available voices")
