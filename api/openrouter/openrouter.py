@@ -48,12 +48,14 @@ async def _fetch_provider_health(model: str) -> Dict[str, Any]:
             endpoints = resp.json().get("data", {}).get("endpoints", [])
             healthy = []
             unhealthy = []
+            name_to_slug = {}
             for ep in endpoints:
                 name = ep.get("provider_name", "")
                 tag = ep.get("tag", "")
                 slug = _slug_from_tag(tag)
                 uptime = ep.get("uptime_last_5m")
                 status = ep.get("status", 0)
+                name_to_slug[name] = slug
                 up_str = f"{uptime:.1f}%" if uptime is not None else "n/a"
                 if status < 0 or (uptime is not None and uptime < PROVIDER_MIN_UPTIME_5M):
                     unhealthy.append(slug)
@@ -63,7 +65,7 @@ async def _fetch_provider_health(model: str) -> Dict[str, Any]:
                     print(f"  OK   {name} ({slug}): status={status} uptime_5m={up_str}")
             print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded")
 
-            result: Dict[str, Any] = {}
+            result: Dict[str, Any] = {"_name_to_slug": name_to_slug}
             if unhealthy:
                 result["ignore"] = unhealthy
             if healthy:
@@ -114,6 +116,13 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
     return reasoning_config
 
 
+class ProviderRateLimited(RuntimeError):
+    """A specific upstream provider returned 429. Retryable by excluding it."""
+    def __init__(self, message: str, provider_slug: str):
+        super().__init__(message)
+        self.provider_slug = provider_slug
+
+
 async def lookup_generation(api_key: str, generation_id: str) -> Optional[Dict[str, Any]]:
     """Query OpenRouter generation API to check if a generation completed server-side."""
     import httpx
@@ -130,13 +139,31 @@ async def lookup_generation(api_key: str, generation_id: str) -> Optional[Dict[s
     return None
 
 
-def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeError:
-    """Extract error message from API exception, including nested provider errors."""
+def _provider_name_to_slug(name: str, name_to_slug: Dict[str, str]) -> Optional[str]:
+    """Convert a provider display name to its routing slug."""
+    # Try exact match from cached endpoint data first
+    if name in name_to_slug:
+        return name_to_slug[name]
+    # Fallback: lowercase, remove spaces (covers Groq->groq, DeepInfra->deepinfra)
+    return name.lower().replace(" ", "")
+
+
+def handle_api_error(
+    e: Exception,
+    prefix: str = "OpenRouter API",
+    name_to_slug: Optional[Dict[str, str]] = None,
+) -> RuntimeError:
+    """Extract error message from API exception, including nested provider errors.
+
+    For 429s with a provider_name in metadata, raises ProviderRateLimited so the
+    caller can retry with that provider excluded.
+    """
     if hasattr(e, "response") and e.response is not None:
         try:
             import json
             error_data = e.response.json()
             error_obj = error_data.get("error", {})
+            code = error_obj.get("code", getattr(e.response, "status_code", 0))
             msg = error_obj.get("message", str(e))
 
             # Grab request/generation IDs from headers for debugging
@@ -145,21 +172,31 @@ def handle_api_error(e: Exception, prefix: str = "OpenRouter API") -> RuntimeErr
             gen_id = headers.get("x-generation-id", "")
             provider = headers.get("x-provider", "")
 
-            # Extract nested provider error from metadata.raw
             metadata = error_obj.get("metadata", {})
+            provider_name = metadata.get("provider_name", provider or "")
+
+            # Log full error details for debugging
+            logger.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
+
+            # 429 with a known provider → retryable by excluding that provider
+            if code == 429 and provider_name:
+                slug = _provider_name_to_slug(provider_name, name_to_slug or {})
+                if slug:
+                    return ProviderRateLimited(
+                        f"{prefix} 429 from {provider_name} ({slug}): {msg} [req:{request_id} gen:{gen_id}]",
+                        provider_slug=slug,
+                    )
+
+            # Extract nested provider error from metadata.raw
             raw = metadata.get("raw")
             if raw:
                 try:
                     raw_error = json.loads(raw)
                     nested_msg = raw_error.get("error", {}).get("message")
                     if nested_msg:
-                        provider_name = metadata.get("provider_name", provider or "Provider")
                         return RuntimeError(f"{prefix} error ({provider_name}): {nested_msg} [req:{request_id} gen:{gen_id}]")
                 except json.JSONDecodeError:
                     pass
-
-            # Log full error details for debugging opaque 500s
-            logger.warning(f"{prefix} error: {msg} | request_id={request_id} generation_id={gen_id} provider={provider} | body={json.dumps(error_data)} | headers={dict(headers)}")
 
             return RuntimeError(f"{prefix} error: {msg} [req:{request_id} gen:{gen_id}]")
         except Exception:
@@ -309,7 +346,7 @@ def _build_params(input_data, model: str, stream: bool, provider_routing: Option
         "stream": stream,
         "extra_headers": {"HTTP-Referer": "https://inference.sh", "X-Title": "inference.sh"},
         "stop": ["<end_of_turn>", "<eos>", "<|im_end|>"],
-        "max_tokens": 64000,
+        "max_tokens": 32768,
     }
 
     if stream:
@@ -328,12 +365,16 @@ def _build_params(input_data, model: str, stream: bool, provider_routing: Option
     # order/ignore use provider slugs from the endpoints API tag field.
     provider_config: Dict[str, Any] = {"allow_fallbacks": True}
     if provider_routing:
-        provider_config.update(provider_routing)
+        # Filter out internal keys (prefixed with _)
+        provider_config.update({k: v for k, v in provider_routing.items() if not k.startswith("_")})
     extra_body["provider"] = provider_config
 
     params["extra_body"] = extra_body
 
     return params
+
+
+MAX_PROVIDER_RETRIES = 3
 
 
 async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
@@ -348,19 +389,36 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
     recover it. See: https://openrouter.ai/docs/api/reference/streaming
     """
     routing = await get_provider_config(model)
-    params = _build_params(input_data, model, stream=True, provider_routing=routing)
+    name_to_slug = routing.pop("_name_to_slug", {})
 
-    # Enable upstream debug echo so we can see what OpenRouter actually sent
-    params["extra_body"]["debug"] = {"echo_upstream_body": True}
+    # Retry loop: on 429 from a specific provider, exclude it and retry
+    excluded_slugs: List[str] = []
+    for attempt in range(1, MAX_PROVIDER_RETRIES + 1):
+        retry_routing = dict(routing)
+        if excluded_slugs:
+            ignore = list(set(retry_routing.get("ignore", []) + excluded_slugs))
+            order = [s for s in retry_routing.get("order", []) if s not in excluded_slugs]
+            retry_routing["ignore"] = ignore
+            if order:
+                retry_routing["order"] = order
 
-    print(f"Calling OpenRouter model={model} provider={params['extra_body'].get('provider', {})}")
+        params = _build_params(input_data, model, stream=True, provider_routing=retry_routing)
+        params["extra_body"]["debug"] = {"echo_upstream_body": True}
 
-    try:
-        stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
-    except asyncio.TimeoutError:
-        raise RuntimeError("OpenRouter API call timed out after 15 seconds")
-    except Exception as e:
-        raise handle_api_error(e)
+        print(f"Calling OpenRouter model={model} attempt={attempt} provider={params['extra_body'].get('provider', {})}")
+
+        try:
+            stream = await asyncio.wait_for(client.chat.completions.create(**params), timeout=15.0)
+            break  # success — proceed to streaming
+        except asyncio.TimeoutError:
+            raise RuntimeError("OpenRouter API call timed out after 15 seconds")
+        except Exception as e:
+            err = handle_api_error(e, name_to_slug=name_to_slug)
+            if isinstance(err, ProviderRateLimited) and attempt < MAX_PROVIDER_RETRIES:
+                print(f"  429 from {err.provider_slug}, retrying without it (attempt {attempt}/{MAX_PROVIDER_RETRIES})")
+                excluded_slugs.append(err.provider_slug)
+                continue
+            raise err
 
     # Grab generation ID from response headers for post-hoc debugging
     generation_id = None
