@@ -13,6 +13,6 @@ kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 24000000000
+        vram: 24
         type: any
-    ram: 32000000000
+    ram: 32
