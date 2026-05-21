@@ -123,6 +123,51 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
+# Model hooks — transform messages/body before sending
+# ---------------------------------------------------------------------------
+# Each hook is (predicate, transform) where predicate(model) -> bool and
+# transform(body, input_data) -> body. Hooks run in order; first match wins.
+
+def _qwen_nothink_hook(body: Dict[str, Any], input_data) -> Dict[str, Any]:
+    """Inject /no_think into the last user message for Qwen models when
+    reasoning is disabled. OpenRouter's effort param isn't reliably mapped
+    for Qwen — the model-level /no_think tag is authoritative."""
+    reasoning_effort = getattr(input_data, "reasoning_effort", None)
+    if reasoning_effort != "none":
+        return body
+    messages = body.get("messages", [])
+    # Find last user message and append /no_think
+    for msg in reversed(messages):
+        if msg.get("role") == "user":
+            content = msg.get("content", "")
+            if isinstance(content, str) and "/no_think" not in content:
+                msg["content"] = content + " /no_think"
+            elif isinstance(content, list):
+                # multimodal: append to last text part
+                for part in reversed(content):
+                    if isinstance(part, dict) and part.get("type") == "text":
+                        if "/no_think" not in part.get("text", ""):
+                            part["text"] = part["text"] + " /no_think"
+                        break
+            break
+    return body
+
+
+# (model_prefix, hook_fn) — checked in order, first match wins
+_MODEL_HOOKS = [
+    ("qwen/", _qwen_nothink_hook),
+]
+
+
+def _apply_model_hooks(body: Dict[str, Any], input_data, model: str) -> Dict[str, Any]:
+    """Apply model-specific hooks to the request body."""
+    for prefix, hook in _MODEL_HOOKS:
+        if model.startswith(prefix):
+            return hook(body, input_data)
+    return body
+
+
+# ---------------------------------------------------------------------------
 # Error handling
 # ---------------------------------------------------------------------------
 
@@ -398,6 +443,9 @@ def _build_request_body(
     if provider_routing:
         provider_config.update({k: v for k, v in provider_routing.items() if not k.startswith("_")})
     body["provider"] = provider_config
+
+    # Model-specific hooks (e.g. Qwen /no_think injection)
+    body = _apply_model_hooks(body, input_data, model)
 
     return body
 
