@@ -3,7 +3,7 @@
 API base: `https://api.pruna.ai/v1`
 Docs: `https://docs.api.pruna.ai/guides/models`
 
-## Implemented Models (16)
+## Implemented Models (17)
 
 ### Image Generation
 
@@ -36,12 +36,17 @@ Docs: `https://docs.api.pruna.ai/guides/models`
 | wan-t2v | [docs](https://docs.api.pruna.ai/guides/models/wan-t2v) | $0.05/video (480p) | 30/min |
 | wan-i2v | [docs](https://docs.api.pruna.ai/guides/models/wan-i2v) | $0.05/video (480p) | 30/min |
 
+### LoRA Training
+
+| Model | Docs | Price | Rate Limit |
+|---|---|---|---|
+| p-image-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-trainer) | $1.80/1000 steps | 5/min |
+
 ## Not Yet Implemented
 
 | Model | Docs | Category |
 |---|---|---|
 | vace | [docs](https://docs.api.pruna.ai/guides/models/vace) | Video (character consistency) |
-| p-image-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-trainer) | LoRA training |
 | p-image-edit-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-edit-trainer) | LoRA training (editing) |
 
 ## Enum Parameters Reference

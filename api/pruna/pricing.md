@@ -71,12 +71,12 @@ Rate Limit: 30 req/min
 
 Rate Limit: 30 req/min
 
-## Trainer Models (Not Implemented)
+## Trainer Models
 
-| Model               | Price               |
-|---------------------|---------------------|
-| P-Image Trainer     | $1.80 / 1000 steps  |
-| P-Image Edit Trainer| $4.00 / 1000 steps  |
+| Model               | Price               | Rate Limit |
+|---------------------|---------------------|------------|
+| P-Image Trainer     | $1.80 / 1000 steps  | 5/min      |
+| P-Image Edit Trainer| $4.00 / 1000 steps  | (not impl) |
 
 ## Notes
 

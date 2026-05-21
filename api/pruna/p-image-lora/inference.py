@@ -59,13 +59,13 @@ class AppInput(BaseAppInput):
     prompt: str = Field(
         description="Text description of the image to generate."
     )
-    lora_preset: LoraPresetEnum = Field(
-        default=LoraPresetEnum.realism,
-        description="Pre-trained LoRA style."
+    lora_preset: Optional[LoraPresetEnum] = Field(
+        default=None,
+        description="Pre-trained LoRA style. Leave empty when using lora_url."
     )
     lora_url: Optional[str] = Field(
         default=None,
-        description="Custom LoRA URL (overrides preset). Format: huggingface.co/owner/repo/file.safetensors"
+        description="Custom LoRA URL. Format: huggingface.co/owner/repo[/file.safetensors]"
     )
     lora_scale: float = Field(
         default=0.5,
@@ -130,8 +130,10 @@ class App(BaseApp):
             # Resolve LoRA URL (custom url overrides preset)
             if input_data.lora_url:
                 lora_url = input_data.lora_url
-            else:
+            elif input_data.lora_preset:
                 lora_url = LORA_PRESET_URLS[input_data.lora_preset]
+            else:
+                raise ValueError("Provide either 'lora_url' or 'lora_preset'")
 
             self.logger.info(f"Generating with LoRA: {lora_url}")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")

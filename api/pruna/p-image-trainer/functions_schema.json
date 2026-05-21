@@ -1,63 +1,86 @@
 {
   "run": {
-    "description": "Generate an image using P-Image-LoRA.",
+    "description": "Train a LoRA using P-Image-Trainer.",
     "input_schema": {
       "$defs": {
-        "AspectRatioEnum": {
-          "enum": [
-            "1:1",
-            "16:9",
-            "9:16",
-            "4:3",
-            "3:4",
-            "3:2",
-            "2:3",
-            "custom"
+        "TrainingImage": {
+          "description": "An image with an optional caption for LoRA training.",
+          "properties": {
+            "image": {
+              "description": "Training image file.",
+              "format": "file",
+              "title": "Image",
+              "type": "string"
+            },
+            "caption": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Caption describing this image. Falls back to default_caption if not set.",
+              "title": "Caption"
+            }
+          },
+          "required": [
+            "image"
           ],
-          "title": "AspectRatioEnum",
-          "type": "string"
+          "title": "TrainingImage",
+          "type": "object"
         },
-        "LoraPresetEnum": {
-          "description": "Pre-trained LoRA styles available on HuggingFace.",
+        "TrainingTypeEnum": {
           "enum": [
-            "photos-realism",
-            "pixel-art",
-            "photos-modernism-art",
-            "pencil-sketch-art",
-            "photos-classic-film",
-            "comic-noir-art",
-            "classic-painting",
-            "photos-sunbleached",
-            "photos-three-color-composite",
-            "text-rendering",
-            "comic-noir-v2"
+            "content",
+            "style",
+            "balanced"
           ],
-          "title": "LoraPresetEnum",
+          "title": "TrainingTypeEnum",
           "type": "string"
         }
       },
-      "description": "Input schema for P-Image-LoRA.",
+      "description": "Input schema for P-Image-Trainer.",
       "properties": {
-        "prompt": {
-          "description": "Text description of the image to generate.",
-          "title": "Prompt",
-          "type": "string"
-        },
-        "lora_preset": {
+        "images": {
           "anyOf": [
             {
-              "$ref": "#/$defs/LoraPresetEnum"
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Pre-trained LoRA style. Leave empty when using lora_url."
+          "description": "Drag-drop mode: array of training images (at least 10). All images use default_caption.",
+          "title": "Images"
         },
-        "lora_url": {
+        "training_images": {
           "anyOf": [
             {
+              "items": {
+                "$ref": "#/$defs/TrainingImage"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Captioned mode: array of {image, caption} pairs for per-image captions.",
+          "title": "Training Images"
+        },
+        "training_data": {
+          "anyOf": [
+            {
+              "format": "file",
               "type": "string"
             },
             {
@@ -65,18 +88,31 @@
             }
           ],
           "default": null,
-          "description": "Custom LoRA URL. Format: huggingface.co/owner/repo[/file.safetensors]",
-          "title": "Lora Url"
+          "description": "Pre-made ZIP with images and .txt caption files (e.g., photo.jpg + photo.txt). Power-user escape hatch.",
+          "title": "Training Data"
         },
-        "lora_scale": {
-          "default": 0.5,
-          "description": "LoRA strength (-1 to 3). 0.5 works well for most.",
-          "maximum": 3,
-          "minimum": -1,
-          "title": "Lora Scale",
+        "steps": {
+          "default": 1000,
+          "description": "Number of training steps (100-5000, increments of 100). More steps = longer training, potentially better results.",
+          "maximum": 5000,
+          "minimum": 100,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "learning_rate": {
+          "default": 0.0001,
+          "description": "Learning rate for training. Lower = slower but more stable.",
+          "maximum": 0.01,
+          "minimum": 1e-05,
+          "title": "Learning Rate",
           "type": "number"
         },
-        "hf_api_token": {
+        "training_type": {
+          "$ref": "#/$defs/TrainingTypeEnum",
+          "default": "balanced",
+          "description": "Type of training: content (subjects/characters), style (artistic styles), balanced (both)."
+        },
+        "default_caption": {
           "anyOf": [
             {
               "type": "string"
@@ -86,73 +122,10 @@
             }
           ],
           "default": null,
-          "description": "HuggingFace API token for private LoRAs.",
-          "title": "Hf Api Token"
-        },
-        "aspect_ratio": {
-          "$ref": "#/$defs/AspectRatioEnum",
-          "default": "16:9",
-          "description": "Aspect ratio for the image."
-        },
-        "width": {
-          "anyOf": [
-            {
-              "maximum": 1440,
-              "minimum": 256,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Custom width in pixels (256-1440, multiple of 16). Only used when aspect_ratio=custom.",
-          "title": "Width"
-        },
-        "height": {
-          "anyOf": [
-            {
-              "maximum": 1440,
-              "minimum": 256,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Custom height in pixels (256-1440, multiple of 16). Only used when aspect_ratio=custom.",
-          "title": "Height"
-        },
-        "prompt_upsampling": {
-          "default": false,
-          "description": "Enhance prompt with LLM for better results.",
-          "title": "Prompt Upsampling",
-          "type": "boolean"
-        },
-        "seed": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Random seed for reproducible generation.",
-          "title": "Seed"
-        },
-        "disable_safety_checker": {
-          "default": false,
-          "description": "Disable safety checker for generated images.",
-          "title": "Disable Safety Checker",
-          "type": "boolean"
+          "description": "Fallback caption for images without an explicit caption. Required if no per-image captions are provided.",
+          "title": "Default Caption"
         }
       },
-      "required": [
-        "prompt"
-      ],
       "title": "AppInput",
       "type": "object"
     },
@@ -441,26 +414,13 @@
           "type": "object"
         }
       },
-      "description": "Output schema for P-Image-LoRA.",
+      "description": "Output schema for P-Image-Trainer.",
       "properties": {
-        "image": {
-          "description": "Generated image file.",
+        "lora_weights": {
+          "description": "ZIP file containing trained LoRA weights (.safetensors). Download within 30 minutes.",
           "format": "file",
-          "title": "Image",
+          "title": "Lora Weights",
           "type": "string"
-        },
-        "seed": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Seed used for generation.",
-          "title": "Seed"
         },
         "output_meta": {
           "anyOf": [
@@ -476,7 +436,7 @@
         }
       },
       "required": [
-        "image"
+        "lora_weights"
       ],
       "title": "AppOutput",
       "type": "object"

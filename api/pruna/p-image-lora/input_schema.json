@@ -41,9 +41,16 @@
       "type": "string"
     },
     "lora_preset": {
-      "$ref": "#/$defs/LoraPresetEnum",
-      "default": "photos-realism",
-      "description": "Pre-trained LoRA style."
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LoraPresetEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Pre-trained LoRA style. Leave empty when using lora_url."
     },
     "lora_url": {
       "anyOf": [
@@ -55,7 +62,7 @@
         }
       ],
       "default": null,
-      "description": "Custom LoRA URL (overrides preset). Format: huggingface.co/owner/repo/file.safetensors",
+      "description": "Custom LoRA URL. Format: huggingface.co/owner/repo[/file.safetensors]",
       "title": "Lora Url"
     },
     "lora_scale": {

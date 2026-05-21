@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "TrainingImage": {
+      "description": "An image with an optional caption for LoRA training.",
+      "properties": {
+        "image": {
+          "description": "Training image file.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "caption": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Caption describing this image. Falls back to default_caption if not set.",
+          "title": "Caption"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "TrainingImage",
+      "type": "object"
+    },
+    "TrainingTypeEnum": {
+      "enum": [
+        "content",
+        "style",
+        "balanced"
+      ],
+      "title": "TrainingTypeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Image-Trainer.",
+  "properties": {
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Drag-drop mode: array of training images (at least 10). All images use default_caption.",
+      "title": "Images"
+    },
+    "training_images": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/TrainingImage"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Captioned mode: array of {image, caption} pairs for per-image captions.",
+      "title": "Training Images"
+    },
+    "training_data": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Pre-made ZIP with images and .txt caption files (e.g., photo.jpg + photo.txt). Power-user escape hatch.",
+      "title": "Training Data"
+    },
+    "steps": {
+      "default": 1000,
+      "description": "Number of training steps (100-5000, increments of 100). More steps = longer training, potentially better results.",
+      "maximum": 5000,
+      "minimum": 100,
+      "title": "Steps",
+      "type": "integer"
+    },
+    "learning_rate": {
+      "default": 0.0001,
+      "description": "Learning rate for training. Lower = slower but more stable.",
+      "maximum": 0.01,
+      "minimum": 1e-05,
+      "title": "Learning Rate",
+      "type": "number"
+    },
+    "training_type": {
+      "$ref": "#/$defs/TrainingTypeEnum",
+      "default": "balanced",
+      "description": "Type of training: content (subjects/characters), style (artistic styles), balanced (both)."
+    },
+    "default_caption": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fallback caption for images without an explicit caption. Required if no per-image captions are provided.",
+      "title": "Default Caption"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

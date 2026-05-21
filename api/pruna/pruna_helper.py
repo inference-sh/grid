@@ -84,7 +84,7 @@ def upload_file(
         files = {"content": f}
         response = requests.post(url, headers=headers, files=files)
 
-    if response.status_code != 200:
+    if response.status_code not in (200, 201):
         raise RuntimeError(f"File upload failed: {response.status_code} - {response.text}")
 
     result = response.json()
