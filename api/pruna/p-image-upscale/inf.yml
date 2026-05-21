@@ -1,6 +1,6 @@
 namespace: pruna
 name: p-image-upscale
-description: AI-powered image upscaling with detail and realism enhancement
+description: AI-powered image upscaling up to 128 megapixels with detail and realism enhancement
 metadata: {}
 category: image
 images:

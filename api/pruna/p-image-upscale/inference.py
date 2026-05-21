@@ -19,8 +19,8 @@ class AppInput(BaseAppInput):
     megapixels: int = Field(
         default=4,
         ge=1,
-        le=8,
-        description="Target resolution in megapixels (1-8). Output is capped at 8 MP."
+        le=128,
+        description="Target resolution in megapixels (1-128). Output is capped at 128 MP."
     )
     output_format: Literal["jpg", "png", "webp"] = Field(
         default="jpg",
@@ -117,8 +117,8 @@ class App(BaseApp):
             self.logger.info(f"Upscaled {in_w}x{in_h} -> {out_w}x{out_h}")
 
             output_meta = OutputMeta(
-                inputs=[ImageMeta(width=in_w, height=in_h, count=1)],
-                outputs=[ImageMeta(width=out_w, height=out_h, count=1)],
+                inputs=[ImageMeta(width=in_w, height=in_h, resolution_mp=round(in_w * in_h / 1_000_000, 2), count=1)],
+                outputs=[ImageMeta(width=out_w, height=out_h, resolution_mp=round(out_w * out_h / 1_000_000, 2), count=1)],
             )
 
             return AppOutput(

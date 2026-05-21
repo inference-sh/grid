@@ -9,8 +9,8 @@
     },
     "megapixels": {
       "default": 4,
-      "description": "Target resolution in megapixels (1-8). Output is capped at 8 MP.",
-      "maximum": 8,
+      "description": "Target resolution in megapixels (1-128). Output is capped at 128 MP.",
+      "maximum": 128,
       "minimum": 1,
       "title": "Megapixels",
       "type": "integer"
