@@ -3,6 +3,10 @@ import shutil
 import tempfile
 import torch
 import logging
+
+# DeepSeek-OCR model code uses total_mem but PyTorch only exposes total_memory
+if not hasattr(torch._C._CudaDeviceProperties, 'total_mem'):
+    torch._C._CudaDeviceProperties.total_mem = property(lambda self: self.total_memory)
 from typing import Literal
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field

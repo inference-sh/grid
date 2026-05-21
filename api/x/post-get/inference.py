@@ -71,6 +71,8 @@ class App(BaseApp):
             response = self.client.posts.get_by_id(**kwargs)
 
             data = response.data
+            if data is None:
+                raise ValueError(f"Tweet {input_data.tweet_id} not found or is not accessible")
             metrics = data.get("public_metrics", {})
             includes = getattr(response, "includes", {}) or {}
 
