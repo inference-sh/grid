@@ -118,7 +118,7 @@
       "type": "string"
     }
   },
-  "description": "OpenRouter input model with reasoning, tools, and image support.",
+  "description": "OpenRouter input model with reasoning and tools support.",
   "properties": {
     "reasoning_exclude": {
       "default": false,

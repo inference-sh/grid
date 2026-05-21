@@ -1,4 +1,4 @@
-namespace: ""
+namespace: openrouter
 name: qwen3-8b
 description: Qwen3 8B - efficient dense language model with reasoning and tool use capabilities via OpenRouter
 metadata:

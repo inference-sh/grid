@@ -341,13 +341,12 @@
       "type": "object"
     }
   },
-  "description": "OpenRouter output model with reasoning, tool calls, images, and usage information.",
+  "description": "OpenRouter output model with reasoning, tool calls, and usage information.",
   "properties": {
     "images": {
       "anyOf": [
         {
           "items": {
-            "format": "file",
             "type": "string"
           },
           "type": "array"

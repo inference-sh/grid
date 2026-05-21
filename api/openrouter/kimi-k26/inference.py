@@ -14,17 +14,22 @@ from inferencesh.models.llm import (
 )
 from .openrouter import stream_completion
 
-# OpenRouter configuration
+# Configuration
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-
 DEFAULT_MODEL = "moonshotai/kimi-k2.6"
+
+
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=262144, description="The context size for the model.")
+
+
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None
+
+
 class App(BaseApp):
 
     async def setup(self, metadata):
