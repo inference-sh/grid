@@ -492,8 +492,11 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
             try:
                 req = http.build_request("POST", f"{OPENROUTER_BASE_URL}/chat/completions", json=body, headers=headers)
                 resp = await asyncio.wait_for(http.send(req, stream=True), timeout=15.0)
-            except asyncio.TimeoutError:
-                raise RuntimeError("OpenRouter API call timed out after 15 seconds")
+            except (asyncio.TimeoutError, httpx.ConnectTimeout, httpx.ReadTimeout):
+                if attempt < MAX_PROVIDER_RETRIES:
+                    print(f"  Connect timeout on attempt {attempt}/{MAX_PROVIDER_RETRIES}, retrying...")
+                    continue
+                raise RuntimeError("OpenRouter API connection timed out after retries")
 
             if resp.status_code != 200:
                 error_body = json.loads(await resp.aread())
