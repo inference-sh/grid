@@ -4,9 +4,9 @@ description: HappyHorse 1.0 Image-to-Video generates physically realistic videos
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/n9z0dd32.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fapkozh0.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/r209zwl2.jpg
 env: {}
 kernel: python-3.11
 secrets:

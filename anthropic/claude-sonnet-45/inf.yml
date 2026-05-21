@@ -1,0 +1,23 @@
+namespace: ""
+name: claude-sonnet-45
+description: Claude Sonnet 4.5 — Previous generation Sonnet. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    checksum: aa3359dc4d0a0798a9f62c5432484b4b0af4ab8db461012f8a66fb5124bd138c
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/qrmcar4t.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/02rjmbvd.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/dfrd2exq.jpg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

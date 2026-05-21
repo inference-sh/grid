@@ -3,7 +3,11 @@ from pydantic import Field
 from typing import Literal
 import tempfile
 from pathlib import Path
+import asyncio
 from playwright.async_api import async_playwright
+import os
+import sys
+from playwright._impl._driver import get_driver_env
 
 class AppInput(BaseAppInput):
     html_content: str = Field(description="The HTML string to render")

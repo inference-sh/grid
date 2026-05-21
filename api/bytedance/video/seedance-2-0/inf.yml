@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-2-0
 description: Professional multimodal video generation from text, images, video, and audio references using ByteDance's Seedance 2.0 model via BytePlus ARK API. Supports up to 1080p, text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
+    checksum: 5b569fd690c5637d72a44612f292b94bd170745af60a96061b4ff117467351b0
     provider: bytedance
     tags:
         - seedance
@@ -14,6 +15,10 @@ metadata:
         - bytedance
         - byteplus
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/uvcts5wu.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/iol07ns8.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/mn2n2ddr.jpg
 env: {}
 kernel: python-3.11
 secrets:

@@ -224,3 +224,7 @@ class App(BaseApp):
             
             return output_path
 
+    async def unload(self):
+        """Clean up resources."""
+        self.upsampler = None
+        self.face_enhancer = None

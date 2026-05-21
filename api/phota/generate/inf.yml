@@ -4,18 +4,17 @@ description: Generate images from text prompts with identity-preserved subjects 
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2h9b640g4a35f9qvz26e.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2g21728wb8dgyk3pt899.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2pynd9fy12v1vntkmb8p.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: PHOTA_KEY
       description: Phota API key from platform.photalabs.com
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

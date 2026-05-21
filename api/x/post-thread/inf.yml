@@ -4,9 +4,9 @@ description: Create threaded posts on X.com. Provide 2-25 tweets that are posted
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqrs66am9whb3592myf03j.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr0rg7qgf2k2c5ra3sbs0.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr6mnx6zg6a6ky8mbdj48.jpeg
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqyhw0evd68260r8mffarg6.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqyhvsg25scnpn9rp5b94va.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqyhp1ys7ka17g0e88gxxzj.jpeg
 env: {}
 kernel: python-3.11
 integrations:

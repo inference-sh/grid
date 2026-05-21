@@ -27,6 +27,8 @@ cryptography==46.0.6
     # via google-auth
 distro==1.9.0
     # via google-genai
+fal-client==0.13.2
+    # via -r requirements.txt
 frozenlist==1.8.0
     # via
     #   aiohttp
@@ -40,15 +42,21 @@ h11==0.16.0
 httpcore==1.0.9
     # via httpx
 httpx==0.28.1
-    # via google-genai
+    # via
+    #   fal-client
+    #   google-genai
+httpx-sse==0.4.3
+    # via fal-client
 idna==3.11
     # via
     #   anyio
     #   httpx
     #   requests
     #   yarl
-inferencesh==0.6.26
+inferencesh==0.6.27
     # via -r requirements.txt
+msgpack==1.1.2
+    # via fal-client
 multidict==6.7.1
     # via
     #   aiohttp
@@ -74,6 +82,7 @@ pydantic-core==2.45.0
     # via pydantic
 requests==2.33.1
     # via
+    #   -r requirements.txt
     #   google-auth
     #   google-genai
     #   inferencesh
@@ -96,6 +105,8 @@ typing-inspection==0.4.2
 urllib3==2.6.3
     # via requests
 websockets==16.0
-    # via google-genai
+    # via
+    #   fal-client
+    #   google-genai
 yarl==1.23.0
     # via aiohttp

@@ -285,7 +285,7 @@
   },
   "properties": {
     "images": {
-      "description": "The generated or edited images",
+      "description": "Generated images",
       "items": {
         "format": "file",
         "type": "string"
@@ -295,7 +295,7 @@
     },
     "description": {
       "default": "",
-      "description": "Text description or response from the model",
+      "description": "Text description from model",
       "title": "Description",
       "type": "string"
     },

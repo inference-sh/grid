@@ -1,0 +1,20 @@
+namespace: ""
+name: post-tweet
+description: Post tweets to X.com (Twitter)
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqp7xdkhy9cabj98277wz7a.png
+    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqp7xdkhy9cabj98277wz7a.png
+    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqp7xdkhy9cabj98277wz7a.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.write
+      description: Post tweets with text and media to X.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

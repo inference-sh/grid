@@ -13,29 +13,43 @@ from inferencesh.models.llm import (
     ImageCapabilityMixin
 )
 from .openrouter import stream_completion
+from openai import AsyncOpenAI
 
 # OpenRouter configuration
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 DEFAULT_MODEL = "anthropic/claude-opus-4.7"
+
+
 class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=1000000, description="The context size for the model.")
+
+
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None
+
+
 class App(BaseApp):
+    def __init__(self):
+        super().__init__()
+        self.client = None
 
     async def setup(self, metadata):
         if not OPENROUTER_API_KEY:
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
-        print("OpenRouter ready")
+        self.client = AsyncOpenAI(base_url=OPENROUTER_BASE_URL, api_key=OPENROUTER_API_KEY)
+        print("OpenRouter client initialization complete!")
 
     async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+        if not self.client:
+            raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
 
-        async for output in stream_completion(OPENROUTER_API_KEY, input_data, DEFAULT_MODEL):
+        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
             yield AppOutput(**output)
 
     async def unload(self):
-        pass
+        self.client = None

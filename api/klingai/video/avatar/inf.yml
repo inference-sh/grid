@@ -9,6 +9,10 @@ metadata:
         - digital-human
         - talking-head
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/dr8bxp7y.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jcg5h9o6.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/w2ovyyi3.jpg
 env: {}
 kernel: python-3.11
 secrets:

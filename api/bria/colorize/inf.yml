@@ -1,21 +1,20 @@
 namespace: bria
 name: colorize
-description: Add color to B&W photos (color_contemporary, sepia_vintage) or convert color photos to grayscale (decolorize). Chain with restore first to clean up old photos before colorizing.
+description: Colorize black and white images with natural or stylized colors
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/a53qn6ty.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bra1jgqk.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/yizefaj0.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

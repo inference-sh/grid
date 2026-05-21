@@ -15,10 +15,10 @@ certifi==2025.8.3
 cffi==1.17.1
 charset-normalizer==3.4.3
 click==8.2.1
-cloudpathlib==0.21.1
+cloudpathlib==0.22.0
 colorama==0.4.6
 confection==0.1.5
-cryptography==45.0.6
+cryptography==45.0.7
 csvw==3.5.1
 curated-tokenizers==0.0.9
 curated-transformers==0.1.1
@@ -36,7 +36,7 @@ espeakng-loader==0.2.4
 filelock==3.19.1
 flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 frozenlist==1.7.0
-fsspec==2025.7.0
+fsspec==2025.9.0
 ftfy==6.3.1
 future==1.0.0
 hf-transfer==0.1.9
@@ -109,7 +109,7 @@ pywavelets==1.8.0
 pyyaml==6.0.2
 rdflib==7.1.4
 referencing==0.36.2
-regex==2025.7.34
+regex==2025.9.1
 requests==2.32.5
 rfc3986==1.5.0
 rich==14.1.0
@@ -138,15 +138,15 @@ sympy==1.13.1
 thinc==8.3.4
 threadpoolctl==3.6.0
 tifffile==2025.5.10
-tokenizers==0.21.4
+tokenizers==0.22.0
 tomli==2.2.1
 torch==2.6.0
 torchaudio==2.6.0
 torchvision==0.21.0
 tqdm==4.67.1
-transformers==4.55.4
+transformers==4.56.0
 triton==3.2.0
-typer==0.16.1
+typer==0.17.3
 typing-extensions==4.15.0
 typing-inspection==0.4.1
 uritemplate==4.2.0

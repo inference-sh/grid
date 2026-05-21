@@ -1,0 +1,20 @@
+namespace: ""
+name: extract
+description: Extracts clean, readable content, including text and images, from specified webpages, supporting batch processing for multiple URLs.
+metadata: {}
+category: text
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5cfbz9v85yjg2kp1bhag5.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5ceh7bb8pay9bgavxe5yq.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5cfezyvbrt7kqce988yft.jpeg
+env:
+    PYTHONPATH: /app
+kernel: python-3.10
+secrets:
+    - key: TVLY_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: any
+    ram: 4000000000

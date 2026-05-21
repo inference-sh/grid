@@ -217,16 +217,10 @@ class InfiniteTalkPipeline:
                                 f"{checkpoint_dir}/diffusion_pytorch_model-00006-of-00007.safetensors", 
                                 f"{checkpoint_dir}/diffusion_pytorch_model-00007-of-00007.safetensors",
                                 f"{infinitetalk_dir}"]
-                # Sequential loading of safetensor files
                 merged_state_dict = {}
                 for weight_file in weight_files:
-                    try:
-                        sd = load_file(weight_file)
-                        merged_state_dict.update(sd)
-                        logging.info(f"Loaded {os.path.basename(weight_file)}")
-                    except Exception as e:
-                        logging.error(f"Failed to load {weight_file}: {e}")
-                        raise
+                    sd = load_file(weight_file)
+                    merged_state_dict.update(sd)
                 self.model.load_state_dict(merged_state_dict)
                 
             else:
@@ -481,12 +475,11 @@ class InfiniteTalkPipeline:
             full_audio_emb = torch.load(audio_embedding_path)
             if torch.isnan(full_audio_emb).any():
                 continue
-            # Audio embedding should be longer than frame_num for windowed processing
             if full_audio_emb.shape[0] <= frame_num:
                 continue
             full_audio_embs.append(full_audio_emb) 
         
-        assert len(full_audio_embs) == HUMAN_NUMBER, f"Audio file not exists or length not satisfies frame nums. Expected {HUMAN_NUMBER} audio embeddings, got {len(full_audio_embs)}. Frame count required: {frame_num}"
+        assert len(full_audio_embs) == HUMAN_NUMBER, f"Aduio file not exists or length not satisfies frame nums."
 
         # preprocess text embedding
         if n_prompt == "":
@@ -562,16 +555,6 @@ class InfiniteTalkPipeline:
                 torch.repeat_interleave(msk[:, 0:1], repeats=4, dim=1), msk[:, 1:]
             ],
                             dim=1)
-            
-            # Ensure the second dimension is divisible by 4 for proper reshaping
-            current_frames = msk.shape[1]  # Should be 4 + (frame_num - 1) = frame_num + 3
-            target_frames = (current_frames + 3) // 4 * 4  # Round up to nearest multiple of 4
-            
-            if current_frames < target_frames:
-                # Pad with zeros to make divisible by 4
-                padding = torch.zeros(1, target_frames - current_frames, lat_h, lat_w, device=self.device)
-                msk = torch.concat([msk, padding], dim=1)
-            
             msk = msk.view(1, msk.shape[1] // 4, 4, lat_h, lat_w)
             msk = msk.transpose(1, 2).to(self.param_dtype) # B 4 T H W
 
@@ -595,12 +578,6 @@ class InfiniteTalkPipeline:
                 else:
                     latent_motion_frames = self.vae.encode(cond_frame)[0]
 
-                # Ensure mask and y tensors have matching dimensions before concatenation
-                if msk.shape[2] != y.shape[2]:  # T dimension mismatch
-                    min_frames = min(msk.shape[2], y.shape[2])
-                    msk = msk[:, :, :min_frames, :, :]
-                    y = y[:, :, :min_frames, :, :]
-                
                 y = torch.concat([msk, y], dim=1) # B 4+C T H W
                 torch_gc()
             

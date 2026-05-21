@@ -4,9 +4,9 @@ description: Read, send, draft, and organize Gmail messages
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp5qf9m5vnx338f118xmw.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppaya1j40f9kj43mkt9bx.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpnwwg32qe4a20v2qva2dd.jpeg
 env: {}
 kernel: python-3.11
 integrations:

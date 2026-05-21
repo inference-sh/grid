@@ -1,7 +1,8 @@
 namespace: infsh
 name: deepseek-ocr
 description: Extracts and converts text from documents, especially good at reading images, photos, handwriting, charts, and graphs.
-metadata: {}
+metadata:
+    checksum: 3faa0f5da2c1a0046bc1db33e8ac4bebc74fde5236acdb1cc28ea35235b0d444
 category: text
 images:
     card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png

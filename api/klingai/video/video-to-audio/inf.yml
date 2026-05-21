@@ -9,6 +9,10 @@ metadata:
         - sound-effects
         - video-editing
 category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/f48ol466.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/p5mdo9lv.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gy5ypfmw.jpg
 env: {}
 kernel: python-3.11
 secrets:

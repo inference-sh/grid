@@ -1,18 +1,22 @@
+namespace: infsh
 name: reddit-scanner
 description: Scan a subreddit for posts and comments, return cleaned CSV data
+metadata: {}
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gxcab12y.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/qx9atkns.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/b3ibx6uf.jpg
+env: {}
 kernel: python-3.11
-
-resources:
-  gpu:
-    count: 0
-    type: none
-  ram: 4
-
 secrets:
-  - key: REDDIT_CLIENT_ID
-    description: Reddit app client ID (from reddit.com/prefs/apps)
-    optional: false
-  - key: REDDIT_CLIENT_SECRET
-    description: Reddit app client secret
-    optional: false
+    - key: REDDIT_CLIENT_ID
+      description: Reddit app client ID (from reddit.com/prefs/apps)
+    - key: REDDIT_CLIENT_SECRET
+      description: Reddit app client secret
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

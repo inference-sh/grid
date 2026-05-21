@@ -4,14 +4,14 @@ description: ArcFace identity similarity — cosine similarity between face embe
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7m7b22asrk2fxnkj13qv.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7d2720p312aykr12kfhx.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7agpz8tdye4nq1enzpfn.jpeg
 env: {}
 kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 8
+        vram: 8000000000
         type: nvidia
-    ram: 8
+    ram: 8000000000

@@ -4,18 +4,17 @@ description: ElevenLabs Music - Generate studio-quality music from text prompts
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vtf4x83n1vx55v5966mt.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vxn99mhpsjfr2y0ee5jp.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vzz384fskzhp4h4k5xqm.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: ELEVENLABS_KEY
       description: ElevenLabs API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

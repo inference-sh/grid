@@ -9,6 +9,10 @@ metadata:
         - fashion
         - e-commerce
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jpmt0x80.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6tau3fh7.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/m53td2c3.jpg
 env: {}
 kernel: python-3.11
 secrets:

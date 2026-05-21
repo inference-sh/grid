@@ -1,21 +1,20 @@
 namespace: bria
 name: blur-background
-description: Automatically detect and blur the background while keeping the foreground sharp. Creates a depth-of-field / bokeh effect. No mask needed — foreground detection is automatic.
+description: Automatically detect and blur image background while keeping foreground sharp
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/lyawekie.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/qvo3lyq3.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/svqlty82.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

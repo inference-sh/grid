@@ -7,6 +7,7 @@ metadata:
         - images
         - files
         - tools
+    checksum: b2f9ff4c1d3ede5c569e9313ff4fa49514da8ade1fefe8eb485eb7c63817d410
 category: chat
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfx4z5af6najtzj0cmzf01.jpeg
@@ -20,5 +21,5 @@ resources:
     gpu:
         count: 0
         vram: 0
-        type: none
+        type: ""
     ram: 0

@@ -165,7 +165,7 @@
         }
       ],
       "default": "en",
-      "description": "Language for prompt optimization (English or Chinese).",
+      "description": "Language for prompt optimization ('en' for English or 'zh' for Chinese).",
       "title": "Language"
     },
     "cache_threshold": {

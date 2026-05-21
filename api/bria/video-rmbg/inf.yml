@@ -1,21 +1,20 @@
 namespace: bria
 name: video-rmbg
-description: Remove the background from a video, producing a transparent or solid-color background. Use before video-replace-background to swap in a new background, or video-green-screen for chroma keying. Supports multiple output codecs including alpha-capable formats.
+description: Remove background from videos with optional color replacement
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/n3zpcqd4.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/v1odopws.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/wt5ain37.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

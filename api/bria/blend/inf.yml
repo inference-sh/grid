@@ -1,21 +1,20 @@
 namespace: bria
 name: blend
-description: Merge objects, apply textures, or rearrange items within an image using natural language instructions. Use to composite elements together seamlessly — e.g. "place the art on the shirt" or "apply the texture to the wall".
+description: Seamlessly blend a foreground image onto a background image
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cpec2i07.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/srhtanmy.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/m82lux7c.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

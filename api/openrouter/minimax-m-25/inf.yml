@@ -6,6 +6,7 @@ metadata:
         - reasoning
         - image
         - file
+    checksum: 40189438c4e64eded81b7fe4b70ba586cb7bb60c297b3eab0600684696fe46c0
 category: chat
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgt7ra5hjxvyp34e4sphfcp.jpeg

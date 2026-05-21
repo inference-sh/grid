@@ -1,21 +1,20 @@
 namespace: bria
 name: enhance
-description: Upscale an image with AI-enhanced detail, sharpening textures and enriching quality at 2x resolution. For pure upscaling without detail changes, use increase-resolution instead. Good as a final step after editing or generation.
+description: Enhance image quality with up to 2x resolution increase and added detail
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2zh5m5x3.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jrr4id7y.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2pljk1ar.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

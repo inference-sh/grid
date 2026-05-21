@@ -1,0 +1,126 @@
+{
+  "description": "Input for video translation.",
+  "properties": {
+    "video": {
+      "description": "Source video to translate. Must be a publicly accessible URL.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "output_language": {
+      "description": "Target language for translation (e.g., 'Spanish (Spain)', 'Chinese (Mandarin, Simplified)', 'French').",
+      "examples": [
+        "Spanish (Spain)",
+        "Japanese",
+        "German"
+      ],
+      "title": "Output Language",
+      "type": "string"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Title for the translation job.",
+      "title": "Title"
+    },
+    "input_language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source language. Auto-detected if not set.",
+      "title": "Input Language"
+    },
+    "mode": {
+      "default": "speed",
+      "description": "Translation mode. 'speed' is faster, 'precision' is higher quality.",
+      "enum": [
+        "speed",
+        "precision"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "translate_audio_only": {
+      "default": false,
+      "description": "Only translate the audio track, keep original video frames.",
+      "title": "Translate Audio Only",
+      "type": "boolean"
+    },
+    "speaker_num": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Number of speakers in the video for improved separation.",
+      "title": "Speaker Num"
+    },
+    "enable_caption": {
+      "default": false,
+      "description": "Generate captions for the translated video.",
+      "title": "Enable Caption",
+      "type": "boolean"
+    },
+    "enable_dynamic_duration": {
+      "default": true,
+      "description": "Allow dynamic duration adjustment for natural pacing.",
+      "title": "Enable Dynamic Duration",
+      "type": "boolean"
+    },
+    "disable_music_track": {
+      "default": false,
+      "description": "Remove background music from the output.",
+      "title": "Disable Music Track",
+      "type": "boolean"
+    },
+    "start_time": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start time in seconds for partial translation.",
+      "title": "Start Time"
+    },
+    "end_time": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End time in seconds for partial translation.",
+      "title": "End Time"
+    }
+  },
+  "required": [
+    "video",
+    "output_language"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

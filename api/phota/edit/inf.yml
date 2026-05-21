@@ -4,18 +4,17 @@ description: Edit images with text prompts while preserving identity of known su
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2g09dpe3akt95rwdhrvn.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2j7jrx3q7pge8dq5nsmq.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2h32n0pw4m3e50jdxrdr.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: PHOTA_KEY
       description: Phota API key from platform.photalabs.com
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

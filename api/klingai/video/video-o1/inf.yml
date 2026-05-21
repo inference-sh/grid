@@ -11,6 +11,10 @@ metadata:
         - video-editing
         - omni
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/vl87y0gb.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dd0g44t0.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2qln96zi.jpg
 env: {}
 kernel: python-3.11
 secrets:

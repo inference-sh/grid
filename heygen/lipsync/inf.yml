@@ -1,0 +1,28 @@
+namespace: ""
+name: lipsync
+description: Re-sync video lip movements to new audio using HeyGen's lipsync technology. Supports speed and precision modes with optional captioning.
+metadata:
+    checksum: 69391f4c35acdd055af318ac67138d5544d1653a2bca54362e3ebf2d5ed1afca
+    provider: heygen
+    tags:
+        - lipsync
+        - lip-sync
+        - audio-sync
+        - video-editing
+        - heygen
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/833syvas.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/do8p8uwh.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/n4wssbn8.jpg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

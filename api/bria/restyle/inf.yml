@@ -1,21 +1,20 @@
 namespace: bria
 name: restyle
-description: Transform the artistic style of an image using a preset (e.g. oil_painting, anime) or custom text description. Preserves composition while changing the visual aesthetic.
+description: Restyle an image using a text description of the desired visual style
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/id08ri5g.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/xac5tgav.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tz6febrn.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

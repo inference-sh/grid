@@ -1,21 +1,20 @@
 namespace: bria
 name: erase-foreground
-description: Erase the foreground object and reconstruct the background behind it. The inverse of crop-foreground — this keeps the scene and removes the subject. Useful for extracting clean backgrounds from photos.
+description: Erase the foreground object from an image while preserving the background
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/p6ziiajd.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/z609k3ms.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/6q2zto3m.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

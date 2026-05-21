@@ -40,8 +40,6 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
 
     logger.info(f"POST {url}")
     resp = await client.post(url, json=payload)
-    if resp.status_code >= 400:
-        logger.error(f"Bria API {resp.status_code}: {resp.text}")
     resp.raise_for_status()
     data = resp.json()
 
@@ -63,7 +61,7 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
         status = poll_data.get("status", "")
 
         if status == "COMPLETED":
-            logger.info(f"Request {request_id} completed in {elapsed:.1f}s: {list(poll_data.keys())}")
+            logger.info(f"Request {request_id} completed in {elapsed:.1f}s")
             return poll_data
         elif status in ("ERROR", "UNKNOWN"):
             error = poll_data.get("error", {})
@@ -74,33 +72,19 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
     raise TimeoutError(f"Bria request {request_id} timed out after {MAX_POLL_TIME}s")
 
 
-def get_result_url(data: dict) -> str:
-    """Extract result URL from v1 or v2 response shape."""
-    if "result_url" in data:
-        val = data["result_url"]
-        return val[0] if isinstance(val, list) else val
-    if "result" in data and isinstance(data["result"], dict):
-        return data["result"].get("image_url") or data["result"].get("video_url")
-    if "result" in data and isinstance(data["result"], list):
-        return data["result"][0]
-    return data.get("image_url") or data.get("video_url", "")
-
-
 async def download_image(client: httpx.AsyncClient, image_url: str, suffix: str = ".png") -> str:
     """Download result image to a temp file, return the path."""
-    async with httpx.AsyncClient(timeout=120) as dl:
-        resp = await dl.get(image_url)
-        resp.raise_for_status()
-        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
-            f.write(resp.content)
-            return f.name
+    resp = await client.get(image_url)
+    resp.raise_for_status()
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
+        f.write(resp.content)
+        return f.name
 
 
 async def download_video(client: httpx.AsyncClient, video_url: str, suffix: str = ".mp4") -> str:
     """Download result video to a temp file, return the path."""
-    async with httpx.AsyncClient(timeout=120) as dl:
-        resp = await dl.get(video_url)
-        resp.raise_for_status()
-        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
-            f.write(resp.content)
-            return f.name
+    resp = await client.get(video_url)
+    resp.raise_for_status()
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
+        f.write(resp.content)
+        return f.name

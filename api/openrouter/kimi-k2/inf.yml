@@ -4,6 +4,7 @@ description: Kimi K2 is the latest, most capable version of open-source model fr
 metadata:
     capabilities:
         - reasoning
+    checksum: 46211a7c604fab02688bf4a355e88892a139cb9619af1898da21aa39eaee7fd4
 category: chat
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfs6p8kdf03b1xrtz8f37e.jpeg
@@ -17,5 +18,5 @@ resources:
     gpu:
         count: 0
         vram: 0
-        type: none
+        type: ""
     ram: 0

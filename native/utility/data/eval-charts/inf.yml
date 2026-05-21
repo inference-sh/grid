@@ -4,9 +4,9 @@ description: Research-quality chart generation (bar, grouped bar, scatter) using
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttgqtpw70yejbfgq6aw51y.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtth17gynxyvag2xfat2vby.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttgpj1v6ts030ps54bbazb.jpeg
 env: {}
 kernel: python-3.11
 resources:
@@ -14,4 +14,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

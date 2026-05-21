@@ -4,18 +4,17 @@ description: ElevenLabs Voice Changer - Transform voice in audio to a different 
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vjyanqf9b99hre8a597v.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vh8kbhtjwreebwxj13ym.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vq119mbkr7v2kb24f04v.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: ELEVENLABS_KEY
       description: ElevenLabs API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

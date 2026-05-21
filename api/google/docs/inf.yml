@@ -4,9 +4,9 @@ description: Read, create, and edit Google Docs documents
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprgsqk34yf8zcewq6wpbk.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprjmtswqnpm611pa9m1n1.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprhsdmy0a5w5hvjnp2490.jpeg
 env: {}
 kernel: python-3.11
 integrations:

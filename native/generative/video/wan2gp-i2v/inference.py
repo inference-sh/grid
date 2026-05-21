@@ -435,3 +435,10 @@ class App(BaseApp):
 
         return AppOutput(video=File(path=latest_file_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        # Free up GPU memory
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+

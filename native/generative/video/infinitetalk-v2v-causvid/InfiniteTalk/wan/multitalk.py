@@ -217,16 +217,10 @@ class InfiniteTalkPipeline:
                                 f"{checkpoint_dir}/diffusion_pytorch_model-00006-of-00007.safetensors", 
                                 f"{checkpoint_dir}/diffusion_pytorch_model-00007-of-00007.safetensors",
                                 f"{infinitetalk_dir}"]
-                # Sequential loading of safetensor files
                 merged_state_dict = {}
                 for weight_file in weight_files:
-                    try:
-                        sd = load_file(weight_file)
-                        merged_state_dict.update(sd)
-                        logging.info(f"Loaded {os.path.basename(weight_file)}")
-                    except Exception as e:
-                        logging.error(f"Failed to load {weight_file}: {e}")
-                        raise
+                    sd = load_file(weight_file)
+                    merged_state_dict.update(sd)
                 self.model.load_state_dict(merged_state_dict)
                 
             else:
@@ -481,7 +475,6 @@ class InfiniteTalkPipeline:
             full_audio_emb = torch.load(audio_embedding_path)
             if torch.isnan(full_audio_emb).any():
                 continue
-            # Audio embedding should be longer than frame_num for windowed processing
             if full_audio_emb.shape[0] <= frame_num:
                 continue
             full_audio_embs.append(full_audio_emb) 

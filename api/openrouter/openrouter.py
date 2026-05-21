@@ -109,13 +109,13 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
     reasoning_max_tokens = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_exclude = getattr(input_data, "reasoning_exclude", False)
 
-    if reasoning_effort == "none" and not reasoning_max_tokens:
-        return None
-
     reasoning_config = {"exclude": reasoning_exclude}
-    if reasoning_max_tokens is not None and reasoning_max_tokens > 0:
+
+    if reasoning_effort == "none":
+        reasoning_config["effort"] = "none"
+    elif reasoning_max_tokens is not None and reasoning_max_tokens > 0:
         reasoning_config["max_tokens"] = reasoning_max_tokens
-    elif reasoning_effort and reasoning_effort != "none":
+    elif reasoning_effort:
         reasoning_config["effort"] = reasoning_effort
     else:
         return None
@@ -354,8 +354,7 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
 
     cost_usd = state.get("cost_usd")
     if gen_extra or cost_usd is not None:
-        # RawMeta.cost is in dollar cents (e.g. $0.05 = 5.0 cents)
-        cost_cents = (cost_usd * 100) if cost_usd else 0
+        cost_cents = (cost_usd * 100) if cost_usd is not None else 0
         inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
 
     if inputs or outputs:

@@ -4,18 +4,17 @@ description: ElevenLabs Speech to Text (Scribe) - High-accuracy transcription wi
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vszvkpz35ewa6mreeye0.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vmh2advfck30n4vx67w4.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vj071vvf9nvbd35bkgss.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: ELEVENLABS_KEY
       description: ElevenLabs API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

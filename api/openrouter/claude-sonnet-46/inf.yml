@@ -5,11 +5,12 @@ metadata:
     capabilities:
         - reasoning
         - image
+    checksum: 33e866fc902d5b743fbb54f7ddd8c91c2d0b2e88ef4adf5be86194041a7a4e0b
 category: chat
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/x6n72d3k.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kif1v23q.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/0rp4w9qt.jpg
 env: {}
 kernel: ""
 secrets:
@@ -18,5 +19,5 @@ resources:
     gpu:
         count: 0
         vram: 0
-        type: none
+        type: ""
     ram: 0

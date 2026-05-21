@@ -10,9 +10,9 @@ metadata:
         - xai
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmk3m97fm0t4mqx9q4a69ynn.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmk3mb4epr11qwcjx2sxqcvn.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmk3mf6k860z7v3nc70p472k.jpeg
 env: {}
 kernel: python-3.11
 secrets:

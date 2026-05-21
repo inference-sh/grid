@@ -364,3 +364,9 @@ class App(BaseApp):
                 else:
                     # Pure image generation
                     yield AppOutput(image=output_image_file)
+
+    async def unload(self):
+        """Clean up resources."""
+        if hasattr(self, 'inferencer'):
+            del self.inferencer
+        torch.cuda.empty_cache()

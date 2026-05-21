@@ -74,3 +74,7 @@ class App(BaseApp):
         
         return AppOutput(result=File(path=output_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        # No cleanup needed for this model
+        pass

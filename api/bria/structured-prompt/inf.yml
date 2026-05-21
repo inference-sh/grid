@@ -1,21 +1,20 @@
 namespace: bria
 name: structured-prompt
-description: Analyze an image and generate a structured prompt JSON describing its composition, objects, lighting, and aesthetics. Use the output as a structured prompt input to generate or generate-lite for controlled image generation.
+description: Generate structured prompt JSON from text or images using Bria
 metadata: {}
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/y3ij50h3.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ivethukx.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kbesek6b.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

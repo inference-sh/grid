@@ -11,6 +11,10 @@ metadata:
         - turbo
         - fast
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u4xfqot2.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/zmnqlw0i.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tx4u962y.jpg
 env: {}
 kernel: python-3.11
 secrets:

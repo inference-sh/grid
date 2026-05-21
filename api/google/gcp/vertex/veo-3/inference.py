@@ -20,12 +20,12 @@ from .vertex_helper import (
 
 
 class AppSetup(BaseAppSetup):
-    """Setup configuration for Veo 3."""
+    """Setup configuration for Veo 3.1."""
     pass
 
 
 class RunInput(BaseModel):
-    """Input for video generation with Veo 3."""
+    """Input for video generation with Veo 3.1."""
     prompt: str = Field(
         description="Text prompt describing the desired video content."
     )
@@ -41,14 +41,18 @@ class RunInput(BaseModel):
         None,
         description="Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds."
     )
+    reference_images: Optional[List[File]] = Field(
+        None,
+        description="Optional reference asset images to guide video content (preview). Style reference images are not supported."
+    )
     aspect_ratio: VideoAspectRatioEnum = Field(
         default=VideoAspectRatioEnum.ratio_16_9,
         description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
     )
     duration: int = Field(
         default=8,
-        description="Video duration in seconds.",
-        ge=5,
+        description="Video duration in seconds (4, 6, or 8). Reference image to video only supports 8.",
+        ge=4,
         le=8
     )
     resolution: VideoResolutionEnum = Field(
@@ -63,7 +67,7 @@ class RunInput(BaseModel):
         default=1,
         description="Number of videos to generate.",
         ge=1,
-        le=2
+        le=4
     )
     person_generation: PersonGenerationEnum = Field(
         default=PersonGenerationEnum.allow_adult,
@@ -74,23 +78,20 @@ class RunInput(BaseModel):
 class RunOutput(BaseAppOutput):
     """Output containing generated videos."""
     videos: List[File] = Field(description="The generated video files")
-    warning: str = Field(default="DEPRECATED: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).", description="Deprecation warning")
 
 
 class App(BaseApp):
     async def setup(self, config: AppSetup):
         """Initialize model configuration."""
         self.logger = setup_logger(__name__)
-        self.model_id = "veo-3.0-generate-001"
+        self.model_id = "veo-3.1-generate-001"
         self.location = "us-central1"
         self.access_token, self.project = get_vertex_credentials()
-        self.logger.info("Veo 3 (Vertex AI) initialized successfully")
-        self.logger.warning("DEPRECATION: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
+        self.logger.info("Veo 3.1 (Vertex AI) initialized successfully")
 
     async def run(self, input_data: RunInput) -> RunOutput:
-        """Generate video using Veo 3 model via Vertex AI."""
+        """Generate video using Veo 3.1 model via Vertex AI."""
         try:
-            self.logger.warning("DEPRECATION: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).")
             self.logger.info(f"Starting video generation with prompt: {input_data.prompt[:100]}...")
 
             aspect_ratio = input_data.aspect_ratio.value
@@ -202,9 +203,19 @@ class App(BaseApp):
                 output_videos.append(File(path=video_path))
 
                 if aspect_ratio == "16:9":
-                    width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
+                    if input_data.resolution.value == "4k":
+                        width, height = 3840, 2160
+                    elif input_data.resolution.value == "1080p":
+                        width, height = 1920, 1080
+                    else:
+                        width, height = 1280, 720
                 else:
-                    width, height = (1080, 1920) if input_data.resolution.value == "1080p" else (720, 1280)
+                    if input_data.resolution.value == "4k":
+                        width, height = 2160, 3840
+                    elif input_data.resolution.value == "1080p":
+                        width, height = 1080, 1920
+                    else:
+                        width, height = 720, 1280
 
                 output_meta_videos.append(VideoMeta(width=width, height=height, seconds=input_data.duration, resolution=input_data.resolution.value, extra={"generate_audio": input_data.generate_audio}))
 

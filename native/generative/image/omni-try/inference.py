@@ -228,3 +228,10 @@ class App(BaseApp):
         output.save(output_path)
         
         return AppOutput(image_output=File(path=output_path))
+
+    async def unload(self):
+        """Clean up resources."""
+        self.pipeline = None
+        self.transformer = None
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()

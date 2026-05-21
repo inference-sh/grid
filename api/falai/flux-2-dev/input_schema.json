@@ -1,79 +1,107 @@
 {
   "$defs": {
     "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
             },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
+            {
+              "type": "null"
             }
-          },
-          "title": "File",
-          "type": "object"
+          ],
+          "default": null,
+          "title": "Uri"
         },
-        {
-          "type": "string"
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
         }
-      ]
+      },
+      "title": "File",
+      "type": "object"
+    },
+    "LoraConfig": {
+      "properties": {
+        "adapter_name": {
+          "description": "Name for the LoRA adapter.",
+          "title": "Adapter Name",
+          "type": "string"
+        },
+        "lora_url": {
+          "description": "URL to LoRA file (.safetensors) or Civitai model page",
+          "title": "Lora Url",
+          "type": "string"
+        },
+        "lora_multiplier": {
+          "default": 1.0,
+          "description": "Multiplier for the LoRA effect",
+          "title": "Lora Multiplier",
+          "type": "number"
+        }
+      },
+      "required": [
+        "adapter_name",
+        "lora_url"
+      ],
+      "title": "LoraConfig",
+      "type": "object"
+    },
+    "SchedulerEnum": {
+      "enum": [
+        "normal",
+        "karras",
+        "exponential",
+        "beta"
+      ],
+      "title": "SchedulerEnum",
+      "type": "string"
     }
   },
   "properties": {
@@ -119,7 +147,7 @@
         }
       ],
       "default": null,
-      "description": "List of reference images to use for generation (enables edit mode).",
+      "description": "List of reference images to use for generation.",
       "title": "Reference Images"
     },
     "seed": {
@@ -134,6 +162,35 @@
       "default": null,
       "description": "The seed for random generation.",
       "title": "Seed"
+    },
+    "loras": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LoraConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "List of LoRA configs to apply",
+      "title": "Loras"
+    },
+    "scheduler": {
+      "$ref": "#/$defs/SchedulerEnum",
+      "default": "normal",
+      "description": "Scheduler to use for diffusion process."
+    },
+    "denoise": {
+      "default": 1.0,
+      "description": "Denoising strength (0.0 to 1.0, where 1.0 is standard full denoising)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Denoise",
+      "type": "number"
     }
   },
   "required": [

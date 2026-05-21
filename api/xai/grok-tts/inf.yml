@@ -11,9 +11,9 @@ metadata:
         - xai
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkyhw54w5pyab1tbs9gec41c.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkyhw648qn70wkcbnd0cxdzd.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkyhvv9m4vhftc1mhv7h1me2.jpeg
 env: {}
 kernel: python-3.11
 secrets:

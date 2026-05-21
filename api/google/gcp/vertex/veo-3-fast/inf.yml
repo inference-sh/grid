@@ -1,12 +1,12 @@
 namespace: google
-name: veo-3-fast
-description: Veo 3 Fast via Vertex AI - Fast video generation with audio from text prompts and images
+name: veo-3-1-fast
+description: Veo 3.1 Fast via Vertex AI - Generate videos from text prompts or images with optional audio
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2jm472kky7mztqwsjaw7q9.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2jm9zy877avvkkps3bbzn2.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2jm335bacnmh692f8h59rg.jpeg
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0n8f3j4jymp92mxw71hs.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0n4rhv13bdszc2mkjst0.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0egyg243mnyth4y6g51q.jpeg
 env: {}
 kernel: python-3.11
 secrets:

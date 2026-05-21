@@ -4,9 +4,9 @@ description: Generate talking head videos from a portrait image with text or aud
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gdspv1l4.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lauxo5ke.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/fi8v0kze.jpg
 env: {}
 kernel: python-3.11
 secrets:

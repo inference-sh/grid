@@ -4,9 +4,9 @@ description: Create, read, update, and delete Google Calendar events
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpnyge60xwf12cv43x1ved.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprc0zy5j948c34k3gfq5m.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp6rdskyfpm2d3pd2jrsc.jpeg
 env: {}
 kernel: python-3.11
 integrations:

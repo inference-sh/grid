@@ -1,0 +1,4 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+google-auth
+google-api-python-client

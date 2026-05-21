@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "File": {
+      "description": "A class representing a file in the inference.sh ecosystem.",
+      "properties": {
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        }
+      },
+      "title": "File",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for single image driven mode"
+    },
+    "video": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input video for video dubbing mode"
+    },
+    "prompt": {
+      "description": "Text prompt describing the desired video",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "default": "bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+      "description": "Negative prompt",
+      "title": "Negative Prompt",
+      "type": "string"
+    },
+    "task_mode": {
+      "default": "VideoDubbing",
+      "description": "Task mode",
+      "enum": [
+        "SingleImageDriven",
+        "VideoDubbing"
+      ],
+      "title": "Task Mode",
+      "type": "string"
+    },
+    "audio_mode": {
+      "default": "Single Person(Local File)",
+      "description": "Audio mode",
+      "enum": [
+        "Single Person(Local File)",
+        "Single Person(TTS)",
+        "Multi Person(Local File, audio add)",
+        "Multi Person(Local File, audio parallel)",
+        "Multi Person(TTS)"
+      ],
+      "title": "Audio Mode",
+      "type": "string"
+    },
+    "audio_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for speaker 1"
+    },
+    "audio_2": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/File"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file for speaker 2"
+    },
+    "tts_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text for TTS generation",
+      "title": "Tts Text"
+    },
+    "resolution": {
+      "default": "infinitetalk-480",
+      "description": "Output resolution",
+      "enum": [
+        "infinitetalk-480",
+        "infinitetalk-720"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "sampling_steps": {
+      "default": 8,
+      "description": "Number of sampling steps",
+      "title": "Sampling Steps",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 42,
+      "description": "Random seed",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "text_guide_scale": {
+      "default": 1.0,
+      "description": "Text guidance scale",
+      "title": "Text Guide Scale",
+      "type": "number"
+    },
+    "audio_guide_scale": {
+      "default": 2.0,
+      "description": "Audio guidance scale",
+      "title": "Audio Guide Scale",
+      "type": "number"
+    },
+    "human1_voice": {
+      "default": "weights/Kokoro-82M/voices/am_adam.pt",
+      "description": "Voice file for person 1",
+      "title": "Human1 Voice",
+      "type": "string"
+    },
+    "human2_voice": {
+      "default": "weights/Kokoro-82M/voices/af_heart.pt",
+      "description": "Voice file for person 2",
+      "title": "Human2 Voice",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

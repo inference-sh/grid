@@ -10,6 +10,10 @@ metadata:
         - face-reference
         - character-consistency
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9tkhtkjv.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/djiplhqx.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/kct160eo.jpg
 env: {}
 kernel: python-3.11
 secrets:

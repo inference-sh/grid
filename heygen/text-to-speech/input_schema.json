@@ -1,0 +1,68 @@
+{
+  "description": "Input for text-to-speech.",
+  "properties": {
+    "text": {
+      "description": "Text to convert to speech (1-5000 characters).",
+      "examples": [
+        "Hello! Welcome to our platform. We're excited to have you here."
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "voice_id": {
+      "description": "Voice ID to use. Must support the Starfish engine.",
+      "title": "Voice Id",
+      "type": "string"
+    },
+    "input_type": {
+      "default": "text",
+      "description": "Input format: 'text' for plain text, 'ssml' for SSML markup.",
+      "enum": [
+        "text",
+        "ssml"
+      ],
+      "title": "Input Type",
+      "type": "string"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speech speed multiplier (0.5-2.0).",
+      "maximum": 2.0,
+      "minimum": 0.5,
+      "title": "Speed",
+      "type": "number"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO language code (e.g., 'en', 'es', 'pt').",
+      "title": "Language"
+    },
+    "locale": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "BCP-47 locale (e.g., 'en-US', 'pt-BR').",
+      "title": "Locale"
+    }
+  },
+  "required": [
+    "text",
+    "voice_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

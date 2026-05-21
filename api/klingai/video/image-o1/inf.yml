@@ -10,6 +10,10 @@ metadata:
         - omni
         - element-control
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/dbvxt1lp.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/yiwv4ke4.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/wg4ddgks.jpg
 env: {}
 kernel: python-3.11
 secrets:

@@ -1,0 +1,23 @@
+namespace: ""
+name: claude-opus-45
+description: Claude Opus 4.5 — Legacy Opus model. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    checksum: c1424ce78872a8a8d95fd73f352586514240be5143216c5bacaacb6fbea619a9
+category: chat
+images:
+    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

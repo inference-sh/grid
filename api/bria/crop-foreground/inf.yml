@@ -1,21 +1,20 @@
 namespace: bria
 name: crop-foreground
-description: Automatically detect and tightly crop the foreground object from an image. The inverse of erase-foreground — this keeps the subject and discards the background.
+description: Automatically detect and crop the foreground object from an image
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/8wz4ry1m.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6svrk7ef.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/72xd01qg.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

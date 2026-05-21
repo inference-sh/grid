@@ -1,21 +1,20 @@
 namespace: bria
 name: ads-generate
-description: Generate multiple ad creatives in various sizes from Bria templates. Supports brand assets, smart image embedding with AI backgrounds, and customizable text/image elements. Outputs include editor iframe URLs for further refinement.
+description: Generate multiple ads in various sizes from templates and brand assets
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/esnypebg.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wi6c3abv.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q39lltdf.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

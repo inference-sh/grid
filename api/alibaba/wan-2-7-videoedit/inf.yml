@@ -4,9 +4,9 @@ description: Wan 2.7 Video Edit performs instruction-based video editing and sty
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/qgvqoe2o.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/ui2p111o.jpeg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/zdtp6ejb.jpeg
 env: {}
 kernel: python-3.11
 secrets:

@@ -4,14 +4,14 @@ description: CLIPScore — cosine similarity between CLIP text and image embeddi
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttbc56w1nee3yebtn2t429.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttbg3br8q1ybx0xswzxy4f.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttb95nk91707jpgjezrqpm.jpeg
 env: {}
 kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 8
+        vram: 8000000000
         type: nvidia
-    ram: 16
+    ram: 16000000000

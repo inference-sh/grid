@@ -4,18 +4,17 @@ description: Inworld Speech to Text - Multi-provider speech transcription with w
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/r9nisr0n.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/fra27qib.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/l3aemntv.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: INWORLD_KEY
       description: Inworld API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

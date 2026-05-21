@@ -1,0 +1,24 @@
+namespace: ""
+name: veo-3-1-fast
+description: Veo 3.1 Fast via Vertex AI - Generate videos from text prompts or images with optional audio
+metadata: {}
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0n8f3j4jymp92mxw71hs.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0n4rhv13bdszc2mkjst0.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c0egyg243mnyth4y6g51q.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: GCP_VIDEO_OUTPUT_BUCKET
+      description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
+      optional: true
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Veo, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,21 +1,20 @@
 namespace: bria
 name: video-replace-background
-description: Replace a video's background with a static image or another video (up to 60s, 16K). Provide the foreground video and a background URL — no need to run video-rmbg first, background removal is automatic.
+description: Replace video background with an image or another video
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/kpbdi4pj.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/mw3wvuo7.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gkn83kao.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

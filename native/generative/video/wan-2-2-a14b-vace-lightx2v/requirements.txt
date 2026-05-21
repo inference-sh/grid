@@ -18,3 +18,9 @@ opencv-python>=4.8.0
 # Utilities
 numpy>=1.23.5,<2
 einops>=0.6.0
+
+# Fast downloads
+hf_transfer
+peft
+gguf
+ftfy

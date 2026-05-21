@@ -10,6 +10,10 @@ metadata:
         - restyle
         - 2k
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9pfr47o2.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tdh2qow7.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/sx1mshj4.jpg
 env: {}
 kernel: python-3.11
 secrets:

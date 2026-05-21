@@ -4,6 +4,7 @@ description: A powerful open-source thinking agent that excels at complex, multi
 metadata:
     capabilities:
         - reasoning
+    checksum: 85d464a97b1e84415e20627dc8fb023df4d46f0a03b8abd57e77119b0a928539
 category: chat
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvftb49mpt4h6zvwc3sapcy.jpeg
@@ -17,5 +18,5 @@ resources:
     gpu:
         count: 0
         vram: 0
-        type: none
+        type: ""
     ram: 0

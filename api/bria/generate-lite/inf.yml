@@ -1,21 +1,20 @@
 namespace: bria
 name: generate-lite
-description: Low-latency image generation using Bria's lightweight Fibo Lite model. Faster than generate but lower quality — good for previews and iterations. Output can be refined with enhance or any editing app.
+description: Fast image generation from text prompts using Bria Fibo Lite
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/plw02yep.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pa7fxdjv.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/rhvmocni.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

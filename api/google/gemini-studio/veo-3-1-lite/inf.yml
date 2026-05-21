@@ -4,9 +4,9 @@ description: Veo 3.1 Lite via Gemini API - Lightweight video generation with tex
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kn2yzbmvrj5h0dnsj8mh6m55.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kn2yzct219tp9npqsvpf3cjx.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kn2yzfnk0g9brk8gs89nd1an.jpeg
 env: {}
 kernel: python-3.11
 secrets:

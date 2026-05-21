@@ -1,6 +1,6 @@
 namespace: bytedance
-name: seedance-1-0-lite
-description: Lightweight 720p video generation. Automatically uses image-to-video mode when an image is provided, or text-to-video mode otherwise.
+name: seedance-1-0-pro-fast
+description: Fast high-quality video generation up to 1080p from text prompts with optional first-frame image control using ByteDance's Seedance 1.0 Pro Fast model.
 metadata:
     provider: bytedance
     tags:
@@ -8,15 +8,15 @@ metadata:
         - video-generation
         - text-to-video
         - image-to-video
-        - lite
-        - 720p
+        - 1080p
+        - fast
         - bytedance
         - byteplus
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzrqxdd5qhc636qpxk1pne.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzrw6g9dr4ckghyvsh81e8.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzzr85d6wyjsa974s73egb6.png
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznv8efhhws18462kf7prk.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznfqdk7cveeneqnxyr28s.png
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznf2vsbq8nyfmpxerje5w.png
 env: {}
 kernel: python-3.11
 secrets:

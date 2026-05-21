@@ -9,6 +9,10 @@ metadata:
         - image-generation
         - text-to-image
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/ab2p6rpu.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/f2x4h88o.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/zd5ougvu.jpg
 env: {}
 kernel: python-3.11
 secrets:

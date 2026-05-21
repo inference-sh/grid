@@ -4,9 +4,9 @@ description: Quickly converts existing videos into new ones with high quality, o
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/7nhme3u5.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/1vzpgpwt.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/h4fngoy0.jpg
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache

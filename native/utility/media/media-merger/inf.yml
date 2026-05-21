@@ -1,6 +1,6 @@
 namespace: infsh
 name: media-merger
-description: Merges multiple videos and images together using customized transitions.
+description: Merge, concatenate, and stitch multiple videos and images into a single video with customizable transitions. Supports common formats  (mp4, mov, webm, png, jpg), custom frame rates, and transition effects between clips. Built on FFmpeg
 metadata: {}
 category: video
 images:

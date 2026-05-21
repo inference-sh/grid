@@ -4,9 +4,9 @@ description: Crop and resize images — center crop to square, face-aware crop, 
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk80e4y1vys6jtmn228f3h.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk850hrfmmyfpejst8f7b8.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk84m30xa481b7sewgj492.jpeg
 env: {}
 kernel: python-3.11
 resources:
@@ -14,4 +14,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

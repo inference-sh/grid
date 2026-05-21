@@ -1,21 +1,21 @@
 namespace: bria
 name: rmbg
 description: Remove the background from an image, producing a transparent cutout. The general-purpose background removal — for product-specific cutouts, use product-cutout instead. Output can be passed to replace-background, blur-background, or any editing app.
-metadata: {}
+metadata:
+    checksum: 94593757f7ca641d18616fc197f3a3b01c18d5e5ba75b72664a7bd2ee2cc204c
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/nbwpva7t.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kz0n5yne.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/d5u0pcam.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

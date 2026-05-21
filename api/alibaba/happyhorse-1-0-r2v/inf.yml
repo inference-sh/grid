@@ -4,9 +4,9 @@ description: HappyHorse 1.0 Reference-to-Video generates videos preserving subje
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ktbenkc4.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fq0jypcb.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3c4y3pit.jpg
 env: {}
 kernel: python-3.11
 secrets:

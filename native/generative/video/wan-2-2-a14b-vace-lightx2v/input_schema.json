@@ -77,20 +77,12 @@
     }
   },
   "properties": {
-    "first_frame": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/File"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Optional first frame image for image-to-video generation"
+    "video": {
+      "$ref": "#/$defs/File",
+      "description": "Input video file to be processed and transformed"
     },
     "prompt": {
-      "description": "Text prompt describing the desired video content",
+      "description": "Text prompt describing the desired video transformation",
       "title": "Prompt",
       "type": "string"
     },
@@ -123,24 +115,6 @@
       "description": "Negative prompt to avoid unwanted content",
       "title": "Negative Prompt"
     },
-    "height": {
-      "default": 480,
-      "description": "Output video height in pixels",
-      "title": "Height",
-      "type": "integer"
-    },
-    "width": {
-      "default": 832,
-      "description": "Output video width in pixels",
-      "title": "Width",
-      "type": "integer"
-    },
-    "num_frames": {
-      "default": 45,
-      "description": "Number of frames in output video",
-      "title": "Num Frames",
-      "type": "integer"
-    },
     "num_inference_steps": {
       "default": 8,
       "description": "Number of inference steps (6-10 recommended)",
@@ -148,6 +122,14 @@
       "minimum": 6,
       "title": "Num Inference Steps",
       "type": "integer"
+    },
+    "boundary_ratio": {
+      "default": 0.875,
+      "description": "Boundary ratio between high and low noise transformers (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Boundary Ratio",
+      "type": "number"
     },
     "seed": {
       "default": 42,
@@ -157,6 +139,7 @@
     }
   },
   "required": [
+    "video",
     "prompt"
   ],
   "title": "AppInput",

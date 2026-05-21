@@ -1,1 +1,1 @@
-from .inference import App, AppInput, AppOutput
+# Empty init file to avoid circular imports during build process

@@ -4,9 +4,9 @@ description: AI-powered image upscaling with detail and realism enhancement
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/cd3boz26.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/8b2raeb1.jpeg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/tyml7bwo.jpeg
 env: {}
 kernel: python-3.11
 secrets:

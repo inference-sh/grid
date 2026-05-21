@@ -9,6 +9,10 @@ metadata:
         - dubbing
         - video-editing
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/rl1hlnic.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/rg8x5l9d.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/zpa18v26.jpg
 env: {}
 kernel: python-3.11
 secrets:

@@ -1,21 +1,20 @@
 namespace: bria
 name: video-eraser
-description: Remove objects from a video using coordinate key points to define the mask area (max 5s, 750p). Specify positive points to include in the mask and negative points to exclude. For text-based object targeting, use video-mask-by-prompt to generate the mask first.
+description: Erase objects from video using a mask with inpainting
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tgg6pulh.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/v9up0vl1.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hjz9irn1.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

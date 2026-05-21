@@ -12,6 +12,10 @@ metadata:
         - audio
         - v3
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/7yofpcv5.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ve3dmicc.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/oqo46e2z.jpg
 env: {}
 kernel: python-3.11
 secrets:

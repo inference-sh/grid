@@ -9,7 +9,7 @@ torchaudio>=2.7.1
 accelerate>=1.1.1
 
 # Diffusers and transformers (need custom branch for Wan S2V support)
-git+https://github.com/tolgacangoz/diffusers.git@f5439e190e91f047ad62b4d8ce16a4a3986ab34b
+git+https://github.com/tolgacangoz/diffusers.git@integrations/wan2.2-s2v
 transformers>=4.49.0
 tokenizers>=0.20.3
 decord

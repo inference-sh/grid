@@ -4,18 +4,17 @@ description: Train a Phota identity profile from 30-50 face images, poll status,
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk1z4ghhxkkb4dcn0wn60e.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk275sgv450mepcm4rv3a0.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk1z0wm69jahgqcpm6fva8.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: PHOTA_KEY
       description: Phota API key from platform.photalabs.com
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

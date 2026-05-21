@@ -1,0 +1,11 @@
+{
+  "urls": [
+    "https://en.wikipedia.org/wiki/Artificial_intelligence",
+    "https://en.wikipedia.org/wiki/Machine_learning"
+  ],
+  "extract_depth": "advanced",
+  "format": "markdown",
+  "include_images": true,
+  "include_favicon": true,
+  "timeout": null
+}

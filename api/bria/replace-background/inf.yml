@@ -1,21 +1,20 @@
 namespace: bria
 name: replace-background
-description: Replace an image's background using a text prompt or reference image. Auto-detects and removes the existing background — no need to run rmbg first. Supports base, high_control, and fast generation modes.
+description: Replace image background with AI-generated content from a text prompt or reference image
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4uyxfifd.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/0obagjsk.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xiojcb7n.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

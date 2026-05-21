@@ -13,9 +13,9 @@ metadata:
         - image-to-image
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/iti8nqch.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/zqyh6a8f.jpeg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/99mungbh.jpeg
 env: {}
 kernel: python-3.11
 secrets:

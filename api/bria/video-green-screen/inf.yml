@@ -1,21 +1,20 @@
 namespace: bria
 name: video-green-screen
-description: Replace a video's background with a green or blue screen for chroma keying in post-production. Supports broadcast green (#00B140), chroma green (#00FF00), and blue screen (#0000FF). Use video-rmbg first if you need transparency instead.
+description: Apply green or blue screen effect to video foreground
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/13x8a00q.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r8r20272.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3f4qcp4v.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

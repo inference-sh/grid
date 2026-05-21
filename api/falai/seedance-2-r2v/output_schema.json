@@ -283,26 +283,13 @@
       "type": "object"
     }
   },
-  "description": "Output schema for Seedance 2.0 Reference-to-Video.",
+  "description": "Output schema for Seedance 2.0 video generation.",
   "properties": {
     "video": {
-      "description": "The generated video file with optional audio.",
+      "description": "The generated video file.",
       "format": "file",
       "title": "Video",
       "type": "string"
-    },
-    "seed": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The seed used for generation.",
-      "title": "Seed"
     },
     "output_meta": {
       "anyOf": [

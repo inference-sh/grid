@@ -1,21 +1,20 @@
 namespace: bria
 name: expand
-description: Generatively expand an image to fit new aspect ratios or larger dimensions (up to 5000x5000). AI fills new canvas areas with content matching the original scene. Supports predefined ratios or custom dimensions with optional text guidance.
+description: Expand image canvas with AI-generated content matching the original scene
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/bqzmmpv1.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wfzjdp9r.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y8v98mda.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

@@ -4,9 +4,9 @@ description: Degrade images with blur, noise, and compression for benchmark test
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk8db35wwdk0br5tg44rmj.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk8tnj1dmgh04tdef68q9m.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk8k9tes248zj66x6v1bxq.jpeg
 env: {}
 kernel: python-3.11
 resources:
@@ -14,4 +14,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

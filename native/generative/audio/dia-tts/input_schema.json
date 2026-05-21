@@ -1,114 +1,89 @@
 {
   "$defs": {
-    "AudioFormat": {
-      "enum": [
-        "wav",
-        "mp3",
-        "ogg",
-        "flac"
-      ],
-      "title": "AudioFormat",
-      "type": "string"
-    },
     "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
+      "$id": "/schemas/File",
+      "oneOf": [
+        {
+          "description": "A class representing a file in the inference.sh ecosystem.",
+          "properties": {
+            "uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Uri"
             },
-            {
-              "type": "null"
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Path"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Type"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Size"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
             }
-          ],
-          "default": null,
-          "title": "Uri"
+          },
+          "title": "File",
+          "type": "object"
         },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
+        {
+          "type": "string"
         }
-      },
-      "title": "File",
-      "type": "object"
+      ]
     }
   },
+  "description": "Input schema for Dia TTS.",
   "properties": {
     "text": {
-      "description": "The text to convert to speech. Use [S1] and [S2] tags for different speakers.",
+      "description": "The text to convert to speech. Use [S1], [S2] for multi-speaker dialogue and (laughs), (sighs) for nonverbals.",
       "title": "Text",
       "type": "string"
     },
-    "format": {
-      "$ref": "#/$defs/AudioFormat",
-      "default": "wav",
-      "description": "The output audio format"
-    },
-    "speed": {
-      "default": 1.0,
-      "description": "Speech speed (0.1 to 0.5)",
-      "title": "Speed",
-      "type": "number"
-    },
-    "clone_from_text": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "The transcript text used for voice cloning. Must use [S1] and [S2] tags.",
-      "title": "Clone From Text"
-    },
-    "clone_from_audio": {
+    "ref_audio": {
       "anyOf": [
         {
           "$ref": "#/$defs/File"
@@ -118,7 +93,20 @@
         }
       ],
       "default": null,
-      "description": "The audio file to clone voices from"
+      "description": "Reference audio file for voice cloning. If provided, ref_text is also required."
+    },
+    "ref_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Transcript of the reference audio. Required when using voice cloning.",
+      "title": "Ref Text"
     }
   },
   "required": [

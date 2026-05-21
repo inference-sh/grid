@@ -1,0 +1,20 @@
+namespace: ""
+name: user-follow
+description: Follow a user on X.com by user ID. Succeeds silently if already following.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqr9ry4wntsy2pxyvwvrb.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqrgtbaf20wmmhtvb4418.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqp1nwhsdyrhmc0n88yaz.jpeg
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.follow.write
+      description: Follow users on X.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

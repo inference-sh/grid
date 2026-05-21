@@ -4,9 +4,9 @@ description: HappyHorse 1.0 Text-to-Video generates physically realistic videos 
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/61jnkueq.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7fo9tgem.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xmnn2j49.jpg
 env: {}
 kernel: python-3.11
 secrets:

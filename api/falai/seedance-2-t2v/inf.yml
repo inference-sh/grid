@@ -1,24 +1,29 @@
-namespace: falai
-name: seedance-2-t2v
-description: Generate videos with synchronized audio from text prompts using ByteDance's Seedance 2.0. Supports quality and fast modes.
+namespace: bytedance
+name: seedance-2-0
+description: Professional multimodal video generation from text, images, video, and audio references using ByteDance's Seedance 2.0 model via BytePlus ARK API. Supports up to 1080p, text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
+    checksum: 5b569fd690c5637d72a44612f292b94bd170745af60a96061b4ff117467351b0
     provider: bytedance
     tags:
         - seedance
-        - seedance-2
+        - video-generation
         - text-to-video
+        - image-to-video
+        - multimodal
         - audio
+        - 1080p
         - bytedance
+        - byteplus
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/uvcts5wu.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/iol07ns8.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/mn2n2ddr.jpg
 env: {}
 kernel: python-3.11
 secrets:
-    - key: FAL_KEY
-      description: fal.ai API key for model access
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedance video generation
 resources:
     gpu:
         count: 0

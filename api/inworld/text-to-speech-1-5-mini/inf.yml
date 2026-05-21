@@ -4,18 +4,17 @@ description: Inworld TTS 1.5 Mini - Ultra-low-latency text-to-speech with 15 lan
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/3dxjn00v.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/9w0dka84.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/caksj85k.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: INWORLD_KEY
       description: Inworld API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

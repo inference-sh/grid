@@ -1,0 +1,28 @@
+namespace: ""
+name: photo-video
+description: Animate portrait photos into talking videos using HeyGen. Upload a face image and add speech with configurable voice, motion prompts, and expressiveness.
+metadata:
+    checksum: c0d891d2e8ad18a99bdc2b6561fef2617d675a6dafb4d9eca92c038e8bdcf236
+    provider: heygen
+    tags:
+        - photo-avatar
+        - image-to-video
+        - talking-head
+        - animation
+        - heygen
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/k5ju7kok.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/94xelqm3.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/wa1tp1m1.jpg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

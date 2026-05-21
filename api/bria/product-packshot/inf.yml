@@ -1,21 +1,20 @@
 namespace: bria
 name: product-packshot
-description: Create a precise product cutout cropped and centered on a clean background. Outputs a professional packshot ready for e-commerce listings. Pairs well with product-shadow to add shadows afterward.
+description: Generate professional 2000x2000 product packshot images
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/v07csij6.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/uki3rsv2.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/85wmxc8e.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

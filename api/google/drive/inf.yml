@@ -4,9 +4,9 @@ description: List, upload, download, and manage Google Drive files
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppsf0bj2c5gw6nyexg1p7.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp3h9800ydkszpeypwswj.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp76xghctx7rz8p2g1vrx.jpeg
 env: {}
 kernel: python-3.11
 integrations:

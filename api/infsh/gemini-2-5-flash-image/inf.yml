@@ -3,14 +3,18 @@ name: gemini-2-5-flash-image
 description: Gemini 2.5 Flash Image via Vertex AI with fal.ai (Nano Banana) fallback on rate limits
 metadata: {}
 category: image
+images:
+    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95nrxmrrveg80pvz28kcx.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95rt8hdk5w4hf0f6tp2f7.jpeg
 env: {}
 kernel: python-3.11
-integrations:
-    - key: gcp.vertex_ai
-      description: Access Vertex AI models
 secrets:
     - key: FAL_KEY
       description: fal.ai API key for fallback
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models
 resources:
     gpu:
         count: 0

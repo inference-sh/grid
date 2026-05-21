@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "user_id": {
+      "description": "The ID of the user to follow",
+      "title": "User Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,12 +1,18 @@
 namespace: infsh
 name: harrier-oss-v1-cpu
 description: CPU-only multilingual text embedding using Microsoft's Harrier OSS v1 (270m). For testing CPU feasibility — no GPU required.
-metadata: {}
+metadata:
+    checksum: 66d2d44e1dbfe8ea126896974b124514e0ceb9e62dd6789848a8cd7c3c7a2cd0
 category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
 env: {}
 kernel: python-3.11
 resources:
     gpu:
         count: 0
+        vram: 0
         type: none
-    ram: 8
+    ram: 8000000000

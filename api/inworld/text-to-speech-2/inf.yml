@@ -4,18 +4,17 @@ description: Inworld TTS-2 - High-quality multilingual text-to-speech with 100+ 
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/x5n1moz0.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/zsq6mr8y.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/d5lc54m4.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: INWORLD_KEY
       description: Inworld API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

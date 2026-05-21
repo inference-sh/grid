@@ -268,3 +268,8 @@ class App(BaseApp):
 
         return AppOutput(result=File(path=output_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        if self.pipeline:
+            self.pipeline = None
+        self.processors = {}

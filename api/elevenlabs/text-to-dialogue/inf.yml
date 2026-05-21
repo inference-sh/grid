@@ -4,18 +4,17 @@ description: ElevenLabs Text to Dialogue - Generate immersive multi-voice dialog
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2x8g1t7bkj6b8aay8zdy3.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2x93cmc7t3vtj9b9rww87.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2x907eb8w4evp1vymke82.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: ELEVENLABS_KEY
       description: ElevenLabs API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

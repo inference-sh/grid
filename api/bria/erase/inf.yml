@@ -1,21 +1,20 @@
 namespace: bria
 name: erase
-description: Remove objects from an image using a mask (white=erase, black=keep). For text-based removal without a mask, use erase-by-text instead. To fill the erased region with new content, use gen-fill.
+description: Remove objects from images using mask-based inpainting while preserving quality
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jrzo6pyh.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/brd5l7yn.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/f36nkd0g.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

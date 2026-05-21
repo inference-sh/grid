@@ -1,0 +1,11 @@
+{
+  "first_frame": null,
+  "prompt": "example_string",
+  "reference_images": null,
+  "negative_prompt": null,
+  "height": 480,
+  "width": 832,
+  "num_frames": 45,
+  "num_inference_steps": 8,
+  "seed": 42
+}

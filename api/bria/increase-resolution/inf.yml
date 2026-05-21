@@ -1,21 +1,20 @@
 namespace: bria
 name: increase-resolution
-description: Upscale image resolution 2x or 4x (up to 8K) while preserving original content faithfully. For upscaling with AI-enhanced detail, use enhance instead. Good as a final step after editing or generation.
+description: Upscale images 2x or 4x (max 8192x8192) while preserving original content
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fdfbbu0g.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/9l5a4cxf.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/wgq6kdsl.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

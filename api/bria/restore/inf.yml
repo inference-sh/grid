@@ -1,21 +1,20 @@
 namespace: bria
 name: restore
-description: Restore old or degraded photographs by removing noise, scratches, and blur. Chain with colorize to add color to restored B&W photos, or with increase-resolution to upscale afterward.
+description: Restore old or degraded images to improved quality
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/axzla10o.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/whkrhnvq.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/rke7orkz.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

@@ -1,21 +1,20 @@
 namespace: bria
 name: gen-fill
-description: Fill a masked region with AI-generated content guided by a text prompt (white=fill, black=keep). Unlike erase which just removes, gen-fill replaces with new content. Combine with expand to add canvas space first.
+description: Generative fill — replace masked regions with AI-generated content guided by a text prompt
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/1nbkp1ib.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/49wyld1q.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/vncnmndw.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

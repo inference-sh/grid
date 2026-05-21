@@ -103,3 +103,6 @@ class App(BaseApp):
         except Exception as e:
             raise RuntimeError(f"Error processing images: {str(e)}")
 
+    async def unload(self):
+        """Clean up resources."""
+        pass

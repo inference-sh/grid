@@ -222,7 +222,7 @@ class AppInput(BaseAppInput):
     num_inference_steps: int = Field(default=8, description="The number of inference steps for generation quality.")
     true_cfg_scale: float = Field(default=1.0, description="The CFG scale for generation guidance.")
     seed: Optional[int] = Field(default=None, description="The seed for reproducible generation.")
-    language: Optional[Literal["en", "zh"]] = Field(default="en", description="Language for prompt optimization (English or Chinese).")
+    language: Optional[Literal["en", "zh"]] = Field(default="en", description="Language for prompt optimization ('en' for English or 'zh' for Chinese).")
     cache_threshold: float = Field(default=0.0, ge=0.0, le=1.0, description="First-block cache threshold for transformer (0 disables caching).")
     use_unipcm_flow_matching: bool = Field(default=False, description="If true, switch scheduler to UniPCM flow matching configuration.")
     loras: Optional[list[LoraConfig]] = Field(default=None, description="List of LoRA configs to apply")
@@ -590,3 +590,9 @@ class App(BaseApp):
         
         return AppOutput(image_output=File(path=output_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        if hasattr(self, 'pipeline'):
+            del self.pipeline
+        torch.cuda.empty_cache() if torch.cuda.is_available() else None
+        logging.info("Resources cleaned up")

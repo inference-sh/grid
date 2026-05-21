@@ -1,0 +1,28 @@
+namespace: ""
+name: subtitles
+description: Add professional burned-in subtitles to videos with 25+ style presets. Supports 100+ languages with automatic transcription or custom SRT files.
+metadata:
+    checksum: 708901203057443743fb313d87d20b3aa42914771e5382345418fa7f9f99763a
+    provider: veed
+    tags:
+        - veed
+        - subtitles
+        - captions
+        - video
+        - transcription
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/ixw1qnxw.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/jxlguneg.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/jbg37pxn.jpg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0

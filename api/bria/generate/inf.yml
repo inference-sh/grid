@@ -1,21 +1,20 @@
 namespace: bria
 name: generate
-description: Generate images from text prompts using Bria's Fibo model. Supports 1MP and 4MP output, configurable aspect ratios, and structured prompts. Output can be refined with any editing app — edit, restyle, relight, enhance, expand, etc. For faster generation at lower quality, use generate-lite.
+description: Generate images from text prompts using Bria Fibo
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/axd3h3ew.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/a87a16po.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/4x2vge2m.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

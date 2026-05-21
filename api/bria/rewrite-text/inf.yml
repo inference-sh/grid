@@ -1,21 +1,20 @@
 namespace: bria
 name: rewrite-text
-description: Modify or replace text in an image while preserving the visual style, font, and layout. Detects text regions automatically and replaces with the new text you provide.
+description: Rewrite text within images while preserving the visual style
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tzq2qxx9.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/u0yobbol.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/4ir585dh.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

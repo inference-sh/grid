@@ -1,201 +1,321 @@
 """
-Seedance 2.0 Text-to-Video
+Seedance 2.0 - BytePlus Video Generation
 
-Generate videos with synchronized audio from text prompts using ByteDance's
-Seedance 2.0 model. Supports both quality and fast modes.
+Professional multimodal video generation supporting text, images, video, and audio references.
+Supports up to 1080p resolution. Uses BytePlus ARK SDK with async task polling.
+Parameters passed as top-level request body fields.
 """
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
 from pydantic import Field
-from typing import Optional
+from typing import List, Optional
 from enum import Enum
 import logging
 
-from .fal_helper import setup_fal_client, run_fal_model, download_video
-
-logging.getLogger("httpx").setLevel(logging.WARNING)
-
-
-class ModeEnum(str, Enum):
-    """Generation mode — quality uses the full model, fast is ~20% cheaper and quicker."""
-    quality = "quality"
-    fast = "fast"
-
-
-class AspectRatioEnum(str, Enum):
-    """Video aspect ratio options."""
-    auto = "auto"
-    ratio_21_9 = "21:9"
-    ratio_16_9 = "16:9"
-    ratio_4_3 = "4:3"
-    ratio_1_1 = "1:1"
-    ratio_3_4 = "3:4"
-    ratio_9_16 = "9:16"
+from .byteplus_helper import (
+    setup_byteplus_client,
+    create_content_task,
+    poll_task_status,
+    cancel_task,
+    download_video,
+    build_text_content,
+    build_image_content,
+    build_video_content,
+    build_audio_content,
+)
 
 
 class ResolutionEnum(str, Enum):
     """Video resolution options."""
     p480 = "480p"
     p720 = "720p"
+    p1080 = "1080p"
 
 
-class DurationEnum(str, Enum):
-    """Video duration options in seconds."""
-    auto = "auto"
-    s4 = "4"
-    s5 = "5"
-    s6 = "6"
-    s7 = "7"
-    s8 = "8"
-    s9 = "9"
-    s10 = "10"
-    s11 = "11"
-    s12 = "12"
-    s13 = "13"
-    s14 = "14"
-    s15 = "15"
-
-
-# Video dimensions lookup: (resolution, aspect_ratio) -> (width, height)
-# auto aspect_ratio falls back to 16:9 for output metadata purposes
-VIDEO_DIMENSIONS = {
-    ("480p", "21:9"): (1120, 480),
-    ("480p", "16:9"): (854, 480),
-    ("480p", "4:3"): (640, 480),
-    ("480p", "1:1"): (480, 480),
-    ("480p", "3:4"): (480, 640),
-    ("480p", "9:16"): (480, 854),
-    ("480p", "auto"): (854, 480),
-    ("720p", "21:9"): (1680, 720),
-    ("720p", "16:9"): (1280, 720),
-    ("720p", "4:3"): (960, 720),
-    ("720p", "1:1"): (720, 720),
-    ("720p", "3:4"): (720, 960),
-    ("720p", "9:16"): (720, 1280),
-    ("720p", "auto"): (1280, 720),
-}
-
-# Duration fallback when user selects "auto"
-AUTO_DURATION_SECONDS = 5.0
-
-ENDPOINT_BY_MODE = {
-    ModeEnum.quality: "bytedance/seedance-2.0/text-to-video",
-    ModeEnum.fast: "bytedance/seedance-2.0/fast/text-to-video",
-}
+class RatioEnum(str, Enum):
+    """Aspect ratio options."""
+    adaptive = "adaptive"
+    r21_9 = "21:9"
+    r16_9 = "16:9"
+    r4_3 = "4:3"
+    r1_1 = "1:1"
+    r3_4 = "3:4"
+    r9_16 = "9:16"
 
 
 class AppInput(BaseAppInput):
-    """Input schema for Seedance 2.0 Text-to-Video."""
+    """Input schema for Seedance 2.0 video generation.
+
+    Supports multiple modes:
+    - Text-to-video: provide prompt only
+    - Image-to-video (first frame): provide prompt + image
+    - Image-to-video (first + last frame): provide prompt + image + end_image
+    - Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios
+    """
 
     prompt: str = Field(
-        description="The text prompt used to generate the video. Describe the scene, subject, and motion.",
-        examples=[
-            "An octopus finds a football in the ocean and excitedly calls its octopus friends to come and play. Cut scene to an octopus football game under the sea."
-        ],
+        description="Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+        examples=["A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."]
     )
-    mode: ModeEnum = Field(
-        default=ModeEnum.quality,
-        description="quality uses the full Seedance 2.0 model. fast is ~20% cheaper and quicker with slightly lower fidelity.",
+    image: Optional[File] = Field(
+        default=None,
+        description="First-frame image for image-to-video generation. Mutually exclusive with reference inputs."
+    )
+    end_image: Optional[File] = Field(
+        default=None,
+        description="Last-frame image for first+last frame video generation. Requires image to be set as the first frame."
+    )
+    reference_images: List[File] = Field(
+        default=[],
+        max_length=9,
+        description="Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image."
+    )
+    reference_videos: List[File] = Field(
+        default=[],
+        max_length=3,
+        description="Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov. Mutually exclusive with image/end_image."
+    )
+    reference_audios: List[File] = Field(
+        default=[],
+        max_length=3,
+        description="Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video."
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 480p for faster generation, 720p for balanced quality.",
+        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest."
     )
-    duration: DurationEnum = Field(
-        default=DurationEnum.auto,
-        description="Duration of the video in seconds (4-15). Use auto to let the model decide based on the prompt.",
+    ratio: RatioEnum = Field(
+        default=RatioEnum.adaptive,
+        description="Aspect ratio. 'adaptive' auto-selects based on input content."
     )
-    aspect_ratio: AspectRatioEnum = Field(
-        default=AspectRatioEnum.auto,
-        description="The aspect ratio of the generated video. Use auto to let the model decide.",
+    duration: int = Field(
+        default=5,
+        description="Duration in seconds (4-15), or -1 for auto-select."
     )
     generate_audio: bool = Field(
         default=True,
-        description="Whether to generate synchronized audio (sound effects, ambient, lip-synced speech). Cost is the same regardless.",
+        description="Whether to generate synchronized audio with the video."
     )
-    seed: Optional[int] = Field(
+    seed: int = Field(
+        default=-1,
+        description="Seed for reproducibility (-1 for random)."
+    )
+    watermark: bool = Field(
+        default=False,
+        description="Whether to add watermark to the output video."
+    )
+    safety_filter: bool = Field(
+        default=True,
+        description="Enable input safety filtering. Set to false to disable NSFW content filtering on inputs."
+    )
+    safety_identifier: Optional[str] = Field(
         default=None,
-        description="Random seed for reproducible generation. Use None for random.",
+        description="Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email."
     )
 
 
 class AppOutput(BaseAppOutput):
-    """Output schema for Seedance 2.0 Text-to-Video."""
+    """Output schema for Seedance 2.0 video generation."""
 
-    video: File = Field(description="The generated video file with optional audio.")
-    seed: Optional[int] = Field(default=None, description="The seed used for generation.")
+    video: File = Field(description="The generated video file.")
 
 
 class App(BaseApp):
-    """Seedance 2.0 Text-to-Video application."""
+    """Seedance 2.0 video generation application using BytePlus ARK SDK."""
 
-    async def setup(self):
+    async def setup(self, metadata):
+        """Initialize the BytePlus client."""
+        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        self.logger.info("Seedance 2.0 T2V initialized")
+        logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    def _build_request(self, input_data: AppInput) -> dict:
-        request = {
-            "prompt": input_data.prompt,
-            "resolution": input_data.resolution.value,
-            "duration": input_data.duration.value,
-            "aspect_ratio": input_data.aspect_ratio.value,
-            "generate_audio": input_data.generate_audio,
-        }
-        if input_data.seed is not None and input_data.seed != -1:
-            request["seed"] = input_data.seed
-        return request
+        self.client = setup_byteplus_client()
+        self.model_id = "dreamina-seedance-2-0-260128"
+        self.unfiltered_model_id = "ep-20260514173157-ppqhm"
 
-    async def run(self, input_data: AppInput) -> AppOutput:
+        self.cancel_flag = False
+        self.current_task_id = None
+
+        self.logger.info(f"Seedance 2.0 initialized with model: {self.model_id}")
+
+    async def on_cancel(self):
+        """Handle cancellation request."""
+        self.logger.info("Cancellation requested")
+        self.cancel_flag = True
+        if self.current_task_id:
+            cancel_task(self.client, self.current_task_id, self.logger)
+        return True
+
+    def _determine_mode(self, input_data: AppInput) -> str:
+        """Determine the generation mode from input."""
+        has_refs = input_data.reference_images or input_data.reference_videos or input_data.reference_audios
+
+        if has_refs:
+            return "multimodal-reference"
+        elif input_data.image and input_data.end_image:
+            return "first-last-frame"
+        elif input_data.image:
+            return "image-to-video"
+        else:
+            return "text-to-video"
+
+    def _build_content(self, input_data: AppInput, mode: str) -> list:
+        """Build content list for BytePlus API."""
+        content = []
+
+        if input_data.prompt:
+            content.append(build_text_content(input_data.prompt))
+
+        if mode == "first-last-frame":
+            if not input_data.image.exists():
+                raise RuntimeError(f"First-frame image does not exist: {input_data.image.path}")
+            if not input_data.end_image.exists():
+                raise RuntimeError(f"Last-frame image does not exist: {input_data.end_image.path}")
+            content.append(build_image_content(input_data.image.uri, role="first_frame"))
+            content.append(build_image_content(input_data.end_image.uri, role="last_frame"))
+
+        elif mode == "image-to-video":
+            if not input_data.image.exists():
+                raise RuntimeError(f"Input image does not exist: {input_data.image.path}")
+            content.append(build_image_content(input_data.image.uri, role="first_frame"))
+
+        elif mode == "multimodal-reference":
+            for ref_img in input_data.reference_images:
+                if ref_img.exists():
+                    content.append(build_image_content(ref_img.uri, role="reference_image"))
+
+            for ref_vid in input_data.reference_videos:
+                if ref_vid.exists():
+                    content.append(build_video_content(ref_vid.uri))
+
+            if input_data.reference_audios:
+                has_visual = input_data.reference_images or input_data.reference_videos
+                if not has_visual:
+                    raise RuntimeError("Audio reference requires at least one image or video reference.")
+                for ref_aud in input_data.reference_audios:
+                    if ref_aud.exists():
+                        content.append(build_audio_content(ref_aud.uri))
+
+        return content
+
+    async def run(self, input_data: AppInput, metadata) -> AppOutput:
+        """Generate video using Seedance 2.0."""
         try:
-            setup_fal_client()
+            self.cancel_flag = False
+            self.current_task_id = None
 
-            model_id = ENDPOINT_BY_MODE[input_data.mode]
-            self.logger.info(
-                f"Generating video ({input_data.mode.value}) with prompt: {input_data.prompt[:100]}..."
+            mode = self._determine_mode(input_data)
+            self.logger.info(f"Starting {mode} generation")
+            self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
+            self.logger.info(f"Resolution: {input_data.resolution.value}, Ratio: {input_data.ratio.value}, Duration: {input_data.duration}s, Audio: {input_data.generate_audio}")
+
+            content = self._build_content(input_data, mode)
+
+            api_params = {
+                "resolution": input_data.resolution.value,
+                "ratio": input_data.ratio.value,
+                "duration": input_data.duration,
+                "generate_audio": input_data.generate_audio,
+                "seed": input_data.seed,
+                "watermark": input_data.watermark,
+            }
+            if input_data.safety_identifier:
+                api_params["safety_identifier"] = input_data.safety_identifier
+
+            model = self.model_id if input_data.safety_filter else self.unfiltered_model_id
+
+            self.current_task_id = create_content_task(
+                self.client,
+                model=model,
+                content=content,
+                logger=self.logger,
+                **api_params,
             )
-            self.logger.info(
-                f"Settings: {input_data.resolution.value}, {input_data.aspect_ratio.value}, {input_data.duration.value}s, endpoint={model_id}"
+
+            result = await poll_task_status(
+                self.client,
+                self.current_task_id,
+                logger=self.logger,
+                poll_interval=2.0,
+                cancel_flag_getter=lambda: self.cancel_flag,
             )
 
-            request_data = self._build_request(input_data)
-            result = run_fal_model(model_id, request_data, self.logger)
+            video_url = None
+            if hasattr(result, 'content') and hasattr(result.content, 'video_url'):
+                video_url = result.content.video_url
+            elif hasattr(result, 'video_url'):
+                video_url = result.video_url
 
-            video_url = result["video"]["url"]
+            if not video_url:
+                self.logger.error(f"Could not extract video URL from result: {result}")
+                raise RuntimeError("Failed to get video URL from response")
+
             video_path = download_video(video_url, self.logger)
 
+            actual_duration = getattr(result, 'duration', float(input_data.duration) if input_data.duration > 0 else 5.0)
+            fps = getattr(result, 'framespersecond', 24)
+            actual_resolution = getattr(result, 'resolution', input_data.resolution.value)
+            seed = getattr(result, 'seed', None)
+
+            usage = getattr(result, 'usage', None)
+            completion_tokens = None
+            total_tokens = None
+            if usage:
+                completion_tokens = getattr(usage, 'completion_tokens', None)
+                total_tokens = getattr(usage, 'total_tokens', None)
+
             resolution_map = {
-                "480p": VideoResolution.VIDEO_RES480_P,
-                "720p": VideoResolution.VIDEO_RES720_P,
+                '480p': VideoResolution.VIDEO_RES480_P,
+                '720p': VideoResolution.VIDEO_RES720_P,
+                '1080p': VideoResolution.VIDEO_RES1080_P,
             }
-            width, height = VIDEO_DIMENSIONS.get(
-                (input_data.resolution.value, input_data.aspect_ratio.value),
-                (1280, 720),
-            )
-            duration_value = input_data.duration.value
-            seconds = AUTO_DURATION_SECONDS if duration_value == "auto" else float(duration_value)
+            resolution_enum = resolution_map.get(actual_resolution, VideoResolution.VIDEO_RES720_P)
+
+            dimension_map = {
+                ('480p', '16:9'): (864, 496), ('480p', '4:3'): (752, 560),
+                ('480p', '1:1'): (640, 640), ('480p', '3:4'): (560, 752),
+                ('480p', '9:16'): (496, 864), ('480p', '21:9'): (992, 432),
+                ('720p', '16:9'): (1280, 720), ('720p', '4:3'): (1112, 834),
+                ('720p', '1:1'): (960, 960), ('720p', '3:4'): (834, 1112),
+                ('720p', '9:16'): (720, 1280), ('720p', '21:9'): (1470, 630),
+                ('1080p', '16:9'): (1920, 1080), ('1080p', '4:3'): (1664, 1248),
+                ('1080p', '1:1'): (1440, 1440), ('1080p', '3:4'): (1248, 1664),
+                ('1080p', '9:16'): (1080, 1920), ('1080p', '21:9'): (2206, 946),
+            }
+            actual_ratio = getattr(result, 'ratio', input_data.ratio.value)
+            if actual_ratio == 'adaptive':
+                actual_ratio = '16:9'
+            width, height = dimension_map.get((actual_resolution, actual_ratio), (1280, 720))
+
+            estimated_tokens = int((width * height * fps * float(actual_duration)) / 1024)
 
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(
                         width=width,
                         height=height,
-                        resolution=resolution_map.get(input_data.resolution.value),
-                        seconds=seconds,
-                        fps=24,
+                        resolution=resolution_enum,
+                        seconds=float(actual_duration),
+                        fps=fps,
                         extra={
+                            "mode": mode,
+                            "ratio": actual_ratio,
                             "generate_audio": input_data.generate_audio,
-                            "mode": input_data.mode.value,
-                        },
+                            "seed": seed,
+                            "completion_tokens": completion_tokens,
+                            "total_tokens": total_tokens,
+                            "estimated_tokens": estimated_tokens,
+                        }
                     )
                 ]
             )
 
-            return AppOutput(
-                video=File(path=video_path),
-                seed=result.get("seed"),
-                output_meta=output_meta,
-            )
+            self.logger.info(f"Video generated successfully: {video_path}")
+
+            return AppOutput(video=File(path=video_path), output_meta=output_meta)
 
         except Exception as e:
             self.logger.error(f"Error during video generation: {e}")
             raise RuntimeError(f"Video generation failed: {str(e)}")
+        finally:
+            self.current_task_id = None

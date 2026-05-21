@@ -4,18 +4,17 @@ description: Automatically enhance photo quality — lighting, composition, colo
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2tkcc1pdbbmxjjrwr6et.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2x9hd9fq94nfe7sc4zgr.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2v2ey7af6v9s56501s5h.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: PHOTA_KEY
       description: Phota API key from platform.photalabs.com
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

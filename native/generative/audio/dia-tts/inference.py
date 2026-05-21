@@ -1,119 +1,98 @@
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+"""
+Dia TTS - Text to Speech with Voice Cloning
+
+Generates realistic dialogue from transcripts with emotion control
+and natural nonverbals like laughter and throat clearing.
+
+Supports two modes:
+- Basic TTS: Just provide text
+- Voice Clone: Provide text + reference audio + reference text
+"""
+
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta, TextMeta
 from pydantic import Field
-from enum import Enum
-import os
-import soundfile as sf
-import tempfile
-from pydub import AudioSegment
-import numpy as np
-from dia.model import Dia
-import torch
-import librosa
 from typing import Optional
-class AudioFormat(str, Enum):
-    WAV = "wav"
-    MP3 = "mp3"
-    OGG = "ogg"
-    FLAC = "flac"
+import logging
+
+from .fal_helper import setup_fal_client, run_fal_model, download_file
+
+# Suppress noisy httpx polling logs
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 
 class AppInput(BaseAppInput):
-    text: str = Field(..., description="The text to convert to speech. Use [S1] and [S2] tags for different speakers.")
-    format: AudioFormat = Field(default=AudioFormat.WAV, description="The output audio format")
-    speed: float = Field(default=1.0, description="Speech speed (0.1 to 0.5)")
-    clone_from_text: Optional[str] = Field(default=None, description="The transcript text used for voice cloning. Must use [S1] and [S2] tags.")
-    clone_from_audio: Optional[File] = Field(default=None, description="The audio file to clone voices from")
+    """Input schema for Dia TTS."""
+    text: str = Field(
+        description="The text to convert to speech. Use [S1], [S2] for multi-speaker dialogue and (laughs), (sighs) for nonverbals."
+    )
+    ref_audio: Optional[File] = Field(
+        default=None,
+        description="Reference audio file for voice cloning. If provided, ref_text is also required."
+    )
+    ref_text: Optional[str] = Field(
+        default=None,
+        description="Transcript of the reference audio. Required when using voice cloning."
+    )
+
 
 class AppOutput(BaseAppOutput):
-    audio: File = Field(..., description="The generated audio file")
+    """Output schema for Dia TTS."""
+    audio: File = Field(description="The generated speech audio")
+
 
 class App(BaseApp):
-    async def setup(self, metadata):
-        """Initialize the DIA TTS model."""
-        print("Initializing DIA model...")
-        self.model = Dia.from_pretrained("nari-labs/Dia-1.6B-0626", compute_dtype="float16")
-        print("DIA model initialized successfully")
+    """Dia TTS app implementation."""
 
-    async def run(self, input_data: AppInput, metadata) -> AppOutput:
-        """Generate speech from text using DIA TTS."""
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(suffix=f".{input_data.format.value}", delete=False) as temp_file:
-            output_path = temp_file.name
-        
-        # Generate speech using DIA
-        if input_data.clone_from_text and input_data.clone_from_audio:
-            # For voice cloning, concatenate the clone text with generation text
-            full_text = input_data.clone_from_text + input_data.text
-            output = self.model.generate(
-                full_text,
-                audio_prompt=input_data.clone_from_audio.path,
-                use_torch_compile=True,
-                verbose=True
+    async def setup(self):
+        """Initialize the application."""
+        self.logger = logging.getLogger(__name__)
+        self.tts_model_id = "fal-ai/dia-tts"
+        self.clone_model_id = "fal-ai/dia-tts/voice-clone"
+        self.logger.info("Dia TTS app initialized")
+
+    def _get_model_id(self, input_data: AppInput) -> str:
+        """Select endpoint based on input."""
+        if input_data.ref_audio:
+            return self.clone_model_id
+        return self.tts_model_id
+
+    def _build_request(self, input_data: AppInput) -> dict:
+        """Build request payload."""
+        request = {"text": input_data.text}
+
+        if input_data.ref_audio:
+            if not input_data.ref_text:
+                raise ValueError("ref_text is required when using voice cloning (ref_audio provided)")
+            request["ref_audio_url"] = input_data.ref_audio.uri
+            request["ref_text"] = input_data.ref_text
+
+        return request
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Run text-to-speech inference."""
+        try:
+            setup_fal_client()
+
+            model_id = self._get_model_id(input_data)
+            mode = "voice-clone" if input_data.ref_audio else "basic-tts"
+            self.logger.info(f"Mode: {mode}, Model: {model_id}")
+            self.logger.info(f"Processing text: {input_data.text[:100]}...")
+
+            request_data = self._build_request(input_data)
+            result = run_fal_model(model_id, request_data, self.logger)
+
+            # Download the generated audio
+            audio_url = result["audio"]["url"]
+            audio_path = download_file(audio_url, suffix=".wav", logger=self.logger)
+
+            return AppOutput(
+                audio=File(path=audio_path),
+                output_meta=OutputMeta(
+                    inputs=[TextMeta(text=input_data.text)],
+                    outputs=[AudioMeta(seconds=0.0)]
+                )
             )
-        else:
-            # Regular generation without cloning
-            output = self.model.generate(
-                input_data.text,
-                use_torch_compile=True,
-                verbose=True
-            )
 
-        # Get sample rate (assuming 44100 as in the example)
-        output_sr = 44100
-
-        # Adjust speed if needed
-        if output is not None:
-            original_len = len(output)
-            # Ensure speed_factor is positive and not excessively small/large
-            speed_factor = max(0.1, min(input_data.speed, 5))
-            target_len = int(original_len / speed_factor)  # Target length based on speed_factor
-
-            if target_len != original_len and target_len > 0:  # Only interpolate if length changes and is valid
-                x_original = np.arange(original_len)
-                x_resampled = np.linspace(0, original_len - 1, target_len)
-                output = np.interp(x_resampled, x_original, output)
-                output = output.astype(np.float32)  # Ensure float32 type
-                print(f"Resampled audio from {original_len} to {target_len} samples for {speed_factor:.2f}x speed.")
-                try:
-                    # Calculate pitch shift in semitones
-                    # When we speed up (speed_factor > 1), we need to pitch down
-                    # When we slow down (speed_factor < 1), we need to pitch up
-                    n_steps = -12 * np.log2(speed_factor)  # Convert speed ratio to semitones
-                    
-                    # Apply pitch shift to compensate
-                    output = librosa.effects.pitch_shift(
-                        y=output,
-                        sr=output_sr,
-                        n_steps=n_steps,
-                        bins_per_octave=12
-                    )
-                    
-                    print(f"Adjusted audio speed to {speed_factor:.2f}x with pitch compensation")
-                except Exception as e:
-                    print(f"Warning: Pitch adjustment failed, using speed-only version: {e}")
-                    # Fall back to speed-only version if pitch adjustment fails
-                    output = output.astype(np.float32)
-            else:
-                print(f"Skipping audio speed adjustment (factor: {speed_factor:.2f}).")
-
-            # Ensure the output is in the correct format and range
-            output = np.clip(output, -1.0, 1.0)  # Clip to valid range
-                
-            print(f"Audio processing successful. Final shape: {output.shape}, Sample Rate: {output_sr}")
-        else:
-            print("Generation produced no valid output.")
-            output = np.zeros(1, dtype=np.float32)
-        
-        # Save the audio in the requested format
-        if input_data.format == AudioFormat.WAV:
-            self.model.save_audio(output_path, output)
-        else:
-            # For other formats, first save as WAV and then convert
-            temp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False).name
-            self.model.save_audio(temp_wav, output)
-            
-            # Convert to the requested format using pydub
-            audio = AudioSegment.from_wav(temp_wav)
-            audio.export(output_path, format=input_data.format.value)
-            os.remove(temp_wav)
-        
-        return AppOutput(audio=File(path=output_path))
+        except Exception as e:
+            self.logger.error(f"Error: {e}")
+            raise RuntimeError(f"TTS generation failed: {str(e)}")

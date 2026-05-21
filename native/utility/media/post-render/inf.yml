@@ -4,9 +4,9 @@ description: Render X/Twitter post cards as PNG images — dark/light theme, pro
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtt8pk333796p3gy90g5j2z.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtt9162fzyhfrjdfygb1ec8.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtt8sa00kjaat894bv3f8fe.jpeg
 env: {}
 kernel: node-22
 resources:

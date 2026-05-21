@@ -4,9 +4,9 @@ description: Render HTML/CSS/JS animations to video — supports GSAP timelines,
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9d9su0s6.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/f848a1v7.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/0qvsqc3u.jpg
 env: {}
 kernel: node-22
 resources:
@@ -14,4 +14,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

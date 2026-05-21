@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-2-0-studio
 description: Professional multimodal video generation with private asset library support. Automatically uploads reference images to BytePlus virtual portrait library for enhanced character consistency. Supports up to 1080p, text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
+    checksum: 682e655ba2b9c89cf28773ca440871ea166690d7f52fd30254395957b7f3af63
     provider: bytedance
     tags:
         - seedance
@@ -16,6 +17,10 @@ metadata:
         - studio
         - asset-library
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/5ciefr4w.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/00sthdlq.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/k7hjmav9.jpg
 env: {}
 kernel: python-3.11
 secrets:

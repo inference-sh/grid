@@ -1,8 +1,20 @@
 pydantic >= 2.0.0 # required for inference.sh
-inferencesh # required for inference.sh
+inferencesh
+torch
+gguf>=0.13.0
+tqdm
+# diffusers
+git+https://github.com/huggingface/diffusers.git@c8656ed73c638e51fc2e777a5fd355d69fa5220f
+transformers
+huggingface_hub
+accelerate
+sentencepiece
+protobuf
+Pillow
+einops
+accelerate
+python-dateutil
+peft
+hf_transfer
 
-# fal.ai integration
-fal-client>=0.4.0
-
-# HTTP requests for downloading videos
-requests>=2.28.0
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl

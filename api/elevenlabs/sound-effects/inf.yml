@@ -4,18 +4,17 @@ description: ElevenLabs Sound Effects - Generate custom sound effects from text
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vpg05rpp65bnrs9kv2xm.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vq953apwxgd3n41pn67y.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vt9fj3gdxdqe536mte1b.jpeg
 env: {}
 kernel: python-3.11
 secrets:
     - key: ELEVENLABS_KEY
       description: ElevenLabs API key
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

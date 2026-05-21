@@ -1,21 +1,20 @@
 namespace: bria
 name: video-increase-resolution
-description: Upscale video resolution 2x or 4x (up to 8K) while preserving original content. Good as a final step after other video editing operations like video-rmbg, video-eraser, or video-replace-background.
+description: Upscale video resolution up to 8K using AI super-resolution
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/62xw8uge.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6s7hkgsc.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qhrh8rey.jpg
 env: {}
 kernel: python-3.11
 secrets:
     - key: BRIA_KEY
       description: Bria API token
-      optional: false
 resources:
     gpu:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

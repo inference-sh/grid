@@ -4,9 +4,9 @@ description: Wan 2.7 Image Pro is Alibaba's professional image generation model 
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/0cgu8fka.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/k7drpr94.jpeg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/a6gclw7h.jpeg
 env: {}
 kernel: python-3.11
 secrets:

@@ -105,3 +105,6 @@ class App(BaseApp):
         # Return the result
         return AppOutput(result=File(path=final_output_persistent_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        pass

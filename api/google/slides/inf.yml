@@ -4,9 +4,9 @@ description: Read, create, and edit Google Slides presentations
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppqy0h2219pgewsfamt4d.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpppn5hr39yn07gnher46p.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppqnx90ppt0xzarv068n3.jpeg
 env: {}
 kernel: python-3.11
 integrations:

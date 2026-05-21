@@ -4,9 +4,9 @@ description: HappyHorse 1.0 Video Edit supports advanced video editing through n
 metadata: {}
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/1mcvgn07.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lq4z8al5.jpg
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/14921on2.jpg
 env: {}
 kernel: python-3.11
 secrets:

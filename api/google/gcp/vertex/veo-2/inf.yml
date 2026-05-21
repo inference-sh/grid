@@ -1,12 +1,12 @@
 namespace: google
-name: veo-2
-description: Veo 2 via Vertex AI - Generate high-quality realistic videos from text prompts
+name: veo-3
+description: Veo 3 via Vertex AI - Generate videos with audio from text prompts and images
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c5w1whrqtt5svngvz8dkk.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c5w06feyxpe347qvx3zk8.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2c63qqthygn05ra5rbnmvc.jpeg
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eev70bhym4swznjydm5c1.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eevga821mwy31rn8bkx16.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg2eesnd44g0pv9ncmggych7.jpeg
 env: {}
 kernel: python-3.11
 secrets:

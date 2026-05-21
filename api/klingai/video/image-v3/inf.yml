@@ -10,6 +10,10 @@ metadata:
         - 2k
         - text-to-image
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/0ffyldqs.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tayqwgdj.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/od2ds7tj.jpg
 env: {}
 kernel: python-3.11
 secrets:

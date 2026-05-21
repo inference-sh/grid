@@ -11,9 +11,9 @@ metadata:
         - gpt-image-2
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/u86jz2z7.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/0nn0mwg1.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/39ych9m6.jpg
 env: {}
 kernel: python-3.11
 secrets:
@@ -24,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

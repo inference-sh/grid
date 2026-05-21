@@ -243,3 +243,6 @@ class App(BaseApp):
         
         return AppOutput(captioned_video=File(path=output_path))
 
+    async def unload(self):
+        """Clean up resources."""
+        pass
