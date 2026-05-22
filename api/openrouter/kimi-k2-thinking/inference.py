@@ -21,6 +21,8 @@ class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     """OpenRouter input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=200000, description="The context size for the model.")
+    # Moonshot recommended for thinking model
+    temperature: float = Field(default=0.6, ge=0.0, le=2.0)
 class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
     images: Optional[List[str]] = None

@@ -445,16 +445,47 @@ def _build_request_body(
 
     # Sampling parameters — always send explicitly so we don't inherit
     # provider-specific defaults (which vary across OpenRouter providers).
-    if hasattr(input_data, "temperature"):
-        body["temperature"] = input_data.temperature
-    if hasattr(input_data, "top_p"):
-        body["top_p"] = input_data.top_p
-    top_k = getattr(input_data, "top_k", None)
+    # Reads from nested model_settings first (new), falls back to flat fields (legacy).
+    ms = getattr(input_data, "model_settings", None)
+
+    def _get(name, default=None):
+        """Read from model_settings if set, else flat field, else default."""
+        if ms is not None:
+            v = getattr(ms, name, None)
+            if v is not None:
+                return v
+        return getattr(input_data, name, default)
+
+    if _get("temperature") is not None:
+        body["temperature"] = _get("temperature")
+    if _get("top_p") is not None:
+        body["top_p"] = _get("top_p")
+    top_k = _get("top_k")
     if top_k is not None and top_k >= 0:
         body["top_k"] = top_k
-    min_p = getattr(input_data, "min_p", None)
+    min_p = _get("min_p")
     if min_p is not None and min_p > 0:
         body["min_p"] = min_p
+    freq_pen = _get("frequency_penalty")
+    if freq_pen is not None:
+        body["frequency_penalty"] = freq_pen
+    pres_pen = _get("presence_penalty")
+    if pres_pen is not None:
+        body["presence_penalty"] = pres_pen
+    rep_pen = _get("repetition_penalty")
+    if rep_pen is not None:
+        body["repetition_penalty"] = rep_pen
+    seed = _get("seed")
+    if seed is not None:
+        body["seed"] = seed
+    # Stop: merge user-provided stop sequences with built-in ones
+    user_stop = _get("stop")
+    if user_stop:
+        body["stop"] = list(set(body.get("stop", []) + user_stop))
+    # max_tokens: model_settings overrides flat field
+    ms_max = _get("max_tokens") if ms else None
+    if ms_max is not None:
+        body["max_tokens"] = ms_max
 
     if tools:
         body["tools"] = tools

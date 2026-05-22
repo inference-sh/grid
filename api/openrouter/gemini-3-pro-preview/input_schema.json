@@ -132,6 +132,27 @@
       "title": "Context Size",
       "type": "integer"
     },
+    "temperature": {
+      "default": 1.0,
+      "maximum": 2.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_k": {
+      "default": 40,
+      "description": "Top-k sampling. -1 to disable.",
+      "minimum": -1,
+      "title": "Top K",
+      "type": "integer"
+    },
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
     "images": {
       "anyOf": [
         {
@@ -262,20 +283,6 @@
       ],
       "title": "Text",
       "type": "string"
-    },
-    "temperature": {
-      "default": 0.7,
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Temperature",
-      "type": "number"
-    },
-    "top_p": {
-      "default": 0.95,
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Top P",
-      "type": "number"
     },
     "max_tokens": {
       "default": 64000,
