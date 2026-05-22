@@ -131,10 +131,23 @@ def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
 def _qwen_nothink_hook(body: Dict[str, Any], input_data) -> Dict[str, Any]:
     """Inject /no_think into the last user message for Qwen models when
     reasoning is disabled. OpenRouter's effort param isn't reliably mapped
-    for Qwen — the model-level /no_think tag is authoritative."""
+    for Qwen — the model-level /no_think tag is authoritative.
+
+    Also adjusts sampling defaults for non-thinking mode per Qwen model card:
+      thinking:     temp=0.6, top_p=0.95, top_k=20, min_p=0
+      non-thinking: temp=0.7, top_p=0.8,  top_k=20, min_p=0
+    """
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
     if reasoning_effort != "none":
         return body
+
+    # Non-thinking mode: adjust sampling to Qwen-recommended values.
+    # Only override if the user hasn't explicitly set a non-default value
+    # (i.e. they're still on the thinking-mode defaults we set).
+    if body.get("temperature") == 0.6:
+        body["temperature"] = 0.7
+    if body.get("top_p") == 0.95:
+        body["top_p"] = 0.8
     messages = body.get("messages", [])
     # Find last user message and append /no_think
     for msg in reversed(messages):
@@ -427,8 +440,21 @@ def _build_request_body(
         "stream": True,
         "stream_options": {"include_usage": True},
         "stop": ["<end_of_turn>", "<eos>", "<|im_end|>"],
-        "max_tokens": 32768,
+        "max_tokens": getattr(input_data, "max_tokens", 32768),
     }
+
+    # Sampling parameters — always send explicitly so we don't inherit
+    # provider-specific defaults (which vary across OpenRouter providers).
+    if hasattr(input_data, "temperature"):
+        body["temperature"] = input_data.temperature
+    if hasattr(input_data, "top_p"):
+        body["top_p"] = input_data.top_p
+    top_k = getattr(input_data, "top_k", None)
+    if top_k is not None and top_k >= 0:
+        body["top_k"] = top_k
+    min_p = getattr(input_data, "min_p", None)
+    if min_p is not None and min_p > 0:
+        body["min_p"] = min_p
 
     if tools:
         body["tools"] = tools
@@ -487,7 +513,8 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
                     retry_routing["order"] = order
 
             body = _build_request_body(input_data, model, provider_routing=retry_routing)
-            print(f"Calling OpenRouter model={model} attempt={attempt} provider={body.get('provider', {})}")
+            sampling = {k: body[k] for k in ("temperature", "top_p", "top_k", "min_p") if k in body}
+            print(f"Calling OpenRouter model={model} attempt={attempt} sampling={sampling} provider={body.get('provider', {})}")
 
             try:
                 req = http.build_request("POST", f"{OPENROUTER_BASE_URL}/chat/completions", json=body, headers=headers)
