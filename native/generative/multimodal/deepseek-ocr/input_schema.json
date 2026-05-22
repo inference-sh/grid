@@ -1,7 +1,7 @@
 {
   "properties": {
     "image": {
-      "description": "Input image file to perform OCR on",
+      "description": "Input image or PDF file to perform OCR on",
       "format": "file",
       "title": "Image",
       "type": "string"

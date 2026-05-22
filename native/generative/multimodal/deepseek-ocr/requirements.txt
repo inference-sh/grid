@@ -9,6 +9,7 @@ tokenizers==0.20.3
 hf_transfer
 
 Pillow
+pymupdf
 # Additional dependencies
 einops
 addict

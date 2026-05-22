@@ -109,6 +109,8 @@ pydantic==2.13.4
     #   inferencesh
 pydantic-core==2.46.4
     # via pydantic
+pymupdf==1.27.2.3
+    # via -r requirements.txt
 pyyaml==6.0.3
     # via
     #   accelerate
