@@ -89,7 +89,6 @@ LAYOUT_LABELS = {'text', 'sub_title', 'title', 'header', 'footer', 'image',
 
 def postprocess_ocr(text: str) -> str:
     """Clean up model output: strip grounding tags, layout labels, fix LaTeX symbols."""
-    # strip grounding ref/det tags but keep the text content inside ref
     text = re.sub(r'<\|ref\|>(.*?)<\|/ref\|><\|det\|>\[\[.*?\]\]<\|/det\|>', r'\1', text)
     text = re.sub(r'<\|ref\|>(.*?)<\|/ref\|>', r'\1', text)
     text = re.sub(r'<\|det\|>.*?<\|/det\|>', '', text)
@@ -97,10 +96,8 @@ def postprocess_ocr(text: str) -> str:
     lines = text.split('\n')
     lines = [l for l in lines if l.strip() not in LAYOUT_LABELS]
     text = '\n'.join(lines)
-    # fix common LaTeX symbol issues
     text = text.replace(r'\coloneqq', ':=')
     text = text.replace(r'\eqqcolon', '=:')
-    # collapse excessive newlines
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
@@ -111,17 +108,16 @@ class App(BaseApp):
         self.model = None
         self.tokenizer = None
         self.device = None
-        self.model_name = "deepseek-ai/DeepSeek-OCR"
+        self.model_name = "deepseek-ai/DeepSeek-OCR-2"
 
     async def setup(self, metadata):
         """Initialize the OCR model and resources."""
-        logger.info("Initializing DeepSeek OCR model...")
+        logger.info("Initializing DeepSeek OCR-2 model...")
 
         accelerator = Accelerator()
         self.device = accelerator.device
         logger.info(f"Using device: {self.device}")
 
-        # Initialize tokenizer and model
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_name,
@@ -135,12 +131,9 @@ class App(BaseApp):
                 use_safetensors=True
             )
 
-            # Move model to device and set to evaluation mode
             self.model = self.model.eval().to(self.device).to(torch.bfloat16)
 
             # Patch generate() to inject windowed n-gram processor
-            # This replaces the weaker built-in no_repeat_ngram_size with
-            # the official vLLM-style processor (windowed + whitelist for <td>/<td>)
             _original_generate = self.model.generate
             td_ids = set()
             for tag in ["<td>", "</td>"]:
