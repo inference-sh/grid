@@ -132,6 +132,13 @@
       "title": "Context Size",
       "type": "integer"
     },
+    "temperature": {
+      "default": 0.6,
+      "maximum": 2.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
     "tools": {
       "anyOf": [
         {
@@ -245,13 +252,6 @@
       ],
       "title": "Text",
       "type": "string"
-    },
-    "temperature": {
-      "default": 0.7,
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Temperature",
-      "type": "number"
     },
     "top_p": {
       "default": 0.95,
