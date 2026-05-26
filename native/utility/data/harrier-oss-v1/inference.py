@@ -95,11 +95,14 @@ class App(BaseApp):
 
         if not use_raw:
             from sentence_transformers import SentenceTransformer
+            import torch
             self.model = SentenceTransformer(
                 config.model_id,
                 device=str(self._device),
-                model_kwargs={"dtype": "auto"},
+                model_kwargs={"torch_dtype": torch.bfloat16},
             )
+            self.model.to(self._device)
+            self.model.eval()
             self._tok = self.model.tokenizer
         else:
             self._use_raw = True
@@ -125,31 +128,43 @@ class App(BaseApp):
 
         INLINE_THRESHOLD = 64 * 1024  # 64KB — skip file upload for small outputs
 
-        all_results = []
+        # Chunk all texts first, then embed in one batched call
+        all_chunks = []  # (text_idx, chunk_meta)
         for i, text in enumerate(texts):
             if input_data.chunk_strategy:
                 chunks = chunk_text(text, input_data.chunk_strategy, chunk_size, overlap, self._tok)
             else:
                 chunks = chunk_text(text, "none", chunk_size, overlap, self._tok)
-
-            chunk_texts = [c["text"] for c in chunks]
+            for c in chunks:
+                all_chunks.append((i, c))
             total_tokens += sum(c["end_token"] - c["start_token"] for c in chunks)
 
-            embeddings = self._embed(chunk_texts, input_data.instruction, input_data.prompt_name)
-            dimension = len(embeddings[0])
-            total_count += len(embeddings)
+        all_chunk_texts = [c["text"] for _, c in all_chunks]
+        all_embeddings = self._embed(all_chunk_texts, input_data.instruction, input_data.prompt_name)
+        dimension = len(all_embeddings[0]) if all_embeddings else 0
+        total_count = len(all_embeddings)
 
-            file_data = {"embeddings": embeddings}
+        # Group results back by text index
+        all_results = []
+        text_groups: dict = {}
+        for idx, ((text_i, chunk_meta), emb) in enumerate(zip(all_chunks, all_embeddings)):
+            if text_i not in text_groups:
+                text_groups[text_i] = {"embeddings": [], "chunks": []}
+            text_groups[text_i]["embeddings"].append(emb)
             if input_data.chunk_strategy:
-                file_data["chunks"] = [{
-                    "index": j,
-                    "text": c["text"],
-                    "start_token": c["start_token"],
-                    "end_token": c["end_token"],
-                    "start_char": c["start_char"],
-                    "end_char": c["end_char"],
-                } for j, c in enumerate(chunks)]
+                text_groups[text_i]["chunks"].append({
+                    "index": len(text_groups[text_i]["chunks"]),
+                    "text": chunk_meta["text"],
+                    "start_token": chunk_meta["start_token"],
+                    "end_token": chunk_meta["end_token"],
+                    "start_char": chunk_meta["start_char"],
+                    "end_char": chunk_meta["end_char"],
+                })
 
+        for text_i in sorted(text_groups.keys()):
+            file_data = {"embeddings": text_groups[text_i]["embeddings"]}
+            if input_data.chunk_strategy:
+                file_data["chunks"] = text_groups[text_i]["chunks"]
             all_results.append(file_data)
 
         # Return inline when small enough, otherwise upload files
@@ -195,6 +210,7 @@ class App(BaseApp):
 
         embeddings = self.model.encode(
             texts,
+            batch_size=256,
             normalize_embeddings=True,
             convert_to_numpy=True,
             **encode_kwargs,
