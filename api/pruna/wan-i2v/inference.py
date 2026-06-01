@@ -82,7 +82,6 @@ class App(BaseApp):
                 "prompt": input_data.prompt,
                 "image": image_url,
                 "resolution": input_data.resolution.value,
-                "duration": input_data.duration,
             }
 
             if input_data.seed is not None:

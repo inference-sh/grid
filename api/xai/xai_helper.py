@@ -256,7 +256,12 @@ def create_xai_client() -> Client:
     api_key = os.environ.get("XAI_API_KEY")
     if not api_key:
         raise RuntimeError("XAI_API_KEY environment variable is required")
-    return Client(api_key=api_key)
+    return Client(
+        api_key=api_key,
+        channel_options=[
+            ("grpc.max_receive_message_length", 100 * 1024 * 1024),
+        ],
+    )
 
 
 # =============================================================================
@@ -449,6 +454,13 @@ def classify_xai_error(error: Exception) -> Exception:
     if "INVALID_ARGUMENT" in error_str:
         return XAIGenerationError(
             f"xAI rejected the request — check your prompt or parameters. Detail: {error_str}"
+        )
+
+    # gRPC OUT_OF_RANGE — response too large for gRPC message size
+    if "OUT_OF_RANGE" in error_str:
+        return XAIGenerationError(
+            "xAI returned a response that exceeded the gRPC message size limit. "
+            "Try requesting a smaller image resolution."
         )
 
     # gRPC PERMISSION_DENIED / UNAUTHENTICATED
