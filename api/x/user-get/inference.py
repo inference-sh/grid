@@ -19,7 +19,7 @@ class AppOutput(BaseAppOutput):
     followers_count: Optional[int] = Field(None, description="Number of followers")
     following_count: Optional[int] = Field(None, description="Number of accounts following")
     tweet_count: Optional[int] = Field(None, description="Number of tweets")
-    verified: Optional[bool] = Field(None, description="Whether the user is verified")
+    verified_type: Optional[str] = Field(None, description="Type of verification (e.g. blue, business, government)")
     created_at: Optional[str] = Field(None, description="Account creation date")
     profile_url: str = Field(description="URL to user profile")
 
@@ -38,10 +38,10 @@ class App(BaseApp):
             raise ValueError("Either user_id or username must be provided")
 
         try:
-            user_fields = ["description", "profile_image_url", "public_metrics", "verified", "created_at"]
+            user_fields = ["description", "profile_image_url", "public_metrics", "verified_type", "created_at"]
 
             if input_data.user_id:
-                response = self.client.users.get(id=input_data.user_id, user_fields=user_fields)
+                response = self.client.users.get_by_id(id=input_data.user_id, user_fields=user_fields)
             else:
                 response = self.client.users.get_by_username(
                     username=input_data.username.lstrip("@"),
@@ -60,7 +60,7 @@ class App(BaseApp):
                 followers_count=metrics.get("followers_count"),
                 following_count=metrics.get("following_count"),
                 tweet_count=metrics.get("tweet_count"),
-                verified=data.get("verified"),
+                verified_type=data.get("verified_type"),
                 created_at=data.get("created_at"),
                 profile_url=f"https://x.com/{data['username']}"
             )

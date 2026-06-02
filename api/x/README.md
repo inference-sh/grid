@@ -24,10 +24,11 @@ client.media.finalize_upload(id=media_id)
 client.media.get_upload_status(media_id=media_id)
 
 # Users
-response = client.users.get(id="123456789")
-response = client.users.get_by_username(username="elonmusk")
-response = client.users.follow(target_user_id="123456789")
-response = client.users.unfollow(target_user_id="123456789")
+response = client.users.get_me()
+response = client.users.get_by_id(id="123456789", user_fields=["description", "public_metrics"])
+response = client.users.get_by_username(username="elonmusk", user_fields=["description", "public_metrics"])
+response = client.users.follow_user(my_id, body={"target_user_id": "123456789"})
+response = client.users.unfollow_user(my_id, body={"target_user_id": "123456789"})
 response = client.users.get_followers(id="123456789")
 response = client.users.get_following(id="123456789")
 
