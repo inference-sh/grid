@@ -1,0 +1,23 @@
+namespace: infsh
+name: gemini-3-pro-image
+description: Gemini 3 Pro Image via Vertex AI with fal.ai (Nano Banana Pro) fallback on rate limits
+metadata: {}
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95nqdvcjmmybjm6030dmj.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95pra5b7jxjxbr1r6ewnj.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95r982nv20jex53qngmf2.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for fallback
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

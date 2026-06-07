@@ -1,0 +1,23 @@
+namespace: infsh
+name: gemini-3-1-flash-image
+description: Gemini 3.1 Flash Image via Vertex AI with fal.ai (Nano Banana 2) fallback on rate limits
+metadata: {}
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95r6cb0f4c4eg8awq7j0x.jpeg
+    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95atq40g3af1qm8vh9h4r.jpeg
+    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv958fgsvm69c25edexst4f.jpeg
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for fallback
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

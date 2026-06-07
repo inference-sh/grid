@@ -1,0 +1,36 @@
+{
+  "description": "Input schema for searching posts.",
+  "properties": {
+    "query": {
+      "description": "X search query. Use 'conversation_id:TWEET_ID' to get replies to a tweet, or any standard X search query (keywords, from:user, to:user, etc.)",
+      "title": "Query",
+      "type": "string"
+    },
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of results to return (10-100)",
+      "maximum": 100,
+      "minimum": 10,
+      "title": "Max Results",
+      "type": "integer"
+    },
+    "sort_order": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "relevancy",
+      "description": "Sort order: 'relevancy' or 'recency'",
+      "title": "Sort Order"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,20 @@
+namespace: x
+name: post-search
+description: Search recent posts on X.com. Use conversation_id to get replies to a tweet, or any X search query. Returns up to 100 posts with text, author, and engagement metrics.
+metadata: {}
+category: social
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.read
+      description: Search and read posts on X.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

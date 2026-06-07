@@ -1,0 +1,198 @@
+from enum import Enum
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, TextMeta
+from pydantic import Field
+from typing import Optional, List
+
+from .vertex_helper import (
+    create_vertex_client,
+    OutputFormatEnum,
+    ResolutionEnum,
+    SafetyToleranceEnum,
+    calculate_dimensions,
+    load_image_as_part,
+    build_image_generation_config,
+    setup_logger,
+    resolve_aspect_ratio,
+    retry_on_resource_exhausted,
+    RetryConfig,
+    process_image_response,
+    raise_no_images_error,
+    build_image_output_meta,
+)
+
+
+class ExtendedAspectRatioAutoEnum(str, Enum):
+    """Aspect ratios for Gemini 3.1 Flash (includes extreme ratios 1:4, 4:1, 1:8, 8:1)."""
+    auto = "auto"
+    ratio_21_9 = "21:9"
+    ratio_16_9 = "16:9"
+    ratio_8_1 = "8:1"
+    ratio_4_1 = "4:1"
+    ratio_3_2 = "3:2"
+    ratio_4_3 = "4:3"
+    ratio_5_4 = "5:4"
+    ratio_1_1 = "1:1"
+    ratio_4_5 = "4:5"
+    ratio_3_4 = "3:4"
+    ratio_2_3 = "2:3"
+    ratio_1_4 = "1:4"
+    ratio_1_8 = "1:8"
+    ratio_9_16 = "9:16"
+
+
+class AppInput(BaseAppInput):
+    prompt: str = Field(
+        description="The prompt for image generation or editing. Describe what you want to create or change."
+    )
+    images: Optional[List[File]] = Field(
+        None,
+        description="Optional list of input images for editing (up to 14 images). When provided, the model will edit these images based on the prompt. When not provided, the model will generate new images from the text prompt. Supported formats: JPEG, PNG, WebP"
+    )
+    num_images: int = Field(
+        1,
+        description="Number of images to generate.",
+        ge=1,
+        le=4
+    )
+    aspect_ratio: ExtendedAspectRatioAutoEnum = Field(
+        default=ExtendedAspectRatioAutoEnum.ratio_1_1,
+        description="Aspect ratio for the output image. Supports extreme ratios like 1:4, 4:1, 1:8, 8:1. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
+    )
+    resolution: ResolutionEnum = Field(
+        default=ResolutionEnum.res_1k,
+        description="Output resolution. Options: 1K, 2K, 4K. Default: 1K"
+    )
+    output_format: OutputFormatEnum = Field(
+        default=OutputFormatEnum.png,
+        description="Output format for the generated images."
+    )
+    enable_google_search: bool = Field(
+        default=False,
+        description="Enable Google Search grounding for real-time information (weather, news, etc.)"
+    )
+    safety_tolerance: SafetyToleranceEnum = Field(
+        default=SafetyToleranceEnum.block_none,
+        description="Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+    )
+    retry_count: int = Field(
+        default=2,
+        ge=0,
+        le=5,
+        description="Number of automatic retries on 429 rate limit errors using exponential backoff with jitter. Set to 0 to disable retries. Example: retry_count=2 means up to 3 total attempts (1 initial + 2 retries)."
+    )
+
+
+class AppOutput(BaseAppOutput):
+    images: List[File] = Field(description="The generated or edited images")
+    description: str = Field(default="", description="Text description or response from the model")
+
+
+class App(BaseApp):
+    async def setup(self):
+        """Initialize model and configuration."""
+        self.logger = setup_logger(__name__)
+        self.model_id = "gemini-3.1-flash-image"
+        self.client = create_vertex_client()
+        self.logger.info("Gemini 3.1 Flash Image (Vertex AI) initialized successfully")
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Generate or edit images using Gemini 3.1 Flash Image model via Vertex AI."""
+        try:
+            is_editing = input_data.images is not None and len(input_data.images) > 0
+
+            if is_editing:
+                if len(input_data.images) > 14:
+                    raise RuntimeError("Gemini 3.1 Flash Image supports up to 14 input images")
+
+                for i, image in enumerate(input_data.images):
+                    if not image.exists():
+                        raise RuntimeError(f"Input image {i+1} does not exist at path: {image.path}")
+
+                self.logger.info(f"Starting image editing with prompt: {input_data.prompt[:100]}...")
+                self.logger.info(f"Processing {len(input_data.images)} input image(s)")
+            else:
+                self.logger.info(f"Starting image generation with prompt: {input_data.prompt[:100]}...")
+
+            # Resolve aspect ratio (handle "auto")
+            aspect_ratio_value = resolve_aspect_ratio(
+                input_data.aspect_ratio.value,
+                input_data.images if is_editing else None,
+                self.logger
+            )
+
+            self.logger.info(f"Resolution: {input_data.resolution.value}, Aspect ratio: {aspect_ratio_value}")
+            self.logger.info(f"Requesting {input_data.num_images} output image(s)")
+
+            # Build content parts
+            contents = [input_data.prompt]
+
+            if is_editing:
+                for image in input_data.images:
+                    image_part = load_image_as_part(image.path, logger=self.logger)
+                    contents.append(image_part)
+
+            # Configure generation settings
+            config = build_image_generation_config(
+                aspect_ratio=aspect_ratio_value,
+                resolution=input_data.resolution.value,
+                output_format=input_data.output_format.value,
+                enable_google_search=input_data.enable_google_search,
+                safety_tolerance=input_data.safety_tolerance.value,
+            )
+
+            # Generate images (one API call per image)
+            results = []
+            retry_config = RetryConfig(max_attempts=input_data.retry_count + 1)
+
+            for i in range(input_data.num_images):
+                self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
+
+                async def _generate():
+                    return self.client.models.generate_content(
+                        model=self.model_id,
+                        contents=contents,
+                        config=config,
+                    )
+
+                response = await retry_on_resource_exhausted(_generate, config=retry_config, logger=self.logger)
+
+                # Debug: Log response structure to check for duplicate images
+                if response.candidates:
+                    candidate = response.candidates[0]
+                    parts = candidate.content.parts or []
+                    image_sizes = [len(p.inline_data.data) for p in parts if p.inline_data is not None]
+                    self.logger.info(f"Response has {len(image_sizes)} image(s) with sizes: {image_sizes}")
+
+                result = process_image_response(response, input_data.output_format.value, self.logger)
+                results.append(result)
+
+            # Collect all images and descriptions
+            output_images = [File(path=p) for r in results for p in r.image_paths]
+            descriptions = [d for r in results for d in r.descriptions]
+
+            if not output_images:
+                raise_no_images_error(results)
+
+            self.logger.info(f"Successfully generated {len(output_images)} image(s)")
+
+            width, height = calculate_dimensions(aspect_ratio_value, input_data.resolution.value)
+            meta = build_image_output_meta(results, width, height)
+
+            return AppOutput(
+                images=output_images,
+                description="\n".join(descriptions) if descriptions else "",
+                output_meta=OutputMeta(
+                    inputs=[TextMeta(**m) for m in meta["inputs"]],
+                    outputs=[
+                        TextMeta(**m) if m["type"] == "text" else ImageMeta(**{k: v for k, v in m.items() if k != "type"})
+                        for m in meta["outputs"]
+                    ],
+                    extra={
+                        "web_search": input_data.enable_google_search,
+                    }
+                )
+            )
+
+        except Exception as e:
+            self.logger.error(f"Error during image generation/editing: {e}")
+            raise RuntimeError(f"Image generation/editing failed: {str(e)}")
