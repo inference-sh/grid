@@ -178,9 +178,14 @@ class App(BaseApp):
         try:
             image_files = []
             for img in input_data.images:
+                if img is None:
+                    continue
                 f = open(img.path, "rb")
                 open_files.append(f)
                 image_files.append(f)
+
+            if not image_files:
+                raise ValueError("No valid images provided for editing")
 
             kwargs: dict = {
                 "model": "gpt-image-2",
