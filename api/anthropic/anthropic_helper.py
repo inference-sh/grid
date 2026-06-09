@@ -200,8 +200,20 @@ def convert_tools_to_anthropic(
     return result
 
 
-def build_thinking_param(input_data) -> Dict[str, Any]:
-    """Build the thinking parameter for Anthropic API based on reasoning config."""
+# Models with adaptive thinking (always on, cannot be disabled)
+ADAPTIVE_THINKING_MODELS = {"claude-fable-5", "claude-mythos-5"}
+
+
+def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]]:
+    """Build the thinking parameter for Anthropic API based on reasoning config.
+
+    Returns None for adaptive-thinking models (thinking is always on and cannot be
+    disabled or configured via the thinking parameter).
+    """
+    # Adaptive thinking models don't accept a thinking parameter
+    if model in ADAPTIVE_THINKING_MODELS:
+        return None
+
     reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
 
@@ -284,7 +296,9 @@ def build_params(
     if tools:
         params["tools"] = tools
 
-    params["thinking"] = build_thinking_param(input_data)
+    thinking = build_thinking_param(input_data, model=model)
+    if thinking is not None:
+        params["thinking"] = thinking
 
     return params
 

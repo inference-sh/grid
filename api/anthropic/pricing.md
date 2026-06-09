@@ -6,6 +6,8 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 
 | Model | Input | Output |
 |-------|-------|--------|
+| Claude Fable 5 | $10.00 | $50.00 |
+| Claude Mythos 5 | $10.00 | $50.00 |
 | Claude Opus 4.7 | $5.00 | $25.00 |
 | Claude Opus 4.6 | $5.00 | $25.00 |
 | Claude Opus 4.5 | $5.00 | $25.00 |
@@ -17,6 +19,7 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 
 | Model | 5m Cache Write (1.25x) | 1h Cache Write (2x) | Cache Hit (0.1x) |
 |-------|----------------------|---------------------|-------------------|
+| Fable 5 / Mythos 5 | $12.50 | $20.00 | $1.00 |
 | Opus 4.7 | $6.25 | $10.00 | $0.50 |
 | Opus 4.6 | $6.25 | $10.00 | $0.50 |
 | Opus 4.5 | $6.25 | $10.00 | $0.50 |
@@ -28,6 +31,7 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 
 | Model | Batch Input | Batch Output |
 |-------|------------|--------------|
+| Fable 5 / Mythos 5 | $5.00 | $25.00 |
 | Opus 4.7 | $2.50 | $12.50 |
 | Opus 4.6 | $2.50 | $12.50 |
 | Opus 4.5 | $2.50 | $12.50 |
@@ -42,6 +46,10 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 All apps use token-based pricing. The `output_meta` reports `TextMeta(tokens=N)` for both inputs and outputs.
 
 ```
+# Fable 5 / Mythos 5: $10/MTok in, $50/MTok out
+partner_input_per_million:  1000000000  # $10.00 in microcents
+partner_output_per_million: 5000000000  # $50.00 in microcents
+
 # Opus 4.7 / 4.6 / 4.5: $5/MTok in, $25/MTok out
 partner_input_per_million:  500000000   # $5.00 in microcents
 partner_output_per_million: 2500000000  # $25.00 in microcents
@@ -73,6 +81,11 @@ partner_fee
 - **US-only inference**: 1.1x multiplier (`inference_geo: "us"`)
 - **Fast Mode** (Opus 4.6/4.7 only): 6x standard ($30/$150 per MTok) — not used in our apps
 - **Extended output** (Batch API only): Up to 300k tokens via `output-300k-2026-03-24` beta header
+
+## Model Notes
+
+- **Claude Fable 5** (`claude-fable-5`) — GA, adaptive thinking (always on), 1M context, 128k output
+- **Claude Mythos 5** (`claude-mythos-5`) — limited availability (Project Glasswing), adaptive thinking (always on), 1M context, 128k output
 
 ## Deprecation Notes
 

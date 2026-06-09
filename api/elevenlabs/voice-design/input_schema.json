@@ -1,0 +1,42 @@
+{
+  "description": "Input schema for ElevenLabs Voice Design.",
+  "properties": {
+    "description": {
+      "description": "Describe the voice you want to create (e.g. 'A warm, mature British female voice with a storytelling quality and slight rasp').",
+      "title": "Description",
+      "type": "string"
+    },
+    "preview_text": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text to speak in the previews. If not provided, text is auto-generated.",
+      "title": "Preview Text"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "description"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

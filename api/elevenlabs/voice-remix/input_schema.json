@@ -1,0 +1,63 @@
+{
+  "description": "Input schema for ElevenLabs Voice Remix.",
+  "properties": {
+    "voice_id": {
+      "description": "Voice ID to remix (from voice-clone, voice-design, or a premade voice ID).",
+      "title": "Voice Id",
+      "type": "string"
+    },
+    "description": {
+      "description": "Describe how to modify the voice (e.g. 'Make it sound younger with an American accent and faster pacing').",
+      "title": "Description",
+      "type": "string"
+    },
+    "preview_text": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text to speak in the previews. If not provided, text is auto-generated.",
+      "title": "Preview Text"
+    },
+    "prompt_strength": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How much to apply the remix description (0-1). Lower preserves more of the original voice.",
+      "title": "Prompt Strength"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "voice_id",
+    "description"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

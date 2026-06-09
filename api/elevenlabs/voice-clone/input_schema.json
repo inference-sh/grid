@@ -1,0 +1,55 @@
+{
+  "description": "Input schema for ElevenLabs Voice Clone.",
+  "properties": {
+    "audio": {
+      "description": "Audio sample of the voice to clone (WAV or MP3, 1-2 minutes of clear speech recommended).",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name for the cloned voice (e.g. 'My Custom Voice').",
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional description of the voice characteristics.",
+      "title": "Description"
+    },
+    "remove_background_noise": {
+      "default": true,
+      "description": "Remove background noise from the audio sample before cloning.",
+      "title": "Remove Background Noise",
+      "type": "boolean"
+    },
+    "preview_text": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional text to generate a preview with the cloned voice. If provided, returns a preview audio file.",
+      "title": "Preview Text"
+    }
+  },
+  "required": [
+    "audio",
+    "name"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

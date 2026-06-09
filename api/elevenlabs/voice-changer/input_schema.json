@@ -9,7 +9,7 @@
     },
     "voice": {
       "default": "george",
-      "description": "Target voice for transformation.",
+      "description": "Premade target voice. Ignored if voice_id is provided.",
       "enum": [
         "adam",
         "alice",
@@ -36,6 +36,19 @@
       ],
       "title": "Voice",
       "type": "string"
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
+      "title": "Voice Id"
     },
     "model": {
       "default": "eleven_multilingual_sts_v2",

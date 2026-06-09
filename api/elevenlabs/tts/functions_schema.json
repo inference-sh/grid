@@ -11,7 +11,7 @@
         },
         "voice": {
           "default": "george",
-          "description": "Voice to use for speech generation.",
+          "description": "Premade voice to use. Ignored if voice_id is provided.",
           "enum": [
             "adam",
             "alice",
@@ -38,6 +38,19 @@
           ],
           "title": "Voice",
           "type": "string"
+        },
+        "voice_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
+          "title": "Voice Id"
         },
         "model": {
           "default": "eleven_v3",

@@ -9,7 +9,8 @@
           "type": "string"
         },
         "voice": {
-          "description": "Voice for this segment",
+          "default": "george",
+          "description": "Premade voice for this segment. Ignored if voice_id is provided.",
           "enum": [
             "adam",
             "alice",
@@ -36,11 +37,23 @@
           ],
           "title": "Voice",
           "type": "string"
+        },
+        "voice_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides voice when provided.",
+          "title": "Voice Id"
         }
       },
       "required": [
-        "text",
-        "voice"
+        "text"
       ],
       "title": "DialogueSegment",
       "type": "object"

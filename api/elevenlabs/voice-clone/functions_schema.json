@@ -1,46 +1,21 @@
 {
   "run": {
-    "description": "Transform voice in audio.",
+    "description": "",
     "input_schema": {
-      "description": "Input schema for ElevenLabs Voice Changer.",
+      "description": "Input schema for ElevenLabs Voice Clone.",
       "properties": {
         "audio": {
-          "description": "Input audio file containing speech to transform.",
+          "description": "Audio sample of the voice to clone (WAV or MP3, 1-2 minutes of clear speech recommended).",
           "format": "file",
           "title": "Audio",
           "type": "string"
         },
-        "voice": {
-          "default": "george",
-          "description": "Premade target voice. Ignored if voice_id is provided.",
-          "enum": [
-            "adam",
-            "alice",
-            "aria",
-            "bella",
-            "bill",
-            "brian",
-            "callum",
-            "charlie",
-            "chris",
-            "daniel",
-            "eric",
-            "george",
-            "harry",
-            "jessica",
-            "laura",
-            "liam",
-            "lily",
-            "matilda",
-            "river",
-            "roger",
-            "sarah",
-            "will"
-          ],
-          "title": "Voice",
+        "name": {
+          "description": "Name for the cloned voice (e.g. 'My Custom Voice').",
+          "title": "Name",
           "type": "string"
         },
-        "voice_id": {
+        "description": {
           "anyOf": [
             {
               "type": "string"
@@ -50,36 +25,33 @@
             }
           ],
           "default": null,
-          "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
-          "title": "Voice Id"
+          "description": "Optional description of the voice characteristics.",
+          "title": "Description"
         },
-        "model": {
-          "default": "eleven_multilingual_sts_v2",
-          "description": "Model to use. multilingual supports 70+ languages.",
-          "enum": [
-            "eleven_multilingual_sts_v2",
-            "eleven_english_sts_v2"
-          ],
-          "title": "Model",
-          "type": "string"
+        "remove_background_noise": {
+          "default": true,
+          "description": "Remove background noise from the audio sample before cloning.",
+          "title": "Remove Background Noise",
+          "type": "boolean"
         },
-        "output_format": {
-          "default": "mp3_44100_128",
-          "description": "Audio output format.",
-          "enum": [
-            "mp3_44100_128",
-            "mp3_44100_192",
-            "pcm_16000",
-            "pcm_22050",
-            "pcm_24000",
-            "pcm_44100"
+        "preview_text": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ],
-          "title": "Output Format",
-          "type": "string"
+          "default": null,
+          "description": "Optional text to generate a preview with the cloned voice. If provided, returns a preview audio file.",
+          "title": "Preview Text"
         }
       },
       "required": [
-        "audio"
+        "audio",
+        "name"
       ],
       "title": "AppInput",
       "type": "object"
@@ -369,13 +341,31 @@
           "type": "object"
         }
       },
-      "description": "Output schema for ElevenLabs Voice Changer.",
+      "description": "Output schema for ElevenLabs Voice Clone.",
       "properties": {
-        "audio": {
-          "description": "Transformed audio file with new voice",
-          "format": "file",
-          "title": "Audio",
+        "voice_id": {
+          "description": "The cloned voice ID \u2014 use this with ElevenLabs TTS, voice changer, or text-to-dialogue apps",
+          "title": "Voice Id",
           "type": "string"
+        },
+        "name": {
+          "description": "Display name of the cloned voice",
+          "title": "Name",
+          "type": "string"
+        },
+        "preview": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Preview audio generated with the cloned voice (if preview_text was provided)",
+          "title": "Preview"
         },
         "output_meta": {
           "anyOf": [
@@ -391,7 +381,8 @@
         }
       },
       "required": [
-        "audio"
+        "voice_id",
+        "name"
       ],
       "title": "AppOutput",
       "type": "object"

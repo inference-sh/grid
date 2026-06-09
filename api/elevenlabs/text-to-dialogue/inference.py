@@ -7,7 +7,7 @@ Each segment can have its own voice and performance directions.
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
 from pydantic import Field, BaseModel
-from typing import List, Literal
+from typing import List, Literal, Optional
 import logging
 
 from .elevenlabs_helper import text_to_dialogue, get_api_key, get_audio_duration, get_voice_id
@@ -22,7 +22,8 @@ VoiceName = Literal[
 class DialogueSegment(BaseModel):
     """A single dialogue segment with text and voice."""
     text: str = Field(description="Text to speak, can include directions like [cheerfully]")
-    voice: VoiceName = Field(description="Voice for this segment")
+    voice: VoiceName = Field(default="george", description="Premade voice for this segment. Ignored if voice_id is provided.")
+    voice_id: Optional[str] = Field(default=None, description="Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides voice when provided.")
 
 
 class AppInput(BaseAppInput):
@@ -54,7 +55,7 @@ class App(BaseApp):
 
         # Convert to API format
         inputs = [
-            {"text": seg.text, "voice_id": get_voice_id(seg.voice)}
+            {"text": seg.text, "voice_id": seg.voice_id if seg.voice_id else get_voice_id(seg.voice)}
             for seg in input_data.segments
         ]
 

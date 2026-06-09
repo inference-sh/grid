@@ -1,0 +1,22 @@
+namespace: anthropic
+name: claude-fable-5
+description: Claude Fable 5 — Anthropic's most capable widely released model. 1M context, 128k output, adaptive thinking, vision, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

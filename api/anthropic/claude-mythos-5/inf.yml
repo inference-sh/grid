@@ -1,0 +1,22 @@
+namespace: anthropic
+name: claude-mythos-5
+description: Claude Mythos 5 — Project Glasswing. Successor to Claude Mythos Preview. 1M context, 128k output, adaptive thinking, vision, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

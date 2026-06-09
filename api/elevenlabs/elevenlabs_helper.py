@@ -407,6 +407,175 @@ def download_dubbed_audio(
     return file_path
 
 
+def clone_voice(
+    name: str,
+    files: List[str],
+    description: Optional[str] = None,
+    labels: Optional[Dict[str, str]] = None,
+    remove_background_noise: Optional[bool] = True,
+    logger: Optional[logging.Logger] = None,
+) -> Dict[str, Any]:
+    """Clone a voice using ElevenLabs Instant Voice Cloning (IVC).
+
+    Args:
+        name: Display name for the cloned voice.
+        files: List of audio file paths (1-10 files, 1-2 min total).
+        description: Optional voice description.
+        labels: Optional dict of labels (e.g. {"user_id": "xxx", "accent": "british"}).
+        remove_background_noise: Preprocess audio to remove noise.
+    """
+    if logger:
+        logger.info(f"Cloning voice '{name}' from {len(files)} file(s)")
+
+    client = get_client()
+
+    # Open files as binary handles — SDK needs IO[bytes], not paths
+    file_handles = []
+    try:
+        for path in files:
+            f = open(path, "rb")
+            file_handles.append(f)
+
+        voice = client.voices.ivc.create(
+            name=name,
+            files=file_handles,
+            description=description,
+            labels=labels,
+            remove_background_noise=remove_background_noise,
+        )
+    finally:
+        for f in file_handles:
+            f.close()
+
+    if logger:
+        logger.info(f"Voice cloned: {voice.voice_id}")
+
+    return {
+        "voice_id": voice.voice_id,
+        "name": name,
+    }
+
+
+def list_cloned_voices(
+    logger: Optional[logging.Logger] = None,
+) -> List[Dict[str, Any]]:
+    """List all voices on the account (cloned and premade)."""
+    client = get_client()
+    result = client.voices.get_all()
+
+    voices = []
+    for v in result.voices:
+        voices.append({
+            "voice_id": v.voice_id,
+            "name": v.name,
+            "category": v.category,
+            "description": v.description,
+            "labels": v.labels if v.labels else {},
+        })
+
+    if logger:
+        logger.info(f"Found {len(voices)} voices")
+    return voices
+
+
+def delete_voice(
+    voice_id: str,
+    logger: Optional[logging.Logger] = None,
+) -> None:
+    """Delete a cloned voice."""
+    if logger:
+        logger.info(f"Deleting voice: {voice_id}")
+    client = get_client()
+    client.voices.delete(voice_id=voice_id)
+    if logger:
+        logger.info(f"Voice deleted: {voice_id}")
+
+
+def design_voice(
+    voice_description: str,
+    text: Optional[str] = None,
+    seed: Optional[int] = None,
+    logger: Optional[logging.Logger] = None,
+) -> List[Dict[str, Any]]:
+    """Design a new voice from a text description.
+
+    Returns a list of preview dicts with generated_voice_id, audio (base64), and duration.
+    Use the generated_voice_id with TTS or save it.
+    """
+    if logger:
+        logger.info(f"Designing voice: {voice_description[:50]}...")
+
+    client = get_client()
+
+    result = client.text_to_voice.create_previews(
+        voice_description=voice_description,
+        text=text,
+        auto_generate_text=text is None,
+        seed=seed,
+    )
+
+    previews = []
+    for p in result.previews:
+        # Decode base64 audio to file
+        import base64
+        audio_bytes = base64.b64decode(p.audio_base_64)
+        audio_path = save_audio_bytes(audio_bytes, suffix=".mp3")
+
+        previews.append({
+            "generated_voice_id": p.generated_voice_id,
+            "audio_path": audio_path,
+            "duration_secs": p.duration_secs,
+        })
+
+    if logger:
+        logger.info(f"Generated {len(previews)} voice previews")
+    return previews
+
+
+def remix_voice(
+    voice_id: str,
+    voice_description: str,
+    text: Optional[str] = None,
+    prompt_strength: Optional[float] = None,
+    seed: Optional[int] = None,
+    logger: Optional[logging.Logger] = None,
+) -> List[Dict[str, Any]]:
+    """Remix an existing voice with a new description.
+
+    Modifies characteristics like accent, gender, style, pacing.
+    Returns preview dicts with generated_voice_id and audio.
+    """
+    if logger:
+        logger.info(f"Remixing voice {voice_id}: {voice_description[:50]}...")
+
+    client = get_client()
+
+    result = client.text_to_voice.remix(
+        voice_id=voice_id,
+        voice_description=voice_description,
+        text=text,
+        auto_generate_text=text is None,
+        prompt_strength=prompt_strength,
+        seed=seed,
+    )
+
+    previews = []
+    for p in result.previews:
+        import base64
+        audio_bytes = base64.b64decode(p.audio_base_64)
+        audio_path = save_audio_bytes(audio_bytes, suffix=".mp3")
+
+        previews.append({
+            "generated_voice_id": p.generated_voice_id,
+            "audio_path": audio_path,
+            "duration_secs": p.duration_secs,
+        })
+
+    if logger:
+        logger.info(f"Generated {len(previews)} remixed voice previews")
+    return previews
+
+
 def text_to_dialogue(
     inputs: List[Dict[str, str]],
     logger: Optional[logging.Logger] = None,

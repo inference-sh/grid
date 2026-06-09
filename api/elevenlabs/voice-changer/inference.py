@@ -7,7 +7,7 @@ while preserving the original speech content.
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
 from pydantic import Field
-from typing import Literal
+from typing import Literal, Optional
 import logging
 
 from .elevenlabs_helper import speech_to_speech, get_api_key, get_audio_duration, get_voice_id
@@ -25,7 +25,11 @@ class AppInput(BaseAppInput):
         "lily", "matilda", "river", "roger", "sarah", "will",
     ] = Field(
         default="george",
-        description="Target voice for transformation.",
+        description="Premade target voice. Ignored if voice_id is provided.",
+    )
+    voice_id: Optional[str] = Field(
+        default=None,
+        description="Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
     )
     model: Literal[
         "eleven_multilingual_sts_v2",
@@ -63,14 +67,15 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Transform voice in audio."""
-        self.logger.info(f"Transforming voice to: {input_data.voice}")
+        resolved_voice_id = input_data.voice_id if input_data.voice_id else get_voice_id(input_data.voice)
+        self.logger.info(f"Transforming voice to: {resolved_voice_id}")
 
         # Get input duration for billing (priced per minute)
         input_duration = get_audio_duration(input_data.audio.path, self.logger)
 
         audio_path = speech_to_speech(
             audio_path=input_data.audio.path,
-            voice_id=get_voice_id(input_data.voice),
+            voice_id=resolved_voice_id,
             model_id=input_data.model,
             output_format=input_data.output_format,
             logger=self.logger,

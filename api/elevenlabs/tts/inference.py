@@ -7,7 +7,7 @@ v3 supports 70+ languages with audio tags for emotion/style control.
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
 from pydantic import Field
-from typing import Literal
+from typing import Literal, Optional
 import logging
 
 from .elevenlabs_helper import text_to_speech, get_api_key, get_voice_id, get_audio_duration
@@ -44,7 +44,11 @@ class AppInput(BaseAppInput):
         "will",      # American male, relaxed
     ] = Field(
         default="george",
-        description="Voice to use for speech generation.",
+        description="Premade voice to use. Ignored if voice_id is provided.",
+    )
+    voice_id: Optional[str] = Field(
+        default=None,
+        description="Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
     )
     model: Literal[
         "eleven_v3",
@@ -117,8 +121,10 @@ class App(BaseApp):
         if input_data.audio_tags and input_data.model != "eleven_v3":
             raise ValueError("Audio tags are only supported with the eleven_v3 model")
 
+        resolved_voice_id = input_data.voice_id if input_data.voice_id else get_voice_id(input_data.voice)
+
         self.logger.info(f"Generating speech: {len(input_data.text)} characters")
-        self.logger.info(f"Voice: {input_data.voice}, Model: {input_data.model}")
+        self.logger.info(f"Voice ID: {resolved_voice_id}, Model: {input_data.model}")
 
         voice_settings = {
             "stability": input_data.stability,
@@ -129,7 +135,7 @@ class App(BaseApp):
 
         audio_path = text_to_speech(
             text=input_data.text,
-            voice_id=get_voice_id(input_data.voice),
+            voice_id=resolved_voice_id,
             model_id=input_data.model,
             output_format=input_data.output_format,
             voice_settings=voice_settings,
