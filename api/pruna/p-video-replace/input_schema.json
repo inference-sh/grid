@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "FpsEnum": {
+      "enum": [
+        "original",
+        "24",
+        "48"
+      ],
+      "title": "FpsEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Video-Replace.",
+  "properties": {
+    "video": {
+      "description": "Source video (.mp4). Motion, timing, camera, and scene come from this.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "images": {
+      "description": "Reference image(s) of people to place into the video (1-4 images).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "instruction_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Describe who in the video to replace with whom from reference images. E.g. 'Replace the person in the source video with the woman from reference image 1. Keep lip sync, motion, audio, and camera from the source video.'",
+      "title": "Instruction Prompt"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Output resolution: 720p ($0.03/s) or 1080p ($0.06/s)."
+    },
+    "turbo": {
+      "default": false,
+      "description": "Turbo mode: faster generation for slightly lower quality.",
+      "title": "Turbo",
+      "type": "boolean"
+    },
+    "target_fps": {
+      "$ref": "#/$defs/FpsEnum",
+      "default": "original",
+      "description": "Target FPS: 'original' to match source, or '24'/'48'."
+    },
+    "save_audio": {
+      "default": true,
+      "description": "Include audio from the source video in the output.",
+      "title": "Save Audio",
+      "type": "boolean"
+    },
+    "ignore_audio": {
+      "default": false,
+      "description": "Ignore source audio during generation. If save_audio is true, audio is still saved.",
+      "title": "Ignore Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "disable_safety_checker": {
+      "default": false,
+      "description": "Disable safety checker for generated videos.",
+      "title": "Disable Safety Checker",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "video",
+    "images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
