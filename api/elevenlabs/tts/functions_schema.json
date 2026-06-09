@@ -5,8 +5,7 @@
       "description": "Input schema for ElevenLabs TTS.",
       "properties": {
         "text": {
-          "description": "Text to convert to speech (max 40,000 characters).",
-          "maxLength": 40000,
+          "description": "Text to convert to speech. Max 40,000 characters for v2 models, 5,000 for v3.",
           "title": "Text",
           "type": "string"
         },
@@ -41,15 +40,22 @@
           "type": "string"
         },
         "model": {
-          "default": "eleven_multilingual_v2",
-          "description": "Model to use. multilingual_v2 is highest quality, turbo/flash are faster with lower latency.",
+          "default": "eleven_v3",
+          "description": "Model to use. v3 is most expressive with 70+ languages and audio tag support, multilingual_v2 is high quality, turbo/flash are faster with lower latency.",
           "enum": [
+            "eleven_v3",
             "eleven_multilingual_v2",
             "eleven_turbo_v2_5",
             "eleven_flash_v2_5"
           ],
           "title": "Model",
           "type": "string"
+        },
+        "audio_tags": {
+          "default": false,
+          "description": "Enable audio tags in text for emotion/style control (v3 only). Use tags like [laughs], [whispers], [excited], [sad], [slow], [fast], [shouts], [sighs] inline in your text.",
+          "title": "Audio Tags",
+          "type": "boolean"
         },
         "output_format": {
           "default": "mp3_44100_128",

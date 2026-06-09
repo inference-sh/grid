@@ -1,8 +1,8 @@
 """
 ElevenLabs Text to Speech
 
-High-quality text-to-speech using ElevenLabs multilingual models.
-Supports 32 languages with natural-sounding voices.
+High-quality text-to-speech using ElevenLabs models.
+v3 supports 70+ languages with audio tags for emotion/style control.
 """
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, AudioMeta
@@ -17,8 +17,7 @@ class AppInput(BaseAppInput):
     """Input schema for ElevenLabs TTS."""
 
     text: str = Field(
-        description="Text to convert to speech (max 40,000 characters).",
-        max_length=40000,
+        description="Text to convert to speech. Max 40,000 characters for v2 models, 5,000 for v3.",
     )
     voice: Literal[
         "adam",      # American male, dominant/firm
@@ -48,12 +47,17 @@ class AppInput(BaseAppInput):
         description="Voice to use for speech generation.",
     )
     model: Literal[
+        "eleven_v3",
         "eleven_multilingual_v2",
         "eleven_turbo_v2_5",
         "eleven_flash_v2_5",
     ] = Field(
-        default="eleven_multilingual_v2",
-        description="Model to use. multilingual_v2 is highest quality, turbo/flash are faster with lower latency.",
+        default="eleven_v3",
+        description="Model to use. v3 is most expressive with 70+ languages and audio tag support, multilingual_v2 is high quality, turbo/flash are faster with lower latency.",
+    )
+    audio_tags: bool = Field(
+        default=False,
+        description="Enable audio tags in text for emotion/style control (v3 only). Use tags like [laughs], [whispers], [excited], [sad], [slow], [fast], [shouts], [sighs] inline in your text.",
     )
     output_format: Literal[
         "mp3_44100_128",
@@ -106,6 +110,13 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Generate speech from text."""
+        max_chars = 5000 if input_data.model == "eleven_v3" else 40000
+        if len(input_data.text) > max_chars:
+            raise ValueError(f"Text exceeds {max_chars} character limit for {input_data.model}")
+
+        if input_data.audio_tags and input_data.model != "eleven_v3":
+            raise ValueError("Audio tags are only supported with the eleven_v3 model")
+
         self.logger.info(f"Generating speech: {len(input_data.text)} characters")
         self.logger.info(f"Voice: {input_data.voice}, Model: {input_data.model}")
 
