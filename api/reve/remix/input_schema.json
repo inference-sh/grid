@@ -1,0 +1,85 @@
+{
+  "properties": {
+    "images": {
+      "description": "Reference images to remix (1-6). Reference them in the prompt as '0', '1', etc.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 6,
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "prompt": {
+      "description": "Describe how to combine the references (e.g. 'The woman from 0 driving the car from 1').",
+      "maxLength": 2560,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "enum": [
+            "16:9",
+            "9:16",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "1:1"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output aspect ratio. If not set, chosen by the model.",
+      "title": "Aspect Ratio"
+    },
+    "test_time_scaling": {
+      "anyOf": [
+        {
+          "maximum": 5,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Spend more time for better quality (1-5). Values above 1 cost additional credits.",
+      "title": "Test Time Scaling"
+    },
+    "upscale_factor": {
+      "anyOf": [
+        {
+          "maximum": 4,
+          "minimum": 2,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Upscale output by 2x, 3x, or 4x.",
+      "title": "Upscale Factor"
+    },
+    "remove_background": {
+      "default": false,
+      "description": "Make background transparent.",
+      "title": "Remove Background",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "images",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

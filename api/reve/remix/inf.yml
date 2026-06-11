@@ -1,0 +1,20 @@
+namespace: reve
+name: remix
+description: Reve Remix — Create images from text and 1-6 reference images combined.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: REVE_KEY
+      description: Reve partner API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,0 +1,66 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate (max 2560 characters).",
+      "maxLength": 2560,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "default": "1:1",
+      "description": "Output aspect ratio.",
+      "enum": [
+        "16:9",
+        "9:16",
+        "3:2",
+        "2:3",
+        "4:3",
+        "3:4",
+        "1:1"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "test_time_scaling": {
+      "anyOf": [
+        {
+          "maximum": 5,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Spend more time for better quality (1-5). Values above 1 cost additional credits.",
+      "title": "Test Time Scaling"
+    },
+    "upscale_factor": {
+      "anyOf": [
+        {
+          "maximum": 4,
+          "minimum": 2,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Upscale output by 2x, 3x, or 4x.",
+      "title": "Upscale Factor"
+    },
+    "remove_background": {
+      "default": false,
+      "description": "Make background transparent.",
+      "title": "Remove Background",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
