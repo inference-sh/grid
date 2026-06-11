@@ -1,4 +1,4 @@
-namespace: ""
+namespace: heygen
 name: create-avatar
 description: Create HeyGen avatars from video footage (digital twin), a photo (photo avatar), or a text prompt (AI-generated). Returns a look ID for use with avatar-video.
 metadata:

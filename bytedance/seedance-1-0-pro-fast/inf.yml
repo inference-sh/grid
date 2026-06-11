@@ -1,4 +1,4 @@
-namespace: ""
+namespace: bytedance
 name: seedance-1-0-pro-fast
 description: Fast high-quality video generation up to 1080p from text prompts with optional first-frame image control using ByteDance's Seedance 1.0 Pro Fast model.
 metadata:

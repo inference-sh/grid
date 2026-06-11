@@ -1,4 +1,4 @@
-namespace: ""
+namespace: falai
 name: gemini-3-pro-image-preview
 description: Generate high-quality images and edit them through conversation, excelling at rendering text accurately and understanding complex prompts.
 metadata: {}

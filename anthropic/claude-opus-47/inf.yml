@@ -1,4 +1,4 @@
-namespace: ""
+namespace: anthropic
 name: claude-opus-47
 description: Claude Opus 4.7 — Anthropic's most capable model. 1M context, 128k output, vision, extended thinking, tool use. Direct API.
 metadata:

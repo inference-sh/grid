@@ -16,10 +16,10 @@ regex==2026.5.9
 requests==2.34.2
 setuptools==82.0.1
 setuptools-scm==10.0.5
-tavily-python==0.7.25
+tavily-python==0.7.26
 tiktoken==0.13.0
 tomli==2.4.1
-tqdm==4.68.1
+tqdm==4.68.2
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 urllib3==2.7.0

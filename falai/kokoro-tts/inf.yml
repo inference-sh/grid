@@ -1,4 +1,4 @@
-namespace: ""
+namespace: falai
 name: kokoro-tts
 description: Kokoro TTS - Lightweight text-to-speech with multiple languages and voices
 metadata: {}

@@ -1,4 +1,4 @@
-namespace: ""
+namespace: heygen
 name: video-translate
 description: Translate videos into 30+ languages with voice cloning and lip-sync using HeyGen. Supports speed and precision modes with optional captioning.
 metadata:

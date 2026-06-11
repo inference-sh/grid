@@ -1,4 +1,4 @@
-namespace: ""
+namespace: infsh
 name: z-image
 description: a fast and high quality image generation model
 metadata: {}

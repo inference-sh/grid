@@ -1,4 +1,4 @@
-namespace: ""
+namespace: x
 name: user-follow
 description: Follow a user on X.com by user ID. Succeeds silently if already following.
 metadata: {}

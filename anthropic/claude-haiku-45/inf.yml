@@ -1,4 +1,4 @@
-namespace: ""
+namespace: anthropic
 name: claude-haiku-45
 description: Claude Haiku 4.5 — Fastest and most affordable Claude. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
 metadata:

@@ -1,4 +1,4 @@
-namespace: ""
+namespace: heygen
 name: photo-video
 description: Animate portrait photos into talking videos using HeyGen. Upload a face image and add speech with configurable voice, motion prompts, and expressiveness.
 metadata:

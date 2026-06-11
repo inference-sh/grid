@@ -1,4 +1,4 @@
-namespace: ""
+namespace: infsh
 name: google-test
 description: google test
 metadata: {}

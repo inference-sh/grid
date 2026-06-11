@@ -1,4 +1,4 @@
-namespace: ""
+namespace: bytedance
 name: seedance-2-0
 description: Professional multimodal video generation from text, images, video, and audio references using ByteDance's Seedance 2.0 model via BytePlus ARK API. Supports up to 1080p, text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:

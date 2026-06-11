@@ -1,4 +1,4 @@
-namespace: ""
+namespace: tavily
 name: extract
 description: Extracts clean, readable content, including text and images, from specified webpages, supporting batch processing for multiple URLs.
 metadata: {}

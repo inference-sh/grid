@@ -1,4 +1,4 @@
-namespace: ""
+namespace: infsh
 name: post-tweet
 description: Post tweets to X.com (Twitter)
 metadata: {}

@@ -1,4 +1,4 @@
-namespace: ""
+namespace: veed
 name: subtitles
 description: Add professional burned-in subtitles to videos with 25+ style presets. Supports 100+ languages with automatic transcription or custom SRT files.
 metadata:

@@ -1,4 +1,4 @@
-namespace: ""
+namespace: anthropic
 name: claude-sonnet-46
 description: Claude Sonnet 4.6 — Best balance of speed and intelligence. 1M context, 64k output, vision, extended thinking, tool use. Direct API.
 metadata:

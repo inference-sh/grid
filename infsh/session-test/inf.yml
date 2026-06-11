@@ -1,4 +1,4 @@
-namespace: ""
+namespace: infsh
 name: session-test
 description: Multi-function test app for verifying session state persistence across calls
 metadata:

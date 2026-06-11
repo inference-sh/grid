@@ -1,4 +1,4 @@
-namespace: ""
+namespace: infsh
 name: pkgtest
 description: Checks if a package is installed
 metadata: {}

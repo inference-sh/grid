@@ -1,4 +1,4 @@
-namespace: ""
+namespace: heygen
 name: text-to-speech
 description: Generate natural speech audio from text using HeyGen's Starfish TTS engine. Supports configurable voice, speed, SSML input, and multiple languages.
 metadata:

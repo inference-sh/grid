@@ -1,4 +1,4 @@
-namespace: ""
+namespace: google
 name: veo-3
 description: Veo 3 via Vertex AI - Generate videos with audio from text prompts and images
 metadata: {}
