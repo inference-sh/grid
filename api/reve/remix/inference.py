@@ -3,7 +3,7 @@ Reve Remix — Create images from text and 1-6 reference images.
 Combine multiple references into a single output guided by a prompt.
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, RawMeta
 from pydantic import Field
 from typing import Optional, Literal, List
 import logging
@@ -88,11 +88,15 @@ class App(BaseApp):
         with Image.open(image_path) as img:
             width, height = img.size
 
-        self.logger.info(f"Image remixed: {width}x{height}")
+        credits_used = result.get("credits_used", 30)
+        self.logger.info(f"Image remixed: {width}x{height}, credits: {credits_used}")
 
         return AppOutput(
             image=File(path=image_path),
             output_meta=OutputMeta(
-                outputs=[ImageMeta(width=width, height=height, count=1)]
+                outputs=[
+                    ImageMeta(width=width, height=height, count=1),
+                    RawMeta(cost=credits_used),
+                ]
             ),
         )
