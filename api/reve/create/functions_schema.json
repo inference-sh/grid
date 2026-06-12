@@ -24,6 +24,12 @@
           "title": "Aspect Ratio",
           "type": "string"
         },
+        "version": {
+          "default": "latest",
+          "description": "Model version (e.g. 'latest' or 'reve-create@20250915').",
+          "title": "Version",
+          "type": "string"
+        },
         "test_time_scaling": {
           "anyOf": [
             {

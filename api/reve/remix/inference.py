@@ -25,6 +25,10 @@ class AppInput(BaseAppInput):
         default=None,
         description="Output aspect ratio. If not set, chosen by the model.",
     )
+    version: str = Field(
+        default="latest",
+        description="Model version (e.g. 'latest' or 'reve-remix@20250915').",
+    )
     test_time_scaling: Optional[int] = Field(
         default=None,
         ge=1,
@@ -74,6 +78,7 @@ class App(BaseApp):
             prompt=input_data.prompt,
             reference_images_b64=ref_images_b64,
             aspect_ratio=input_data.aspect_ratio,
+            version=input_data.version,
             test_time_scaling=input_data.test_time_scaling,
             postprocessing=postprocessing or None,
             logger=self.logger,

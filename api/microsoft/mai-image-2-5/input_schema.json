@@ -1,0 +1,65 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image (3-5000 characters).",
+      "maxLength": 5000,
+      "minLength": 3,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference image for editing. When provided, the prompt becomes an edit instruction.",
+      "title": "Image"
+    },
+    "num_images": {
+      "default": 1,
+      "description": "Number of images to generate (1-4).",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Num Images",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "auto",
+      "description": "Output aspect ratio.",
+      "enum": [
+        "auto",
+        "1:1",
+        "4:3",
+        "3:4",
+        "16:9",
+        "9:16",
+        "3:2",
+        "2:3"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "output_format": {
+      "default": "png",
+      "description": "Output image format.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

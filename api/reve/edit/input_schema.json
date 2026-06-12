@@ -34,6 +34,12 @@
       "description": "Output aspect ratio. If not set, uses the reference image's ratio.",
       "title": "Aspect Ratio"
     },
+    "version": {
+      "default": "latest",
+      "description": "Model version (e.g. 'latest' or 'reve-edit@20250915').",
+      "title": "Version",
+      "type": "string"
+    },
     "test_time_scaling": {
       "anyOf": [
         {

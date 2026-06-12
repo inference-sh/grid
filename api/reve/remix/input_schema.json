@@ -39,6 +39,12 @@
       "description": "Output aspect ratio. If not set, chosen by the model.",
       "title": "Aspect Ratio"
     },
+    "version": {
+      "default": "latest",
+      "description": "Model version (e.g. 'latest' or 'reve-remix@20250915').",
+      "title": "Version",
+      "type": "string"
+    },
     "test_time_scaling": {
       "anyOf": [
         {

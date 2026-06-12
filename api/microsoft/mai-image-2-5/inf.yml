@@ -1,0 +1,20 @@
+namespace: microsoft
+name: mai-image-2-5
+description: MAI Image 2.5 — Microsoft's photorealistic image generation and editing model with fine-grained pixel-level control.
+metadata: {}
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FAL_KEY
+      description: fal.ai API key for model access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

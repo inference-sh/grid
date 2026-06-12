@@ -3,35 +3,17 @@
     "description": "",
     "input_schema": {
       "properties": {
-        "images": {
-          "description": "Reference images to remix (1-6). Reference them in the prompt as '0', '1', etc.",
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "maxItems": 6,
-          "minItems": 1,
-          "title": "Images",
-          "type": "array"
-        },
         "prompt": {
-          "description": "Describe how to combine the references (e.g. 'The woman from 0 driving the car from 1').",
-          "maxLength": 2560,
+          "description": "Text prompt describing the desired image (3-5000 characters).",
+          "maxLength": 5000,
+          "minLength": 3,
           "title": "Prompt",
           "type": "string"
         },
-        "aspect_ratio": {
+        "image": {
           "anyOf": [
             {
-              "enum": [
-                "16:9",
-                "9:16",
-                "3:2",
-                "2:3",
-                "4:3",
-                "3:4",
-                "1:1"
-              ],
+              "format": "file",
               "type": "string"
             },
             {
@@ -39,54 +21,46 @@
             }
           ],
           "default": null,
-          "description": "Output aspect ratio. If not set, chosen by the model.",
-          "title": "Aspect Ratio"
+          "description": "Reference image for editing. When provided, the prompt becomes an edit instruction.",
+          "title": "Image"
         },
-        "version": {
-          "default": "latest",
-          "description": "Model version (e.g. 'latest' or 'reve-remix@20250915').",
-          "title": "Version",
+        "num_images": {
+          "default": 1,
+          "description": "Number of images to generate (1-4).",
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Num Images",
+          "type": "integer"
+        },
+        "aspect_ratio": {
+          "default": "auto",
+          "description": "Output aspect ratio.",
+          "enum": [
+            "auto",
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16",
+            "3:2",
+            "2:3"
+          ],
+          "title": "Aspect Ratio",
           "type": "string"
         },
-        "test_time_scaling": {
-          "anyOf": [
-            {
-              "maximum": 5,
-              "minimum": 1,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
+        "output_format": {
+          "default": "png",
+          "description": "Output image format.",
+          "enum": [
+            "png",
+            "jpeg",
+            "webp"
           ],
-          "default": null,
-          "description": "Spend more time for better quality (1-5). Values above 1 cost additional credits.",
-          "title": "Test Time Scaling"
-        },
-        "upscale_factor": {
-          "anyOf": [
-            {
-              "maximum": 4,
-              "minimum": 2,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Upscale output by 2x, 3x, or 4x.",
-          "title": "Upscale Factor"
-        },
-        "remove_background": {
-          "default": false,
-          "description": "Make background transparent.",
-          "title": "Remove Background",
-          "type": "boolean"
+          "title": "Output Format",
+          "type": "string"
         }
       },
       "required": [
-        "images",
         "prompt"
       ],
       "title": "AppInput",
@@ -379,10 +353,23 @@
       },
       "properties": {
         "image": {
-          "description": "Remixed image.",
+          "description": "Generated or edited image.",
           "format": "file",
           "title": "Image",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Model description of the generated image.",
+          "title": "Description"
         },
         "output_meta": {
           "anyOf": [

@@ -20,6 +20,10 @@ class AppInput(BaseAppInput):
         default="1:1",
         description="Output aspect ratio.",
     )
+    version: str = Field(
+        default="latest",
+        description="Model version (e.g. 'latest' or 'reve-create@20250915').",
+    )
     test_time_scaling: Optional[int] = Field(
         default=None,
         ge=1,
@@ -60,6 +64,7 @@ class App(BaseApp):
         result = create_image(
             prompt=input_data.prompt,
             aspect_ratio=input_data.aspect_ratio,
+            version=input_data.version,
             test_time_scaling=input_data.test_time_scaling,
             postprocessing=postprocessing or None,
             logger=self.logger,

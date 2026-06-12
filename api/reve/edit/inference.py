@@ -23,6 +23,10 @@ class AppInput(BaseAppInput):
         default=None,
         description="Output aspect ratio. If not set, uses the reference image's ratio.",
     )
+    version: str = Field(
+        default="latest",
+        description="Model version (e.g. 'latest' or 'reve-edit@20250915').",
+    )
     test_time_scaling: Optional[int] = Field(
         default=None,
         ge=1,
@@ -70,6 +74,7 @@ class App(BaseApp):
             edit_instruction=input_data.edit_instruction,
             reference_image_b64=ref_b64,
             aspect_ratio=input_data.aspect_ratio,
+            version=input_data.version,
             test_time_scaling=input_data.test_time_scaling,
             postprocessing=postprocessing or None,
             logger=self.logger,
