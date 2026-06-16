@@ -68,7 +68,7 @@ class App(BaseApp):
             self.logger.info(f"Upscaling image to {input_data.megapixels} MP, format={input_data.output_format}")
 
             # Upload image or use URL directly
-            if input_data.image.uri and input_data.image.uri.startswith("http"):
+            if input_data.image.uri and isinstance(input_data.image.uri, str) and input_data.image.uri.startswith("http"):
                 image_url = input_data.image.uri
             else:
                 if not input_data.image.exists():

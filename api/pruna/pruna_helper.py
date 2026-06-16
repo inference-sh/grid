@@ -174,9 +174,33 @@ async def poll_prediction_status(
         status = result.get("status")
 
         if status == "succeeded":
-            if logger:
-                logger.info("Prediction completed successfully")
-            return result
+            gen_url = result.get("generation_url")
+            if isinstance(gen_url, str):
+                if logger:
+                    logger.info("Prediction completed successfully")
+                return result
+            # Check if output URL is in a different field
+            output = result.get("output")
+            if isinstance(output, str):
+                result["generation_url"] = output
+                if logger:
+                    logger.info("Prediction completed (URL in output field)")
+                return result
+            if isinstance(output, list) and output and isinstance(output[0], str):
+                result["generation_url"] = output[0]
+                if logger:
+                    logger.info("Prediction completed (URL in output list)")
+                return result
+            if isinstance(output, dict):
+                url_val = output.get("url") or output.get("uri") or output.get("image")
+                if isinstance(url_val, str):
+                    result["generation_url"] = url_val
+                    if logger:
+                        logger.info("Prediction completed (URL in output dict)")
+                    return result
+            # Upstream says "succeeded" but no URL — model may be broken
+            if elapsed > 60:
+                raise RuntimeError("Upstream model returned succeeded status but no generation URL — the model may be temporarily unavailable")
         elif status == "failed":
             error_msg = result.get("error", result.get("message", "Unknown error"))
             if logger:
@@ -223,6 +247,10 @@ def get_generation_url(result: Dict[str, Any]) -> str:
         raise RuntimeError("No generation_url in response")
     if isinstance(generation_url, list):
         generation_url = generation_url[0]
+    if isinstance(generation_url, dict):
+        generation_url = generation_url.get("url") or generation_url.get("uri") or next(iter(generation_url.values()))
+    if not isinstance(generation_url, str):
+        raise RuntimeError(f"Unexpected generation_url type: {type(generation_url).__name__}")
     if generation_url.startswith("/"):
         generation_url = f"https://api.pruna.ai{generation_url}"
     return generation_url
@@ -289,7 +317,7 @@ async def run_prediction(
     Args:
         model: Model name.
         input_data: Input parameters.
-        use_sync: Ignored, kept for backwards compatibility.
+        use_sync: Whether to try synchronous mode (Try-Sync header).
         logger: Optional logger.
 
     Returns:
@@ -302,9 +330,21 @@ async def run_prediction(
         logger=logger,
     )
 
+    # If sync mode returned a complete result, use it
+    gen_url = result.get("generation_url")
+    if isinstance(gen_url, str):
+        if logger:
+            logger.info("Sync mode returned result directly")
+        return result
+
     # Poll for completion
     prediction_id = result.get("id")
     if not prediction_id:
+        # Upstream returned no prediction ID and no URL — API contract broken
+        status = result.get("status")
+        if status == "succeeded" and isinstance(gen_url, dict):
+            raise RuntimeError(f"Upstream model returned status metadata instead of generation URL — the model may be temporarily unavailable")
+
         raise RuntimeError("No prediction ID in response")
 
     return await poll_prediction_status(
