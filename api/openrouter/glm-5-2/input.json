@@ -1,0 +1,14 @@
+{
+  "tools": [],
+  "tool_call_id": "example",
+  "system_prompt": "you are a helpful assistant that can answer questions and help with tasks.",
+  "context": [],
+  "role": "user",
+  "text": "example",
+  "temperature": 0.7,
+  "top_p": 0.9,
+  "context_size": 1048576,
+  "max_tokens": 64000,
+  "top_k": -1,
+  "min_p": 0.0
+}

@@ -1,0 +1,19 @@
+namespace: openrouter
+name: glm-5-2
+description: GLM 5.2 - zhipu's latest flagship language model with 1M context via OpenRouter
+metadata: {}
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: ""
+    ram: 0
