@@ -24,10 +24,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            me = self.client.users.get_me()
-            my_id = me.data["id"]
-
-            response = self.client.users.follow_user(my_id, body={"target_user_id": input_data.user_id})
+            response = self.client.users.follow(target_user_id=input_data.user_id)
             following = getattr(response.data, "following", True)
 
             return AppOutput(following=following, user_id=input_data.user_id)

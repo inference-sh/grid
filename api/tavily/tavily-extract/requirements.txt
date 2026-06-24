@@ -1,9 +1,0 @@
-# Core inference.sh requirements
-pydantic>=2.0.0
-inferencesh
-
-# Tavily extract API
-tavily-python>=0.3.0
-
-# Utility libraries
-requests>=2.25.0

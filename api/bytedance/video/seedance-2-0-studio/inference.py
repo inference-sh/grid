@@ -42,12 +42,16 @@ DIMENSION_MAP = {
     ('1080p', '16:9'): (1920, 1080), ('1080p', '4:3'): (1664, 1248),
     ('1080p', '1:1'): (1440, 1440), ('1080p', '3:4'): (1248, 1664),
     ('1080p', '9:16'): (1080, 1920), ('1080p', '21:9'): (2206, 946),
+    ('4k', '16:9'): (3840, 2160), ('4k', '4:3'): (3328, 2496),
+    ('4k', '1:1'): (2880, 2880), ('4k', '3:4'): (2496, 3328),
+    ('4k', '9:16'): (2160, 3840), ('4k', '21:9'): (4412, 1892),
 }
 
 RESOLUTION_MAP = {
     '480p': VideoResolution.VIDEO_RES480_P,
     '720p': VideoResolution.VIDEO_RES720_P,
     '1080p': VideoResolution.VIDEO_RES1080_P,
+    '4k': VideoResolution.VIDEO_RES4_K,
 }
 
 
@@ -56,6 +60,7 @@ class ResolutionEnum(str, Enum):
     p480 = "480p"
     p720 = "720p"
     p1080 = "1080p"
+    p4k = "4k"
 
 
 class RatioEnum(str, Enum):
@@ -111,7 +116,7 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest."
+        description="Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,

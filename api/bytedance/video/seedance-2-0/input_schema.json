@@ -19,7 +19,8 @@
       "enum": [
         "480p",
         "720p",
-        "1080p"
+        "1080p",
+        "4k"
       ],
       "title": "ResolutionEnum",
       "type": "string"
@@ -99,7 +100,7 @@
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "720p",
-      "description": "Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest."
+      "description": "Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
     },
     "ratio": {
       "$ref": "#/$defs/RatioEnum",

@@ -2,7 +2,7 @@
 Seedance 2.0 - BytePlus Video Generation
 
 Professional multimodal video generation supporting text, images, video, and audio references.
-Supports up to 1080p resolution. Uses BytePlus ARK SDK with async task polling.
+Supports up to 4K resolution (10-bit color). Uses BytePlus ARK SDK with async task polling.
 Parameters passed as top-level request body fields.
 """
 
@@ -30,6 +30,7 @@ class ResolutionEnum(str, Enum):
     p480 = "480p"
     p720 = "720p"
     p1080 = "1080p"
+    p4k = "4k"
 
 
 class RatioEnum(str, Enum):
@@ -82,7 +83,7 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 1080p for highest quality, 720p for balanced, 480p for fastest."
+        description="Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,
@@ -268,6 +269,7 @@ class App(BaseApp):
                 '480p': VideoResolution.VIDEO_RES480_P,
                 '720p': VideoResolution.VIDEO_RES720_P,
                 '1080p': VideoResolution.VIDEO_RES1080_P,
+                '4k': VideoResolution.VIDEO_RES4_K,
             }
             resolution_enum = resolution_map.get(actual_resolution, VideoResolution.VIDEO_RES720_P)
 
@@ -281,6 +283,9 @@ class App(BaseApp):
                 ('1080p', '16:9'): (1920, 1080), ('1080p', '4:3'): (1664, 1248),
                 ('1080p', '1:1'): (1440, 1440), ('1080p', '3:4'): (1248, 1664),
                 ('1080p', '9:16'): (1080, 1920), ('1080p', '21:9'): (2206, 946),
+                ('4k', '16:9'): (3840, 2160), ('4k', '4:3'): (3328, 2496),
+                ('4k', '1:1'): (2880, 2880), ('4k', '3:4'): (2496, 3328),
+                ('4k', '9:16'): (2160, 3840), ('4k', '21:9'): (4412, 1892),
             }
             actual_ratio = getattr(result, 'ratio', input_data.ratio.value)
             if actual_ratio == 'adaptive':

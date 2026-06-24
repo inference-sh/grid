@@ -1,3 +1,0 @@
-pydantic >= 2.0.0
-inferencesh >= 0.6.30
-anthropic >= 0.52.0

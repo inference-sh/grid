@@ -2,7 +2,9 @@
 Shared helper module for fal.ai client operations.
 Provides common utilities for video/image generation apps using fal.ai API.
 
-Copy this file into your app folder for deployment.
+Symlink this file from each app folder (e.g. `ln -sr fal_helper.py my-app/fal_helper.py`).
+`infsh app deploy` resolves symlinks when packaging, so the shared helper deploys correctly
+and stays in a single place. Do not copy this file into individual app directories.
 """
 
 import os
@@ -12,6 +14,9 @@ from typing import Optional, Callable
 
 import fal_client
 import requests
+
+# Suppress httpx polling logs
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def setup_fal_client(api_key: Optional[str] = None) -> str:
@@ -47,7 +52,7 @@ def create_progress_callback(logger: logging.Logger) -> Callable:
         Callback function for on_queue_update.
     """
     def on_queue_update(update):
-        if isinstance(update, fal_client.InProgress):
+        if isinstance(update, fal_client.InProgress) and update.logs:
             for log in update.logs:
                 logger.info(f"fal.ai: {log['message']}")
     return on_queue_update

@@ -2,6 +2,7 @@ namespace: heygen
 name: create-avatar
 description: Create HeyGen avatars from video footage (digital twin), a photo (photo avatar), or a text prompt (AI-generated). Returns a look ID for use with avatar-video.
 metadata:
+    checksum: e8f2edec3289edfef155fe747a5e66f8ea73cb4d338b0db22c54e98849f487b1
     provider: heygen
     tags:
         - avatar
@@ -11,9 +12,9 @@ metadata:
         - heygen
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/tq6bmppe.jpg
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/rjj6xisw.jpg
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/l1v8qpu3.jpg
 env: {}
 kernel: python-3.11
 secrets:
@@ -23,5 +24,5 @@ resources:
     gpu:
         count: 0
         vram: 0
-        type: none
+        type: ""
     ram: 0

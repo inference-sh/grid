@@ -1,18 +1,145 @@
 {
   "run": {
-    "description": "",
+    "description": "Generate video using Veo 3.1 model via Vertex AI.",
     "input_schema": {
-      "properties": {
-        "user_id": {
-          "description": "The ID of the user to follow",
-          "title": "User Id",
+      "$defs": {
+        "PersonGenerationEnum": {
+          "description": "Person generation settings for video.",
+          "enum": [
+            "allow_adult",
+            "disallow"
+          ],
+          "title": "PersonGenerationEnum",
+          "type": "string"
+        },
+        "VideoAspectRatioEnum": {
+          "description": "Aspect ratio options for video (Veo supports 16:9 and 9:16).",
+          "enum": [
+            "16:9",
+            "9:16"
+          ],
+          "title": "VideoAspectRatioEnum",
+          "type": "string"
+        },
+        "VideoResolutionEnum": {
+          "description": "Resolution options for video.",
+          "enum": [
+            "720p",
+            "1080p",
+            "4k"
+          ],
+          "title": "VideoResolutionEnum",
           "type": "string"
         }
       },
+      "description": "Input for video generation with Veo 3.1.",
+      "properties": {
+        "prompt": {
+          "description": "Text prompt describing the desired video content.",
+          "title": "Prompt",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional first frame image for image-to-video generation.",
+          "title": "Image"
+        },
+        "last_frame": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional last frame image for frame interpolation. Requires first frame image.",
+          "title": "Last Frame"
+        },
+        "video": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds.",
+          "title": "Video"
+        },
+        "reference_images": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional reference asset images to guide video content (preview). Style reference images are not supported.",
+          "title": "Reference Images"
+        },
+        "aspect_ratio": {
+          "$ref": "#/$defs/VideoAspectRatioEnum",
+          "default": "16:9",
+          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+        },
+        "duration": {
+          "default": 8,
+          "description": "Video duration in seconds (4, 6, or 8). Reference image to video only supports 8.",
+          "maximum": 8,
+          "minimum": 4,
+          "title": "Duration",
+          "type": "integer"
+        },
+        "resolution": {
+          "$ref": "#/$defs/VideoResolutionEnum",
+          "default": "720p",
+          "description": "Output video resolution."
+        },
+        "generate_audio": {
+          "default": false,
+          "description": "Whether to generate audio for the video.",
+          "title": "Generate Audio",
+          "type": "boolean"
+        },
+        "num_videos": {
+          "default": 1,
+          "description": "Number of videos to generate.",
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Num Videos",
+          "type": "integer"
+        },
+        "person_generation": {
+          "$ref": "#/$defs/PersonGenerationEnum",
+          "default": "allow_adult",
+          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
+        }
+      },
       "required": [
-        "user_id"
+        "prompt"
       ],
-      "title": "AppInput",
+      "title": "RunInput",
       "type": "object"
     },
     "output_schema": {
@@ -112,7 +239,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -273,14 +400,15 @@
             "resolution": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/VideoResolution"
+                  "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
             },
             "seconds": {
               "default": 0,
@@ -297,30 +425,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
-        },
-        "VideoResolution": {
-          "description": "Standard video resolution presets.",
-          "enum": [
-            "480p",
-            "720p",
-            "1080p",
-            "1440p",
-            "4k"
-          ],
-          "title": "VideoResolution",
-          "type": "string"
         }
       },
+      "description": "Output containing generated videos.",
       "properties": {
-        "following": {
-          "description": "Whether now following the user",
-          "title": "Following",
-          "type": "boolean"
-        },
-        "user_id": {
-          "description": "ID of the user",
-          "title": "User Id",
-          "type": "string"
+        "videos": {
+          "description": "The generated video files",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Videos",
+          "type": "array"
         },
         "output_meta": {
           "anyOf": [
@@ -336,10 +452,9 @@
         }
       },
       "required": [
-        "following",
-        "user_id"
+        "videos"
       ],
-      "title": "AppOutput",
+      "title": "RunOutput",
       "type": "object"
     }
   }

@@ -44,6 +44,7 @@ def create_content_task(
     model: str,
     content: List[Dict[str, Any]],
     logger: Optional[logging.Logger] = None,
+    **kwargs,
 ) -> str:
     """
     Create a content generation task (video/image).
@@ -53,16 +54,19 @@ def create_content_task(
         model: Model ID (e.g., "seedance-1-5-pro-251215").
         content: List of content items (text prompts, images, etc.).
         logger: Optional logger for output.
+        **kwargs: Additional parameters passed to the API (e.g. generate_audio,
+            resolution, ratio, duration, seed, watermark).
 
     Returns:
         Task ID for polling.
     """
     if logger:
-        logger.info(f"Creating content generation task with model: {model}")
+        logger.info(f"Creating task — model: {model}, params: {kwargs}")
 
     result = client.content_generation.tasks.create(
         model=model,
         content=content,
+        **kwargs,
     )
 
     task_id = result.id
@@ -77,30 +81,31 @@ async def poll_task_status(
     task_id: str,
     logger: Optional[logging.Logger] = None,
     poll_interval: float = 2.0,
-    max_attempts: int = 300,
     cancel_flag_getter: Optional[callable] = None,
 ) -> Dict[str, Any]:
     """
     Poll a content generation task until completion.
+
+    Polls indefinitely until the task succeeds, fails, or is cancelled.
 
     Args:
         client: The BytePlus ARK client.
         task_id: Task ID to poll.
         logger: Optional logger for progress output.
         poll_interval: Seconds between poll attempts.
-        max_attempts: Maximum number of poll attempts.
         cancel_flag_getter: Optional callable that returns True if cancelled.
 
     Returns:
         The completed task result.
 
     Raises:
-        RuntimeError: If task fails or times out.
+        RuntimeError: If task fails or is cancelled.
     """
     if logger:
         logger.info(f"Polling task status for: {task_id}")
 
-    for attempt in range(max_attempts):
+    attempt = 0
+    while True:
         # Check for cancellation
         if cancel_flag_getter and cancel_flag_getter():
             if logger:
@@ -120,11 +125,11 @@ async def poll_task_status(
                 logger.error(f"Task failed: {error_msg}")
             raise RuntimeError(f"Content generation failed: {error_msg}")
         else:
-            if logger and attempt % 5 == 0:  # Log every 5th attempt to reduce noise
-                logger.info(f"Task status: {status}, waiting...")
+            if logger and attempt % 5 == 0:
+                elapsed = attempt * poll_interval
+                logger.info(f"Task status: {status}, elapsed: {elapsed:.0f}s, waiting...")
             await asyncio.sleep(poll_interval)
-
-    raise RuntimeError(f"Task timed out after {max_attempts * poll_interval} seconds")
+            attempt += 1
 
 
 def cancel_task(
@@ -185,19 +190,63 @@ def build_text_content(text: str, **params) -> Dict[str, str]:
     }
 
 
-def build_image_content(image_url: str) -> Dict[str, Any]:
+def build_image_content(image_url: str, role: Optional[str] = None) -> Dict[str, Any]:
     """
     Build an image content item for BytePlus API.
 
     Args:
         image_url: URL of the image (first frame, reference image, etc.)
+        role: Optional role (first_frame, last_frame, reference_image).
+
+    Returns:
+        Content dict for the API.
+    """
+    item: Dict[str, Any] = {
+        "type": "image_url",
+        "image_url": {
+            "url": image_url,
+        },
+    }
+    if role:
+        item["role"] = role
+    return item
+
+
+def build_video_content(video_url: str, role: str = "reference_video") -> Dict[str, Any]:
+    """
+    Build a video content item for BytePlus API (Seedance 2.0+).
+
+    Args:
+        video_url: Public URL of the video.
+        role: Role of the video (reference_video).
 
     Returns:
         Content dict for the API.
     """
     return {
-        "type": "image_url",
-        "image_url": {
-            "url": image_url,
+        "type": "video_url",
+        "video_url": {
+            "url": video_url,
         },
+        "role": role,
+    }
+
+
+def build_audio_content(audio_url: str, role: str = "reference_audio") -> Dict[str, Any]:
+    """
+    Build an audio content item for BytePlus API (Seedance 2.0+).
+
+    Args:
+        audio_url: Public URL or base64 of the audio.
+        role: Role of the audio (reference_audio).
+
+    Returns:
+        Content dict for the API.
+    """
+    return {
+        "type": "audio_url",
+        "audio_url": {
+            "url": audio_url,
+        },
+        "role": role,
     }
