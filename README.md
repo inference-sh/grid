@@ -36,6 +36,6 @@ see [LICENSE](./LICENSE) for full terms.
 
 - [inference.sh](https://inference.sh) — main platform
 - [documentation](https://inference.sh/docs) — getting started
-- [app store](https://app.inference.sh) — browse all apps
+- [app store](https://inference.sh/apps) — browse all apps
 - [blog](https://inference.sh/blog) — tutorials and guides
 - [discord](https://discord.gg/inference) — community
