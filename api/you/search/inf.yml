@@ -1,0 +1,17 @@
+namespace: you
+name: search
+description: web search api — ground your apps in reliable, web-scale knowledge with contextual snippets
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+secrets:
+    - key: YOU_KEY
+      description: You.com API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,0 +1,32 @@
+{
+  "$defs": {
+    "ResearchEffortEnum": {
+      "enum": [
+        "lite",
+        "standard",
+        "deep",
+        "exhaustive"
+      ],
+      "title": "ResearchEffortEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "query": {
+      "description": "Research question (up to 40,000 characters)",
+      "maxLength": 40000,
+      "title": "Query",
+      "type": "string"
+    },
+    "research_effort": {
+      "$ref": "#/$defs/ResearchEffortEnum",
+      "default": "standard",
+      "description": "Research depth: lite (fast), standard (balanced), deep (thorough), exhaustive (comprehensive)"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

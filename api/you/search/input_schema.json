@@ -1,0 +1,120 @@
+{
+  "properties": {
+    "query": {
+      "description": "Search query",
+      "title": "Query",
+      "type": "string"
+    },
+    "count": {
+      "default": 10,
+      "description": "Number of results (1-20)",
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Count",
+      "type": "integer"
+    },
+    "country": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO 3166-1 alpha-2 country code for location targeting",
+      "title": "Country"
+    },
+    "search_lang": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "BCP 47 language code to filter results",
+      "title": "Search Lang"
+    },
+    "livecrawl": {
+      "default": false,
+      "description": "Enable live crawling for full page content (adds latency, billed separately)",
+      "title": "Livecrawl",
+      "type": "boolean"
+    },
+    "include_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Only return results from these domains",
+      "title": "Include Domains"
+    },
+    "exclude_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Exclude results from these domains",
+      "title": "Exclude Domains"
+    },
+    "boost_domains": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Boost results from these domains",
+      "title": "Boost Domains"
+    },
+    "recent_past_day": {
+      "default": false,
+      "description": "Only results from the past day",
+      "title": "Recent Past Day",
+      "type": "boolean"
+    },
+    "recent_past_week": {
+      "default": false,
+      "description": "Only results from the past week",
+      "title": "Recent Past Week",
+      "type": "boolean"
+    },
+    "recent_past_month": {
+      "default": false,
+      "description": "Only results from the past month",
+      "title": "Recent Past Month",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

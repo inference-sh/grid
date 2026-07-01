@@ -1,0 +1,17 @@
+namespace: you
+name: contents
+description: contents api — fetch clean markdown or html from any url, batch up to 10 pages per request
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+secrets:
+    - key: YOU_KEY
+      description: You.com API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

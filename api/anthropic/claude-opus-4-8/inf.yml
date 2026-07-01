@@ -1,0 +1,22 @@
+namespace: anthropic
+name: claude-opus-4-8
+description: Claude Opus 4.8 — Anthropic's most capable Opus model. 1M context, 128k output, vision, extended thinking, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

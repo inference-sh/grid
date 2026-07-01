@@ -1,0 +1,17 @@
+namespace: you
+name: finance-research
+description: finance research api — agentic financial research with filings, macro data, and institutional-grade sources
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+secrets:
+    - key: YOU_KEY
+      description: You.com API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

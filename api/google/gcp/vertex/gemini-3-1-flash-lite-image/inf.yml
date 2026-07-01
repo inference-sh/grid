@@ -1,0 +1,16 @@
+namespace: google
+name: gemini-3-1-flash-lite-image
+description: Gemini 3.1 Flash Lite Image (NanoBanana 2 Lite) via Vertex AI — ultra-low latency image generation
+metadata: {}
+category: image
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

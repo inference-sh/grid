@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "VideoAspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16"
+      ],
+      "title": "VideoAspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired video content.",
+      "maxLength": 20000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional input image for image-to-video generation.",
+      "title": "Image"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional reference images to guide video content (subject/style reference).",
+      "title": "Reference Images"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/VideoAspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

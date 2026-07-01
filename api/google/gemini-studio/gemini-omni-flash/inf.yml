@@ -1,0 +1,17 @@
+namespace: google
+name: gemini-omni-flash
+description: Gemini Omni Flash — text-to-video with synchronized audio, grounded in real-world knowledge
+metadata: {}
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: GEMINI_API_KEY
+      description: Google API key for model access
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

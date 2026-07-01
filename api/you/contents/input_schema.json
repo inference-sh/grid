@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "FormatEnum": {
+      "enum": [
+        "markdown",
+        "html"
+      ],
+      "title": "FormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "urls": {
+      "description": "URLs to fetch (up to 10)",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Urls",
+      "type": "array"
+    },
+    "format": {
+      "$ref": "#/$defs/FormatEnum",
+      "default": "markdown",
+      "description": "Output format: markdown or html"
+    },
+    "crawl_timeout": {
+      "default": 10,
+      "description": "Crawl timeout in seconds (1-60). Use 20-30 for JS-heavy pages.",
+      "maximum": 60,
+      "minimum": 1,
+      "title": "Crawl Timeout",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "urls"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

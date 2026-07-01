@@ -1,0 +1,30 @@
+{
+  "$defs": {
+    "FinanceEffortEnum": {
+      "enum": [
+        "deep",
+        "exhaustive"
+      ],
+      "title": "FinanceEffortEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "query": {
+      "description": "Financial research question",
+      "maxLength": 40000,
+      "title": "Query",
+      "type": "string"
+    },
+    "research_effort": {
+      "$ref": "#/$defs/FinanceEffortEnum",
+      "default": "deep",
+      "description": "Research depth: deep (thorough), exhaustive (comprehensive)"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

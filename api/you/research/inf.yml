@@ -1,0 +1,17 @@
+namespace: you
+name: research
+description: deep research api — multi-step web research with source-backed citations and configurable effort levels
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+secrets:
+    - key: YOU_KEY
+      description: You.com API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
