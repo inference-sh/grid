@@ -218,23 +218,35 @@ class App(BaseApp):
 
             output_path = download_result(download_url, self.logger)
 
-            # Use actual cost from API response if available
+            # Get actual credits from API response
             estimates = status_data.get("estimates", {})
             cost_range = estimates.get("cost", [])
             if cost_range:
                 credits = cost_range[-1]  # use upper estimate
             else:
                 # Fallback: ~4 credits per 10s at 1080p
-                duration = info["duration"] or 10
+                duration_s = info["duration"] or 10
                 resolution_factor = (out_width * out_height) / (1920 * 1080)
-                credits = max(1, int(duration / 10 * 4 * resolution_factor))
-            cost_cents = credits * 12  # $0.12 per credit = 12 cents
+                credits = max(1, int(duration_s / 10 * 4 * resolution_factor))
 
-            self.logger.info(f"{credits} credits = ${credits * 0.12:.2f}")
+            # $100 for 1400 credits = $0.07143/credit = 7.143 cents/credit
+            cost_cents = credits * (100.0 / 1400.0 * 100.0 / 100.0)  # credits * 7.143 cents
+
+            self.logger.info(f"{credits} credits = ${credits * 100.0 / 1400.0:.2f}")
 
             return AppOutput(
                 video=File(path=output_path),
-                output_meta=OutputMeta(outputs=[RawMeta(cost=cost_cents)]),
+                output_meta=OutputMeta(outputs=[RawMeta(
+                    cost=cost_cents,
+                    extra={
+                        "credits": credits,
+                        "model": input_data.model.value,
+                        "scale": input_data.scale,
+                        "input_resolution": f"{src_width}x{src_height}",
+                        "output_resolution": f"{out_width}x{out_height}",
+                        "output_size": status_data.get("outputSize", ""),
+                    }
+                )]),
             )
 
         except Exception as e:
