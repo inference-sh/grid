@@ -1,0 +1,67 @@
+{
+  "properties": {
+    "video": {
+      "description": "input video file",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "creativity": {
+      "default": 0.5,
+      "description": "creativity level (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Creativity",
+      "type": "number"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "text guidance for creative upscaling (limits input to 450 frames)",
+      "title": "Prompt"
+    },
+    "realism": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "realism level (0-1)",
+      "title": "Realism"
+    },
+    "sharpness": {
+      "default": 0.5,
+      "description": "sharpness level (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Sharpness",
+      "type": "number"
+    },
+    "scale": {
+      "default": 2.0,
+      "description": "upscale factor (1.0-4.0)",
+      "maximum": 4.0,
+      "minimum": 1.0,
+      "title": "Scale",
+      "type": "number"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

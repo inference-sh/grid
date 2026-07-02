@@ -3,15 +3,6 @@
     "description": "",
     "input_schema": {
       "$defs": {
-        "ContainerEnum": {
-          "enum": [
-            "mp4",
-            "mov",
-            "mkv"
-          ],
-          "title": "ContainerEnum",
-          "type": "string"
-        },
         "FocusFixEnum": {
           "enum": [
             "none",
@@ -23,26 +14,10 @@
         },
         "ModelEnum": {
           "enum": [
-            "proteus",
-            "proteus-natural",
-            "rhea",
-            "theia-detail",
-            "theia-fidelity",
-            "artemis-hq",
-            "artemis-mq",
-            "artemis-lq",
-            "artemis-medium-halo",
-            "artemis-strong-halo",
-            "artemis-aliasing",
-            "dione-dv",
-            "dione-tv",
-            "dione-robust",
-            "dione-dehalo",
-            "dione-robust-dehalo",
-            "gaia-cg",
-            "gaia-hq",
-            "iris-mq",
-            "iris-lq"
+            "nyx",
+            "nyx-high-fidelity",
+            "nyx-xl",
+            "nyx-fast"
           ],
           "title": "ModelEnum",
           "type": "string"
@@ -59,23 +34,15 @@
       },
       "properties": {
         "video": {
-          "description": "input video file (max 500MB)",
+          "description": "input video file",
           "format": "file",
           "title": "Video",
           "type": "string"
         },
         "model": {
           "$ref": "#/$defs/ModelEnum",
-          "default": "proteus",
-          "description": "enhancement model: proteus (general), proteus-natural (natural look), rhea (detail-rich), theia-detail/fidelity (temporal), artemis-hq/mq/lq (legacy footage), dione-dv/tv (deinterlace), gaia-cg/hq (CGI/animation), iris-mq/lq (face recovery)"
-        },
-        "scale": {
-          "default": 2.0,
-          "description": "upscale factor (1.0-4.0)",
-          "maximum": 4.0,
-          "minimum": 1.0,
-          "title": "Scale",
-          "type": "number"
+          "default": "nyx",
+          "description": "denoise model: nyx (balanced), nyx-high-fidelity (detail preservation), nyx-xl (heavy noise), nyx-fast (speed optimized)"
         },
         "video_type": {
           "$ref": "#/$defs/VideoTypeEnum",
@@ -142,11 +109,6 @@
           "minimum": 0.0,
           "title": "Recover Original Detail",
           "type": "number"
-        },
-        "output_container": {
-          "$ref": "#/$defs/ContainerEnum",
-          "default": "mp4",
-          "description": "output container format"
         }
       },
       "required": [
@@ -442,7 +404,7 @@
       },
       "properties": {
         "video": {
-          "description": "enhanced video",
+          "description": "denoised video",
           "format": "file",
           "title": "Video",
           "type": "string"

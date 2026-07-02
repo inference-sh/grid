@@ -285,7 +285,7 @@
   },
   "properties": {
     "video": {
-      "description": "enhanced video",
+      "description": "processed video",
       "format": "file",
       "title": "Video",
       "type": "string"

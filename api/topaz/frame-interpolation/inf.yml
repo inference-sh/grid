@@ -1,0 +1,17 @@
+namespace: topaz
+name: frame-interpolation
+description: video frame interpolation — slowmo and fps boost with apollo, chronos, and aion models
+metadata: {}
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: TOPAZ_KEY
+      description: Topaz Labs API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

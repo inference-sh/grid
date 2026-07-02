@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "ModelEnum": {
+      "enum": [
+        "precise-2.5",
+        "hq",
+        "mini",
+        "sharp",
+        "fast-2"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "input video file",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "precise-2.5",
+      "description": "starlight model: precise-2.5 (best quality), hq (high quality), mini (lightweight), sharp (detail emphasis), fast-2 (speed optimized)"
+    },
+    "scale": {
+      "default": 2.0,
+      "description": "upscale factor (1.0-4.0)",
+      "maximum": 4.0,
+      "minimum": 1.0,
+      "title": "Scale",
+      "type": "number"
+    },
+    "upscaling_factor": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "upscaling factor override (hq model only)",
+      "title": "Upscaling Factor"
+    },
+    "low_sharpness": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "use low sharpness mode (hq model only)",
+      "title": "Low Sharpness"
+    },
+    "keep_original": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "keep original detail (hq model only)",
+      "title": "Keep Original"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

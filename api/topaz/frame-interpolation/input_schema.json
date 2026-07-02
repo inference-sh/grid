@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "ModelEnum": {
+      "enum": [
+        "apollo",
+        "apollo-fast",
+        "chronos",
+        "chronos-fast",
+        "aion"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "input video file",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "apollo",
+      "description": "interpolation model: apollo (best quality), apollo-fast (speed), chronos (optical flow), chronos-fast (fast optical flow), aion (large motion)"
+    },
+    "slowmo": {
+      "default": 2.0,
+      "description": "slowmo factor (1-16)",
+      "maximum": 16.0,
+      "minimum": 1.0,
+      "title": "Slowmo",
+      "type": "number"
+    },
+    "target_fps": {
+      "default": 60.0,
+      "description": "target frame rate (15-240)",
+      "maximum": 240.0,
+      "minimum": 15.0,
+      "title": "Target Fps",
+      "type": "number"
+    },
+    "remove_duplicates": {
+      "default": true,
+      "description": "remove duplicate frames before interpolation",
+      "title": "Remove Duplicates",
+      "type": "boolean"
+    },
+    "duplicate_threshold": {
+      "default": 0.01,
+      "description": "duplicate detection threshold (0.001-0.1)",
+      "maximum": 0.1,
+      "minimum": 0.001,
+      "title": "Duplicate Threshold",
+      "type": "number"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
