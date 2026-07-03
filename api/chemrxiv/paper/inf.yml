@@ -1,0 +1,13 @@
+namespace: chemrxiv
+name: paper
+description: get a chemrxiv paper by doi via crossref api
+metadata: {}
+category: text
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

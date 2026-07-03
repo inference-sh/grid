@@ -20,6 +20,12 @@
           "default": "biorxiv",
           "description": "server: biorxiv or medrxiv",
           "title": "Server"
+        },
+        "fetch_pdf": {
+          "default": false,
+          "description": "download the pdf file",
+          "title": "Fetch Pdf",
+          "type": "boolean"
         }
       },
       "required": [
@@ -325,6 +331,20 @@
           "description": "raw api response",
           "title": "Raw",
           "type": "object"
+        },
+        "pdf": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "downloaded pdf file (when fetch_pdf is true)",
+          "title": "Pdf"
         },
         "output_meta": {
           "anyOf": [

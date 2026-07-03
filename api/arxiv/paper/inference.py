@@ -1,17 +1,20 @@
 import logging
+import tempfile
 import requests
 import xml.etree.ElementTree as ET
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
-from typing import List
+from typing import Optional
 
 
 class AppInput(BaseAppInput):
     arxiv_id: str = Field(description="arxiv paper id like 2301.07041 or 2301.07041v1")
+    fetch_pdf: bool = Field(default=False, description="download the pdf file")
 
 
 class AppOutput(BaseAppOutput):
     paper: dict = Field(description="paper metadata with title, authors, summary, published, updated, arxiv_id, pdf_url, categories, links")
+    pdf: Optional[File] = Field(default=None, description="downloaded pdf file (when fetch_pdf is true)")
 
 
 class App(BaseApp):
@@ -79,4 +82,16 @@ class App(BaseApp):
         }
 
         self.logger.info(f"fetched paper: {paper['title'][:80]}")
-        return AppOutput(paper=paper)
+
+        pdf_file = None
+        if input_data.fetch_pdf and pdf_url:
+            self.logger.info(f"downloading pdf from {pdf_url}")
+            pdf_resp = requests.get(pdf_url, timeout=120, stream=True)
+            pdf_resp.raise_for_status()
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                for chunk in pdf_resp.iter_content(chunk_size=8192):
+                    tmp.write(chunk)
+                pdf_file = File(path=tmp.name)
+            self.logger.info("pdf downloaded")
+
+        return AppOutput(paper=paper, pdf=pdf_file)

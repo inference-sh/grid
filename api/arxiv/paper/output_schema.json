@@ -290,6 +290,20 @@
       "title": "Paper",
       "type": "object"
     },
+    "pdf": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "downloaded pdf file (when fetch_pdf is true)",
+      "title": "Pdf"
+    },
     "output_meta": {
       "anyOf": [
         {

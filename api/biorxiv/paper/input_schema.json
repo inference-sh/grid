@@ -17,6 +17,12 @@
       "default": "biorxiv",
       "description": "server: biorxiv or medrxiv",
       "title": "Server"
+    },
+    "fetch_pdf": {
+      "default": false,
+      "description": "download the pdf file",
+      "title": "Fetch Pdf",
+      "type": "boolean"
     }
   },
   "required": [

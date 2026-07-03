@@ -4,6 +4,12 @@
       "description": "arxiv paper id like 2301.07041 or 2301.07041v1",
       "title": "Arxiv Id",
       "type": "string"
+    },
+    "fetch_pdf": {
+      "default": false,
+      "description": "download the pdf file",
+      "title": "Fetch Pdf",
+      "type": "boolean"
     }
   },
   "required": [
