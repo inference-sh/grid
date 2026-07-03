@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "query": {
+      "description": "search keywords",
+      "title": "Query",
+      "type": "string"
+    },
+    "rows": {
+      "default": 10,
+      "description": "number of results",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Rows",
+      "type": "integer"
+    },
+    "sort": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "relevance",
+      "description": "sort: relevance, published-desc, published-asc",
+      "title": "Sort"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "doi": {
+      "description": "chemrxiv paper DOI like 10.26434/chemrxiv-2023-fw8n4",
+      "title": "Doi",
+      "type": "string"
+    }
+  },
+  "required": [
+    "doi"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
