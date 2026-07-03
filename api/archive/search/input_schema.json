@@ -1,0 +1,71 @@
+{
+  "properties": {
+    "query": {
+      "description": "search query using lucene-like syntax",
+      "title": "Query",
+      "type": "string"
+    },
+    "rows": {
+      "default": 10,
+      "description": "results per page",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Rows",
+      "type": "integer"
+    },
+    "page": {
+      "default": 1,
+      "description": "page number",
+      "minimum": 1,
+      "title": "Page",
+      "type": "integer"
+    },
+    "fields": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "metadata fields to return (default: identifier, title, description, mediatype, date, creator)",
+      "title": "Fields"
+    },
+    "sort": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "sort field like 'downloads desc' or 'date asc'",
+      "title": "Sort"
+    },
+    "mediatype": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "filter by type: texts, movies, audio, software, image, etc.",
+      "title": "Mediatype"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

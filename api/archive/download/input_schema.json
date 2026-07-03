@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "identifier": {
+      "description": "the archive.org item identifier",
+      "title": "Identifier",
+      "type": "string"
+    },
+    "filename": {
+      "description": "the specific file to download from the item",
+      "title": "Filename",
+      "type": "string"
+    }
+  },
+  "required": [
+    "identifier",
+    "filename"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

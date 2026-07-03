@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "identifier": {
+      "description": "the archive.org item identifier (e.g. 'greatgatsby00fitzgerald')",
+      "title": "Identifier",
+      "type": "string"
+    }
+  },
+  "required": [
+    "identifier"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

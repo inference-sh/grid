@@ -1,0 +1,17 @@
+namespace: archive
+name: search
+description: search the internet archive
+metadata: {}
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
