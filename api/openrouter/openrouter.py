@@ -567,9 +567,21 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
                 resp_headers = dict(resp.headers)
                 err = _handle_error_response(resp.status_code, error_body, resp_headers, name_to_slug)
                 if isinstance(err, ProviderRateLimited) and attempt < MAX_PROVIDER_RETRIES:
+                    await resp.aclose()
+                    # Only exclude the provider if that leaves at least one
+                    # alternative. Excluding the sole provider of a model turns
+                    # a truthful 429 into OpenRouter's misleading "All providers
+                    # have been ignored" — back off and retry the same provider
+                    # instead.
+                    known = set(name_to_slug.values()) or set(routing.get("order", []))
+                    would_exclude = set(excluded_slugs) | {err.provider_slug}
+                    if known and would_exclude >= known:
+                        backoff = 2 * attempt
+                        print(f"  429 from {err.provider_slug} (no alternative providers), backing off {backoff}s (attempt {attempt}/{MAX_PROVIDER_RETRIES})")
+                        await asyncio.sleep(backoff)
+                        continue
                     print(f"  429 from {err.provider_slug}, retrying without it (attempt {attempt}/{MAX_PROVIDER_RETRIES})")
                     excluded_slugs.append(err.provider_slug)
-                    await resp.aclose()
                     continue
                 await resp.aclose()
                 raise err
