@@ -69,12 +69,16 @@ async def _fetch_provider_health(model: str) -> Dict[str, Any]:
                 else:
                     healthy.append(slug)
                     print(f"  OK   {name} ({slug}): status={status} uptime_5m={up_str}")
-            print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} excluded")
+            print(f"Provider health for {model}: {len(healthy)} healthy, {len(unhealthy)} deprioritized")
             result: Dict[str, Any] = {"_name_to_slug": name_to_slug}
-            if unhealthy:
-                result["ignore"] = unhealthy
+            # Health is a soft preference: put healthy providers first in `order`
+            # and let allow_fallbacks reach the rest. Never use `ignore` here —
+            # a hard exclusion covering all endpoints (e.g. the single provider
+            # of a small model dipping below the uptime bar) makes OpenRouter
+            # reject every request with "All providers have been ignored".
+            # `ignore` is reserved for confirmed 429s in the retry loop.
             if healthy:
-                result["order"] = healthy
+                result["order"] = healthy + unhealthy
             return result
     except Exception as e:
         print(f"Failed to fetch provider health for {model}: {e}")
@@ -85,13 +89,13 @@ _health_cache: Dict[str, tuple] = {}
 
 
 async def get_provider_config(model: str) -> Dict[str, Any]:
-    """Return provider routing config with ignore + order, TTL cached."""
+    """Return provider routing config with health-ordered providers, TTL cached."""
     now = time.monotonic()
     cached = _health_cache.get(model)
     if cached and cached[0] > now:
         ttl_left = int(cached[0] - now)
         cfg = cached[1]
-        print(f"Provider health for {model}: cached ({ttl_left}s ttl) order={cfg.get('order', [])} ignore={cfg.get('ignore', [])}")
+        print(f"Provider health for {model}: cached ({ttl_left}s ttl) order={cfg.get('order', [])}")
         return cfg
     print(f"Provider health for {model}: checking endpoints...")
     cfg = await _fetch_provider_health(model)
@@ -520,7 +524,9 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
     no keep-alive for non-streaming requests.
     """
     routing = await get_provider_config(model)
-    name_to_slug = routing.pop("_name_to_slug", {})
+    # .get, not .pop — routing is the cached dict, popping would drop the
+    # name→slug map for every cache hit within the TTL.
+    name_to_slug = routing.get("_name_to_slug", {})
 
     headers = {
         "Authorization": f"Bearer {api_key}",
