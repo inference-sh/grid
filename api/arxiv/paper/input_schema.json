@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "arxiv_id": {
+      "description": "arxiv paper id like 2301.07041 or 2301.07041v1",
+      "title": "Arxiv Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "arxiv_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

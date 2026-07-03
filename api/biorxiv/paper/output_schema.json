@@ -284,20 +284,15 @@
     }
   },
   "properties": {
-    "results": {
-      "description": "search results",
-      "items": {},
-      "title": "Results",
-      "type": "array"
-    },
-    "total": {
-      "description": "total matching items",
-      "title": "Total",
-      "type": "integer"
+    "paper": {
+      "additionalProperties": true,
+      "description": "paper metadata",
+      "title": "Paper",
+      "type": "object"
     },
     "raw": {
       "additionalProperties": true,
-      "description": "full api response",
+      "description": "raw api response",
       "title": "Raw",
       "type": "object"
     },
@@ -315,8 +310,7 @@
     }
   },
   "required": [
-    "results",
-    "total",
+    "paper",
     "raw"
   ],
   "title": "AppOutput",

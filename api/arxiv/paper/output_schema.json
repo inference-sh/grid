@@ -284,41 +284,10 @@
     }
   },
   "properties": {
-    "available": {
-      "description": "whether the url is archived",
-      "title": "Available",
-      "type": "boolean"
-    },
-    "snapshot_url": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "url of the archived snapshot",
-      "title": "Snapshot Url"
-    },
-    "snapshot_timestamp": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "timestamp of the snapshot",
-      "title": "Snapshot Timestamp"
-    },
-    "raw": {
+    "paper": {
       "additionalProperties": true,
-      "description": "full api response",
-      "title": "Raw",
+      "description": "paper metadata with title, authors, summary, published, updated, arxiv_id, pdf_url, categories, links",
+      "title": "Paper",
       "type": "object"
     },
     "output_meta": {
@@ -335,8 +304,7 @@
     }
   },
   "required": [
-    "available",
-    "raw"
+    "paper"
   ],
   "title": "AppOutput",
   "type": "object"

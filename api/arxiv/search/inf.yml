@@ -1,6 +1,6 @@
-namespace: archive
-name: metadata
-description: get item metadata from the internet archive
+namespace: arxiv
+name: search
+description: search arxiv papers by query with field prefixes, boolean operators, category filtering, and sorting
 metadata: {}
 category: text
 images:

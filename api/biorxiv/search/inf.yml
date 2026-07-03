@@ -1,6 +1,6 @@
-namespace: archive
-name: download
-description: download a file from an internet archive item
+namespace: biorxiv
+name: search
+description: search biorxiv and medrxiv preprints by date range with optional category filtering
 metadata: {}
 category: text
 images:

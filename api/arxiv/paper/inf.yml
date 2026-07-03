@@ -1,6 +1,6 @@
-namespace: archive
-name: search
-description: search the internet archive
+namespace: arxiv
+name: paper
+description: get a specific arxiv paper by its id with full metadata including title, authors, abstract, and links
 metadata: {}
 category: text
 images:

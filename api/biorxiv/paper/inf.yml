@@ -1,6 +1,6 @@
-namespace: archive
-name: wayback
-description: check url availability in the wayback machine
+namespace: biorxiv
+name: paper
+description: get a specific biorxiv or medrxiv paper by its doi
 metadata: {}
 category: text
 images:

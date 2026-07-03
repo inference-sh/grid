@@ -284,15 +284,23 @@
     }
   },
   "properties": {
-    "file": {
-      "description": "the downloaded file",
-      "format": "file",
-      "title": "File",
-      "type": "string"
+    "results": {
+      "description": "list of preprint papers",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Results",
+      "type": "array"
     },
-    "size": {
-      "description": "file size in bytes",
-      "title": "Size",
+    "total": {
+      "description": "total number of results",
+      "title": "Total",
+      "type": "integer"
+    },
+    "cursor": {
+      "description": "current cursor position",
+      "title": "Cursor",
       "type": "integer"
     },
     "output_meta": {
@@ -309,8 +317,9 @@
     }
   },
   "required": [
-    "file",
-    "size"
+    "results",
+    "total",
+    "cursor"
   ],
   "title": "AppOutput",
   "type": "object"

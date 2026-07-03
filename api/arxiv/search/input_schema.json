@@ -1,0 +1,68 @@
+{
+  "properties": {
+    "query": {
+      "description": "search query. supports field prefixes: ti: (title), au: (author), abs: (abstract), cat: (category), all: (all fields). boolean operators: AND, OR, ANDNOT",
+      "title": "Query",
+      "type": "string"
+    },
+    "max_results": {
+      "default": 10,
+      "description": "number of results to return",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    },
+    "start": {
+      "default": 0,
+      "description": "pagination offset",
+      "minimum": 0,
+      "title": "Start",
+      "type": "integer"
+    },
+    "sort_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "relevance",
+      "description": "sort by: relevance, lastUpdatedDate, or submittedDate",
+      "title": "Sort By"
+    },
+    "sort_order": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "descending",
+      "description": "sort order: ascending or descending",
+      "title": "Sort Order"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "filter by arxiv category like cs.AI, physics.hep-th",
+      "title": "Category"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

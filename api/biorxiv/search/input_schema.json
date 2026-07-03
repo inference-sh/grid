@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "start_date": {
+      "description": "start date in YYYY-MM-DD format",
+      "title": "Start Date",
+      "type": "string"
+    },
+    "end_date": {
+      "description": "end date in YYYY-MM-DD format",
+      "title": "End Date",
+      "type": "string"
+    },
+    "cursor": {
+      "default": 0,
+      "description": "pagination offset",
+      "minimum": 0,
+      "title": "Cursor",
+      "type": "integer"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "filter by subject like cell_biology, neuroscience",
+      "title": "Category"
+    },
+    "server": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "biorxiv",
+      "description": "server to search: biorxiv or medrxiv",
+      "title": "Server"
+    }
+  },
+  "required": [
+    "start_date",
+    "end_date"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

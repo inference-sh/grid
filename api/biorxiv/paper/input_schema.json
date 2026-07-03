@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "doi": {
+      "description": "paper DOI like 10.1101/2023.01.01.123456",
+      "title": "Doi",
+      "type": "string"
+    },
+    "server": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "biorxiv",
+      "description": "server: biorxiv or medrxiv",
+      "title": "Server"
+    }
+  },
+  "required": [
+    "doi"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

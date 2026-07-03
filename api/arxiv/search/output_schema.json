@@ -284,33 +284,19 @@
     }
   },
   "properties": {
-    "metadata": {
-      "additionalProperties": true,
-      "description": "the item's metadata",
-      "title": "Metadata",
-      "type": "object"
-    },
-    "files": {
-      "description": "list of files in the item",
-      "items": {},
-      "title": "Files",
+    "results": {
+      "description": "list of papers with title, authors, summary, published, updated, arxiv_id, pdf_url, categories",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Results",
       "type": "array"
     },
-    "files_count": {
-      "description": "number of files",
-      "title": "Files Count",
+    "total": {
+      "description": "total number of results",
+      "title": "Total",
       "type": "integer"
-    },
-    "item_size": {
-      "description": "total size in bytes",
-      "title": "Item Size",
-      "type": "integer"
-    },
-    "raw": {
-      "additionalProperties": true,
-      "description": "full api response",
-      "title": "Raw",
-      "type": "object"
     },
     "output_meta": {
       "anyOf": [
@@ -326,11 +312,8 @@
     }
   },
   "required": [
-    "metadata",
-    "files",
-    "files_count",
-    "item_size",
-    "raw"
+    "results",
+    "total"
   ],
   "title": "AppOutput",
   "type": "object"
