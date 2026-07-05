@@ -15,6 +15,7 @@ from pydantic import Field
 from .kling_helper import (
     KlingClient,
     KlingAPIError,
+    ensure_kling_audio,
     poll_task,
 )
 from .download_helper import download_video
@@ -94,10 +95,12 @@ class App(BaseApp):
         sound_end = input_data.sound_end_time if input_data.sound_end_time else face_end
         self.logger.info(f"Step 2: Creating lip-sync task, sound_end_time={sound_end}ms")
 
+        sound_file = await ensure_kling_audio(input_data.audio.uri, self.logger)
+
         task = await self.client.lip_sync.create(
             session_id=session_id,
             face_id=face_id,
-            sound_file=input_data.audio.uri,
+            sound_file=sound_file,
             sound_end_time=sound_end,
             sound_volume=input_data.sound_volume,
             original_audio_volume=input_data.original_audio_volume,

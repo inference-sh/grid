@@ -16,6 +16,7 @@ from pydantic import Field
 from .kling_helper import (
     KlingClient,
     KlingAPIError,
+    ensure_kling_audio,
     poll_task,
 )
 from .download_helper import download_video
@@ -88,9 +89,11 @@ class App(BaseApp):
 
         self.logger.info(f"Creating avatar video, quality: {input_data.mode.value}")
 
+        sound_file = await ensure_kling_audio(input_data.audio.uri, self.logger)
+
         task = await self.client.avatar.create(
             image=input_data.image.uri,
-            sound_file=input_data.audio.uri,
+            sound_file=sound_file,
             prompt=input_data.prompt,
             mode=input_data.mode.value,
         )

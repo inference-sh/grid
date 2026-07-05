@@ -10,6 +10,10 @@ This module provides a unified interface for all Kling AI API endpoints includin
 API Domain: https://api-singapore.klingai.com
 """
 
+import asyncio
+import base64
+import os
+import tempfile
 import time
 import jwt
 import httpx
@@ -23,6 +27,58 @@ from enum import Enum
 # =============================================================================
 
 API_BASE_URL = "https://api-singapore.klingai.com"
+
+# Kling rejects valid m4a/aac audio with [1201] "Audio format is invalid"
+# despite documenting mp3/wav/m4a/aac support. Only these pass reliably.
+KLING_SAFE_AUDIO_EXTS = (".mp3", ".wav")
+KLING_AUDIO_MAX_BYTES = 5 * 1024 * 1024
+
+
+async def ensure_kling_audio(uri: str, logger=None) -> str:
+    """Return a sound_file value Kling accepts.
+
+    mp3/wav URLs pass through untouched. Anything else (m4a, aac, ...) is
+    downloaded, transcoded to mp3 via ffmpeg, and returned as base64 —
+    Kling's sound_file accepts URL or base64. Requires ffmpeg (packages.txt).
+    """
+    def _log(msg: str):
+        if logger:
+            logger.info(msg)
+        else:
+            print(msg)
+
+    if uri.split("?", 1)[0].lower().endswith(KLING_SAFE_AUDIO_EXTS):
+        return uri
+
+    with tempfile.TemporaryDirectory() as tmp:
+        src = os.path.join(tmp, "in")
+        if os.path.exists(uri):
+            src = uri
+        else:
+            async with httpx.AsyncClient(timeout=60, follow_redirects=True) as http:
+                resp = await http.get(uri)
+                resp.raise_for_status()
+                with open(src, "wb") as f:
+                    f.write(resp.content)
+
+        dst = os.path.join(tmp, "out.mp3")
+        _log(f"Transcoding audio to mp3 for Kling (source: {uri.split('?', 1)[0].rsplit('/', 1)[-1]})")
+        proc = await asyncio.create_subprocess_exec(
+            "ffmpeg", "-v", "error", "-y", "-i", src,
+            "-vn", "-codec:a", "libmp3lame", "-qscale:a", "2", dst,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        _, stderr = await proc.communicate()
+        if proc.returncode != 0:
+            raise RuntimeError(f"Audio transcode failed: {stderr.decode()[:300]}")
+
+        size = os.path.getsize(dst)
+        if size > KLING_AUDIO_MAX_BYTES:
+            raise RuntimeError(
+                f"Audio exceeds Kling's 5MB limit after transcode ({size / 1024 / 1024:.1f}MB) — use a shorter clip"
+            )
+        with open(dst, "rb") as f:
+            return base64.b64encode(f.read()).decode()
 
 # Video Models
 class VideoModel(str, Enum):
