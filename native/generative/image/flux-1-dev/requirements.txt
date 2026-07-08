@@ -1,10 +1,11 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh==0.2.7
-torch
+torch==2.10.0 # 2.12.x breaks against the prebuilt flash-attn cu128torch2.9 wheel (ncclCommResume)
 gguf>=0.13.0
 tqdm
 diffusers
-transformers
+transformers==5.3.0
+tokenizers==0.22.2 # 0.23.1 dropped the cls kwarg on RobertaProcessing, breaking tokenizer setup
 huggingface_hub
 accelerate
 sentencepiece
