@@ -14,7 +14,7 @@ git+https://github.com/huggingface/transformers.git
 # Additional dependencies
 sentencepiece
 Pillow
-tokenizers
+tokenizers==0.22.1
 numpy
 peft>=0.7.0
 hf_transfer  # Fast HuggingFace downloads

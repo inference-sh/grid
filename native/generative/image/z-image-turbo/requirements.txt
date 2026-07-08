@@ -1,8 +1,9 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 
-torch
-transformers
+torch==2.9.1
+transformers==4.57.3
+tokenizers==0.22.1
 accelerate
 huggingface_hub
 spaces

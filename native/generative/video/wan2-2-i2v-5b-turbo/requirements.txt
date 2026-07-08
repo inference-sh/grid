@@ -1,11 +1,11 @@
 pydantic==2.10.6
 inferencesh
-torch
+torch==2.9.0
 torchvision
 torchaudio
 diffusers
-transformers
-tokenizers
+transformers==4.57.1
+tokenizers==0.22.1
 accelerate
 numpy>=1.23.5,<2
 imageio

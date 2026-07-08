@@ -25,7 +25,8 @@ tqdm
 pytorch_msssim
 tensorboard
 calflops
-transformers
+transformers==4.57.3
+tokenizers==0.22.1
 safetensors
 pycocotools
 opencv-python

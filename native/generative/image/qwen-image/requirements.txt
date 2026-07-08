@@ -2,7 +2,8 @@ pydantic >= 2.0.0  # required for inference.sh
 inferencesh
 torch==2.8.0
 git+https://github.com/huggingface/diffusers.git@schedulers/unipc-custom-sigmas
-transformers
+transformers==4.57.3
+tokenizers==0.22.1
 huggingface_hub>=0.24.0
 accelerate>=0.30.0
 Pillow>=10.0.0

@@ -1,7 +1,8 @@
 pydantic >= 2.0.0
 inferencesh
-torch
-transformers 
+torch==2.8.0
+transformers==4.55.4
+tokenizers==0.21.4
 accelerate 
 diffusers 
 huggingface_hub[cli]

@@ -4,8 +4,8 @@ torch>=2.7.0
 torchvision>=0.20.0
 torchaudio
 diffusers
-transformers
-tokenizers
+transformers==4.57.1
+tokenizers==0.22.1
 accelerate
 numpy>=1.23.5,<2
 imageio

@@ -2,7 +2,8 @@ inferencesh
 pydantic>=2.0.0
 protobuf
 diffusers
-transformers
+transformers==4.55.4
+tokenizers==0.21.4
 sentencepiece
 huggingface_hub
 numpy==1.26.0
