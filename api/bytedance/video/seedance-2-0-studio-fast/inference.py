@@ -6,7 +6,7 @@ to BytePlus private virtual portrait library for enhanced character consistency.
 Uses asset:// URIs instead of direct image URLs for trusted asset generation.
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution, ImageMeta, AudioMeta
 from pydantic import Field
 from typing import List, Optional
 from enum import Enum
@@ -271,7 +271,24 @@ class App(BaseApp):
 
         estimated_tokens = int((width * height * fps * float(actual_duration)) / 1024)
 
+        # Build input metadata for pricing
+        input_metas = []
+        if input_data.image:
+            input_metas.append(ImageMeta())
+        if input_data.end_image:
+            input_metas.append(ImageMeta())
+        if input_data.reference_images:
+            for _ in input_data.reference_images:
+                input_metas.append(ImageMeta())
+        if input_data.reference_videos:
+            for _ in input_data.reference_videos:
+                input_metas.append(VideoMeta())
+        if input_data.reference_audios:
+            for _ in input_data.reference_audios:
+                input_metas.append(AudioMeta())
+
         return OutputMeta(
+            inputs=input_metas,
             outputs=[
                 VideoMeta(
                     width=width,

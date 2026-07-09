@@ -189,8 +189,15 @@ class App(BaseApp):
             # Download image
             image_path = download_image(image_url, self.logger)
 
+            # Build input metadata for pricing
+            input_metas = []
+            if input_data.images:
+                for _ in input_data.images:
+                    input_metas.append(ImageMeta())
+
             # Build output metadata for pricing
             output_meta = OutputMeta(
+                inputs=input_metas,
                 outputs=[
                     ImageMeta(
                         width=width,

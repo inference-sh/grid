@@ -114,8 +114,14 @@ class App(BaseApp):
             if input_data.size == SizeEnum.size_4k:
                 width, height = (4096, 4096)
 
+            # Build input metadata for pricing
+            input_metas = []
+            if input_data.image:
+                input_metas.append(ImageMeta())
+
             # Build output metadata for pricing
             output_meta = OutputMeta(
+                inputs=input_metas,
                 outputs=[
                     ImageMeta(
                         width=width,

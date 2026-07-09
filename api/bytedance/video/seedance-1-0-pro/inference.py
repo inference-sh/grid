@@ -5,7 +5,7 @@ Generate high-quality videos from text prompts with optional first-frame image c
 Supports up to 1080p resolution. Uses BytePlus ARK SDK with async task polling.
 """
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, VideoResolution, ImageMeta
 from pydantic import Field
 from typing import Optional
 from enum import Enum
@@ -189,7 +189,13 @@ class App(BaseApp):
             # Calculate estimated tokens as fallback
             estimated_tokens = int((width * height * fps * duration_seconds) / 1024)
 
+            # Build input metadata for pricing
+            input_metas = []
+            if input_data.image:
+                input_metas.append(ImageMeta())
+
             output_meta = OutputMeta(
+                inputs=input_metas,
                 outputs=[
                     VideoMeta(
                         width=width,
