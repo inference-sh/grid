@@ -1,0 +1,26 @@
+namespace: bytedance
+name: seedream-5-pro
+description: ByteDance's flagship Seedream 5.0 Pro image model via BytePlus ARK API. Precision creation and editing with pixel-level regional edits, intelligent layer understanding, complex infographic generation, multi-reference blending (up to 10 images), and native text rendering in 14 languages.
+metadata:
+    provider: bytedance
+    tags:
+        - seedream
+        - image-generation
+        - text-to-image
+        - image-to-image
+        - image-editing
+        - bytedance
+        - byteplus
+        - 2k
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedream image generation
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

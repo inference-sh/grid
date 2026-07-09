@@ -105,49 +105,32 @@
       ],
       "title": "ContextMessageRole",
       "type": "string"
-    },
-    "ReasoningEffortEnum": {
-      "description": "Enum for reasoning effort.",
-      "enum": [
-        "low",
-        "medium",
-        "high",
-        "none"
-      ],
-      "title": "ReasoningEffortEnum",
-      "type": "string"
     }
   },
-  "description": "OpenRouter input model with reasoning and tools support.",
+  "description": "OpenRouter input model for GLM 5.2.",
   "properties": {
-    "reasoning_exclude": {
-      "default": false,
-      "description": "Exclude reasoning tokens from response",
-      "title": "Reasoning Exclude",
-      "type": "boolean"
-    },
     "context_size": {
-      "default": 131072,
+      "default": 1048576,
       "description": "The context size for the model.",
       "title": "Context Size",
       "type": "integer"
     },
     "temperature": {
-      "default": 0.6,
+      "default": 0.7,
       "maximum": 2.0,
       "minimum": 0.0,
       "title": "Temperature",
       "type": "number"
     },
     "top_p": {
-      "default": 0.95,
+      "default": 0.9,
       "maximum": 1.0,
       "minimum": 0.0,
       "title": "Top P",
       "type": "number"
     },
     "top_k": {
-      "default": 20,
+      "default": -1,
       "description": "Top-k sampling. -1 to disable.",
       "minimum": -1,
       "title": "Top K",
@@ -190,37 +173,6 @@
       "default": null,
       "description": "the tool call id for tool role messages",
       "title": "Tool Call Id"
-    },
-    "reasoning": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "the reasoning input of the message",
-      "title": "Reasoning"
-    },
-    "reasoning_effort": {
-      "$ref": "#/$defs/ReasoningEffortEnum",
-      "default": "none",
-      "description": "enable step-by-step reasoning"
-    },
-    "reasoning_max_tokens": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "the maximum number of tokens to use for reasoning",
-      "title": "Reasoning Max Tokens"
     },
     "system_prompt": {
       "default": "you are a helpful assistant that can answer questions and help with tasks.",

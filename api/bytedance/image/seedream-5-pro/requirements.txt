@@ -1,0 +1,10 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+
+# BytePlus ARK SDK for image generation
+byteplus-python-sdk-v2
+
+# HTTP requests for downloading generated images
+requests
+httpx>=0.24.0,<1.0.0
+sniffio
