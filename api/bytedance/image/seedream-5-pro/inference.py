@@ -120,7 +120,7 @@ class App(BaseApp):
 
         # Initialize client
         self.client = setup_byteplus_client()
-        self.model_id = "seedream-5-0-pro-260628"
+        self.model_id = "dola-seedream-5-0-pro-260628"
 
         self.logger.info(f"Seedream 5.0 Pro initialized with model: {self.model_id}")
 
