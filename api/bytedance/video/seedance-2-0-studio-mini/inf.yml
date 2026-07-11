@@ -1,0 +1,34 @@
+namespace: bytedance
+name: seedance-2-0-studio-mini
+description: Cost-effective multimodal video generation with private asset library support. Automatically uploads reference images to BytePlus virtual portrait library for enhanced character consistency. ~50% cheaper than Seedance 2.0, supports text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
+metadata:
+    provider: bytedance
+    tags:
+        - seedance
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - multimodal
+        - audio
+        - mini
+        - cost-effective
+        - bytedance
+        - byteplus
+        - studio
+        - asset-library
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ARK_API_KEY
+      description: BytePlus ModelArk API key for Seedance video generation
+    - key: BYTEPLUS_AK
+      description: BytePlus Access Key for asset library operations
+    - key: BYTEPLUS_SK
+      description: BytePlus Secret Key for asset library operations
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

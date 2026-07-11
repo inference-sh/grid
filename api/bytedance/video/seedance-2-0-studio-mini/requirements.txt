@@ -1,0 +1,6 @@
+pydantic>=2.0.0
+inferencesh
+byteplus-python-sdk-v2
+requests
+httpx>=0.24.0,<1.0.0
+sniffio

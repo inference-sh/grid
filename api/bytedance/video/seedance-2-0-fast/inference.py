@@ -21,6 +21,7 @@ from .byteplus_helper import (
     build_image_content,
     build_video_content,
     build_audio_content,
+    probe_video,
 )
 
 
@@ -250,9 +251,16 @@ class App(BaseApp):
 
             video_path = download_video(video_url, self.logger)
 
-            actual_duration = getattr(result, 'duration', float(input_data.duration) if input_data.duration > 0 else 5.0)
-            fps = getattr(result, 'framespersecond', 24)
+            # Probe actual output video for real dimensions, fps, frame count
+            probe = probe_video(video_path)
+            width = probe.get("width", 1280)
+            height = probe.get("height", 720)
+            fps = probe.get("fps", 24)
+            actual_duration = probe.get("seconds", float(input_data.duration) if input_data.duration > 0 else 5.0)
             actual_resolution = getattr(result, 'resolution', input_data.resolution.value)
+            actual_ratio = getattr(result, 'ratio', input_data.ratio.value)
+            if actual_ratio == 'adaptive':
+                actual_ratio = '16:9'
             seed = getattr(result, 'seed', None)
 
             usage = getattr(result, 'usage', None)
@@ -261,27 +269,13 @@ class App(BaseApp):
             if usage:
                 completion_tokens = getattr(usage, 'completion_tokens', None)
                 total_tokens = getattr(usage, 'total_tokens', None)
+            self.logger.info(f"BytePlus usage — completion_tokens: {completion_tokens}, total_tokens: {total_tokens}, mode: {mode}, probe: {width}x{height}@{fps} {actual_duration:.3f}s")
 
             resolution_map = {
                 '480p': VideoResolution.VIDEO_RES480_P,
                 '720p': VideoResolution.VIDEO_RES720_P,
             }
             resolution_enum = resolution_map.get(actual_resolution, VideoResolution.VIDEO_RES720_P)
-
-            dimension_map = {
-                ('480p', '16:9'): (864, 496), ('480p', '4:3'): (752, 560),
-                ('480p', '1:1'): (640, 640), ('480p', '3:4'): (560, 752),
-                ('480p', '9:16'): (496, 864), ('480p', '21:9'): (992, 432),
-                ('720p', '16:9'): (1280, 720), ('720p', '4:3'): (1112, 834),
-                ('720p', '1:1'): (960, 960), ('720p', '3:4'): (834, 1112),
-                ('720p', '9:16'): (720, 1280), ('720p', '21:9'): (1470, 630),
-            }
-            actual_ratio = getattr(result, 'ratio', input_data.ratio.value)
-            if actual_ratio == 'adaptive':
-                actual_ratio = '16:9'
-            width, height = dimension_map.get((actual_resolution, actual_ratio), (1280, 720))
-
-            estimated_tokens = int((width * height * fps * float(actual_duration)) / 1024)
 
             # Build input metadata for pricing
             input_metas = []
@@ -293,8 +287,15 @@ class App(BaseApp):
                 for _ in input_data.reference_images:
                     input_metas.append(ImageMeta())
             if input_data.reference_videos:
-                for _ in input_data.reference_videos:
-                    input_metas.append(VideoMeta())
+                for ref_vid in input_data.reference_videos:
+                    if ref_vid and ref_vid.exists():
+                        ref_probe = probe_video(ref_vid.path)
+                        ref_frames = ref_probe.get("nb_frames", 0)
+                        ref_fps = ref_probe.get("fps", 24)
+                        ref_seconds = ref_frames / ref_fps if ref_fps > 0 else 0.0
+                        input_metas.append(VideoMeta(seconds=ref_seconds))
+                    else:
+                        input_metas.append(VideoMeta())
             if input_data.reference_audios:
                 for _ in input_data.reference_audios:
                     input_metas.append(AudioMeta())
@@ -315,7 +316,6 @@ class App(BaseApp):
                             "seed": seed,
                             "completion_tokens": completion_tokens,
                             "total_tokens": total_tokens,
-                            "estimated_tokens": estimated_tokens,
                         }
                     )
                 ]

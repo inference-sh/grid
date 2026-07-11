@@ -1,7 +1,7 @@
 """
-Seedance 2.0 Studio - BytePlus Video Generation with Asset Library
+Seedance 2.0 Mini Studio - BytePlus Video Generation with Asset Library
 
-Same capabilities as Seedance 2.0, but automatically uploads reference images
+Same capabilities as Seedance 2.0 Mini, but automatically uploads reference images
 to BytePlus private virtual portrait library for enhanced character consistency.
 Uses asset:// URIs instead of direct image URLs for trusted asset generation.
 """
@@ -36,17 +36,13 @@ from .asset_library_helper import (
 RESOLUTION_MAP = {
     '480p': VideoResolution.VIDEO_RES480_P,
     '720p': VideoResolution.VIDEO_RES720_P,
-    '1080p': VideoResolution.VIDEO_RES1080_P,
-    '4k': VideoResolution.VIDEO_RES4_K,
 }
 
 
 class ResolutionEnum(str, Enum):
-    """Video resolution options."""
+    """Video resolution options (Mini supports 480p and 720p only)."""
     p480 = "480p"
     p720 = "720p"
-    p1080 = "1080p"
-    p4k = "4k"
 
 
 class RatioEnum(str, Enum):
@@ -61,9 +57,9 @@ class RatioEnum(str, Enum):
 
 
 class AppInput(BaseAppInput):
-    """Input schema for Seedance 2.0 Studio video generation.
+    """Input schema for Seedance 2.0 Mini Studio video generation.
 
-    Same as Seedance 2.0, but images are automatically uploaded to the
+    Same as Seedance 2.0 Mini, but images are automatically uploaded to the
     private virtual portrait library for enhanced character consistency.
 
     Supports multiple modes:
@@ -102,7 +98,7 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
+        description="Video resolution. Seedance 2.0 Mini supports 480p and 720p only."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,
@@ -135,13 +131,13 @@ class AppInput(BaseAppInput):
 
 
 class AppOutput(BaseAppOutput):
-    """Output schema for Seedance 2.0 Studio video generation."""
+    """Output schema for Seedance 2.0 Mini Studio video generation."""
 
     video: File = Field(description="The generated video file.")
 
 
 class App(BaseApp):
-    """Seedance 2.0 Studio video generation with private asset library."""
+    """Seedance 2.0 Mini Studio video generation with private asset library."""
 
     async def setup(self, metadata):
         """Initialize BytePlus clients for generation and asset library."""
@@ -151,14 +147,14 @@ class App(BaseApp):
 
         self.client = setup_byteplus_client()
         self.asset_client = setup_asset_client()
-        self.model_id = "dreamina-seedance-2-0-260128"
-        self.unfiltered_model_id = "ep-20260514173157-ppqhm"
+        self.model_id = "dreamina-seedance-2-0-mini-260615"
+        self.unfiltered_model_id = "ep-20260711220818-87j2z"
         self.asset_group_id = None
 
         self.cancel_flag = False
         self.current_task_id = None
 
-        self.logger.info(f"Seedance 2.0 Studio initialized with model: {self.model_id}")
+        self.logger.info(f"Seedance 2.0 Mini Studio initialized with model: {self.model_id}")
 
     async def on_cancel(self):
         """Handle cancellation request."""
@@ -175,7 +171,7 @@ class App(BaseApp):
             self.asset_group_id = create_asset_group(
                 self.asset_client,
                 name=group_name,
-                description="Auto-managed asset group for Seedance 2.0 Studio",
+                description="Auto-managed asset group for Seedance 2.0 Mini Studio",
                 logger=self.logger,
             )
         return self.asset_group_id
@@ -314,13 +310,13 @@ class App(BaseApp):
         )
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
-        """Generate video using Seedance 2.0 with asset library."""
+        """Generate video using Seedance 2.0 Mini with asset library."""
         try:
             self.cancel_flag = False
             self.current_task_id = None
 
             mode = self._determine_mode(input_data)
-            self.logger.info(f"Starting {mode} generation (studio)")
+            self.logger.info(f"Starting {mode} generation (mini studio)")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
             self.logger.info(f"Resolution: {input_data.resolution.value}, Ratio: {input_data.ratio.value}, Duration: {input_data.duration}s, Audio: {input_data.generate_audio}")
 

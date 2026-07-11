@@ -166,6 +166,40 @@ def cancel_task(
 from .download_helper import download_file, download_video, download_image  # noqa: F401
 
 
+def probe_video(path: str, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+    """
+    Probe a video file for width, height, fps, frame count, and duration.
+    Uses ffprobe. Returns empty dict on failure.
+    """
+    import subprocess
+    import json
+
+    try:
+        result = subprocess.run(
+            ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", path],
+            capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0:
+            data = json.loads(result.stdout)
+            for s in data.get("streams", []):
+                if s.get("codec_type") == "video":
+                    fps_str = s.get("r_frame_rate", "24/1")
+                    num, den = fps_str.split("/")
+                    fps = int(num) / int(den)
+                    nb_frames = int(s.get("nb_frames", 0))
+                    return {
+                        "width": int(s.get("width", 0)),
+                        "height": int(s.get("height", 0)),
+                        "fps": fps,
+                        "nb_frames": nb_frames,
+                        "seconds": nb_frames / fps if fps > 0 else 0.0,
+                    }
+    except Exception as e:
+        if logger:
+            logger.warning(f"Could not probe video: {e}")
+    return {}
+
+
 def build_text_content(text: str, **params) -> Dict[str, str]:
     """
     Build a text content item for BytePlus API.
