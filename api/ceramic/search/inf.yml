@@ -1,0 +1,16 @@
+namespace: ceramic
+name: search
+description: Web search powered by Ceramic AI
+metadata: {}
+category: text
+env: {}
+kernel: "3.11"
+secrets:
+    - key: CERAMIC_KEY
+      description: Ceramic AI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
