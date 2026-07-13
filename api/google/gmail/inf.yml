@@ -11,7 +11,11 @@ env: {}
 kernel: python-3.11
 integrations:
     - key: google.gmail.send
-      description: Full Gmail access for reading, sending, and organizing emails
+      description: Send emails on your behalf
+    - key: google.gmail.modify
+      description: Read, label, archive, and organize emails
+    - key: google.gmail.compose
+      description: Create and update email drafts
 resources:
     gpu:
         count: 0

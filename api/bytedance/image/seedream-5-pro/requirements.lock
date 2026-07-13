@@ -1,6 +1,6 @@
 annotated-types==0.7.0
 anyio==4.14.1
-byteplus-python-sdk-v2==3.0.52
+byteplus-python-sdk-v2==3.0.53
 certifi==2026.6.17
 charset-normalizer==3.4.9
 h11==0.16.0
