@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "query": {
+      "default": "latest developments in artificial intelligence",
+      "description": "Search query in keyword format (1-50 words)",
+      "title": "Query",
+      "type": "string"
+    },
+    "max_description_length": {
+      "default": 3000,
+      "description": "Maximum character length for each result's description",
+      "maximum": 8000,
+      "minimum": 1000,
+      "title": "Max Description Length",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}
