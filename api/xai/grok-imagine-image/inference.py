@@ -136,6 +136,9 @@ class App(BaseApp):
 
         except XAIError:
             raise
+        except ValueError as e:
+            self.logger.error(f"xAI SDK value error: {e}", exc_info=True)
+            raise RuntimeError(f"Image generation failed: invalid response from xAI API")
         except Exception as e:
-            self.logger.error(f"Error during image generation: {e}")
+            self.logger.error(f"Unexpected error during image generation: {e}", exc_info=True)
             raise RuntimeError(f"Image generation failed: {str(e)}")
