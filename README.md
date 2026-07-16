@@ -1,6 +1,6 @@
 # grid — open source ai app store for inference.sh
 
-250+ ai models and apps: image generation (flux, stable diffusion), video generation (veo, seedance), llms (claude, gpt, gemini), and more.
+ai models and apps: image generation (flux, stable diffusion), video generation (veo, seedance), llms (claude, gpt, gemini), and more.
 
 *a digital frontier.*
 
