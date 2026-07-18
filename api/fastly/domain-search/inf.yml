@@ -1,0 +1,18 @@
+namespace: fastly
+name: domain-search
+description: domain research api — search for available domains and check registration status
+metadata: {}
+category: text
+default_function: suggest
+env: {}
+kernel: python-3.11
+secrets:
+    - key: FASTLY_KEY
+      description: Fastly API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

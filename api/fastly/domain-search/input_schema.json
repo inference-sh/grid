@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "query": {
+      "description": "Search terms for domain suggestions",
+      "title": "Query",
+      "type": "string"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
