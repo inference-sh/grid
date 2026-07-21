@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "markdown": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Markdown text to convert",
+      "title": "Markdown"
+    },
+    "file": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Markdown file to convert (.md)",
+      "title": "File"
+    },
+    "reference_doc": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Word template (.docx) for styling",
+      "title": "Reference Doc"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

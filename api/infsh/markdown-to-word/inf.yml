@@ -1,0 +1,9 @@
+name: markdown-to-word
+description: Convert Markdown text or files to Word (.docx) documents
+category: text
+kernel: python-3.11
+resources:
+  gpu:
+    count: 0
+    type: none
+  ram: 4
