@@ -91,7 +91,7 @@ class App(BaseApp):
     async def setup(self):
         """Initialize model and configuration."""
         self.logger = setup_logger(__name__)
-        self.model_id = "gemini-3.1-flash-image-preview"
+        self.model_id = "gemini-3.1-flash-image"
         self.client = create_vertex_client()
         self.logger.info("Gemini 3.1 Flash Image Preview (Vertex AI) initialized successfully")
 
@@ -104,6 +104,7 @@ class App(BaseApp):
                 if len(input_data.images) > 14:
                     raise RuntimeError("Gemini 3.1 Flash Image Preview supports up to 14 input images")
 
+                input_data.images = [img for img in input_data.images if img is not None]
                 for i, image in enumerate(input_data.images):
                     if not image.exists():
                         raise RuntimeError(f"Input image {i+1} does not exist at path: {image.path}")

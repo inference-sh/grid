@@ -93,6 +93,7 @@ class App(BaseApp):
                 if len(input_data.images) > 14:
                     raise RuntimeError("Gemini 3 Pro Image supports up to 14 input images")
 
+                input_data.images = [img for img in input_data.images if img is not None]
                 for i, image in enumerate(input_data.images):
                     if not image.exists():
                         raise RuntimeError(f"Input image {i+1} does not exist at path: {image.path}")
