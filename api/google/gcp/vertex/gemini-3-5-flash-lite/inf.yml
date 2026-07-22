@@ -1,0 +1,23 @@
+namespace: google
+name: gemini-3-5-flash-lite
+description: Gemini 3.5 Flash-Lite via Vertex AI — fastest, most cost-effective 3.5-class model at 350 output tokens/s. Built for high-throughput agentic workflows.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

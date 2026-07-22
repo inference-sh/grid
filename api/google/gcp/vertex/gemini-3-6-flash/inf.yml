@@ -1,0 +1,23 @@
+namespace: google
+name: gemini-3-6-flash
+description: Gemini 3.6 Flash via Vertex AI — efficient workhorse model with improved coding, knowledge work, multimodal performance, and 17% fewer output tokens than 3.5 Flash.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

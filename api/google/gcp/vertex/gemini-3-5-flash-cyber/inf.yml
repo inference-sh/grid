@@ -1,0 +1,23 @@
+namespace: google
+name: gemini-3-5-flash-cyber
+description: Gemini 3.5 Flash Cyber via Vertex AI — specialized cybersecurity model fine-tuned for finding and fixing vulnerabilities, built on 3.5 Flash.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
