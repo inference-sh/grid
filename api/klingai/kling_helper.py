@@ -1252,28 +1252,11 @@ async def poll_task(
     get_func,
     task_id: str,
     interval: float = 5.0,
-    timeout: float = 600.0,
+    **_kwargs,
 ) -> TaskResult:
-    """
-    Poll a task until completion.
-
-    Args:
-        get_func: The get method to call (e.g., client.text2video.get)
-        task_id: Task ID to poll
-        interval: Seconds between polls
-        timeout: Maximum seconds to wait
-
-    Returns:
-        Final TaskResult
-
-    Raises:
-        TimeoutError: If task doesn't complete within timeout
-        KlingAPIError: If task fails
-    """
     import asyncio
 
-    start = time.time()
-    while time.time() - start < timeout:
+    while True:
         result = await get_func(task_id)
 
         if result.task_status == TaskStatus.SUCCEED:
@@ -1285,8 +1268,6 @@ async def poll_task(
             )
 
         await asyncio.sleep(interval)
-
-    raise TimeoutError(f"Task {task_id} did not complete within {timeout} seconds")
 
 
 def validate_image_input(image: str) -> bool:
