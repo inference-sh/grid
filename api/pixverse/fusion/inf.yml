@@ -1,0 +1,21 @@
+namespace: pixverse
+name: fusion
+description: "PixVerse Fusion — generate video from reference images. Compose 1-3 subject/background images into a video scene with text-guided motion."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - fusion
+        - reference-to-video
+        - composition
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

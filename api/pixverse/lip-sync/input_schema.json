@@ -1,0 +1,55 @@
+{
+  "properties": {
+    "video": {
+      "description": "Source video for lip sync. MP4/MOV/WebM, max 100MB, max 1920px, max 60s.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio file to sync. MP3/WAV/M4A/AAC, max 60s. Provide either audio or tts_text.",
+      "title": "Audio"
+    },
+    "tts_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text for TTS lip sync (max 200 chars). Provide either tts_text or audio.",
+      "title": "Tts Text"
+    },
+    "tts_speaker_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "TTS voice ID. Use 'auto' for automatic selection. Required when using tts_text.",
+      "title": "Tts Speaker Id"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

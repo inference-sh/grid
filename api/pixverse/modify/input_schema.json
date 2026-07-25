@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "video": {
+      "description": "Source video to modify. MP4/MOV, max 100MB, max 1920px, max 30s.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "description": "Modification instruction. Use @selection0/@selection1 for mask refs and @img0/@img1 for image refs.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for swap/add/restyle operations (max 3). Referenced as @img0, @img1, @img2 in prompt.",
+      "title": "Reference Images"
+    },
+    "quality": {
+      "default": "540p",
+      "description": "Output resolution (currently only 540p supported)",
+      "enum": [
+        "540p"
+      ],
+      "title": "Quality",
+      "type": "string"
+    }
+  },
+  "required": [
+    "video",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

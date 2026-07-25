@@ -1,0 +1,21 @@
+namespace: pixverse
+name: lip-sync
+description: "PixVerse Lip Sync — align speech to mouth movement in video. Supports audio file input or text-to-speech with selectable voices."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - lip-sync
+        - speech
+        - tts
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

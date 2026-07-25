@@ -1,0 +1,21 @@
+namespace: pixverse
+name: avatar
+description: "PixVerse Avatar — generate talking avatar video from a portrait image. Supports audio file or text-to-speech input at up to 1080p."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - avatar
+        - talking-head
+        - tts
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

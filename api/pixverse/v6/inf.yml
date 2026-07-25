@@ -1,0 +1,22 @@
+namespace: pixverse
+name: v6
+description: "PixVerse V6 — versatile video generation model. Text-to-video and image-to-video with up to 1080p resolution and 15s duration. Per-second billing."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - v6
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

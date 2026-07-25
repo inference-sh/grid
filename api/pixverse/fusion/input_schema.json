@@ -1,0 +1,116 @@
+{
+  "$defs": {
+    "ImageReference": {
+      "properties": {
+        "image": {
+          "description": "Reference image",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "ref_name": {
+          "description": "Reference name used in prompt with @ prefix (e.g. 'dog' \u2192 use '@dog ' in prompt)",
+          "title": "Ref Name",
+          "type": "string"
+        },
+        "type": {
+          "default": "subject",
+          "description": "Role of the image",
+          "enum": [
+            "subject",
+            "background"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "ref_name"
+      ],
+      "title": "ImageReference",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Scene description. Prefix ref_names with @ and include a space after (e.g. '@dog plays in the park').",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image_references": {
+      "description": "Reference images for composition (1-3). Each must have a unique ref_name.",
+      "items": {
+        "$ref": "#/$defs/ImageReference"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Image References",
+      "type": "array"
+    },
+    "model": {
+      "default": "v6",
+      "description": "Generation model",
+      "enum": [
+        "c1",
+        "v6"
+      ],
+      "title": "Model",
+      "type": "string"
+    },
+    "quality": {
+      "default": "720p",
+      "description": "Output resolution",
+      "enum": [
+        "360p",
+        "540p",
+        "720p",
+        "1080p"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Video aspect ratio",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducibility",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image_references"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+namespace: pixverse
+name: modify
+description: "PixVerse Modify — edit video content using text prompts. Swap subjects, add elements, or restyle regions with reference images."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - video-editing
+        - modify
+        - swap
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

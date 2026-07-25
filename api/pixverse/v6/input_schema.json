@@ -1,0 +1,99 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video (25-200 words recommended)",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for image-to-video mode. PNG/JPG/JPEG/WebP, max 10000px. When provided, generates video from this image.",
+      "title": "Image"
+    },
+    "quality": {
+      "default": "720p",
+      "description": "Output resolution",
+      "enum": [
+        "360p",
+        "540p",
+        "720p",
+        "1080p"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (5-15). Billed per second.",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "Video aspect ratio (text-to-video only; image-to-video uses image aspect ratio)",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid in the video",
+      "title": "Negative Prompt"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducibility",
+      "title": "Seed"
+    },
+    "motion_mode": {
+      "default": "normal",
+      "description": "Motion intensity",
+      "enum": [
+        "normal",
+        "fast"
+      ],
+      "title": "Motion Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,20 @@
+namespace: pixverse
+name: extend
+description: "PixVerse Extend — extend an existing video with AI-generated continuation. Supports 5s or 8s extensions at up to 1080p."
+metadata:
+    provider: pixverse
+    tags:
+        - pixverse
+        - video-extension
+        - extend
+category: video
+kernel: python-3.11
+secrets:
+    - key: PIXVERSE_KEY
+      description: PixVerse API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

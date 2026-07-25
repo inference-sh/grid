@@ -1,0 +1,81 @@
+{
+  "properties": {
+    "video": {
+      "description": "Source video to extend. MP4/MOV, max 50MB, max 1920px, max 30s.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "description": "Prompt describing what should happen in the extended portion (max 2048 chars)",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "quality": {
+      "default": "720p",
+      "description": "Output resolution",
+      "enum": [
+        "360p",
+        "540p",
+        "720p",
+        "1080p"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Extension duration in seconds. 1080p supports only 5s.",
+      "enum": [
+        5,
+        8
+      ],
+      "title": "Duration",
+      "type": "integer"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to avoid (max 2048 chars)",
+      "title": "Negative Prompt"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducibility",
+      "title": "Seed"
+    },
+    "motion_mode": {
+      "default": "normal",
+      "description": "Motion intensity. Fast mode only available for 5s, not at 1080p.",
+      "enum": [
+        "normal",
+        "fast"
+      ],
+      "title": "Motion Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "video",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
