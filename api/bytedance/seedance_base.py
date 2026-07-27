@@ -2,7 +2,7 @@
 Shared implementation for the Seedance 2.0 app family.
 
 The six Seedance 2.0 apps (full / fast / mini, each in a plain and a "studio"
-variant) differ only in four things: display name, model IDs, the set of
+variant) differ only in four things: display name, model ID, the set of
 resolutions the model supports, and whether references are routed through the
 BytePlus private asset library. Everything else — mode detection, content
 building, task polling, output probing, usage metadata — is identical, so it
@@ -13,9 +13,11 @@ those are what generate the app's public API schema and they differ per app
 (resolution enum members, field descriptions).
 
 Two classes:
-    SeedanceApp        — passes reference URLs through directly
-    SeedanceStudioApp  — uploads every reference to the asset library first,
-                         and passes asset:// URIs instead
+    SeedanceApp        — passes reference URLs through directly, and always
+                         uses the standard safety-filtered endpoint
+    SeedanceStudioApp  — uploads every reference to the asset library first
+                         and passes asset:// URIs instead; the only variant
+                         that may expose safety_filter / a custom endpoint
 
 Not used by the Seedance 1.x apps: those take a different input shape
 (no references, no ratio/audio) and encode parameters into the prompt text
@@ -74,9 +76,6 @@ class SeedanceApp(BaseApp):
     # would turn these into request fields and leak into the public schema.
     display_name: ClassVar[str] = "Seedance 2.0"
     model_id: ClassVar[str] = ""
-    # Endpoint used when safety_filter is False. None means the app has no
-    # unfiltered endpoint and always uses model_id.
-    unfiltered_model_id: ClassVar[Optional[str]] = None
     # Marks output metadata so pricing/analytics can tell the variants apart.
     is_studio: ClassVar[bool] = False
     # The app's own AppOutput class. Set by each app so the base can build the
@@ -249,10 +248,12 @@ class SeedanceApp(BaseApp):
     # --- generation ---
 
     def _select_model(self, input_data) -> str:
-        """Pick the filtered or unfiltered endpoint for this request."""
-        if getattr(input_data, "safety_filter", True):
-            return self.model_id
-        return self.unfiltered_model_id or self.model_id
+        """Always the standard, safety-filtered endpoint.
+
+        Plain apps do not expose safety_filter and have no custom endpoint;
+        only the studio variants can opt out. See SeedanceStudioApp.
+        """
+        return self.model_id
 
     async def run(self, input_data, metadata):
         """Generate a video. Subclasses re-declare this with typed signatures."""
@@ -327,9 +328,21 @@ class SeedanceStudioApp(SeedanceApp):
     Every reference — image, video, and audio — is uploaded to a private asset
     group and passed as an asset:// URI. This is what makes the input a trusted
     asset; raw URLs trip the real-person / privacy input filters.
+
+    Studio apps are also the only ones that may expose safety_filter and route
+    to a custom unfiltered endpoint.
     """
 
     is_studio: ClassVar[bool] = True
+    # Endpoint used when safety_filter is False. None means this app has no
+    # unfiltered endpoint yet and always uses model_id.
+    unfiltered_model_id: ClassVar[Optional[str]] = None
+
+    def _select_model(self, input_data) -> str:
+        """Pick the filtered or unfiltered endpoint for this request."""
+        if getattr(input_data, "safety_filter", True):
+            return self.model_id
+        return self.unfiltered_model_id or self.model_id
 
     async def setup(self, metadata):
         await super().setup(metadata)

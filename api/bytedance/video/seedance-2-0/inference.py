@@ -94,10 +94,6 @@ class AppInput(BaseAppInput):
         default=False,
         description="Whether to add watermark to the output video."
     )
-    safety_filter: bool = Field(
-        default=True,
-        description="Enable input safety filtering. Set to false to disable NSFW content filtering on inputs."
-    )
     safety_identifier: Optional[str] = Field(
         default=None,
         description="Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email."
@@ -115,7 +111,6 @@ class App(SeedanceApp):
 
     display_name: ClassVar[str] = "Seedance 2.0"
     model_id: ClassVar[str] = "dreamina-seedance-2-0-260128"
-    unfiltered_model_id: ClassVar[Optional[str]] = "ep-20260514173157-ppqhm"
     OutputType: ClassVar[Any] = AppOutput
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
