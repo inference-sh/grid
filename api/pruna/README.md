@@ -3,7 +3,7 @@
 API base: `https://api.pruna.ai/v1`
 Docs: `https://docs.api.pruna.ai/guides/models`
 
-## Implemented Models (17)
+## Implemented Models (18)
 
 ### Image Generation
 
@@ -13,6 +13,7 @@ Docs: `https://docs.api.pruna.ai/guides/models`
 | flux-dev-lora | [docs](https://docs.api.pruna.ai/guides/models/flux-dev-lora) | $0.01/img | 150/min |
 | flux-klein-4b | [docs](https://docs.api.pruna.ai/guides/models/flux-2-klein-4b) | $0.0001/img | 150/min |
 | p-image | [docs](https://docs.api.pruna.ai/guides/models/p-image) | $0.005/img | 500/min |
+| p-image-ideogram | [docs](https://docs.api.pruna.ai/guides/models/p-image-ideogram) | $0.003-0.03/img | 500/min |
 | p-image-lora | [docs](https://docs.api.pruna.ai/guides/models/p-image-lora) | - | 250/min |
 | qwen-image | [docs](https://docs.api.pruna.ai/guides/models/qwen-image) | $0.025/img | 150/min |
 | qwen-image-fast | [docs](https://docs.api.pruna.ai/guides/models/qwen-image-fast) | - | 150/min |
@@ -71,7 +72,7 @@ Most models support a subset of these:
 | `5:4` | flux-dev, flux-dev-lora, flux-klein-4b |
 | `4:5` | flux-dev, flux-dev-lora, flux-klein-4b |
 | `match_input_image` | p-image-edit, p-image-edit-lora, qwen-image-edit-plus, flux-klein-4b |
-| `custom` | p-image, p-image-lora, qwen-image-fast, wan-image-small |
+| `custom` | p-image, p-image-ideogram, p-image-lora, qwen-image-fast, wan-image-small |
 
 ### output_format
 
@@ -100,9 +101,17 @@ Most models support a subset of these:
 | flux-dev-lora | `"Base Model (compiled)"`, `"Lightly Juiced"`, `"Juiced"`, `"Extra Juiced"` |
 | vace (not impl) | `"Lightly Juiced (more consistent)"`, `"Juiced (more speed)"`, `"Extra Juiced (even more speed)"` |
 
-### image_size (qwen-image only)
+### image_size
 
-`"optimize_for_quality"`, `"optimize_for_speed"`
+| Model | Allowed Values |
+|---|---|
+| qwen-image | `"optimize_for_quality"`, `"optimize_for_speed"` |
+| p-image-ideogram | `"1K"`, `"2K"` (ignored for custom dimensions) |
+
+### thinking (p-image-ideogram only)
+
+`"very low"`, `"low"`, `"medium"`, `"high"` -- reasoning effort, trades speed and
+price against quality. Drives per-image pricing together with `image_size`.
 
 ### fps (p-video only)
 

@@ -13,6 +13,19 @@ Source: Pruna Developer Portal (2026-03)
 | P-Image-Edit        | $0.010 / image      | 500 req/min   |
 | P-Image-Edit-LoRA   | $0.010 / image      | 250 req/min   |
 
+### P-Image-Ideogram
+
+Priced per image by thinking level and resolution budget. 2K is 2x the 1K rate.
+
+| thinking   | 1K       | 2K      |
+|------------|----------|---------|
+| very low   | $0.003   | $0.006  |
+| low        | $0.0075  | $0.015  |
+| medium     | $0.010   | $0.020  |
+| high       | $0.015   | $0.030  |
+
+Rate Limit: 500 req/min
+
 ### Video Generation (P-Video)
 
 | Resolution | Draft Mode | Price per Second |

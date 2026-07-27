@@ -1,0 +1,16 @@
+namespace: pruna
+name: p-image-ideogram
+description: High-quality text-to-image generation with strong typography and prompt understanding, built with Ideogram
+metadata: {}
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

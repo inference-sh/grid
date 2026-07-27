@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "custom"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ImageSizeEnum": {
+      "enum": [
+        "1K",
+        "2K"
+      ],
+      "title": "ImageSizeEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "ThinkingEnum": {
+      "enum": [
+        "very low",
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "ThinkingEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for P-Image-Ideogram.",
+  "properties": {
+    "prompt": {
+      "description": "Text description of the image to generate. Handles rendered text and typography well.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "thinking": {
+      "$ref": "#/$defs/ThinkingEnum",
+      "default": "high",
+      "description": "Reasoning effort. Higher levels improve quality at the cost of speed and price."
+    },
+    "image_size": {
+      "$ref": "#/$defs/ImageSizeEnum",
+      "default": "1K",
+      "description": "Output resolution budget. Ignored when aspect_ratio is custom."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1",
+      "description": "Aspect ratio for the image. Use custom to set width and height directly."
+    },
+    "width": {
+      "anyOf": [
+        {
+          "maximum": 2560,
+          "minimum": 256,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom width in pixels (256-2560). Only used when aspect_ratio=custom.",
+      "title": "Width"
+    },
+    "height": {
+      "anyOf": [
+        {
+          "maximum": 2560,
+          "minimum": 256,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom height in pixels (256-2560). Only used when aspect_ratio=custom.",
+      "title": "Height"
+    },
+    "prompt_upsampling": {
+      "default": true,
+      "description": "Enhance the prompt with an LLM before generation.",
+      "title": "Prompt Upsampling",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output image format."
+    },
+    "output_quality": {
+      "default": 80,
+      "description": "Output quality from 0 to 100. Ignored for PNG.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

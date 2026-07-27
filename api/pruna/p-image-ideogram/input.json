@@ -1,0 +1,9 @@
+{
+  "prompt": "A typographic travel poster for the French Riviera",
+  "thinking": "medium",
+  "image_size": "2K",
+  "aspect_ratio": "16:9",
+  "prompt_upsampling": true,
+  "output_format": "jpg",
+  "output_quality": 80
+}
