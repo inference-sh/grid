@@ -24,7 +24,7 @@
       "type": "string"
     }
   },
-  "description": "Input schema for Seedance 2.0 Mini Studio video generation.\n\nSame as Seedance 2.0 Mini, but images are automatically uploaded to the\nprivate virtual portrait library for enhanced character consistency.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios",
+  "description": "Input schema for Seedance 2.0 Mini Studio video generation.\n\nSame as Seedance 2.0 Mini, but all references are automatically uploaded to\nthe private virtual portrait library for enhanced character consistency.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios",
   "properties": {
     "prompt": {
       "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
