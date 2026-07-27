@@ -24,6 +24,7 @@ Not used by the Seedance 1.x apps: those take a different input shape
 rather than as top-level request fields.
 """
 
+import hashlib
 import logging
 from typing import Any, ClassVar, Optional
 
@@ -51,7 +52,7 @@ from .byteplus_helper import (
 )
 from .asset_library_helper import (
     setup_asset_client,
-    create_asset_group,
+    ensure_asset_group,
     upload_and_activate,
 )
 
@@ -118,7 +119,7 @@ class SeedanceApp(BaseApp):
         else:
             return "text-to-video"
 
-    async def _resolve_uri(self, file: File, asset_type: str, label: str) -> str:
+    async def _resolve_uri(self, file: File, asset_type: str, label: str, ctx) -> str:
         """Resolve an input file to the URI handed to the generation API.
 
         The plain variant passes the file's own URL through. The studio variant
@@ -128,11 +129,16 @@ class SeedanceApp(BaseApp):
             raise RuntimeError(f"{label} does not exist: {getattr(file, 'path', file)}")
         return file.uri
 
-    async def _prepare_generation(self, input_data) -> None:
-        """Hook run before content building. Studio uses it to open its group."""
+    async def _prepare_generation(self, input_data):
+        """Build the per-request context passed to _resolve_uri.
+
+        Whatever this returns lives on the call stack for exactly one request.
+        Nothing derived from input_data may be stored on self: workers are
+        reused across end users, so per-user state would leak between them.
+        """
         return None
 
-    async def _build_content(self, input_data, mode: str) -> list:
+    async def _build_content(self, input_data, mode: str, ctx) -> list:
         """Build the content list for the BytePlus API."""
         content = []
 
@@ -140,24 +146,24 @@ class SeedanceApp(BaseApp):
             content.append(build_text_content(input_data.prompt))
 
         if mode == "first-last-frame":
-            first_uri = await self._resolve_uri(input_data.image, "Image", "First-frame image")
-            last_uri = await self._resolve_uri(input_data.end_image, "Image", "Last-frame image")
+            first_uri = await self._resolve_uri(input_data.image, "Image", "First-frame image", ctx)
+            last_uri = await self._resolve_uri(input_data.end_image, "Image", "Last-frame image", ctx)
             content.append(build_image_content(first_uri, role="first_frame"))
             content.append(build_image_content(last_uri, role="last_frame"))
 
         elif mode == "image-to-video":
-            first_uri = await self._resolve_uri(input_data.image, "Image", "Input image")
+            first_uri = await self._resolve_uri(input_data.image, "Image", "Input image", ctx)
             content.append(build_image_content(first_uri, role="first_frame"))
 
         elif mode == "multimodal-reference":
             for ref_img in input_data.reference_images:
                 if ref_img.exists():
-                    uri = await self._resolve_uri(ref_img, "Image", "Reference image")
+                    uri = await self._resolve_uri(ref_img, "Image", "Reference image", ctx)
                     content.append(build_image_content(uri, role="reference_image"))
 
             for ref_vid in input_data.reference_videos:
                 if ref_vid.exists():
-                    uri = await self._resolve_uri(ref_vid, "Video", "Reference video")
+                    uri = await self._resolve_uri(ref_vid, "Video", "Reference video", ctx)
                     content.append(build_video_content(uri))
 
             if input_data.reference_audios:
@@ -166,7 +172,7 @@ class SeedanceApp(BaseApp):
                     raise RuntimeError("Audio reference requires at least one image or video reference.")
                 for ref_aud in input_data.reference_audios:
                     if ref_aud.exists():
-                        uri = await self._resolve_uri(ref_aud, "Audio", "Reference audio")
+                        uri = await self._resolve_uri(ref_aud, "Audio", "Reference audio", ctx)
                         content.append(build_audio_content(uri))
 
         return content
@@ -267,9 +273,9 @@ class SeedanceApp(BaseApp):
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
             self.logger.info(f"Resolution: {input_data.resolution.value}, Ratio: {input_data.ratio.value}, Duration: {input_data.duration}s, Audio: {input_data.generate_audio}")
 
-            await self._prepare_generation(input_data)
+            ctx = await self._prepare_generation(input_data)
 
-            content = await self._build_content(input_data, mode)
+            content = await self._build_content(input_data, mode, ctx)
 
             api_params = {
                 "resolution": input_data.resolution.value,
@@ -344,35 +350,54 @@ class SeedanceStudioApp(SeedanceApp):
             return self.model_id
         return self.unfiltered_model_id or self.model_id
 
+    # Cap on cached group entries per worker, so a long-lived worker serving
+    # many end users cannot grow this without bound.
+    GROUP_CACHE_MAX: ClassVar[int] = 512
+
     async def setup(self, metadata):
         await super().setup(metadata)
         self.asset_client = setup_asset_client()
-        self.asset_group_id = None
+        # Maps a hash of the group name -> group id. Keyed by hash so no raw
+        # end-user identifier is held in the worker; the group id it returns is
+        # only ever handed back for the same identifier that produced it.
+        self._group_cache = {}
 
-    async def _ensure_asset_group(self, safety_identifier: Optional[str] = None) -> str:
-        """Create asset group, namespaced by safety_identifier if provided."""
-        if self.asset_group_id is None:
-            group_name = f"seedance-studio-{safety_identifier}" if safety_identifier else "seedance-studio-assets"
-            self.asset_group_id = create_asset_group(
-                self.asset_client,
-                name=group_name,
-                description=f"Auto-managed asset group for {self.display_name}",
-                logger=self.logger,
-            )
-        return self.asset_group_id
+    async def _prepare_generation(self, input_data) -> str:
+        """Resolve this request's asset group and return its id as the context.
 
-    async def _prepare_generation(self, input_data) -> None:
-        # Ensure asset group is namespaced by safety_identifier
-        await self._ensure_asset_group(input_data.safety_identifier)
+        Never cached under a shared key: workers are reused across end users, so
+        a single cached group id would put a later user's assets into the group
+        named for whoever the worker happened to serve first. The cache is keyed
+        per identifier, so a hit can only ever return that identifier's group.
+        """
+        safety_identifier = input_data.safety_identifier
+        group_name = f"seedance-studio-{safety_identifier}" if safety_identifier else "seedance-studio-assets"
+        key = hashlib.sha256(group_name.encode()).hexdigest()[:16]
 
-    async def _resolve_uri(self, file: File, asset_type: str, label: str) -> str:
-        """Upload the file to the asset library and return its asset:// URI."""
+        cached = self._group_cache.get(key)
+        if cached:
+            return cached
+
+        group_id = ensure_asset_group(
+            self.asset_client,
+            name=group_name,
+            description=f"Auto-managed asset group for {self.display_name}",
+            logger=self.logger,
+        )
+
+        if len(self._group_cache) >= self.GROUP_CACHE_MAX:
+            # Insertion-ordered: drop the oldest entry.
+            self._group_cache.pop(next(iter(self._group_cache)))
+        self._group_cache[key] = group_id
+        return group_id
+
+    async def _resolve_uri(self, file: File, asset_type: str, label: str, ctx) -> str:
+        """Upload the file to this request's asset group, return its asset:// URI."""
         if not file or not file.exists():
             raise RuntimeError(f"{label} does not exist: {getattr(file, 'path', file)}")
-        group_id = await self._ensure_asset_group()
         return await upload_and_activate(
             self.asset_client,
-            group_id,
+            ctx,
             file.uri,
             asset_type=asset_type,
             logger=self.logger,

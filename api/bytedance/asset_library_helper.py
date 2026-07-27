@@ -101,6 +101,68 @@ def create_asset_group(
     return group_id
 
 
+def find_asset_group(
+    api: UniversalApi,
+    name: str,
+    project_name: str = "default",
+    logger: Optional[logging.Logger] = None,
+) -> Optional[str]:
+    """
+    Find an existing asset group by exact name.
+
+    Returns None if no group matches, or if the API does not support group
+    listing — callers should fall back to creating one. Never raises: a failed
+    lookup must not fail the request.
+    """
+    try:
+        resp = _ark_call(api, "ListAssetGroups", {
+            "Filter": {
+                "GroupType": "AIGC",
+                "Name": name,
+            },
+            "PageNumber": 1,
+            "PageSize": 10,
+        })
+    except Exception as e:
+        if logger:
+            logger.warning(f"ListAssetGroups unavailable ({e}); falling back to create")
+        return None
+
+    items = resp.get("Items") or resp.get("items") or []
+    for item in items:
+        if (item.get("Name") or item.get("name")) == name:
+            group_id = item.get("Id") or item.get("id")
+            if logger:
+                logger.info(f"REUSING existing asset group {group_id} for: {name}")
+            return group_id
+
+    if logger:
+        logger.info(f"No existing asset group named {name}")
+    return None
+
+
+def ensure_asset_group(
+    api: UniversalApi,
+    name: str,
+    description: str = "",
+    project_name: str = "default",
+    logger: Optional[logging.Logger] = None,
+) -> str:
+    """
+    Resolve an asset group by name, creating it only if it does not exist.
+
+    Stateless by design: the caller passes the name for this request and gets
+    back a group id. Nothing is cached, so a worker serving several end users
+    never reuses one user's group for another.
+    """
+    existing = find_asset_group(api, name, project_name=project_name, logger=logger)
+    if existing:
+        return existing
+    return create_asset_group(
+        api, name, description=description, project_name=project_name, logger=logger,
+    )
+
+
 def create_asset(
     api: UniversalApi,
     group_id: str,
