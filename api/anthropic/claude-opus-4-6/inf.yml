@@ -1,6 +1,6 @@
 namespace: anthropic
-name: claude-sonnet-46
-description: Claude Sonnet 4.6 — Best balance of speed and intelligence. 1M context, 64k output, vision, extended thinking, tool use. Direct API.
+name: claude-opus-4-6
+description: Claude Opus 4.6 — Previous generation Opus. 1M context, 128k output, vision, extended thinking, tool use. Direct API.
 metadata:
     capabilities:
         - reasoning

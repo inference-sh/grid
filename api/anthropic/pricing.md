@@ -8,9 +8,13 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 |-------|-------|--------|
 | Claude Fable 5 | $10.00 | $50.00 |
 | Claude Mythos 5 | $10.00 | $50.00 |
+| Claude Opus 5 | $5.00 | $25.00 |
+| Claude Opus 4.8 | $5.00 | $25.00 |
 | Claude Opus 4.7 | $5.00 | $25.00 |
 | Claude Opus 4.6 | $5.00 | $25.00 |
 | Claude Opus 4.5 | $5.00 | $25.00 |
+| Claude Sonnet 5 (through 2026-08-31) | $2.00 | $10.00 |
+| Claude Sonnet 5 (from 2026-09-01) | $3.00 | $15.00 |
 | Claude Sonnet 4.6 | $3.00 | $15.00 |
 | Claude Sonnet 4.5 | $3.00 | $15.00 |
 | Claude Haiku 4.5 | $1.00 | $5.00 |
@@ -20,9 +24,12 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 | Model | 5m Cache Write (1.25x) | 1h Cache Write (2x) | Cache Hit (0.1x) |
 |-------|----------------------|---------------------|-------------------|
 | Fable 5 / Mythos 5 | $12.50 | $20.00 | $1.00 |
+| Opus 5 | $6.25 | $10.00 | $0.50 |
+| Opus 4.8 | $6.25 | $10.00 | $0.50 |
 | Opus 4.7 | $6.25 | $10.00 | $0.50 |
 | Opus 4.6 | $6.25 | $10.00 | $0.50 |
 | Opus 4.5 | $6.25 | $10.00 | $0.50 |
+| Sonnet 5 (through 2026-08-31) | $2.50 | $4.00 | $0.20 |
 | Sonnet 4.6 | $3.75 | $6.00 | $0.30 |
 | Sonnet 4.5 | $3.75 | $6.00 | $0.30 |
 | Haiku 4.5 | $1.25 | $2.00 | $0.10 |
@@ -32,9 +39,12 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 | Model | Batch Input | Batch Output |
 |-------|------------|--------------|
 | Fable 5 / Mythos 5 | $5.00 | $25.00 |
+| Opus 5 | $2.50 | $12.50 |
+| Opus 4.8 | $2.50 | $12.50 |
 | Opus 4.7 | $2.50 | $12.50 |
 | Opus 4.6 | $2.50 | $12.50 |
 | Opus 4.5 | $2.50 | $12.50 |
+| Sonnet 5 (through 2026-08-31) | $1.00 | $5.00 |
 | Sonnet 4.6 | $1.50 | $7.50 |
 | Sonnet 4.5 | $1.50 | $7.50 |
 | Haiku 4.5 | $0.50 | $2.50 |
@@ -45,16 +55,26 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 
 All apps use token-based pricing. The `output_meta` reports `TextMeta(tokens=N)` for both inputs and outputs.
 
+**Units: price variables are microcents, where $1 = 100,000,000 microcents.** So $1/MTok is
+`100000000` and $5/MTok is `500000000`. The pricing agent has repeatedly saved these 100x too
+low (`5000000`, i.e. $0.05/MTok) even when given the dollar rate, so verify before approving a
+publish: for a 41-input / 282-output-token task at $5/$25, `evaluate` must return a total of
+`725500` microcents ($0.007255). A total of `7255` means the variables are 100x too low.
+
 ```
 # Fable 5 / Mythos 5: $10/MTok in, $50/MTok out
 partner_input_per_million:  1000000000  # $10.00 in microcents
 partner_output_per_million: 5000000000  # $50.00 in microcents
 
-# Opus 4.7 / 4.6 / 4.5: $5/MTok in, $25/MTok out
+# Opus 5 / 4.8 / 4.7 / 4.6 / 4.5: $5/MTok in, $25/MTok out
 partner_input_per_million:  500000000   # $5.00 in microcents
 partner_output_per_million: 2500000000  # $25.00 in microcents
 
-# Sonnet 4.6 / 4.5: $3/MTok in, $15/MTok out
+# Sonnet 5 (intro, through 2026-08-31): $2/MTok in, $10/MTok out
+partner_input_per_million:  200000000   # $2.00 in microcents
+partner_output_per_million: 1000000000  # $10.00 in microcents
+
+# Sonnet 4.6 / 4.5 (and Sonnet 5 from 2026-09-01): $3/MTok in, $15/MTok out
 partner_input_per_million:  300000000   # $3.00 in microcents
 partner_output_per_million: 1500000000  # $15.00 in microcents
 
@@ -79,7 +99,7 @@ partner_fee
 - **Web Search**: $10 per 1,000 searches (not currently exposed)
 - **Web Fetch**: No additional charge
 - **US-only inference**: 1.1x multiplier (`inference_geo: "us"`)
-- **Fast Mode** (Opus 4.6/4.7 only): 6x standard ($30/$150 per MTok) — not used in our apps
+- **Fast Mode** (Opus 5 / Opus 4.8 only, Claude API only): $10/$50 per MTok — not used in our apps. Removed on Opus 4.7 (`speed: "fast"` errors); no-op on Opus 4.6.
 - **Extended output** (Batch API only): Up to 300k tokens via `output-300k-2026-03-24` beta header
 
 ## Model Notes

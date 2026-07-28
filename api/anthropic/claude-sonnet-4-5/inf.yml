@@ -1,5 +1,5 @@
 namespace: anthropic
-name: claude-sonnet-45
+name: claude-sonnet-4-5
 description: Claude Sonnet 4.5 — Previous generation Sonnet. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
 metadata:
     capabilities:

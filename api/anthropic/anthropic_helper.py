@@ -20,6 +20,10 @@ from inferencesh.models.llm import (
 
 logger = logging.getLogger(__name__)
 
+# Non-streaming request limits. Streaming has no such cap.
+NON_STREAM_TIMEOUT = 120.0
+NON_STREAM_MAX_TOKENS = 16000
+
 # Budget tokens mapping for reasoning effort levels
 EFFORT_TO_BUDGET = {
     ReasoningEffortEnum.LOW: 1024,
@@ -200,34 +204,85 @@ def convert_tools_to_anthropic(
     return result
 
 
-# Models with adaptive thinking (always on, cannot be disabled)
-ADAPTIVE_THINKING_MODELS = {"claude-fable-5", "claude-mythos-5"}
+# Models with always-on thinking: the thinking parameter must be omitted entirely
+# (an explicit {"type": "disabled"} returns 400).
+ALWAYS_ON_THINKING_MODELS = {"claude-fable-5", "claude-mythos-5"}
+
+# Models that removed thinking.budget_tokens (400 if sent). Thinking depth is
+# controlled with adaptive thinking + output_config.effort instead.
+EFFORT_MODELS = {
+    "claude-opus-5",
+    "claude-opus-4-8",
+    "claude-opus-4-7",
+    "claude-sonnet-5",
+}
+
+# Models where disabling thinking is a documented footgun: the model can emit a
+# tool call as plain response text (the call silently never runs) and can leak
+# <thinking> tags into the output. Thinking stays on; cost is controlled with a
+# lower output_config.effort instead.
+NEVER_DISABLE_THINKING_MODELS = {"claude-opus-5"}
+
+# Reasoning effort -> output_config.effort level
+EFFORT_TO_LEVEL = {
+    ReasoningEffortEnum.LOW: "low",
+    ReasoningEffortEnum.MEDIUM: "medium",
+    ReasoningEffortEnum.HIGH: "high",
+}
+
+
+def _reasoning_requested(input_data) -> bool:
+    """Whether the caller asked for reasoning (explicit budget + non-none effort)."""
+    reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
+    reasoning_effort = getattr(input_data, "reasoning_effort", None)
+
+    if reasoning_max is None or reasoning_max == 0:
+        return False
+
+    return bool(reasoning_effort) and reasoning_effort != ReasoningEffortEnum.NONE
 
 
 def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]]:
     """Build the thinking parameter for Anthropic API based on reasoning config.
 
-    Returns None for adaptive-thinking models (thinking is always on and cannot be
-    disabled or configured via the thinking parameter).
+    Returns None when the parameter must be omitted (always-on thinking models).
     """
-    # Adaptive thinking models don't accept a thinking parameter
-    if model in ADAPTIVE_THINKING_MODELS:
+    if model in ALWAYS_ON_THINKING_MODELS:
         return None
+
+    if model in NEVER_DISABLE_THINKING_MODELS:
+        return {"type": "adaptive"}
+
+    if not _reasoning_requested(input_data):
+        return {"type": "disabled"}
+
+    if model in EFFORT_MODELS:
+        return {"type": "adaptive"}
 
     reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
+    if reasoning_max is not None and reasoning_max > 1024:
+        budget = reasoning_max
+    else:
+        budget = EFFORT_TO_BUDGET.get(reasoning_effort, 1024)
+    return {"type": "enabled", "budget_tokens": budget}
 
-    if reasoning_max is None or reasoning_max == 0:
-        return {"type": "disabled"}
 
-    if reasoning_effort and reasoning_effort != ReasoningEffortEnum.NONE:
-        if reasoning_max is not None and reasoning_max > 1024:
-            budget = reasoning_max
-        else:
-            budget = EFFORT_TO_BUDGET.get(reasoning_effort, 1024)
-        return {"type": "enabled", "budget_tokens": budget}
+def build_output_config(input_data, model: str = "") -> Optional[Dict[str, Any]]:
+    """Build the output_config parameter (effort) for models that support it."""
+    if model not in EFFORT_MODELS:
+        return None
 
-    return {"type": "disabled"}
+    level = EFFORT_TO_LEVEL.get(getattr(input_data, "reasoning_effort", None))
+    if level:
+        return {"effort": level}
+
+    if model in NEVER_DISABLE_THINKING_MODELS:
+        # No reasoning requested: keep thinking on (disabling it misbehaves on
+        # these models) but run at the cheapest depth.
+        return {"effort": "low"}
+
+    return None
 
 
 def handle_api_error(e: Exception, prefix: str = "Anthropic API") -> RuntimeError:
@@ -299,6 +354,10 @@ def build_params(
     thinking = build_thinking_param(input_data, model=model)
     if thinking is not None:
         params["thinking"] = thinking
+
+    output_config = build_output_config(input_data, model=model)
+    if output_config is not None:
+        params["output_config"] = output_config
 
     return params
 
@@ -380,15 +439,23 @@ async def stream_completion(
 async def complete(
     client, input_data, model: str, max_tokens: int = 64000
 ) -> Dict[str, Any]:
-    """Non-streaming completion from Anthropic API."""
-    params = build_params(input_data, model, max_tokens)
+    """Non-streaming completion from Anthropic API.
+
+    max_tokens is capped for this path: the SDK refuses a non-streaming request
+    whose estimated duration exceeds the client timeout, and a response that big
+    would not finish inside NON_STREAM_TIMEOUT anyway. Use stream=True for long
+    outputs.
+    """
+    params = build_params(input_data, model, min(max_tokens, NON_STREAM_MAX_TOKENS))
     params["stream"] = False
 
     logger.info(f"Calling Anthropic API (non-stream): model={model}")
 
     try:
+        # The explicit timeout also suppresses the SDK's long-request guard.
         response = await asyncio.wait_for(
-            client.messages.create(**params), timeout=120.0
+            client.with_options(timeout=NON_STREAM_TIMEOUT).messages.create(**params),
+            timeout=NON_STREAM_TIMEOUT,
         )
     except asyncio.TimeoutError:
         raise RuntimeError("Anthropic API call timed out after 120 seconds")

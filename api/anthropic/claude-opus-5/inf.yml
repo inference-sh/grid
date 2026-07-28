@@ -1,6 +1,6 @@
 namespace: anthropic
-name: claude-haiku-45
-description: Claude Haiku 4.5 — Fastest and most affordable Claude. 200k context, 64k output, vision, extended thinking, tool use. Direct API.
+name: claude-opus-5
+description: Claude Opus 5 — Anthropic's frontier Opus for complex agentic coding and long-horizon work. 1M context, 128k output, adaptive thinking, vision, tool use. Direct API.
 metadata:
     capabilities:
         - reasoning
