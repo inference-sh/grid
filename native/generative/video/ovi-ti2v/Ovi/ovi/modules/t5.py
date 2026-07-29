@@ -475,7 +475,7 @@ class T5EncoderModel:
         self,
         text_len,
         dtype=torch.bfloat16,
-        device=torch.cuda.current_device(),
+        device=None,
         checkpoint_path=None,
         tokenizer_path=None,
         shard_fn=None,
@@ -483,7 +483,9 @@ class T5EncoderModel:
     ):
         self.text_len = text_len
         self.dtype = dtype
-        self.device = device
+        # resolved lazily: evaluating it as a default arg ran CUDA init at import,
+        # which fails on GPU-less hosts (deploy validation imports this module)
+        self.device = torch.cuda.current_device() if device is None else device
         self.checkpoint_path = checkpoint_path
         self.tokenizer_path = tokenizer_path
 

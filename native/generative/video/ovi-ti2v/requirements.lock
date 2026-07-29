@@ -93,6 +93,6 @@ typing-extensions==4.16.0
 typing-inspection==0.4.2
 tzdata==2026.3
 urllib3==2.7.0
-vcs-versioning==2.2.2
+vcs-versioning==2.2.3
 wcwidth==0.8.2
 zipp==4.1.0

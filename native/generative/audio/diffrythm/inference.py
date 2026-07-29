@@ -48,7 +48,6 @@ from .infer_utils import (
     prepare_model,
 )
 from .model import DiT, CFM
-from g2p.g2p_generation import chn_eng_g2p
 
 class AppInput(BaseAppInput):
     lyrics: str = Field(description="The lyrics to generate music for in LRC format")
@@ -69,6 +68,9 @@ class CNENTokenizer:
         with open("./g2p/g2p/vocab.json", "r", encoding='utf-8') as file:
             self.phone2id: dict = json.load(file)["vocab"]
         self.id2phone = {v: k for (k, v) in self.phone2id.items()}
+        # imported here, not at module scope: it builds a phonemizer backend that
+        # needs espeak on the host, which the GPU-less deploy validator lacks
+        from g2p.g2p_generation import chn_eng_g2p
         self.tokenizer = chn_eng_g2p
 
     def encode(self, text):

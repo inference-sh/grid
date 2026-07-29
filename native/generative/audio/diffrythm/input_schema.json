@@ -1,73 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "properties": {
     "lyrics": {
       "description": "The lyrics to generate music for in LRC format",
@@ -90,14 +21,16 @@
     "reference_audio": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Reference audio file to use as style"
+      "description": "Reference audio file to use as style",
+      "title": "Reference Audio"
     },
     "audio_length": {
       "default": 95,
@@ -114,14 +47,16 @@
     "reference_song": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Reference song for editing"
+      "description": "Reference song for editing",
+      "title": "Reference Song"
     },
     "edit_segments": {
       "anyOf": [

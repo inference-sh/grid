@@ -42,6 +42,18 @@ def _headers(api_key: str, content_type: str = "application/json") -> dict:
     return h
 
 
+def _raise_for_status(resp: requests.Response, log: logging.Logger, action: str) -> None:
+    """raise_for_status, but keep the response body — Topaz puts the actual reason
+    (invalid filter, quota, unsupported codec) in the body, not the status line."""
+    if resp.ok:
+        return
+    body = (resp.text or "").strip()[:500]
+    log.error(f"{action} failed: HTTP {resp.status_code} {body}")
+    raise requests.HTTPError(
+        f"{action} failed: HTTP {resp.status_code} {body}", response=resp
+    )
+
+
 def create_request(
     api_key: str,
     source: dict,
@@ -65,7 +77,7 @@ def create_request(
         headers=_headers(api_key),
         timeout=30,
     )
-    resp.raise_for_status()
+    _raise_for_status(resp, log, "Creating request")
     data = resp.json()
     log.info(f"Request created: {data.get('id', 'unknown')}")
     return data
@@ -85,7 +97,7 @@ def accept_request(
         headers=_headers(api_key, content_type=None),
         timeout=30,
     )
-    resp.raise_for_status()
+    _raise_for_status(resp, log, "Accepting request")
     data = resp.json()
     log.info("Got upload URL")
     return data
@@ -110,7 +122,7 @@ def upload_to_s3(
             headers={"Content-Type": content_type},
             timeout=600,
         )
-    resp.raise_for_status()
+    _raise_for_status(resp, log, "Uploading to S3")
 
     etag = resp.headers.get("ETag", "").strip('"')
     log.info(f"Upload complete, eTag: {etag}")
@@ -137,7 +149,7 @@ def complete_upload(
         headers=_headers(api_key),
         timeout=30,
     )
-    resp.raise_for_status()
+    _raise_for_status(resp, log, "Completing upload")
     data = resp.json()
     log.info("Upload completed, queued for processing")
     return data
@@ -160,7 +172,7 @@ def poll_status(
             headers=_headers(api_key, content_type=None),
             timeout=30,
         )
-        resp.raise_for_status()
+        _raise_for_status(resp, log, "Polling status")
         data = resp.json()
 
         status = data.get("status", "unknown")
@@ -187,7 +199,7 @@ def download_result(
 
     log.info(f"Downloading result")
     resp = requests.get(download_url, stream=True, timeout=600)
-    resp.raise_for_status()
+    _raise_for_status(resp, log, "Downloading result")
 
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
         for chunk in resp.iter_content(chunk_size=8192):

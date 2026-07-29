@@ -89,13 +89,37 @@ class AppInput(BaseAppInput):
         description="Language for speech generation."
     )
     voice: Literal[
+        # american-english
         "af_heart", "af_alloy", "af_aoede", "af_bella", "af_jessica", "af_kore",
         "af_nicole", "af_nova", "af_river", "af_sarah", "af_sky",
         "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael",
         "am_onyx", "am_puck", "am_santa",
+        # british-english
+        "bf_alice", "bf_emma", "bf_isabella", "bf_lily",
+        "bm_daniel", "bm_fable", "bm_george", "bm_lewis",
+        # french
+        "ff_siwis",
+        # spanish
+        "ef_dora", "em_alex", "em_santa",
+        # japanese
+        "jf_alpha", "jf_gongitsune", "jf_nezumi", "jf_tebukuro", "jm_kumo",
+        # italian
+        "if_sara", "im_nicola",
+        # hindi
+        "hf_alpha", "hf_beta", "hm_omega", "hm_psi",
+        # brazilian-portuguese
+        "pf_dora", "pm_alex", "pm_santa",
+        # mandarin-chinese
+        "zf_xiaobei", "zf_xiaoni", "zf_xiaoxiao", "zf_xiaoyi",
+        "zm_yunjian", "zm_yunxi", "zm_yunxia", "zm_yunyang",
     ] = Field(
         default="af_heart",
-        description="Voice ID for the desired voice."
+        description=(
+            "Voice ID. Voices are language-specific (prefix: a=american, b=british, "
+            "e=spanish, f=french, h=hindi, i=italian, j=japanese, p=portuguese, "
+            "z=mandarin). A voice that does not belong to the selected language "
+            "falls back to that language's default voice."
+        ),
     )
     speed: float = Field(
         default=1.0,
@@ -123,8 +147,21 @@ class App(BaseApp):
         return LANGUAGE_ENDPOINTS[input_data.language]
 
     def _resolve_voice(self, input_data: AppInput) -> str:
-        """Return the voice ID."""
-        return input_data.voice
+        """Return a voice ID valid for the selected language.
+
+        Each language endpoint only accepts its own voices, so passing e.g.
+        af_heart (american) to the japanese endpoint fails or mispronounces.
+        """
+        voice = input_data.voice
+        allowed = LANGUAGE_VOICES[input_data.language]
+        if voice in allowed:
+            return voice
+        fallback = DEFAULT_VOICES[input_data.language]
+        self.logger.warning(
+            f"Voice {voice} is not available for {input_data.language}; "
+            f"using {fallback} instead"
+        )
+        return fallback
 
     def _build_request(self, input_data: AppInput) -> dict:
         """Build request payload for fal.ai."""

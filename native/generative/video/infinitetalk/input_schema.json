@@ -1,97 +1,32 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "properties": {
     "image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Input image for single image driven mode"
+      "description": "Input image for single image driven mode",
+      "title": "Image"
     },
     "video": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Input video for video dubbing mode"
+      "description": "Input video for video dubbing mode",
+      "title": "Video"
     },
     "prompt": {
       "description": "Text prompt describing the desired video",
@@ -130,26 +65,30 @@
     "audio_1": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Audio file for speaker 1"
+      "description": "Audio file for speaker 1",
+      "title": "Audio 1"
     },
     "audio_2": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "Audio file for speaker 2"
+      "description": "Audio file for speaker 2",
+      "title": "Audio 2"
     },
     "tts_text": {
       "anyOf": [

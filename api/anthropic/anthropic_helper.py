@@ -286,15 +286,23 @@ def build_output_config(input_data, model: str = "") -> Optional[Dict[str, Any]]
 
 
 def handle_api_error(e: Exception, prefix: str = "Anthropic API") -> RuntimeError:
-    """Extract error message from API exception."""
+    """Extract error message from API exception.
+
+    Includes the status code and error type: without them a model the key has no
+    access to reports as a bare `model: <id>`, which reads like the model does not
+    exist rather than a 404 not_found_error on an existing but ungranted model.
+    """
+    status = getattr(e, "status_code", None)
     if hasattr(e, "response") and e.response is not None:
+        status = status or getattr(e.response, "status_code", None)
         try:
-            error_data = e.response.json()
-            msg = error_data.get("error", {}).get("message", str(e))
-            return RuntimeError(f"{prefix} error: {msg}")
+            error = e.response.json().get("error", {})
+            msg = error.get("message", str(e))
+            detail = " ".join(str(p) for p in (status, error.get("type")) if p)
+            return RuntimeError(f"{prefix} error ({detail}): {msg}" if detail else f"{prefix} error: {msg}")
         except Exception:
             pass
-    return RuntimeError(f"{prefix} error: {str(e)}")
+    return RuntimeError(f"{prefix} error ({status}): {e}" if status else f"{prefix} error: {e}")
 
 
 def create_initial_state() -> Dict[str, Any]:
