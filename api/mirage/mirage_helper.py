@@ -137,7 +137,14 @@ def _raise_for_error(resp: httpx.Response, what: str) -> None:
 async def post_multipart(
     client: httpx.AsyncClient, path: str, data: dict, files: dict | None = None
 ) -> dict:
-    """POST multipart/form-data to the Mirage platform and return the JSON body."""
+    """POST multipart/form-data to the Mirage platform and return the JSON body.
+
+    data must be a dict. To send an ordered repeated field (texts, fonts, sizes,
+    colors on the text-overlay endpoint) give the key a list value — httpx emits
+    one form part per entry, preserving order. Do not pass a list of (key, value)
+    pairs: httpx treats any non-dict data as raw request content and fails with
+    "Attempted to send an sync request with an AsyncClient instance".
+    """
     logger.info(f"POST {MIRAGE_BASE}{path} fields={sorted(data)} files={sorted(files or {})}")
     resp = await client.post(path, data=data, files=files or None)
     _raise_for_error(resp, f"POST {path}")
@@ -187,6 +194,40 @@ async def download_video_content(client: httpx.AsyncClient, video_id: str) -> st
         path = f.name
     logger.info(f"saved {len(resp.content)} bytes to {path}")
     return path
+
+
+async def poll_text_overlay(client: httpx.AsyncClient, overlay_id: str) -> dict:
+    """Poll GET /meta/text_overlays/{id} until the job reaches a terminal state.
+
+    Unlike a video job this fans out: the job carries a results[] with one entry
+    per input text, each with its own COMPLETE/FAILED status. A job can finish
+    COMPLETE with individual items failed, so the caller must inspect results[]
+    rather than trusting the job status alone.
+    """
+    elapsed = 0.0
+    while elapsed < MAX_POLL_TIME:
+        data = await get_json(client, f"/meta/text_overlays/{overlay_id}")
+        status = data.get("status", "")
+        results = data.get("results") or []
+        logger.info(
+            f"overlay {overlay_id}: {status} "
+            f"({sum(1 for r in results if r.get('status') == 'COMPLETE')}/{len(results)} done, "
+            f"{elapsed:.0f}s)"
+        )
+
+        if status == "COMPLETE":
+            return data
+        if status in ("FAILED", "CANCELLED"):
+            err = data.get("error") or {}
+            raise RuntimeError(
+                f"Mirage overlay job {overlay_id} ended {status}: "
+                f"[{err.get('code', 'unknown')}] {err.get('message', 'no detail')}"
+            )
+
+        await asyncio.sleep(POLL_INTERVAL)
+        elapsed += POLL_INTERVAL
+
+    raise TimeoutError(f"Mirage overlay job {overlay_id} did not finish within {MAX_POLL_TIME}s")
 
 
 async def list_caption_templates(

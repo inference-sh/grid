@@ -1,0 +1,25 @@
+namespace: mirage
+name: text-overlays
+description: Render up to 4 static text variants onto one video with per-variant font, size and colour — built for testing ad hooks and headlines against the same footage.
+metadata:
+    provider: mirage
+    tags:
+        - text-overlay
+        - video-editing
+        - ads
+        - hook-testing
+        - captions
+        - mirage
+category: video
+env: {}
+kernel: python-3.11
+default_function: run
+secrets:
+    - key: CAPTIONS_KEY
+      description: Mirage/Captions API key from platform.mirage.app
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

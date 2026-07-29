@@ -1,0 +1,82 @@
+{
+  "description": "Input for text overlay rendering.",
+  "properties": {
+    "video": {
+      "description": "Source video to render text onto (MP4 or MOV), at most 50 MB.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "texts": {
+      "description": "Text variants to render, one output video per entry. Up to 4 \u2014 the point is testing several hooks against the same footage in one call.",
+      "examples": [
+        [
+          "I tried this for a week",
+          "Nobody talks about this",
+          "Day 3 changed it"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Texts",
+      "type": "array"
+    },
+    "fonts": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Font per variant, aligned by position with texts. Blank entries let Mirage decide. Omit entirely to auto-pick every font.",
+      "title": "Fonts"
+    },
+    "sizes": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Font size in pixels per variant, aligned by position with texts. Blank entries auto-decide.",
+      "title": "Sizes"
+    },
+    "colors": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text colour per variant as #RRGGBB, aligned by position with texts. Blank entries auto-decide.",
+      "title": "Colors"
+    }
+  },
+  "required": [
+    "video",
+    "texts"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
