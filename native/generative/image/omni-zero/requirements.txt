@@ -12,7 +12,9 @@ opencv_contrib_python==4.9.0.80
 opencv_python==4.9.0.80
 opencv_python_headless==4.7.0.72
 Pillow==10.1.0
-torch==2.7.0
+# 2.7.0 lacks kernels for the newer GPUs now in the fleet
+# (`CUDA error: no kernel image is available for execution on the device`)
+torch==2.8.0
 torchsde==0.2.6
 transformers==4.37.1
 tokenizers==0.15.2
@@ -23,4 +25,4 @@ onnx==1.19.0
 hf_transfer
 gradio
 spaces
-xformers==0.0.30
+xformers
