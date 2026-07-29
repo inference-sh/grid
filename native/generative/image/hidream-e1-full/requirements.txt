@@ -1,11 +1,12 @@
 pydantic >= 2.0.0
 inferencesh
 
-torch>=2.7.0
-torchvision>=0.20.1
+torch==2.8.0
+torchvision==0.23.0
 sentencepiece
-git+https://github.com/huggingface/diffusers.git@main
-transformers>=4.47.1
+git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc
+transformers==4.55.4
+tokenizers==0.21.4
 einops>=0.7.0
 accelerate>=1.2.1
 optimum>=1.13.0

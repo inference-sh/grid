@@ -2,13 +2,14 @@ pydantic >= 2.0.0
 inferencesh
 
 # PyTorch and related
-torch>=2.7.1
-torchvision>=0.22.0
-torchaudio>=2.7.1
+torch==2.8.0
+torchvision==0.23.0
+torchaudio==2.8.0
 
 # Diffusers and related ML libraries
-git+https://github.com/huggingface/diffusers.git
-transformers>=4.49.0
+git+https://github.com/huggingface/diffusers.git@751e250f70cf446ae342c8a860d92f6a8b78261a
+transformers==4.56.1
+tokenizers==0.22.0
 accelerate>=1.1.1
 
 # Image and video processing

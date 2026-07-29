@@ -23,6 +23,7 @@ torch==2.5.1
 torchvision==0.20.1
 tqdm==4.67.1
 transformers==4.48.1
+tokenizers==0.21.4
 trimesh==4.6.0
 xatlas==0.0.9
 sentencepiece==0.2.0

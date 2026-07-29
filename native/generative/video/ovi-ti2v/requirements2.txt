@@ -1,2 +1,6 @@
-# Flash Attention 2 - will be compiled from source if wheel not available
-flash-attn>=2.7.0
+# torch pinned here too: requirements2.txt is compiled independently, and an
+# unconstrained torch dep otherwise resolves to the CUDA 13 build
+torch==2.8.0
+# prebuilt flash-attn: the sdist build imports torch from an isolated env that
+# resolves its own (CUDA 13) torch and fails
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.7.16/flash_attn-2.8.3+cu128torch2.8-cp310-cp310-linux_x86_64.whl

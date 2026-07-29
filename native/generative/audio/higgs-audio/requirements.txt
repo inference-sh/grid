@@ -3,14 +3,15 @@ inferencesh # required for inference.sh
 
 # Higgs Audio dependencies
 descript-audio-codec
-torch
-transformers>=4.45.1,<4.47.0
+torch==2.8.0
+transformers==4.46.3
+tokenizers==0.20.3
 librosa
 dacite
 boto3==1.35.36
 s3fs
-torchvision
-torchaudio
+torchvision==0.23.0
+torchaudio==2.8.0
 json_repair
 pandas
 vector_quantize_pytorch

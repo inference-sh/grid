@@ -2,18 +2,18 @@ pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 
 # ML frameworks
-torch>=2.7.1
-torchvision>=0.22.0
-torchaudio>=2.7.1
+torch==2.8.0
+torchvision==0.23.0
+torchaudio==2.8.0
 accelerate>=1.1.1
-transformers>=4.49.0,<=4.51.3
-tokenizers>=0.20.3
+transformers==4.51.3
+tokenizers==0.21.4
 huggingface_hub>=0.20.0
 hf_transfer
 
 # Ovi core dependencies
 opencv-python>=4.9.0.80
-diffusers>=0.31.0
+diffusers==0.35.1
 omegaconf
 tqdm
 einops
@@ -25,7 +25,7 @@ sentencepiece
 protobuf
 
 # Video/Audio processing
-av
+av==15.1.0
 imageio[ffmpeg]
 imageio-ffmpeg
 moviepy==1.0.3

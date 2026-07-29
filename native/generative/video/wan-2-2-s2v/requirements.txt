@@ -3,15 +3,15 @@ pydantic==2.10.6
 inferencesh==0.2.7
 
 # PyTorch and vision libraries - using latest version for better CUDA operator support
-torch>=2.7.1
-torchvision>=0.22.0
-torchaudio>=2.7.1
+torch==2.8.0
+torchvision==0.23.0
+torchaudio==2.8.0
 accelerate>=1.1.1
 
 # Diffusers and transformers (need custom branch for Wan S2V support)
 git+https://github.com/tolgacangoz/diffusers.git@integrations/wan2.2-s2v
-transformers>=4.49.0
-tokenizers>=0.20.3
+transformers==4.56.2
+tokenizers==0.22.1
 decord
 
 # Audio processing

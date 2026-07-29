@@ -1,8 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
-torch>=2.1.0
-diffusers>=0.28.2
-transformers>=4.47.2
+torch==2.8.0
+diffusers==0.32.2
+transformers==4.48.3
+tokenizers==0.21.4
 sentencepiece>=0.1.96
 huggingface-hub~=0.25.2
 einops
@@ -10,7 +11,7 @@ timm
 accelerate
 matplotlib
 imageio[ffmpeg]
-av
+av==15.0.0
 opencv-python
 pillow
 numpy

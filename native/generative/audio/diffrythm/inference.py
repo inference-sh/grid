@@ -39,7 +39,7 @@ import json
 from huggingface_hub import hf_hub_download
 from muq import MuQMuLan
 
-from infer_utils import (
+from .infer_utils import (
     decode_audio,
     get_lrc_token,
     get_negative_style_prompt,
@@ -47,7 +47,7 @@ from infer_utils import (
     get_style_prompt,
     prepare_model,
 )
-from model import DiT, CFM
+from .model import DiT, CFM
 from g2p.g2p_generation import chn_eng_g2p
 
 class AppInput(BaseAppInput):

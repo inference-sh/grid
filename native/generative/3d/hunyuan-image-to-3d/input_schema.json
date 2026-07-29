@@ -1,73 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "description": "Input parameters for converting an image to a 3D model",
   "examples": [
     {
@@ -93,12 +24,14 @@
       "type": "string"
     },
     "input_image": {
-      "$ref": "#/$defs/File",
       "description": "Input image to convert to 3D model",
       "examples": [
         "https://1nf.sh/examples/car.jpg",
         "https://1nf.sh/examples/chair.png"
-      ]
+      ],
+      "format": "file",
+      "title": "Input Image",
+      "type": "string"
     },
     "num_inference_steps": {
       "default": 30,

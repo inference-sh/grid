@@ -1,9 +1,10 @@
 pydantic >= 2.0.0
 inferencesh
-torch>=2.0.0
-torchvision>=0.15.0
-transformers>=4.36.0
+torch==2.8.0
+torchvision==0.23.0
+transformers==4.55.4
+tokenizers==0.21.4
 accelerate>=0.25.0
 safetensors>=0.4.0
 pillow>=10.0.0
-git+https://github.com/huggingface/diffusers.git
+git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc

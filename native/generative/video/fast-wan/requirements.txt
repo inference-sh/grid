@@ -1,11 +1,12 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
-torch>=2.0.0
+torch==2.8.0
 gradio
 spaces
 # diffusers>=0.31.0
-git+https://github.com/huggingface/diffusers.git
-transformers>=4.40.0
+git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc
+transformers==4.55.4
+tokenizers==0.21.4
 accelerate>=0.30.0
 huggingface_hub>=0.22.0
 Pillow>=10.0.0

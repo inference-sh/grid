@@ -1,1 +1,8 @@
+# torch pinned here too: requirements2.txt is compiled independently, and the
+# flash-attn wheel's unconstrained torch dep otherwise resolves to the CUDA 13 build
+torch==2.6.0
+torchvision==0.21.0
+torchaudio==2.6.0
 https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+# kept in step with requirements.txt (installed second, so it would win)
+numpy==1.26.4

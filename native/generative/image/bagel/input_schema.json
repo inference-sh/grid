@@ -11,17 +11,52 @@
           "title": "Text",
           "type": "string"
         },
-        "image": {
+        "reasoning": {
           "anyOf": [
             {
-              "$ref": "#/$defs/File"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "the image file of the message"
+          "description": "the reasoning content of the message",
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the images of the message",
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the files of the message",
+          "title": "Files"
         },
         "tool_calls": {
           "anyOf": [
@@ -39,6 +74,19 @@
           "default": null,
           "description": "the tool calls of the message",
           "title": "Tool Calls"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the tool call id for tool role messages",
+          "title": "Tool Call Id"
         }
       },
       "required": [
@@ -57,81 +105,6 @@
       ],
       "title": "ContextMessageRole",
       "type": "string"
-    },
-    "File": {
-      "$id": "/schemas/File",
-      "oneOf": [
-        {
-          "description": "A class representing a file in the inference.sh ecosystem.",
-          "properties": {
-            "uri": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Uri"
-            },
-            "path": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Path"
-            },
-            "content_type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Content Type"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Size"
-            },
-            "filename": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Filename"
-            }
-          },
-          "title": "File",
-          "type": "object"
-        },
-        {
-          "type": "string"
-        }
-      ]
     }
   },
   "properties": {
@@ -147,18 +120,22 @@
       "title": "Analysis Mode",
       "type": "boolean"
     },
-    "image": {
+    "images": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
         },
         {
           "type": "null"
         }
       ],
-      "contentMediaType": "image/*",
       "default": null,
-      "description": "the image to use for the model"
+      "description": "the images to use for the model",
+      "title": "Images"
     },
     "system_prompt": {
       "default": "you are a helpful assistant that can answer questions and help with tasks.",
@@ -230,6 +207,11 @@
     "context_size": {
       "default": 4096,
       "title": "Context Size",
+      "type": "integer"
+    },
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
       "type": "integer"
     }
   },

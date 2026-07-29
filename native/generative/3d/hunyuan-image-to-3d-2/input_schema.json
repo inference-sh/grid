@@ -1,73 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "description": "Input parameters for converting an image or text to a 3D model using Hunyuan3D-2",
   "examples": [
     {
@@ -96,18 +27,21 @@
       "type": "string"
     },
     "input_image": {
-      "$ref": "#/$defs/File",
       "default": null,
       "description": "Input image to convert to 3D model (optional if prompt is provided)",
       "examples": [
         "https://1nf.sh/examples/car.jpg",
         "https://1nf.sh/examples/chair.png"
-      ]
+      ],
+      "format": "file",
+      "title": "Input Image",
+      "type": "string"
     },
     "additional_images": {
       "description": "Additional images for multiview input (used for mv/mv_turbo variants)",
       "items": {
-        "$ref": "#/$defs/File"
+        "format": "file",
+        "type": "string"
       },
       "title": "Additional Images",
       "type": "array"
