@@ -1,7 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
 accelerate
-diffusers>=0.38.0
+# pinned to the deployed version: diffusers >=0.38 requires huggingface-hub >=0.34,
+# which this app's pinned hub version contradicts (resolution fails outright)
+diffusers==0.29.0
 controlnet_aux==0.0.8
 huggingface_hub==0.23.2
 insightface==0.7.3
@@ -14,7 +16,10 @@ torch==2.7.0
 torchsde==0.2.6
 transformers==4.37.1
 tokenizers==0.15.2
-onnxruntime-gpu
+# pinned to the deployed version: 1.27 fails to load its CUDA libs on the
+# GPU-less deploy host, and insightface imports onnxruntime at module scope
+onnxruntime-gpu==1.22.0
+onnx==1.19.0
 hf_transfer
 gradio
 spaces

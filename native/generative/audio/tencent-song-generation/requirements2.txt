@@ -1,3 +1,8 @@
+# torch pinned here too: requirements2.txt is compiled independently, and the
+# flash-attn wheel's unconstrained torch dep otherwise resolves to the CUDA 13 build
+torch==2.9.0
+torchaudio==2.9.0
+torchvision==0.24.0
 https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp310-cp310-linux_x86_64.whl
 git+https://github.com/facebookresearch/fairseq.git
 antlr4-python3-runtime==4.8

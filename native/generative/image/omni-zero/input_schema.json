@@ -1,73 +1,4 @@
 {
-  "$defs": {
-    "File": {
-      "description": "A class representing a file in the inference.sh ecosystem.",
-      "properties": {
-        "uri": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Uri"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        },
-        "content_type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Content Type"
-        },
-        "size": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Size"
-        },
-        "filename": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Filename"
-        }
-      },
-      "title": "File",
-      "type": "object"
-    }
-  },
   "properties": {
     "seed": {
       "default": 42,
@@ -94,7 +25,9 @@
       "type": "integer"
     },
     "base_image": {
-      "$ref": "#/$defs/File"
+      "format": "file",
+      "title": "Base Image",
+      "type": "string"
     },
     "base_image_strength": {
       "default": 0.15,
@@ -102,7 +35,9 @@
       "type": "number"
     },
     "composition_image": {
-      "$ref": "#/$defs/File"
+      "format": "file",
+      "title": "Composition Image",
+      "type": "string"
     },
     "composition_image_strength": {
       "default": 1.0,
@@ -110,7 +45,9 @@
       "type": "number"
     },
     "style_image": {
-      "$ref": "#/$defs/File"
+      "format": "file",
+      "title": "Style Image",
+      "type": "string"
     },
     "style_image_strength": {
       "default": 1.0,
@@ -118,7 +55,9 @@
       "type": "number"
     },
     "identity_image": {
-      "$ref": "#/$defs/File"
+      "format": "file",
+      "title": "Identity Image",
+      "type": "string"
     },
     "identity_image_strength": {
       "default": 1.0,
@@ -128,13 +67,15 @@
     "depth_image": {
       "anyOf": [
         {
-          "$ref": "#/$defs/File"
+          "format": "file",
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
-      "default": null
+      "default": null,
+      "title": "Depth Image"
     },
     "depth_image_strength": {
       "default": 0.5,
