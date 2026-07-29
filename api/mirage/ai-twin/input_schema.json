@@ -1,0 +1,42 @@
+{
+  "description": "Input for AI Twin creation.",
+  "properties": {
+    "label": {
+      "description": "A label for the twin, for your own reference. The twin's actual name is this label prefixed with your team and task id \u2014 use the twin_name returned by this app as creator_name in mirage/ai-creator or mirage/ai-ads. Record it: there is no endpoint that lists your twins.",
+      "examples": [
+        "my-spokesperson"
+      ],
+      "title": "Label",
+      "type": "string"
+    },
+    "calibration_video": {
+      "description": "Calibration video of the person speaking to camera. Must be a publicly reachable URL \u2014 the endpoint fetches media by URL rather than accepting an upload.",
+      "format": "file",
+      "title": "Calibration Video",
+      "type": "string"
+    },
+    "calibration_images": {
+      "description": "Calibration stills of the same person, as publicly reachable URLs.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Calibration Images",
+      "type": "array"
+    },
+    "language": {
+      "default": "English",
+      "description": "Language spoken in the calibration video.",
+      "title": "Language",
+      "type": "string"
+    }
+  },
+  "required": [
+    "label",
+    "calibration_video",
+    "calibration_images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,24 @@
+namespace: mirage
+name: video-captions
+description: Burn styled animated captions onto a vertical video using Mirage caption templates, from an upload or an existing Mirage video ID.
+metadata:
+    provider: mirage
+    tags:
+        - captions
+        - subtitles
+        - video-editing
+        - shorts
+        - mirage
+category: video
+env: {}
+kernel: python-3.11
+default_function: run
+secrets:
+    - key: CAPTIONS_KEY
+      description: Mirage/Captions API key from platform.mirage.app
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

@@ -1,0 +1,24 @@
+namespace: mirage
+name: ai-ads
+description: Generate a UGC-style ad video from a script plus your product images and clips, performed by a Captions AI Creator.
+metadata:
+    provider: mirage
+    tags:
+        - ads
+        - ugc
+        - marketing
+        - avatar
+        - text-to-video
+        - captions
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: CAPTIONS_KEY
+      description: Mirage/Captions API key from platform.mirage.app
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

@@ -1,0 +1,35 @@
+{
+  "description": "Input for AI Creator video generation.",
+  "properties": {
+    "script": {
+      "description": "What the creator says, up to 800 characters. The voice is generated from this text.",
+      "examples": [
+        "I tried this for two weeks and the difference was obvious by day three. Here's what actually changed."
+      ],
+      "maxLength": 800,
+      "title": "Script",
+      "type": "string"
+    },
+    "creator_name": {
+      "default": "Kate",
+      "description": "Name of the AI Creator to perform the script, or the twin_name returned by mirage/ai-twin. There is no endpoint that lists creators or twins, so this must be a name you already know.",
+      "title": "Creator Name",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "4k",
+      "description": "Output resolution \u2014 fhd is 1080p, 4k is 2160p.",
+      "enum": [
+        "fhd",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "script"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

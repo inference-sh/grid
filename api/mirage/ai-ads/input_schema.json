@@ -1,0 +1,47 @@
+{
+  "description": "Input for AI Ads video generation.",
+  "properties": {
+    "script": {
+      "description": "Ad script the creator performs, up to 800 characters.",
+      "examples": [
+        "I was skeptical too. Then I actually used it for a week \u2014 and now it's the first thing I reach for every morning."
+      ],
+      "maxLength": 800,
+      "title": "Script",
+      "type": "string"
+    },
+    "media": {
+      "description": "Product media cut into the ad as B-roll: 1 to 10 files, JPEG, PNG, MOV or MP4. These must be publicly reachable URLs \u2014 the endpoint fetches them by URL rather than accepting an upload.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Media",
+      "type": "array"
+    },
+    "creator_name": {
+      "default": "Kate",
+      "description": "Name of the AI Creator to perform the ad, or the twin_name returned by mirage/ai-twin. There is no endpoint that lists creators or twins, so this must be a name you already know.",
+      "title": "Creator Name",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "4k",
+      "description": "Output resolution \u2014 fhd is 1080p, 4k is 2160p.",
+      "enum": [
+        "fhd",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "script",
+    "media"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

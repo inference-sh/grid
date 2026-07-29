@@ -1,0 +1,22 @@
+{
+  "description": "Input for adding captions to a video.",
+  "properties": {
+    "video": {
+      "description": "Video to caption (MP4 or MOV). Must be 9:16 vertical, at most 50 MB and 5 minutes.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "caption_template_id": {
+      "default": "ctpl_DxflLOnuKkb198FNdI9E",
+      "description": "Caption style template ID (ctpl_...). Run the list_templates function to see every available style with a preview video. Defaults to the 'Heat' style.",
+      "title": "Caption Template Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

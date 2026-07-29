@@ -1,0 +1,24 @@
+namespace: mirage
+name: video-1
+description: Generate an expressive talking-head video from a portrait image and an audio track using Mirage Video 1, with natural lip sync, eye contact and micro-expressions.
+metadata:
+    provider: mirage
+    tags:
+        - talking-head
+        - avatar
+        - lipsync
+        - video-generation
+        - image-to-video
+        - mirage
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: CAPTIONS_KEY
+      description: Mirage/Captions API key from platform.mirage.app
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

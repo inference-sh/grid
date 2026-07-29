@@ -1,0 +1,23 @@
+{
+  "description": "Input for Mirage Video 1 generation.",
+  "properties": {
+    "image": {
+      "description": "Portrait image to animate (JPEG or PNG). Use a clear, front-facing shot of a single person in a close to medium framing, with the mouth open. Closed mouths and multiple faces in frame both degrade the result.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "audio": {
+      "description": "Speech audio that drives the performance (WAV or MP3). The output video runs as long as this clip. Expressive, natural-sounding audio gives the best result \u2014 audibly synthetic voices look worse on screen.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    }
+  },
+  "required": [
+    "image",
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
