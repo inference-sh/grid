@@ -1,0 +1,21 @@
+namespace: runway
+name: aleph-2
+description: Runway Aleph 2.0 — video-to-video transformation with text and keyframe guidance. Supports aspect ratio targeting and up to 5 reference keyframes. 28 credits/second.
+metadata:
+    provider: runway
+    tags:
+        - runway
+        - video-generation
+        - video-to-video
+        - aleph
+category: video
+kernel: python-3.11
+secrets:
+    - key: RUNWAY_KEY
+      description: Runway API secret key from dev.runwayml.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "RatioEnum": {
+      "enum": [
+        "1280:720",
+        "720:1280",
+        "1104:832",
+        "832:1104",
+        "960:960",
+        "1584:672"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video. Max 1000 chars.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "Input image to animate into video.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "1280:720",
+      "description": "Output video aspect ratio."
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 10,
+          "minimum": 2,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 5,
+      "description": "Video duration in seconds.",
+      "title": "Duration"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

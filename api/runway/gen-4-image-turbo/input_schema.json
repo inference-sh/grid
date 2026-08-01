@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "RatioEnum": {
+      "enum": [
+        "1280:720",
+        "720:1280",
+        "1104:832",
+        "832:1104",
+        "960:960",
+        "1584:672",
+        "1920:1080",
+        "1080:1920"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    },
+    "ReferenceImage": {
+      "properties": {
+        "image": {
+          "description": "Reference image.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "tag": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tag name to reference in prompt with @tagName syntax.",
+          "title": "Tag"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "ReferenceImage",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt. Use @tagName to reference tagged images.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "description": "Reference image (required). Gen-4 Image Turbo transforms reference images guided by your prompt.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "1280:720",
+      "description": "Output image aspect ratio."
+    },
+    "additional_references": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ReferenceImage"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Additional reference images with optional tags.",
+      "title": "Additional References"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt",
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

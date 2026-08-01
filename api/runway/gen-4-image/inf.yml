@@ -1,0 +1,21 @@
+namespace: runway
+name: gen-4-image
+description: Runway Gen-4 Image — high-quality text-to-image generation with optional reference images and @tag syntax. 5 credits per 720p, 8 credits per 1080p.
+metadata:
+    provider: runway
+    tags:
+        - runway
+        - image-generation
+        - text-to-image
+        - gen4
+category: image
+kernel: python-3.11
+secrets:
+    - key: RUNWAY_KEY
+      description: Runway API secret key from dev.runwayml.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

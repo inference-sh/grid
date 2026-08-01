@@ -1,0 +1,22 @@
+namespace: runway
+name: act-two
+description: Runway Act-Two — character performance transfer. Animate a character image or video using a reference performance video with facial expressions, gestures, and body control. 5 credits/second.
+metadata:
+    provider: runway
+    tags:
+        - runway
+        - video-generation
+        - character-performance
+        - act-two
+        - animation
+category: video
+kernel: python-3.11
+secrets:
+    - key: RUNWAY_KEY
+      description: Runway API secret key from dev.runwayml.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

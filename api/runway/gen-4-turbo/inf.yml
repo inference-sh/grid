@@ -1,0 +1,22 @@
+namespace: runway
+name: gen-4-turbo
+description: Runway Gen-4 Turbo — fast image-to-video generation. Animate images into video with text guidance. 5 credits/second.
+metadata:
+    provider: runway
+    tags:
+        - runway
+        - video-generation
+        - image-to-video
+        - gen4
+        - turbo
+category: video
+kernel: python-3.11
+secrets:
+    - key: RUNWAY_KEY
+      description: Runway API secret key from dev.runwayml.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

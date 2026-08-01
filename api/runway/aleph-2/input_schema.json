@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "4:3",
+        "3:2",
+        "1:1",
+        "2:3",
+        "3:4",
+        "9:16",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "Keyframe": {
+      "properties": {
+        "seconds": {
+          "description": "Timestamp in the input video for this keyframe.",
+          "title": "Seconds",
+          "type": "number"
+        },
+        "image": {
+          "description": "Reference image for this keyframe.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "range": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How many seconds around the keyframe timestamp to apply the guidance.",
+          "title": "Range"
+        }
+      },
+      "required": [
+        "seconds",
+        "image"
+      ],
+      "title": "Keyframe",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Input video to transform. Max 16MB.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text prompt to guide the transformation.",
+      "title": "Prompt"
+    },
+    "target_aspect_ratio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AspectRatioEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Target aspect ratio for the output video."
+    },
+    "keyframes": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Keyframe"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Up to 5 keyframes with reference images at specific timestamps.",
+      "title": "Keyframes"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

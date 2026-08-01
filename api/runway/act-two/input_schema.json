@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "CharacterTypeEnum": {
+      "enum": [
+        "image",
+        "video"
+      ],
+      "title": "CharacterTypeEnum",
+      "type": "string"
+    },
+    "RatioEnum": {
+      "enum": [
+        "1280:720",
+        "720:1280",
+        "960:960",
+        "1104:832",
+        "832:1104",
+        "1584:672"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "character": {
+      "description": "Character source \u2014 image (max 5MB) or video (max 16MB) of the character to animate.",
+      "format": "file",
+      "title": "Character",
+      "type": "string"
+    },
+    "character_type": {
+      "$ref": "#/$defs/CharacterTypeEnum",
+      "default": "image",
+      "description": "Whether the character source is an image or video."
+    },
+    "reference_video": {
+      "description": "Performance reference video (3-30 seconds, max 16MB). The character will mimic this performance.",
+      "format": "file",
+      "title": "Reference Video",
+      "type": "string"
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "1280:720",
+      "description": "Output video aspect ratio."
+    },
+    "body_control": {
+      "default": false,
+      "description": "Enable non-facial movements and gestures.",
+      "title": "Body Control",
+      "type": "boolean"
+    },
+    "expression_intensity": {
+      "anyOf": [
+        {
+          "maximum": 5,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Expression intensity (1-5). Higher = more expressive.",
+      "title": "Expression Intensity"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "character",
+    "reference_video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

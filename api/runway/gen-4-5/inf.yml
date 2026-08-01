@@ -1,0 +1,22 @@
+namespace: runway
+name: gen-4-5
+description: Runway Gen-4.5 — high-quality video generation from text or image. 2-10 second duration, multiple aspect ratios. 12 credits/second.
+metadata:
+    provider: runway
+    tags:
+        - runway
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - gen4
+category: video
+kernel: python-3.11
+secrets:
+    - key: RUNWAY_KEY
+      description: Runway API secret key from dev.runwayml.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
