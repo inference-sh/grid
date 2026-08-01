@@ -86,12 +86,46 @@ partner_output_per_million: 500000000   # $5.00 in microcents
 ### Example CEL expressions
 
 ```cel
-# partner_expression
-double(text_tokens(inputs)) / 1000000.0 * double(prices.partner_input_per_million) +
+# partner_expression (cache-aware)
+# input_tokens from Anthropic = uncached tokens only
+# cache_read_tokens = tokens read from cache (billed at 0.1x input price)
+# cache_write_tokens = tokens written to cache (billed at 1.25x input price)
+# total tokens in TextMeta = uncached + cache_read + cache_write
+(
+  double(get_extra(inputs[0], "cache_read_tokens", 0)) / 1000000.0 * double(prices.partner_cache_read_per_million) +
+  double(get_extra(inputs[0], "cache_write_tokens", 0)) / 1000000.0 * double(prices.partner_cache_write_per_million) +
+  double(text_tokens(inputs) - get_extra(inputs[0], "cache_read_tokens", 0) - get_extra(inputs[0], "cache_write_tokens", 0)) / 1000000.0 * double(prices.partner_input_per_million)
+) +
 double(text_tokens(outputs)) / 1000000.0 * double(prices.partner_output_per_million)
 
 # total_expression
 partner_fee
+```
+
+### Cache pricing constants
+
+Cache read = 0.1x input price. Cache write (5min) = 1.25x input price.
+
+```
+# Fable 5 / Mythos 5: input=$10
+partner_cache_read_per_million:   100000000   # $1.00
+partner_cache_write_per_million: 1250000000   # $12.50
+
+# Opus 5 / 4.8 / 4.7 / 4.6 / 4.5: input=$5
+partner_cache_read_per_million:    50000000   # $0.50
+partner_cache_write_per_million:  625000000   # $6.25
+
+# Sonnet 5 (intro): input=$2
+partner_cache_read_per_million:    20000000   # $0.20
+partner_cache_write_per_million:  250000000   # $2.50
+
+# Sonnet 4.6 / 4.5: input=$3
+partner_cache_read_per_million:    30000000   # $0.30
+partner_cache_write_per_million:  375000000   # $3.75
+
+# Haiku 4.5: input=$1
+partner_cache_read_per_million:    10000000   # $0.10
+partner_cache_write_per_million:  125000000   # $1.25
 ```
 
 ## Additional Costs

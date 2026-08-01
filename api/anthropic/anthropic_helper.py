@@ -327,8 +327,15 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
 
     inputs = []
     outputs = []
-    if state.get("input_tokens"):
-        inputs.append(TextMeta(tokens=state["input_tokens"]))
+    cache_read = state.get("cache_read_input_tokens", 0)
+    cache_write = state.get("cache_creation_input_tokens", 0)
+    uncached = state.get("input_tokens", 0)
+    total_input = uncached + cache_read + cache_write
+    if total_input:
+        inputs.append(TextMeta(tokens=total_input, extra={
+            "cache_read_tokens": cache_read,
+            "cache_write_tokens": cache_write,
+        }))
     if state.get("output_tokens"):
         outputs.append(TextMeta(tokens=state["output_tokens"]))
     if inputs or outputs:
@@ -366,6 +373,8 @@ def build_params(
     output_config = build_output_config(input_data, model=model)
     if output_config is not None:
         params["output_config"] = output_config
+
+    params["cache_control"] = {"type": "ephemeral"}
 
     return params
 
@@ -431,6 +440,8 @@ async def stream_completion(
                     usage = getattr(msg, "usage", None)
                     if usage:
                         state["input_tokens"] = getattr(usage, "input_tokens", 0)
+                        state["cache_read_input_tokens"] = getattr(usage, "cache_read_input_tokens", 0)
+                        state["cache_creation_input_tokens"] = getattr(usage, "cache_creation_input_tokens", 0)
 
             yield build_output(state)
 
@@ -441,6 +452,8 @@ async def stream_completion(
 
     logger.info(
         f"Anthropic stream complete: in={state['input_tokens']} out={state['output_tokens']}"
+        f" cache_read={state.get('cache_read_input_tokens', 0)}"
+        f" cache_write={state.get('cache_creation_input_tokens', 0)}"
     )
 
 
@@ -476,6 +489,8 @@ async def complete(
     if hasattr(response, "usage") and response.usage:
         state["input_tokens"] = getattr(response.usage, "input_tokens", 0)
         state["output_tokens"] = getattr(response.usage, "output_tokens", 0)
+        state["cache_read_input_tokens"] = getattr(response.usage, "cache_read_input_tokens", 0)
+        state["cache_creation_input_tokens"] = getattr(response.usage, "cache_creation_input_tokens", 0)
 
     # Process content blocks
     for block in response.content:
@@ -497,6 +512,8 @@ async def complete(
 
     logger.info(
         f"Anthropic complete: in={state['input_tokens']} out={state['output_tokens']}"
+        f" cache_read={state.get('cache_read_input_tokens', 0)}"
+        f" cache_write={state.get('cache_creation_input_tokens', 0)}"
     )
 
     return build_output(state)
