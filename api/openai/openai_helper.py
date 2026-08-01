@@ -85,6 +85,14 @@ def validate_and_fix_dimensions(
     # Round to nearest 16 if needed
     if w % 16 != 0 or h % 16 != 0:
         w, h = round_to_16(w), round_to_16(h)
+        # Rounding can push ratio past the limit — shrink long / grow short from originals
+        if max(w, h) / min(w, h) > MAX_RATIO:
+            if w >= h:
+                w = (width // 16) * 16
+                h = -(-height // 16) * 16
+            else:
+                h = (height // 16) * 16
+                w = -(-width // 16) * 16
         if logger:
             logger.info(f"Rounded dimensions to nearest 16: {width}x{height} -> {w}x{h}")
 
