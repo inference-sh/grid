@@ -75,6 +75,11 @@ def validate_and_fix_dimensions(
     Rounds to nearest multiple of 16 if needed. Raises on hard constraint violations.
     Returns the (possibly adjusted) (width, height).
     """
+    long_edge = max(width, height)
+    short_edge = min(width, height)
+    if long_edge / short_edge > MAX_RATIO:
+        raise ValueError(f"Aspect ratio must not exceed {MAX_RATIO}:1, got {long_edge/short_edge:.1f}:1")
+
     w, h = width, height
 
     # Round to nearest 16 if needed
@@ -88,10 +93,6 @@ def validate_and_fix_dimensions(
     pixels = w * h
     if pixels < MIN_PIXELS or pixels > MAX_PIXELS:
         raise ValueError(f"Total pixels must be {MIN_PIXELS:,}–{MAX_PIXELS:,}, got {pixels:,}")
-    long_edge = max(w, h)
-    short_edge = min(w, h)
-    if long_edge / short_edge > MAX_RATIO:
-        raise ValueError(f"Aspect ratio must not exceed {MAX_RATIO}:1, got {long_edge/short_edge:.1f}:1")
 
     return w, h
 
