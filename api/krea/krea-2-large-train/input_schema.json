@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "TrainingTypeEnum": {
+      "enum": [
+        "Style",
+        "Object",
+        "Character"
+      ],
+      "title": "TrainingTypeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "name": {
+      "description": "Name for the trained style.",
+      "title": "Name",
+      "type": "string"
+    },
+    "images": {
+      "description": "Training images (5-20 recommended).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "title": "Images",
+      "type": "array"
+    },
+    "type": {
+      "$ref": "#/$defs/TrainingTypeEnum",
+      "default": "Style",
+      "description": "Training type: style, object, or character."
+    },
+    "trigger_word": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Trigger word to activate the style in prompts.",
+      "title": "Trigger Word"
+    },
+    "max_train_steps": {
+      "anyOf": [
+        {
+          "maximum": 2000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Maximum training steps (1-2000).",
+      "title": "Max Train Steps"
+    }
+  },
+  "required": [
+    "name",
+    "images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

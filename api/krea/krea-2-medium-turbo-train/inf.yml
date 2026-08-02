@@ -1,0 +1,22 @@
+namespace: krea
+name: krea-2-medium-turbo-train
+description: Train custom LoRA styles for Krea 2 Medium Turbo generation
+metadata:
+    provider: krea
+    tags:
+        - krea
+        - lora
+        - training
+        - krea-2
+        - turbo
+category: image
+kernel: python-3.11
+secrets:
+    - key: KREA_KEY
+      description: Krea API key (id:secret format)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

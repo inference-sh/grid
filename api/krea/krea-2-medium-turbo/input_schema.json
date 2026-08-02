@@ -1,0 +1,186 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "1:1",
+        "4:3",
+        "3:2",
+        "16:9",
+        "2.35:1",
+        "4:5",
+        "2:3",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "CreativityEnum": {
+      "enum": [
+        "raw",
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "CreativityEnum",
+      "type": "string"
+    },
+    "StyleConfig": {
+      "properties": {
+        "id": {
+          "description": "Trained style/LoRA ID.",
+          "title": "Id",
+          "type": "string"
+        },
+        "strength": {
+          "default": 1.0,
+          "description": "Style strength.",
+          "maximum": 2.0,
+          "minimum": -2.0,
+          "title": "Strength",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "StyleConfig",
+      "type": "object"
+    },
+    "StyleReference": {
+      "properties": {
+        "image": {
+          "description": "Style reference image.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "strength": {
+          "default": 0.5,
+          "description": "Reference strength.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Strength",
+          "type": "number"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "StyleReference",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt for image generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1",
+      "description": "Output aspect ratio."
+    },
+    "creativity": {
+      "$ref": "#/$defs/CreativityEnum",
+      "default": "low",
+      "description": "Creativity level."
+    },
+    "intensity": {
+      "default": 0,
+      "description": "Intensity control.",
+      "maximum": 100,
+      "minimum": -100,
+      "title": "Intensity",
+      "type": "integer"
+    },
+    "complexity": {
+      "default": 0,
+      "description": "Complexity control.",
+      "maximum": 100,
+      "minimum": -100,
+      "title": "Complexity",
+      "type": "integer"
+    },
+    "movement": {
+      "default": 0,
+      "description": "Movement control.",
+      "maximum": 100,
+      "minimum": -100,
+      "title": "Movement",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for reproducible results.",
+      "title": "Seed"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for image-to-image generation.",
+      "title": "Image"
+    },
+    "strength": {
+      "default": 0.99,
+      "description": "Denoising strength for image-to-image.",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Strength",
+      "type": "number"
+    },
+    "styles": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/StyleConfig"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Trained style/LoRA configurations.",
+      "title": "Styles"
+    },
+    "image_style_references": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/StyleReference"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Style reference images (max 10).",
+      "title": "Image Style References"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

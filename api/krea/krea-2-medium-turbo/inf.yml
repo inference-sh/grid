@@ -1,0 +1,22 @@
+namespace: krea
+name: krea-2-medium-turbo
+description: Krea 2 Medium Turbo — fastest K2 model, ~3s per generation, 1.5K native resolution
+metadata:
+    provider: krea
+    tags:
+        - krea
+        - image-generation
+        - text-to-image
+        - krea-2
+        - turbo
+category: image
+kernel: python-3.11
+secrets:
+    - key: KREA_KEY
+      description: Krea API key (id:secret format)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
