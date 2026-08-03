@@ -1,0 +1,26 @@
+namespace: minimax
+name: music-cover
+description: MiniMax Music Cover — AI-powered song covers and style transfer. Upload a reference track and generate a cover with new style and optional new lyrics.
+metadata:
+    provider: minimax
+    tags:
+        - music
+        - music-cover
+        - style-transfer
+        - minimax
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MINIMAX_KEY
+      description: MiniMax API key from platform.minimax.io
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

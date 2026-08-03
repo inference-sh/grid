@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "FormatEnum": {
+      "enum": [
+        "mp3",
+        "wav"
+      ],
+      "title": "FormatEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax Music 3.0 \u2014 AI music generation up to 5 minutes.\n\nProvide a style prompt and/or lyrics. Use section tags in lyrics:\n[Verse], [Chorus], [Bridge], [Intro], [Outro], [Hook], [Pre-Chorus].",
+  "properties": {
+    "prompt": {
+      "description": "Style and mood description for the music.",
+      "examples": [
+        "Upbeat pop song with acoustic guitar and light percussion"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "lyrics": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Song lyrics with section tags like [Verse], [Chorus]. 1-3500 chars.",
+      "title": "Lyrics"
+    },
+    "is_instrumental": {
+      "default": false,
+      "description": "Generate instrumental music without vocals.",
+      "title": "Is Instrumental",
+      "type": "boolean"
+    },
+    "lyrics_optimizer": {
+      "default": false,
+      "description": "Auto-generate lyrics from the prompt when lyrics field is empty.",
+      "title": "Lyrics Optimizer",
+      "type": "boolean"
+    },
+    "format": {
+      "$ref": "#/$defs/FormatEnum",
+      "default": "mp3",
+      "description": "Output audio format."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

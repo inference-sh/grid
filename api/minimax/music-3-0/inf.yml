@@ -1,0 +1,25 @@
+namespace: minimax
+name: music-3-0
+description: MiniMax Music 3.0 — AI music generation up to 5 minutes. Supports vocals with lyrics, instrumentals, and style prompts. Direct MiniMax API.
+metadata:
+    provider: minimax
+    tags:
+        - music
+        - music-generation
+        - minimax
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MINIMAX_KEY
+      description: MiniMax API key from platform.minimax.io
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

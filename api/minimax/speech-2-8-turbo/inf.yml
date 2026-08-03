@@ -1,0 +1,27 @@
+namespace: minimax
+name: speech-2-8-turbo
+description: MiniMax Speech 2.8 Turbo — fast text-to-speech. 40 languages, 9 emotions, custom voices. Lower latency than HD. Direct MiniMax API.
+metadata:
+    provider: minimax
+    tags:
+        - tts
+        - text-to-speech
+        - speech
+        - minimax
+        - turbo
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MINIMAX_KEY
+      description: MiniMax API key from platform.minimax.io
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

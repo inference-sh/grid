@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "EmotionEnum": {
+      "enum": [
+        "happy",
+        "sad",
+        "angry",
+        "fearful",
+        "disgusted",
+        "surprised",
+        "calm",
+        "fluent",
+        "whisper"
+      ],
+      "title": "EmotionEnum",
+      "type": "string"
+    },
+    "FormatEnum": {
+      "enum": [
+        "mp3",
+        "wav",
+        "flac"
+      ],
+      "title": "FormatEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax Speech 2.8 HD \u2014 high-quality text-to-speech. 40 languages, 9 emotions.",
+  "properties": {
+    "text": {
+      "description": "Text to convert to speech. Max 10,000 characters.",
+      "examples": [
+        "Hello, welcome to our platform. How can I help you today?"
+      ],
+      "title": "Text",
+      "type": "string"
+    },
+    "voice_id": {
+      "default": "Wise_Woman",
+      "description": "Voice ID \u2014 system voice name or custom cloned voice ID.",
+      "title": "Voice Id",
+      "type": "string"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speech speed (0.5-2.0).",
+      "maximum": 2.0,
+      "minimum": 0.5,
+      "title": "Speed",
+      "type": "number"
+    },
+    "emotion": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EmotionEnum"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Emotion style for the speech."
+    },
+    "format": {
+      "$ref": "#/$defs/FormatEnum",
+      "default": "mp3",
+      "description": "Output audio format."
+    },
+    "language_boost": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "auto",
+      "description": "Language boost \u2014 'auto' for auto-detect, or specify language code.",
+      "title": "Language Boost"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

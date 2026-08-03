@@ -39,6 +39,20 @@ Pay-as-you-go API pricing. All prices in USD.
 | M2.5 / M2.5-highspeed | $0.30-0.60 | $1.20-2.40 |
 | M2.1 / M2.1-highspeed | $0.30-0.60 | $1.20-2.40 |
 
+## Speech (TTS)
+
+| Model | Per M Characters |
+|-------|-----------------|
+| **speech-2.8-hd** | $100/M chars ($0.0001/char) |
+| **speech-2.8-turbo** | $60/M chars ($0.00006/char) |
+
+## Music
+
+| Model | Per Track |
+|-------|----------|
+| **music-3.0** | $0.15 per track (up to 5 min) |
+| **music-cover** | $0.15 per cover |
+
 ## OutputMeta Mapping
 
 ### Video apps (h3)

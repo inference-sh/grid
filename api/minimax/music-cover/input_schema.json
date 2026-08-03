@@ -1,0 +1,53 @@
+{
+  "$defs": {
+    "FormatEnum": {
+      "enum": [
+        "mp3",
+        "wav"
+      ],
+      "title": "FormatEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax Music Cover \u2014 AI-powered song covers and style transfer.\n\nUpload a reference track to extract its style, then generate a cover\nwith new lyrics and/or style direction.",
+  "properties": {
+    "reference_audio": {
+      "description": "Reference audio track for style transfer. 6s-6min, max 50MB.",
+      "format": "file",
+      "title": "Reference Audio",
+      "type": "string"
+    },
+    "prompt": {
+      "description": "Style and mood direction for the cover.",
+      "examples": [
+        "Jazz arrangement with piano and soft drums"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "lyrics": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "New lyrics for the cover with section tags. 10-1000 chars. If empty, uses reference lyrics.",
+      "title": "Lyrics"
+    },
+    "format": {
+      "$ref": "#/$defs/FormatEnum",
+      "default": "mp3",
+      "description": "Output audio format."
+    }
+  },
+  "required": [
+    "reference_audio",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
