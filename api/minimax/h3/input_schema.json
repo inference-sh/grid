@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "RatioEnum": {
+      "enum": [
+        "adaptive",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "768P",
+        "2K"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax H3 \u2014 next-gen multimodal video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only (ratio required, no adaptive)\n- Image-to-video: prompt + image (first frame)\n- First-last frame: prompt + image + last_image\n- Reference: prompt + reference images/videos/audio",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Max 7000 chars.",
+      "examples": [
+        "A cinematic aerial shot of a lighthouse at sunset, waves crashing against the rocky shore"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image for image-to-video. Formats: JPG, PNG, WEBP, HEIC. Max 30MB.",
+      "title": "Image"
+    },
+    "last_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last frame image. Requires image to be set as first frame.",
+      "title": "Last Image"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for style/content guidance. Cannot combine with first/last frame.",
+      "title": "Reference Images"
+    },
+    "reference_video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference video for motion/style guidance. MP4/MOV, max 50MB, 2-15s.",
+      "title": "Reference Video"
+    },
+    "reference_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference audio for synchronized generation. WAV/MP3, max 15MB, 2-15s.",
+      "title": "Reference Audio"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "Output resolution: 768P or 2K."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (4-15).",
+      "maximum": 15,
+      "minimum": 4,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Text-to-video requires a concrete value (not adaptive)."
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

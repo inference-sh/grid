@@ -1,0 +1,29 @@
+namespace: minimax
+name: h3
+description: MiniMax H3 — next-gen multimodal video generation. Text-to-video, image-to-video, first-last frame, and reference-based generation. 768P to 2K resolution, 4-15s duration, 24fps.
+metadata:
+    provider: minimax
+    tags:
+        - minimax
+        - hailuo
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - 2k
+        - h3
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MINIMAX_KEY
+      description: MiniMax API key from platform.minimax.io
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

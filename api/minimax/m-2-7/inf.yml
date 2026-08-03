@@ -1,0 +1,24 @@
+namespace: minimax
+name: m-2-7
+description: MiniMax-M2.7 — large language model with enhanced reasoning, image understanding, and file processing. 200K context. Direct MiniMax API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+category: chat
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MINIMAX_KEY
+      description: MiniMax API key from platform.minimax.io
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
