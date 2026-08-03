@@ -1,6 +1,6 @@
 namespace: minimax
 name: h3
-description: MiniMax H3 — next-gen multimodal video generation. Text-to-video, image-to-video, first-last frame, and reference-based generation. 768P to 2K resolution, 4-15s duration, 24fps.
+description: MiniMax H3 — multimodal video generation with native audio. Text-to-video, image-to-video with end_image, and reference-based generation. 2K resolution, 5-15s duration, 24fps. Prompt with timelines, audio cues, and negative lists.
 metadata:
     provider: minimax
     tags:

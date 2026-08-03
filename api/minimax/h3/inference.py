@@ -36,8 +36,8 @@ class AppInput(BaseAppInput):
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video content. Max 7000 chars.",
-        examples=["A cinematic aerial shot of a lighthouse at sunset, waves crashing against the rocky shore"],
+        description="Video prompt. Use six-block structure: style contract, timeline with [0s-2s] markers, camera, audio cues, spelled-out text, negative list. Max 7000 chars.",
+        examples=["[0s-3s] Static wide shot. A lone marble camera on a pedestal in darkness, single moonbeam. [3s-6s] The lens flares to life, film strips unfurl from the reels. [6s-8s] Film strips fill the frame. Camera: locked off, no cuts. Audio: low hum building to orchestral swell at 6s. Do not add subtitles."],
     )
     image: Optional[File] = Field(
         default=None,
@@ -60,18 +60,18 @@ class AppInput(BaseAppInput):
         description="Reference audio for synchronized generation. WAV/MP3, max 15MB, 2-15s.",
     )
     resolution: ResolutionEnum = Field(
-        default=ResolutionEnum.r768p,
-        description="Output resolution: 768P or 2K.",
+        default=ResolutionEnum.r2k,
+        description="Output resolution. 2K is the only resolution currently accepted.",
     )
     duration: int = Field(
-        default=5,
-        ge=4,
+        default=8,
+        ge=5,
         le=15,
-        description="Video duration in seconds (4-15).",
+        description="Video duration in seconds. 5-10 for text/image-to-video, 5-15 for reference-to-video.",
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.r16_9,
-        description="Aspect ratio. Text-to-video requires a concrete value (not adaptive).",
+        description="Aspect ratio. Text-to-video requires explicit value (not adaptive). Image/reference modes default to adaptive.",
     )
 
 
