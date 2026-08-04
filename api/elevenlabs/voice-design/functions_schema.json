@@ -13,6 +13,7 @@
           "anyOf": [
             {
               "maxLength": 500,
+              "minLength": 100,
               "type": "string"
             },
             {
@@ -20,7 +21,7 @@
             }
           ],
           "default": null,
-          "description": "Text to speak in the previews. If not provided, text is auto-generated.",
+          "description": "Text to speak in the previews (min 100 characters). If not provided, text is auto-generated.",
           "title": "Preview Text"
         },
         "seed": {

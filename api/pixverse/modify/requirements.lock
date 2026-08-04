@@ -5,8 +5,8 @@ httpcore==1.0.9
 httpx==0.28.1
 idna==3.18
 ninja==1.13.0
-packaging==26.2
+packaging==26.3
 setuptools==83.0.0
 setuptools-scm==10.2.1
 typing-extensions==4.16.0
-vcs-versioning==2.2.2
+vcs-versioning==2.2.3
