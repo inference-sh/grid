@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "auto",
+        "21:9",
+        "2:1",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "hd",
+        "fhd"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video to generate.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Single keyframe image. The image becomes the opening frame of the video (image-to-video).",
+      "title": "Image"
+    },
+    "keyframes": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Multiple keyframes as [seconds, image_url] pairs for storyboard-style generation. Overrides image if both provided.",
+      "title": "Keyframes"
+    },
+    "start_video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video to continue from (video-to-video continuation).",
+      "title": "Start Video"
+    },
+    "draft_cache": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Draft cache bundle from a prior draft generation for full-quality render (draft_enhance).",
+      "title": "Draft Cache"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "hd",
+      "description": "Output resolution. hd: up to 1MP per frame. fhd: up to 2MP per frame. Draft mode only supports hd."
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 20,
+          "minimum": 5,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video duration in seconds (5-20). Default: auto.",
+      "title": "Duration"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "auto",
+      "description": "Output aspect ratio."
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Generate synchronized audio. Included at no extra charge.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "draft": {
+      "default": false,
+      "description": "Generate a fast HD preview. Result includes a draft_cache for later full-quality render.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "safety_tolerance": {
+      "anyOf": [
+        {
+          "maximum": 4,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Safety filter tolerance: 0 (strictest) to 4. Default: 2.",
+      "title": "Safety Tolerance"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
