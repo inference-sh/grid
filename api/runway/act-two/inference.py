@@ -18,16 +18,6 @@ class RatioEnum(str, Enum):
     r1584_672 = "1584:672"
 
 
-RATIO_DIMS = {
-    "1280:720": (1280, 720),
-    "720:1280": (720, 1280),
-    "960:960": (960, 960),
-    "1104:832": (1104, 832),
-    "832:1104": (832, 1104),
-    "1584:672": (1584, 672),
-}
-
-
 class CharacterTypeEnum(str, Enum):
     image = "image"
     video = "video"
@@ -119,16 +109,16 @@ class App(BaseApp):
         self.logger.info(f"Video ready: {video_url[:80]}...")
         video_path = await download_file(video_url, suffix=".mp4", logger=self.logger)
 
-        w, h = RATIO_DIMS.get(input_data.ratio.value, (1280, 720))
+        video_meta = VideoMeta.from_file(
+            video_path,
+            extra={"model": "act_two", "body_control": input_data.body_control},
+        )
 
         return AppOutput(
             video=File(path=video_path),
             output_meta=OutputMeta(
                 inputs=input_metas,
-                outputs=[VideoMeta(
-                    width=w, height=h,
-                    extra={"model": "act_two", "body_control": input_data.body_control},
-                )],
+                outputs=[video_meta],
             ),
         )
 

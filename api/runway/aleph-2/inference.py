@@ -20,18 +20,6 @@ class AspectRatioEnum(str, Enum):
     r21_9 = "21:9"
 
 
-ASPECT_DIMS = {
-    "16:9": (1280, 720),
-    "4:3": (960, 720),
-    "3:2": (1080, 720),
-    "1:1": (720, 720),
-    "2:3": (720, 1080),
-    "3:4": (720, 960),
-    "9:16": (720, 1280),
-    "21:9": (1512, 648),
-}
-
-
 class Keyframe(BaseAppInput):
     seconds: float = Field(description="Timestamp in the input video for this keyframe.")
     image: File = Field(description="Reference image for this keyframe.")
@@ -113,17 +101,16 @@ class App(BaseApp):
         self.logger.info(f"Video ready: {video_url[:80]}...")
         video_path = await download_file(video_url, suffix=".mp4", logger=self.logger)
 
-        ar = input_data.target_aspect_ratio.value if input_data.target_aspect_ratio else "16:9"
-        w, h = ASPECT_DIMS.get(ar, (1280, 720))
+        video_meta = VideoMeta.from_file(
+            video_path,
+            extra={"model": "aleph2"},
+        )
 
         return AppOutput(
             video=File(path=video_path),
             output_meta=OutputMeta(
                 inputs=[VideoMeta()],
-                outputs=[VideoMeta(
-                    width=w, height=h,
-                    extra={"model": "aleph2"},
-                )],
+                outputs=[video_meta],
             ),
         )
 
