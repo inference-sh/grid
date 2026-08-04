@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import Optional, List, Union
 from enum import Enum
 
@@ -112,6 +113,7 @@ def _detect_mode(input_data: AppInput) -> str:
 
 class App(BaseApp):
     async def setup(self, metadata):
+        self.logger = logging.getLogger(__name__)
         api_key = os.environ.get("BFL_KEY")
         if not api_key:
             raise RuntimeError("BFL_KEY must be set")
