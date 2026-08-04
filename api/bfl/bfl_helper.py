@@ -11,7 +11,6 @@ import httpx
 BASE_URL = "https://api.bfl.ai"
 
 POLL_INTERVAL = 2.0
-POLL_TIMEOUT = 600.0
 
 TERMINAL_STATUSES = {"Error", "Request Moderated", "Content Moderated"}
 
@@ -71,14 +70,13 @@ class BFLClient:
         endpoint: str,
         payload: dict,
         interval: float = POLL_INTERVAL,
-        timeout: float = POLL_TIMEOUT,
     ) -> BFLResult:
         submitted = await self.submit(endpoint, payload)
         if not submitted.polling_url:
             raise BFLAPIError(-1, "No polling_url in response")
 
         elapsed = 0.0
-        while elapsed < timeout:
+        while True:
             await asyncio.sleep(interval)
             elapsed += interval
             result = await self.poll(submitted.polling_url)
@@ -87,8 +85,6 @@ class BFLClient:
             if result.status in TERMINAL_STATUSES:
                 raise BFLAPIError(-1, f"Task failed: {result.status}")
             self.logger.info(f"Status: {result.status} ({elapsed:.0f}s)")
-
-        raise BFLAPIError(-1, f"Task timed out after {timeout}s")
 
     async def close(self):
         await self.client.aclose()
