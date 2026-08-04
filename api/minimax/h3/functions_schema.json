@@ -28,9 +28,9 @@
       "description": "MiniMax H3 \u2014 next-gen multimodal video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only (ratio required, no adaptive)\n- Image-to-video: prompt + image (first frame)\n- First-last frame: prompt + image + last_image\n- Reference: prompt + reference images/videos/audio",
       "properties": {
         "prompt": {
-          "description": "Text prompt describing the video content. Max 7000 chars.",
+          "description": "Video prompt. Use six-block structure: style contract, timeline with [0s-2s] markers, camera, audio cues, spelled-out text, negative list. Max 7000 chars.",
           "examples": [
-            "A cinematic aerial shot of a lighthouse at sunset, waves crashing against the rocky shore"
+            "[0s-3s] Static wide shot. A lone marble camera on a pedestal in darkness, single moonbeam. [3s-6s] The lens flares to life, film strips unfurl from the reels. [6s-8s] Film strips fill the frame. Camera: locked off, no cuts. Audio: low hum building to orchestral swell at 6s. Do not add subtitles."
           ],
           "title": "Prompt",
           "type": "string"
@@ -110,21 +110,21 @@
         },
         "resolution": {
           "$ref": "#/$defs/ResolutionEnum",
-          "default": "768P",
-          "description": "Output resolution: 768P or 2K."
+          "default": "2K",
+          "description": "Output resolution. 2K is the only resolution currently accepted."
         },
         "duration": {
-          "default": 5,
-          "description": "Video duration in seconds (4-15).",
+          "default": 8,
+          "description": "Video duration in seconds. 5-10 for text/image-to-video, 5-15 for reference-to-video.",
           "maximum": 15,
-          "minimum": 4,
+          "minimum": 5,
           "title": "Duration",
           "type": "integer"
         },
         "ratio": {
           "$ref": "#/$defs/RatioEnum",
           "default": "16:9",
-          "description": "Aspect ratio. Text-to-video requires a concrete value (not adaptive)."
+          "description": "Aspect ratio. Text-to-video requires explicit value (not adaptive). Image/reference modes default to adaptive."
         }
       },
       "required": [
