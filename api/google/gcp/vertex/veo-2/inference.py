@@ -159,7 +159,6 @@ class App(BaseApp):
                 model_id=self.model_id,
                 operation_name=operation_name,
                 poll_interval=5.0,
-                max_wait_time=600.0,
                 logger=self.logger
             )
 

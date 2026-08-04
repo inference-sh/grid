@@ -607,7 +607,6 @@ async def generate_video_with_polling(
     person_generation: Optional[str] = None,
     negative_prompt: Optional[str] = None,
     poll_interval: float = 5.0,
-    max_wait_time: float = 600.0,
     logger: Optional[logging.Logger] = None,
 ) -> list:
     """
@@ -664,14 +663,11 @@ async def generate_video_with_polling(
 
     # Poll until done
     elapsed = 0.0
-    while not operation.done and elapsed < max_wait_time:
+    while not operation.done:
         await asyncio.sleep(poll_interval)
         elapsed += poll_interval
         operation = client.operations.get(operation)
         log.info(f"Operation in progress... (elapsed: {elapsed:.0f}s)")
-
-    if not operation.done:
-        raise RuntimeError(f"Video generation timed out after {max_wait_time}s")
 
     if operation.error:
         raise RuntimeError(f"Video generation failed: {operation.error}")

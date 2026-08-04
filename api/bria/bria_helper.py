@@ -17,7 +17,6 @@ BASE_URL = "https://engine.prod.bria-api.com/v2/image/edit"
 VIDEO_EDIT_URL = "https://engine.prod.bria-api.com/v2/video/edit"
 VIDEO_URL = "https://engine.prod.bria-api.com/v2/video"
 POLL_INTERVAL = 1.5
-MAX_POLL_TIME = 300
 
 
 def get_client(timeout: float = 120) -> httpx.AsyncClient:
@@ -52,7 +51,7 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
 
     logger.info(f"Polling request {request_id}")
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
         poll_resp = await client.get(status_url)
@@ -68,8 +67,6 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
             raise RuntimeError(
                 f"Bria request {request_id} failed: {error.get('message', status)}"
             )
-
-    raise TimeoutError(f"Bria request {request_id} timed out after {MAX_POLL_TIME}s")
 
 
 async def download_image(client: httpx.AsyncClient, image_url: str, suffix: str = ".png") -> str:

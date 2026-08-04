@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://api.heygen.com"
 POLL_INTERVAL = 3.0
-MAX_POLL_TIME = 600
 
 
 def get_api_key() -> str:
@@ -67,7 +66,7 @@ async def poll_video(client: httpx.AsyncClient, video_id: str) -> dict:
     """Poll GET /v3/videos/{video_id} until completed or failed."""
     path = f"/v3/videos/{video_id}"
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         data = await get_endpoint(client, path)
         status = data.get("status", "")
         logger.info(f"Video {video_id} status: {status} ({elapsed:.0f}s)")
@@ -82,14 +81,12 @@ async def poll_video(client: httpx.AsyncClient, video_id: str) -> dict:
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
 
-    raise TimeoutError(f"Video {video_id} timed out after {MAX_POLL_TIME}s")
-
 
 async def poll_lipsync(client: httpx.AsyncClient, lipsync_id: str) -> dict:
     """Poll GET /v3/lipsyncs/{lipsync_id} until completed or failed."""
     path = f"/v3/lipsyncs/{lipsync_id}"
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         data = await get_endpoint(client, path)
         status = data.get("status", "")
         logger.info(f"Lipsync {lipsync_id} status: {status} ({elapsed:.0f}s)")
@@ -103,14 +100,12 @@ async def poll_lipsync(client: httpx.AsyncClient, lipsync_id: str) -> dict:
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
 
-    raise TimeoutError(f"Lipsync {lipsync_id} timed out after {MAX_POLL_TIME}s")
-
 
 async def poll_translation(client: httpx.AsyncClient, translation_id: str) -> dict:
     """Poll GET /v3/video-translations/{id} until completed or failed."""
     path = f"/v3/video-translations/{translation_id}"
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         data = await get_endpoint(client, path)
         status = data.get("status", "")
         logger.info(f"Translation {translation_id} status: {status} ({elapsed:.0f}s)")
@@ -123,8 +118,6 @@ async def poll_translation(client: httpx.AsyncClient, translation_id: str) -> di
 
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
-
-    raise TimeoutError(f"Translation {translation_id} timed out after {MAX_POLL_TIME}s")
 
 
 async def download_file(url: str, suffix: str = ".mp4") -> str:
@@ -164,7 +157,7 @@ async def get_look(client: httpx.AsyncClient, look_id: str) -> dict:
 async def poll_avatar(client: httpx.AsyncClient, look_id: str) -> dict:
     """Poll GET /v3/avatars/looks/{look_id} until status is completed or failed."""
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         data = await get_look(client, look_id)
         status = data.get("status", "completed")  # public avatars may not have status
         logger.info(f"Avatar {look_id} status: {status} ({elapsed:.0f}s)")
@@ -176,8 +169,6 @@ async def poll_avatar(client: httpx.AsyncClient, look_id: str) -> dict:
 
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
-
-    raise TimeoutError(f"Avatar {look_id} timed out after {MAX_POLL_TIME}s")
 
 
 def build_asset_ref(file_obj) -> dict:

@@ -33,10 +33,10 @@ async def create_video(client, api_key: str, payload: dict, logger) -> str:
 
 
 async def poll_video(client, api_key: str, task_id: str, logger,
-                     interval: float = 3.0, timeout: float = 600.0) -> dict:
+                     interval: float = 3.0) -> dict:
     elapsed = 0.0
     attempt = 0
-    while elapsed < timeout:
+    while True:
         await asyncio.sleep(interval)
         elapsed += interval
         attempt += 1
@@ -67,8 +67,6 @@ async def poll_video(client, api_key: str, task_id: str, logger,
 
         if attempt % 10 == 0:
             logger.info(f"Status: {status} ({int(elapsed)}s elapsed)")
-
-    raise MiniMaxError(-1, f"Video generation timed out after {int(timeout)}s")
 
 
 async def download_file(client, url: str, output_path: str) -> str:

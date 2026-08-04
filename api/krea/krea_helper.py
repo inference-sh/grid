@@ -8,8 +8,6 @@ import httpx
 
 BASE_URL = "https://api.krea.ai"
 JOB_POLL_INTERVAL = 3.0
-JOB_POLL_TIMEOUT = 600.0
-TRAIN_POLL_TIMEOUT = 7200.0
 
 
 class KreaAPIError(Exception):
@@ -44,7 +42,7 @@ class KreaClient:
                 return data
             raise KreaAPIError(-1, f"No job ID in response: {str(data)[:300]}")
         self.logger.info(f"Job created: {job_id}")
-        return await self._poll_job(job_id, timeout=JOB_POLL_TIMEOUT)
+        return await self._poll_job(job_id)
 
     async def train(self, payload: dict) -> dict:
         self.logger.info("POST /styles/train")
@@ -56,11 +54,11 @@ class KreaClient:
         if not job_id:
             return data
         self.logger.info(f"Training job created: {job_id}")
-        return await self._poll_job(job_id, timeout=TRAIN_POLL_TIMEOUT)
+        return await self._poll_job(job_id)
 
-    async def _poll_job(self, job_id: str, timeout: float) -> dict:
+    async def _poll_job(self, job_id: str) -> dict:
         elapsed = 0.0
-        while elapsed < timeout:
+        while True:
             resp = await self.client.get(f"/jobs/{job_id}")
             if resp.status_code != 200:
                 raise KreaAPIError(resp.status_code, resp.text)
@@ -75,7 +73,6 @@ class KreaClient:
             self.logger.info(f"Job {job_id}: {status}")
             await asyncio.sleep(JOB_POLL_INTERVAL)
             elapsed += JOB_POLL_INTERVAL
-        raise KreaAPIError(-1, f"Job {job_id} timed out after {timeout}s")
 
     async def upload_asset(self, file_path: str) -> str:
         """Upload a file to Krea's asset storage, return the asset URL."""

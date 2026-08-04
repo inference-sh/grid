@@ -279,7 +279,6 @@ async def wait_for_asset_active(
     project_name: str = "default",
     logger: Optional[logging.Logger] = None,
     poll_interval: float = 2.0,
-    timeout: float = 300.0,
 ) -> str:
     """
     Poll an asset until its status becomes Active.
@@ -290,16 +289,15 @@ async def wait_for_asset_active(
         project_name: BytePlus project name.
         logger: Optional logger.
         poll_interval: Seconds between polls.
-        timeout: Maximum wait time in seconds.
 
     Returns:
         The asset ID (confirmed active).
 
     Raises:
-        RuntimeError: If asset fails processing or times out.
+        RuntimeError: If asset fails processing.
     """
     elapsed = 0.0
-    while elapsed < timeout:
+    while True:
         info = get_asset(api, asset_id, project_name=project_name)
         status = info.get("Status") or info.get("status")
 
@@ -314,8 +312,6 @@ async def wait_for_asset_active(
                 logger.info(f"Asset {asset_id} status: {status}, waiting...")
             await asyncio.sleep(poll_interval)
             elapsed += poll_interval
-
-    raise RuntimeError(f"Asset {asset_id} timed out after {timeout}s")
 
 
 async def upload_and_activate(

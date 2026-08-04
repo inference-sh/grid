@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://app-api.pixverse.ai"
 POLL_INTERVAL = 5.0
-MAX_POLL_TIME = 600
 
 
 def get_api_key() -> str:
@@ -102,7 +101,7 @@ async def upload_audio(client: httpx.AsyncClient, audio_path: str) -> int:
 async def poll_video(client: httpx.AsyncClient, video_id: int) -> dict:
     path = f"/openapi/v2/video/result/{video_id}"
     elapsed = 0.0
-    while elapsed < MAX_POLL_TIME:
+    while True:
         result = await api_get(client, path)
         status = result.get("status")
         logger.info(f"Video {video_id} status={status} ({elapsed:.0f}s)")
@@ -116,8 +115,6 @@ async def poll_video(client: httpx.AsyncClient, video_id: int) -> dict:
 
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
-
-    raise TimeoutError(f"Video {video_id} timed out after {MAX_POLL_TIME}s")
 
 
 async def download_file(url: str, suffix: str = ".mp4") -> str:

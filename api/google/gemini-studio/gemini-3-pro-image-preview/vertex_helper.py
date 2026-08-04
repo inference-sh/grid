@@ -981,7 +981,6 @@ async def poll_long_running_operation(
     model_id: str,
     operation_name: str,
     poll_interval: float = 5.0,
-    max_wait_time: float = 600.0,
     logger: Optional[logging.Logger] = None,
     retry_config: Optional[RetryConfig] = None
 ) -> Dict[str, Any]:
@@ -995,7 +994,6 @@ async def poll_long_running_operation(
         model_id: Model ID
         operation_name: Full operation name from start response
         poll_interval: Seconds between polls (default: 5)
-        max_wait_time: Maximum wait time in seconds (default: 600)
         logger: Optional logger
         retry_config: Optional retry configuration for 429 errors on individual poll requests
 
@@ -1003,7 +1001,7 @@ async def poll_long_running_operation(
         Final operation response with results
 
     Raises:
-        RuntimeError: If operation fails or times out
+        RuntimeError: If operation fails
     """
     url = get_vertex_api_url(project, location, model_id, "fetchPredictOperation")
 
@@ -1018,7 +1016,7 @@ async def poll_long_running_operation(
 
     elapsed = 0.0
     async with aiohttp.ClientSession() as session:
-        while elapsed < max_wait_time:
+        while True:
             # Retry loop for individual poll requests
             for attempt in range(1, config.max_attempts + 1):
                 async with session.post(url, headers=headers, json=request_payload) as response:
@@ -1052,8 +1050,6 @@ async def poll_long_running_operation(
 
             await asyncio.sleep(poll_interval)
             elapsed += poll_interval
-
-    raise RuntimeError(f"Operation timed out after {max_wait_time}s")
 
 
 # =============================================================================

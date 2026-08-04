@@ -207,7 +207,6 @@ async def poll_video_task(
     task_id: str,
     logger: Optional[logging.Logger] = None,
     poll_interval: float = 3.0,
-    max_attempts: int = 1200,
     cancel_flag_getter: Optional[callable] = None,
 ) -> Dict[str, Any]:
     """
@@ -219,19 +218,19 @@ async def poll_video_task(
         task_id: Task ID to poll.
         logger: Optional logger for progress output.
         poll_interval: Seconds between poll attempts.
-        max_attempts: Maximum number of poll attempts.
         cancel_flag_getter: Optional callable that returns True if cancelled.
 
     Returns:
         Dict with video_url and other response data (comfyui_cost, etc.)
 
     Raises:
-        RuntimeError: If task fails or times out.
+        RuntimeError: If task fails.
     """
     if logger:
         logger.info(f"Polling task status for: {task_id}")
 
-    for attempt in range(max_attempts):
+    attempt = 0
+    while True:
         # Check for cancellation
         if cancel_flag_getter and cancel_flag_getter():
             if logger:
@@ -284,8 +283,7 @@ async def poll_video_task(
             logger.info(f"Task status: {status} (attempt {attempt + 1})...")
 
         await asyncio.sleep(poll_interval)
-
-    raise RuntimeError(f"Task timed out after {max_attempts * poll_interval} seconds")
+        attempt += 1
 
 
 def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:

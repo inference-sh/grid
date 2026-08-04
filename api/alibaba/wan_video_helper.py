@@ -23,7 +23,6 @@ VIDEO_SYNTHESIS_URL = f"{BASE_URL}/services/aigc/video-generation/video-synthesi
 TASK_URL = f"{BASE_URL}/tasks"
 
 POLL_INTERVAL = 15  # seconds between status checks
-MAX_POLL_TIME = 3600  # 1 hour max wait
 
 
 def get_api_key() -> str:
@@ -94,7 +93,7 @@ def _poll_task_sync(
     url = f"{TASK_URL}/{task_id}"
     elapsed = 0
 
-    while elapsed < MAX_POLL_TIME:
+    while True:
         resp = requests.get(url, headers=_task_headers(), timeout=30)
         resp.raise_for_status()
         data = resp.json()
@@ -118,8 +117,6 @@ def _poll_task_sync(
 
         time.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
-
-    raise RuntimeError(f"Task {task_id} timed out after {MAX_POLL_TIME}s")
 
 
 def _download_video_sync(

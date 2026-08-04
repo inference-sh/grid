@@ -139,7 +139,6 @@ def create_prediction(
 async def poll_prediction_status(
     prediction_id: str,
     logger: Optional[logging.Logger] = None,
-    max_wait: float = 600.0,
 ) -> Dict[str, Any]:
     """
     Poll a prediction until completion with adaptive intervals.
@@ -149,13 +148,12 @@ async def poll_prediction_status(
     Args:
         prediction_id: Prediction ID to poll.
         logger: Optional logger for progress output.
-        max_wait: Maximum total wait time in seconds.
 
     Returns:
         The completed prediction result.
 
     Raises:
-        RuntimeError: If prediction fails or times out.
+        RuntimeError: If prediction fails.
     """
     if logger:
         logger.info(f"Polling prediction status: {prediction_id}")
@@ -164,7 +162,7 @@ async def poll_prediction_status(
     headers = {"apikey": get_api_key()}
 
     elapsed = 0.0
-    while elapsed < max_wait:
+    while True:
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
@@ -222,8 +220,6 @@ async def poll_prediction_status(
 
         await asyncio.sleep(interval)
         elapsed += interval
-
-    raise RuntimeError(f"Prediction timed out after {int(elapsed)} seconds")
 
 
 def get_generation_url(result: Dict[str, Any]) -> str:

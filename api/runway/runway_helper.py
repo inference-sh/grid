@@ -12,7 +12,6 @@ BASE_URL = "https://api.dev.runwayml.com"
 API_VERSION = "2024-11-06"
 
 TASK_POLL_INTERVAL = 5.0
-TASK_POLL_TIMEOUT = 600.0
 
 
 class RunwayAPIError(Exception):
@@ -75,10 +74,9 @@ class RunwayClient:
         self,
         task_id: str,
         interval: float = TASK_POLL_INTERVAL,
-        timeout: float = TASK_POLL_TIMEOUT,
     ) -> RunwayTask:
         elapsed = 0.0
-        while elapsed < timeout:
+        while True:
             task = await self.get_task(task_id)
             if task.status == "SUCCEEDED":
                 return task
@@ -89,7 +87,6 @@ class RunwayClient:
             self.logger.info(f"Task {task_id}: {task.status}{progress_str}")
             await asyncio.sleep(interval)
             elapsed += interval
-        raise RunwayAPIError(-1, f"Task {task_id} timed out after {timeout}s")
 
     async def close(self):
         await self.client.aclose()

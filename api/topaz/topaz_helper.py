@@ -159,14 +159,13 @@ def poll_status(
     api_key: str,
     request_id: str,
     poll_interval: float = 5.0,
-    max_wait: float = 1800.0,
     logger: Optional[logging.Logger] = None,
 ) -> dict:
     """Step 5: Poll until processing is complete."""
     log = logger or logging.getLogger(__name__)
 
     elapsed = 0.0
-    while elapsed < max_wait:
+    while True:
         resp = requests.get(
             f"{BASE_URL}/{request_id}/status",
             headers=_headers(api_key, content_type=None),
@@ -186,8 +185,6 @@ def poll_status(
 
         time.sleep(poll_interval)
         elapsed += poll_interval
-
-    raise RuntimeError(f"Processing timed out after {max_wait}s")
 
 
 def download_result(

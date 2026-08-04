@@ -362,13 +362,13 @@ async def poll_dubbing_status(
     dubbing_id: str,
     target_lang: str,
     poll_interval: float = 5.0,
-    max_attempts: int = 120,
     logger: Optional[logging.Logger] = None,
 ) -> str:
     """Poll dubbing status until completion."""
     client = get_client()
 
-    for attempt in range(max_attempts):
+    attempt = 0
+    while True:
         result = client.dubbing.get(dubbing_id=dubbing_id)
         status = result.status
 
@@ -383,8 +383,7 @@ async def poll_dubbing_status(
             if logger and attempt % 6 == 0:
                 logger.info(f"Dubbing status: {status}, waiting...")
             await asyncio.sleep(poll_interval)
-
-    raise RuntimeError(f"Dubbing timed out after {max_attempts * poll_interval} seconds")
+        attempt += 1
 
 
 def download_dubbed_audio(
