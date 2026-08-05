@@ -1,12 +1,13 @@
 namespace: pruna
 name: p-video-replace
 description: Replace characters in videos using reference images. Preserves motion, timing, camera, and scene.
-metadata: {}
+metadata:
+    checksum: bcb51430ca40c60307416eaea3d9b9912b1ac524249e31235383641af80e3886
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/8ad521f9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/b0xboi0m.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/45linfnu.png
 env: {}
 kernel: python-3.11
 secrets:

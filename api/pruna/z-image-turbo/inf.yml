@@ -1,7 +1,8 @@
 namespace: pruna
 name: z-image-turbo
 description: Ultra-fast turbo image generation with minimal latency
-metadata: {}
+metadata:
+    checksum: 8090dbc6f35a0c4b034ca9e2bfd9b898f6d0ecba8537444c04b48497ab8e4d49
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh977hqn07na1pc9ace36zw.jpeg

@@ -2,7 +2,7 @@ namespace: bytedance
 name: seedance-2-0-studio
 description: Professional multimodal video generation with private asset library support. Automatically uploads reference images to BytePlus virtual portrait library for enhanced character consistency. Supports up to 4K (10-bit color), text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
-    checksum: 682e655ba2b9c89cf28773ca440871ea166690d7f52fd30254395957b7f3af63
+    checksum: 5a5f654a6e62892a34d4e6ec396d53461c60de2a36fc91f742156e103d13f6d7
     provider: bytedance
     tags:
         - seedance

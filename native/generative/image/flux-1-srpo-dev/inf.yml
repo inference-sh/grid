@@ -4,9 +4,9 @@ description: Creates high-quality images from text descriptions, specializing in
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a09x7desvwgshcfs31rtmm.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a09x7desvwgshcfs31rtmm.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k5a09x7desvwgshcfs31rtmm.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6ge5w3nb.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/tzhq5lir.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/9o3376no.png
 env: {}
 kernel: python-3.11
 secrets:

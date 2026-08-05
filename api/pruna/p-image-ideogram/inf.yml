@@ -1,8 +1,13 @@
 namespace: pruna
 name: p-image-ideogram
 description: High-quality text-to-image generation with strong typography and prompt understanding, built with Ideogram
-metadata: {}
+metadata:
+    checksum: 07f5edce40e366d7e7405034bb3ab27087504ac58ca69b99fd24a7ea064dc450
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ct5qxlik.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/sjs3me2z.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/iut6an0j.png
 env: {}
 kernel: python-3.11
 secrets:

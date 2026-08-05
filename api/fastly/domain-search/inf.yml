@@ -1,15 +1,18 @@
 namespace: fastly
 name: domain-search
 description: domain research api — search for available domains and check registration status
-metadata: {}
+metadata:
+    checksum: 33989797b48bb87263edd6472744981064c0a5aef653cd5174dfe05cb4e2ca19
 category: text
-default_function: suggest
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4iztnioe.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/gzswqibb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/locscohf.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: FASTLY_KEY
       description: Fastly API key
-      optional: false
 resources:
     gpu:
         count: 0

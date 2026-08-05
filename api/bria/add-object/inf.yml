@@ -1,7 +1,8 @@
 namespace: bria
 name: add-object
 description: Add an object to an image using a text description
-metadata: {}
+metadata:
+    checksum: 57b70aa7fe2e30ebf807c57d0770b4b3d038214a6d7471d111726cf5b611592c
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/6dwmrlvs.jpg

@@ -4,9 +4,9 @@ description: Allows you to choose between two different inputs based on a condit
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy35hx21tx7gksk57ccgga.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy35hx21tx7gksk57ccgga.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy35hx21tx7gksk57ccgga.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/nmy51x3w.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r9se3bxm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/k2nplkxf.png
 env: {}
 kernel: python-3.12
 resources:

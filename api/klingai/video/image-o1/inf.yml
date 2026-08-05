@@ -2,6 +2,7 @@ namespace: klingai
 name: image-o1
 description: Kling Image O1 (Kolors Image-O1) - omni image generation with element control. Text-to-image and image-to-image at 1K/2K. $0.028/image.
 metadata:
+    checksum: 340ab4b77f37e737ca9fbb4f1d5b97961d08f59930c9b257aa950e138f1db2f0
     provider: klingai
     tags:
         - kling
@@ -11,9 +12,9 @@ metadata:
         - element-control
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/dbvxt1lp.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/yiwv4ke4.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/wg4ddgks.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/dq9d9q1k.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/k91w4qrc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/f6bm52dj.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -1,12 +1,13 @@
 namespace: google
 name: slides
 description: Read, create, and edit Google Slides presentations
-metadata: {}
+metadata:
+    checksum: 3f6c1338c8fd3fd33419e682a3d6ce34bca2fb7389fd90be315d238791cd91ed
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppqy0h2219pgewsfamt4d.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpppn5hr39yn07gnher46p.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppqnx90ppt0xzarv068n3.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/hzjlbxlc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bfnw36fu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/70fo8tst.png
 env: {}
 kernel: python-3.11
 integrations:

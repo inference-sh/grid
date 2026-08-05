@@ -4,9 +4,9 @@ description: Creates high-quality videos from a single still image, generating s
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/25a7p31m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jupkmmjl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/l1ezw44u.png
 env: {}
 kernel: python-3.12
 resources:

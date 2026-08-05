@@ -1,7 +1,8 @@
 namespace: bria
 name: video-green-screen
 description: Apply green or blue screen effect to video foreground
-metadata: {}
+metadata:
+    checksum: a8bbe00bbcaed5f89739d25415295841afaaa62603eec2ea16cf09ab05c6ec3c
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/13x8a00q.jpg

@@ -2,6 +2,7 @@ namespace: runway
 name: gen-4-image-turbo
 description: Runway Gen-4 Image Turbo — fast text-to-image generation with reference image support. 2 credits per image at any resolution.
 metadata:
+    checksum: a13b060218df6691f80e1fea298896cc5c106f8bfadad05f510296ae556e4c47
     provider: runway
     tags:
         - runway
@@ -10,6 +11,11 @@ metadata:
         - gen4
         - turbo
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6ri98695.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r3240byd.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/g7o7k4i4.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

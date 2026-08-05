@@ -4,12 +4,12 @@ description: Kimi K2.5 is the latest model from Moonshot AI, building on K2 with
 metadata:
     capabilities:
         - reasoning
-    checksum: 7f609c56d61bc6cb45e3c8584ff262ae78af39edb1e53845a0fefc8781aa5339
+    checksum: 7fc44ddcb74565ab080c9a83e66d15e3d06645ea5485f2213623b732b7961276
 category: chat
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfs6p8kdf03b1xrtz8f37e.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfsa5g7q7a3wr6cgwavwx4.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgvfs4cawr7pqgy446td131k.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2svgm9p6.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/gy7j8h3h.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/mvrzim8w.png
 env: {}
 kernel: ""
 secrets:

@@ -1,12 +1,13 @@
 namespace: infsh
 name: hunyuan-image-to-3d-2
 description: Create high-quality, photorealistic 3D models and textures from simple text prompts or 2D images.
-metadata: {}
+metadata:
+    checksum: f25123a58aa78fd1b6d41876aa5b05a6fe5ffb1e927cccaf18e6ce82bf5083fe
 category: 3d
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/mj24kpzc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5o7x0jci.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kpm2ij0e.png
 env: {}
 kernel: python-3.11
 resources:

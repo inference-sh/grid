@@ -2,6 +2,7 @@ namespace: falai
 name: patina-extract-material
 description: Extracts a seamlessly tiling texture plus PBR material maps from a region of a source image described by a text prompt, via fal.ai PATINA.
 metadata:
+    checksum: 0d96c66be9ca480bddacf86f160d622687fe2039a66d88c970cd4e176e6ece0e
     provider: fal-ai
     tags:
         - patina
@@ -13,9 +14,9 @@ metadata:
         - image-to-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/iti8nqch.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/zqyh6a8f.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/99mungbh.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/xxwf69yw.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/776jqf7a.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/32d86l8a.png
 env: {}
 kernel: python-3.11
 secrets:

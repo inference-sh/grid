@@ -4,9 +4,9 @@ description: Generates video content using text prompts.
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/e2vx4g6q.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/8leagumm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/unpmfhw2.png
 env: {}
 kernel: python-3.11
 resources:

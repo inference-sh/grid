@@ -2,6 +2,7 @@ namespace: klingai
 name: avatar
 description: Kling Avatar - generate digital human broadcast-style talking head videos from a single face photo. Provide text or audio for the avatar to speak.
 metadata:
+    checksum: cffc04053528570b28401c209d48ba9acb3afc658cd44f3b8794523f71974a06
     provider: klingai
     tags:
         - kling
@@ -10,9 +11,9 @@ metadata:
         - talking-head
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/dr8bxp7y.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jcg5h9o6.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/w2ovyyi3.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/p386e3i4.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/t7omp697.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/o7ccrtb1.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -4,9 +4,9 @@ description: Inworld TTS 1.5 Mini - Ultra-low-latency text-to-speech with 15 lan
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/3dxjn00v.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/9w0dka84.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/caksj85k.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/qczphoap.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lk8gj5ar.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/bvk24up6.png
 env: {}
 kernel: python-3.11
 secrets:

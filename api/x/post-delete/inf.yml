@@ -4,9 +4,9 @@ description: Delete a post from X.com by post ID. Can only delete posts authored
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqs4222ys1f09k8bhttf2w.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqs4agjvxhh5ff91mmcg3t.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqs8kpm0e1h6avjeax32zt.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/827ijgb6.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/h5rpg56d.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/rgqyi7pw.png
 env: {}
 kernel: python-3.11
 integrations:

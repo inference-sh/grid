@@ -1,7 +1,8 @@
 namespace: alibaba
 name: wan-2-7-videoedit
 description: Wan 2.7 Video Edit performs instruction-based video editing and style transfer using multimodal inputs (text, images, video) via DashScope API with 720P/1080P output
-metadata: {}
+metadata:
+    checksum: 16089f557ed84281910fea491924b0394f62aa67fd6bf43f055a72ac670c6f46
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/qgvqoe2o.jpeg

@@ -4,9 +4,9 @@ description: Creates and modifies images using multiple structural control techn
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzaxfw0yj6a2pjettsrwx0.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzaxfw0yj6a2pjettsrwx0.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzaxfw0yj6a2pjettsrwx0.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/bb8tdu19.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/iu6sn0z1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/c8y7wah9.png
 env: {}
 kernel: python-3.12
 secrets:

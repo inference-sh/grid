@@ -4,9 +4,9 @@ description: Like a post on X.com by post ID. Succeeds silently if already liked
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsk7jet0qj4w6km68zh6b.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqscf6fd37aa6vn5n8g47v.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsdkpfwbvqb4zxdffp3cw.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/shvus0pt.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vbmijjwq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ag0t36cq.png
 env: {}
 kernel: python-3.11
 integrations:

@@ -1,12 +1,13 @@
 namespace: infsh
 name: falconsai-nsfw-detection
 description: Detects NSFW content in images and videos using Falconsai/nsfw_image_detection model. For videos, samples frames at configurable intervals.
-metadata: {}
+metadata:
+    checksum: e76545f6f5eb063d49fa9c708fef1941ca1ae5c7616ba6b15e93033580047a5f
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kbdcgy3ch926ae4c2h7633q6.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kbdcgy3ch926ae4c2h7633q6.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kbdcgy3ch926ae4c2h7633q6.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/uy5zxqvw.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/88mtdook.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/h5hr5297.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

@@ -1,14 +1,18 @@
 namespace: google
 name: gemini-omni-flash
 description: Gemini Omni Flash — text-to-video with synchronized audio, grounded in real-world knowledge
-metadata: {}
+metadata:
+    checksum: f5234d8ade5a5818a443252b14a82b3f09c1b856dff5d0e6454cf7ce4d1b0e7c
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3pvtxdts.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/m0fiiacl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q3u9au46.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: GEMINI_API_KEY
       description: Google API key for model access
-      optional: false
 resources:
     gpu:
         count: 0

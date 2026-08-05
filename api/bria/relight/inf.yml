@@ -1,7 +1,8 @@
 namespace: bria
 name: relight
 description: Change the lighting of an image using a text description
-metadata: {}
+metadata:
+    checksum: 64cebd9f11c5676d1d70b8b2421da892080106a7b09beed9377288ad357ea1c0
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/yyz3l1hq.jpg

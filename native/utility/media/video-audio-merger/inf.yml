@@ -4,9 +4,9 @@ description: Merge video and audio files easily, with the flexibility to keep th
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn2h2bsv0fzsgm54ggepxa.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn2h2bsv0fzsgm54ggepxa.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn2h2bsv0fzsgm54ggepxa.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/usbwg3qh.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/549962wi.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/b5yketqu.png
 env: {}
 kernel: python-3.11
 resources:

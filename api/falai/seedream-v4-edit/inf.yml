@@ -4,9 +4,9 @@ description: Creates and edits images using a single, unified system.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d82nxgyexrh9brw40njp21.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d82nxgyexrh9brw40njp21.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d82nxgyexrh9brw40njp21.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5f4peigf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wl42pkzz.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/t4cco6d2.png
 env: {}
 kernel: ""
 secrets:

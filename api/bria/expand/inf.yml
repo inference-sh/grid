@@ -1,7 +1,8 @@
 namespace: bria
 name: expand
 description: Expand image canvas with AI-generated content matching the original scene
-metadata: {}
+metadata:
+    checksum: 3a58989370f2a3b305008c544e203954ab1b73731d6859a9b8c32a098a1c9edb
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bqzmmpv1.jpg

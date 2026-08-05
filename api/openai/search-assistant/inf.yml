@@ -4,9 +4,9 @@ description: Helps users create and refine search queries, retrieve relevant res
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8f03x382af840gv9h4vez.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8f03x382af840gv9h4vez.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8f03x382af840gv9h4vez.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/odjm93c3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/53bn9t8m.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3iqy2uww.png
 env:
     PYTHONPATH: /app
 kernel: python-3.10

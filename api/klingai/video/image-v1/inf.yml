@@ -2,6 +2,7 @@ namespace: klingai
 name: image-v1
 description: Kling Image V1 (Kolors V1.0) - basic text-to-image and image-to-image generation. Cheapest option at $0.0035/image.
 metadata:
+    checksum: eb71dd2a16d00b1ff11f49e7e7a4d70bf39cb676dd7bac3bab446d1cf98f367e
     provider: klingai
     tags:
         - kling
@@ -10,9 +11,9 @@ metadata:
         - text-to-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/ab2p6rpu.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/f2x4h88o.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/zd5ougvu.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4eglz5rl.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7lmunhj6.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kxj2azpd.png
 env: {}
 kernel: python-3.11
 secrets:

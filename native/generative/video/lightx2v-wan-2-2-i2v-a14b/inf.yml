@@ -4,9 +4,9 @@ description: Converts a static image into a video quickly by using advanced opti
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/78i73vx3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/nymf50oh.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2cw2ibgo.png
 env: {}
 kernel: python-3.12
 resources:

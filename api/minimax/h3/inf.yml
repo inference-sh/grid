@@ -2,6 +2,7 @@ namespace: minimax
 name: h3
 description: MiniMax H3 — multimodal video generation with native audio. Text-to-video, image-to-video with end_image, and reference-based generation. 2K resolution, 5-15s duration, 24fps. Prompt with timelines, audio cues, and negative lists.
 metadata:
+    checksum: 02607e44c1dde5997cd54440439fa70b6eff27e1fa8905f20cb2b581de11e72f
     provider: minimax
     tags:
         - minimax
@@ -13,9 +14,9 @@ metadata:
         - h3
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/1lqjgpik.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/hl4udmdw.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/cdgd2t4o.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -26,4 +27,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

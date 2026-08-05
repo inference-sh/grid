@@ -2,7 +2,7 @@ namespace: bytedance
 name: seedance-2-0-studio-fast
 description: Fast multimodal video generation with private asset library support. Automatically uploads reference images to BytePlus virtual portrait library for enhanced character consistency. Supports text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
-    checksum: e54d278f9eb5bc4d207e62667acf9d00ef6e9161f71e86688a6539a16257055c
+    checksum: 33180bdddb2159be73aee5b13901ec1206637cb7f6e5df50fd940f17a9bdb977
     provider: bytedance
     tags:
         - seedance

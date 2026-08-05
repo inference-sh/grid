@@ -1,12 +1,13 @@
 namespace: x
 name: user-get
 description: Get a user profile from X.com by ID or username. Returns bio, follower/following counts, tweet count, verified status, and profile image URL.
-metadata: {}
+metadata:
+    checksum: b203d26931b21d2fa5ae2eaaa85b4a3bfc414a6da0d8ff4b717816969a7f61f6
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsscpste4fyjf40g89q6v.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsv53zftjn6w2k7htajnh.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqsqwjpf3ak22n1v05q970.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/1vexg2s3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/cce7wq52.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hgmya0qf.png
 env: {}
 kernel: python-3.11
 integrations:

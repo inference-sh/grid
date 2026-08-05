@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-2-0-mini
 description: Cost-effective multimodal video generation from text, images, video, and audio references using ByteDance's Seedance 2.0 Mini model via BytePlus ARK API. ~50% cheaper than Seedance 2.0, supports text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
+    checksum: c3ef9966583bbe9be6e6f7fe6a1c4e63a8334cf101652f79e99c67d900b564e9
     provider: bytedance
     tags:
         - seedance
@@ -15,6 +16,10 @@ metadata:
         - bytedance
         - byteplus
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/v8uebhk8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6p0fm1gp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/a922yqmn.png
 env: {}
 kernel: python-3.11
 secrets:

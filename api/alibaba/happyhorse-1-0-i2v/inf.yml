@@ -1,7 +1,8 @@
 namespace: alibaba
 name: happyhorse-1-0-i2v
 description: HappyHorse 1.0 Image-to-Video generates physically realistic videos with smooth motion from a single image and optional text description via DashScope API, supporting 720P/1080P resolution
-metadata: {}
+metadata:
+    checksum: 5d8aee00faf947e0ffc026bdc535d356f9a03855894d6ba9126cb61e8f6186ca
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/n9z0dd32.jpg

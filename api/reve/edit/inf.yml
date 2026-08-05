@@ -1,12 +1,13 @@
 namespace: reve
 name: edit
 description: Reve Edit — Edit images with natural language instructions. Top 3 on LMArena leaderboard.
-metadata: {}
+metadata:
+    checksum: 8efe48f6e92e96f128c6ac60cddaf9c29ae7df51c801112de1dbade9992201e6
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/adkponu7.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wiuwryoh.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/m22ak0h1.png
 env: {}
 kernel: python-3.11
 secrets:

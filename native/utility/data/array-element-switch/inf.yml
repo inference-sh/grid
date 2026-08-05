@@ -4,9 +4,9 @@ description: Selects one of two possible inputs based on a comparison check with
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy6sck9cb906ahrfnrcvd1.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u8d8xbf2.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ymo8ycqk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hvq0h264.png
 env: {}
 kernel: python-3.12
 resources:

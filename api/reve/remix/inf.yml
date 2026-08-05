@@ -1,12 +1,13 @@
 namespace: reve
 name: remix
 description: Reve Remix — Create images from text and 1-6 reference images combined.
-metadata: {}
+metadata:
+    checksum: c14b4efdc691cd9bdba1105f494f7fb309972f575186cc84666ed5699ca8596b
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2nvgdd9f.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/clb4j5jj.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/t59d71se.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -1,7 +1,8 @@
 namespace: pruna
 name: p-image-edit
 description: Fast image editing with text instructions and multi-image support
-metadata: {}
+metadata:
+    checksum: b77d6605dfe9af27e5428306bab758de85a3ab07237ff14c49c0754bdbd6e45b
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymft0hdtnkjej88c1932j.jpeg

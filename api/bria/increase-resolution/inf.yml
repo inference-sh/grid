@@ -1,7 +1,8 @@
 namespace: bria
 name: increase-resolution
 description: Upscale images 2x or 4x (max 8192x8192) while preserving original content
-metadata: {}
+metadata:
+    checksum: c1fd1b81ba5ee2b1968a2d78cbd818d82cd99a9396aafaa24f1aa4c6012f8126
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/fdfbbu0g.jpg

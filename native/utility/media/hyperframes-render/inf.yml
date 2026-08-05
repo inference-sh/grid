@@ -4,9 +4,9 @@ description: Render HeyGen Hyperframes compositions to video — supports clips,
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/ggvr8dx8.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vhcebalc.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2ebatxdr.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tur3pa41.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6vytxss8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ese23x6x.png
 env: {}
 kernel: node-22
 resources:

@@ -1,7 +1,6 @@
 pydantic >= 2.0.0
 inferencesh
-transformers==4.57.1
-tokenizers==0.22.1
+transformers
 torch>=2.7.0
 torchvision
 numpy<2

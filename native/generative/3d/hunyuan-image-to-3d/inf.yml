@@ -1,12 +1,13 @@
 namespace: infsh
 name: hunyuan-image-to-3d
 description: Generates detailed, high-resolution 3D assets quickly from simple text descriptions or reference images.
-metadata: {}
+metadata:
+    checksum: 3ed00eecc1d3b7429983ed78a761b284dcf0c30870af51ae48203a16799f1de4
 category: 3d
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02fhjefhmky16f1n5bnj9p.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/43fc18si.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/b03caj1w.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/l2vxsjvh.png
 env: {}
 kernel: python-3.11
 resources:

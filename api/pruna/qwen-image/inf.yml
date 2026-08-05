@@ -1,7 +1,8 @@
 namespace: pruna
 name: qwen-image
 description: Advanced text-to-image generation with optional LoRA weights and prompt enhancement
-metadata: {}
+metadata:
+    checksum: 6e63a74e52177541418d3bb53d7eb90b318393595a2b66999485d930623fca4c
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh992h68dn9dyq5aax74nrv.jpeg

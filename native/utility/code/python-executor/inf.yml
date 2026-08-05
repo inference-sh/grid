@@ -4,9 +4,9 @@ description: Runs and executes Python programming code in a safe environment.
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d8b4mckh6z89dhtxh72dsz.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/1t21ucs1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/9u29vhbq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/vncm4gza.png
 env:
     MPLBACKEND: Agg
     PYTHONUNBUFFERED: "1"

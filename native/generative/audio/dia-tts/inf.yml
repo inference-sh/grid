@@ -4,9 +4,9 @@ description: Dia TTS - Generate realistic dialogue with emotion control, natural
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/184c5bkc8y7gjwt0v6jb68hwz6.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/g5bzc26a.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/03md2ty2.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/h0uonez0.png
 env: {}
 kernel: python-3.11
 secrets:

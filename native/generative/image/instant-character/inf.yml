@@ -4,9 +4,9 @@ description: Generates images featuring a character with a consistent visual sty
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz0203xrcw4gtzv0edzyanq5.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5hc5lerk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/rmn7187z.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/dj88xisi.png
 env: {}
 kernel: python-3.12
 resources:

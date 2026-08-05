@@ -1,7 +1,8 @@
 namespace: bria
 name: gen-fill
 description: Generative fill — replace masked regions with AI-generated content guided by a text prompt
-metadata: {}
+metadata:
+    checksum: 717550ba4a1b9b230071f04f9bd48629ceb18aedbaf9ab14bafc67f0a0e30d65
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1nbkp1ib.jpg

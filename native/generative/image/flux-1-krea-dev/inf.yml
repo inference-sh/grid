@@ -4,9 +4,9 @@ description: A tool for generating images from text descriptions, available for 
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/o83ptsy1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/9kspqpm1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/6mgnt63a.png
 env: {}
 kernel: python-3.11
 secrets:

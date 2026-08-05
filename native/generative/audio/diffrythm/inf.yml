@@ -1,12 +1,13 @@
 namespace: infsh
 name: diffrythm
 description: Generates complete songs quickly and simply using advanced latent diffusion technology.
-metadata: {}
+metadata:
+    checksum: 8015eb31529c060b56892de15ac8a4cbb37e6bb333c059b5c67e33388cb6dda7
 category: audio
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01qvx0gdcyvhvhpfjjb6s4.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/19hhyi00.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ku55qu1k.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kzerpqpz.png
 env: {}
 kernel: python-3.11
 resources:

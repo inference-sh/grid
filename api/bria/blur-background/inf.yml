@@ -1,7 +1,8 @@
 namespace: bria
 name: blur-background
 description: Automatically detect and blur image background while keeping foreground sharp
-metadata: {}
+metadata:
+    checksum: 247dea391f46adccb08136b047fec38745cd3d7cfd58573ab49b184ad3166d1e
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/lyawekie.jpg

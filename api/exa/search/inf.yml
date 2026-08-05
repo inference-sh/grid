@@ -4,9 +4,9 @@ description: Intelligent web search using Exa's neural and keyword search capabi
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5enk7qgetza3efahd4em1.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5etrk522d1wwj5x9ekvd1.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5en2q4cy6zgzw581cgzpe.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/525zjt06.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fghemldx.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/6omzc4ep.png
 env: {}
 kernel: "3.10"
 secrets:

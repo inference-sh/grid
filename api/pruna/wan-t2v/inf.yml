@@ -1,7 +1,8 @@
 namespace: pruna
 name: wan-t2v
 description: Generate videos directly from text descriptions in 480p or 720p
-metadata: {}
+metadata:
+    checksum: 6f48b94795a291062215ac0d8cb8c31c6f92d2ed2df5ebf77d333893bd22a9fa
 category: video
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh995dq0yaafhgtxcxxkh89.jpeg

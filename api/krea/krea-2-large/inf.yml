@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-large
 description: Krea 2 Large — photorealistic generation, ~25s per generation, 2K native resolution
 metadata:
+    checksum: 179e385b049f9ddda7a51218050827aaeb24c0cdd31afded604e686ca16ed81a
     provider: krea
     tags:
         - krea
@@ -9,6 +10,11 @@ metadata:
         - text-to-image
         - krea-2
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/l2w981nk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/r09wza2z.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/motdfqsu.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

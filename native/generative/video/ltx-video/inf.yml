@@ -1,12 +1,13 @@
 namespace: infsh
 name: ltx-video
 description: Create high-quality, realistic, and customizable videos quickly, with capabilities for producing detailed, high-resolution content.
-metadata: {}
+metadata:
+    checksum: 05fc4c7269a692a95528113600fd75e93004bd4b0ea11ce87a188007a40825d9
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4y25g71d2jmp4mwp5gcjzxm74h.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4y25g71d2jmp4mwp5gcjzxm74h.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4y25g71d2jmp4mwp5gcjzxm74h.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/t1d92jzx.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kcq28ch0.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hs83a42k.png
 env: {}
 kernel: python-3.12
 resources:

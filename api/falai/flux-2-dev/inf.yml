@@ -4,9 +4,9 @@ description: FLUX.2 Dev is an open-weight, guidance-distilled text-to-image mode
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kaxxghzte2aez6sbe5n001as.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kaxxghzte2aez6sbe5n001as.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/asxpbvje.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/isqthdb4.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/43bc5g94.png
 env: {}
 kernel: python-3.11
 secrets:

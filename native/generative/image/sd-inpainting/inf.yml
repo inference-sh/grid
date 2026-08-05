@@ -4,9 +4,9 @@ description: Fill in or replace masked parts of an image using a text descriptio
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01sa8hwn2f8fx5d7scpmpd.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ocz1hmgw.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ytzrryxk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/8siczzk7.png
 env: {}
 kernel: python-3.11
 resources:

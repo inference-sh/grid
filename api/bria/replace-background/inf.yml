@@ -1,7 +1,8 @@
 namespace: bria
 name: replace-background
 description: Replace image background with AI-generated content from a text prompt or reference image
-metadata: {}
+metadata:
+    checksum: 8506b48ad18d549640bb184941c115126232675f72cfa961917ac73116274ed2
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4uyxfifd.jpg

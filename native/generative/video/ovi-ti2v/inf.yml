@@ -1,12 +1,13 @@
 namespace: infsh
 name: ovi-ti2v
 description: Creates videos with synchronized audio from text descriptions or images, supporting both text-to-video and image-to-video generation with built-in speech.
-metadata: {}
+metadata:
+    checksum: 241e10ee8a57ab88b115c57816f7ae978e522f59968750a9d815431cd8f0e207
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/30q0qjev53aps250t64txd3my0.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/30q0qjev53aps250t64txd3my0.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/30q0qjev53aps250t64txd3my0.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fnzt9d9y.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vzluzt3a.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/doietc0e.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache

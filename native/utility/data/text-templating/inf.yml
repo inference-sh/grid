@@ -4,9 +4,9 @@ description: Dynamically generate content by combining a fixed template with spe
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn7rnwycq6m6v6yvtxp8p3.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn7rnwycq6m6v6yvtxp8p3.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyn7rnwycq6m6v6yvtxp8p3.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/eamftffo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7y3w3hai.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/352zrel9.png
 env: {}
 kernel: ""
 resources:

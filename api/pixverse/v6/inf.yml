@@ -1,7 +1,8 @@
 namespace: pixverse
 name: v6
-description: "PixVerse V6 — versatile video generation model. Text-to-video and image-to-video with up to 1080p resolution and 15s duration. Per-second billing."
+description: PixVerse V6 — versatile video generation model. Text-to-video and image-to-video with up to 1080p resolution and 15s duration. Per-second billing.
 metadata:
+    checksum: 2ea30646fb26c1779fd64d48e24a815a15034b500af376c6639c5d6d07ed6b69
     provider: pixverse
     tags:
         - pixverse
@@ -10,6 +11,11 @@ metadata:
         - image-to-video
         - v6
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/16xo2tfu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vn6f6eun.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/eonz72fm.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

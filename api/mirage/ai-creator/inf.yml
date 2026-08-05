@@ -2,6 +2,7 @@ namespace: mirage
 name: ai-creator
 description: Turn a script into a spokesperson video performed by a Captions AI Creator or your own AI Twin, up to 4K.
 metadata:
+    checksum: 5d6fd394c0e3e26ba172cb47abdea3a65cff3ac85ef3207bb20f31d7229cb224
     provider: mirage
     tags:
         - avatar
@@ -11,6 +12,10 @@ metadata:
         - ugc
         - captions
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/kaqxlp62.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7og2bhf9.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/cw6a7rdc.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -21,4 +26,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

@@ -1,7 +1,8 @@
 namespace: pruna
 name: flux-2-klein-4b
 description: Lightweight 4B parameter model with excellent speed-to-quality ratio
-metadata: {}
+metadata:
+    checksum: dc8d0d5caf0482e998c026d2738220eaa7a7dd35a0e2be0054b31bd25753a95f
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96cnn71sqzyhreddd4x9b.jpeg

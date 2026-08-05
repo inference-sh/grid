@@ -4,9 +4,9 @@ description: Generates realistic, talking videos of unlimited length from any vi
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k48jamx54qm1tg92x07102.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h41fcccb.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lpee8c2m.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/5uopnpyv.png
 env:
     USE_CAUSVID_LORA: "true"
 kernel: python-3.11

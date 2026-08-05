@@ -1,7 +1,8 @@
 namespace: bria
 name: blend
 description: Seamlessly blend a foreground image onto a background image
-metadata: {}
+metadata:
+    checksum: 39f5c4ae48d25c0243e69909429847d1fb84ef43ce0f2ffa32fc13a5a8c2d433
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cpec2i07.jpg

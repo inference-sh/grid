@@ -4,9 +4,9 @@ description: CLIPScore — cosine similarity between CLIP text and image embeddi
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttbc56w1nee3yebtn2t429.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttbg3br8q1ybx0xswzxy4f.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttb95nk91707jpgjezrqpm.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/engeotg8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bfoo73ob.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qkof45ec.png
 env: {}
 kernel: python-3.11
 resources:

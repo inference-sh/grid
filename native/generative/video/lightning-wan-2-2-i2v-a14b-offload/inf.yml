@@ -4,9 +4,9 @@ description: image to video with wan2.2 using the Lightning LoRA (non-fused) for
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jnhol9uk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/07i9jknw.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/uhdpryvz.png
 env: {}
 kernel: python-3.12
 resources:

@@ -1,12 +1,13 @@
 namespace: google
 name: gmail
 description: Read, send, draft, and organize Gmail messages
-metadata: {}
+metadata:
+    checksum: 256d0485b6e66725f07a55f44e41446ad12e1d21ff876a43c08d8e85bb0b15e9
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp5qf9m5vnx338f118xmw.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppaya1j40f9kj43mkt9bx.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpnwwg32qe4a20v2qva2dd.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/v88ev8p8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/be2scapa.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/i49xwgwc.png
 env: {}
 kernel: python-3.11
 integrations:

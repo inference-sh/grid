@@ -2,18 +2,18 @@ namespace: infsh
 name: deepseek-ocr
 description: Extracts and converts text from documents, especially good at reading images, photos, handwriting, charts, and graphs.
 metadata:
-    checksum: 3faa0f5da2c1a0046bc1db33e8ac4bebc74fde5236acdb1cc28ea35235b0d444
+    checksum: 5c9b678b8bcc472640db98051b61c5c9d1e887c7a4ac109b8e2a5b9e9a9e26a2
 category: text
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3bltyh1c.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/tlkkc1w0.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qtpd9j26.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 24
+        vram: 24000000000
         type: any
-    ram: 32
+    ram: 32000000000

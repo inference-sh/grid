@@ -2,6 +2,7 @@ namespace: falai
 name: patina-text-to-material
 description: Generates seamlessly tiling PBR materials up to 8K from a text prompt (optional image-to-image and inpainting) via fal.ai PATINA.
 metadata:
+    checksum: 5ccae40422f8b36975b9ebba056c2ce14251db47455b9daf2ffa1ca32a086009
     provider: fal-ai
     tags:
         - patina
@@ -13,9 +14,9 @@ metadata:
         - text-to-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/mspl8woy.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/nf7ibn2x.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/p5ug2af1.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/md2o53l8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/tmx7choz.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/iwobn9r5.png
 env: {}
 kernel: python-3.11
 secrets:

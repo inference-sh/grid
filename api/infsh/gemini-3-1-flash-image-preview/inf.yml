@@ -1,12 +1,13 @@
 namespace: infsh
 name: gemini-3-1-flash-image-preview
 description: Gemini 3.1 Flash Image Preview via Vertex AI with fal.ai (Nano Banana 2) fallback on rate limits
-metadata: {}
+metadata:
+    checksum: e52426381e1299776e70eb88119181e3e50e382420c0290363dce6f938db6bdb
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95r6cb0f4c4eg8awq7j0x.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv95atq40g3af1qm8vh9h4r.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkv958fgsvm69c25edexst4f.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fwfd7eoc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/b6rlmvrl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kfurm4ye.png
 env: {}
 kernel: python-3.11
 secrets:

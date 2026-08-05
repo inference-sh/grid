@@ -4,9 +4,9 @@ description: Reve - Image generation, editing, and style remix via text prompts
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2wmec1zv.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pkmrks2p.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xvfxsvp5.png
 env: {}
 kernel: python-3.10
 secrets:

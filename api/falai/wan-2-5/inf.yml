@@ -4,9 +4,9 @@ description: Creates high-quality, animated videos instantly from any static ima
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18zaxsn5vay8byv1f0zc3ng.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18zaxsn5vay8byv1f0zc3ng.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18zaxsn5vay8byv1f0zc3ng.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/y1xn913h.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5qr9c928.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/64o9sfpf.png
 env: {}
 kernel: ""
 secrets:

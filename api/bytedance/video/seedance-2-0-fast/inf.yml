@@ -2,7 +2,7 @@ namespace: bytedance
 name: seedance-2-0-fast
 description: Fast multimodal video generation from text, images, video, and audio references using ByteDance's Seedance 2.0 Fast model via BytePlus ARK API. Supports text-to-video, image-to-video, and multimodal reference-to-video with synchronized audio.
 metadata:
-    checksum: aa4891432eae7f0d3f6f2abf9348e929a4fc460d757e4022fbc8345e650c546a
+    checksum: 59592b066efacf03d0f38e2809e1e18f973f104a9ae0e9828a15a4b842c390e5
     provider: bytedance
     tags:
         - seedance

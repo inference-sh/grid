@@ -1,12 +1,13 @@
 namespace: infsh
 name: bytedance-uso
 description: A unified image editor that allows users to generate images by combining any subject with any style efficiently, preserving identity and consistency.
-metadata: {}
+metadata:
+    checksum: 424f8d61e7d0c4aef70c14702f5b6a835b57fc2d5c445a3c038a72e5acdd8d80
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k3wzw5tj0pqxkm90018jewh1.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k3wzw5tj0pqxkm90018jewh1.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k3wzw5tj0pqxkm90018jewh1.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/229s8obd.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/zutqhop6.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/9p2sv7pd.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

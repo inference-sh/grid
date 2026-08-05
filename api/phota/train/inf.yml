@@ -4,9 +4,9 @@ description: Train a Phota identity profile from 30-50 face images, poll status,
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk1z4ghhxkkb4dcn0wn60e.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk275sgv450mepcm4rv3a0.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk1z0wm69jahgqcpm6fva8.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/0sfjfrdm.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/e3y0vfp5.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/99kuknjh.png
 env: {}
 kernel: python-3.11
 secrets:

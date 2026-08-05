@@ -1,7 +1,8 @@
 namespace: pruna
 name: qwen-image-edit-plus
 description: Edit images using text instructions with multi-image support and pose transfer
-metadata: {}
+metadata:
+    checksum: af09a906584dd23a76183a88ff9234b0313938602d24fcd209fd3f36919c9d32
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh97hdw25nj221bkkcqwa9k.jpeg

@@ -1,7 +1,8 @@
 namespace: alibaba
 name: wan-2-7-t2v
 description: Wan 2.7 Text-to-Video generates high-quality videos from text prompts using Alibaba's latest video generation model via DashScope API, supporting 720P/1080P resolution and up to 15 seconds duration
-metadata: {}
+metadata:
+    checksum: 1f11ce3c0906c9fbe8367d916f42564b85ce6338d83e6a26eb23230c625a6944
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/p0ak8i51.jpeg

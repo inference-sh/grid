@@ -4,9 +4,9 @@ description: Creates animated videos by transferring movement from one video to 
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/lyv6byga.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/u1j7fftp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/n550bkt9.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

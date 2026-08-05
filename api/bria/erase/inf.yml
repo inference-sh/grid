@@ -1,7 +1,8 @@
 namespace: bria
 name: erase
 description: Remove objects from images using mask-based inpainting while preserving quality
-metadata: {}
+metadata:
+    checksum: fcbbce3dabebf5f081236311cec5717ddb94af0521b40fdd275103aec863dbf5
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/jrzo6pyh.jpg

@@ -1,7 +1,8 @@
 namespace: bria
 name: generate
 description: Generate images from text prompts using Bria Fibo
-metadata: {}
+metadata:
+    checksum: 038552afb4762055d9e64cbad52b0f75e9baa5d29c8518d681ae781cdd94a4df
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/axd3h3ew.jpg

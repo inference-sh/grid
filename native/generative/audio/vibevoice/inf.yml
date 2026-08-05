@@ -1,12 +1,13 @@
 namespace: infsh
 name: vibevoice
 description: Generates high-quality podcasts using natural speech and voices for multiple speakers.
-metadata: {}
+metadata:
+    checksum: d871d8e0934039ad30fb230ea6db55dde27886b84dbec2bd621e3b82b253789c
 category: audio
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3xgesbd6p1njfvv08st6fzv.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3xgesbd6p1njfvv08st6fzv.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3xgesbd6p1njfvv08st6fzv.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/688jqsgc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bgxdnow1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xvch3xdh.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

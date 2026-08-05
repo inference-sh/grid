@@ -2,7 +2,7 @@ namespace: heygen
 name: create-avatar
 description: Create HeyGen avatars from video footage (digital twin), a photo (photo avatar), or a text prompt (AI-generated). Returns a look ID for use with avatar-video.
 metadata:
-    checksum: e8f2edec3289edfef155fe747a5e66f8ea73cb4d338b0db22c54e98849f487b1
+    checksum: fb7cd3f58a54bcbd20b860fe3786e32f71b71c7a5f561d909b2569ee32d8c015
     provider: heygen
     tags:
         - avatar

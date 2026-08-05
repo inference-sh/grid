@@ -12,9 +12,9 @@ metadata:
         - 2k
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg06ym18asrttxweyyt68dhx.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg06s1bsjqj6h5yvt2nf9w8m.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg06x9enymcc3176k65scnxg.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2l4pfw9g.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ezvrgsvl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/1xfjpy37.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -1,12 +1,13 @@
 namespace: infsh
 name: audio-x
 description: Generates audio from any input using a unified framework.
-metadata: {}
+metadata:
+    checksum: 47d01b6bc03b1931780b48ea7c440e08893786b7e042f013e754c0181356124b
 category: audio
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz02ntwdabb4317ka9ra7hfy.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/trs8oi55.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/s14r8v8y.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tqptkym0.png
 env: {}
 kernel: python-3.11
 resources:

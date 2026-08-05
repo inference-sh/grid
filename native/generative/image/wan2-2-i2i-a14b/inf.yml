@@ -4,9 +4,9 @@ description: Creates videos from images and enhances video quality using a built
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2xtsa7neh118szd75f107cw.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2xtsa7neh118szd75f107cw.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k2xtsa7neh118szd75f107cw.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2sc5p2fo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4e83o3gu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/75tzn432.png
 env: {}
 kernel: "3.11"
 resources:

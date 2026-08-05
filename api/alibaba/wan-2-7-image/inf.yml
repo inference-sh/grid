@@ -4,9 +4,9 @@ description: Wan 2.7 Image is Alibaba's fast image generation model supporting t
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9mgi0t4o.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/0a7e3sjn.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/taqyiyvl.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cpvwrfk1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1v99s400.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pcmz3app.png
 env: {}
 kernel: python-3.11
 secrets:

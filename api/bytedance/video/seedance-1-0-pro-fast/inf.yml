@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-1-0-pro-fast
 description: Fast high-quality video generation up to 1080p from text prompts with optional first-frame image control using ByteDance's Seedance 1.0 Pro Fast model.
 metadata:
+    checksum: eb22cfc7694c935b1d2ec9e427363ca79e9e2882d053cedc188721a488f67324
     provider: bytedance
     tags:
         - seedance
@@ -14,9 +15,9 @@ metadata:
         - byteplus
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznv8efhhws18462kf7prk.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznfqdk7cveeneqnxyr28s.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzznf2vsbq8nyfmpxerje5w.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2xc8e8zj.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2cfw7f9f.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/s6dwl6d2.png
 env: {}
 kernel: python-3.11
 secrets:

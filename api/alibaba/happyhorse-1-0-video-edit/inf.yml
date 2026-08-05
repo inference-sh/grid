@@ -1,7 +1,8 @@
 namespace: alibaba
 name: happyhorse-1-0-video-edit
 description: HappyHorse 1.0 Video Edit supports advanced video editing through natural language instructions with up to 5 reference images, preserving original motion dynamics via DashScope API
-metadata: {}
+metadata:
+    checksum: b5bc9aaee6f7c723954f24e9b89fdbeab57780fce71534ea8962e540008beb85
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1mcvgn07.jpg

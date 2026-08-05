@@ -2,6 +2,7 @@ namespace: mirage
 name: text-overlays
 description: Render up to 4 static text variants onto one video with per-variant font, size and colour — built for testing ad hooks and headlines against the same footage.
 metadata:
+    checksum: 38ffc0f4b8f5bfb2c94339a6905773993e6cef8eaeb8f64f73caec4972b7c44c
     provider: mirage
     tags:
         - text-overlay
@@ -11,9 +12,12 @@ metadata:
         - captions
         - mirage
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/08ci1uvz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/02o39y83.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/b790ha26.png
 env: {}
 kernel: python-3.11
-default_function: run
 secrets:
     - key: CAPTIONS_KEY
       description: Mirage/Captions API key from platform.mirage.app
@@ -22,4 +26,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

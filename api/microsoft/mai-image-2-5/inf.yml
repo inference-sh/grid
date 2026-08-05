@@ -1,12 +1,13 @@
 namespace: microsoft
 name: mai-image-2-5
 description: MAI Image 2.5 — Microsoft's photorealistic image generation and editing model with fine-grained pixel-level control.
-metadata: {}
+metadata:
+    checksum: 589017b8cc096d7a5f92f792dec7092fa7314acb9b87548321a1be1f858b0066
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ts24w6m8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7si9lzzb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/49b35hdb.png
 env: {}
 kernel: python-3.11
 secrets:

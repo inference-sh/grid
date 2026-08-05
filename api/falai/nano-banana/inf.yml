@@ -4,9 +4,9 @@ description: Allows you to edit images by combining features and elements from m
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/b6mf51bx.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/av7d7mcc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/mel3wkrm.png
 env: {}
 kernel: ""
 secrets:

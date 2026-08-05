@@ -129,6 +129,8 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
+            if input_data.images is not None:
+                input_data.images = [img for img in input_data.images if img is not None]
             is_editing = input_data.images is not None and len(input_data.images) > 0
 
             if is_editing:

@@ -1,7 +1,8 @@
 namespace: pruna
 name: wan-i2v
 description: Transform static images into animated videos with text prompts
-metadata: {}
+metadata:
+    checksum: cad02a935d039c789ad5260be1fee76e8c0f7270afa9adbdb5233be8b2998def
 category: video
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh976hz034q64nzbetgv64f.jpeg

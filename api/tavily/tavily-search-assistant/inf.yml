@@ -4,9 +4,9 @@ description: Tavily-powered search assistant that browses the internet and retur
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndqmn1zjmsv6sqq68wz8ck.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndqqj6t8b4ts36kh130syj.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndqjxd780zm2j3rmada6y8.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2e234epf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/djpjx0da.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/labznvca.png
 env:
     PYTHONPATH: /app
 kernel: python-3.10

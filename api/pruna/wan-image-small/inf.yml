@@ -1,7 +1,8 @@
 namespace: pruna
 name: wan-image-small
 description: Fast, efficient text-to-image optimized for rapid prototyping and batch generation
-metadata: {}
+metadata:
+    checksum: 7258d0aece337c99e7500212a4628ca0ab9d8ccd4e0fb43b75830b0c7103144d
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh99sja3y4y0zg35qc1sfha.jpeg

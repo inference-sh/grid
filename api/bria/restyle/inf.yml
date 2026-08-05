@@ -1,7 +1,8 @@
 namespace: bria
 name: restyle
 description: Restyle an image using a text description of the desired visual style
-metadata: {}
+metadata:
+    checksum: d1bef18ebd4de883c8a0c668d9ffb8b462770c0cab884568b7a8e1235a03af8d
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/id08ri5g.jpg

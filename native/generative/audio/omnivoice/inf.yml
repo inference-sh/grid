@@ -4,9 +4,9 @@ description: Zero-shot text-to-speech with voice cloning for 600+ languages.
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/ci0ogf6s.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/bpanxigg.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/d0t8wiis.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/9qm4xi4z.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/j5xjn1jg.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tu1nvysn.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.11

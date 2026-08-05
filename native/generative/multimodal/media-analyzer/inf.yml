@@ -4,9 +4,9 @@ description: Analyzes images and audio files to provide detailed insights based 
 metadata: {}
 category: multimodal
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7byxk2z05v2hktmkn0p45.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h6zi3bd0.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4z02e244.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/e5jogw6g.png
 env:
     PYTHONPATH: /app
 kernel: python-3.10

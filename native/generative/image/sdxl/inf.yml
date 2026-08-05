@@ -4,9 +4,9 @@ description: Generates and modifies images from text prompts, producing high-res
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy94v9rn8fggww7njp3qfb.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy94v9rn8fggww7njp3qfb.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzy94v9rn8fggww7njp3qfb.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/oszbs2xt.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/3wezmjla.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xi16whg9.png
 env: {}
 kernel: python-3.12
 resources:

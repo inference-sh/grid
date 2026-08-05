@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-medium-train
 description: Train custom LoRA styles for Krea 2 Medium generation
 metadata:
+    checksum: 3aaea50d40663292689e9b3d2d0f124be6c10692c1f8b63b33f9a4837ea1dd4a
     provider: krea
     tags:
         - krea
@@ -9,6 +10,11 @@ metadata:
         - training
         - krea-2
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/aui6llff.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/p5h5pa5j.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/0a8ad99u.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

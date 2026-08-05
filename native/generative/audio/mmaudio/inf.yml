@@ -4,9 +4,9 @@ description: Transforms silent videos into immersive experiences by generating h
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1pf78j748eb18msms7haz.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gtumzhu4.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/35uqd5sy.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/0taytq6e.png
 env: {}
 kernel: python-3.12
 resources:

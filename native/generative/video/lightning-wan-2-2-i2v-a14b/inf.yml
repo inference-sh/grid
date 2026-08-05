@@ -4,9 +4,9 @@ description: Generates videos from a single image quickly, utilizing the WAN 2.2
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k24tjz51zxxxa8e7d1te9pvr.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/kpxdsoq0.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/i3m2uxc4.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/niddxv1r.png
 env: {}
 kernel: python-3.12
 resources:

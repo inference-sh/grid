@@ -1,12 +1,13 @@
 namespace: tavily
 name: extract
 description: Extracts clean, readable content, including text and images, from specified webpages, supporting batch processing for multiple URLs.
-metadata: {}
+metadata:
+    checksum: 6404c00f2cd1971f539239e1496bcf9f7ff3617365fd613f8f5b1a52204f9157
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5cfbz9v85yjg2kp1bhag5.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5ceh7bb8pay9bgavxe5yq.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5cfezyvbrt7kqce988yft.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/48pkeqob.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/8xb08yb8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/sx7kb9oo.png
 env:
     PYTHONPATH: /app
 kernel: python-3.10

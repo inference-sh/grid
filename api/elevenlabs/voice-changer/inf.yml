@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: voice-changer
 description: ElevenLabs Voice Changer - Transform voice in audio to a different voice
-metadata: {}
+metadata:
+    checksum: b9179ea37f36c9ac4b3c44d9d0fa7e0178df5ba952806fc8f3281996504d0450
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vjyanqf9b99hre8a597v.jpeg

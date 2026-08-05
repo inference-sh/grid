@@ -6,12 +6,12 @@ metadata:
         - reasoning
         - image
         - file
-    checksum: a6629915f0e6c13ada1d7cb9685531487fc7ef24a7cd852532e87f18cd990b8e
+    checksum: 57b3b389bdf22b86dc253b2c24cda55060da48681a14bb9c37cb2d70767ca432
 category: chat
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvqynzr7s5fy2dxs8pat6n.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvr6bzr3n703pv8rrbp16k.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khgvqyk0xh336q1pa8j8m1yg.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/y2hgvgax.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/3493g20a.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tz63b8tp.png
 env: {}
 kernel: ""
 secrets:

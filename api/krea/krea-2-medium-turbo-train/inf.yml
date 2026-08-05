@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-medium-turbo-train
 description: Train custom LoRA styles for Krea 2 Medium Turbo generation
 metadata:
+    checksum: 4dfb71bb6538321f9146387762bdf32759d2ed139e775e15abf82ef0c754978f
     provider: krea
     tags:
         - krea
@@ -10,6 +11,11 @@ metadata:
         - krea-2
         - turbo
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/d9b82wns.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/8ruau0h6.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/e1s0yikq.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

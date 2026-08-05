@@ -4,9 +4,9 @@ description: Removes backgrounds from images quickly and accurately.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzzgq141kskkrdb1928smq3.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tcya3lsw.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lw6bz7ze.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/72rm34m0.png
 env: {}
 kernel: python-3.12
 resources:

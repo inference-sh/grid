@@ -1,12 +1,13 @@
 namespace: infsh
 name: flux-1-dev
 description: Generates images from text descriptions for non-commercial purposes.
-metadata: {}
+metadata:
+    checksum: b91ba032664dbbf46295de4ba2a2a4175b4f1d39a4f4b6c90df66f06648d096a
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyevhvv773nbhhxwp79ef8.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/lo77vhg2.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/e8hug07n.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ra5s25du.png
 env: {}
 kernel: python-3.11
 secrets:

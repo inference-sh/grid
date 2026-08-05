@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: sound-effects
 description: ElevenLabs Sound Effects - Generate custom sound effects from text
-metadata: {}
+metadata:
+    checksum: 313bd30b1bfec2a809f2ba424bfbe66eb2d565483f4414190731886184ee2cd1
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vpg05rpp65bnrs9kv2xm.jpeg

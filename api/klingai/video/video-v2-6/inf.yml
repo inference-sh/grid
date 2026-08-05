@@ -2,6 +2,7 @@ namespace: klingai
 name: video-v2-6
 description: Kling V2.6 video generation with native sound and voice control. Supports text-to-video and image-to-video with start/end frames, synchronized audio generation, and voice-driven character animation.
 metadata:
+    checksum: 3eb6a1fa5377246af8575d526188134d29f099d2e46b2e161fd55b185e6876d2
     provider: klingai
     tags:
         - kling
@@ -12,9 +13,9 @@ metadata:
         - voice
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/jqo7n1uj.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5l2ou289.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/17e3o5yi.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/zjdaazcq.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/102w094v.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/v86o97xz.png
 env: {}
 kernel: python-3.11
 secrets:

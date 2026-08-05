@@ -2,6 +2,7 @@ namespace: mirage
 name: video-1
 description: Generate an expressive talking-head video from a portrait image and an audio track using Mirage Video 1, with natural lip sync, eye contact and micro-expressions.
 metadata:
+    checksum: 7e6770d95d1def5d5560f69ee26286165fea0f2cbc1105c8c62729bbbfef83e7
     provider: mirage
     tags:
         - talking-head
@@ -11,6 +12,10 @@ metadata:
         - image-to-video
         - mirage
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/33h94d58.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/mu8hk9j1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/d4s5gdyn.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -21,4 +26,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

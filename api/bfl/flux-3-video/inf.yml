@@ -1,7 +1,8 @@
 namespace: bfl
 name: flux-3-video
-description: "FLUX 3 Video by Black Forest Labs — generate, animate, and extend video up to 20s at HD or Full HD with synchronized audio. Supports text-to-video, image-to-video with keyframes, video continuation, and draft mode."
+description: FLUX 3 Video by Black Forest Labs — generate, animate, and extend video up to 20s at HD or Full HD with synchronized audio. Supports text-to-video, image-to-video with keyframes, video continuation, and draft mode.
 metadata:
+    checksum: e22ec2c981f5a9cb5b78fe48fdadf1627ca0f01c1f26edbd03463bcfcaf2cdd7
     provider: black-forest-labs
     tags:
         - bfl
@@ -13,6 +14,11 @@ metadata:
         - video-continuation
         - audio
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/t7qoll2d.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/eadbdi2h.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/mez3fkgj.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: BFL_KEY
@@ -22,4 +28,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

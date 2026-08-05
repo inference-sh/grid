@@ -4,9 +4,9 @@ description: Execute shell commands in a sandboxed environment. Run grep, sed, l
 metadata: {}
 category: utilities
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfk09jw642y8ksj09hs851.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfk9qfw0g3byfbcfp14yg6.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjxfkhbhfbb0apz89eqa455t.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/1r30znr9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/9zrhdwcf.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kgh49zia.png
 env: {}
 kernel: python-3.11
 resources:

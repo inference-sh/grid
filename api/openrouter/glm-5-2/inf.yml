@@ -1,12 +1,13 @@
 namespace: openrouter
 name: glm-5-2
 description: GLM 5.2 - zhipu's latest flagship language model with 1M context via OpenRouter
-metadata: {}
+metadata:
+    checksum: fd367cb543aa840336a04da518a86fb77ea1f87cf24c71d9bc23b7f7817c7edc
 category: chat
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6ii0m22p.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kjdtxcnv.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/lnueoakz.png
 env: {}
 kernel: ""
 secrets:

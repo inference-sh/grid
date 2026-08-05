@@ -1,12 +1,13 @@
 namespace: infsh
 name: wan-2-2-a14b-vace-lightx2v
 description: Quickly converts existing videos into new ones with high quality, offering exceptionally fast processing.
-metadata: {}
+metadata:
+    checksum: c48f4bd42c2830f73d8b44d8ddaca0028fffca341b7671cf01e2e9b98f330adb
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/7nhme3u5.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/1vzpgpwt.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/h4fngoy0.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/9776hycu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/metimrec.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/txwve0d2.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache

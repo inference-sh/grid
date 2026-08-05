@@ -1,7 +1,8 @@
 namespace: bria
 name: rewrite-text
 description: Rewrite text within images while preserving the visual style
-metadata: {}
+metadata:
+    checksum: ce354f203542fb60358365b60b2f41e7bd0ff2cc419714ca6fc740eb19f39d7b
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tzq2qxx9.jpg

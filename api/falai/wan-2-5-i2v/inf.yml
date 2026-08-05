@@ -4,9 +4,9 @@ description: Generates high-quality video content from static images.
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cjeqw5tc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wdgk14tp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/bnzbjex7.png
 env: {}
 kernel: ""
 secrets:

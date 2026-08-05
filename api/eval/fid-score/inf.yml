@@ -4,9 +4,9 @@ description: Frechet Inception Distance — measures distributional similarity b
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttahcfgqtdx50dp33h9zs9.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttah039wk0mjdpksrvk7n1.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmttahd727sdzdzp0mpph4k5.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tfjyrjib.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r5evrad8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nnosr899.png
 env: {}
 kernel: python-3.11
 resources:

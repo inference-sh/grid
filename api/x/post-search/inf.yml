@@ -1,12 +1,13 @@
 namespace: x
 name: post-search
 description: Search recent posts on X.com. Use conversation_id to get replies to a tweet, or any X search query. Returns up to 100 posts with text, author, and engagement metrics.
-metadata: {}
+metadata:
+    checksum: 5037a478bed0ab546d4917ba3a8793fbb62282b1b81e47d5814b8d536520b7fe
 category: social
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ocdclosu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/sqfgw50y.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y70d5zjo.png
 env: {}
 kernel: python-3.11
 integrations:

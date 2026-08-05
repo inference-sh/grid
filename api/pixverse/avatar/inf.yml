@@ -1,7 +1,8 @@
 namespace: pixverse
 name: avatar
-description: "PixVerse Avatar — generate talking avatar video from a portrait image. Supports audio file or text-to-speech input at up to 1080p."
+description: PixVerse Avatar — generate talking avatar video from a portrait image. Supports audio file or text-to-speech input at up to 1080p.
 metadata:
+    checksum: 4a20e35fb51601b3b5f5725212f28cc91ca094368f0e93bc280f443ac0386b8c
     provider: pixverse
     tags:
         - pixverse
@@ -9,6 +10,11 @@ metadata:
         - talking-head
         - tts
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/9noku4oz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/p36kpoa3.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q4u695gc.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

@@ -4,9 +4,9 @@ description: Gemini 2.5 Flash Image (NanoBanana) via Vertex AI - Advanced image 
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d6xa9cwawrvzk9cgtsexfc.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gz9cbilp.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/l2jdszqr.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ifbi3rjo.png
 env: {}
 kernel: python-3.11
 integrations:

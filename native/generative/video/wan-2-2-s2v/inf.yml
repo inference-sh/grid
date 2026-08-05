@@ -1,12 +1,13 @@
 namespace: infsh
 name: wan-2-2-s2v
 description: Generates video content from spoken audio, with different versions available to suit various computer specifications.
-metadata: {}
+metadata:
+    checksum: 415d1b51fb27f0fa31ad1f920609495cdc1cbbe335c743d931461c24d282bee6
 category: video
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fkv2o7re.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/47fj1f8x.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/oktd2ro1.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

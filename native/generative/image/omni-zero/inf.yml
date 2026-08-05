@@ -1,12 +1,13 @@
 namespace: infsh
 name: omni-zero
 description: Creates stylized portraits instantly without needing specific training data.
-metadata: {}
+metadata:
+    checksum: f7c16e03b617f46568a22726df556ff495656fbec41e9c1da9b9269a2a87ed11
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyqbz1x0vjqcdjw8bynazp.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/804vn22o.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lxy8rwae.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ahhlfdyb.png
 env: {}
 kernel: python-3.12
 resources:

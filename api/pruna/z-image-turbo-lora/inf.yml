@@ -1,7 +1,8 @@
 namespace: pruna
 name: z-image-turbo-lora
 description: Fast generation with LoRA support for unique styles and personalized outputs
-metadata: {}
+metadata:
+    checksum: 1495ce6ff299ed2cee77f6341be813a2f9a6547f0953c41f3370f8dc29878d78
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh96bntx00t73zbfcae8e65.jpeg

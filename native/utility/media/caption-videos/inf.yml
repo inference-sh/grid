@@ -4,9 +4,9 @@ description: Add captions to videos using an existing caption file, such as thos
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynpzdd6hg19g85r3245dwn.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynpzdd6hg19g85r3245dwn.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynpzdd6hg19g85r3245dwn.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/xnseru1c.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r12oy5p3.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/jkcocx3p.png
 env: {}
 kernel: python-3.12
 resources:

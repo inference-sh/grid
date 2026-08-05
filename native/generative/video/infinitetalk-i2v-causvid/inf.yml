@@ -1,12 +1,13 @@
 namespace: infsh
 name: infinitetalk-i2v-causvid
 description: Creates videos from images or footage, using audio to generate accurate lip synchronization and natural body movements, enabling the creation of talking videos of unlimited length.
-metadata: {}
+metadata:
+    checksum: 18c8722ae301c77d46e5e93a3fd596c92065bf35382c7e535f287c891bb01d9a
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtz7hx8shs8j1bh2fgfbyd.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtz7hx8shs8j1bh2fgfbyd.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtz7hx8shs8j1bh2fgfbyd.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/mwyjatsj.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/nzxfzi9l.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/1wyilwne.png
 env: {}
 kernel: python-3.10
 resources:

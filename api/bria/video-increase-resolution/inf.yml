@@ -1,7 +1,8 @@
 namespace: bria
 name: video-increase-resolution
 description: Upscale video resolution up to 8K using AI super-resolution
-metadata: {}
+metadata:
+    checksum: 459a12749236128563652d05b8a39c928e71fe5d1b9f543ffc30a52f2a6881db
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/62xw8uge.jpg

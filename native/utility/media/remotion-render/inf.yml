@@ -4,9 +4,9 @@ description: Render videos from React/Remotion component code — pass TSX, get 
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1d34dbybf8gajb3bw047.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1f46kzwzrwz4zasjybsz.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01khxv1f5vyrpy5njcmrs01wh7.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2laxsocs.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/d0chkj3g.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/9cnexlpr.png
 env: {}
 kernel: node-22
 resources:

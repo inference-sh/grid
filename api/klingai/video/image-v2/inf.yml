@@ -2,6 +2,7 @@ namespace: klingai
 name: image-v2
 description: Kling Image V2 (Kolors V2.0) - text-to-image with 2K resolution, multi-image reference, and restyle. Restyle output matches input resolution.
 metadata:
+    checksum: 1e9045ff95b3d18efb03ac7fe641a36f8cc13c72de4e27ea27cf3650b4bbfa2a
     provider: klingai
     tags:
         - kling
@@ -11,9 +12,9 @@ metadata:
         - 2k
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9pfr47o2.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tdh2qow7.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/sx1mshj4.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ylrbd1ca.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/xn0paaxy.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2qtiwltz.png
 env: {}
 kernel: python-3.11
 secrets:

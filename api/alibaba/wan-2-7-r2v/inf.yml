@@ -1,7 +1,8 @@
 namespace: alibaba
 name: wan-2-7-r2v
 description: Wan 2.7 Reference-to-Video generates videos featuring characters from reference images and videos, supporting multi-character interaction, voice timbre cloning, and first-frame control
-metadata: {}
+metadata:
+    checksum: cc362d7baac127dc57b1885ac40321d71dec887b5d819ff519049233eaf2ef63
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/t4d13pkg.jpeg

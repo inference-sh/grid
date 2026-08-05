@@ -4,9 +4,9 @@ description: Generate multiple ads in various sizes from templates and brand ass
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/esnypebg.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wi6c3abv.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q39lltdf.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/e6q428f1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/z5l6y0x5.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/snomp7cq.png
 env: {}
 kernel: python-3.11
 secrets:

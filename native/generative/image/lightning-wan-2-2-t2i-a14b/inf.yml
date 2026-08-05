@@ -4,9 +4,9 @@ description: Creates images from text descriptions quickly using Lightning LoRA 
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rgqs65pxn9916jjs4aejg.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/iyjbk5vi.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7b5ncs99.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/lt0go52m.png
 env: {}
 kernel: python-3.12
 resources:

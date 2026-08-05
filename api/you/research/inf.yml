@@ -1,14 +1,18 @@
 namespace: you
 name: research
 description: deep research api — multi-step web research with source-backed citations and configurable effort levels
-metadata: {}
+metadata:
+    checksum: ef3c4a59aa37a0307dea27d5d219864b93763c7099834c1dc26c75e2c60d6633
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/213f4qbm.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bqrd0udl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gt049zw3.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: YOU_KEY
       description: You.com API key
-      optional: false
 resources:
     gpu:
         count: 0

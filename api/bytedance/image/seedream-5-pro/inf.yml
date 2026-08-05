@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedream-5-pro
 description: ByteDance's flagship Seedream 5.0 Pro image model via BytePlus ARK API. Precision creation and editing with pixel-level regional edits, intelligent layer understanding, complex infographic generation, multi-reference blending (up to 10 images), and native text rendering in 14 languages.
 metadata:
+    checksum: 98ad22b45845247c3f9f3211c8176dd7f284d57c972c3b741e473a831e262d1e
     provider: bytedance
     tags:
         - seedream
@@ -13,6 +14,10 @@ metadata:
         - byteplus
         - 2k
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/aew2x2j3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/094ran86.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pikk12hx.png
 env: {}
 kernel: python-3.11
 secrets:

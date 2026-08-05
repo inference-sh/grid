@@ -82,18 +82,17 @@ class App(BaseApp):
         self.logger = setup_logger(__name__)
         self.model_id = "gemini-3-pro-image"
         self.client = create_vertex_client()
-        self.logger.info("Gemini 3 Pro Image Preview (Vertex AI) initialized successfully")
+        self.logger.info("Gemini 3 Pro Image (Vertex AI) initialized successfully")
 
     async def run(self, input_data: AppInput) -> AppOutput:
-        """Generate or edit images using Gemini 3 Pro Image Preview model via Vertex AI."""
+        """Generate or edit images using Gemini 3 Pro Image model via Vertex AI."""
         try:
             is_editing = input_data.images is not None and len(input_data.images) > 0
 
             if is_editing:
                 if len(input_data.images) > 14:
-                    raise RuntimeError("Gemini 3 Pro Image Preview supports up to 14 input images")
+                    raise RuntimeError("Gemini 3 Pro Image supports up to 14 input images")
 
-                input_data.images = [img for img in input_data.images if img is not None]
                 for i, image in enumerate(input_data.images):
                     if not image.exists():
                         raise RuntimeError(f"Input image {i+1} does not exist at path: {image.path}")

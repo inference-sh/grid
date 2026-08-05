@@ -4,9 +4,9 @@ description: Generates high-quality images with state-of-the-art results.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/70en6ch6h3tvppf4qzwvs76jgd.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/70en6ch6h3tvppf4qzwvs76jgd.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/70en6ch6h3tvppf4qzwvs76jgd.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/56dmwmzo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7qzc4fou.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gaq40g9p.png
 env: {}
 kernel: python-3.12
 resources:

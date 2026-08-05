@@ -4,9 +4,9 @@ description: Combine multiple photos horizontally or vertically into a single im
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k47jc7ks3nbqxwxvg2db0dz6.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/izw8m9m4.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7tnst7ey.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/exgv52e6.png
 env: {}
 kernel: python-3.12
 resources:

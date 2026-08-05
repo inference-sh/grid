@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: tts
 description: ElevenLabs Text to Speech - High-quality multilingual voice synthesis
-metadata: {}
+metadata:
+    checksum: 458fe5c193da1a84eea9be38e91199784fa453e20bd23480730ff259db54be95
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vaedvf7yn1m6nmadta01.jpeg

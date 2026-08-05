@@ -4,9 +4,9 @@ description: Generates images with high quality and precise control over the com
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyhfvbppyjd8eq0p5vz36y.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/76djon57.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/33adk7qq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/u0c2hjp5.png
 env: {}
 kernel: python-3.12
 resources:

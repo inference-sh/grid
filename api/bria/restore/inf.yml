@@ -1,7 +1,8 @@
 namespace: bria
 name: restore
 description: Restore old or degraded images to improved quality
-metadata: {}
+metadata:
+    checksum: 41889a6d91df6c653e407e8cd1032c8b119c12047551a0223bb01ca58abb2f68
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/axzla10o.jpg

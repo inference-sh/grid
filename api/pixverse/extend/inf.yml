@@ -1,13 +1,19 @@
 namespace: pixverse
 name: extend
-description: "PixVerse Extend — extend an existing video with AI-generated continuation. Supports 5s or 8s extensions at up to 1080p."
+description: PixVerse Extend — extend an existing video with AI-generated continuation. Supports 5s or 8s extensions at up to 1080p.
 metadata:
+    checksum: 71c49e894c4f89233a803a7ec5ecc307f1d4c0a5b0ac78273f71006774708233
     provider: pixverse
     tags:
         - pixverse
         - video-extension
         - extend
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5haytfib.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1qtd3xgs.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pppd4lxs.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -17,4 +23,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

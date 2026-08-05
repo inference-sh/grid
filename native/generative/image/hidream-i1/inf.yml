@@ -4,9 +4,9 @@ description: An open-source tool for generating high-quality images in seconds.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
-    thumbnail: https://cloud.inference.sh/u/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
-    banner: https://cloud.inference.sh/u/120ce91d-2b93-4599-aa4e-42ab33b7349d/2mgh25nghmgxtfyqbjm7h85hft.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/38zis3wo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bai8f2l0.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/f1qzl5uy.png
 env: {}
 kernel: python-3.12
 resources:

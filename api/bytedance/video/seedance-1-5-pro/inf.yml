@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-1-5-pro
 description: Generate high-quality videos from text prompts with optional first-frame image control using ByteDance's Seedance 1.5 Pro model via BytePlus ARK API.
 metadata:
+    checksum: 9e2377bf02a310ad0dd54a1f3e8196681e4775387d74fa7bc0ea82adff942882
     provider: bytedance
     tags:
         - seedance
@@ -12,9 +13,9 @@ metadata:
         - byteplus
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqsrh145ya5e0267svj2th.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqspz95q67c4mcy9n52wmd.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzqsgkesct6cx7q7nyah0d7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/s66h3cz7.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/e11adh20.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/57a8cl6o.png
 env: {}
 kernel: python-3.11
 secrets:

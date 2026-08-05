@@ -1,7 +1,8 @@
 namespace: pixverse
 name: fusion
-description: "PixVerse Fusion — generate video from reference images. Compose 1-3 subject/background images into a video scene with text-guided motion."
+description: PixVerse Fusion — generate video from reference images. Compose 1-3 subject/background images into a video scene with text-guided motion.
 metadata:
+    checksum: 9b1d193c8b0dde8804e73c55f26e6e895dbe96eb7a138b98a49b918f283ab61b
     provider: pixverse
     tags:
         - pixverse
@@ -9,6 +10,11 @@ metadata:
         - reference-to-video
         - composition
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/yhgkslea.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hu817ofu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/72kr7ncf.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

@@ -4,9 +4,9 @@ description: Fills designated areas in existing images based on a descriptive te
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzz0gs81vez6qxv8qwzjc89.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzz0gs81vez6qxv8qwzjc89.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzz0gs81vez6qxv8qwzjc89.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/8gyqoy6e.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vckvyxcg.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/agnh4s3r.png
 env: {}
 kernel: python-3.12
 secrets:

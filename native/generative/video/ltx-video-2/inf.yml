@@ -4,9 +4,9 @@ description: LTX 2.0 audio-video foundation model. Generates videos with synced 
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3ex7kw1kc10d0pry16ggr.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3evnyfjqgay5w58jda0sh.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kew3ekbn6jb94g1mbsc9ddgy.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/b11x2gv3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4xnnvqqu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pk18oejt.png
 env: {}
 kernel: python-3.11
 resources:

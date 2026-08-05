@@ -1,8 +1,13 @@
 namespace: chemrxiv
 name: search
 description: search chemrxiv preprints via crossref api
-metadata: {}
+metadata:
+    checksum: dff4a7e6710ac9b6ae003f5ac07e60ac54560fdb4acb941dd3d3819d814c12be
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/rs8kzoil.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hwgfoomd.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ej03j8tc.png
 env: {}
 kernel: python-3.11
 resources:

@@ -4,12 +4,12 @@ description: A powerful, open-source language system excelling in advanced codin
 metadata:
     capabilities:
         - reasoning
-    checksum: 55fd9f9be5845bcd995277704fa99d398bb5d9a01878e8719b7f5ccec5124473
+    checksum: 743832c8909fce2b234906e747c7b67767e419ac61f1c46fae88240eb4efd9e0
 category: chat
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/609pvb6bde2xvfn7203q93tqd7.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/kws17bmf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/smrxbnea.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ihz07fv0.png
 env: {}
 kernel: ""
 secrets:

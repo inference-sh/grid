@@ -1,14 +1,18 @@
 namespace: topaz
 name: denoise
 description: video denoising — nyx family models for noise, compression, and artifact removal
-metadata: {}
+metadata:
+    checksum: a98155b792147fb5b98746b85978577a3172fe176896682d05149e7eb9b70967
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/czzf0803.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wc2m2jml.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kk8yy9b0.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

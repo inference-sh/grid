@@ -1,7 +1,8 @@
 namespace: bria
 name: structured-prompt
 description: Generate structured prompt JSON from text or images using Bria
-metadata: {}
+metadata:
+    checksum: e3172d97d118293633f2e4ef336467394f231d386ad30aee2ba08393f1374200
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/y3ij50h3.jpg

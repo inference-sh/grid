@@ -4,9 +4,9 @@ description: Merge, concatenate, and stitch multiple videos and images into a si
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4e7qqqergjzq9mrpzw9hnes7ft.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/zigwzw8t.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/oo8lnv2q.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/zaoyyo73.png
 env: {}
 kernel: python-3.12
 resources:

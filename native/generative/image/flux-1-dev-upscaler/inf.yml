@@ -4,9 +4,9 @@ description: Increases the resolution of images and videos, enhancing clarity an
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7sqvskhmv8mpyajps3f3khnxsy.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4ne7mp7r.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5y21goz8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/wtsvfjug.png
 env: {}
 kernel: python-3.12
 resources:

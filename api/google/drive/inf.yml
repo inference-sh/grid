@@ -1,12 +1,13 @@
 namespace: google
 name: drive
 description: List, upload, download, and manage Google Drive files
-metadata: {}
+metadata:
+    checksum: 55479b5e26de68f488d230b2acee36e8f6d2b9d814e130188ac87ba40a0c7f75
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxppsf0bj2c5gw6nyexg1p7.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp3h9800ydkszpeypwswj.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp76xghctx7rz8p2g1vrx.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/0dnrh72d.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pt2nlb8b.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/te2c36h0.png
 env: {}
 kernel: python-3.11
 integrations:

@@ -1,12 +1,13 @@
 namespace: infsh
 name: bagel
 description: A tool that combines understanding and creation capabilities, notable for its high-quality image generation and advanced image editing using simple language.
-metadata: {}
+metadata:
+    checksum: a76a3c8a78efa2efaedb1a5ccc733459f07d3d30105df738acbca1277f72314b
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjwc3565kx32zrbpk2tkvg7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/l28x0hcf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5y19r7d7.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/73y72f8o.png
 env: {}
 kernel: python-3.11
 resources:

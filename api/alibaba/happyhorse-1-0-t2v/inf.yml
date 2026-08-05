@@ -1,7 +1,8 @@
 namespace: alibaba
 name: happyhorse-1-0-t2v
 description: HappyHorse 1.0 Text-to-Video generates physically realistic videos with smooth motion from text prompts via DashScope API, supporting 720P/1080P resolution and up to 15 seconds duration
-metadata: {}
+metadata:
+    checksum: 0b788e01166ff5009ea1810566ef94ec73b4f49b7bcccf3266bf4dfb6f4cbeb3
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/61jnkueq.jpg

@@ -2,6 +2,7 @@ namespace: bytedance
 name: omnihuman-1-0
 description: Audio-driven avatar video generation. Takes a portrait image + audio and generates a video where the person speaks/sings in sync with the audio.
 metadata:
+    checksum: df396980deb95bf5d180a106e4e45b464d356383c9d5d85b926c97dfcbcd4006
     provider: bytedance
     tags:
         - omnihuman

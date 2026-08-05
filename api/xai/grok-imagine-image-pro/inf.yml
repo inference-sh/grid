@@ -11,9 +11,9 @@ metadata:
         - xai
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19ptcdq4egzaxbsfnf60z.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19j6064krgrbkw4ga73sn.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgz19jhwhf5h3jxa31zzzh04.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/0dptpu5k.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/h0zydca1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/fyocdo0k.png
 env: {}
 kernel: python-3.11
 secrets:

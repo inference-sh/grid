@@ -4,9 +4,9 @@ description: Returns a specific element from a list based on its position.
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynhx0e18c3mp3xv8bnv5ab.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/bh511nm6.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/sg2kr1tl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ijmcv5qc.png
 env: {}
 kernel: python-3.12
 resources:

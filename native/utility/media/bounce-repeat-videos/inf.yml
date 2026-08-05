@@ -4,9 +4,9 @@ description: Repeats a video segment by playing it forward and then immediately 
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxwb8hdjwey4wdd7vqk22f.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxwb8hdjwey4wdd7vqk22f.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzxwb8hdjwey4wdd7vqk22f.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/c8stmeky.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r3ew25yc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7wc1mwwx.png
 env: {}
 kernel: python-3.12
 resources:

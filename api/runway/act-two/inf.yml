@@ -2,6 +2,7 @@ namespace: runway
 name: act-two
 description: Runway Act-Two — character performance transfer. Animate a character image or video using a reference performance video with facial expressions, gestures, and body control. 5 credits/second.
 metadata:
+    checksum: 3ea5d2171b7646ded73f7d3925f510e92e84e80d57ad3febbf1fb31228eab9cb
     provider: runway
     tags:
         - runway
@@ -10,6 +11,11 @@ metadata:
         - act-two
         - animation
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/esvmbsx9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/48x4h35o.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/h6xexudu.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

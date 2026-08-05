@@ -12,9 +12,9 @@ metadata:
         - high-quality
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3bpku9rg.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jrd5h53j.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pebot79p.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/k4j20lpa.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hezggros.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/9hev9307.png
 env: {}
 kernel: python-3.11
 secrets:

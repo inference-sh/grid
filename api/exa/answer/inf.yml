@@ -4,9 +4,9 @@ description: Generate LLM-powered answers informed by Exa search results
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5ekxa2jg9ewkk36qj8s14.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5eejecph0zskcpey7tfrt.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5ef41n5gmac48dg6cfqbh.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/d5qv5wh3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/yl61qnkg.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/z5e6b3fl.png
 env: {}
 kernel: "3.10"
 secrets:

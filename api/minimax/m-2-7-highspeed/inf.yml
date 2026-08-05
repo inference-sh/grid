@@ -6,11 +6,12 @@ metadata:
         - reasoning
         - image
         - file
+    checksum: 998d12a9416abd8a83caeedd8940481a3c2587d974d254ed5286454990003603
 category: chat
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/koa9er6r.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/20bwcapa.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/4ykfvs1p.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -21,4 +22,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

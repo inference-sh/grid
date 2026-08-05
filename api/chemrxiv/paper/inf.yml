@@ -1,8 +1,13 @@
 namespace: chemrxiv
 name: paper
 description: get a chemrxiv paper by doi via crossref api
-metadata: {}
+metadata:
+    checksum: 2c7f72caed44b2b5f492143d88a827198d8f9d6d14b03783654183d2ae12bce4
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u9f4fizf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/eqzzqbim.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/by2lu4g7.png
 env: {}
 kernel: python-3.11
 resources:

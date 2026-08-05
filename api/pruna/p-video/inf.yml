@@ -1,7 +1,8 @@
 namespace: pruna
 name: p-video
 description: Fast text-to-video and image-to-video in 720p/1080p with audio support
-metadata: {}
+metadata:
+    checksum: ec518d0b8d54325c4277c53630915e96c99e11b36ad5222c296834c2fed03481
 category: video
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgymcjx9g2tv51m602jssn3.jpeg

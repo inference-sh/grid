@@ -4,9 +4,9 @@ description: Quickly converts audio files into written text or translates them t
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz025e88nkvw55at1rqtj5t8.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz025e88nkvw55at1rqtj5t8.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz025e88nkvw55at1rqtj5t8.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cn0y8qx4.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dyrrjo4i.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nd2segwd.png
 env: {}
 kernel: python-3.11
 resources:

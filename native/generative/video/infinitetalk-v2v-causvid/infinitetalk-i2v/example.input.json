@@ -7,9 +7,12 @@
   "audio_mode": "Single Person(Local File)",
   "audio_1": null,
   "audio_2": null,
+  "tts_text": null,
   "resolution": "infinitetalk-480",
   "sampling_steps": 8,
   "seed": 42,
   "text_guide_scale": 1.0,
-  "audio_guide_scale": 2.0
+  "audio_guide_scale": 2.0,
+  "human1_voice": "weights/Kokoro-82M/voices/am_adam.pt",
+  "human2_voice": "weights/Kokoro-82M/voices/af_heart.pt"
 }

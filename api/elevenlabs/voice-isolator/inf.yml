@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: voice-isolator
 description: ElevenLabs Voice Isolator - Remove background noise from audio
-metadata: {}
+metadata:
+    checksum: 1875898a894c8cd7cacda68e564809baae597b993265574eba0faa9b49b6e486
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vex7zpdv4hmmr7pp5w9y.jpeg

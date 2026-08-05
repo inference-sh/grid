@@ -5,11 +5,12 @@ metadata:
     capabilities:
         - reasoning
         - image
+    checksum: 301f1d65367505171a17e339fc54b95bd46ce60367e6fbc00cad5e6ea6b0ac6f
 category: chat
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/lww085ev.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7l1m7maf.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hmwmt5e1.png
 env: {}
 kernel: python-3.11
 secrets:

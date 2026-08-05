@@ -4,9 +4,9 @@ description: Turns static images into dynamic, realistic videos, often including
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01jzjx3fky4zpjf700efezxxsc.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/buzhpclu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1bdqb5pb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/xsycibt8.png
 env: {}
 kernel: python-3.12
 resources:

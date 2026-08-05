@@ -11,9 +11,9 @@ metadata:
     version: 1.0.0
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9znx4x226ftq6wc5treft.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9zmarzpbbpz3wf1mg6jpt.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01ket9z71npzzade7skt92fpf8.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gckjjd7y.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hung4lo3.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/6t78p9es.png
 env: {}
 kernel: python-3.11
 resources:

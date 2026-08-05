@@ -4,9 +4,9 @@ description: Splits a piece of text into smaller sections based on a specified s
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz01vxzk2h9mzqkfej5kwwh7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/j2dtzzmo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fvf9673y.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ibo47tmn.png
 env: {}
 kernel: python-3.12
 resources:

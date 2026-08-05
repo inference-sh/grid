@@ -1,12 +1,13 @@
 namespace: infsh
 name: infinitetalk-v2v
 description: Generates realistic, talking videos from any video or image using uploaded audio, featuring accurate lip synchronization and natural body movements.
-metadata: {}
+metadata:
+    checksum: 2122fd251ba2276837c4cd753752fa0c82aa109e3f1a490d42aa3a98b75340de
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k488pke6z77gcrrcxzx8bw.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k488pke6z77gcrrcxzx8bw.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3k488pke6z77gcrrcxzx8bw.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4fupgnn4.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/msw1qg3l.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/awj7yt3o.png
 env:
     USE_CAUSVID_LORA: "true"
 kernel: python-3.10

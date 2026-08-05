@@ -6,9 +6,9 @@ metadata:
         - reasoning
 category: chat
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k59jkf6xrrqyyp3pbz7qataw.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k59jkf6xrrqyyp3pbz7qataw.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k59jkf6xrrqyyp3pbz7qataw.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/21kwn0ic.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hbaftj9o.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/odrs1efd.png
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
 kernel: python-3.11

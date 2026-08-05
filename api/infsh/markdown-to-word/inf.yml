@@ -1,9 +1,18 @@
+namespace: infsh
 name: markdown-to-word
 description: Convert Markdown text or files to Word (.docx) documents
+metadata:
+    checksum: 718c5ea85ec5de626657344a4a4c9a30f097ff1f6fed96f1c896a66c703873f7
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/wln979vs.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/8dw3ti8q.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/l8yug0uf.png
+env: {}
 kernel: python-3.11
 resources:
-  gpu:
-    count: 0
-    type: none
-  ram: 4
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

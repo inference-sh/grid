@@ -4,9 +4,9 @@ description: Text-to-image and image-to-image generation with FLUX.2 [klein] LoR
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tykgpeqv3320nff05bywe.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tykgmxpdwhnkrm9rkfdb5.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0tyszntcwky0kwpgvr67wj.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/t64y67e0.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x44a1owt.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/wbkhy3ot.png
 env: {}
 kernel: python-3.11
 secrets:

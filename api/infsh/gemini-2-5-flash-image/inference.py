@@ -1,17 +1,11 @@
-"""
-Gemini 2.5 Flash Image with fal.ai fallback.
-
-Uses Vertex AI with automatic fallback to fal.ai (nano-banana) on rate limits.
-"""
-
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta, TextMeta
 from pydantic import Field
 from typing import Optional, List
-import asyncio
-import random
+import os
 
-from .vertex_helper import (
-    create_vertex_client,
+from google import genai
+
+from .gemini_helper import (
     OutputFormatExtendedEnum,
     AspectRatioAutoEnum,
     SafetyToleranceEnum,
@@ -21,12 +15,12 @@ from .vertex_helper import (
     build_image_generation_config,
     setup_logger,
     resolve_aspect_ratio,
-    is_resource_exhausted_error,
+    retry_on_resource_exhausted,
+    RetryConfig,
     process_image_response,
     raise_no_images_error,
     build_image_output_meta,
 )
-from .fal_helper import setup_fal_client, run_fal_model, download_file
 
 
 class AppInput(BaseAppInput):
@@ -35,7 +29,7 @@ class AppInput(BaseAppInput):
     )
     images: Optional[List[File]] = Field(
         None,
-        description="Optional list of input images for editing (up to 14 images). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF."
+        description="Optional list of input images for editing (up to 14 images). Max file size: 7MB (inline). Supported formats: PNG, JPEG, WEBP, HEIC, HEIF."
     )
     num_images: int = Field(
         1,
@@ -45,7 +39,7 @@ class AppInput(BaseAppInput):
     )
     aspect_ratio: AspectRatioAutoEnum = Field(
         default=AspectRatioAutoEnum.ratio_1_1,
-        description="Aspect ratio for the output image. Use 'auto' to match input image. Default: 1:1"
+        description="Aspect ratio for the output image. Use 'auto' to automatically match the first input image's aspect ratio. Default: 1:1"
     )
     output_format: OutputFormatExtendedEnum = Field(
         default=OutputFormatExtendedEnum.png,
@@ -53,11 +47,37 @@ class AppInput(BaseAppInput):
     )
     enable_google_search: bool = Field(
         default=False,
-        description="Enable Google Search grounding for real-time information."
+        description="Enable Google Search grounding for real-time information (weather, news, etc.)"
+    )
+    temperature: float = Field(
+        default=1.0,
+        description="Controls randomness in token selection. Range: 0.0 - 2.0. Default: 1.0",
+        ge=0.0,
+        le=2.0
+    )
+    top_p: float = Field(
+        default=0.95,
+        description="Nucleus sampling probability. Range: 0.0 - 1.0. Default: 0.95",
+        ge=0.0,
+        le=1.0
+    )
+    top_k: int = Field(
+        default=64,
+        description="Top-k sampling. Fixed at 64 for this model.",
+    )
+    max_output_tokens: int = Field(
+        default=32768,
+        description="Maximum number of tokens to generate. Max: 32768"
     )
     safety_tolerance: SafetyToleranceEnum = Field(
         default=SafetyToleranceEnum.block_none,
-        description="Safety filter threshold."
+        description="Safety filter threshold. Options: BLOCK_NONE, BLOCK_LOW_AND_ABOVE, BLOCK_MEDIUM_AND_ABOVE, BLOCK_ONLY_HIGH"
+    )
+    retry_count: int = Field(
+        default=2,
+        ge=0,
+        le=5,
+        description="Number of automatic retries on 429 rate limit errors using exponential backoff with jitter. Set to 0 to disable retries. Example: retry_count=2 means up to 3 total attempts (1 initial + 2 retries)."
     )
 
 
@@ -68,78 +88,36 @@ class AppOutput(BaseAppOutput):
 
 class App(BaseApp):
     async def setup(self):
+        """Initialize model and configuration."""
         self.logger = setup_logger(__name__)
         self.model_id = "gemini-2.5-flash-image"
-        self.fal_text_model = "fal-ai/nano-banana"
-        self.fal_edit_model = "fal-ai/nano-banana/edit"
-        self.client = create_vertex_client()
-        self.logger.info("Gemini 2.5 Flash Image (with fal fallback) initialized")
 
-    async def _generate_fal(self, input_data: AppInput, aspect_ratio_value: str) -> list:
-        """Generate using fal.ai as fallback."""
-        setup_fal_client()
-        is_editing = input_data.images and len(input_data.images) > 0
-        model_id = self.fal_edit_model if is_editing else self.fal_text_model
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY environment variable is required for model access.")
 
-        from dataclasses import dataclass, field
-        @dataclass
-        class FalResult:
-            image_paths: list = field(default_factory=list)
-            descriptions: list = field(default_factory=list)
-
-        results = []
-        for i in range(input_data.num_images):
-            self.logger.info(f"fal.ai: generating image {i+1}/{input_data.num_images}")
-
-            # Map Vertex safety tolerance to fal (1=strict, 6=permissive)
-            safety_map = {
-                "BLOCK_NONE": "6",
-                "BLOCK_ONLY_HIGH": "5",
-                "BLOCK_MEDIUM_AND_ABOVE": "3",
-                "BLOCK_LOW_AND_ABOVE": "2",
-            }
-            fal_safety = safety_map.get(input_data.safety_tolerance.value, "4")
-
-            request = {
-                "prompt": input_data.prompt,
-                "num_images": 1,
-                "output_format": input_data.output_format.value,
-                "limit_generations": True,
-                "safety_tolerance": fal_safety,
-            }
-            if aspect_ratio_value != "auto":
-                request["aspect_ratio"] = aspect_ratio_value
-            if is_editing:
-                request["image_urls"] = [img.uri for img in input_data.images]
-
-            result = run_fal_model(model_id, request, self.logger, with_logs=False)
-
-            image_paths = []
-            for img_data in result.get("images", []):
-                path = download_file(img_data["url"], f".{input_data.output_format.value}", self.logger)
-                image_paths.append(path)
-
-            results.append(FalResult(
-                image_paths=image_paths,
-                descriptions=[result.get("description", "")]
-            ))
-
-        return results
+        self.client = genai.Client(api_key=api_key)
+        self.logger.info("Gemini 2.5 Flash Image initialized successfully")
 
     async def run(self, input_data: AppInput) -> AppOutput:
+        """Generate or edit images using Gemini 2.5 Flash Image model."""
         try:
             is_editing = input_data.images is not None and len(input_data.images) > 0
 
             if is_editing:
                 if len(input_data.images) > 14:
-                    raise RuntimeError("Supports up to 14 input images")
+                    raise RuntimeError("Gemini 2.5 Flash supports up to 14 input images")
+
                 for i, image in enumerate(input_data.images):
                     if not image.exists():
-                        raise RuntimeError(f"Input image {i+1} does not exist: {image.path}")
-                self.logger.info(f"Starting image editing: {input_data.prompt[:100]}...")
-            else:
-                self.logger.info(f"Starting image generation: {input_data.prompt[:100]}...")
+                        raise RuntimeError(f"Input image {i+1} does not exist at path: {image.path}")
 
+                self.logger.info(f"Starting image editing with prompt: {input_data.prompt[:100]}...")
+                self.logger.info(f"Processing {len(input_data.images)} input image(s)")
+            else:
+                self.logger.info(f"Starting image generation with prompt: {input_data.prompt[:100]}...")
+
+            # Resolve aspect ratio (handle "auto")
             aspect_ratio_value = resolve_aspect_ratio(
                 input_data.aspect_ratio.value,
                 input_data.images if is_editing else None,
@@ -147,65 +125,55 @@ class App(BaseApp):
             )
 
             resolution = ResolutionEnum.res_1k
-            self.logger.info(f"Resolution: {resolution.value}, Aspect: {aspect_ratio_value}")
+            self.logger.info(f"Resolution: {resolution.value}, Aspect ratio: {aspect_ratio_value}")
+            self.logger.info(f"Requesting {input_data.num_images} output image(s)")
 
+            # Build content parts
             contents = [input_data.prompt]
+
             if is_editing:
                 for image in input_data.images:
-                    contents.append(load_image_as_part(image.path, logger=self.logger))
+                    image_part = load_image_as_part(image.path, logger=self.logger)
+                    contents.append(image_part)
 
+            # Configure generation settings
             config = build_image_generation_config(
                 aspect_ratio=aspect_ratio_value,
                 resolution=resolution.value,
+                temperature=input_data.temperature,
+                top_p=input_data.top_p,
+                top_k=input_data.top_k,
+                max_output_tokens=input_data.max_output_tokens,
                 safety_tolerance=input_data.safety_tolerance.value,
                 enable_google_search=input_data.enable_google_search,
             )
 
+            # Generate images (one API call per image)
             results = []
-            provider = "vertex"
-            use_fal = False
+            retry_config = RetryConfig(max_attempts=input_data.retry_count + 1)
 
             for i in range(input_data.num_images):
-                if use_fal:
-                    break
-
                 self.logger.info(f"Generating image {i+1}/{input_data.num_images}...")
 
-                # Try Vertex with 2 retries, then fallback to fal
-                for attempt in range(1, 3):
-                    try:
-                        response = self.client.models.generate_content(
-                            model=self.model_id,
-                            contents=contents,
-                            config=config,
-                        )
-                        result = process_image_response(response, input_data.output_format.value, self.logger)
-                        results.append(result)
-                        break
-                    except Exception as e:
-                        if is_resource_exhausted_error(e):
-                            if attempt < 2:
-                                delay = random.uniform(0.3, 0.6) * attempt
-                                self.logger.warning(f"Vertex 429 attempt {attempt}/2, retry in {delay:.1f}s")
-                                await asyncio.sleep(delay)
-                            else:
-                                self.logger.warning("Vertex 429 after 2 attempts, falling back to fal.ai")
-                                use_fal = True
-                                break
-                        else:
-                            raise
+                async def _generate():
+                    return self.client.models.generate_content(
+                        model=self.model_id,
+                        contents=contents,
+                        config=config,
+                    )
 
-            if use_fal:
-                results = await self._generate_fal(input_data, aspect_ratio_value)
-                provider = "fal"
+                response = await retry_on_resource_exhausted(_generate, config=retry_config, logger=self.logger)
+                result = process_image_response(response, input_data.output_format.value, self.logger)
+                results.append(result)
 
+            # Collect all images and descriptions
             output_images = [File(path=p) for r in results for p in r.image_paths]
-            descriptions = [d for r in results for d in r.descriptions if d]
+            descriptions = [d for r in results for d in r.descriptions]
 
             if not output_images:
                 raise_no_images_error(results)
 
-            self.logger.info(f"Generated {len(output_images)} image(s) via {provider}")
+            self.logger.info(f"Successfully generated {len(output_images)} image(s)")
 
             width, height = calculate_dimensions(aspect_ratio_value, resolution.value)
             meta = build_image_output_meta(results, width, height)
@@ -216,12 +184,12 @@ class App(BaseApp):
                 output_meta=OutputMeta(
                     inputs=[TextMeta(**m) for m in meta["inputs"]],
                     outputs=[
-                        TextMeta(**m) if m["type"] == "text" else ImageMeta(**{k: v for k, v in m.items() if k != "type"}, extra={"provider": provider})
+                        TextMeta(**m) if m["type"] == "text" else ImageMeta(**{k: v for k, v in m.items() if k != "type"})
                         for m in meta["outputs"]
                     ],
                 )
             )
 
         except Exception as e:
-            self.logger.error(f"Error: {e}")
-            raise RuntimeError(f"Image generation failed: {str(e)}")
+            self.logger.error(f"Error during image generation/editing: {e}")
+            raise RuntimeError(f"Image generation/editing failed: {str(e)}")

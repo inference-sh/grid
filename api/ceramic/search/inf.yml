@@ -1,8 +1,13 @@
 namespace: ceramic
 name: search
 description: Web search powered by Ceramic AI
-metadata: {}
+metadata:
+    checksum: 7d8ff4c685c34e7ec180c553e323c745f5a2b89816aa1d6ee2988c4f43885c12
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/wi9x78eu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6y6qycui.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/zqv455xw.png
 env: {}
 kernel: "3.11"
 secrets:
@@ -13,4 +18,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

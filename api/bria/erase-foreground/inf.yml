@@ -1,7 +1,8 @@
 namespace: bria
 name: erase-foreground
 description: Erase the foreground object from an image while preserving the background
-metadata: {}
+metadata:
+    checksum: 5e564c0f09234d1dce2b66f5a9cbf92978d0ee610fa83e9271d7d0c007379ef5
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/p6ziiajd.jpg

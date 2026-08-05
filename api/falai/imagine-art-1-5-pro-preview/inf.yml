@@ -4,9 +4,9 @@ description: Advanced text-to-image model creating ultra-high-fidelity 4K visual
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xm85c0tecj2k5hgzq0rnc.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xpf1k24b25jqwa9kscdcq.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kf5xm27qpnxdwa5zkfktdzag.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h7n9wd1t.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/d6u1uo8p.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ta807kq1.png
 env: {}
 kernel: python-3.11
 secrets:

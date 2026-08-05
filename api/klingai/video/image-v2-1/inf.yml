@@ -2,6 +2,7 @@ namespace: klingai
 name: image-v2-1
 description: Kling Image V2.1 (Kolors V2.1) - text-to-image and multi-image reference generation. Combine multiple images for complex compositions.
 metadata:
+    checksum: d2c101b5aef378f20d37873e05e5ba22159b5fefc2f50d39b6f050c378d4804a
     provider: klingai
     tags:
         - kling
@@ -10,9 +11,9 @@ metadata:
         - multi-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/qbnodzac.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/q5ew5erb.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/vymjqik1.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/248mvp3o.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/rzmr9ddv.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/srw0bl1o.png
 env: {}
 kernel: python-3.11
 secrets:

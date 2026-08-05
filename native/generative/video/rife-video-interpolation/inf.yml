@@ -1,12 +1,13 @@
 namespace: infsh
 name: rife-video-interpolation
 description: Increases video smoothness by using AI to generate and insert extra frames, effectively raising the video's frame rate.
-metadata: {}
+metadata:
+    checksum: c7af64c2b8f81ee0a1a78dc9cee0d17b244f31127909ae3f3989efa76f72ffc6
 category: video
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4phs60aaeqzjq5ycjj4z5nw.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h46letf9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/5bv5f3pw.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qtz391bp.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache

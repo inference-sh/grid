@@ -4,9 +4,9 @@ description: Fills in missing or masked areas of an image using text instruction
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyc29tp03sd7bvt5h3rnh4.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyc29tp03sd7bvt5h3rnh4.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyzyc29tp03sd7bvt5h3rnh4.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/zx1ovhv7.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/n7faaglo.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3l7bl2lp.png
 env: {}
 kernel: python-3.12
 resources:

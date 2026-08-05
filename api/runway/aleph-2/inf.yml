@@ -2,6 +2,7 @@ namespace: runway
 name: aleph-2
 description: Runway Aleph 2.0 — video-to-video transformation with text and keyframe guidance. Supports aspect ratio targeting and up to 5 reference keyframes. 28 credits/second.
 metadata:
+    checksum: 14b8a6e8c6d10e4dc1aa41f7cd561db933b973f14a8d94a958e807e7d578fc77
     provider: runway
     tags:
         - runway
@@ -9,6 +10,11 @@ metadata:
         - video-to-video
         - aleph
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/aomb8fuq.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2jjebv73.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/675f1o1y.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

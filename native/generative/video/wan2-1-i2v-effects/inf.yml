@@ -1,12 +1,13 @@
 namespace: infsh
 name: wan2-1-i2v-effects
 description: Generate videos from text descriptions and apply image-to-video effects for enhanced visual results.
-metadata: {}
+metadata:
+    checksum: 23fe56abab6ec3114ccf6f36a2dd90786f4501db9b1c125c785ab71fafdefe7a
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4rk1fyz092rkdxsp4w9517qkh5.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4rk1fyz092rkdxsp4w9517qkh5.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/4rk1fyz092rkdxsp4w9517qkh5.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/enzb6qjb.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/qcue194l.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/j3nxm5b6.png
 env: {}
 kernel: python-3.11
 resources:

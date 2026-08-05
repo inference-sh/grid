@@ -4,9 +4,9 @@ description: Generates realistic videos from a static picture by making the pers
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/pl0b3abu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/uyssqveh.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3h8sde6i.png
 env: {}
 kernel: ""
 secrets:

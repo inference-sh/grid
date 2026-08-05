@@ -1,7 +1,8 @@
 namespace: bria
 name: video-eraser
 description: Erase objects from video using a mask with inpainting
-metadata: {}
+metadata:
+    checksum: 799ced23945c638b2f7965d7bf085662525176208228ac23a499e13f18ddcadf
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tgg6pulh.jpg

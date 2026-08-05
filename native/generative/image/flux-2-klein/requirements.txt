@@ -1,12 +1,11 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh
-torch==2.10.0
+torch
 gguf>=0.13.0
 tqdm
 # diffusers
 git+https://github.com/huggingface/diffusers.git@1eb40c6dbdf51f54514febf2fdea827a5414c494
-transformers==5.3.0
-tokenizers==0.22.2
+transformers
 huggingface_hub
 accelerate
 sentencepiece

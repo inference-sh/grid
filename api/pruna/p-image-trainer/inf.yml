@@ -1,12 +1,13 @@
 namespace: pruna
 name: p-image-trainer
 description: train custom LoRA weights for p-image-lora using your own images
-metadata: {}
+metadata:
+    checksum: 32c527d4d7d7919d1b678888a875ba5a9c388897037743fc2ad4bfa742292281
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cb4h19ym.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/01wog56n.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/oec94r1g.png
 env: {}
 kernel: python-3.11
 secrets:

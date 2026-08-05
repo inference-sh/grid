@@ -4,9 +4,9 @@ description: Resize images by width, height, scale factor, or megapixel target
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/n131yj2z.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/cu3hcjjx.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/92mvjydr.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/32xaumum.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/0yvun25q.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nttay906.png
 env: {}
 kernel: python-3.11
 resources:

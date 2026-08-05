@@ -2,6 +2,7 @@ namespace: runway
 name: gen-4-turbo
 description: Runway Gen-4 Turbo — fast image-to-video generation. Animate images into video with text guidance. 5 credits/second.
 metadata:
+    checksum: a98308e9326390c54cba5f50a56dbcaa991f133fcc3a53b09fafa0b0dca4f6c1
     provider: runway
     tags:
         - runway
@@ -10,6 +11,11 @@ metadata:
         - gen4
         - turbo
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5cni1x2n.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/uahcl9sy.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7c2zb4r0.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

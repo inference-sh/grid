@@ -1,7 +1,8 @@
 namespace: bria
 name: replace-object
 description: Replace an object in an image with AI-generated content from a text description
-metadata: {}
+metadata:
+    checksum: b2184aaae8fba82e70a7c166b56fbf13361976c391553f45e79610a9c10c2cd7
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0tm7kh7x.jpg

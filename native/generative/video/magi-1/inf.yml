@@ -1,12 +1,13 @@
 namespace: infsh
 name: magi-1
 description: Generates high-quality videos from text descriptions, ensuring smooth, consistent motion across the video, and supports real-time streaming.
-metadata: {}
+metadata:
+    checksum: d8944d3c8efa9a6974b495ecaeade5a7a6bbbb5f3eb588f6fc1c0d0fffab9338
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7k8fsw2nmz2deys4hzgmb03kqz.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/7t1e2j6l.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/xpgwcftp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/14ijuo22.png
 env:
     CUDA_DEVICE_MAX_CONNECTIONS: "1"
     NCCL_ALGO: ^NVLS

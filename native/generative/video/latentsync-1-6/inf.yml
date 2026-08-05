@@ -4,9 +4,9 @@ description: Generates precise and realistic lip synchronization for video and a
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/086baxdt.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/zg1oori9.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/agfz50x6.png
 env: {}
 kernel: python-3.10
 resources:

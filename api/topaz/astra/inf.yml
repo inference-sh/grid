@@ -1,14 +1,18 @@
 namespace: topaz
 name: astra
 description: creative video upscaling — ai-guided upscaling with prompt and creativity controls
-metadata: {}
+metadata:
+    checksum: 20d83f8094d733ad592cb49ef93601e0e846d70225936a1c597d8b9263ac816e
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2y9t0stk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kvmjgg7f.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2hl7xmks.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

@@ -1,12 +1,13 @@
 namespace: infsh
 name: wan2-1-t2v-effects
 description: Generates high-quality videos from text descriptions with dynamic motion and supports both Chinese and English language prompts at 720P resolution.
-metadata: {}
+metadata:
+    checksum: cdeb3ebd3806411c424fb9d2fa11db2f5dc4f40345c84efa11b9fcb94d83f480
 category: video
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6ka2cyhpcns4z9s471cv15jp4w.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6ka2cyhpcns4z9s471cv15jp4w.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/6ka2cyhpcns4z9s471cv15jp4w.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6pynm9ar.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/h0f19vf3.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ziomzc7w.png
 env: {}
 kernel: python-3.11
 resources:

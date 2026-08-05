@@ -4,9 +4,9 @@ description: embed or detect imperceptible watermarking for images and videos.
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdn0wd7j2ms944dhhmz2xd9c.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdn0wd7j2ms944dhhmz2xd9c.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdn0wd7j2ms944dhhmz2xd9c.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4o6f1p21.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1lpkxksz.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pnh4mi5a.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

@@ -4,9 +4,9 @@ description: Creates high-definition images from text descriptions, primarily de
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k94chj1pwbzh5ne65wtgdh1k.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k94chj1pwbzh5ne65wtgdh1k.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k94chj1pwbzh5ne65wtgdh1k.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4i6ui4da.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vx0ju1x2.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/iaya9qs4.png
 env: {}
 kernel: python-3.11
 resources:

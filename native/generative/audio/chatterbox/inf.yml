@@ -4,9 +4,9 @@ description: Converts written text into spoken audio.
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00s52jdk25nrwahvj93gn4.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00s52jdk25nrwahvj93gn4.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00s52jdk25nrwahvj93gn4.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/t3wzlv8p.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2x4x7uu2.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ja6e4zl6.png
 env: {}
 kernel: python-3.11
 resources:

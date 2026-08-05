@@ -1,12 +1,13 @@
 namespace: arxiv
 name: paper
 description: get a specific arxiv paper by its id with full metadata including title, authors, abstract, and links
-metadata: {}
+metadata:
+    checksum: b32acb6c4c12b7f4ecceaaa4a0a07e883caa058d292eb77a381b8cdec3614c6d
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/pfb4wyep.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/okjo9yuu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/dvysgvcw.png
 env: {}
 kernel: python-3.11
 resources:

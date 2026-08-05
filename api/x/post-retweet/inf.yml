@@ -4,9 +4,9 @@ description: Retweet a post on X.com by post ID. Succeeds silently if already re
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqjdk4703778axe8aydvk.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqjz9vzs2nzwfj19p7h0j.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqqts10frqxg4zda2fp622.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5834dm7c.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/inyiiba4.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/cojs1ou6.png
 env: {}
 kernel: python-3.11
 integrations:

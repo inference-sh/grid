@@ -4,9 +4,9 @@ description: Extract and analyze web page content using Exa's advanced content r
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bnabf3q6qq4se5nkt6c2.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bne0q56tnqjtd9e4w5e3.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kga5bmnxp929p3r2y3mqpy38.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/49rdkjzk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/9g7jy0xw.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/8iw6tutv.png
 env: {}
 kernel: "3.10"
 secrets:

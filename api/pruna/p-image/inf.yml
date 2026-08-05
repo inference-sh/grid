@@ -1,7 +1,8 @@
 namespace: pruna
 name: p-image
 description: Pruna's flagship fast text-to-image with multiple aspect ratios and prompt enhancement
-metadata: {}
+metadata:
+    checksum: 2f034a8b12ebd4dc43ce273b18100bd521b217412cb78d7a83d3e959d98bfbdd
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym0yqys16pqrg9h8ctk2y.jpeg

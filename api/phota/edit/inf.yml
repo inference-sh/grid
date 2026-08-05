@@ -4,9 +4,9 @@ description: Edit images with text prompts while preserving identity of known su
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2g09dpe3akt95rwdhrvn.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2j7jrx3q7pge8dq5nsmq.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmqd2h32n0pw4m3e50jdxrdr.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/vznw9y4f.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/94msd6av.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/4iih7mo3.png
 env: {}
 kernel: python-3.11
 secrets:

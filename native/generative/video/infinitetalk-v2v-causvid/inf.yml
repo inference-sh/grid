@@ -1,12 +1,13 @@
 namespace: infsh
 name: infinitetalk-v2v-causvid
 description: Enhanced tool for high-quality dubbing where one video is accurately translated into another, keeping the speech and video synchronized.
-metadata: {}
+metadata:
+    checksum: c841554a201282a0c41b4d530475a8690ba5bf5fc2cd06444eefa4e5fd3e9bad
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtycv1rd8qd5bv23nw81r4.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtycv1rd8qd5bv23nw81r4.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtycv1rd8qd5bv23nw81r4.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4xs267zy.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/eyim438t.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/c0i9yqpv.png
 env: {}
 kernel: python-3.10
 resources:

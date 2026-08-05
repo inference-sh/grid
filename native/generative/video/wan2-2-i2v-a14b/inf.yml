@@ -4,9 +4,9 @@ description: Generates high-resolution videos from single images, offering one o
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18regb7hekrr7qb2dbw308z.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/a32371jj.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r5uhzhtm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/my38wd9q.png
 env: {}
 kernel: python-3.11
 resources:

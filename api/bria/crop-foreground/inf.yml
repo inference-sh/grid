@@ -1,7 +1,8 @@
 namespace: bria
 name: crop-foreground
 description: Automatically detect and crop the foreground object from an image
-metadata: {}
+metadata:
+    checksum: 2b3807dc25f7b43b8d9882103e2162d2e004c488f48533c678637e3715c656e2
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/8wz4ry1m.jpg

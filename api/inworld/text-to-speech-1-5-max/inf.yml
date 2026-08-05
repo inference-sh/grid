@@ -4,9 +4,9 @@ description: Inworld TTS 1.5 Max - Low-latency text-to-speech with 15 languages 
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/8ap070or.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/1jym62uc.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/bz3ct4ct.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u1xkdsm3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bdcgym1o.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/rilu2c6t.png
 env: {}
 kernel: python-3.11
 secrets:

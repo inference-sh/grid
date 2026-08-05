@@ -1,7 +1,8 @@
 namespace: pixverse
 name: modify
-description: "PixVerse Modify — edit video content using text prompts. Swap subjects, add elements, or restyle regions with reference images."
+description: PixVerse Modify — edit video content using text prompts. Swap subjects, add elements, or restyle regions with reference images.
 metadata:
+    checksum: f84cd13c95e4feec67ca38f1d8dffc40863b83c3f3cc1a6bfec8d39c0fb604e2
     provider: pixverse
     tags:
         - pixverse
@@ -9,6 +10,11 @@ metadata:
         - modify
         - swap
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jubuwaiv.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/cj6j1fvy.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/l2rf5tl9.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

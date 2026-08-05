@@ -4,9 +4,9 @@ description: Scan a subreddit for posts and comments, return cleaned CSV data
 metadata: {}
 category: text
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/gxcab12y.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/qx9atkns.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/b3ibx6uf.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/053zsc8b.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bq6ru4ml.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ebzlbz66.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -2,6 +2,7 @@ namespace: mirage
 name: ai-ads
 description: Generate a UGC-style ad video from a script plus your product images and clips, performed by a Captions AI Creator.
 metadata:
+    checksum: b4bcdf40c4ee2ccd3d4dc2683896e1cbb87545ae8d6cabf073cb0acc9b40e024
     provider: mirage
     tags:
         - ads
@@ -11,6 +12,10 @@ metadata:
         - text-to-video
         - captions
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h08ors4u.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/llmgnaim.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pt7gfdso.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -21,4 +26,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

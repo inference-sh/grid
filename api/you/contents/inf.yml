@@ -1,14 +1,18 @@
 namespace: you
 name: contents
 description: contents api — fetch clean markdown or html from any url, batch up to 10 pages per request
-metadata: {}
+metadata:
+    checksum: 28c3d5422a52d76d947f7cbfb08e390b6c57cb149fca915b520a62b65ad0bf3d
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/b6120pus.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/yumkdm7t.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/emjdq7vq.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: YOU_KEY
       description: You.com API key
-      optional: false
 resources:
     gpu:
         count: 0

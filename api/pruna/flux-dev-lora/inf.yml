@@ -1,7 +1,8 @@
 namespace: pruna
 name: flux-dev-lora
 description: Text-to-image and image-to-image generation with custom LoRA weights from HuggingFace
-metadata: {}
+metadata:
+    checksum: de73203a93f9f3e4e0f91f4cfa02f11582de792fe0069e6ce354683399be9ef2
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh95ygs51719sk67cqz99w3.jpeg

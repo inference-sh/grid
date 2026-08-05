@@ -4,9 +4,9 @@ description: Qwen-Image-2.0 is Alibaba's multimodal image generation model that 
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbq7wkaexek1vdqxt6csk.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbn3sb81mxndpe2z0vcq0.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtcbmde0jccmb4t36q04ctx.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/zg54duec.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/999s9ht8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/rs0stjn1.png
 env: {}
 kernel: python-3.11
 secrets:

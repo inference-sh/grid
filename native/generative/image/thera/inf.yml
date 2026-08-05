@@ -1,12 +1,13 @@
 namespace: infsh
 name: thera
 description: Upscales images to any size without blurriness or jagged edges, maintaining high detail through its unique neural heat field technology.
-metadata: {}
+metadata:
+    checksum: de9b2bd22879581a84faa999da70dedf5749276b91c6c057bef1c390f88c9bf5
 category: image
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/68hjzpwz1we5t5a41gw8b73dba.jpg
-    thumbnail: https://cloud.inference.sh/28g7n0cj7d07gzm6p0pwbe5jx7
-    banner: https://cloud.inference.sh/1nf4zd5786p10sfaajcaqmkwaf
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/wg55lx6q.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/e5do2b27.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/j4ngqky3.png
 env: {}
 kernel: python-3.11
 resources:

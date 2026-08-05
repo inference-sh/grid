@@ -4,9 +4,9 @@ description: Generate high-quality images and edit them through conversation, ex
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kak1webbcxmea1ygtgzjsdvs.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kak1webbcxmea1ygtgzjsdvs.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01kak1webbcxmea1ygtgzjsdvs.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/rr36kn2l.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2y0gocnp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/5e3cnn8v.png
 env: {}
 kernel: python-3.11
 secrets:

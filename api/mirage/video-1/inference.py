@@ -42,10 +42,9 @@ class AppInput(BaseAppInput):
 
     image: File = Field(
         description=(
-            "Portrait image to animate (JPEG or PNG). Must be 9:16 or 16:9 — a square "
-            "image is rejected. Use a clear, front-facing shot of a single person in a "
-            "close to medium framing, with the mouth open. Closed mouths and multiple "
-            "faces in frame both degrade the result."
+            "Portrait image to animate (JPEG or PNG). Use a clear, front-facing shot "
+            "of a single person in a close to medium framing, with the mouth open. "
+            "Closed mouths and multiple faces in frame both degrade the result."
         )
     )
     audio: File = Field(

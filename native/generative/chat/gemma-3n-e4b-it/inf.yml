@@ -7,9 +7,9 @@ metadata:
         - audio
 category: chat
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7n1z4js7a32645m7n3axedxmwq.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7n1z4js7a32645m7n3axedxmwq.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/7n1z4js7a32645m7n3axedxmwq.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/xqi5m3jy.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4zpgm74f.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q3twd4yh.png
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
 kernel: python-3.11

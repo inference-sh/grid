@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-large-train
 description: Train custom LoRA styles for Krea 2 Large generation
 metadata:
+    checksum: cdf5b793de0892b76bb8b6a76ba2ed62b73ff733550f51bc3248bcf23c76780c
     provider: krea
     tags:
         - krea
@@ -9,6 +10,11 @@ metadata:
         - training
         - krea-2
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/71pctm47.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/waskamk1.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/kyhks320.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

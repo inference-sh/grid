@@ -4,9 +4,9 @@ description: FLUX.2 Dev Turbo is an open-weight, guidance and step distilled tex
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqbqpncm04dxx2hk7s8r687.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqbqpncm04dxx2hk7s8r687.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdqbqpncm04dxx2hk7s8r687.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6g68j98i.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/yaa68qj6.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/iocb4bps.png
 env: {}
 kernel: python-3.11
 secrets:

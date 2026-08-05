@@ -4,9 +4,9 @@ description: Creates videos where an image appears to talk using advanced lip-sy
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zx0sb95jzqpnz0pw9whndn.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/15353pui.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/tukliz3n.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/js5t3u0b.png
 env: {}
 kernel: ""
 secrets:

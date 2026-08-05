@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: text-to-dialogue
 description: ElevenLabs Text to Dialogue - Generate immersive multi-voice dialogue
-metadata: {}
+metadata:
+    checksum: 8901afa47f4fefdedf4300561d39718ad2baa8a68a56c710cfc1a6e9b6fdf9dd
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2x8g1t7bkj6b8aay8zdy3.jpeg

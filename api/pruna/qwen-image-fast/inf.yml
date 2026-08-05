@@ -1,7 +1,8 @@
 namespace: pruna
 name: qwen-image-fast
 description: Fast Qwen-based image generation with creativity control
-metadata: {}
+metadata:
+    checksum: 0f27bf735105f411e97fc9d73bc649216133f58d8ac5c7a9cefc39752fe94978
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkh97nx9t6wzhrby9bw2s7pn.jpeg

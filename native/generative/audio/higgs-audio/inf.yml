@@ -7,6 +7,7 @@ metadata:
         - Voice Cloning
         - Multi-speaker Dialog
         - Expressive Audio
+    checksum: 94c41c31d1542cab80b8ed8d606b499fc3b6d08525dc61e5b3dbb94100a00615
     model_name: Higgs Audio V2
     model_size: 3B
     sample_rate: 24000
@@ -16,9 +17,9 @@ metadata:
         - Multilingual
 category: audio
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1c1tvpx77m5nwncwsj123fa.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/2bdpzg6p.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/p4r5r2md.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/scp6c2ad.png
 env:
     CUDA_LAUNCH_BLOCKING: "1"
     TORCH_DTYPE: bfloat16

@@ -4,9 +4,9 @@ description: A rapid image generator that produces high-quality images in variou
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
-    thumbnail: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
-    banner: https://cloud.inference.sh/u/7fc33ab0-cf3b-4d36-bf92-a79d9e02087e/3fjtw9qff1v3vmn8fwg98kd26v.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fruexz2x.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ymovlhcq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2l2e5eqy.png
 env: {}
 kernel: python-3.12
 resources:

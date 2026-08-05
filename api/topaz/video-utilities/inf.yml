@@ -1,14 +1,18 @@
 namespace: topaz
 name: video-utilities
 description: video utilities — motion deblur, colorization, and sdr to hdr conversion
-metadata: {}
+metadata:
+    checksum: 9f77cdfce0c9de877d76175a87616ac63596d92f6b78ff0ef8f2a1f0d61f52db
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/orbubzxa.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/0vqkcynk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/wxrjldhe.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

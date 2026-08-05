@@ -2,7 +2,7 @@ namespace: heygen
 name: lipsync
 description: Re-sync video lip movements to new audio using HeyGen's lipsync technology. Supports speed and precision modes with optional captioning.
 metadata:
-    checksum: 69391f4c35acdd055af318ac67138d5544d1653a2bca54362e3ebf2d5ed1afca
+    checksum: 6fdfad8151decedff9bffdb8a8670665bed2ce874de24fd3c4e2d931421207aa
     provider: heygen
     tags:
         - lipsync

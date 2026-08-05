@@ -4,9 +4,9 @@ description: ArcFace identity similarity — cosine similarity between face embe
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7m7b22asrk2fxnkj13qv.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7d2720p312aykr12kfhx.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7agpz8tdye4nq1enzpfn.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/34wgunyn.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/b0oqjh7c.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/vog4k0kd.png
 env: {}
 kernel: python-3.11
 resources:

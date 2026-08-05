@@ -5,8 +5,7 @@ torch>=2.7.0
 torchvision>=0.20.1
 sentencepiece
 git+https://github.com/huggingface/diffusers.git@main
-transformers==4.55.4
-tokenizers==0.21.4
+transformers
 einops>=0.7.0
 accelerate>=1.2.1
 optimum>=1.13.0

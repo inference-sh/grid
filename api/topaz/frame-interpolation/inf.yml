@@ -1,14 +1,18 @@
 namespace: topaz
 name: frame-interpolation
 description: video frame interpolation — slowmo and fps boost with apollo, chronos, and aion models
-metadata: {}
+metadata:
+    checksum: c286124fdc687df97cf4f292ef2381860b50b82ce67d5e251aef87b3866c77e4
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5adjmmco.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/3zbe6l1a.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/8xoiqegk.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

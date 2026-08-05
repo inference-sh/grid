@@ -1,12 +1,13 @@
 namespace: biorxiv
 name: paper
 description: get a specific biorxiv or medrxiv paper by its doi
-metadata: {}
+metadata:
+    checksum: 14a66f845219af04ef3f3f1fd647414342cb937428a9a6b9d9abaaf65b713b67
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/m1oc4jfv.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wwmjjwwn.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/5z7tsw95.png
 env: {}
 kernel: python-3.11
 resources:

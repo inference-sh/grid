@@ -1,6 +1,6 @@
 {
   "run": {
-    "description": "Generate or edit images using Gemini 3.1 Flash Image Preview model via Vertex AI.",
+    "description": "Generate or edit images using Gemini 3.1 Flash Image model via Vertex AI.",
     "input_schema": {
       "$defs": {
         "ExtendedAspectRatioAutoEnum": {

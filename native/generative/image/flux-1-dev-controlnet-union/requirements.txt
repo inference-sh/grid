@@ -1,11 +1,10 @@
 pydantic >= 2.0.0
 inferencesh==0.2.7
-torch==2.10.0
+torch
 gguf>=0.13.0
 tqdm
 diffusers
-transformers==5.3.0
-tokenizers==0.22.2
+transformers
 huggingface_hub
 accelerate
 sentencepiece

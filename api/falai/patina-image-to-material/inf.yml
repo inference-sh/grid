@@ -2,6 +2,7 @@ namespace: falai
 name: patina-image-to-material
 description: Predicts seamless high-resolution PBR material maps (basecolor, normal, roughness, metalness, height) from a single input image via fal.ai PATINA.
 metadata:
+    checksum: 9c481d23e8a6d2a1e68b25f45032090eba4af840f016f2ce73a85ee840a2b17f
     provider: fal-ai
     tags:
         - patina
@@ -16,9 +17,9 @@ metadata:
         - image-to-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/wryckfnr.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tyd35xh2.jpeg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/3wlpq2jw.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/th42irvr.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/m0j9uu0t.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/zwos5esw.png
 env: {}
 kernel: python-3.11
 secrets:

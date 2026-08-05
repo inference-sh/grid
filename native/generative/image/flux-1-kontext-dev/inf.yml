@@ -4,9 +4,9 @@ description: Edits existing images using text instructions, allowing for changes
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10w2aez7dq4axc4tyjav5az.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10w2aez7dq4axc4tyjav5az.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10w2aez7dq4axc4tyjav5az.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5i070um5.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/t1luhhlc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3jmauoo4.png
 env: {}
 kernel: python-3.12
 secrets:

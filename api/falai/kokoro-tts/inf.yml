@@ -1,12 +1,13 @@
 namespace: falai
 name: kokoro-tts
 description: Kokoro TTS - Lightweight text-to-speech with multiple languages and voices
-metadata: {}
+metadata:
+    checksum: 1a26b5a10f295bb45be17b9bd076a83d0f384971f23b39db51d33e9ac0cad784
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnvg507v5kq187a2ad09.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnmvmct2qefvrysxrteg.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kh17fnhq4hh0ka7thq95ggje.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5qxuby2i.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/u0hj72to.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/4si2u76q.png
 env: {}
 kernel: python-3.11
 secrets:

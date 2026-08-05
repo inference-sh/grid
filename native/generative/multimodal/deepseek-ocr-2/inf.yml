@@ -1,17 +1,19 @@
 namespace: infsh
 name: deepseek-ocr-2
 description: Next-gen document OCR with improved math, tables, and reading order. Converts images and PDFs to structured markdown.
+metadata:
+    checksum: 1de9f406dd02cf88a4452df57d34689e7661041e861cbd5319e088535843856e
 category: text
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8jggvkmwrz8xzahg61vrnc2.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/41o482i3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lal6j940.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tnadzdvi.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.11
 resources:
     gpu:
         count: 1
-        vram: 24
+        vram: 24000000000
         type: any
-    ram: 32
+    ram: 32000000000

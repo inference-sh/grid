@@ -2,6 +2,7 @@ namespace: runway
 name: gen-4-image
 description: Runway Gen-4 Image — high-quality text-to-image generation with optional reference images and @tag syntax. 5 credits per 720p, 8 credits per 1080p.
 metadata:
+    checksum: eee037f8a9b2be2f905ab0aadaee2fe5883da4f8316b2d638095b4cfa9d0fcc8
     provider: runway
     tags:
         - runway
@@ -9,6 +10,11 @@ metadata:
         - text-to-image
         - gen4
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/16kt5sxs.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jz6m0mw9.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gve4ner7.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

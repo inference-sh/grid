@@ -1,12 +1,13 @@
 namespace: infsh
 name: fast-wan
 description: Generates high-quality videos quickly by utilizing a technology that distills a complex process into fewer steps, significantly improving generation speed.
-metadata: {}
+metadata:
+    checksum: 2b6bfdc7c1faaf167b87eee2903d3adc7f6a8be0f933bc97cd0ca2db3ab74399
 category: video
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10x089dy1gc1fmacykqwevv.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10x089dy1gc1fmacykqwevv.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01k10x089dy1gc1fmacykqwevv.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ogeg3n34.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fg34uerd.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/s7s909c4.png
 env: {}
 kernel: python-3.12
 resources:

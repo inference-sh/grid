@@ -1,12 +1,13 @@
 namespace: google
 name: docs
 description: Read, create, and edit Google Docs documents
-metadata: {}
+metadata:
+    checksum: 511bcc8efaebb7b201c1ea6ceb295bcdfdec71eeeae75bd7ad4f929541da0286
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprgsqk34yf8zcewq6wpbk.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprjmtswqnpm611pa9m1n1.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprhsdmy0a5w5hvjnp2490.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/v11etvwq.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1d9qbtob.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/3sb011la.png
 env: {}
 kernel: python-3.11
 integrations:

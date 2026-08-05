@@ -1,7 +1,8 @@
 namespace: pruna
 name: p-image-lora
 description: Pruna's flagship fast text-to-image with custom LoRA style support
-metadata: {}
+metadata:
+    checksum: 48ae61d4beb4b6579cfd2dbc0dc7df0b67512dd977a32a6f9e6aff6d514b461e
 category: image
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkgym8005r200f6rmk9mq0hj.jpeg

@@ -2,6 +2,7 @@ namespace: bytedance
 name: seedance-1-0-pro
 description: Generate high-quality videos up to 1080p from text prompts with optional first-frame image control using ByteDance's Seedance 1.0 Pro model.
 metadata:
+    checksum: be2280295e025a93b34fad55179344886c709c867bc6cdba146f33355f46bc1f
     provider: bytedance
     tags:
         - seedance
@@ -13,9 +14,9 @@ metadata:
         - byteplus
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzz644sq2v9shwvhrmev5x4.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzz644sq2v9shwvhrmev5x4.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfzz5mbayk2hfg6a3mym4rnv.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/noj0mecp.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/k28scdie.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/agfgafan.png
 env: {}
 kernel: python-3.11
 secrets:

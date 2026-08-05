@@ -6,9 +6,9 @@ metadata:
         - tools
 category: chat
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4przxn82xhsjxv71dzsdw7r.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ksqfjb9z.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/3e5xupcu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/abkmfeav.png
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
     FORCE_CMAKE: "1"

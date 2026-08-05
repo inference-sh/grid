@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-medium
 description: Krea 2 Medium — expressive illustrations, ~10s per generation, 1.5K native resolution
 metadata:
+    checksum: a077fa62e63d7b50692e54bf2feaac0668d0c37f5fe913384d006f118afc48ca
     provider: krea
     tags:
         - krea
@@ -9,6 +10,11 @@ metadata:
         - text-to-image
         - krea-2
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/6yqwszmw.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/1qcnmewn.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/t4lu1o93.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

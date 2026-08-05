@@ -4,9 +4,9 @@ description: Inworld Speech to Text - Multi-provider speech transcription with w
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/r9nisr0n.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/fra27qib.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/l3aemntv.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/gfgkf130.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/7b0dflvk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/vne4k2lw.png
 env: {}
 kernel: python-3.11
 secrets:

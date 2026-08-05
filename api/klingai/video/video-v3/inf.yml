@@ -2,6 +2,7 @@ namespace: klingai
 name: video-v3
 description: Kling V3.0 - latest and most capable video generation model. Native 4K output, multi-shot generation, flexible 3-15s duration billed per second, element control, motion control, and synchronized audio.
 metadata:
+    checksum: 12a4018c590e4f1a5ab0db7615b6aca168f6fac5fb20a087c44fba1e8f753951
     provider: klingai
     tags:
         - kling
@@ -13,9 +14,9 @@ metadata:
         - v3
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/7yofpcv5.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ve3dmicc.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/oqo46e2z.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fmemthkn.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/v9k0idqm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/f0q1p8tk.png
 env: {}
 kernel: python-3.11
 secrets:

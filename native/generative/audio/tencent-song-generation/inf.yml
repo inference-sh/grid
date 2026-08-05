@@ -1,12 +1,13 @@
 namespace: infsh
 name: tencent-song-generation
 description: Generates high-quality songs, including both music and vocals, and can also produce pure music or vocal-only tracks.
-metadata: {}
+metadata:
+    checksum: adaf8754806cc752fef878cbbb54e1c5e3ec4f384a2c4a6d42a3cf44cd0e0bf6
 category: audio
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1vgcfg4vcfvvydrz57rkt4r.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1vgcfg4vcfvvydrz57rkt4r.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1vgcfg4vcfvvydrz57rkt4r.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/j065dzx9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/aiw4bxy7.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/glkfg60j.png
 env: {}
 kernel: python-3.10
 secrets:

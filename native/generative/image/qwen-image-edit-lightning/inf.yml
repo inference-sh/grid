@@ -4,9 +4,9 @@ description: Quickly edit images and render high-quality text within those image
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/kaz52z70.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/cvp5mihp.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/cfqzd6eu.png
 env: {}
 kernel: python-3.12
 resources:

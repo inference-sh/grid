@@ -1,6 +1,6 @@
 {
   "run": {
-    "description": "Generate video using Veo 3 model via Vertex AI.",
+    "description": "Generate video using Veo 3.1 model via Vertex AI.",
     "input_schema": {
       "$defs": {
         "PersonGenerationEnum": {
@@ -25,13 +25,14 @@
           "description": "Resolution options for video.",
           "enum": [
             "720p",
-            "1080p"
+            "1080p",
+            "4k"
           ],
           "title": "VideoResolutionEnum",
           "type": "string"
         }
       },
-      "description": "Input for video generation with Veo 3.",
+      "description": "Input for video generation with Veo 3.1.",
       "properties": {
         "prompt": {
           "description": "Text prompt describing the desired video content.",
@@ -80,6 +81,23 @@
           "description": "Optional video to extend (1-30s MP4, 24fps, 720p/1080p). Extends by 7 seconds.",
           "title": "Video"
         },
+        "reference_images": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional reference asset images to guide video content (preview). Style reference images are not supported.",
+          "title": "Reference Images"
+        },
         "aspect_ratio": {
           "$ref": "#/$defs/VideoAspectRatioEnum",
           "default": "16:9",
@@ -87,9 +105,9 @@
         },
         "duration": {
           "default": 8,
-          "description": "Video duration in seconds.",
+          "description": "Video duration in seconds (4, 6, or 8). Reference image to video only supports 8.",
           "maximum": 8,
-          "minimum": 5,
+          "minimum": 4,
           "title": "Duration",
           "type": "integer"
         },
@@ -107,7 +125,7 @@
         "num_videos": {
           "default": 1,
           "description": "Number of videos to generate.",
-          "maximum": 2,
+          "maximum": 4,
           "minimum": 1,
           "title": "Num Videos",
           "type": "integer"
@@ -419,12 +437,6 @@
           },
           "title": "Videos",
           "type": "array"
-        },
-        "warning": {
-          "default": "DEPRECATED: veo-3.0-generate-001 will be discontinued on June 30, 2026. Migrate to google/veo-3-1 (veo-3.1-generate-001).",
-          "description": "Deprecation warning",
-          "title": "Warning",
-          "type": "string"
         },
         "output_meta": {
           "anyOf": [

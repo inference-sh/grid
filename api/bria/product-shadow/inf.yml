@@ -1,7 +1,8 @@
 namespace: bria
 name: product-shadow
 description: Add realistic shadows to product cutout images
-metadata: {}
+metadata:
+    checksum: 1b6959bbd12500b65ee003daf7563e4bd7dfec827650511fdd64e7e9479baf48
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ro4cuwj1.jpg

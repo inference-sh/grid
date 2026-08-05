@@ -4,12 +4,12 @@ description: Qwen3 8B - efficient dense language model with reasoning and tool u
 metadata:
     capabilities:
         - reasoning
-    checksum: 2a6e31a1752f7ad43f291b43c652587167eec2ff2ddee1f0bbc4de29ab5fae7a
+    checksum: 90bb7603f1e0b85a4a3524f8ac6362113fcc7c4e7eb5d8ff7234751ce0567703
 category: chat
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/47r6eodo.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/0xywr1hq.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/xfwlp2pc.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/crhicb1k.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/114re2op.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/n6y39dnt.png
 env: {}
 kernel: ""
 secrets:

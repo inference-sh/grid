@@ -4,9 +4,9 @@ description: Advanced image editing that excels at rendering and manipulating te
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3oiwoct1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2s4kbvll.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/jutpabcm.png
 env: {}
 kernel: python-3.12
 resources:

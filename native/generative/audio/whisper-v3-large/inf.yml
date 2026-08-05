@@ -4,9 +4,9 @@ description: Transcribes and translates audio files accurately, especially usefu
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00czmv27c9jx6j3vcz6kbn.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00czmv27c9jx6j3vcz6kbn.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jz00czmv27c9jx6j3vcz6kbn.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6bflg2f2.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dq3q0fgr.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/th3s4aq4.png
 env: {}
 kernel: python-3.11
 resources:

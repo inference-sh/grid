@@ -4,12 +4,12 @@ description: Hy3 preview is a high-efficiency Mixture-of-Experts model from Tenc
 metadata:
     capabilities:
         - reasoning
-    checksum: ae4f2af0effc9bf46cca90360e3db7f82e7a8343bb0eaa0fd64533ae1fd499b3
+    checksum: 40324969441c6aabbf3fd6f604ff7f049f1f42a4d7eda0a3744486fc1a895442
 category: chat
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/urfgwuka.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/uez6051g.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/5kke6fdh.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/8auzjaqk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ylpq99np.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/61x2jd99.png
 env: {}
 kernel: ""
 secrets:

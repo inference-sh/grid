@@ -4,9 +4,9 @@ description: Creates a new document using the text and file name you specify.
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9c6ma4gdr4y9rrphya9exrq.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9c6ma4gdr4y9rrphya9exrq.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9c6ma4gdr4y9rrphya9exrq.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/e1bzm9o9.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/p0o0oxyc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/babceonr.png
 env: {}
 kernel: python-3.11
 resources:

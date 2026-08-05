@@ -2,6 +2,7 @@ namespace: klingai
 name: video-to-audio
 description: Kling Video-to-Audio - add generated sound effects, ambient audio, or music to any video. Works with Kling-generated and user-uploaded videos (3-20s).
 metadata:
+    checksum: f51824fa267e24cfcce9c36a349d67647999aa318792c0925c928123229c05ea
     provider: klingai
     tags:
         - kling
@@ -10,9 +11,9 @@ metadata:
         - video-editing
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/f48ol466.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/p5mdo9lv.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/gy5ypfmw.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fc73b1fy.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bca8vj9x.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/0g2p1j2a.png
 env: {}
 kernel: python-3.11
 secrets:

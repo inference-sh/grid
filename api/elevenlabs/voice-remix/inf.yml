@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: voice-remix
 description: ElevenLabs Voice Remix - Modify voice characteristics like accent, gender, style, pacing
-metadata: {}
+metadata:
+    checksum: abc0260dc3850bd40cf895fe7d7b72d6c1692ffc77aaa924f8876771af017073
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vjyanqf9b99hre8a597v.jpeg

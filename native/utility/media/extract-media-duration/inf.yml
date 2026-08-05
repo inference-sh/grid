@@ -4,9 +4,9 @@ description: Extracts the length of video and audio files.
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynmgqy446sx49cdspkvsqx.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynmgqy446sx49cdspkvsqx.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynmgqy446sx49cdspkvsqx.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/hcredg9o.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/142c2l0j.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y2ftnvsr.png
 env: {}
 kernel: python-3.12
 resources:

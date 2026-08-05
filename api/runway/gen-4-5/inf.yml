@@ -2,6 +2,7 @@ namespace: runway
 name: gen-4-5
 description: Runway Gen-4.5 — high-quality video generation from text or image. 2-10 second duration, multiple aspect ratios. 12 credits/second.
 metadata:
+    checksum: 95c36b6ca017fea0b0951e66f97661ff8f1c5d3ebd9bb319ff08e4b27b252325
     provider: runway
     tags:
         - runway
@@ -10,6 +11,11 @@ metadata:
         - image-to-video
         - gen4
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/i70zk7yo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/v4b7vw33.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/frqdonor.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: RUNWAY_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

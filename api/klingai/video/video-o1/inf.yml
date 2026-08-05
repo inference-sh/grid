@@ -2,6 +2,7 @@ namespace: klingai
 name: video-o1
 description: Kling Video O1 (Omni) - unified video generation with text, image references, start/end frames, element references, and video references for editing and style transfer. The most capable Kling model.
 metadata:
+    checksum: 6c664bfa3d82dc925dc7995b7289261596e120f42dfad6eea08f94f8d7238cf4
     provider: klingai
     tags:
         - kling
@@ -12,9 +13,9 @@ metadata:
         - omni
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/vl87y0gb.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dd0g44t0.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2qln96zi.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/41y6yl5t.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/jnrjzr08.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qjwmrxaf.png
 env: {}
 kernel: python-3.11
 secrets:

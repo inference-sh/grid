@@ -4,12 +4,12 @@ description: Qwen3 32B - powerful dense language model with reasoning and tool u
 metadata:
     capabilities:
         - reasoning
-    checksum: b077aab618ceda4192d9793b13393e75c222f805249e0502d963a1c2dc8a2402
+    checksum: 249b08304b4aeb7dfd5c0d9b99134f623b3debce881911cbc4b2a9b99fa721ec
 category: chat
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/8sl2gw3i.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/vnxqjtfj.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/g3k9gdbt.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/zgg7bsxb.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2ds44bwh.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/pgzv8dcq.png
 env: {}
 kernel: ""
 secrets:

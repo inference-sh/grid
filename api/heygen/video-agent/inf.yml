@@ -2,7 +2,7 @@ namespace: heygen
 name: video-agent
 description: Generate complete videos from natural language prompts using HeyGen's AI video agent. The agent handles avatar selection, scripting, and production automatically.
 metadata:
-    checksum: 464422d0f6ddf3cfc8b7a9cafe8eea27d02d47ceb7f42093564a5ca7a4ae701e
+    checksum: befe638898c93278734451a5976aa61f5e742ec114fa796d7c8d52d550ecadfa
     provider: heygen
     tags:
         - video-agent

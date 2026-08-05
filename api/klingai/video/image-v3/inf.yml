@@ -2,6 +2,7 @@ namespace: klingai
 name: image-v3
 description: Kling Image V3 (Kolors V3.0) - latest image generation model with 1K/2K resolution support. Highest quality text-to-image.
 metadata:
+    checksum: 8145103c24d3d96662bb728830c01a61aa5d50c6bd06e411a0be62432be69f46
     provider: klingai
     tags:
         - kling
@@ -11,9 +12,9 @@ metadata:
         - text-to-image
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/0ffyldqs.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tayqwgdj.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/od2ds7tj.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/l3362aiq.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fd5yz6rm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y6k4z62r.png
 env: {}
 kernel: python-3.11
 secrets:

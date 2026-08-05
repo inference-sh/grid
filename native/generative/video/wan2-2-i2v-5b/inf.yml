@@ -4,9 +4,9 @@ description: Generates high-definition video from images or text prompts quickly
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ulnmr7od.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6rd66bip.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7xi2eq4u.png
 env: {}
 kernel: python-3.11
 resources:

@@ -4,9 +4,9 @@ description: Clone a voice from 5-15 seconds of audio using Inworld instant voic
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/w028y6eq.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/1i3rpj0f.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/6cwvbg81.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/v6r5ux6w.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/2nrbumpt.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/74u3aueg.png
 env: {}
 kernel: python-3.11
 secrets:

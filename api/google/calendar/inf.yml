@@ -1,12 +1,13 @@
 namespace: google
 name: calendar
 description: Create, read, update, and delete Google Calendar events
-metadata: {}
+metadata:
+    checksum: c02f9fbf0d13161c5225d7ee76142ab02b3d2d99acf7a07027d98d33a7628d31
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpnyge60xwf12cv43x1ved.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxprc0zy5j948c34k3gfq5m.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmxpp6rdskyfpm2d3pd2jrsc.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/l4bti63v.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1w375gxn.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/lm9k2f86.png
 env: {}
 kernel: python-3.11
 integrations:

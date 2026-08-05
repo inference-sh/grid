@@ -4,9 +4,9 @@ description: Turns web content into customizable PNG or JPEG images.
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9akfjpjkwb84df4yfcmby6g.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9akfjpjkwb84df4yfcmby6g.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k9akfjpjkwb84df4yfcmby6g.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/0calzhcn.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dg5ero3l.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/joecvcxs.png
 env: {}
 kernel: python-3.10
 resources:

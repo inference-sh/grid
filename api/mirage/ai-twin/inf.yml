@@ -2,6 +2,7 @@ namespace: mirage
 name: ai-twin
 description: Create a reusable AI Twin avatar from a calibration video and stills, usable as a creator in mirage/ai-creator and mirage/ai-ads.
 metadata:
+    checksum: e8025a019f81c6f22c46f421d2931a9f16c0d911b1588dd960109827671a7487
     provider: mirage
     tags:
         - avatar-creation
@@ -11,6 +12,10 @@ metadata:
         - voice-clone
         - captions
 category: other
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/nleifbza.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/wlbcnvok.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kwv551hx.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -21,4 +26,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

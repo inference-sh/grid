@@ -5,9 +5,9 @@ description: |
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf9s7q151y3hdpp5zqe5t.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf5kz7wq762qf6xd9zgre.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kfnjf9s7q151y3hdpp5zqe5t.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tauabe9b.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/owa2nl3x.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/syvu1i0n.png
 env: {}
 kernel: python-3.11
 secrets:

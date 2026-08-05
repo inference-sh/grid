@@ -4,9 +4,9 @@ description: Compares strings to decide which of two inputs to use.
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyncnfm2j6rfy0h6gx01f6c.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyncnfm2j6rfy0h6gx01f6c.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyyncnfm2j6rfy0h6gx01f6c.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/oit4fija.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4sbkkguf.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/x4jkffi6.png
 env: {}
 kernel: python-3.12
 resources:

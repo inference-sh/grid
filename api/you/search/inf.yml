@@ -1,14 +1,18 @@
 namespace: you
 name: search
 description: web search api — ground your apps in reliable, web-scale knowledge with contextual snippets
-metadata: {}
+metadata:
+    checksum: 38fe8e10e428c1dc9405473a63737038c64b3d2e0e6d6b4ca109c1f0a0d3186c
 category: text
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cx1t5fwi.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/njc72o04.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/edv577s2.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: YOU_KEY
       description: You.com API key
-      optional: false
 resources:
     gpu:
         count: 0

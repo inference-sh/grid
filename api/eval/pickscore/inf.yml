@@ -4,9 +4,9 @@ description: PickScore v1 — scores how well an image matches a text prompt (CL
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7f9701nb8xx7h9rf0cnx.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7h34ccdrx3eg1v8r79sv.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kmtk7c9hvqh2kpammx9kj625.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/sw5xot8z.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pfc8uzna.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/i4r9dpe9.png
 env: {}
 kernel: python-3.11
 resources:

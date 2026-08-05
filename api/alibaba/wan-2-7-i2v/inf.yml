@@ -1,7 +1,8 @@
 namespace: alibaba
 name: wan-2-7-i2v
 description: Wan 2.7 Image-to-Video generates videos from images using multi-modal input (text, images, audio, video). Supports first frame generation, first+last frame, and video continuation with 720P/1080P resolution
-metadata: {}
+metadata:
+    checksum: 07b2fa19b85488d45064d7f9afed273324136f9b0f74b08809b64c5e48385765
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/knlho3gw.jpeg

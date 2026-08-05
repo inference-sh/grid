@@ -4,9 +4,9 @@ description: a fast and high quality image generation model
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kb7t8v75er37hbj625jppxpj.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kb7t8v75er37hbj625jppxpj.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kb7t8v75er37hbj625jppxpj.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/abe5zdbh.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/op9lc92q.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/c0hs7a63.png
 env:
     TOKENIZERS_PARALLELISM: "false"
 kernel: python-3.11

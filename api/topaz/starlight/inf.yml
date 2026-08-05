@@ -1,14 +1,18 @@
 namespace: topaz
 name: starlight
 description: generative video upscaling — precision, hq, mini, sharp, and fast models
-metadata: {}
+metadata:
+    checksum: 7db9a289b92db97d70fdee95fc07f79ea73e189783c90a6cd196736325c3e9e5
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/89n6y6kt.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ze8hrjjz.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nvqn5rde.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

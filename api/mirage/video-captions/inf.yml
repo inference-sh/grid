@@ -2,6 +2,7 @@ namespace: mirage
 name: video-captions
 description: Burn styled animated captions onto a vertical video using Mirage caption templates, from an upload or an existing Mirage video ID.
 metadata:
+    checksum: 33af2c00c1161d177be3930cf40a903ab8d68c636b87b06ecd8d8bd47d24bea1
     provider: mirage
     tags:
         - captions
@@ -10,9 +11,12 @@ metadata:
         - shorts
         - mirage
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ee4jgmgn.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/rs94vffw.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/dqyodsye.png
 env: {}
 kernel: python-3.11
-default_function: run
 secrets:
     - key: CAPTIONS_KEY
       description: Mirage/Captions API key from platform.mirage.app
@@ -21,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

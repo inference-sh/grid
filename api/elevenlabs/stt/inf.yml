@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: stt
 description: ElevenLabs Speech to Text (Scribe) - High-accuracy transcription with diarization
-metadata: {}
+metadata:
+    checksum: ce09a1055bdfd8c66436f83d3d7874df8371647702975f02aff66347a315a0e0
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vszvkpz35ewa6mreeye0.jpeg

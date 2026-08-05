@@ -4,9 +4,9 @@ description: Synthesizes realistic sound effects and audio tracks based on your 
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtsg50nqmpdbf5h7891b33.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtsg50nqmpdbf5h7891b33.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k3rtsg50nqmpdbf5h7891b33.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/s9d03qtm.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/nefke8pk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/cmk1fhik.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache

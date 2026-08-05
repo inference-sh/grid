@@ -2,6 +2,7 @@ namespace: minimax
 name: music-3-0
 description: MiniMax Music 3.0 — AI music generation up to 5 minutes. Supports vocals with lyrics, instrumentals, and style prompts. Direct MiniMax API.
 metadata:
+    checksum: 3695a560383eadcda349b81683832f7a0d1f61f13bbf7f465ff3c4843c819d61
     provider: minimax
     tags:
         - music
@@ -9,9 +10,9 @@ metadata:
         - minimax
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h8s9dccf.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/c5o9fp2e.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/l4fydh8j.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -22,4 +23,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

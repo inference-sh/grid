@@ -4,9 +4,9 @@ description: Quickly converts still images into high-definition videos (up to 72
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k18rdndtcq0747ngv7f6djas.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/68wwnoyx.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4moo0e83.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/okn2ee3d.png
 env: {}
 kernel: python-3.11
 resources:

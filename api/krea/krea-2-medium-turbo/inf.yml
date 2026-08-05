@@ -2,6 +2,7 @@ namespace: krea
 name: krea-2-medium-turbo
 description: Krea 2 Medium Turbo — fastest K2 model, ~3s per generation, 1.5K native resolution
 metadata:
+    checksum: f5aae9273444ed4ea31096c80258fb354e7922e8f8712a544e56a2e395ed3885
     provider: krea
     tags:
         - krea
@@ -10,6 +11,11 @@ metadata:
         - krea-2
         - turbo
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/6q3tzwab.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/lcvppabl.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/785g1o8d.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: KREA_KEY
@@ -19,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

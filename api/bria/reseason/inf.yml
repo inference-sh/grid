@@ -1,7 +1,8 @@
 namespace: bria
 name: reseason
 description: Change the season of an image (spring, summer, autumn, winter)
-metadata: {}
+metadata:
+    checksum: 22c882af23ecfb389e01a5de391fa5f595ffb1ecda7b088450833d60763fcffb
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ktazydib.jpg

@@ -4,9 +4,9 @@ description: Generates images from text descriptions.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k22agcnb24axy5tpewqc095w.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k22agcnb24axy5tpewqc095w.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k22agcnb24axy5tpewqc095w.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/h6j72e15.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/yj6xpvrq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/t8d76jlv.png
 env: {}
 kernel: "3.11"
 resources:

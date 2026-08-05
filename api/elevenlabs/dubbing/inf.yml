@@ -1,7 +1,8 @@
 namespace: elevenlabs
 name: dubbing
 description: ElevenLabs Dubbing - Automatically dub audio/video to other languages
-metadata: {}
+metadata:
+    checksum: bb6a722d90a6d6c1ab069c8e2ed7a8fa3bbcc687a5763ebcda994f356ee42352
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vqeerpkce599pwxs5a4f.jpeg

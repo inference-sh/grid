@@ -2,6 +2,7 @@ namespace: klingai
 name: lip-sync
 description: Kling Lip Sync - drive mouth movements in videos using text or audio. Ideal for dubbing, adding speech to silent videos, or replacing dialogue.
 metadata:
+    checksum: f998f1512f9ecc08c665fa322fac48dbb99534f96ba3da7d41f8928476beedce
     provider: klingai
     tags:
         - kling
@@ -10,9 +11,9 @@ metadata:
         - video-editing
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/rl1hlnic.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/rg8x5l9d.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/zpa18v26.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/bipykyxo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/lsyebsw9.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/17bjnqw5.png
 env: {}
 kernel: python-3.11
 secrets:

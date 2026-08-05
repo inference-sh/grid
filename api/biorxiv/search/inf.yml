@@ -1,12 +1,13 @@
 namespace: biorxiv
 name: search
 description: search biorxiv and medrxiv preprints by date range with optional category filtering
-metadata: {}
+metadata:
+    checksum: 8bf5a820436389d08b4dca16ac838cd028d1f35d2fafe115b8fc6019b5ee4b0f
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/fhallftz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/j86uxdkc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/z2lkg4b2.png
 env: {}
 kernel: python-3.11
 resources:

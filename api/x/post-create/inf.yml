@@ -4,9 +4,9 @@ description: Create posts on X.com with text (280 char limit) and optional media
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqrs66am9whb3592myf03j.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr0rg7qgf2k2c5ra3sbs0.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtqr6mnx6zg6a6ky8mbdj48.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
 env: {}
 kernel: python-3.11
 integrations:

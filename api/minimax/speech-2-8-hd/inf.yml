@@ -2,6 +2,7 @@ namespace: minimax
 name: speech-2-8-hd
 description: MiniMax Speech 2.8 HD — high-quality text-to-speech. 40 languages, 9 emotions, custom voices. Direct MiniMax API.
 metadata:
+    checksum: 4f1ae8fa03e1b9b4f4cf791402cb4378b8c6e9f996b896c29cc5387120d49401
     provider: minimax
     tags:
         - tts
@@ -10,9 +11,9 @@ metadata:
         - minimax
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/vliurct3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/a4e1gie5.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2rarrgul.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -23,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

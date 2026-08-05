@@ -4,9 +4,9 @@ description: Generates and edits images from text descriptions, excelling at ren
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k1zyfd6wa58n0n41npkasgp1.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/t3fpjpj3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ywf4cjmt.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7tyj8a99.png
 env: {}
 kernel: python-3.12
 resources:

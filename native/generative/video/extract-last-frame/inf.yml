@@ -4,9 +4,9 @@ description: Save a specific frame from the end of a video as a static image fil
 metadata: {}
 category: video
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k4pjdmqh4fy3v0n115m266mz.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/wp8yucob.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/upar8r6e.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/k3eaibmu.png
 env: {}
 kernel: python-3.12
 resources:

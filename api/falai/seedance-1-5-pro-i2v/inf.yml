@@ -10,9 +10,9 @@ metadata:
         - bytedance
 category: video
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdnj5s9byn9hmbgdv69y4s8c.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdnj5s9byn9hmbgdv69y4s8c.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01kdnj5s9byn9hmbgdv69y4s8c.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4c3xq4tu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vce3dtio.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/dc512vgk.png
 env: {}
 kernel: python-3.11
 secrets:

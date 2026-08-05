@@ -4,9 +4,9 @@ description: Selects one of two inputs based on a condition involving numerical 
 metadata: {}
 category: other
 images:
-    card: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
-    thumbnail: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
-    banner: https://cloud.inference.sh/u/4mg21r6ta37mpaz6ktzwtt8krr/01jyynewtrdhyfnxdje7xn7cwe.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/14y39xpo.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hp1t7mye.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/82hgvual.png
 env: {}
 kernel: python-3.12
 resources:

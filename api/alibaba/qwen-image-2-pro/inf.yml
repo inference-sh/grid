@@ -4,9 +4,9 @@ description: Qwen-Image-2.0 Pro offers enhanced text rendering, fine-grained rea
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtke38c4689yzd0b0w6vwfj.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtke4mwctrez57sjbsd1yg7.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kjtkdzbxw3ma6wx4j1e42yry.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jdume67q.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/08r4k6gv.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/x11b8a20.png
 env: {}
 kernel: python-3.11
 secrets:

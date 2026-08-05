@@ -5,8 +5,7 @@ torchvision
 triton
 
 diffusers
-transformers==4.48.3
-tokenizers==0.21.4
+transformers
 huggingface-hub==0.25.2
 imageio==2.27.0
 decord==0.6.0

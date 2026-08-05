@@ -2,6 +2,7 @@ namespace: klingai
 name: image-v1-5
 description: Kling Image V1.5 (Kolors V1.5) - text-to-image with subject and face reference for character consistency. Generate images preserving a person's appearance.
 metadata:
+    checksum: 6fa5b0065e9d3e832274c562f5149d788bae82269e55213678f369e3a049309f
     provider: klingai
     tags:
         - kling
@@ -11,9 +12,9 @@ metadata:
         - character-consistency
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9tkhtkjv.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/djiplhqx.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/kct160eo.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/n4nemho0.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4k3c039v.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/dn791tik.png
 env: {}
 kernel: python-3.11
 secrets:

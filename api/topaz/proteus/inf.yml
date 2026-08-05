@@ -1,14 +1,18 @@
 namespace: topaz
 name: proteus
 description: proteus video upscaling and enhancement — precision upscaling, deinterlacing, face recovery, and cgi enhancement
-metadata: {}
+metadata:
+    checksum: b978ae80aea943e761b6d8bef088da4602cb1979fd3cd353ef4024216df02228
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/y36ihdvu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/bii7zsrm.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ph46qyl4.png
 env: {}
 kernel: python-3.11
 secrets:
     - key: TOPAZ_KEY
       description: Topaz Labs API key
-      optional: false
 resources:
     gpu:
         count: 0

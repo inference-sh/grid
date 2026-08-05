@@ -4,9 +4,9 @@ description: Design a custom voice from a text description using Inworld AI. Des
 metadata: {}
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/gzd7bcfo.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/tic32und.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/x59x3gby.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u5x7uq1q.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/sv0p7qq5.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/jecubzdr.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -4,9 +4,9 @@ description: Enhance and increase the size of images without losing quality, mak
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d77p126y82zfecnt46hy4h.png
-    thumbnail: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d77p126y82zfecnt46hy4h.png
-    banner: https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d77p126y82zfecnt46hy4h.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/d8kz4o9x.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/urhuo71e.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/e0smz7y5.png
 env: {}
 kernel: ""
 secrets:

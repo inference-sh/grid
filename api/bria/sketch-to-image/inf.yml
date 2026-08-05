@@ -1,7 +1,8 @@
 namespace: bria
 name: sketch-to-image
 description: Convert a sketch into a fully colored image
-metadata: {}
+metadata:
+    checksum: 800556523699690f6c93a497ab8a03b6d2997304edcb396f2f5162e853df372d
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/yfc6dvui.jpg

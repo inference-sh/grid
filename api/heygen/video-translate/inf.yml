@@ -2,7 +2,7 @@ namespace: heygen
 name: video-translate
 description: Translate videos into 30+ languages with voice cloning and lip-sync using HeyGen. Supports speed and precision modes with optional captioning.
 metadata:
-    checksum: 90118a17194dbb17dea585d8b0cac14d5f37ba929e708ee814f3caeddcfa9744
+    checksum: 2ffcf69d3133f373e1e7a5e2c7a7caf0a8ef283a2ab1ffc169f53c2b059b5267
     provider: heygen
     tags:
         - video-translation

@@ -4,9 +4,9 @@ description: Performs high-quality editing across multiple images.
 metadata: {}
 category: image
 images:
-    card: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
-    thumbnail: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
-    banner: https://cloud.inference.sh/u/01sm9vzqrjkvqhzx5xsybwce0y/01k31c4qds72pwpk9z8a5cgdmb.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/advn7yo1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/j2l4hvr0.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/enijy87m.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
 kernel: python-3.10

@@ -2,6 +2,7 @@ namespace: klingai
 name: video-v2-5
 description: Kling V2.5 Turbo - fast video generation from text and images. Supports start/end frame interpolation in pro mode. Optimized for speed while maintaining high quality at up to 1080p.
 metadata:
+    checksum: 1cabec3acc5526cd3c54d245c6a1b9a6d2a9411eb0ff71ec07fd7e1caefcdb62
     provider: klingai
     tags:
         - kling
@@ -12,9 +13,9 @@ metadata:
         - fast
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/u4xfqot2.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/zmnqlw0i.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tx4u962y.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/4kr6qjwb.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1ykbeztd.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/9nnu77ey.png
 env: {}
 kernel: python-3.11
 secrets:

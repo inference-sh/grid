@@ -1,12 +1,13 @@
 namespace: reve
 name: create
 description: Reve Create — Generate images from text with best-in-class prompt adherence and text rendering.
-metadata: {}
+metadata:
+    checksum: 7d58e9cfb8100674a3e19cbb74bbe1f2aa5e142a4585f5574cd556491247421d
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/jy8ny8yc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/tt8lfth8.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/f5cg2jn3.png
 env: {}
 kernel: python-3.11
 secrets:

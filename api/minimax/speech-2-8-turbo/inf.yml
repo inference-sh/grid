@@ -2,6 +2,7 @@ namespace: minimax
 name: speech-2-8-turbo
 description: MiniMax Speech 2.8 Turbo — fast text-to-speech. 40 languages, 9 emotions, custom voices. Lower latency than HD. Direct MiniMax API.
 metadata:
+    checksum: 665b3aead5c97e900dd8d1d14589f841c076527f047259a37845ae59041cd761
     provider: minimax
     tags:
         - tts
@@ -11,9 +12,9 @@ metadata:
         - turbo
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/wlts5tyd.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ltzlxnva.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/6e0y9fuw.png
 env: {}
 kernel: python-3.11
 secrets:
@@ -24,4 +25,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

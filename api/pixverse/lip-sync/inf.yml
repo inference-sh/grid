@@ -1,7 +1,8 @@
 namespace: pixverse
 name: lip-sync
-description: "PixVerse Lip Sync — align speech to mouth movement in video. Supports audio file input or text-to-speech with selectable voices."
+description: PixVerse Lip Sync — align speech to mouth movement in video. Supports audio file input or text-to-speech with selectable voices.
 metadata:
+    checksum: 0d08f4cea19d8c7dfbf57f27b69aaf7f3c590555f192fa450b42add9ff6f2f11
     provider: pixverse
     tags:
         - pixverse
@@ -9,6 +10,11 @@ metadata:
         - speech
         - tts
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/tfubt8fx.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/w9cqslsg.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/cvswxlun.png
+env: {}
 kernel: python-3.11
 secrets:
     - key: PIXVERSE_KEY
@@ -18,4 +24,4 @@ resources:
         count: 0
         vram: 0
         type: none
-    ram: 4
+    ram: 4000000000

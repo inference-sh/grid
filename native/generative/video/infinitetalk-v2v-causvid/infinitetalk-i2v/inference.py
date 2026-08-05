@@ -48,18 +48,32 @@ from .InfiniteTalk import wan
 from .InfiniteTalk.wan.configs import SIZE_CONFIGS, SUPPORTED_SIZES, WAN_CONFIGS
 from .InfiniteTalk.wan.utils.utils import cache_image, cache_video, str2bool
 from .InfiniteTalk.wan.utils.multitalk_utils import save_video_ffmpeg
+from .InfiniteTalk.kokoro import KPipeline
 from .InfiniteTalk.src.audio_analysis.wav2vec2 import Wav2Vec2Model
 
 warnings.filterwarnings('ignore')
 
 class AppInput(BaseAppInput):
-    image: File = Field(description="Input image for image-to-video generation")
+    image: Optional[File] = Field(None, description="Input image for single image driven mode")
+    video: Optional[File] = Field(None, description="Input video for video dubbing mode")
     prompt: str = Field(description="Text prompt describing the desired video")
     negative_prompt: str = Field(
         default="bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
         description="Negative prompt"
     )
-    audio_file: File = Field(description="Audio file to drive the video generation")
+    task_mode: str = Field(
+        default="VideoDubbing", 
+        description="Task mode", 
+        enum=["SingleImageDriven", "VideoDubbing"]
+    )
+    audio_mode: str = Field(
+        default="Single Person(Local File)",
+        description="Audio mode",
+        enum=["Single Person(Local File)", "Single Person(TTS)", "Multi Person(Local File, audio add)", "Multi Person(Local File, audio parallel)", "Multi Person(TTS)"]
+    )
+    audio_1: Optional[File] = Field(None, description="Audio file for speaker 1")
+    audio_2: Optional[File] = Field(None, description="Audio file for speaker 2")
+    tts_text: Optional[str] = Field(None, description="Text for TTS generation")
     resolution: str = Field(
         default="infinitetalk-480",
         description="Output resolution",
@@ -69,6 +83,14 @@ class AppInput(BaseAppInput):
     seed: int = Field(default=42, description="Random seed")
     text_guide_scale: float = Field(default=1.0, description="Text guidance scale")
     audio_guide_scale: float = Field(default=2.0, description="Audio guidance scale")
+    human1_voice: str = Field(
+        default="weights/Kokoro-82M/voices/am_adam.pt",
+        description="Voice file for person 1"
+    )
+    human2_voice: str = Field(
+        default="weights/Kokoro-82M/voices/af_heart.pt", 
+        description="Voice file for person 2"
+    )
 
 class AppOutput(BaseAppOutput):
     video: File = Field(description="Generated video file")
@@ -137,16 +159,17 @@ class App(BaseApp):
         infinitetalk_repo = snapshot_download("MeiGen-AI/InfiniteTalk")
         self.infinitetalk_dir = os.path.join(infinitetalk_repo, "single/infinitetalk.safetensors")
         
+        # Download Kokoro TTS model for voices
+        self.kokoro_dir = snapshot_download("hexgrad/Kokoro-82M")
+        
         logging.info("Model downloads completed.")
         self.audio_save_dir = 'save_audio/inference'
         
         # Model configuration
-        # Model config parameters - simplified for image-to-video only
         self.task = "infinitetalk-14B"
-        self.task_mode = "SingleImageDriven"  # Fixed to image-to-video only
-        self.frame_num = 125  # Default frame count for image-to-video
-        self.motion_frame = 0  # Starting motion frame
-        self.mode = "clip"     # Mode for image-to-video
+        self.frame_num = 81
+        self.motion_frame = 9
+        self.mode = "streaming"
         self.sample_shift = 7  # Default for 480p
         self.offload_model = True if self.world_size == 1 else False
         self.color_correction_strength = 1.0
@@ -249,28 +272,6 @@ class App(BaseApp):
             human_speech_array = self._loudness_norm(human_speech_array, sr)
         return human_speech_array
     
-    def _audio_prepare_multi(self, left_path, right_path, audio_type, sample_rate=16000):
-        """Prepare multi-person audio files."""
-        if not (left_path == 'None' or right_path == 'None'):
-            human_speech_array1 = self._audio_prepare_single(left_path)
-            human_speech_array2 = self._audio_prepare_single(right_path)
-        elif left_path == 'None':
-            human_speech_array2 = self._audio_prepare_single(right_path)
-            human_speech_array1 = np.zeros(human_speech_array2.shape[0])
-        elif right_path == 'None':
-            human_speech_array1 = self._audio_prepare_single(left_path)
-            human_speech_array2 = np.zeros(human_speech_array1.shape[0])
-
-        if audio_type == 'para':
-            new_human_speech1 = human_speech_array1
-            new_human_speech2 = human_speech_array2
-        elif audio_type == 'add':
-            new_human_speech1 = np.concatenate([human_speech_array1[: human_speech_array1.shape[0]], np.zeros(human_speech_array2.shape[0])]) 
-            new_human_speech2 = np.concatenate([np.zeros(human_speech_array1.shape[0]), human_speech_array2[:human_speech_array2.shape[0]]])
-        
-        sum_human_speechs = new_human_speech1 + new_human_speech2
-        return new_human_speech1, new_human_speech2, sum_human_speechs
-    
     def _get_embedding(self, speech_array, sr=16000):
         """Extract audio embedding using wav2vec."""
         audio_duration = len(speech_array) / sr
@@ -319,25 +320,61 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video using InfiniteTalk."""
-        # Prepare input data structure for image-to-video
+        # Prepare input data structure
         input_dict = {
-            "prompt": input_data.prompt,
-            "cond_video": input_data.image.path  # Use image as input
+            "prompt": input_data.prompt
         }
         
-        # Process single audio file
-        human_speech = self._audio_prepare_single(input_data.audio_file.path)
-        audio_embedding = self._get_embedding(human_speech)
+        # Set condition video/image based on task mode
+        if input_data.task_mode == 'VideoDubbing':
+            if input_data.video is None:
+                raise ValueError("Video is required for VideoDubbing mode")
+            input_dict["cond_video"] = input_data.video.path
+        else:  # SingleImageDriven
+            if input_data.image is None:
+                raise ValueError("Image is required for SingleImageDriven mode")
+            input_dict["cond_video"] = input_data.image.path
         
-        # Save audio embeddings and processed audio
-        emb_path = os.path.join(self.audio_save_dir, '1.pt')
-        sum_audio = os.path.join(self.audio_save_dir, 'sum.wav')
-        sf.write(sum_audio, human_speech, 16000)
-        torch.save(audio_embedding, emb_path)
+        # Process audio based on mode
+        person = {}
+        if input_data.audio_mode == "Single Person(Local File)":
+            if input_data.audio_1 is None:
+                raise ValueError("Audio file is required for Single Person mode")
+            person['person1'] = input_data.audio_1.path
+        elif input_data.audio_mode == "Single Person(TTS)":
+            if input_data.tts_text is None:
+                raise ValueError("TTS text is required for TTS mode")
+            tts_audio = {
+                'text': input_data.tts_text,
+                'human1_voice': input_data.human1_voice
+            }
+            input_dict["tts_audio"] = tts_audio
+        # Add other audio modes as needed...
         
-        # Set audio paths in input dict
-        input_dict['cond_audio'] = {'person1': emb_path}
-        input_dict['video_audio'] = sum_audio
+        input_dict["cond_audio"] = person
+        
+        # Process audio files and generate embeddings
+        if 'Local File' in input_data.audio_mode and len(person) >= 1:
+            human_speech = self._audio_prepare_single(person['person1'])
+            audio_embedding = self._get_embedding(human_speech)
+            emb_path = os.path.join(self.audio_save_dir, '1.pt')
+            sum_audio = os.path.join(self.audio_save_dir, 'sum.wav')
+            sf.write(sum_audio, human_speech, 16000)
+            torch.save(audio_embedding, emb_path)
+            input_dict['cond_audio']['person1'] = emb_path
+            input_dict['video_audio'] = sum_audio
+        elif 'TTS' in input_data.audio_mode:
+            if 'human2_voice' not in input_dict['tts_audio']:
+                new_human_speech1, sum_audio = self._process_tts_single(
+                    input_dict['tts_audio']['text'], 
+                    self.audio_save_dir, 
+                    input_dict['tts_audio']['human1_voice']
+                )
+                audio_embedding_1 = self._get_embedding(new_human_speech1)
+                emb1_path = os.path.join(self.audio_save_dir, '1.pt')
+                torch.save(audio_embedding_1, emb1_path)
+                input_dict['cond_audio']['person1'] = emb1_path
+                input_dict['video_audio'] = sum_audio
         
         # Generate video
         logging.info("Generating video...")
