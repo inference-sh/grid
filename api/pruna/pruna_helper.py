@@ -162,6 +162,7 @@ async def poll_prediction_status(
     headers = {"apikey": get_api_key()}
 
     elapsed = 0.0
+    succeeded_at = None
     while True:
         response = requests.get(url, headers=headers)
 
@@ -172,32 +173,17 @@ async def poll_prediction_status(
         status = result.get("status")
 
         if status == "succeeded":
-            gen_url = result.get("generation_url")
-            if isinstance(gen_url, str):
+            if succeeded_at is None:
+                succeeded_at = elapsed
+            resolved = _extract_url(result)
+            if resolved:
                 if logger:
                     logger.info("Prediction completed successfully")
                 return result
-            # Check if output URL is in a different field
-            output = result.get("output")
-            if isinstance(output, str):
-                result["generation_url"] = output
+            # Wait up to 60s after status turned green for the URL to appear
+            if elapsed - succeeded_at > 60:
                 if logger:
-                    logger.info("Prediction completed (URL in output field)")
-                return result
-            if isinstance(output, list) and output and isinstance(output[0], str):
-                result["generation_url"] = output[0]
-                if logger:
-                    logger.info("Prediction completed (URL in output list)")
-                return result
-            if isinstance(output, dict):
-                url_val = output.get("url") or output.get("uri") or output.get("image")
-                if isinstance(url_val, str):
-                    result["generation_url"] = url_val
-                    if logger:
-                        logger.info("Prediction completed (URL in output dict)")
-                    return result
-            # Upstream says "succeeded" but no URL — model may be broken
-            if elapsed > 60:
+                    logger.error(f"No URL after 60s. Last response: {result}")
                 raise RuntimeError("Upstream model returned succeeded status but no generation URL — the model may be temporarily unavailable")
         elif status == "failed":
             error_msg = result.get("error", result.get("message", "Unknown error"))
@@ -220,6 +206,29 @@ async def poll_prediction_status(
 
         await asyncio.sleep(interval)
         elapsed += interval
+
+
+def _extract_url(result: Dict[str, Any]) -> bool:
+    """Try to extract a generation URL from the result, mutating it in place. Returns True if found."""
+    gen_url = result.get("generation_url")
+    if isinstance(gen_url, str):
+        return True
+    if isinstance(gen_url, list) and gen_url and isinstance(gen_url[0], str):
+        result["generation_url"] = gen_url[0]
+        return True
+    output = result.get("output")
+    if isinstance(output, str):
+        result["generation_url"] = output
+        return True
+    if isinstance(output, list) and output and isinstance(output[0], str):
+        result["generation_url"] = output[0]
+        return True
+    if isinstance(output, dict):
+        url_val = output.get("url") or output.get("uri") or output.get("image")
+        if isinstance(url_val, str):
+            result["generation_url"] = url_val
+            return True
+    return False
 
 
 def get_generation_url(result: Dict[str, Any]) -> str:
@@ -327,8 +336,7 @@ async def run_prediction(
     )
 
     # If sync mode returned a complete result, use it
-    gen_url = result.get("generation_url")
-    if isinstance(gen_url, str):
+    if _extract_url(result):
         if logger:
             logger.info("Sync mode returned result directly")
         return result
