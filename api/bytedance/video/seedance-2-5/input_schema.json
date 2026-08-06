@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "OutputFormatEnum": {
+      "enum": [
+        "mp4",
+        "mov"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "RatioEnum": {
+      "enum": [
+        "adaptive",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "RatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedance 2.5 video generation.\n\nThree task categories (auto-detected from parameters):\n- First frame / First & last frame: set image (and optionally end_image)\n- Multi-reference: set reference_images / reference_videos / reference_audios\n- Text-to-video: provide prompt only\n\nThe API determines the specific task type (Video Editing, Video Extension,\nor Video Reference) automatically. For Video Editing tasks, duration is\nforced to -1. For First & Last Frame, Video Editing, or Video Extension\ntasks, ratio must be 'adaptive'.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+      "examples": [
+        "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First-frame image for image-to-video generation. Mutually exclusive with reference inputs.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last-frame image for first+last frame video generation. Requires image to be set as the first frame. Ratio must be 'adaptive'.",
+      "title": "End Image"
+    },
+    "reference_images": {
+      "default": [],
+      "description": "Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 9,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "reference_videos": {
+      "default": [],
+      "description": "Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov (MOV recommended for best quality). Mutually exclusive with image/end_image.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Videos",
+      "type": "array"
+    },
+    "reference_audios": {
+      "default": [],
+      "description": "Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Audios",
+      "type": "array"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
+    },
+    "ratio": {
+      "$ref": "#/$defs/RatioEnum",
+      "default": "adaptive",
+      "description": "Aspect ratio. Must be 'adaptive' for first+last frame, video editing, and video extension tasks. 'adaptive' auto-selects based on input content."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Duration in seconds (4-30). Set to -1 for Video Editing tasks (auto-determined by API).",
+      "title": "Duration",
+      "type": "integer"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "mp4",
+      "description": "Output video format. MOV provides higher quality; recommended when using video references."
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Whether to generate synchronized audio with the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Seed for reproducibility (-1 for random).",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "watermark": {
+      "default": false,
+      "description": "Whether to add watermark to the output video.",
+      "title": "Watermark",
+      "type": "boolean"
+    },
+    "safety_identifier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email.",
+      "title": "Safety Identifier"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

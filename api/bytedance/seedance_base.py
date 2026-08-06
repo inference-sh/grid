@@ -287,6 +287,9 @@ class SeedanceApp(BaseApp):
             }
             if input_data.safety_identifier:
                 api_params["safety_identifier"] = input_data.safety_identifier
+            output_format = getattr(input_data, "output_format", None)
+            if output_format:
+                api_params["output_format"] = output_format
 
             self.current_task_id = create_content_task(
                 self.client,
