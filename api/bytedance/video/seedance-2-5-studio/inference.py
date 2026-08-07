@@ -18,8 +18,6 @@ from .seedance_base import SeedanceStudioApp
 class ResolutionEnum(str, Enum):
     p480 = "480p"
     p720 = "720p"
-    p1080 = "1080p"
-    p4k = "4k"
 
 
 class RatioEnum(str, Enum):
@@ -45,22 +43,22 @@ class AppInput(BaseAppInput):
 
     Three task categories (auto-detected from parameters):
     - First frame / First & last frame: set image (and optionally end_image)
-    - Multi-reference: set reference_images / reference_videos / reference_audios
+    - Multi-reference: set reference_images / reference_videos / reference_audios (audio-only supported)
     - Text-to-video: provide prompt only
 
     The API determines the specific task type (Video Editing, Video Extension,
-    or Video Reference) automatically. For Video Editing tasks, duration is
-    forced to -1. For First & Last Frame, Video Editing, or Video Extension
-    tasks, ratio must be 'adaptive'.
+    or Video Reference) automatically. For Video Editing tasks, duration must
+    be -1. For First & Last Frame, Video Editing, Video Extension, and
+    first-frame image-to-video tasks, ratio must be 'adaptive'.
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+        description="Text prompt describing the video content. Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
         examples=["A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."]
     )
     image: Optional[File] = Field(
         default=None,
-        description="First-frame image for image-to-video generation. Mutually exclusive with reference inputs."
+        description="First-frame image for image-to-video generation. Ratio must be 'adaptive'. Mutually exclusive with reference inputs."
     )
     end_image: Optional[File] = Field(
         default=None,
@@ -68,34 +66,34 @@ class AppInput(BaseAppInput):
     )
     reference_images: List[File] = Field(
         default=[],
-        max_length=9,
-        description="Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image."
+        max_length=30,
+        description="Reference images for multimodal generation (up to 30). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image."
     )
     reference_videos: List[File] = Field(
         default=[],
-        max_length=3,
-        description="Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov (MOV recommended for best quality). Mutually exclusive with image/end_image."
+        max_length=10,
+        description="Reference videos for multimodal generation (up to 10). Each 2-30s, total max 30s. Formats: mp4/mov (MOV recommended for best quality). Mutually exclusive with image/end_image."
     )
     reference_audios: List[File] = Field(
         default=[],
-        max_length=3,
-        description="Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video."
+        max_length=10,
+        description="Reference audios for multimodal generation (up to 10). Each 2-30s, total max 30s. Formats: wav/mp3. Audio-only input is supported."
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
+        description="Video resolution. 720p for balanced quality, 480p for fastest."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,
-        description="Aspect ratio. Must be 'adaptive' for first+last frame, video editing, and video extension tasks. 'adaptive' auto-selects based on input content."
+        description="Aspect ratio. Must be 'adaptive' for image-to-video, first+last frame, video editing, and video extension tasks. 'adaptive' auto-selects based on input content."
     )
     duration: int = Field(
-        default=5,
-        description="Duration in seconds (4-30). Set to -1 for Video Editing tasks (auto-determined by API)."
+        default=-1,
+        description="Duration in seconds (4-30), or -1 for auto-select. Must be -1 for Video Editing tasks."
     )
     output_format: OutputFormatEnum = Field(
         default=OutputFormatEnum.mp4,
-        description="Output video format. MOV provides higher quality; recommended when using video references."
+        description="Output video format. MOV provides higher color precision (YUV 4:4:4); recommended for professional workflows and when using video references."
     )
     generate_audio: bool = Field(
         default=True,
@@ -126,7 +124,8 @@ class AppOutput(BaseAppOutput):
 class App(SeedanceStudioApp):
     display_name: ClassVar[str] = "Seedance 2.5 Studio"
     model_id: ClassVar[str] = "dreamina-seedance-2-5-260628"
-    unfiltered_model_id: ClassVar[Optional[str]] = None
+    unfiltered_model_id: ClassVar[Optional[str]] = "ep-20260807142403-9ggvl"
+    supports_audio_only: ClassVar[bool] = True
     OutputType: ClassVar[Any] = AppOutput
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:

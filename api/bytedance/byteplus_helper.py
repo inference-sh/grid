@@ -60,12 +60,14 @@ def create_content_task(
     Returns:
         Task ID for polling.
     """
+    extra_body = kwargs.pop("extra_body", None)
     if logger:
-        logger.info(f"Creating task — model: {model}, params: {kwargs}")
+        logger.info(f"Creating task — model: {model}, params: {kwargs}, extra_body: {extra_body}")
 
     result = client.content_generation.tasks.create(
         model=model,
         content=content,
+        extra_body=extra_body,
         **kwargs,
     )
 

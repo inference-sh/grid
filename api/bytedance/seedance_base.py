@@ -82,6 +82,9 @@ class SeedanceApp(BaseApp):
     # The app's own AppOutput class. Set by each app so the base can build the
     # return value without importing app-specific schemas.
     OutputType: ClassVar[Any] = None
+    # 2.5 supports audio-only reference input; 2.0 requires at least one
+    # image or video alongside audio references.
+    supports_audio_only: ClassVar[bool] = False
 
     async def setup(self, metadata):
         """Initialize the BytePlus client."""
@@ -167,9 +170,10 @@ class SeedanceApp(BaseApp):
                     content.append(build_video_content(uri))
 
             if input_data.reference_audios:
-                has_visual = input_data.reference_images or input_data.reference_videos
-                if not has_visual:
-                    raise RuntimeError("Audio reference requires at least one image or video reference.")
+                if not self.supports_audio_only:
+                    has_visual = input_data.reference_images or input_data.reference_videos
+                    if not has_visual:
+                        raise RuntimeError("Audio reference requires at least one image or video reference.")
                 for ref_aud in input_data.reference_audios:
                     if ref_aud.exists():
                         uri = await self._resolve_uri(ref_aud, "Audio", "Reference audio", ctx)
@@ -289,8 +293,7 @@ class SeedanceApp(BaseApp):
                 api_params["safety_identifier"] = input_data.safety_identifier
             output_format = getattr(input_data, "output_format", None)
             if output_format:
-                api_params["output_format"] = output_format
-
+                api_params["extra_body"] = {"output_format": output_format}
             self.current_task_id = create_content_task(
                 self.client,
                 model=self._select_model(input_data),

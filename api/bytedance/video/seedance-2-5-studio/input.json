@@ -7,7 +7,7 @@
   "reference_audios": [],
   "resolution": "720p",
   "ratio": "adaptive",
-  "duration": 5,
+  "duration": -1,
   "output_format": "mp4",
   "generate_audio": true,
   "seed": -1,

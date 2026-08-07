@@ -24,18 +24,16 @@
     "ResolutionEnum": {
       "enum": [
         "480p",
-        "720p",
-        "1080p",
-        "4k"
+        "720p"
       ],
       "title": "ResolutionEnum",
       "type": "string"
     }
   },
-  "description": "Input schema for Seedance 2.5 video generation.\n\nThree task categories (auto-detected from parameters):\n- First frame / First & last frame: set image (and optionally end_image)\n- Multi-reference: set reference_images / reference_videos / reference_audios\n- Text-to-video: provide prompt only\n\nThe API determines the specific task type (Video Editing, Video Extension,\nor Video Reference) automatically. For Video Editing tasks, duration is\nforced to -1. For First & Last Frame, Video Editing, or Video Extension\ntasks, ratio must be 'adaptive'.",
+  "description": "Input schema for Seedance 2.5 video generation.\n\nThree task categories (auto-detected from parameters):\n- First frame / First & last frame: set image (and optionally end_image)\n- Multi-reference: set reference_images / reference_videos / reference_audios (audio-only supported)\n- Text-to-video: provide prompt only\n\nThe API determines the specific task type (Video Editing, Video Extension,\nor Video Reference) automatically. For Video Editing tasks, duration must\nbe -1. For First & Last Frame, Video Editing, Video Extension, and\nfirst-frame image-to-video tasks, ratio must be 'adaptive'.",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+      "description": "Text prompt describing the video content. Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
       "examples": [
         "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."
       ],
@@ -53,7 +51,7 @@
         }
       ],
       "default": null,
-      "description": "First-frame image for image-to-video generation. Mutually exclusive with reference inputs.",
+      "description": "First-frame image for image-to-video generation. Ratio must be 'adaptive'. Mutually exclusive with reference inputs.",
       "title": "Image"
     },
     "end_image": {
@@ -72,57 +70,57 @@
     },
     "reference_images": {
       "default": [],
-      "description": "Reference images for multimodal generation (up to 9). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image.",
+      "description": "Reference images for multimodal generation (up to 30). Use prompt to describe how to use each, e.g. 'Image 1', 'Image 2'. Mutually exclusive with image/end_image.",
       "items": {
         "format": "file",
         "type": "string"
       },
-      "maxItems": 9,
+      "maxItems": 30,
       "title": "Reference Images",
       "type": "array"
     },
     "reference_videos": {
       "default": [],
-      "description": "Reference videos for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: mp4/mov (MOV recommended for best quality). Mutually exclusive with image/end_image.",
+      "description": "Reference videos for multimodal generation (up to 10). Each 2-30s, total max 30s. Formats: mp4/mov (MOV recommended for best quality). Mutually exclusive with image/end_image.",
       "items": {
         "format": "file",
         "type": "string"
       },
-      "maxItems": 3,
+      "maxItems": 10,
       "title": "Reference Videos",
       "type": "array"
     },
     "reference_audios": {
       "default": [],
-      "description": "Reference audios for multimodal generation (up to 3). Max 15s each, total max 15s. Formats: wav/mp3. Requires at least one image or video.",
+      "description": "Reference audios for multimodal generation (up to 10). Each 2-30s, total max 30s. Formats: wav/mp3. Audio-only input is supported.",
       "items": {
         "format": "file",
         "type": "string"
       },
-      "maxItems": 3,
+      "maxItems": 10,
       "title": "Reference Audios",
       "type": "array"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "720p",
-      "description": "Video resolution. 4k for ultra-high quality (10-bit color, ~2x cost of 1080p), 1080p for high quality, 720p for balanced, 480p for fastest."
+      "description": "Video resolution. 720p for balanced quality, 480p for fastest."
     },
     "ratio": {
       "$ref": "#/$defs/RatioEnum",
       "default": "adaptive",
-      "description": "Aspect ratio. Must be 'adaptive' for first+last frame, video editing, and video extension tasks. 'adaptive' auto-selects based on input content."
+      "description": "Aspect ratio. Must be 'adaptive' for image-to-video, first+last frame, video editing, and video extension tasks. 'adaptive' auto-selects based on input content."
     },
     "duration": {
-      "default": 5,
-      "description": "Duration in seconds (4-30). Set to -1 for Video Editing tasks (auto-determined by API).",
+      "default": -1,
+      "description": "Duration in seconds (4-30), or -1 for auto-select. Must be -1 for Video Editing tasks.",
       "title": "Duration",
       "type": "integer"
     },
     "output_format": {
       "$ref": "#/$defs/OutputFormatEnum",
       "default": "mp4",
-      "description": "Output video format. MOV provides higher quality; recommended when using video references."
+      "description": "Output video format. MOV provides higher color precision (YUV 4:4:4); recommended for professional workflows and when using video references."
     },
     "generate_audio": {
       "default": true,
