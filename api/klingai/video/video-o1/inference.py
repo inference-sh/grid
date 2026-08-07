@@ -1,13 +1,12 @@
 """
 Kling Video O1 - Omni Video Generation
 
-Unified video generation using Kling's most capable model (kling-video-o1).
+Unified video generation using Kling's most capable model (kling-o1).
 Supports text-to-video, image-to-video with start/end frames, image/element
 references, and video references for editing and style transfer.
 """
 
 import os
-import asyncio
 import logging
 from typing import List, Optional
 from enum import Enum
@@ -15,27 +14,19 @@ from enum import Enum
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import Field
 
-from .kling_helper import (
-    KlingClient,
-    ImageRef,
-    VideoRef,
-    WatermarkInfo,
-    TaskStatus,
-    KlingAPIError,
-    poll_task,
-)
+from .kling_helper import KlingClient, KlingAPIError, poll_task_v2
 from .download_helper import download_video
-
-
-class ModeEnum(str, Enum):
-    std = "std"
-    pro = "pro"
 
 
 class AspectRatioEnum(str, Enum):
     r16_9 = "16:9"
     r9_16 = "9:16"
     r1_1 = "1:1"
+
+
+class ResolutionEnum(str, Enum):
+    r720p = "720p"
+    r1080p = "1080p"
 
 
 class AppInput(BaseAppInput):
@@ -49,12 +40,12 @@ class AppInput(BaseAppInput):
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video. Use <<<image_1>>>, <<<element_1>>>, <<<video_1>>> to reference inputs. Max 2500 chars.",
+        description="Text prompt describing the video. Use @image_1, @element_name, @video_1 to reference inputs. Max 2500 chars.",
         examples=["A serene lake at sunset with birds flying overhead"],
     )
     image: Optional[File] = Field(
         default=None,
-        description="First-frame reference image. Sets the opening frame of the video.",
+        description="First-frame reference image.",
     )
     end_image: Optional[File] = Field(
         default=None,
@@ -63,33 +54,29 @@ class AppInput(BaseAppInput):
     reference_images: List[File] = Field(
         default=[],
         max_length=7,
-        description="Reference images for style, character, or scene consistency. Referenced in prompt as <<<image_1>>>, <<<image_2>>>, etc. Max 7 without video, max 4 with video.",
+        description="Reference images for style, character, or scene consistency. Referenced in prompt as @image_1, @image_2, etc. Max 7 without video, max 4 with video.",
     )
     reference_video: Optional[File] = Field(
         default=None,
-        description="Reference video for camera style, motion, or editing. Referenced in prompt as <<<video_1>>>.",
+        description="Reference video for camera style, motion, or editing. Referenced in prompt as @video_1.",
     )
     reference_video_type: str = Field(
         default="feature",
-        description="How to use reference video: 'feature' for style/motion reference, 'base' for direct editing/transformation.",
+        description="How to use reference video: 'feature' for style/motion reference, 'base' for direct editing.",
     )
-    keep_original_sound: bool = Field(
-        default=True,
-        description="Keep original sound from reference video (only applies when reference_video is set).",
-    )
-    mode: ModeEnum = Field(
-        default=ModeEnum.pro,
-        description="Generation quality. 'pro' for highest quality, 'std' for faster/cheaper.",
+    resolution: ResolutionEnum = Field(
+        default=ResolutionEnum.r1080p,
+        description="Video resolution.",
     )
     aspect_ratio: Optional[AspectRatioEnum] = Field(
         default=None,
-        description="Video aspect ratio. Required for text-to-video and reference generation (not needed when using first-frame image or video editing).",
+        description="Video aspect ratio. Required for text-to-video.",
     )
     duration: int = Field(
         default=5,
         ge=3,
         le=10,
-        description="Video duration in seconds (3-10). For video editing, output matches input video duration.",
+        description="Video duration in seconds (3-10).",
     )
     watermark: bool = Field(
         default=False,
@@ -102,12 +89,8 @@ class AppOutput(BaseAppOutput):
 
 
 DIMENSION_MAP = {
-    ("720p", "16:9"): (1280, 720),
-    ("720p", "9:16"): (720, 1280),
-    ("720p", "1:1"): (960, 960),
-    ("1080p", "16:9"): (1920, 1080),
-    ("1080p", "9:16"): (1080, 1920),
-    ("1080p", "1:1"): (1440, 1440),
+    ("720p", "16:9"): (1280, 720), ("720p", "9:16"): (720, 1280), ("720p", "1:1"): (960, 960),
+    ("1080p", "16:9"): (1920, 1080), ("1080p", "9:16"): (1080, 1920), ("1080p", "1:1"): (1440, 1440),
 }
 
 
@@ -118,119 +101,102 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
+        api_key = os.environ.get("KLING_KEY")
         access_key = os.environ.get("KLING_ACCESS_KEY")
         secret_key = os.environ.get("KLING_SECRET_KEY")
-        if not access_key or not secret_key:
-            raise RuntimeError("KLING_ACCESS_KEY and KLING_SECRET_KEY must be set")
-
-        self.client = KlingClient(access_key=access_key, secret_key=secret_key)
-        self.cancel_flag = False
+        if api_key:
+            self.client = KlingClient(api_key=api_key)
+        elif access_key and secret_key:
+            self.client = KlingClient(access_key=access_key, secret_key=secret_key)
+        else:
+            raise RuntimeError("Set KLING_KEY (V2) or KLING_ACCESS_KEY + KLING_SECRET_KEY (V1)")
         self.logger.info("Kling Video O1 initialized")
 
     async def on_cancel(self):
-        self.logger.info("Cancellation requested")
-        self.cancel_flag = True
         return True
 
-    def _determine_mode(self, input_data: AppInput) -> str:
-        if input_data.reference_video and input_data.reference_video_type == "base":
-            return "video-editing"
-        if input_data.reference_video or input_data.reference_images:
-            return "reference-generation"
-        if input_data.image and input_data.end_image:
-            return "start-end-frame"
-        if input_data.image:
-            return "image-to-video"
-        return "text-to-video"
-
     async def run(self, input_data: AppInput) -> AppOutput:
-        self.cancel_flag = False
-        mode = self._determine_mode(input_data)
+        has_ref_video = input_data.reference_video is not None
+        has_ref_imgs = len(input_data.reference_images) > 0
+        has_image = input_data.image is not None
+        has_end = input_data.end_image is not None
+
+        if has_ref_video and input_data.reference_video_type == "base":
+            mode = "video-editing"
+        elif has_ref_video or has_ref_imgs:
+            mode = "reference-generation"
+        elif has_image and has_end:
+            mode = "start-end-frame"
+        elif has_image:
+            mode = "image-to-video"
+        else:
+            mode = "text-to-video"
+
         self.logger.info(f"Mode: {mode}, prompt: {input_data.prompt[:100]}")
 
-        # Build image_list
-        image_list = []
-        if input_data.image:
-            image_list.append(ImageRef(image_url=input_data.image.uri, type="first_frame"))
-        if input_data.end_image:
-            if not input_data.image:
+        contents = [{"type": "prompt", "text": input_data.prompt}]
+
+        if has_image:
+            contents.append({"type": "first_frame", "url": input_data.image.uri})
+        if has_end:
+            if not has_image:
                 raise RuntimeError("End frame requires a first frame image")
-            image_list.append(ImageRef(image_url=input_data.end_image.uri, type="end_frame"))
-        for ref_img in input_data.reference_images:
-            image_list.append(ImageRef(image_url=ref_img.uri))
+            contents.append({"type": "last_frame", "url": input_data.end_image.uri})
 
-        # Build video_list
-        video_list = []
-        if input_data.reference_video:
-            video_list.append(VideoRef(
-                video_url=input_data.reference_video.uri,
-                refer_type=input_data.reference_video_type,
-                keep_original_sound="yes" if input_data.keep_original_sound else "no",
-            ))
+        for i, ref_img in enumerate(input_data.reference_images):
+            contents.append({"type": "refer_image", "url": ref_img.uri, "id": f"image_{i+1}"})
 
-        # Determine if aspect_ratio is required
-        needs_aspect_ratio = mode in ("text-to-video", "reference-generation")
+        if has_ref_video:
+            vid_type = "base_video" if input_data.reference_video_type == "base" else "feature_video"
+            contents.append({"type": vid_type, "url": input_data.reference_video.uri, "id": "video_1"})
+
         aspect_ratio = input_data.aspect_ratio
-        if needs_aspect_ratio and not aspect_ratio:
+        if mode in ("text-to-video", "reference-generation") and not aspect_ratio:
             aspect_ratio = AspectRatioEnum.r16_9
-            self.logger.info(f"Auto-selecting aspect_ratio: {aspect_ratio.value}")
 
-        self.logger.info(f"Creating omni-video task: mode={input_data.mode.value}, duration={input_data.duration}s, images={len(image_list)}, videos={len(video_list)}")
+        settings = {
+            "resolution": input_data.resolution.value,
+            "duration": input_data.duration,
+        }
+        if aspect_ratio:
+            settings["aspect_ratio"] = aspect_ratio.value
 
-        task = await self.client.omni_video.create(
-            prompt=input_data.prompt,
-            model_name="kling-video-o1",
-            image_list=image_list if image_list else None,
-            video_list=video_list if video_list else None,
-            mode=input_data.mode.value,
-            aspect_ratio=aspect_ratio.value if aspect_ratio else None,
-            duration=str(input_data.duration),
-            watermark_info=WatermarkInfo(enabled=input_data.watermark),
+        options = {}
+        if input_data.watermark:
+            options["watermark_info"] = {"enabled": True}
+
+        self.logger.info(f"Creating omni-video task: duration={input_data.duration}s, refs={len(contents)-1}")
+
+        task = await self.client.v2.omni_video(
+            model="kling-o1",
+            contents=contents,
+            settings=settings,
+            options=options if options else None,
         )
 
-        self.logger.info(f"Task created: {task.task_id}")
+        self.logger.info(f"Task created: {task.id}")
+        result = await poll_task_v2(self.client, task.id, interval=3.0)
 
-        # Poll for completion
-        result = await poll_task(
-            self.client.omni_video.get,
-            task.task_id,
-            interval=3.0,
-            timeout=600.0,
-        )
+        video_out = next((o for o in (result.outputs or []) if o.type == "video"), None)
+        if not video_out or not video_out.url:
+            raise RuntimeError(f"No video URL: {result.message}")
 
-        if not result.videos or not result.videos[0].url:
-            raise RuntimeError(f"No video URL in result: {result.task_status_msg}")
+        video_duration = float(video_out.duration) if video_out.duration else float(input_data.duration)
+        video_path = download_video(video_out.url, self.logger)
 
-        video_url = result.videos[0].url
-        video_duration = float(result.videos[0].duration) if result.videos[0].duration else float(input_data.duration)
-        self.logger.info(f"Video ready: {video_url[:80]}..., duration={video_duration}s")
-
-        video_path = download_video(video_url, self.logger)
-
-        # Build output metadata
         ratio_str = aspect_ratio.value if aspect_ratio else "16:9"
-        # O1 outputs at various resolutions depending on mode
-        res_key = "1080p" if input_data.mode == ModeEnum.pro else "720p"
-        width, height = DIMENSION_MAP.get((res_key, ratio_str), (1280, 720))
-        fps = 24
+        width, height = DIMENSION_MAP.get((input_data.resolution.value, ratio_str), (1920, 1080))
 
         output_meta = OutputMeta(
             outputs=[
                 VideoMeta(
-                    width=width,
-                    height=height,
-                    resolution=res_key,
-                    seconds=video_duration,
-                    fps=fps,
-                    extra={
-                        "mode": mode,
-                        "quality": input_data.mode.value,
-                        "model": "kling-video-o1",
-                    },
+                    width=width, height=height,
+                    resolution=input_data.resolution.value,
+                    seconds=video_duration, fps=24,
+                    extra={"mode": mode, "model": "kling-o1"},
                 )
             ]
         )
-
         return AppOutput(video=File(path=video_path), output_meta=output_meta)
 
     async def unload(self):

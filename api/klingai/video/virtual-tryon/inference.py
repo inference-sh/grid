@@ -55,12 +55,15 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
+        api_key = os.environ.get("KLING_KEY")
         access_key = os.environ.get("KLING_ACCESS_KEY")
         secret_key = os.environ.get("KLING_SECRET_KEY")
-        if not access_key or not secret_key:
-            raise RuntimeError("KLING_ACCESS_KEY and KLING_SECRET_KEY must be set")
-
-        self.client = KlingClient(access_key=access_key, secret_key=secret_key)
+        if api_key:
+            self.client = KlingClient(api_key=api_key)
+        elif access_key and secret_key:
+            self.client = KlingClient(access_key=access_key, secret_key=secret_key)
+        else:
+            raise RuntimeError("Set KLING_KEY (V2) or KLING_ACCESS_KEY + KLING_SECRET_KEY (V1)")
         self.logger.info("Kling Virtual Try-On initialized")
 
     async def on_cancel(self):

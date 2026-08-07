@@ -345,13 +345,22 @@ class KlingClient:
 
     def __init__(
         self,
-        access_key: str,
-        secret_key: str,
+        access_key: str = None,
+        secret_key: str = None,
+        api_key: str = None,
         base_url: str = API_BASE_URL,
         timeout: float = 30.0,
     ):
-        self.access_key = access_key
-        self.secret_key = secret_key
+        if api_key:
+            self._api_key = api_key
+            self.access_key = None
+            self.secret_key = None
+        elif access_key and secret_key:
+            self._api_key = None
+            self.access_key = access_key
+            self.secret_key = secret_key
+        else:
+            raise ValueError("Provide either api_key (V2) or access_key + secret_key (V1)")
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self._client: Optional[httpx.AsyncClient] = None
@@ -361,29 +370,35 @@ class KlingClient:
         self.image2video = Image2VideoAPI(self)
         self.omni_video = OmniVideoAPI(self)
         self.images = ImageGenerationAPI(self)
+        self.omni_image = OmniImageAPI(self)
+        self.v2 = KlingV2API(self)
         self.lip_sync = LipSyncAPI(self)
         self.avatar = AvatarAPI(self)
         self.video_to_audio = VideoToAudioAPI(self)
         self.virtual_tryon = VirtualTryOnAPI(self)
 
     def _generate_token(self) -> str:
-        """Generate JWT token for API authentication"""
+        """Generate JWT token for V1 API authentication"""
         headers = {
             "alg": "HS256",
             "typ": "JWT"
         }
         payload = {
             "iss": self.access_key,
-            "exp": int(time.time()) + 1800,  # Valid for 30 minutes
-            "nbf": int(time.time()) - 5      # Valid from 5 seconds ago
+            "exp": int(time.time()) + 1800,
+            "nbf": int(time.time()) - 5
         }
         return jwt.encode(payload, self.secret_key, algorithm="HS256", headers=headers)
 
     def _get_headers(self) -> Dict[str, str]:
         """Get request headers with authorization"""
+        if self._api_key:
+            token = self._api_key
+        else:
+            token = self._generate_token()
         return {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._generate_token()}"
+            "Authorization": f"Bearer {token}"
         }
 
     async def _get_client(self) -> httpx.AsyncClient:
@@ -914,6 +929,96 @@ class ImageGenerationAPI:
 
 
 # =============================================================================
+# Omni Image API (V2 - model-specific endpoint)
+# =============================================================================
+
+class OmniImageAPI:
+    """Omni Image API - kling-image-o1 and kling-v3-omni models"""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def create(
+        self,
+        prompt: str,
+        model_name: str = "kling-image-o1",
+        image_list: Optional[List[Dict[str, str]]] = None,
+        element_list: Optional[List[Dict[str, Any]]] = None,
+        resolution: Literal["1k", "2k", "4k"] = "1k",
+        result_type: Literal["single", "series"] = "single",
+        n: int = 1,
+        series_amount: Optional[int] = None,
+        aspect_ratio: str = "16:9",
+        watermark_info: Optional[Dict[str, bool]] = None,
+        callback_url: Optional[str] = None,
+        external_task_id: Optional[str] = None,
+    ) -> TaskResult:
+        payload = {
+            "model_name": model_name,
+            "prompt": prompt,
+            "resolution": resolution,
+            "n": n,
+            "aspect_ratio": aspect_ratio,
+        }
+
+        if image_list:
+            payload["image_list"] = image_list
+        if element_list:
+            payload["element_list"] = element_list
+        if result_type != "single":
+            payload["result_type"] = result_type
+        if series_amount is not None:
+            payload["series_amount"] = series_amount
+        if watermark_info:
+            payload["watermark_info"] = watermark_info
+        if callback_url:
+            payload["callback_url"] = callback_url
+        if external_task_id:
+            payload["external_task_id"] = external_task_id
+
+        data = await self._client._request("POST", "/v1/images/omni-image", json_data=payload)
+        return self._parse_task_result(data)
+
+    async def get(self, task_id: str) -> TaskResult:
+        data = await self._client._request("GET", f"/v1/images/omni-image/{task_id}")
+        return self._parse_task_result(data)
+
+    async def list(self, page_num: int = 1, page_size: int = 30) -> List[TaskResult]:
+        data = await self._client._request(
+            "GET",
+            "/v1/images/omni-image",
+            params={"pageNum": page_num, "pageSize": page_size}
+        )
+        return [self._parse_task_result({"data": item}) for item in data.get("data", [])]
+
+    def _parse_task_result(self, data: Dict) -> TaskResult:
+        task_data = data.get("data", {})
+
+        images = None
+        if "task_result" in task_data and "images" in task_data["task_result"]:
+            images = [
+                ImageResult(
+                    index=img.get("index", 0),
+                    url=img.get("url", ""),
+                )
+                for img in task_data["task_result"]["images"]
+            ]
+
+        task_info = task_data.get("task_info", {})
+
+        return TaskResult(
+            task_id=task_data.get("task_id", ""),
+            task_status=TaskStatus(task_data.get("task_status", "submitted")),
+            task_status_msg=task_data.get("task_status_msg"),
+            external_task_id=task_info.get("external_task_id"),
+            final_unit_deduction=task_data.get("final_unit_deduction"),
+            created_at=task_data.get("created_at"),
+            updated_at=task_data.get("updated_at"),
+            images=images,
+        )
+
+
+# =============================================================================
 # Lip Sync API
 # =============================================================================
 
@@ -1245,7 +1350,140 @@ class VirtualTryOnAPI:
 
 
 # =============================================================================
-# Utility Functions
+# V2 API (model-specific endpoints, unified task query)
+# =============================================================================
+
+@dataclass
+class V2Output:
+    type: str
+    url: str
+    id: Optional[str] = None
+    duration: Optional[str] = None
+    watermark_url: Optional[str] = None
+
+
+@dataclass
+class V2TaskResult:
+    id: str
+    status: str
+    message: Optional[str] = None
+    create_time: Optional[int] = None
+    update_time: Optional[int] = None
+    external_id: Optional[str] = None
+    outputs: Optional[List[V2Output]] = None
+
+
+class KlingV2API:
+    """V2 API with model-specific endpoints and unified task query."""
+
+    def __init__(self, client: KlingClient):
+        self._client = client
+
+    async def text_to_video(
+        self,
+        model: str,
+        prompt: str,
+        settings: Optional[Dict[str, Any]] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> V2TaskResult:
+        payload = {"prompt": prompt}
+        if settings:
+            payload["settings"] = settings
+        if options:
+            payload["options"] = options
+        data = await self._client._request("POST", f"/text-to-video/{model}", json_data=payload)
+        return self._parse_create(data)
+
+    async def image_to_video(
+        self,
+        model: str,
+        contents: List[Dict[str, Any]],
+        settings: Optional[Dict[str, Any]] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> V2TaskResult:
+        payload = {"contents": contents}
+        if settings:
+            payload["settings"] = settings
+        if options:
+            payload["options"] = options
+        data = await self._client._request("POST", f"/image-to-video/{model}", json_data=payload)
+        return self._parse_create(data)
+
+    async def omni_video(
+        self,
+        model: str,
+        contents: List[Dict[str, Any]],
+        settings: Optional[Dict[str, Any]] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> V2TaskResult:
+        payload = {"contents": contents}
+        if settings:
+            payload["settings"] = settings
+        if options:
+            payload["options"] = options
+        data = await self._client._request("POST", f"/omni-video/{model}", json_data=payload)
+        return self._parse_create(data)
+
+    async def query_task(self, task_id: str) -> V2TaskResult:
+        data = await self._client._request("GET", "/tasks", params={"task_ids": task_id})
+        items = data.get("data", [])
+        if not items:
+            raise KlingAPIError(code=-1, message=f"Task {task_id} not found")
+        return self._parse_query(items[0])
+
+    def _parse_create(self, data: Dict) -> V2TaskResult:
+        d = data.get("data", {})
+        return V2TaskResult(
+            id=d.get("id", ""),
+            status=d.get("status", "submitted"),
+            create_time=d.get("create_time"),
+            update_time=d.get("update_time"),
+            external_id=d.get("external_id"),
+        )
+
+    def _parse_query(self, d: Dict) -> V2TaskResult:
+        outputs = None
+        if "outputs" in d and d["outputs"]:
+            outputs = [
+                V2Output(
+                    type=o.get("type", ""),
+                    url=o.get("url", ""),
+                    id=o.get("id"),
+                    duration=o.get("duration"),
+                    watermark_url=o.get("watermark_url"),
+                )
+                for o in d["outputs"]
+            ]
+        return V2TaskResult(
+            id=d.get("id", ""),
+            status=d.get("status", "submitted"),
+            message=d.get("message"),
+            create_time=d.get("create_time"),
+            update_time=d.get("update_time"),
+            external_id=d.get("external_id"),
+            outputs=outputs,
+        )
+
+
+async def poll_task_v2(
+    client: KlingClient,
+    task_id: str,
+    interval: float = 5.0,
+) -> V2TaskResult:
+    while True:
+        result = await client.v2.query_task(task_id)
+        if result.status == "succeeded":
+            return result
+        elif result.status == "failed":
+            raise KlingAPIError(
+                code=-1,
+                message=f"Task failed: {result.message or 'Unknown error'}",
+            )
+        await asyncio.sleep(interval)
+
+
+# =============================================================================
+# Utility Functions (V1 legacy)
 # =============================================================================
 
 async def poll_task(

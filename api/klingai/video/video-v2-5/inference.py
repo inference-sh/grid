@@ -2,12 +2,10 @@
 Kling Video V2.5 Turbo - Fast Video Generation
 
 Fast turbo model for text-to-video and image-to-video generation.
-Supports start/end frames in pro mode. Optimized for speed while
-maintaining good quality.
+Supports start/end frames. Optimized for speed while maintaining good quality.
 """
 
 import os
-import asyncio
 import logging
 from typing import Optional
 from enum import Enum
@@ -15,34 +13,24 @@ from enum import Enum
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
 from pydantic import Field
 
-from .kling_helper import (
-    KlingClient,
-    TaskStatus,
-    KlingAPIError,
-    poll_task,
-)
+from .kling_helper import KlingClient, KlingAPIError, poll_task_v2
 from .download_helper import download_video
-
-
-class ModeEnum(str, Enum):
-    std = "std"
-    pro = "pro"
 
 
 class AspectRatioEnum(str, Enum):
     r16_9 = "16:9"
     r9_16 = "9:16"
     r1_1 = "1:1"
-    r4_3 = "4:3"
-    r3_4 = "3:4"
-    r3_2 = "3:2"
-    r2_3 = "2:3"
-    r21_9 = "21:9"
 
 
-class DurationEnum(str, Enum):
-    s5 = "5"
-    s10 = "10"
+class ResolutionEnum(str, Enum):
+    r720p = "720p"
+    r1080p = "1080p"
+
+
+class DurationEnum(int, Enum):
+    s5 = 5
+    s10 = 10
 
 
 class AppInput(BaseAppInput):
@@ -51,7 +39,7 @@ class AppInput(BaseAppInput):
     Modes determined by inputs:
     - Text-to-video: prompt only
     - Image-to-video: prompt + image (first frame)
-    - Start/end frame: prompt + image + end_image (pro mode only)
+    - Start/end frame: prompt + image + end_image
     """
 
     prompt: str = Field(
@@ -64,11 +52,11 @@ class AppInput(BaseAppInput):
     )
     end_image: Optional[File] = Field(
         default=None,
-        description="End frame image (pro mode only). Requires image to be set as start frame.",
+        description="End frame image. Requires image to be set as start frame.",
     )
-    mode: ModeEnum = Field(
-        default=ModeEnum.pro,
-        description="Generation mode. 'pro' for higher quality + start/end frame support, 'std' for faster/cheaper.",
+    resolution: ResolutionEnum = Field(
+        default=ResolutionEnum.r720p,
+        description="Video resolution.",
     )
     aspect_ratio: AspectRatioEnum = Field(
         default=AspectRatioEnum.r16_9,
@@ -78,10 +66,6 @@ class AppInput(BaseAppInput):
         default=DurationEnum.s5,
         description="Video duration: 5 or 10 seconds.",
     )
-    negative_prompt: Optional[str] = Field(
-        default=None,
-        description="What to avoid in the video. Max 2500 chars.",
-    )
 
 
 class AppOutput(BaseAppOutput):
@@ -89,14 +73,8 @@ class AppOutput(BaseAppOutput):
 
 
 DIMENSION_MAP = {
-    ("720p", "16:9"): (1280, 720), ("720p", "9:16"): (720, 1280),
-    ("720p", "1:1"): (960, 960), ("720p", "4:3"): (1080, 810),
-    ("720p", "3:4"): (810, 1080), ("720p", "3:2"): (1080, 720),
-    ("720p", "2:3"): (720, 1080), ("720p", "21:9"): (1470, 630),
-    ("1080p", "16:9"): (1920, 1080), ("1080p", "9:16"): (1080, 1920),
-    ("1080p", "1:1"): (1440, 1440), ("1080p", "4:3"): (1620, 1215),
-    ("1080p", "3:4"): (1215, 1620), ("1080p", "3:2"): (1620, 1080),
-    ("1080p", "2:3"): (1080, 1620), ("1080p", "21:9"): (2206, 946),
+    ("720p", "16:9"): (1280, 720), ("720p", "9:16"): (720, 1280), ("720p", "1:1"): (960, 960),
+    ("1080p", "16:9"): (1920, 1080), ("1080p", "9:16"): (1080, 1920), ("1080p", "1:1"): (1440, 1440),
 }
 
 
@@ -107,111 +85,74 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
+        api_key = os.environ.get("KLING_KEY")
         access_key = os.environ.get("KLING_ACCESS_KEY")
         secret_key = os.environ.get("KLING_SECRET_KEY")
-        if not access_key or not secret_key:
-            raise RuntimeError("KLING_ACCESS_KEY and KLING_SECRET_KEY must be set")
-
-        self.client = KlingClient(access_key=access_key, secret_key=secret_key)
-        self.cancel_flag = False
+        if api_key:
+            self.client = KlingClient(api_key=api_key)
+        elif access_key and secret_key:
+            self.client = KlingClient(access_key=access_key, secret_key=secret_key)
+        else:
+            raise RuntimeError("Set KLING_KEY (V2) or KLING_ACCESS_KEY + KLING_SECRET_KEY (V1)")
         self.logger.info("Kling Video V2.5 Turbo initialized")
 
     async def on_cancel(self):
-        self.logger.info("Cancellation requested")
-        self.cancel_flag = True
         return True
 
-    def _determine_mode(self, input_data: AppInput) -> str:
-        if input_data.image and input_data.end_image:
-            return "start-end-frame"
-        if input_data.image:
-            return "image-to-video"
-        return "text-to-video"
-
     async def run(self, input_data: AppInput) -> AppOutput:
-        self.cancel_flag = False
-        mode = self._determine_mode(input_data)
-        self.logger.info(f"Mode: {mode}, quality: {input_data.mode.value}, duration: {input_data.duration.value}s")
-        self.logger.info(f"Prompt: {input_data.prompt[:100]}")
+        has_image = input_data.image is not None
+        has_end = input_data.end_image is not None
+        mode = "start-end-frame" if has_image and has_end else "image-to-video" if has_image else "text-to-video"
+        self.logger.info(f"Mode: {mode}, res: {input_data.resolution.value}, duration: {input_data.duration.value}s")
 
-        if mode == "start-end-frame" and input_data.mode != ModeEnum.pro:
-            self.logger.warning("Start/end frame only supported in pro mode, upgrading to pro")
+        settings = {
+            "resolution": input_data.resolution.value,
+            "aspect_ratio": input_data.aspect_ratio.value,
+            "duration": input_data.duration.value,
+        }
 
         if mode == "text-to-video":
-            self.logger.info(f"Creating text2video task: aspect_ratio={input_data.aspect_ratio.value}")
-
-            task = await self.client.text2video.create(
+            task = await self.client.v2.text_to_video(
+                model="kling-2.5-turbo",
                 prompt=input_data.prompt,
-                model_name="kling-v2-5-turbo",
-                negative_prompt=input_data.negative_prompt,
-                mode=input_data.mode.value,
-                aspect_ratio=input_data.aspect_ratio.value,
-                duration=input_data.duration.value,
+                settings=settings,
             )
-
-            self.logger.info(f"Task created: {task.task_id}")
-            result = await poll_task(
-                self.client.text2video.get,
-                task.task_id,
-                interval=3.0,
-                timeout=600.0,
-            )
-
         else:
-            # Image-to-video or start/end frame
-            i2v_mode = "pro" if mode == "start-end-frame" else input_data.mode.value
+            contents = [{"type": "prompt", "text": input_data.prompt}]
+            contents.append({"type": "first_frame", "url": input_data.image.uri})
+            if has_end:
+                contents.append({"type": "last_frame", "url": input_data.end_image.uri})
 
-            self.logger.info(f"Creating image2video task: mode={i2v_mode}, end_frame={'yes' if input_data.end_image else 'no'}")
-
-            task = await self.client.image2video.create(
-                image=input_data.image.uri,
-                prompt=input_data.prompt,
-                model_name="kling-v2-5-turbo",
-                image_tail=input_data.end_image.uri if input_data.end_image else None,
-                negative_prompt=input_data.negative_prompt,
-                mode=i2v_mode,
-                duration=input_data.duration.value,
+            task = await self.client.v2.image_to_video(
+                model="kling-2.5-turbo",
+                contents=contents,
+                settings=settings,
             )
 
-            self.logger.info(f"Task created: {task.task_id}")
-            result = await poll_task(
-                self.client.image2video.get,
-                task.task_id,
-                interval=3.0,
-                timeout=600.0,
-            )
+        self.logger.info(f"Task created: {task.id}")
+        result = await poll_task_v2(self.client, task.id, interval=3.0)
 
-        if not result.videos or not result.videos[0].url:
-            raise RuntimeError(f"No video URL in result: {result.task_status_msg}")
+        video_out = next((o for o in (result.outputs or []) if o.type == "video"), None)
+        if not video_out or not video_out.url:
+            raise RuntimeError(f"No video URL: {result.message}")
 
-        video_url = result.videos[0].url
-        video_duration = float(result.videos[0].duration) if result.videos[0].duration else float(input_data.duration.value)
-        self.logger.info(f"Video ready: {video_url[:80]}..., duration={video_duration}s")
+        video_duration = float(video_out.duration) if video_out.duration else float(input_data.duration.value)
+        video_path = download_video(video_out.url, self.logger)
 
-        video_path = download_video(video_url, self.logger)
-
-        # V2.5 turbo: pro outputs 1080p, std outputs 720p
-        res_key = "1080p" if input_data.mode == ModeEnum.pro else "720p"
-        width, height = DIMENSION_MAP.get((res_key, input_data.aspect_ratio.value), (1280, 720))
-        fps = 24
+        width, height = DIMENSION_MAP.get(
+            (input_data.resolution.value, input_data.aspect_ratio.value), (1280, 720)
+        )
 
         output_meta = OutputMeta(
             outputs=[
                 VideoMeta(
-                    width=width,
-                    height=height,
-                    resolution=res_key,
-                    seconds=video_duration,
-                    fps=fps,
-                    extra={
-                        "mode": mode,
-                        "quality": input_data.mode.value,
-                        "model": "kling-v2-5-turbo",
-                    },
+                    width=width, height=height,
+                    resolution=input_data.resolution.value,
+                    seconds=video_duration, fps=24,
+                    extra={"mode": mode, "model": "kling-2.5-turbo"},
                 )
             ]
         )
-
         return AppOutput(video=File(path=video_path), output_meta=output_meta)
 
     async def unload(self):
