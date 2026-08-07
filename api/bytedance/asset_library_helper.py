@@ -306,7 +306,10 @@ async def wait_for_asset_active(
                 logger.info(f"Asset {asset_id} is active")
             return asset_id
         elif status == "Failed":
-            raise RuntimeError(f"Asset {asset_id} processing failed")
+            if logger:
+                logger.error(f"Asset {asset_id} failed. Full response: {info}")
+            fail_reason = info.get("FailReason") or info.get("fail_reason") or info.get("Message") or info.get("message") or "unknown"
+            raise RuntimeError(f"Asset {asset_id} processing failed: {fail_reason}")
         else:
             if logger and int(elapsed) % 10 == 0:
                 logger.info(f"Asset {asset_id} status: {status}, waiting...")
