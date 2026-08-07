@@ -152,6 +152,7 @@ class App(BaseApp):
             'quiet': True,
             'no_warnings': True,
             'extract_flat': False,
+            'noplaylist': True,
         }
         if proxy:
             ydl_opts['proxy'] = proxy
@@ -255,6 +256,7 @@ class App(BaseApp):
             'outtmpl': output_path,
             'quiet': False,
             'no_warnings': False,
+            'noplaylist': True,
         }
 
         if proxy:
