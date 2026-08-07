@@ -76,7 +76,7 @@ class AppInput(BaseAppInput):
         default=5,
         ge=3,
         le=10,
-        description="Video duration in seconds (3-10).",
+        description="Video duration in seconds. Text-to-video: 5 or 10 only. With reference images: 3-10.",
     )
     watermark: bool = Field(
         default=False,
