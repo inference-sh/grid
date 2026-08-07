@@ -85,6 +85,10 @@ class SeedanceApp(BaseApp):
     # 2.5 supports audio-only reference input; 2.0 requires at least one
     # image or video alongside audio references.
     supports_audio_only: ClassVar[bool] = False
+    # 2.5 requires adaptive ratio for first-frame, first+last-frame, and
+    # multimodal tasks with video input (editing/extension). Auto-coerce
+    # to prevent API rejections.
+    force_adaptive_ratio: ClassVar[bool] = False
 
     async def setup(self, metadata):
         """Initialize the BytePlus client."""
@@ -281,9 +285,18 @@ class SeedanceApp(BaseApp):
 
             content = await self._build_content(input_data, mode, ctx)
 
+            ratio = input_data.ratio.value
+            if self.force_adaptive_ratio and ratio != "adaptive":
+                needs_adaptive = mode in ("image-to-video", "first-last-frame")
+                if not needs_adaptive and mode == "multimodal-reference" and input_data.reference_videos:
+                    needs_adaptive = True
+                if needs_adaptive:
+                    self.logger.info(f"Coercing ratio from '{ratio}' to 'adaptive' (required for {mode} on this model)")
+                    ratio = "adaptive"
+
             api_params = {
                 "resolution": input_data.resolution.value,
-                "ratio": input_data.ratio.value,
+                "ratio": ratio,
                 "duration": input_data.duration,
                 "generate_audio": input_data.generate_audio,
                 "seed": input_data.seed,

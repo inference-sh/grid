@@ -126,6 +126,7 @@ class App(SeedanceStudioApp):
     model_id: ClassVar[str] = "dreamina-seedance-2-5-260628"
     unfiltered_model_id: ClassVar[Optional[str]] = "ep-20260807142403-9ggvl"
     supports_audio_only: ClassVar[bool] = True
+    force_adaptive_ratio: ClassVar[bool] = True
     OutputType: ClassVar[Any] = AppOutput
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
