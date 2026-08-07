@@ -20,6 +20,8 @@ images:
 env: {}
 kernel: python-3.11
 secrets:
+    - key: KLING_KEY
+      description: Kling AI API key (V2)
     - key: KLING_ACCESS_KEY
       description: Kling AI API access key
     - key: KLING_SECRET_KEY
