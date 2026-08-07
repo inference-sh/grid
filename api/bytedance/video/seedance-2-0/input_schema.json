@@ -29,9 +29,9 @@
   "description": "Input schema for Seedance 2.0 video generation.\n\nSupports multiple modes:\n- Text-to-video: provide prompt only\n- Image-to-video (first frame): provide prompt + image\n- Image-to-video (first + last frame): provide prompt + image + end_image\n- Multimodal reference: provide prompt + reference_images/reference_videos/reference_audios",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+      "description": "Text prompt describing the video content. Use @Image1, @Image2, @Video1, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
       "examples": [
-        "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."
+        "@Image1 is the character reference. @Video1 provides the motion. A cat stretches lazily on a sunlit windowsill."
       ],
       "title": "Prompt",
       "type": "string"

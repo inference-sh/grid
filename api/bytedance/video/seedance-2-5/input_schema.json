@@ -33,9 +33,9 @@
   "description": "Input schema for Seedance 2.5 video generation.\n\nThree task categories (auto-detected from parameters):\n- First frame / First & last frame: set image (and optionally end_image)\n- Multi-reference: set reference_images / reference_videos / reference_audios (audio-only supported)\n- Text-to-video: provide prompt only\n\nThe API determines the specific task type (Video Editing, Video Extension,\nor Video Reference) automatically. For Video Editing tasks, duration must\nbe -1. For First & Last Frame, Video Editing, Video Extension, and\nfirst-frame image-to-video tasks, ratio must be 'adaptive'.",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content. Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
+      "description": "Text prompt describing the video content. Use @Image1, @Image2, @Video1, @Video2, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). For video editing, use editing verbs ('Edit @Video1 to remove...'). Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
       "examples": [
-        "A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."
+        "@Image1 is the character reference. @Video1 provides the motion. A marble statue stands in a sunlit hall, camera slowly orbiting."
       ],
       "title": "Prompt",
       "type": "string"

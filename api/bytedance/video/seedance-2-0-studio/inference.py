@@ -48,8 +48,8 @@ class AppInput(BaseAppInput):
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video content. Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
-        examples=["A cat stretches lazily on a sunlit windowsill, yawning as golden afternoon light filters through sheer curtains."]
+        description="Text prompt describing the video content. Use @Image1, @Image2, @Video1, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). Supports English, Japanese, Indonesian, Spanish, and Portuguese.",
+        examples=["@Image1 is the character reference. @Video1 provides the motion. A cat stretches lazily on a sunlit windowsill."]
     )
     image: Optional[File] = Field(
         default=None,

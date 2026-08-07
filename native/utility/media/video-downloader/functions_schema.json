@@ -596,7 +596,7 @@
             }
           ],
           "default": null,
-          "description": "Usage metadata for pricing"
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
         }
       },
       "required": [
