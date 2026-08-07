@@ -50,7 +50,10 @@ def setup_asset_client(
     return UniversalApi(client)
 
 
-def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any], logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+_log = logging.getLogger(__name__)
+
+
+def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any]) -> Dict[str, Any]:
     """Make a call to the ARK service via the universal API."""
     info = UniversalInfo(
         method="POST",
@@ -59,10 +62,10 @@ def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any], logger: Opti
         action=action,
         content_type="application/json",
     )
-    data, status, headers = api.do_call_with_http_info(info, body)
+    data, _status, headers = api.do_call_with_http_info(info, body)
     request_id = headers.get("X-TT-LOGID") or headers.get("x-tt-logid")
-    if logger and request_id:
-        logger.info(f"[{action}] request_id={request_id}")
+    if request_id:
+        _log.info(f"[{action}] request_id={request_id}")
     return data
 
 
@@ -205,9 +208,10 @@ def create_asset(
         body["Moderation"] = {"Strategy": "Skip"}
 
     if logger:
-        logger.info(f"Uploading {asset_type} asset to group {group_id}")
+        mod_status = "SKIP" if skip_moderation else "Default"
+        logger.info(f"Uploading {asset_type} asset to group {group_id} (moderation={mod_status})")
 
-    resp = _ark_call(api, "CreateAsset", body, logger=logger)
+    resp = _ark_call(api, "CreateAsset", body)
     asset_id = resp.get("Id") or resp.get("id")
     if not asset_id:
         raise RuntimeError(f"Failed to create asset, response: {resp}")
@@ -368,44 +372,3 @@ async def upload_and_activate(
     return f"asset://{asset_id}"
 
 
-async def upload_images_to_library(
-    api: UniversalApi,
-    group_id: str,
-    image_urls: List[str],
-    project_name: str = "default",
-    logger: Optional[logging.Logger] = None,
-) -> Dict[str, str]:
-    """
-    Upload multiple images to the asset library concurrently.
-
-    Args:
-        api: Configured UniversalApi client.
-        group_id: Target asset group ID.
-        image_urls: List of image URLs to upload.
-        project_name: BytePlus project name.
-        logger: Optional logger.
-
-    Returns:
-        Dict mapping original URL → asset URI (asset://asset-xxxxx).
-    """
-    if not image_urls:
-        return {}
-
-    if logger:
-        logger.info(f"Uploading {len(image_urls)} images to asset library")
-
-    tasks = []
-    for url in image_urls:
-        tasks.append(upload_and_activate(
-            api, group_id, url,
-            asset_type="Image",
-            project_name=project_name,
-            logger=logger,
-        ))
-
-    asset_uris = await asyncio.gather(*tasks)
-    url_to_asset = dict(zip(image_urls, asset_uris))
-
-    if logger:
-        logger.info(f"All {len(image_urls)} assets are active")
-    return url_to_asset

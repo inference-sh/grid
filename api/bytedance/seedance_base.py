@@ -274,7 +274,6 @@ class SeedanceApp(BaseApp):
         try:
             self.cancel_flag = False
             self.current_task_id = None
-            self._current_input = input_data
 
             mode = self._determine_mode(input_data)
             suffix = " (studio)" if self.is_studio else ""
@@ -346,7 +345,6 @@ class SeedanceApp(BaseApp):
             raise RuntimeError(f"Video generation failed: {str(e)}")
         finally:
             self.current_task_id = None
-            self._current_input = None
 
 
 class SeedanceStudioApp(SeedanceApp):
@@ -383,45 +381,40 @@ class SeedanceStudioApp(SeedanceApp):
         # only ever handed back for the same identifier that produced it.
         self._group_cache = {}
 
-    async def _prepare_generation(self, input_data) -> str:
-        """Resolve this request's asset group and return its id as the context.
+    async def _prepare_generation(self, input_data):
+        """Resolve this request's asset group and return per-request context.
 
-        Never cached under a shared key: workers are reused across end users, so
-        a single cached group id would put a later user's assets into the group
-        named for whoever the worker happened to serve first. The cache is keyed
-        per identifier, so a hit can only ever return that identifier's group.
+        Returns a dict with group_id and skip_moderation so _resolve_uri
+        can use them without storing per-request state on self.
         """
         safety_identifier = input_data.safety_identifier
         group_name = f"seedance-studio-{safety_identifier}" if safety_identifier else "seedance-studio-assets"
         key = hashlib.sha256(group_name.encode()).hexdigest()[:16]
 
         cached = self._group_cache.get(key)
-        if cached:
-            return cached
+        if not cached:
+            cached = ensure_asset_group(
+                self.asset_client,
+                name=group_name,
+                description=f"Auto-managed asset group for {self.display_name}",
+                logger=self.logger,
+            )
+            if len(self._group_cache) >= self.GROUP_CACHE_MAX:
+                self._group_cache.pop(next(iter(self._group_cache)))
+            self._group_cache[key] = cached
 
-        group_id = ensure_asset_group(
-            self.asset_client,
-            name=group_name,
-            description=f"Auto-managed asset group for {self.display_name}",
-            logger=self.logger,
-        )
-
-        if len(self._group_cache) >= self.GROUP_CACHE_MAX:
-            # Insertion-ordered: drop the oldest entry.
-            self._group_cache.pop(next(iter(self._group_cache)))
-        self._group_cache[key] = group_id
-        return group_id
+        skip_mod = not getattr(input_data, "safety_filter", True)
+        return {"group_id": cached, "skip_moderation": skip_mod}
 
     async def _resolve_uri(self, file: File, asset_type: str, label: str, ctx) -> str:
         """Upload the file to this request's asset group, return its asset:// URI."""
         if not file or not file.exists():
             raise RuntimeError(f"{label} does not exist: {getattr(file, 'path', file)}")
-        skip_mod = not getattr(self._current_input, "safety_filter", True)
         return await upload_and_activate(
             self.asset_client,
-            ctx,
+            ctx["group_id"],
             file.uri,
             asset_type=asset_type,
-            skip_moderation=skip_mod,
+            skip_moderation=ctx["skip_moderation"],
             logger=self.logger,
         )
