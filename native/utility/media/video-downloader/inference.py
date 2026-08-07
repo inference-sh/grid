@@ -1,4 +1,4 @@
-from inferencesh import BaseApp, BaseAppSetup, File, OutputMeta, AudioMeta, VideoMeta
+from inferencesh import BaseApp, BaseAppOutput, BaseAppSetup, File, OutputMeta, AudioMeta, VideoMeta
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
@@ -129,14 +129,13 @@ class VideoInfo(BaseModel):
     source: Optional[str] = Field(default=None, description="Source platform (e.g. youtube, instagram, twitter)")
 
 
-class RunOutput(BaseModel):
+class RunOutput(BaseAppOutput):
     """Output from the video downloader."""
     file: File = Field(description="Downloaded audio/video file")
     info: VideoInfo = Field(description="Video/audio metadata")
     format_downloaded: str = Field(description="Format that was downloaded (e.g., 'audio mp3 320kbps')")
     transcript: Optional[List[TranscriptSegment]] = Field(default=None, description="Transcript segments with timestamps, if requested and available")
     transcript_text: Optional[str] = Field(default=None, description="Full transcript as plain text, if requested and available")
-    output_meta: Optional[OutputMeta] = Field(default=None, description="Usage metadata for pricing")
 
 
 
