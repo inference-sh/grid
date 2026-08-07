@@ -7,29 +7,25 @@
           "enum": [
             "16:9",
             "9:16",
-            "1:1",
-            "4:3",
-            "3:4",
-            "3:2",
-            "2:3",
-            "21:9"
+            "1:1"
           ],
           "title": "AspectRatioEnum",
           "type": "string"
         },
-        "ModeEnum": {
+        "ResolutionEnum": {
           "enum": [
-            "std",
-            "pro"
+            "720p",
+            "1080p",
+            "4k"
           ],
-          "title": "ModeEnum",
+          "title": "ResolutionEnum",
           "type": "string"
         }
       },
       "description": "Kling V3.0 - latest video generation with native 4K.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image",
       "properties": {
         "prompt": {
-          "description": "Text prompt describing the video content. Max 2500 chars.",
+          "description": "Text prompt describing the video content. Max 3072 chars (recommended \u22642500).",
           "examples": [
             "A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"
           ],
@@ -47,7 +43,7 @@
             }
           ],
           "default": null,
-          "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 10MB, min 300px.",
+          "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 50MB, min 300px.",
           "title": "Image"
         },
         "end_image": {
@@ -64,16 +60,22 @@
           "description": "End frame image. Requires image to be set as start frame.",
           "title": "End Image"
         },
-        "mode": {
-          "$ref": "#/$defs/ModeEnum",
-          "default": "pro",
-          "description": "Generation mode. 'pro' for higher quality, 'std' for faster/cheaper."
-        },
         "sound": {
           "default": true,
-          "description": "Generate synchronized audio with the video.",
+          "description": "Generate synchronized native audio with the video.",
           "title": "Sound",
           "type": "boolean"
+        },
+        "multi_shot": {
+          "default": true,
+          "description": "Enable multi-shot video generation via prompt format.",
+          "title": "Multi Shot",
+          "type": "boolean"
+        },
+        "resolution": {
+          "$ref": "#/$defs/ResolutionEnum",
+          "default": "1080p",
+          "description": "Video resolution."
         },
         "aspect_ratio": {
           "$ref": "#/$defs/AspectRatioEnum",
@@ -87,19 +89,6 @@
           "minimum": 3,
           "title": "Duration",
           "type": "integer"
-        },
-        "negative_prompt": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "What to avoid in the video. Max 2500 chars.",
-          "title": "Negative Prompt"
         }
       },
       "required": [
