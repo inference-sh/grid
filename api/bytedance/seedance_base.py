@@ -274,6 +274,7 @@ class SeedanceApp(BaseApp):
         try:
             self.cancel_flag = False
             self.current_task_id = None
+            self._current_input = input_data
 
             mode = self._determine_mode(input_data)
             suffix = " (studio)" if self.is_studio else ""
@@ -345,6 +346,7 @@ class SeedanceApp(BaseApp):
             raise RuntimeError(f"Video generation failed: {str(e)}")
         finally:
             self.current_task_id = None
+            self._current_input = None
 
 
 class SeedanceStudioApp(SeedanceApp):
@@ -414,10 +416,12 @@ class SeedanceStudioApp(SeedanceApp):
         """Upload the file to this request's asset group, return its asset:// URI."""
         if not file or not file.exists():
             raise RuntimeError(f"{label} does not exist: {getattr(file, 'path', file)}")
+        skip_mod = not getattr(self._current_input, "safety_filter", True)
         return await upload_and_activate(
             self.asset_client,
             ctx,
             file.uri,
             asset_type=asset_type,
+            skip_moderation=skip_mod,
             logger=self.logger,
         )

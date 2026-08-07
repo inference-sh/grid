@@ -50,7 +50,7 @@ def setup_asset_client(
     return UniversalApi(client)
 
 
-def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any]) -> Dict[str, Any]:
+def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any], logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
     """Make a call to the ARK service via the universal API."""
     info = UniversalInfo(
         method="POST",
@@ -59,7 +59,11 @@ def _ark_call(api: UniversalApi, action: str, body: Dict[str, Any]) -> Dict[str,
         action=action,
         content_type="application/json",
     )
-    return api.do_call(info, body)
+    data, status, headers = api.do_call_with_http_info(info, body)
+    request_id = headers.get("X-TT-LOGID") or headers.get("x-tt-logid")
+    if logger and request_id:
+        logger.info(f"[{action}] request_id={request_id}")
+    return data
 
 
 def create_asset_group(
@@ -203,7 +207,7 @@ def create_asset(
     if logger:
         logger.info(f"Uploading {asset_type} asset to group {group_id}")
 
-    resp = _ark_call(api, "CreateAsset", body)
+    resp = _ark_call(api, "CreateAsset", body, logger=logger)
     asset_id = resp.get("Id") or resp.get("id")
     if not asset_id:
         raise RuntimeError(f"Failed to create asset, response: {resp}")
@@ -308,8 +312,10 @@ async def wait_for_asset_active(
         elif status == "Failed":
             if logger:
                 logger.error(f"Asset {asset_id} failed. Full response: {info}")
-            fail_reason = info.get("FailReason") or info.get("fail_reason") or info.get("Message") or info.get("message") or "unknown"
-            raise RuntimeError(f"Asset {asset_id} processing failed: {fail_reason}")
+            error_obj = info.get("Error") or {}
+            error_code = error_obj.get("Code") or "UnknownError"
+            error_msg = error_obj.get("Message") or info.get("FailReason") or "unknown"
+            raise RuntimeError(f"Asset {asset_id} rejected ({error_code}): {error_msg}")
         else:
             if logger and int(elapsed) % 10 == 0:
                 logger.info(f"Asset {asset_id} status: {status}, waiting...")
