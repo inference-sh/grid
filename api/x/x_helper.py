@@ -5,6 +5,7 @@ not dict subscript (["id"]) or .get().
 """
 
 import io
+import re
 import time
 import asyncio
 import base64
@@ -29,10 +30,6 @@ def format_rate_limit_error(exc: Exception) -> str:
     reset_ts = h.get("x-rate-limit-reset")
 
     parts = ["Rate limit exceeded."]
-    if limit:
-        parts.append(f"Limit: {limit} requests per window.")
-    if remaining is not None:
-        parts.append(f"Remaining: {remaining}.")
     if reset_ts:
         try:
             reset_unix = int(reset_ts)
@@ -61,11 +58,10 @@ def format_rate_limit_from_response(resp) -> str:
     """Extract rate limit info from a requests.Response (for raw HTTP calls)."""
     h = resp.headers
     limit = h.get("x-rate-limit-limit")
+    remaining = h.get("x-rate-limit-remaining")
     reset_ts = h.get("x-rate-limit-reset")
 
-    parts = [f"Rate limit exceeded ({resp.status_code})."]
-    if limit:
-        parts.append(f"Limit: {limit} requests per window.")
+    parts = ["Rate limit exceeded."]
     if reset_ts:
         try:
             reset_unix = int(reset_ts)
@@ -76,6 +72,38 @@ def format_rate_limit_from_response(resp) -> str:
             pass
 
     return " ".join(parts)
+
+
+def detect_text_entities(text: str) -> Optional[dict]:
+    """Detect @mentions, #hashtags, $cashtags, and bare URLs in text.
+
+    Returns a dict with keys (mentions, hashtags, cashtags, urls) each
+    containing a list of {from_index, to_index, text} spans, or None
+    if nothing found. Used by Articles DraftJS block data.
+    """
+    data = {}
+
+    for m in re.finditer(r'(?<!\w)@(\w{1,15})', text):
+        data.setdefault('mentions', []).append({
+            'from_index': m.start(), 'to_index': m.end(), 'text': m.group(0),
+        })
+
+    for m in re.finditer(r'(?<!\w)#(\w+)', text):
+        data.setdefault('hashtags', []).append({
+            'from_index': m.start(), 'to_index': m.end(), 'text': m.group(0),
+        })
+
+    for m in re.finditer(r'(?<!\w)\$([A-Z]{1,6})(?!\w)', text):
+        data.setdefault('cashtags', []).append({
+            'from_index': m.start(), 'to_index': m.end(), 'text': m.group(0),
+        })
+
+    for m in re.finditer(r'https?://[^\s)\]]+', text):
+        data.setdefault('urls', []).append({
+            'from_index': m.start(), 'to_index': m.end(), 'text': m.group(0),
+        })
+
+    return data or None
 
 
 MAX_IMAGE_SIZE = 5 * 1024 * 1024       # 5MB

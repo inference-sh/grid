@@ -7,7 +7,7 @@ from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from typing import Optional, List, Tuple, Dict
-from .x_helper import upload_file, get_content_type, get_media_category, raise_api_error, format_rate_limit_from_response
+from .x_helper import upload_file, get_content_type, get_media_category, raise_api_error, format_rate_limit_from_response, detect_text_entities
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +108,10 @@ def _make_text_block(text: str, block_type: str, entities: list) -> dict:
             })
         block['entity_ranges'] = eranges
 
+    block_data = detect_text_entities(clean)
+    if block_data:
+        block['data'] = block_data
+
     return block
 
 
@@ -195,14 +199,15 @@ def markdown_to_draftjs(
         img_match = re.match(r'^!\[([^\]]*)\]\(file:(\d+)\)\s*$', line)
         if img_match:
             flush_para()
+            alt_text = img_match.group(1)
             idx = int(img_match.group(2))
             if idx in media_map:
                 mid, mcat = media_map[idx]
+                img_data = {'media_items': [{'media_id': mid, 'media_category': mcat}]}
+                if alt_text:
+                    img_data['caption'] = alt_text
                 blocks.append(_make_atomic(
-                    {
-                        'type': 'image', 'mutability': 'immutable',
-                        'data': {'media_items': [{'media_id': mid, 'media_category': mcat}]},
-                    },
+                    {'type': 'image', 'mutability': 'immutable', 'data': img_data},
                     entities,
                 ))
             else:
