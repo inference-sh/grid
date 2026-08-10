@@ -10,7 +10,6 @@ import time
 import asyncio
 import base64
 from typing import Tuple, Optional
-from PIL import Image
 
 def format_rate_limit_error(exc: Exception) -> str:
     """Extract rate limit info from an X API error and return a useful message.
@@ -132,6 +131,7 @@ def get_content_type(file_path: str) -> str:
 
 def resize_image(file_data: bytes, content_type: str, max_size: int = MAX_IMAGE_SIZE) -> Tuple[bytes, str]:
     """Resize an image to fit under the size limit while maintaining aspect ratio."""
+    from PIL import Image
     img = Image.open(io.BytesIO(file_data))
 
     if img.mode in ("RGBA", "P"):
