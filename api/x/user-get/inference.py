@@ -3,6 +3,7 @@ from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
 from typing import Optional
+from .x_helper import raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -65,7 +66,7 @@ class App(BaseApp):
                 profile_url=f"https://x.com/{data['username']}"
             )
         except Exception as e:
-            raise ValueError(f"X API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         self.client = None

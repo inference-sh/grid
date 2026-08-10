@@ -1,0 +1,59 @@
+{
+  "properties": {
+    "title": {
+      "description": "Article title (headline)",
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "content": {
+      "description": "Article body in markdown. Supports # headings, **bold**, *italic*, ~~strikethrough~~, `code`, [links](url), lists, blockquotes, fenced code blocks, GFM tables, $$LaTeX$$, horizontal rules. Reference uploaded media as ![alt](file:0), ![alt](file:1). Embed tweets as {{tweet:ID}}.",
+      "minLength": 1,
+      "title": "Content",
+      "type": "string"
+    },
+    "cover_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Cover image displayed at the top of the article",
+      "title": "Cover Image"
+    },
+    "media": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Media files referenced in content as file:0, file:1, etc. Supports images (JPG, PNG, WEBP, GIF) and video (MP4).",
+      "title": "Media"
+    },
+    "publish": {
+      "default": true,
+      "description": "Publish immediately. Set false to save as draft only.",
+      "title": "Publish",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "title",
+    "content"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

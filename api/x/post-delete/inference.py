@@ -2,6 +2,7 @@ import os
 from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
+from .x_helper import raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -29,7 +30,7 @@ class App(BaseApp):
 
             return AppOutput(deleted=deleted, tweet_id=input_data.tweet_id)
         except Exception as e:
-            raise ValueError(f"X API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         self.client = None

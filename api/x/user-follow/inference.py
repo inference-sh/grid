@@ -2,6 +2,7 @@ import os
 from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
+from .x_helper import raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -32,7 +33,7 @@ class App(BaseApp):
             error_msg = str(e).lower()
             if "already following" in error_msg:
                 return AppOutput(following=True, user_id=input_data.user_id)
-            raise ValueError(f"X API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         self.client = None

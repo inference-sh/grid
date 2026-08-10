@@ -3,7 +3,7 @@ from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from typing import Optional, List
-from .x_helper import upload_file, get_content_type
+from .x_helper import upload_file, get_content_type, raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -97,15 +97,7 @@ class App(BaseApp):
             raise
         except Exception as e:
             print(f"X API raw error: {type(e).__name__}: {e}")
-            error_msg = str(e).lower()
-            if "duplicate" in error_msg:
-                raise ValueError("This post was already created (duplicate content)")
-            elif "rate limit" in error_msg:
-                raise ValueError("Rate limit exceeded. Please try again later.")
-            elif "unauthorized" in error_msg or "forbidden" in error_msg or "401" in error_msg or "403" in error_msg:
-                raise ValueError(f"Authorization failed: {e}")
-            else:
-                raise ValueError(f"X.com API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         """Cleanup resources."""

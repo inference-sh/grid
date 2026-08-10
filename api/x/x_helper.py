@@ -5,10 +5,78 @@ not dict subscript (["id"]) or .get().
 """
 
 import io
+import time
 import asyncio
 import base64
-from typing import Tuple
+from typing import Tuple, Optional
 from PIL import Image
+
+def format_rate_limit_error(exc: Exception) -> str:
+    """Extract rate limit info from an X API error and return a useful message.
+
+    X returns these headers on every response:
+      x-rate-limit-limit     — max requests in the window
+      x-rate-limit-remaining — requests left
+      x-rate-limit-reset     — unix timestamp when the window resets
+    """
+    import requests as _requests
+    if not isinstance(exc, _requests.HTTPError) or exc.response is None:
+        return f"Rate limit exceeded: {exc}"
+
+    h = exc.response.headers
+    limit = h.get("x-rate-limit-limit")
+    remaining = h.get("x-rate-limit-remaining")
+    reset_ts = h.get("x-rate-limit-reset")
+
+    parts = ["Rate limit exceeded."]
+    if limit:
+        parts.append(f"Limit: {limit} requests per window.")
+    if remaining is not None:
+        parts.append(f"Remaining: {remaining}.")
+    if reset_ts:
+        try:
+            reset_unix = int(reset_ts)
+            wait_secs = max(0, reset_unix - int(time.time()))
+            mins, secs = divmod(wait_secs, 60)
+            parts.append(f"Resets in {mins}m {secs}s.")
+        except ValueError:
+            pass
+
+    return " ".join(parts)
+
+
+def raise_api_error(exc: Exception) -> None:
+    """Raise a ValueError with a useful message for common X API errors."""
+    msg = str(exc).lower()
+    if "429" in msg or "rate limit" in msg or "too many" in msg:
+        raise ValueError(format_rate_limit_error(exc))
+    if "duplicate" in msg:
+        raise ValueError("Duplicate content")
+    if "unauthorized" in msg or "forbidden" in msg or "401" in msg or "403" in msg:
+        raise ValueError(f"Authorization failed: {exc}")
+    raise ValueError(f"X API error: {exc}")
+
+
+def format_rate_limit_from_response(resp) -> str:
+    """Extract rate limit info from a requests.Response (for raw HTTP calls)."""
+    h = resp.headers
+    limit = h.get("x-rate-limit-limit")
+    reset_ts = h.get("x-rate-limit-reset")
+
+    parts = [f"Rate limit exceeded ({resp.status_code})."]
+    if limit:
+        parts.append(f"Limit: {limit} requests per window.")
+    if reset_ts:
+        try:
+            reset_unix = int(reset_ts)
+            wait_secs = max(0, reset_unix - int(time.time()))
+            mins, secs = divmod(wait_secs, 60)
+            parts.append(f"Resets in {mins}m {secs}s.")
+        except ValueError:
+            pass
+
+    return " ".join(parts)
+
 
 MAX_IMAGE_SIZE = 5 * 1024 * 1024       # 5MB
 MAX_GIF_SIZE = 15 * 1024 * 1024        # 15MB

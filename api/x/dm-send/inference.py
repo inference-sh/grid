@@ -2,6 +2,7 @@ import os
 from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
+from .x_helper import raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -39,7 +40,7 @@ class App(BaseApp):
                 sent=True
             )
         except Exception as e:
-            raise ValueError(f"X API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         self.client = None

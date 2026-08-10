@@ -3,6 +3,7 @@ from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
 from typing import Optional, List
+from .x_helper import raise_api_error
 
 
 class AppInput(BaseAppInput):
@@ -139,13 +140,7 @@ class App(BaseApp):
             )
 
         except Exception as e:
-            error_msg = str(e).lower()
-            if "rate limit" in error_msg:
-                raise ValueError("Rate limit exceeded. Please try again later.")
-            elif "unauthorized" in error_msg or "401" in error_msg or "403" in error_msg:
-                raise ValueError(f"Authorization failed: {e}")
-            else:
-                raise ValueError(f"X.com API error: {e}")
+            raise_api_error(e)
 
     async def unload(self):
         """Cleanup resources."""

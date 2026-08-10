@@ -4,7 +4,7 @@ from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta, RawMeta
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from .x_helper import upload_file, get_content_type
+from .x_helper import upload_file, get_content_type, format_rate_limit_error
 
 logger = logging.getLogger(__name__)
 
@@ -120,16 +120,16 @@ class App(BaseApp):
             raise
         except Exception as e:
             logger.error(f"X API error on tweet {len(posted)}: {type(e).__name__}: {e}")
-            error_msg = str(e).lower()
             already_posted = f" ({len(posted)} tweets were already posted)" if posted else ""
+            error_msg = str(e).lower()
+            if "429" in error_msg or "rate limit" in error_msg or "too many" in error_msg:
+                detail = format_rate_limit_error(e)
+                raise ValueError(f"{detail} Failed on tweet {len(posted)}.{already_posted}")
             if "duplicate" in error_msg:
                 raise ValueError(f"Duplicate content detected on tweet {len(posted)}{already_posted}")
-            elif "rate limit" in error_msg:
-                raise ValueError(f"Rate limit exceeded on tweet {len(posted)}{already_posted}")
-            elif "unauthorized" in error_msg or "forbidden" in error_msg or "401" in error_msg or "403" in error_msg:
+            if "unauthorized" in error_msg or "forbidden" in error_msg or "401" in error_msg or "403" in error_msg:
                 raise ValueError(f"Authorization failed: {e}")
-            else:
-                raise ValueError(f"X.com API error on tweet {len(posted)}: {e}{already_posted}")
+            raise ValueError(f"X.com API error on tweet {len(posted)}: {e}{already_posted}")
 
         thread_root = posted[0]
         logger.info(f"Thread created: {len(posted)} tweets, {total_chars} total chars, root={thread_root.tweet_url}")

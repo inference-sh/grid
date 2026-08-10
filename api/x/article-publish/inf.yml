@@ -1,0 +1,22 @@
+namespace: x
+name: article-publish
+description: Publish long-form articles on X.com from markdown. Supports headings, lists, blockquotes, code blocks, GFM tables, LaTeX, images, embedded tweets, and inline formatting (bold, italic, strikethrough, links). Optional cover image and draft-only mode.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.write
+      description: Create and publish articles on X.com
+    - key: x.media.write
+      description: Upload images and media for articles
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000
