@@ -1,7 +1,7 @@
 import os
 from xdk import Client
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
-from pydantic import Field
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from .x_helper import raise_api_error
 
@@ -12,12 +12,19 @@ class AppInput(BaseAppInput):
     include_media: bool = Field(default=False, description="Include media attachment URLs")
 
 
-class AuthorInfo(BaseAppOutput):
+class AuthorInfo(BaseModel):
     id: str = Field(description="Author user ID")
     name: str = Field(default="", description="Display name")
     username: str = Field(default="", description="Handle without @")
     profile_image_url: Optional[str] = Field(None, description="Avatar URL")
     verified: Optional[bool] = Field(None, description="Verified status")
+
+
+class ArticleInfo(BaseModel):
+    title: Optional[str] = Field(None, description="Article title")
+    plain_text: Optional[str] = Field(None, description="Full article text (plaintext)")
+    preview_text: Optional[str] = Field(None, description="Truncated preview (~200 chars)")
+    urls: Optional[List[str]] = Field(None, description="URLs referenced in the article")
 
 
 class AppOutput(BaseAppOutput):
@@ -31,6 +38,7 @@ class AppOutput(BaseAppOutput):
     reply_count: Optional[int] = Field(None, description="Number of replies")
     quote_count: Optional[int] = Field(None, description="Number of quotes")
     media_urls: Optional[List[str]] = Field(None, description="Media attachment URLs (when include_media=true)")
+    article: Optional[ArticleInfo] = Field(None, description="Article metadata (when the post is a published article)")
     post_url: str = Field(description="URL of the post")
 
 
@@ -96,9 +104,22 @@ class App(BaseApp):
                     if m.get("url") or m.get("preview_image_url")
                 ]
 
-            # note_tweet contains the full untruncated text for tweets > 280 chars
             note_tweet = data.get("note_tweet", {})
             full_text = note_tweet.get("text", data.get("text", ""))
+
+            article = None
+            article_data = data.get("article")
+            if article_data:
+                article_urls = None
+                entities = article_data.get("entities", {})
+                if entities.get("urls"):
+                    article_urls = [u.get("text", "") for u in entities["urls"] if u.get("text")]
+                article = ArticleInfo(
+                    title=article_data.get("title"),
+                    plain_text=article_data.get("plain_text"),
+                    preview_text=article_data.get("preview_text"),
+                    urls=article_urls,
+                )
 
             return AppOutput(
                 id=data["id"],
@@ -111,6 +132,7 @@ class App(BaseApp):
                 reply_count=metrics.get("reply_count"),
                 quote_count=metrics.get("quote_count"),
                 media_urls=media_urls,
+                article=article,
                 post_url=f"https://x.com/i/web/status/{data['id']}"
             )
         except Exception as e:
