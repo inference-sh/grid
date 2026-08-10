@@ -45,7 +45,7 @@ class App(BaseApp):
 
     async def run(self, input_data: AppInput) -> AppOutput:
         try:
-            tweet_fields = ["created_at", "public_metrics", "author_id", "note_tweet"]
+            tweet_fields = ["created_at", "public_metrics", "author_id", "note_tweet", "article", "article_title"]
             if input_data.include_media:
                 tweet_fields.append("attachments")
 

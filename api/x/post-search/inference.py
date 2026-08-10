@@ -74,7 +74,8 @@ class App(BaseApp):
                 sort_order=input_data.sort_order,
                 tweet_fields=[
                     "id", "text", "author_id", "created_at",
-                    "public_metrics", "in_reply_to_user_id", "conversation_id"
+                    "public_metrics", "in_reply_to_user_id", "conversation_id",
+                    "article", "article_title",
                 ],
                 expansions=["author_id"],
                 user_fields=["id", "name", "username"],
