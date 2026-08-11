@@ -11,34 +11,49 @@ import asyncio
 import base64
 from typing import Tuple, Optional
 
-def format_rate_limit_error(exc: Exception) -> str:
-    """Extract rate limit info from an X API error and return a useful message.
+def _format_reset(headers: dict) -> str:
+    """Build a human-readable rate limit message from X API response headers.
 
-    X returns these headers on every response:
-      x-rate-limit-limit     — max requests in the window
-      x-rate-limit-remaining — requests left
-      x-rate-limit-reset     — unix timestamp when the window resets
+    X returns two sets of rate limit headers:
+      15-min window:  x-rate-limit-limit / remaining / reset
+      24-hour window: x-user-limit-24hour-limit / remaining / reset
+    The 24-hour headers only appear on some endpoints (e.g. articles).
     """
-    import requests as _requests
-    if not isinstance(exc, _requests.HTTPError) or exc.response is None:
-        return f"Rate limit exceeded: {exc}"
-
-    h = exc.response.headers
-    limit = h.get("x-rate-limit-limit")
-    remaining = h.get("x-rate-limit-remaining")
-    reset_ts = h.get("x-rate-limit-reset")
-
     parts = ["Rate limit exceeded."]
+
+    daily_limit = headers.get("x-user-limit-24hour-limit")
+    daily_remaining = headers.get("x-user-limit-24hour-remaining")
+    daily_reset = headers.get("x-user-limit-24hour-reset")
+
+    if daily_limit:
+        parts.append(f"Limit: {daily_limit}/24h (remaining: {daily_remaining or '0'}).")
+        if daily_reset:
+            try:
+                wait = max(0, int(daily_reset) - int(time.time()))
+                h, m = divmod(wait // 60, 60)
+                parts.append(f"Resets in {h}h {m}m.")
+            except ValueError:
+                pass
+        return " ".join(parts)
+
+    reset_ts = headers.get("x-rate-limit-reset")
     if reset_ts:
         try:
-            reset_unix = int(reset_ts)
-            wait_secs = max(0, reset_unix - int(time.time()))
-            mins, secs = divmod(wait_secs, 60)
+            wait = max(0, int(reset_ts) - int(time.time()))
+            mins, secs = divmod(wait, 60)
             parts.append(f"Resets in {mins}m {secs}s.")
         except ValueError:
             pass
 
     return " ".join(parts)
+
+
+def format_rate_limit_error(exc: Exception) -> str:
+    """Extract rate limit info from an X API HTTPError exception."""
+    import requests as _requests
+    if not isinstance(exc, _requests.HTTPError) or exc.response is None:
+        return f"Rate limit exceeded: {exc}"
+    return _format_reset(exc.response.headers)
 
 
 def raise_api_error(exc: Exception) -> None:
@@ -55,22 +70,7 @@ def raise_api_error(exc: Exception) -> None:
 
 def format_rate_limit_from_response(resp) -> str:
     """Extract rate limit info from a requests.Response (for raw HTTP calls)."""
-    h = resp.headers
-    limit = h.get("x-rate-limit-limit")
-    remaining = h.get("x-rate-limit-remaining")
-    reset_ts = h.get("x-rate-limit-reset")
-
-    parts = ["Rate limit exceeded."]
-    if reset_ts:
-        try:
-            reset_unix = int(reset_ts)
-            wait_secs = max(0, reset_unix - int(time.time()))
-            mins, secs = divmod(wait_secs, 60)
-            parts.append(f"Resets in {mins}m {secs}s.")
-        except ValueError:
-            pass
-
-    return " ".join(parts)
+    return _format_reset(resp.headers)
 
 
 def detect_text_entities(text: str) -> Optional[dict]:
