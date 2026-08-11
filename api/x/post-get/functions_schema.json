@@ -29,6 +29,67 @@
     },
     "output_schema": {
       "$defs": {
+        "ArticleInfo": {
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Article title",
+              "title": "Title"
+            },
+            "plain_text": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Full article text (plaintext)",
+              "title": "Plain Text"
+            },
+            "preview_text": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Truncated preview (~200 chars)",
+              "title": "Preview Text"
+            },
+            "urls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "URLs referenced in the article",
+              "title": "Urls"
+            }
+          },
+          "title": "ArticleInfo",
+          "type": "object"
+        },
         "AudioMeta": {
           "description": "Metadata for audio inputs/outputs.",
           "properties": {
@@ -69,18 +130,6 @@
         },
         "AuthorInfo": {
           "properties": {
-            "output_meta": {
-              "anyOf": [
-                {
-                  "$ref": "#/$defs/OutputMeta"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Structured metadata about inputs/outputs for pricing calculation"
-            },
             "id": {
               "description": "Author user ID",
               "title": "Id",
@@ -484,6 +533,18 @@
           "default": null,
           "description": "Media attachment URLs (when include_media=true)",
           "title": "Media Urls"
+        },
+        "article": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArticleInfo"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Article metadata (when the post is a published article)"
         },
         "post_url": {
           "description": "URL of the post",
