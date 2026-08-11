@@ -1,0 +1,36 @@
+{
+  "description": "Input schema for post analytics.",
+  "properties": {
+    "tweet_ids": {
+      "description": "List of post IDs to get analytics for",
+      "items": {
+        "type": "string"
+      },
+      "title": "Tweet Ids",
+      "type": "array"
+    },
+    "start_time": {
+      "description": "Start time in ISO 8601 format (e.g. 2024-01-01T00:00:00Z)",
+      "title": "Start Time",
+      "type": "string"
+    },
+    "end_time": {
+      "description": "End time in ISO 8601 format (e.g. 2024-01-31T23:59:59Z)",
+      "title": "End Time",
+      "type": "string"
+    },
+    "granularity": {
+      "default": "day",
+      "description": "Time granularity: 'day', 'hour', or 'total'",
+      "title": "Granularity",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tweet_ids",
+    "start_time",
+    "end_time"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

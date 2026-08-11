@@ -1,0 +1,20 @@
+namespace: x
+name: post-quotes
+description: List posts that quoted a specific post. Returns quote tweets with text, author, and engagement metrics.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.read
+      description: Read posts on X.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

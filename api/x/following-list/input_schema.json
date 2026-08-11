@@ -1,0 +1,41 @@
+{
+  "description": "Input schema for listing accounts a user follows.",
+  "properties": {
+    "username": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Username to get following for (without @)",
+      "title": "Username"
+    },
+    "user_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "User ID to get following for",
+      "title": "User Id"
+    },
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of accounts to return",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

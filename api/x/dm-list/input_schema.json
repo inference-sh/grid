@@ -1,0 +1,15 @@
+{
+  "description": "Input schema for listing DM events.",
+  "properties": {
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of results (1-100)",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

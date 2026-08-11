@@ -1,0 +1,23 @@
+{
+  "description": "Input schema for listing quote tweets.",
+  "properties": {
+    "tweet_id": {
+      "description": "The ID of the post to get quotes for",
+      "title": "Tweet Id",
+      "type": "string"
+    },
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of quotes to return",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "tweet_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

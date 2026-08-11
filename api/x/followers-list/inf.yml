@@ -1,0 +1,22 @@
+namespace: x
+name: followers-list
+description: List followers of a user. Returns profiles with bios, follower counts, and join dates.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.follow.read
+      description: Read follower relationships
+    - key: x.user.read
+      description: Resolve usernames to user IDs
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

@@ -1,0 +1,15 @@
+{
+  "description": "Input schema for bookmarking a post.",
+  "properties": {
+    "tweet_id": {
+      "description": "The ID of the post to bookmark",
+      "title": "Tweet Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tweet_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

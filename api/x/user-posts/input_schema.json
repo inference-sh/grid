@@ -1,0 +1,41 @@
+{
+  "description": "Input schema for listing user posts.",
+  "properties": {
+    "username": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Username to look up (with or without @)",
+      "title": "Username"
+    },
+    "user_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "User ID to look up",
+      "title": "User Id"
+    },
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of results (5-100)",
+      "maximum": 100,
+      "minimum": 5,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

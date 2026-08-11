@@ -1,0 +1,27 @@
+{
+  "description": "Input schema for home timeline.",
+  "properties": {
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of results (1-100)",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    },
+    "exclude_replies": {
+      "default": false,
+      "description": "Exclude replies from timeline",
+      "title": "Exclude Replies",
+      "type": "boolean"
+    },
+    "exclude_retweets": {
+      "default": false,
+      "description": "Exclude retweets from timeline",
+      "title": "Exclude Retweets",
+      "type": "boolean"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

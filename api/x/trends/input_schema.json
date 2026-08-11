@@ -1,0 +1,13 @@
+{
+  "description": "Input schema for getting trends.",
+  "properties": {
+    "woeid": {
+      "default": 1,
+      "description": "Where On Earth ID. Use 1 for worldwide, or a specific location ID (e.g. 23424977 for US, 23424975 for UK, 23424856 for Japan)",
+      "title": "Woeid",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

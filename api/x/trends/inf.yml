@@ -1,0 +1,20 @@
+namespace: x
+name: trends
+description: Get trending topics by location. Use WOEID 1 for worldwide, or a specific location ID.
+metadata: {}
+category: social
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: x.tweet.read
+      description: Access trending topics data
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

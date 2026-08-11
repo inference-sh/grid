@@ -1,0 +1,23 @@
+{
+  "description": "Input schema for listing users who liked a post.",
+  "properties": {
+    "tweet_id": {
+      "description": "The ID of the post to get likers for",
+      "title": "Tweet Id",
+      "type": "string"
+    },
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of users to return",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "tweet_id"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

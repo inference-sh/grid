@@ -1,0 +1,15 @@
+{
+  "description": "Input schema for listing bookmarks.",
+  "properties": {
+    "max_results": {
+      "default": 20,
+      "description": "Maximum number of bookmarks to return",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Results",
+      "type": "integer"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}
