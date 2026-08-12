@@ -1,0 +1,44 @@
+{
+  "description": "Input for Mirage Avatar X generation.",
+  "properties": {
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Portrait image (JPEG or PNG, 9:16 or 16:9). Use a clear, front-facing shot of a single person with mouth open. Ignored when video is provided.",
+      "title": "Image"
+    },
+    "video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Video appearance reference (MP4 or MOV, 10\u201360s). Takes precedence over image when both are provided.",
+      "title": "Video"
+    },
+    "audio": {
+      "description": "Speech audio that drives the performance (WAV or MP3, 1\u2013180s). The output video length matches this clip. Expressive, natural-sounding audio gives the best result.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
