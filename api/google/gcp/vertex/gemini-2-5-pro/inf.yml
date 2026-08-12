@@ -1,0 +1,24 @@
+namespace: google
+name: gemini-2-5-pro
+description: Gemini 2.5 Pro via Vertex AI — Google's most capable thinking model with enhanced reasoning, coding, math, and science performance. 1M token context window.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    checksum: ""
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/q5d7give.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3pvekfc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/knv4i3eq.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
