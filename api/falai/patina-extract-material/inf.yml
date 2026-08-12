@@ -1,5 +1,5 @@
-namespace: falai
-name: patina-extract-material
+namespace: patina
+name: extract-material
 description: Extracts a seamlessly tiling texture plus PBR material maps from a region of a source image described by a text prompt, via fal.ai PATINA.
 metadata:
     checksum: 0d96c66be9ca480bddacf86f160d622687fe2039a66d88c970cd4e176e6ece0e
