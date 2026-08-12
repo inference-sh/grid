@@ -1,5 +1,5 @@
-namespace: falai
-name: patina-text-to-material
+namespace: patina
+name: text-to-material
 description: Generates seamlessly tiling PBR materials up to 8K from a text prompt (optional image-to-image and inpainting) via fal.ai PATINA.
 metadata:
     checksum: 5ccae40422f8b36975b9ebba056c2ce14251db47455b9daf2ffa1ca32a086009
