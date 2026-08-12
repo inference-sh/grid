@@ -1,0 +1,24 @@
+namespace: google
+name: gemini-2-5-flash-lite
+description: Gemini 2.5 Flash-Lite via Vertex AI — most cost-efficient Gemini 2.5 model optimized for high-throughput, low-latency workloads. 1M token context window.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    checksum: ""
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/q5d7give.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3pvekfc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/knv4i3eq.png
+env: {}
+kernel: python-3.11
+integrations:
+    - key: gcp.vertex_ai
+      description: Access Vertex AI models (Gemini, etc.)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
