@@ -24,9 +24,20 @@
     "ResolutionEnum": {
       "enum": [
         "480p",
-        "720p"
+        "720p",
+        "1080p"
       ],
       "title": "ResolutionEnum",
+      "type": "string"
+    },
+    "TaskTypeEnum": {
+      "enum": [
+        "auto",
+        "video_editing",
+        "video_extension",
+        "video_reference"
+      ],
+      "title": "TaskTypeEnum",
       "type": "string"
     }
   },
@@ -104,7 +115,7 @@
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "720p",
-      "description": "Video resolution. 720p for balanced quality, 480p for fastest."
+      "description": "Video resolution. 1080p for high quality, 720p for balanced, 480p for fastest."
     },
     "ratio": {
       "$ref": "#/$defs/RatioEnum",
@@ -139,6 +150,11 @@
       "description": "Whether to add watermark to the output video.",
       "title": "Watermark",
       "type": "boolean"
+    },
+    "task_type": {
+      "$ref": "#/$defs/TaskTypeEnum",
+      "default": "auto",
+      "description": "Guide the generation task type. 'auto' lets the API detect from prompt content. Set explicitly to avoid misdetection errors \u2014 e.g. when the API wrongly classifies a reference task as video editing and rejects duration/ratio settings."
     },
     "safety_identifier": {
       "anyOf": [
