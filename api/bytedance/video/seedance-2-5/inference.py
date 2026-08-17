@@ -17,6 +17,7 @@ from .seedance_base import SeedanceApp
 class ResolutionEnum(str, Enum):
     p480 = "480p"
     p720 = "720p"
+    p1080 = "1080p"
 
 
 class RatioEnum(str, Enum):
@@ -32,6 +33,13 @@ class RatioEnum(str, Enum):
 class OutputFormatEnum(str, Enum):
     mp4 = "mp4"
     mov = "mov"
+
+
+class TaskTypeEnum(str, Enum):
+    auto = "auto"
+    video_editing = "video_editing"
+    video_extension = "video_extension"
+    video_reference = "video_reference"
 
 
 class AppInput(BaseAppInput):
@@ -77,7 +85,7 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 720p for balanced quality, 480p for fastest."
+        description="Video resolution. 1080p for high quality, 720p for balanced, 480p for fastest."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,
@@ -102,6 +110,10 @@ class AppInput(BaseAppInput):
     watermark: bool = Field(
         default=False,
         description="Whether to add watermark to the output video."
+    )
+    task_type: TaskTypeEnum = Field(
+        default=TaskTypeEnum.auto,
+        description="Guide the generation task type. 'auto' lets the API detect from prompt content. Set explicitly to avoid misdetection errors — e.g. when the API wrongly classifies a reference task as video editing and rejects duration/ratio settings."
     )
     safety_identifier: Optional[str] = Field(
         default=None,
