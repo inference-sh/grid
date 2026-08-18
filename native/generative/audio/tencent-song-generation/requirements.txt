@@ -23,7 +23,7 @@ peft==0.10.0
 torch==2.9.0
 torchaudio==2.9.0
 torchvision==0.24.0
-transformers==4.37.2
+transformers>=4.53.0
 tokenizers==0.15.2
 vector-quantize-pytorch>=1.22.17
 wheel>=0.45.1

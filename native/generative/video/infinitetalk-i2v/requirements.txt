@@ -6,8 +6,8 @@ torch
 torchvision
 torchaudio
 opencv-python>=4.9.0.80
-diffusers
-transformers
+diffusers>=0.38.0
+transformers>=4.53.0
 tokenizers
 accelerate
 tqdm

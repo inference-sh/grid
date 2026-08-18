@@ -3,8 +3,8 @@ inferencesh
 torch
 gguf>=0.13.0
 tqdm
-diffusers
-transformers
+diffusers>=0.38.0
+transformers>=4.53.0
 huggingface_hub
 accelerate
 sentencepiece

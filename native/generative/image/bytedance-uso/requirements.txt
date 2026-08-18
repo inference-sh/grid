@@ -23,7 +23,7 @@ pillow
 einops==0.8.1
 
 # USO specific dependencies
-diffusers>=0.30.1
+diffusers>=0.38.0
 huggingface-hub
 # required by HF_HUB_ENABLE_HF_TRANSFER=1 in inf.yml
 hf_transfer

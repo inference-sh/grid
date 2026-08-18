@@ -4,7 +4,7 @@ accelerate
 # Core ML dependencies
 torch>=2.7.1
 torchvision>=0.22.0
-transformers==4.46.3
+transformers>=4.53.0
 tokenizers==0.20.3
 hf_transfer
 

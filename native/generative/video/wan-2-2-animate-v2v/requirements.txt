@@ -16,7 +16,7 @@ imageio[ffmpeg]
 imageio-ffmpeg
 
 # Model utilities
-diffusers>=0.31.0
+diffusers>=0.38.0
 peft
 tokenizers>=0.20.3
 sentencepiece

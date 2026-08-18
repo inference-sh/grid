@@ -6,7 +6,7 @@ accelerate==1.4.0
 torchdiffeq==0.2.5
 torchaudio==2.6.0
 x-transformers==2.1.2
-transformers==4.49.0
+transformers>=4.53.0
 tokenizers==0.21.4
 librosa==0.10.2.post1
 pyarrow==19.0.1

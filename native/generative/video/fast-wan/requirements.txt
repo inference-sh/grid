@@ -1,9 +1,9 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 torch==2.8.0
-gradio
+gradio>=5.31.0
 spaces
-# diffusers>=0.31.0
+# diffusers>=0.38.0
 git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc
 transformers==4.55.4
 tokenizers==0.21.4

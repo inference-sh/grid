@@ -1,7 +1,7 @@
 pydantic >= 2.0.0
 inferencesh
 torch>=2.2.0
-transformers
+transformers>=4.53.0
 accelerate
 numba==0.61.0
 datasets[audio]

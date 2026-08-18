@@ -3,5 +3,5 @@ inferencesh # required for inference.sh
 torch
 accelerate
 git+https://github.com/huggingface/diffusers.git@7feb4fc791909f4a58b153d6d07c6cb8437b2e58
-transformers
+transformers>=4.53.0
 av

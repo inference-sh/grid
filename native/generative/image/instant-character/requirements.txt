@@ -1,9 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
 torch
-transformers 
+transformers>=4.53.0
 accelerate 
-diffusers 
+diffusers>=0.38.0
 huggingface_hub[cli]
 safetensors
 hf_xet

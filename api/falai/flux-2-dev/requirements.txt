@@ -5,7 +5,7 @@ gguf>=0.13.0
 tqdm
 # diffusers
 git+https://github.com/huggingface/diffusers.git@c8656ed73c638e51fc2e777a5fd355d69fa5220f
-transformers
+transformers>=4.53.0
 huggingface_hub
 accelerate
 sentencepiece

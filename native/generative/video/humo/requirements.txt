@@ -5,7 +5,7 @@ inferencesh
 # app requirements
 omegaconf>=2.3.0
 opencv-python>=4.9.0.80
-diffusers>=0.31.0
+diffusers>=0.38.0
 transformers>=4.49.0
 tokenizers>=0.20.3
 accelerate>=1.1.1
@@ -15,7 +15,7 @@ easydict
 ftfy
 dashscope
 imageio-ffmpeg
-gradio>=5.0.0
+gradio>=5.31.0
 numpy>=1.23.5,<2
 xfuser>=0.4.1
 audio-separator==0.24.1
