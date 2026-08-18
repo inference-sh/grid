@@ -4,7 +4,7 @@ torch
 gguf>=0.13.0
 tqdm
 git+https://github.com/calcuis/diffusers.git
-transformers
+transformers>=4.53.0
 huggingface_hub
 accelerate
 sentencepiece

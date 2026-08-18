@@ -29,7 +29,7 @@ tqdm==4.65.0
 # torch is transitive here; pinned so deploy can't pull the CUDA 13 build
 torch==2.8.0
 torchvision==0.23.0
-transformers==4.46.3
+transformers>=4.53.0
 tokenizers==0.20.3
 Pillow==10.0.0
 wandb

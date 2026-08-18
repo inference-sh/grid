@@ -16,13 +16,13 @@ Pillow==10.1.0
 # (`CUDA error: no kernel image is available for execution on the device`)
 torch==2.8.0
 torchsde==0.2.6
-transformers==4.37.1
+transformers>=4.53.0
 tokenizers==0.15.2
 # pinned to the deployed version: 1.27 fails to load its CUDA libs on the
 # GPU-less deploy host, and insightface imports onnxruntime at module scope
 onnxruntime-gpu==1.22.0
 onnx==1.19.0
 hf_transfer
-gradio
+gradio>=5.31.0
 spaces
 xformers

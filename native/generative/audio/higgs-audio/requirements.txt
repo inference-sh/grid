@@ -4,7 +4,7 @@ inferencesh # required for inference.sh
 # Higgs Audio dependencies
 descript-audio-codec
 torch==2.8.0
-transformers==4.46.3
+transformers>=4.53.0
 tokenizers==0.20.3
 librosa
 dacite

@@ -1,8 +1,8 @@
 pydantic >= 2.0.0
 inferencesh
 torch
-diffusers
-transformers
+diffusers>=0.38.0
+transformers>=4.53.0
 accelerate
 safetensors
 controlnet-aux

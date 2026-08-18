@@ -15,7 +15,7 @@ scipy==1.10.1
 sentencepiece==0.1.99
 torch==2.9.0
 torchvision==0.24.0
-transformers==4.49.0
+transformers>=4.53.0
 tokenizers==0.21.4
 accelerate>=0.34.0
 wandb

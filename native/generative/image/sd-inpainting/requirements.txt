@@ -1,9 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
-diffusers
+diffusers>=0.38.0
 torch
 numpy
 Pillow
-transformers
+transformers>=4.53.0
 protobuf
 sentencepiece

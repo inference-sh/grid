@@ -11,7 +11,7 @@ scipy
 hf_transfer
 
 # Deep Learning frameworks
-diffusers
+diffusers>=0.38.0
 timm
 accelerate
 

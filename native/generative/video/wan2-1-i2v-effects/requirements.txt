@@ -14,7 +14,7 @@ easydict
 ftfy
 dashscope
 imageio-ffmpeg
-gradio>=5.0.0
+gradio>=5.31.0
 numpy>=1.23.5,<2
 huggingface-hub>=0.26.0
 hf_transfer>=0.1.1
