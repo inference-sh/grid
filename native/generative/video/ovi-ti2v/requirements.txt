@@ -13,7 +13,7 @@ hf_transfer
 
 # Ovi core dependencies
 opencv-python>=4.9.0.80
-diffusers==0.35.1
+diffusers>=0.38.0
 omegaconf
 tqdm
 einops
