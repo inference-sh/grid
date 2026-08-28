@@ -1,11 +1,12 @@
 import os
-from typing import AsyncGenerator, List, Optional
+from typing import AsyncGenerator, List, Optional, Union
 from pydantic import Field
 
 from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
+    LLMDelta,
     ReasoningCapabilityMixin,
     ReasoningMixin,
     ToolsCapabilityMixin,
@@ -37,10 +38,30 @@ class App(BaseApp):
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
         print("OpenRouter ready")
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
+        prev_response = ""
+        prev_reasoning = ""
+        last_output = None
 
         async for output in stream_completion(OPENROUTER_API_KEY, input_data, DEFAULT_MODEL):
-            yield AppOutput(**output)
+            response = output.get("response", "")
+            reasoning = output.get("reasoning", "")
+
+            response_delta = response[len(prev_response):]
+            reasoning_delta = reasoning[len(prev_reasoning):] if reasoning else None
+
+            if response_delta or reasoning_delta:
+                yield LLMDelta(
+                    response=response_delta,
+                    reasoning=reasoning_delta if reasoning_delta else None,
+                )
+
+            prev_response = response
+            prev_reasoning = reasoning or ""
+            last_output = output
+
+        if last_output:
+            yield AppOutput(**last_output)
 
     async def unload(self):
         pass
