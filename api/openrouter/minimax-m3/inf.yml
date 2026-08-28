@@ -1,5 +1,5 @@
-namespace: openrouter
-name: minimax-m3
+namespace: minimax
+name: m3
 description: MiniMax-M3 is a frontier multimodal model with 1M context window. Supports text, image, and video inputs for coding, reasoning, and long-horizon agentic tasks.
 metadata:
     capabilities:
