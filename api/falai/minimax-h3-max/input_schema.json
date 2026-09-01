@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "adaptive",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "PromptExpansionEnum": {
+      "enum": [
+        "balanced",
+        "quality"
+      ],
+      "title": "PromptExpansionEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax H3 Max \u2014 fal's post-trained H3.\n\nModes determined by inputs:\n- Text-to-video: prompt only (aspect_ratio required, no adaptive)\n- Image-to-video: prompt + image (optional end_image for first-last-frame)\n- Reference: prompt + reference images/videos/audio (aspect_ratio defaults to adaptive)",
+  "properties": {
+    "prompt": {
+      "description": "Video prompt. Max 50000 chars. Use timeline markers like [0s-3s] for scene pacing.",
+      "examples": [
+        "A cinematic tracking shot through a misty forest at dawn, golden light filtering through ancient trees."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image for image-to-video. Formats: JPG, PNG, WEBP, GIF, AVIF.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last frame image. Requires image to be set as first frame.",
+      "title": "End Image"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images for style/subject guidance (max 9). Cannot combine with first/last frame.",
+      "title": "Reference Images"
+    },
+    "reference_videos": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference videos for motion/style (max 3). MP4, 2-15s each.",
+      "title": "Reference Videos"
+    },
+    "reference_audios": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference audio clips (max 3). Requires reference image or video. 2-15s each.",
+      "title": "Reference Audios"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (5-15).",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "Output resolution. 768P for best quality, 480P for faster/cheaper."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Text-to-video requires explicit value (not adaptive). Reference mode defaults to adaptive."
+    },
+    "prompt_expansion_mode": {
+      "$ref": "#/$defs/PromptExpansionEnum",
+      "default": "balanced",
+      "description": "balanced (~1s) or quality (~30s extra) for richer prompt rewriting."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
