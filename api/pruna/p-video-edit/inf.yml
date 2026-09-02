@@ -1,0 +1,14 @@
+namespace: pruna
+name: p-video-edit
+description: Edit videos from text prompts with optional reference images. Up to 15s input, standard or draft quality.
+category: video
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

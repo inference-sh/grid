@@ -1,0 +1,24 @@
+namespace: openrouter
+name: minimax-m3-delta
+description: MiniMax-M3 with streaming delta support. Test app for INF-630.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    checksum: 17d016b7e031176e3c54c3d45fdc5df045746fb0b0343efe607e3283d03f361a
+category: chat
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/cqbzwk26.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/sxucmwt2.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/srzm4wvv.png
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,0 +1,70 @@
+{
+  "properties": {
+    "video": {
+      "description": "Source video to edit (.mp4). Maximum length: 15 seconds.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "description": "Text prompt describing the edit, e.g. 'Replace the sky with a sunset'.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 4,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional reference image(s) for identity or style guidance (1-4 images, jpg/png/webp).",
+      "title": "Images"
+    },
+    "prompt_upsampling": {
+      "default": true,
+      "description": "Enhance the edit prompt with an LLM.",
+      "title": "Prompt Upsampling",
+      "type": "boolean"
+    },
+    "draft": {
+      "default": false,
+      "description": "Draft mode: faster, lower-quality preview.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "save_audio": {
+      "default": true,
+      "description": "Preserve audio from the source video.",
+      "title": "Save Audio",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
