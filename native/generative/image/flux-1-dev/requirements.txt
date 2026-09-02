@@ -4,7 +4,7 @@ torch==2.10.0 # 2.12.x breaks against the prebuilt flash-attn cu128torch2.9 whee
 gguf>=0.13.0
 tqdm
 diffusers>=0.38.0
-transformers==5.3.0
+transformers==5.10.0
 tokenizers==0.22.2 # 0.23.1 dropped the cls kwarg on RobertaProcessing, breaking tokenizer setup
 huggingface_hub
 accelerate

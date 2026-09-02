@@ -13,7 +13,7 @@ torchaudio==2.8.0
 accelerate>=1.1.1
 # pinned: transformers 5.x drops slow tokenizers (T5 conversion then needs
 # protobuf), and tokenizers 0.23 prereleases break RobertaProcessing(cls=...)
-transformers==4.56.0
+transformers==5.10.0
 tokenizers==0.22.0
 
 # Utility libraries

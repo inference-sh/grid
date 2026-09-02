@@ -10,7 +10,7 @@ accelerate>=1.1.1
 
 # Diffusers and transformers (need custom branch for Wan S2V support)
 git+https://github.com/tolgacangoz/diffusers.git@integrations/wan2.2-s2v
-transformers==4.56.2
+transformers==5.10.0
 tokenizers==0.22.1
 decord
 

@@ -5,7 +5,7 @@ torch==2.9.1
 torchvision>=0.20.0
 torchaudio==2.9.1
 diffusers>=0.38.0
-transformers==4.57.1
+transformers==5.10.0
 tokenizers==0.22.1
 torchaudio==2.9.1
 torchvision==0.24.1

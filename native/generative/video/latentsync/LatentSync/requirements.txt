@@ -5,7 +5,7 @@ xformers==0.0.26
 triton==2.2.0
 
 diffusers>=0.38.0
-transformers==4.38.0
+transformers==5.10.0
 huggingface-hub==0.25.2
 imageio==2.27.0
 decord==0.6.0

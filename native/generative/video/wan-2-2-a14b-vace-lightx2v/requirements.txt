@@ -8,7 +8,7 @@ torchaudio==2.8.0
 
 # Diffusers and related ML libraries
 git+https://github.com/huggingface/diffusers.git@751e250f70cf446ae342c8a860d92f6a8b78261a
-transformers==4.56.1
+transformers==5.10.0
 tokenizers==0.22.0
 accelerate>=1.1.1
 
