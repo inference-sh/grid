@@ -249,8 +249,10 @@ def _handle_error_response(
 # SSE parsing
 # ---------------------------------------------------------------------------
 
-def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[str]:
-    """Process a parsed SSE data object and update state. Returns finish_reason if present."""
+def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> tuple[Optional[str], Optional[Dict[str, Any]]]:
+    """Process a parsed SSE data object and update state.
+    Returns (finish_reason, delta_dict). delta_dict is the raw OpenAI
+    choices[0].delta mapped to LLMDelta field names, or None if empty."""
 
     # Capture generation_id from chunk id
     chunk_id = data.get("id")
@@ -307,7 +309,7 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
     # Choices
     choices = data.get("choices", [])
     if not choices:
-        return None
+        return None, None
 
     choice = choices[0]
     finish_reason = choice.get("finish_reason")
@@ -316,13 +318,18 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
         state["native_finish_reason"] = native_finish
     delta = choice.get("delta", {})
 
+    # Build LLMDelta-shaped dict from the raw SSE delta
+    llm_delta: Dict[str, Any] = {}
+
     content = delta.get("content")
     if content:
         state["response"] += content
+        llm_delta["response"] = content
 
     reasoning = delta.get("reasoning")
     if reasoning:
         state["reasoning"] += reasoning
+        llm_delta["reasoning"] = reasoning
 
     reasoning_details = delta.get("reasoning_details")
     if reasoning_details:
@@ -332,6 +339,7 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
     if tool_calls:
         for tc in tool_calls:
             _process_tool_call_delta(tc, state["tool_calls"])
+        llm_delta["tool_calls"] = tool_calls
 
     images = delta.get("images")
     if images:
@@ -343,7 +351,7 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
     if finish_reason == "error":
         raise RuntimeError("OpenRouter stream terminated with finish_reason=error")
 
-    return finish_reason
+    return finish_reason, llm_delta if llm_delta else None
 
 
 def _process_tool_call_delta(tc: Dict[str, Any], tool_calls: List[Dict[str, Any]]) -> None:
@@ -515,13 +523,14 @@ def _build_request_body(
 # Main streaming function
 # ---------------------------------------------------------------------------
 
-async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
-    """
-    Stream a completion from OpenRouter via raw httpx SSE.
+async def stream_completion(
+    api_key: str, input_data, model: str, *, with_deltas: bool = False,
+) -> AsyncGenerator[Any, None]:
+    """Stream a completion from OpenRouter via raw httpx SSE.
 
-    Uses direct HTTP so we get all OpenRouter-specific fields (provider, cost,
-    cost_details) that the OpenAI SDK strips. Always streams — OpenRouter has
-    no keep-alive for non-streaming requests.
+    When with_deltas=False (default): yields accumulated output dicts.
+    When with_deltas=True: yields (output_dict, delta_dict | None) tuples.
+    delta_dict has LLMDelta-shaped keys (response, reasoning, tool_calls).
     """
     routing = await get_provider_config(model)
     # .get, not .pop — routing is the cached dict, popping would drop the
@@ -634,8 +643,9 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
                 last_data_time = now
                 chunks_received += 1
 
-                finish_reason = _parse_sse_chunk(data, state)
-                yield _build_output(state)
+                finish_reason, chunk_delta = _parse_sse_chunk(data, state)
+                output = _build_output(state)
+                yield (output, chunk_delta) if with_deltas else output
 
         except httpx.ReadTimeout:
             detail = f"no data for {STREAM_SILENCE_TIMEOUT}s after {chunks_received} chunks"
