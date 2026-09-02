@@ -1,5 +1,133 @@
 [
   {
+    "endpoint_id": "alibaba/happy-horse/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Happy Horse",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Happy Horse",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Happy Horse",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/v1.1/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Happy Horse 1.1 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/v1.1/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Happy Horse 1.1 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/v1.1/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Happy Horse 1.1 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/happy-horse/video-edit",
+    "category": "video-to-video",
+    "display_name": "Happy Horse Video Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/qwen-audio-3-tts",
+    "category": "text-to-speech",
+    "display_name": "Qwen Audio 3.0 TTS (Flash)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/qwen-image-3/edit",
+    "category": "image-to-image",
+    "display_name": "Qwen Image 3 Image Editing",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/qwen-image-3/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Qwen Image 3 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0-prime/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Wan 3.0 Prime",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0-prime/reference-to-video",
+    "category": "video-to-video",
+    "display_name": "Wan 3.0 Prime",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0-prime/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Wan 3.0 Prime",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Wan 3.0",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Wan 3.0",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "alibaba/wan-3.0/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Wan Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "argil/avatars/audio-to-video",
     "category": "audio-to-video",
     "display_name": "Avatars Audio to Video",
@@ -16,17 +144,105 @@
     "direct": false
   },
   {
-    "endpoint_id": "beatoven/music-generation",
-    "category": "text-to-audio",
-    "display_name": "Music Generation",
+    "endpoint_id": "async/tts-pro/v1.0",
+    "category": "text-to-speech",
+    "display_name": "Async Text to Speech Pro V1.0",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "beatoven/sound-effect-generation",
-    "category": "text-to-audio",
-    "display_name": "Sound Effect Generation",
+    "endpoint_id": "blackforestlabs/flux-3/draft-enhance",
+    "category": "video-to-video",
+    "display_name": "Flux 3 Draft Enhance",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/extend-video",
+    "category": "video-to-video",
+    "display_name": "Flux 3 Extend Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/extend-video/draft",
+    "category": "video-to-video",
+    "display_name": "Flux 3 Extend Video Draft",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/first-last-frame-to-video",
+    "category": "image-to-video",
+    "display_name": "Flux 3 First Last Frame to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/first-last-frame-to-video/draft",
+    "category": "image-to-video",
+    "display_name": "Flux 3 First Last Frame to Video Draft",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/image-to-video",
+    "category": "image-to-video",
+    "display_name": "FLUX 3 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/image-to-video/draft",
+    "category": "image-to-video",
+    "display_name": "Flux 3 Image To Video Draft",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/keyframes-to-video",
+    "category": "image-to-video",
+    "display_name": "Flux 3 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/keyframes-to-video/draft",
+    "category": "image-to-video",
+    "display_name": "Flux 3 Keyframes To Video Draft",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Flux 3 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3/text-to-video/draft",
+    "category": "text-to-video",
+    "display_name": "Flux 3 Text To Video Draft",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-video-upscale",
+    "category": "video-to-video",
+    "display_name": "Flux Video Upscale",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -42,7 +258,7 @@
   {
     "endpoint_id": "bria/bria_video_eraser/erase/mask",
     "category": "video-to-video",
-    "display_name": "Bria Video Eraser",
+    "display_name": "Bria Video Eraser Erase Mask",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -51,6 +267,38 @@
     "endpoint_id": "bria/bria_video_eraser/erase/prompt",
     "category": "video-to-video",
     "display_name": "Bria Video Eraser",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/embed-product",
+    "category": "image-to-image",
+    "display_name": "Embed Product",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/extract-object",
+    "category": "image-to-image",
+    "display_name": "Extract Object",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/fibo-bbq-preview/generate",
+    "category": "text-to-image",
+    "display_name": "Fibo Bbq Preview",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/fibo-edit-1.5/edit",
+    "category": "image-to-image",
+    "display_name": "Fibo Edit 1.5 Image Editing",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -160,6 +408,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "bria/fibo-gen-1.5/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Fibo Gen 1.5 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "bria/fibo-lite/generate",
     "category": "text-to-image",
     "display_name": "Fibo Lite",
@@ -169,14 +425,6 @@
   },
   {
     "endpoint_id": "bria/fibo-lite/generate/structured_prompt",
-    "category": "text-to-json",
-    "display_name": "Fibo Lite",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "bria/fibo-lite/generate/structured_prompt/lite",
     "category": "text-to-json",
     "display_name": "Fibo Lite",
     "status": "active",
@@ -200,9 +448,17 @@
     "direct": false
   },
   {
-    "endpoint_id": "bria/reimagine/3.2",
+    "endpoint_id": "bria/genfill/v2",
     "category": "image-to-image",
-    "display_name": "Reimagine",
+    "display_name": "Genfill",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/product-dimensions",
+    "category": "image-to-image",
+    "display_name": "Bria Product Dimensions",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -216,9 +472,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "bria/text-to-image/3.2",
-    "category": "text-to-image",
-    "display_name": "Bria 3.2 Text-to-Image",
+    "endpoint_id": "bria/upscale/creative",
+    "category": "image-to-image",
+    "display_name": "Upscale",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -227,6 +483,30 @@
     "endpoint_id": "bria/video/background-removal",
     "category": "video-to-video",
     "display_name": "Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/video/background-removal/green-screen-despill",
+    "category": "video-to-video",
+    "display_name": "Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/video/background-removal/realtime",
+    "category": "video-to-video",
+    "display_name": "Bria's VRMBG 3.0 Realtime",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "bria/video/background-removal/v3",
+    "category": "video-to-video",
+    "display_name": "Bria's VRMBG 3.0",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -272,6 +552,150 @@
     "direct": true
   },
   {
+    "endpoint_id": "bytedance/seed-audio-1.0",
+    "category": "text-to-audio",
+    "display_name": "Seed Audio 1.0",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/fast/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.0 Fast Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/fast/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.0 Fast Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/fast/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Seedance 2.0 Fast Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/mini/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.0 Mini Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/mini/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.0 Mini",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/mini/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Seedance 2.0 Mini Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.0/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Seedance 2.0 Text to Video API",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.5/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.5 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.5/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Seedance 2.5 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedance-2.5/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Seedance 2.5 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedream/v5/lite/edit",
+    "category": "image-to-image",
+    "display_name": "Seedream",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedream/v5/lite/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Seedream",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedream/v5/pro/edit",
+    "category": "image-to-image",
+    "display_name": "Seedream 5.0 Pro Image Editing",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedream/v5/pro/layerize",
+    "category": "image-to-image",
+    "display_name": "Seedream 5.0 Pro Layerize",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "bytedance/seedream/v5/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Seedream 5.0 Pro Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "cassetteai/music-generator",
     "category": "text-to-audio",
     "display_name": "music generator",
@@ -312,25 +736,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "decart/lucy-14b/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Decart Lucy 14b",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "decart/lucy-edit/dev",
+    "endpoint_id": "decart/lucy-2-5/realtime",
     "category": "video-to-video",
-    "display_name": "Lucy Edit [Dev]",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "decart/lucy-edit/fast",
-    "category": "video-to-video",
-    "display_name": "Lucy Edit [Fast]",
+    "display_name": "Lucy 2.5",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -352,9 +760,17 @@
     "direct": false
   },
   {
+    "endpoint_id": "decart/lucy2-vton/realtime",
+    "category": "video-to-video",
+    "display_name": "Lucy 2.1 VTON Realtime",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/ace-step",
     "category": "text-to-audio",
-    "display_name": "ACE-Step",
+    "display_name": "ACE Step",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -362,7 +778,7 @@
   {
     "endpoint_id": "fal-ai/ace-step/audio-inpaint",
     "category": "audio-to-audio",
-    "display_name": "ACE-Step",
+    "display_name": "ACE Step Audio Inpaint",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -370,7 +786,7 @@
   {
     "endpoint_id": "fal-ai/ace-step/audio-outpaint",
     "category": "audio-to-audio",
-    "display_name": "ACE-Step",
+    "display_name": "ACE Step Audio Outpaint",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -378,7 +794,7 @@
   {
     "endpoint_id": "fal-ai/ace-step/audio-to-audio",
     "category": "audio-to-audio",
-    "display_name": "ACE-Step",
+    "display_name": "ACE Step Audio To Audio",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -386,15 +802,7 @@
   {
     "endpoint_id": "fal-ai/ace-step/prompt-to-audio",
     "category": "text-to-audio",
-    "display_name": "ACE-Step",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ai-avatar",
-    "category": "image-to-video",
-    "display_name": "Ai Avatar",
+    "display_name": "ACE Step Prompt To Audio",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -402,7 +810,7 @@
   {
     "endpoint_id": "fal-ai/ai-avatar/multi",
     "category": "image-to-video",
-    "display_name": "Ai Avatar",
+    "display_name": "AI Avatar Multi",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -410,7 +818,7 @@
   {
     "endpoint_id": "fal-ai/ai-avatar/multi-text",
     "category": "image-to-video",
-    "display_name": "Ai Avatar",
+    "display_name": "AI Avatar Multi Text",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -418,7 +826,7 @@
   {
     "endpoint_id": "fal-ai/ai-avatar/single-text",
     "category": "image-to-video",
-    "display_name": "Ai Avatar",
+    "display_name": "AI Avatar Single Text",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -435,38 +843,6 @@
     "endpoint_id": "fal-ai/amt-interpolation/frame-interpolation",
     "category": "image-to-video",
     "display_name": "AMT Frame Interpolation",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/animatediff-sparsectrl-lcm",
-    "category": "text-to-video",
-    "display_name": "Animatediff SparseCtrl LCM",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/arbiter/image",
-    "category": "vision",
-    "display_name": "Arbiter",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/arbiter/image/image",
-    "category": "vision",
-    "display_name": "Arbiter",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/arbiter/image/text",
-    "category": "vision",
-    "display_name": "Arbiter",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -544,6 +920,46 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/bernini-r/edit-image",
+    "category": "image-to-image",
+    "display_name": "Bernini-R Edit Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/bernini-r/edit-video",
+    "category": "video-to-video",
+    "display_name": "Bernini-R Edit Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/bernini-r/reference-edit-video",
+    "category": "video-to-video",
+    "display_name": "Bernini-R Reference Edit Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/bernini-r/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Bernini-R Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/bernini-r/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Bernini-R Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/birefnet",
     "category": "image-to-image",
     "display_name": "Birefnet Background Removal",
@@ -554,7 +970,7 @@
   {
     "endpoint_id": "fal-ai/birefnet/v2",
     "category": "image-to-image",
-    "display_name": "Birefnet Background Removal",
+    "display_name": "Birefnet Background Removal V2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -563,6 +979,30 @@
     "endpoint_id": "fal-ai/birefnet/v2/video",
     "category": "video-to-video",
     "display_name": "Birefnet",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/bitdance",
+    "category": "text-to-image",
+    "display_name": "Bitdance",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/boogu-image",
+    "category": "text-to-image",
+    "display_name": "Boogu Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/boogu-image/edit",
+    "category": "image-to-image",
+    "display_name": "Boogu Image",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -650,15 +1090,15 @@
   {
     "endpoint_id": "fal-ai/bytedance-upscaler/upscale/video",
     "category": "video-to-video",
-    "display_name": "Bytedance Upscaler",
+    "display_name": "Bytedance Upscaler Upscale Video",
     "status": "active",
     "implemented": false,
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/bytedance/dreamina/v3.1/text-to-image",
-    "category": "text-to-image",
-    "display_name": "Bytedance",
+    "endpoint_id": "fal-ai/bytedance/dreamactor/v2",
+    "category": "video-to-video",
+    "display_name": "Bytedance Dreamactor V2",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -674,15 +1114,23 @@
   {
     "endpoint_id": "fal-ai/bytedance/omnihuman/v1.5",
     "category": "image-to-video",
-    "display_name": "Bytedance OmniHuman v1.5",
+    "display_name": "Bytedance Omnihuman V1.5",
     "status": "active",
     "implemented": true,
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/bytedance/seed3d/image-to-3d",
-    "category": "image-to-3d",
-    "display_name": "Bytedance",
+    "endpoint_id": "fal-ai/bytedance/seed-speech/tts/v2",
+    "category": "text-to-speech",
+    "display_name": "Bytedance Seed Speech Text to Speech",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "fal-ai/bytedance/seed/v2/mini",
+    "category": "llm",
+    "display_name": "Bytedance Seed V2 Mini",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -690,7 +1138,7 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
     "category": "image-to-video",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedance V1.5 Pro Image To Video",
     "status": "active",
     "implemented": true,
     "direct": true
@@ -698,39 +1146,15 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedance/v1.5/pro/text-to-video",
     "category": "text-to-video",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedance V1.5 Pro Text To Video",
     "status": "active",
     "implemented": true,
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/bytedance/seedance/v1/lite/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Seedance 1.0 Lite",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/bytedance/seedance/v1/lite/reference-to-video",
-    "category": "image-to-video",
-    "display_name": "Bytedance",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/bytedance/seedance/v1/lite/text-to-video",
-    "category": "text-to-video",
-    "display_name": "Seedance 1.0 Lite",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
     "endpoint_id": "fal-ai/bytedance/seedance/v1/pro/fast/image-to-video",
     "category": "image-to-video",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedance V1 Pro Fast Image To Video",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -738,7 +1162,7 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedance/v1/pro/fast/text-to-video",
     "category": "text-to-video",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedance V1 Pro Fast Text To Video",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -760,17 +1184,9 @@
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/bytedance/seedream/v3/text-to-image",
-    "category": "text-to-image",
-    "display_name": "Bytedance",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
     "endpoint_id": "fal-ai/bytedance/seedream/v4.5/edit",
     "category": "image-to-image",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedream V4.5 Edit",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -778,7 +1194,7 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedream/v4.5/text-to-image",
     "category": "text-to-image",
-    "display_name": "Bytedance",
+    "display_name": "Bytedance Seedream V4.5 Text To Image",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -786,7 +1202,7 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedream/v4/edit",
     "category": "image-to-image",
-    "display_name": "Bytedance Seedream v4 Edit",
+    "display_name": "Bytedance Seedream V4 Edit",
     "status": "active",
     "implemented": true,
     "direct": true
@@ -794,26 +1210,10 @@
   {
     "endpoint_id": "fal-ai/bytedance/seedream/v4/text-to-image",
     "category": "text-to-image",
-    "display_name": "Bytedance Seedream v4",
+    "display_name": "Bytedance Seedream V4 Text To Image",
     "status": "active",
     "implemented": false,
     "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/bytedance/video-stylize",
-    "category": "image-to-video",
-    "display_name": "Bytedance",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/calligrapher",
-    "category": "image-to-image",
-    "display_name": "Calligrapher",
-    "status": "active",
-    "implemented": false,
-    "direct": false
   },
   {
     "endpoint_id": "fal-ai/cartoonify",
@@ -835,14 +1235,6 @@
     "endpoint_id": "fal-ai/ccsr",
     "category": "image-to-image",
     "display_name": "CCSR Upscaler",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/chain-of-zoom",
-    "category": "image-to-image",
-    "display_name": "Chain Of Zoom",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -952,9 +1344,57 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/controlnext",
+    "endpoint_id": "fal-ai/cohere-transcribe",
+    "category": "speech-to-text",
+    "display_name": "Cohere Transcribe",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/control-light",
+    "category": "image-to-image",
+    "display_name": "ControlLight",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/controlfoley",
     "category": "video-to-video",
-    "display_name": "ControlNeXt SVD",
+    "display_name": "Controlfoley",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/cosmos-predict-2.5/distilled/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Cosmos Predict 2.5 2B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/cosmos-predict-2.5/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Cosmos Predict 2.5 2B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/cosmos-predict-2.5/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Cosmos Predict 2.5 2B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/cosmos-predict-2.5/video-to-video",
+    "category": "video-to-video",
+    "display_name": "Cosmos Predict 2.5 2B",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -979,6 +1419,14 @@
     "endpoint_id": "fal-ai/csm-1b",
     "category": "text-to-audio",
     "display_name": "CSM-1B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/davinci-magihuman",
+    "category": "image-to-video",
+    "display_name": "Davinci Magihuman",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1016,6 +1464,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/depth-anything-video",
+    "category": "video-to-video",
+    "display_name": "Depth Anything Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/dia-tts",
     "category": "text-to-speech",
     "display_name": "Dia",
@@ -1035,14 +1491,6 @@
     "endpoint_id": "fal-ai/diffrhythm",
     "category": "text-to-audio",
     "display_name": "DiffRhythm: Lyrics to Song",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/diffusion-edge",
-    "category": "text-to-image",
-    "display_name": "DiffusionEdge",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1072,14 +1520,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/dreamo",
-    "category": "text-to-image",
-    "display_name": "DreamO",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/dreamomni2/edit",
     "category": "image-to-image",
     "display_name": "DreamOmni2",
@@ -1091,14 +1531,6 @@
     "endpoint_id": "fal-ai/dreamshaper",
     "category": "text-to-image",
     "display_name": "Dreamshaper",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/dubbing",
-    "category": "video-to-video",
-    "display_name": "Dubbing",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1162,7 +1594,7 @@
   {
     "endpoint_id": "fal-ai/elevenlabs/sound-effects/v2",
     "category": "text-to-audio",
-    "display_name": "Elevenlabs",
+    "display_name": "Elevenlabs Sound Effects V2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1194,7 +1626,7 @@
   {
     "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
     "category": "text-to-audio",
-    "display_name": "Elevenlabs",
+    "display_name": "Elevenlabs Tts Eleven V3",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1240,9 +1672,41 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/era-3d",
-    "category": "image-to-image",
-    "display_name": "Era 3D",
+    "endpoint_id": "fal-ai/ernie-image",
+    "category": "text-to-image",
+    "display_name": "Ernie Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ernie-image-trainer",
+    "category": "training",
+    "display_name": "ERNIE-Image Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ernie-image/lora",
+    "category": "text-to-image",
+    "display_name": "Ernie Image Lora",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ernie-image/lora/turbo",
+    "category": "text-to-image",
+    "display_name": "Ernie Image Lora Turbo",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ernie-image/turbo",
+    "category": "text-to-image",
+    "display_name": "Ernie Image Turbo",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1264,33 +1728,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/f-lite/standard",
-    "category": "text-to-image",
-    "display_name": "F Lite",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/f-lite/texture",
-    "category": "text-to-image",
-    "display_name": "F Lite (texture mode)",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/f5-tts",
     "category": "text-to-audio",
     "display_name": "F5 TTS",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/face-to-sticker",
-    "category": "image-to-image",
-    "display_name": "Face to Sticker",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1339,14 +1779,6 @@
     "endpoint_id": "fal-ai/fast-animatediff/video-to-video",
     "category": "video-to-video",
     "display_name": "AnimateDiff",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/fast-fooocus-sdxl",
-    "category": "text-to-image",
-    "display_name": "Fooocus",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1480,6 +1912,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/feynobg",
+    "category": "image-to-image",
+    "display_name": "Feynobg Background Remover",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/ffmpeg-api/compose",
     "category": "video-to-video",
     "display_name": "FFmpeg API Compose",
@@ -1491,6 +1931,14 @@
     "endpoint_id": "fal-ai/ffmpeg-api/extract-frame",
     "category": "image-to-image",
     "display_name": "Ffmpeg Api",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ffmpeg-api/images-to-video",
+    "category": "image-to-video",
+    "display_name": "Ffmpeg Api Images to Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1562,7 +2010,7 @@
   {
     "endpoint_id": "fal-ai/finegrain-eraser",
     "category": "image-to-image",
-    "display_name": "finegrain eraser",
+    "display_name": "Finegrain Eraser",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1570,7 +2018,7 @@
   {
     "endpoint_id": "fal-ai/finegrain-eraser/bbox",
     "category": "image-to-image",
-    "display_name": "finegrain eraser",
+    "display_name": "Finegrain Eraser Bbox",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1578,7 +2026,39 @@
   {
     "endpoint_id": "fal-ai/finegrain-eraser/mask",
     "category": "image-to-image",
-    "display_name": "finegrain eraser",
+    "display_name": "Finegrain Eraser Mask",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/firered-image-edit",
+    "category": "image-to-image",
+    "display_name": "Firered Image Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/firered-image-edit-v1.1",
+    "category": "image-to-image",
+    "display_name": "Firered Image Edit V1.1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flashhead",
+    "category": "image-to-video",
+    "display_name": "Flashhead",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flashtalk",
+    "category": "audio-to-video",
+    "display_name": "Flashtalk",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1594,7 +2074,7 @@
   {
     "endpoint_id": "fal-ai/florence-2-large/caption",
     "category": "vision",
-    "display_name": "Florence-2 Large",
+    "display_name": "Florence 2 Large Caption",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1618,7 +2098,7 @@
   {
     "endpoint_id": "fal-ai/florence-2-large/detailed-caption",
     "category": "vision",
-    "display_name": "Florence-2 Large",
+    "display_name": "Florence 2 Large Detailed Caption",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1642,7 +2122,7 @@
   {
     "endpoint_id": "fal-ai/florence-2-large/ocr",
     "category": "vision",
-    "display_name": "Florence-2 Large",
+    "display_name": "Florence 2 Large OCR",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1682,7 +2162,7 @@
   {
     "endpoint_id": "fal-ai/florence-2-large/region-to-category",
     "category": "vision",
-    "display_name": "Florence-2 Large",
+    "display_name": "Florence 2 Large Region To Category",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1794,7 +2274,7 @@
   {
     "endpoint_id": "fal-ai/flux-2",
     "category": "text-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1816,25 +2296,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/flux-2-klein-4b-base-trainer",
-    "category": "training",
-    "display_name": "Flux 2 Klein 4B Base Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/flux-2-klein-4b-base-trainer/edit",
-    "category": "training",
-    "display_name": "Flux 2 Klein 4B Base Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/flux-2-klein-9b-base-trainer",
     "category": "training",
-    "display_name": "Flux 2 Klein 9B Base Trainer",
+    "display_name": "FLUX 2 [klein] 9b Base Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1890,7 +2354,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-lora-gallery/hdr-style",
     "category": "text-to-image",
-    "display_name": "Flux 2 Lora Gallery",
+    "display_name": "FLUX 2 Lora Gallery Hdr Style",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1906,7 +2370,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-lora-gallery/realism",
     "category": "text-to-image",
-    "display_name": "Flux 2 Lora Gallery",
+    "display_name": "FLUX 2 Lora Gallery Realism",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1962,7 +2426,15 @@
   {
     "endpoint_id": "fal-ai/flux-2-pro/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2 Pro",
+    "display_name": "FLUX 2 Pro Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2-pro/outpaint",
+    "category": "image-to-image",
+    "display_name": "FLUX 2 Pro Outpaint",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1970,7 +2442,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-trainer",
     "category": "training",
-    "display_name": "Flux 2 Trainer",
+    "display_name": "FLUX 2 Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1978,7 +2450,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-trainer-v2",
     "category": "training",
-    "display_name": "Flux 2 Trainer V2",
+    "display_name": "FLUX 2 Trainer V2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1986,7 +2458,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-trainer-v2/edit",
     "category": "training",
-    "display_name": "Flux 2 Trainer V2",
+    "display_name": "FLUX 2 Trainer V2 Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -1994,7 +2466,7 @@
   {
     "endpoint_id": "fal-ai/flux-2-trainer/edit",
     "category": "training",
-    "display_name": "Flux 2 Trainer",
+    "display_name": "FLUX 2 Trainer Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2002,7 +2474,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2010,7 +2482,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/flash",
     "category": "text-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Flash",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2018,7 +2490,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/flash/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Flash Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2026,7 +2498,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b",
     "category": "text-to-image",
-    "display_name": "Flux 2 [klein] 4B",
+    "display_name": "FLUX.2 [klein] 4B",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2034,7 +2506,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b/base",
     "category": "text-to-image",
-    "display_name": "Flux 2 [klein] 4B Base",
+    "display_name": "FLUX.2 [klein] 4B Base",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2042,7 +2514,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b/base/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 4B Base",
+    "display_name": "FLUX.2 [klein] 4B Base",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2050,7 +2522,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b/base/edit/lora",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 4B Base Lora",
+    "display_name": "FLUX.2 [klein] 4B Base LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2058,7 +2530,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b/base/lora",
     "category": "text-to-image",
-    "display_name": "Flux 2 [klein] 4B Base Lora",
+    "display_name": "FLUX.2 [klein] 4B Base LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2066,7 +2538,23 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/4b/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 4B",
+    "display_name": "FLUX.2 [klein] 4B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2/klein/4b/edit/lora",
+    "category": "image-to-image",
+    "display_name": "FLUX.2 [klein] 4B LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2/klein/4b/lora",
+    "category": "text-to-image",
+    "display_name": "FLUX.2 [klein] 4B LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2090,7 +2578,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/9b/base/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 9B Base",
+    "display_name": "FLUX.2 [klein] 9B Base",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2098,7 +2586,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/9b/base/edit/lora",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 9B Base Lora",
+    "display_name": "FLUX.2 [klein] 9B Base LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2106,7 +2594,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/9b/base/lora",
     "category": "text-to-image",
-    "display_name": "Flux 2 [klein] 9B Base Lora",
+    "display_name": "FLUX.2 [klein] 9B Base LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2114,7 +2602,31 @@
   {
     "endpoint_id": "fal-ai/flux-2/klein/9b/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2 [klein] 9B",
+    "display_name": "FLUX.2 [klein] 9B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2/klein/9b/edit/lora",
+    "category": "image-to-image",
+    "display_name": "FLUX.2 [klein] 9B LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2/klein/9b/lora",
+    "category": "text-to-image",
+    "display_name": "FLUX.2 [klein] 9B LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-2/klein/realtime",
+    "category": "image-to-image",
+    "display_name": "Flux 2 [klein] Realtime",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2122,7 +2634,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/lora",
     "category": "text-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2130,7 +2642,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/lora/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Lora Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2138,7 +2650,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/turbo",
     "category": "text-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Turbo",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2146,7 +2658,7 @@
   {
     "endpoint_id": "fal-ai/flux-2/turbo/edit",
     "category": "image-to-image",
-    "display_name": "Flux 2",
+    "display_name": "FLUX 2 Turbo Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2179,14 +2691,6 @@
     "endpoint_id": "fal-ai/flux-control-lora-depth/image-to-image",
     "category": "image-to-image",
     "display_name": "FLUX.1 [dev] Control LoRA Depth",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/flux-differential-diffusion",
-    "category": "image-to-image",
-    "display_name": "FLUX.1 [dev] Differential Diffusion",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2299,14 +2803,6 @@
     "endpoint_id": "fal-ai/flux-krea-lora/stream",
     "category": "text-to-image",
     "display_name": "Flux Krea Lora",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/flux-krea-trainer",
-    "category": "training",
-    "display_name": "Train Flux Krea LoRA",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2472,6 +2968,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/flux-pro/v1/erase",
+    "category": "image-to-image",
+    "display_name": "Flux Pro Erase",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/flux-pro/v1/fill",
     "category": "image-to-image",
     "display_name": "FLUX.1 [pro] Fill",
@@ -2483,6 +2987,14 @@
     "endpoint_id": "fal-ai/flux-pro/v1/fill-finetuned",
     "category": "image-to-image",
     "display_name": "FLUX.1 [pro] Fill Fine-tuned",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/flux-pro/v1/vto",
+    "category": "image-to-image",
+    "display_name": "FLUX Virtual Try-On ",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2680,17 +3192,33 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/gemini-flash-edit",
-    "category": "image-to-image",
-    "display_name": "Gemini Flash Edit Multi Image",
+    "endpoint_id": "fal-ai/gemini-3.1-flash-image-preview",
+    "category": "text-to-image",
+    "display_name": "Gemini 3.1 Flash Image Preview",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/gemini-flash-edit/multi",
+    "endpoint_id": "fal-ai/gemini-3.1-flash-image-preview/edit",
     "category": "image-to-image",
-    "display_name": "Gemini Flash Edit Multi Image",
+    "display_name": "Gemini 3.1 Flash Image Preview",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/gemini-3.1-flash-tts",
+    "category": "text-to-speech",
+    "display_name": "Gemini 3.1 Flash Tts",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/gemini-tts",
+    "category": "text-to-audio",
+    "display_name": "Gemini TTS",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2706,7 +3234,7 @@
   {
     "endpoint_id": "fal-ai/glm-image",
     "category": "text-to-image",
-    "display_name": "Glm Image",
+    "display_name": "GLM Image",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2776,9 +3304,89 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/hidream-e1-1",
-    "category": "image-to-image",
-    "display_name": "Hidream E1 1",
+    "endpoint_id": "fal-ai/heygen/avatar3/digital-twin",
+    "category": "text-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/avatar4/digital-twin",
+    "category": "text-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/avatar4/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/avatar5/digital-twin",
+    "category": "text-to-video",
+    "display_name": "Heygen v5 Digital Twin",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v2/translate/precision",
+    "category": "video-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v2/translate/speed",
+    "category": "video-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v2/video-agent",
+    "category": "text-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v3/filler-word-removal",
+    "category": "video-to-video",
+    "display_name": "Heygen",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v3/lipsync/precision",
+    "category": "video-to-video",
+    "display_name": "Heygen Lipsync - Precision",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v3/lipsync/speed",
+    "category": "video-to-video",
+    "display_name": "Heygen Lipsync - Speed",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/heygen/v3/video-agent",
+    "category": "text-to-video",
+    "display_name": "Heygen Video Agent",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2811,6 +3419,38 @@
     "endpoint_id": "fal-ai/hidream-i1-full/image-to-image",
     "category": "image-to-image",
     "display_name": "Hidream I1 Full",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hidream-o1-image",
+    "category": "text-to-image",
+    "display_name": "Hidream O1 Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hidream-o1-image/dev",
+    "category": "text-to-image",
+    "display_name": "Hidream O1 Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hidream-o1-image/dev/edit",
+    "category": "image-to-image",
+    "display_name": "Hidream O1 Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hidream-o1-image/edit",
+    "category": "image-to-image",
+    "display_name": "Hidream O1 Image",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -2864,22 +3504,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/hunyuan-avatar",
-    "category": "image-to-video",
-    "display_name": "Hunyuan Avatar",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hunyuan-custom",
-    "category": "image-to-video",
-    "display_name": "Hunyuan Custom",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/hunyuan-image/v2.1/text-to-image",
     "category": "text-to-image",
     "display_name": "Hunyuan Image",
@@ -2928,22 +3552,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/hunyuan-part",
-    "category": "3d-to-3d",
-    "display_name": "Hunyuan Part",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hunyuan-portrait",
-    "category": "image-to-video",
-    "display_name": "Hunyuan Portrait",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/hunyuan-video",
     "category": "text-to-video",
     "display_name": "Hunyuan Video",
@@ -2976,30 +3584,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/hunyuan-video-lora",
-    "category": "text-to-video",
-    "display_name": "Hunyuan Video LoRA Inference",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hunyuan-video-lora-training",
-    "category": "training",
-    "display_name": "Train Hunyuan LoRA",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hunyuan-video-lora/video-to-video",
-    "category": "video-to-video",
-    "display_name": "Hunyuan Video LoRA Inference (Video-to-Video)",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/hunyuan-video-v1.5/image-to-video",
     "category": "image-to-video",
     "display_name": "Hunyuan Video V1.5",
@@ -3019,14 +3603,6 @@
     "endpoint_id": "fal-ai/hunyuan-video/video-to-video",
     "category": "video-to-video",
     "display_name": "Hunyuan Video (Video-to-Video)",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hunyuan3d-v21",
-    "category": "image-to-3d",
-    "display_name": "Hunyuan 3D 2.1",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3120,25 +3696,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/hyper-sdxl",
-    "category": "text-to-image",
-    "display_name": "Hyper SDXL",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hyper-sdxl/image-to-image",
+    "endpoint_id": "fal-ai/hy-wu-edit",
     "category": "image-to-image",
-    "display_name": "Hyper SDXL",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/hyper-sdxl/inpainting",
-    "category": "image-to-image",
-    "display_name": "Hyper SDXL",
+    "display_name": "Hy Wu Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3155,6 +3715,38 @@
     "endpoint_id": "fal-ai/hyper3d/rodin/v2",
     "category": "image-to-3d",
     "display_name": "Hyper3d",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hyper3d/rodin/v2.5",
+    "category": "image-to-3d",
+    "display_name": "Hyper3D - Rodin V2.5 - Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hyper3d/rodin/v2.5/fast",
+    "category": "image-to-3d",
+    "display_name": "Hyper3D - Rodin V2.5 - Image to 3D - Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hyper3d/rodin/v2.5/text-to-3d",
+    "category": "text-to-3d",
+    "display_name": "Hyper3D - Rodin V2.5 - Text to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/hyper3d/rodin/v2.5/text-to-3d/fast",
+    "category": "text-to-3d",
+    "display_name": "Hyper3D - Rodin V2.5 - Text to 3D - Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3187,6 +3779,38 @@
     "endpoint_id": "fal-ai/ideogram/character/remix",
     "category": "image-to-image",
     "display_name": "Ideogram V3 Character Remix",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/custom-models",
+    "category": "training",
+    "display_name": "Ideogram",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/custom-models/generate",
+    "category": "text-to-image",
+    "display_name": "Ideogram",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/object-removal",
+    "category": "image-to-image",
+    "display_name": "Ideogram Object Removal",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/remove-background",
+    "category": "image-to-image",
+    "display_name": "Ideogram Remove Background",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3291,6 +3915,22 @@
     "endpoint_id": "fal-ai/ideogram/v3/edit",
     "category": "image-to-image",
     "display_name": "Ideogram V3 Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/v3/generate-transparent",
+    "category": "text-to-image",
+    "display_name": "Ideogram Transparent",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ideogram/v3/layerize-text",
+    "category": "image-to-image",
+    "display_name": "Ideogram",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3474,7 +4114,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/age-progression",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Age Progression",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3490,7 +4130,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/background-change",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Background Change",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3498,7 +4138,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/broccoli-haircut",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Broccoli Haircut",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3506,7 +4146,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/cartoonify",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Cartoonify",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3514,7 +4154,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/color-correction",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Color Correction",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3522,7 +4162,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/expression-change",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Expression Change",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3530,7 +4170,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/face-enhancement",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Face Enhancement",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3538,7 +4178,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/hair-change",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Hair Change",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3546,7 +4186,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/object-removal",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Object Removal",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3554,7 +4194,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/photo-restoration",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Photo Restoration",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3562,7 +4202,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/plushie-style",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Plushie Style",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3570,7 +4210,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/professional-photo",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Professional Photo",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3578,7 +4218,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/realism",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Realism",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3586,7 +4226,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/reframe",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Reframe",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3594,7 +4234,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/retouch",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Retouch",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3602,7 +4242,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/scene-composition",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Scene Composition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3610,7 +4250,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/style-transfer",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Style Transfer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3618,7 +4258,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/text-removal",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Text Removal",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3626,7 +4266,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/time-of-day",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Time Of Day",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3634,7 +4274,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/weather-effect",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Weather Effect",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3642,7 +4282,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/wojak-style",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Wojak Style",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3650,7 +4290,7 @@
   {
     "endpoint_id": "fal-ai/image-editing/youtube-thumbnails",
     "category": "image-to-image",
-    "display_name": "Image Editing",
+    "display_name": "Image Editing Youtube Thumbnails",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -3752,46 +4392,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/imagen3",
-    "category": "text-to-image",
-    "display_name": "Imagen3",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/imagen3/fast",
-    "category": "text-to-image",
-    "display_name": "Imagen3 Fast",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/imagen4/preview",
-    "category": "text-to-image",
-    "display_name": "Imagen 4",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/imagen4/preview/fast",
-    "category": "text-to-image",
-    "display_name": "Imagen 4",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/imagen4/preview/ultra",
-    "category": "text-to-image",
-    "display_name": "Imagen 4 Ultra",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/imageutils/depth",
     "category": "image-to-image",
     "display_name": "Midas Depth Estimation",
@@ -3888,6 +4488,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/inworld-tts",
+    "category": "text-to-speech",
+    "display_name": "Inworld TTS-1.5 Max",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/ip-adapter-face-id",
     "category": "image-to-image",
     "display_name": "IP Adapter Face ID",
@@ -3899,6 +4507,14 @@
     "endpoint_id": "fal-ai/janus",
     "category": "text-to-image",
     "display_name": "DeepSeek Janus-Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/joyai-image-edit",
+    "category": "image-to-image",
+    "display_name": "Joyai Image Edit",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4080,6 +4696,46 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/kling-video/o3/4k/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Kling Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/o3/4k/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Kling Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/o3/4k/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Kling Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/o3/4k/video-to-video/edit",
+    "category": "video-to-video",
+    "display_name": "Kling Video 4K Video to Video Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/o3/4k/video-to-video/reference",
+    "category": "video-to-video",
+    "display_name": "Kling Video 4K Video to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/kling-video/o3/pro/image-to-video",
     "category": "image-to-video",
     "display_name": "Kling O3 Image to Video [Pro]",
@@ -4131,6 +4787,14 @@
     "endpoint_id": "fal-ai/kling-video/o3/standard/reference-to-video",
     "category": "image-to-video",
     "display_name": "Kling O3 Reference to Video [Standard]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/o3/standard/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Kling O3 Text to Video [Standard]",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4243,22 +4907,6 @@
     "endpoint_id": "fal-ai/kling-video/v1/pro/ai-avatar",
     "category": "image-to-video",
     "display_name": "Kling AI Avatar Pro",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/kling-video/v1/pro/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Kling 1.0",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/kling-video/v1/pro/text-to-video",
-    "category": "text-to-video",
-    "display_name": "Kling 1.0",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4408,9 +5056,33 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/kling-video/v3/4k/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Kling Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/4k/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Kling Video V3 Text to Video 4K",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/kling-video/v3/pro/image-to-video",
     "category": "image-to-video",
     "display_name": "Kling Video v3 Image to Video [Pro]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/pro/motion-control",
+    "category": "video-to-video",
+    "display_name": "Kling Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4432,9 +5104,49 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/kling-video/v3/standard/motion-control",
+    "category": "video-to-video",
+    "display_name": "Kling Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/kling-video/v3/standard/text-to-video",
     "category": "text-to-video",
     "display_name": "Kling Video v3 Text to Video [Standard]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/turbo/pro/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Kling Video V3 Turbo Pro Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/turbo/pro/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Kling Video V3 Turbo Pro Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/turbo/standard/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Kling Video V3 Standard Turbo Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/kling-video/v3/turbo/standard/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Kling Video V3 Standard Turbo Text to Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4544,6 +5256,38 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/krea-2-trainer",
+    "category": "training",
+    "display_name": "Krea 2 Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/krea-2/turbo",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Turbo",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/krea-2/turbo/lora",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Text to Image Turbo LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/krea-2/turbo/style",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Text to Image Turbo Style",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/krea-wan-14b/text-to-video",
     "category": "text-to-video",
     "display_name": "Krea Wan 14b- Text to Video",
@@ -4563,22 +5307,6 @@
     "endpoint_id": "fal-ai/latentsync",
     "category": "video-to-video",
     "display_name": "LatentSync",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/layer-diffusion",
-    "category": "text-to-image",
-    "display_name": "Layer Diffusion XL",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/lcm",
-    "category": "text-to-image",
-    "display_name": "Latent Consistency (SDXL & SDv1.5)",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4608,14 +5336,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/lightning-models",
-    "category": "text-to-image",
-    "display_name": "Lightning Models",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/lightx/recamera",
     "category": "video-to-video",
     "display_name": "Lightx",
@@ -4627,14 +5347,6 @@
     "endpoint_id": "fal-ai/lightx/relight",
     "category": "video-to-video",
     "display_name": "Lightx",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/live-avatar",
-    "category": "image-to-video",
-    "display_name": "Live Avatar",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4675,22 +5387,6 @@
     "endpoint_id": "fal-ai/longcat-image/edit",
     "category": "image-to-image",
     "display_name": "Longcat Image",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/longcat-multi-avatar/image-audio-to-video",
-    "category": "audio-to-video",
-    "display_name": "Longcat Multi Avatar",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/longcat-multi-avatar/image-audio-to-video/multi-speaker",
-    "category": "audio-to-video",
-    "display_name": "Longcat Multi Avatar",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -4960,41 +5656,465 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-2/image-to-video",
-    "category": "image-to-video",
-    "display_name": "LTX Video 2.0 Pro",
+    "endpoint_id": "fal-ai/ltx-2.3-22b/audio-to-video",
+    "category": "audio-to-video",
+    "display_name": "LTX-2.3 22B",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-2/image-to-video/fast",
-    "category": "image-to-video",
-    "display_name": "LTX Video 2.0 Fast",
+    "endpoint_id": "fal-ai/ltx-2.3-22b/audio-to-video/lora",
+    "category": "audio-to-video",
+    "display_name": "LTX-2.3 22B",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-2/retake-video",
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/audio-to-video",
+    "category": "audio-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/audio-to-video/lora",
+    "category": "audio-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/image-to-video",
+    "category": "image-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/image-to-video/lora",
+    "category": "image-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/reference-video-to-video",
     "category": "video-to-video",
-    "display_name": "LTX Video 2.0 Retake",
+    "display_name": "LTX-2.3 22B Distilled",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-2/text-to-video",
-    "category": "text-to-video",
-    "display_name": "LTX Video 2.0 Pro",
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/reference-video-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-2/text-to-video/fast",
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/text-to-video",
     "category": "text-to-video",
-    "display_name": "LTX Video 2.0 Fast",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/text-to-video/lora",
+    "category": "text-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/video-to-video",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/distilled/video-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B Distilled",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/extend-video",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/extend-video/lora",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/image-to-video",
+    "category": "image-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/image-to-video/lora",
+    "category": "image-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/reference-video-to-video",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/reference-video-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "LTX 2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/text-to-video",
+    "category": "text-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/text-to-video/lora",
+    "category": "text-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/video-to-video",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-22b/video-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "LTX-2.3 22B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/audio-to-video",
+    "category": "audio-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/audio-to-video/lora",
+    "category": "audio-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/clean-plate",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/colorization",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/cross-eyed",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/day-to-night",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/deblur",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/decompression",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/extend-video",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/extend-video/lora",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/hdr",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/hdr/lora",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/image-to-video/lora",
+    "category": "image-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/ingredient",
+    "category": "image-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/inpaint",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/inpaint/lora",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/instant-shave",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/outpaint",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/outpaint/lora",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/reference-video-to-video",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/reference-video-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/render-to-real",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/text-to-audio/lora",
+    "category": "text-to-audio",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/text-to-video/lora",
+    "category": "text-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3-quality/water-simulation",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/audio-to-video",
+    "category": "audio-to-video",
+    "display_name": "LTX 2.3 Video Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/extend-video",
+    "category": "video-to-video",
+    "display_name": "LTX Video 2.3 Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/image-to-video",
+    "category": "image-to-video",
+    "display_name": "LTX 2.3 Video Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/image-to-video/fast",
+    "category": "image-to-video",
+    "display_name": "LTX 2.3 Video Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/reframe",
+    "category": "video-to-video",
+    "display_name": "Ltx 2.3 ",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/retake-video",
+    "category": "video-to-video",
+    "display_name": "LTX Video 2.3 Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/text-to-video",
+    "category": "text-to-video",
+    "display_name": "LTX Video 2.3 Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx-2.3/text-to-video/fast",
+    "category": "text-to-video",
+    "display_name": "LTX 2.3 Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5003,38 +6123,6 @@
     "endpoint_id": "fal-ai/ltx-video",
     "category": "text-to-video",
     "display_name": "LTX Video (preview)",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-13b-dev",
-    "category": "text-to-video",
-    "display_name": "LTX Video-0.9.7 13B",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-13b-dev/extend",
-    "category": "video-to-video",
-    "display_name": "LTX Video-0.9.7 13B",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-13b-dev/image-to-video",
-    "category": "image-to-video",
-    "display_name": "LTX Video-0.9.7 13B",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-13b-dev/multiconditioning",
-    "category": "video-to-video",
-    "display_name": "LTX Video-0.9.7 13B",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5072,30 +6160,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx-video-lora/image-to-video",
-    "category": "image-to-video",
-    "display_name": "LTX Video-0.9.7 LoRA",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-lora/multiconditioning",
-    "category": "video-to-video",
-    "display_name": "LTX Video-0.9.7 LoRA",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/ltx-video-trainer",
-    "category": "training",
-    "display_name": "LTX Video Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/ltx-video-v095",
     "category": "text-to-video",
     "display_name": "LTX Video-0.9.5",
@@ -5128,17 +6192,201 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx2-v2v-trainer",
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/a2a",
     "category": "training",
-    "display_name": "LTX-2 Video to Video Trainer",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio-to-Audio",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ltx2-video-trainer",
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/a2v",
     "category": "training",
-    "display_name": "LTX-2 Video Trainer",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio-to-Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/audio-extend-prefix",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Forward Audio Extension",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/audio-extend-suffix",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Backward Audio Extension",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/audio-inpaint",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/av2av",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio+Video Reference Transformation",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/av2av-masked",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Masked Audio+Video Transformation",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/extend-prefix",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Forward Video Extension",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/extend-suffix",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Backward Video Extension",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/i2v",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Image-to-Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/ic-lora/a2a",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio-to-Audio IC-LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/ic-lora/av2av",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Audio+Video Reference IC-LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/ic-lora/av2av-masked",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Masked Audio+Video IC-LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/ic-lora/v2v",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Video-to-Video IC-LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/ic-lora/v2v-masked",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Masked Video-to-Video IC-LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/inpaint",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Video Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/interpolate",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Keyframe Interpolation",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/outpaint",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Spatial Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/t2a",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Text-to-Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/t2v",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Text-to-Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/v2a",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Video-to-Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/v2v",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Video-to-Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-trainer-v2/v2v-masked",
+    "category": "training",
+    "display_name": "LTX 2.3 Trainer (V2) - Masked Video-to-Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-v2v-trainer",
+    "category": "training",
+    "display_name": "LTX-2.3 22B Video to Video Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/ltx23-video-trainer",
+    "category": "training",
+    "display_name": "LTX-2.3 22B Video Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5171,14 +6419,6 @@
     "endpoint_id": "fal-ai/ltxv-13b-098-distilled/multiconditioning",
     "category": "video-to-video",
     "display_name": "LTX-Video 13B 0.9.8 Distilled",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/lucidflux",
-    "category": "image-to-image",
-    "display_name": "Lucidflux",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5312,9 +6552,17 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/magi",
-    "category": "text-to-video",
-    "display_name": "MAGI-1",
+    "endpoint_id": "fal-ai/lyria3",
+    "category": "text-to-audio",
+    "display_name": "Lyria3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/lyria3/pro",
+    "category": "text-to-audio",
+    "display_name": "Lyria 3 Pro",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5344,17 +6592,17 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/magi/extend-video",
-    "category": "video-to-video",
-    "display_name": "MAGI-1",
+    "endpoint_id": "fal-ai/marlin",
+    "category": "vision",
+    "display_name": "Marlin",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/magi/image-to-video",
-    "category": "image-to-video",
-    "display_name": "MAGI-1",
+    "endpoint_id": "fal-ai/marlin/find",
+    "category": "vision",
+    "display_name": "Marlin Find",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5379,6 +6627,22 @@
     "endpoint_id": "fal-ai/maya/stream",
     "category": "text-to-speech",
     "display_name": "Maya",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/meshy/rigging",
+    "category": "3d-to-3d",
+    "display_name": "Meshy Rigging",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/meshy/rigging/multi-animation",
+    "category": "3d-to-3d",
+    "display_name": "Meshy Rigging Multi Animation",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5424,6 +6688,30 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/meshy/v6/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Meshy 6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/meshy/v6/multi-image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Meshy 6 - Multi Image To 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/meshy/v6/text-to-3d",
+    "category": "text-to-3d",
+    "display_name": "Meshy 6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/minimax-music",
     "category": "text-to-audio",
     "display_name": "MiniMax (Hailuo AI) Music",
@@ -5443,6 +6731,22 @@
     "endpoint_id": "fal-ai/minimax-music/v2",
     "category": "text-to-audio",
     "display_name": "Minimax Music",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/minimax-music/v2.5",
+    "category": "text-to-audio",
+    "display_name": "Minimax Music 2.5",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/minimax-music/v2.6",
+    "category": "text-to-audio",
+    "display_name": "Minimax Music 2.6",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5650,7 +6954,7 @@
   {
     "endpoint_id": "fal-ai/minimax/video-01-live/image-to-video",
     "category": "image-to-video",
-    "display_name": "MiniMax (Hailuo AI) Video 01 Live",
+    "display_name": "MiniMax (Hailuo AI) Video 01",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5688,14 +6992,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/mix-dehaze-net",
-    "category": "image-to-image",
-    "display_name": "MixDehazer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/mmaudio-v2",
     "category": "video-to-video",
     "display_name": "MMAudio V2",
@@ -5707,14 +7003,6 @@
     "endpoint_id": "fal-ai/mmaudio-v2/text-to-audio",
     "category": "text-to-audio",
     "display_name": "MMAudio V2 Text to Audio",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/mochi-v1",
-    "category": "text-to-video",
-    "display_name": "Mochi 1",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5856,6 +7144,22 @@
     "direct": true
   },
   {
+    "endpoint_id": "fal-ai/nano-banana-2",
+    "category": "text-to-image",
+    "display_name": "Nano Banana 2",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "fal-ai/nano-banana-2/edit",
+    "category": "image-to-image",
+    "display_name": "Nano Banana 2",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "fal-ai/nano-banana-pro",
     "category": "text-to-image",
     "display_name": "Nano Banana Pro",
@@ -5880,33 +7184,17 @@
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/nemotron/asr",
-    "category": "audio-to-text",
-    "display_name": "Nemotron",
+    "endpoint_id": "fal-ai/nemotron-diffusion-vlm",
+    "category": "vision",
+    "display_name": "Nemotron Diffusion Vlm",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/nemotron/asr/stream",
-    "category": "audio-to-text",
-    "display_name": "Nemotron",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/nextstep-1",
-    "category": "image-to-image",
-    "display_name": "Nextstep 1",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/nova-sr",
-    "category": "audio-to-audio",
-    "display_name": "Nova SR",
+    "endpoint_id": "fal-ai/nucleus-image",
+    "category": "text-to-image",
+    "display_name": "Nucleus Image",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -5960,9 +7248,25 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/omnipart",
-    "category": "image-to-3d",
-    "display_name": "Omnipart",
+    "endpoint_id": "fal-ai/omnilottie",
+    "category": "json",
+    "display_name": "Omnilottie",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/omnilottie/image-to-lottie",
+    "category": "json",
+    "display_name": "Omnilottie",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/omnilottie/video-to-lottie",
+    "category": "json",
+    "display_name": "Omnilottie",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6024,25 +7328,81 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/patina",
+    "category": "image-to-image",
+    "display_name": "PATINA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/patina/material",
+    "category": "text-to-image",
+    "display_name": "PATINA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/patina/material/extract",
+    "category": "image-to-image",
+    "display_name": "PATINA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/personaplex",
+    "category": "audio-to-audio",
+    "display_name": "Personaplex",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/personaplex/realtime",
+    "category": "audio-to-audio",
+    "display_name": "Personaplex",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/phota",
+    "category": "text-to-image",
+    "display_name": "Phota Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/phota/create-profile",
+    "category": "training",
+    "display_name": "Phota Create Profile",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/phota/edit",
+    "category": "image-to-image",
+    "display_name": "Phota",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/phota/enhance",
+    "category": "image-to-image",
+    "display_name": "Phota Enhance",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/photomaker",
     "category": "image-to-image",
     "display_name": "PhotoMaker",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/piflow",
-    "category": "text-to-image",
-    "display_name": "Piflow",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/pika/v1.5/pikaffects",
-    "category": "image-to-video",
-    "display_name": "Pika Effects (v1.5)",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6096,14 +7456,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/pika/v2/pikadditions",
-    "category": "video-to-video",
-    "display_name": "Pikadditions (v2)",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/pika/v2/turbo/image-to-video",
     "category": "image-to-video",
     "display_name": "Pika Image to Video Turbo (v2)",
@@ -6120,9 +7472,49 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/pixal3d",
+    "category": "image-to-3d",
+    "display_name": "Pixal3d",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/pixart-sigma",
     "category": "text-to-image",
-    "display_name": "PixArt-Σ",
+    "display_name": "PixArt-\u03a3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/c1/image-to-video",
+    "category": "image-to-video",
+    "display_name": "PixVerse C1 Image To Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/c1/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "PixVerse C1 Reference To Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/c1/text-to-video",
+    "category": "text-to-video",
+    "display_name": "PixVerse C1 Text To Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/c1/transition",
+    "category": "image-to-video",
+    "display_name": "PixVerse C1 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6130,7 +7522,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/extend",
     "category": "video-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse Extend",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6138,7 +7530,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/extend/fast",
     "category": "video-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse Extend Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6146,7 +7538,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/lipsync",
     "category": "video-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse Lipsync",
     "status": "active",
     "implemented": true,
     "direct": false
@@ -6154,7 +7546,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/sound-effects",
     "category": "video-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse Sound Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6162,7 +7554,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/swap",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse Swap",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6170,7 +7562,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/effects",
     "category": "image-to-video",
-    "display_name": "PixVerse v3.5: Effects",
+    "display_name": "PixVerse V3.5 Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6178,7 +7570,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/image-to-video",
     "category": "image-to-video",
-    "display_name": "PixVerse v3.5: Image to Video",
+    "display_name": "PixVerse V3.5 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6186,7 +7578,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/image-to-video/fast",
     "category": "image-to-video",
-    "display_name": "PixVerse v3.5: Image to Video Fast",
+    "display_name": "PixVerse V3.5 Image To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6194,7 +7586,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/text-to-video",
     "category": "text-to-video",
-    "display_name": "PixVerse v3.5",
+    "display_name": "PixVerse V3.5 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6202,7 +7594,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/text-to-video/fast",
     "category": "text-to-video",
-    "display_name": "PixVerse v3.5 Fast",
+    "display_name": "PixVerse V3.5 Text To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6210,7 +7602,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v3.5/transition",
     "category": "image-to-video",
-    "display_name": "PixVerse v3.5: Transition",
+    "display_name": "PixVerse V3.5 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6218,7 +7610,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/effects",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6226,7 +7618,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/image-to-video",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6234,7 +7626,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/image-to-video/fast",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Image To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6242,7 +7634,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/text-to-video",
     "category": "text-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6250,7 +7642,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/text-to-video/fast",
     "category": "text-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Text To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6258,7 +7650,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4.5/transition",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4.5 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6266,7 +7658,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4/effects",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V4 Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6274,7 +7666,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4/image-to-video",
     "category": "image-to-video",
-    "display_name": "PixVerse v4: Image to Video",
+    "display_name": "PixVerse V4 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6282,7 +7674,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4/image-to-video/fast",
     "category": "image-to-video",
-    "display_name": "PixVerse v4: Image to Video Fast",
+    "display_name": "PixVerse V4 Image To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6290,7 +7682,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4/text-to-video",
     "category": "text-to-video",
-    "display_name": "PixVerse v4: Text to Video",
+    "display_name": "PixVerse V4 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6298,7 +7690,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v4/text-to-video/fast",
     "category": "text-to-video",
-    "display_name": "PixVerse v4: Text to Video Fast",
+    "display_name": "PixVerse V4 Text To Video Fast",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6306,7 +7698,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.5/effects",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.5 Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6314,7 +7706,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.5/image-to-video",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.5 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6322,7 +7714,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.5/text-to-video",
     "category": "text-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.5 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6330,7 +7722,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.5/transition",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.5 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6338,7 +7730,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.6/image-to-video",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.6 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6346,7 +7738,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.6/text-to-video",
     "category": "text-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.6 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6354,7 +7746,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5.6/transition",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5.6 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6362,7 +7754,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5/effects",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5 Effects",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6370,7 +7762,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5/image-to-video",
     "category": "image-to-video",
-    "display_name": "Pixverse v5 Image to Video",
+    "display_name": "PixVerse V5 Image To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6378,7 +7770,7 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5/text-to-video",
     "category": "text-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5 Text To Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6386,7 +7778,39 @@
   {
     "endpoint_id": "fal-ai/pixverse/v5/transition",
     "category": "image-to-video",
-    "display_name": "Pixverse",
+    "display_name": "PixVerse V5 Transition",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/v6/extend",
+    "category": "video-to-video",
+    "display_name": "PixVerse V6 Extend",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/v6/image-to-video",
+    "category": "image-to-video",
+    "display_name": "PixVerse V6 Image To Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/v6/text-to-video",
+    "category": "text-to-video",
+    "display_name": "PixVerse V6 Text To Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/pixverse/v6/transition",
+    "category": "image-to-video",
+    "display_name": "PixVerse V6 Transition",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6416,14 +7840,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/plushify",
-    "category": "image-to-image",
-    "display_name": "Plushify",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/pony-v7",
     "category": "text-to-image",
     "display_name": "Pony V7",
@@ -6442,7 +7858,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/blur",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Blur",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6450,7 +7866,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/chromatic-aberration",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Chromatic Aberration",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6458,7 +7874,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/color-correction",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Color Correction",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6466,7 +7882,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/color-tint",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Color Tint",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6474,7 +7890,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/desaturate",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Desaturate",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6482,7 +7898,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/dissolve",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Dissolve",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6490,7 +7906,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/dodge-burn",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Dodge Burn",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6498,7 +7914,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/grain",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Grain",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6506,7 +7922,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/parabolize",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Parabolize",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6514,7 +7930,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/sharpen",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Sharpen",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6522,7 +7938,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/solarize",
     "category": "image-to-image",
-    "display_name": "Post Processing",
+    "display_name": "Post Processing Solarize",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6530,15 +7946,7 @@
   {
     "endpoint_id": "fal-ai/post-processing/vignette",
     "category": "image-to-image",
-    "display_name": "Post Processing",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/pshuman",
-    "category": "image-to-3d",
-    "display_name": "Pshuman",
+    "display_name": "Post Processing Vignette",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6552,16 +7960,8 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/qwen-3-guard",
-    "category": "llm",
-    "display_name": "Qwen 3 Guard [8B]",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/qwen-3-tts/clone-voice/0.6b",
-    "category": "unknown",
+    "category": "audio-to-audio",
     "display_name": "Qwen 3 TTS - Clone Voice [0.6B]",
     "status": "active",
     "implemented": false,
@@ -6569,7 +7969,7 @@
   },
   {
     "endpoint_id": "fal-ai/qwen-3-tts/clone-voice/1.7b",
-    "category": "unknown",
+    "category": "audio-to-audio",
     "display_name": "Qwen 3 TTS - Clone Voice [1.7B]",
     "status": "active",
     "implemented": false,
@@ -6619,14 +8019,6 @@
     "endpoint_id": "fal-ai/qwen-image-2512-trainer",
     "category": "training",
     "display_name": "Qwen Image 2512 Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/qwen-image-2512-trainer-v2",
-    "category": "training",
-    "display_name": "Qwen Image 2512 Trainer V2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6768,14 +8160,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/qwen-image-edit-2511-trainer",
-    "category": "training",
-    "display_name": "Qwen Image Edit 2511 Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/qwen-image-edit-2511/lora",
     "category": "image-to-image",
     "display_name": "Qwen Image Edit 2511",
@@ -6888,22 +8272,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/qwen-image-edit-plus-trainer",
-    "category": "training",
-    "display_name": "Qwen Image Edit Plus Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/qwen-image-edit-trainer",
-    "category": "training",
-    "display_name": "Qwen Image Edit Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/qwen-image-edit/image-to-image",
     "category": "image-to-image",
     "display_name": "Qwen Image Edit",
@@ -6923,14 +8291,6 @@
     "endpoint_id": "fal-ai/qwen-image-layered",
     "category": "image-to-image",
     "display_name": "Qwen Image Layered",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/qwen-image-layered-trainer",
-    "category": "training",
-    "display_name": "Qwen Image Layered Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -6960,14 +8320,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/qwen-image-trainer",
-    "category": "training",
-    "display_name": "Qwen Image Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/qwen-image/image-to-image",
     "category": "image-to-image",
     "display_name": "Qwen Image",
@@ -6979,6 +8331,14 @@
     "endpoint_id": "fal-ai/realistic-vision",
     "category": "text-to-image",
     "display_name": "Realistic Vision",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/reconviagen-0.5",
+    "category": "image-to-3d",
+    "display_name": "ReconViaGen 0.5",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7032,6 +8392,86 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/recraft/v4.1/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Text to Image Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4.1/pro/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Text to Vector Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4.1/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4.1/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Text to Vector",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4.1/utility/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Utility Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4.1/utility/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4.1 Text to Image Utility",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4/pro/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Pro (Vector)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/recraft/v4/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 (Vector)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/recraft/vectorize",
     "category": "image-to-image",
     "display_name": "Recraft",
@@ -7045,46 +8485,6 @@
     "display_name": "Face Retoucher",
     "status": "active",
     "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/reve/edit",
-    "category": "image-to-image",
-    "display_name": "Reve",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/reve/fast/edit",
-    "category": "image-to-image",
-    "display_name": "Reve",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/reve/fast/remix",
-    "category": "image-to-image",
-    "display_name": "Reve",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/reve/remix",
-    "category": "image-to-image",
-    "display_name": "Reve",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/reve/text-to-image",
-    "category": "text-to-image",
-    "display_name": "Reve",
-    "status": "active",
-    "implemented": true,
     "direct": false
   },
   {
@@ -7147,6 +8547,38 @@
     "endpoint_id": "fal-ai/sadtalker/reference",
     "category": "image-to-video",
     "display_name": "Sad Talker",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sam-3-1/image",
+    "category": "image-to-image",
+    "display_name": "Sam 3 1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sam-3-1/image-rle",
+    "category": "image-to-image",
+    "display_name": "Sam 3 1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sam-3-1/video",
+    "category": "video-to-video",
+    "display_name": "Sam 3 1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sam-3-1/video-rle",
+    "category": "video-to-video",
+    "display_name": "Sam 3 1",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7272,14 +8704,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/sana-video",
-    "category": "text-to-video",
-    "display_name": "Sana Video",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/sana/sprint",
     "category": "text-to-image",
     "display_name": "Sana Sprint",
@@ -7304,17 +8728,17 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/scail",
+    "endpoint_id": "fal-ai/scail-2",
     "category": "video-to-video",
-    "display_name": "Scail",
+    "display_name": "Scail 2",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/sd15-depth-controlnet",
-    "category": "image-to-image",
-    "display_name": "SD 1.5 Depth ControlNet",
+    "endpoint_id": "fal-ai/scene-finder",
+    "category": "vision",
+    "display_name": "Scene Finder",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7352,9 +8776,25 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/seedvr/upscale/image/seamless",
+    "category": "image-to-image",
+    "display_name": "SeedVR2",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/seedvr/upscale/video",
     "category": "video-to-video",
     "display_name": "SeedVR2",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sensenova-u1-infographic",
+    "category": "text-to-image",
+    "display_name": "Sensenova U1 Infographic",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7368,17 +8808,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/sky-raccoon",
-    "category": "text-to-image",
-    "display_name": "Sky Raccoon",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/skyreels-i2v",
-    "category": "image-to-video",
-    "display_name": "Skyreels V1 (Image-to-Video)",
+    "endpoint_id": "fal-ai/smart-resize",
+    "category": "image-to-image",
+    "display_name": "Smart Resize",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7387,46 +8819,6 @@
     "endpoint_id": "fal-ai/smart-turn",
     "category": "speech-to-text",
     "display_name": "Pipecat's Smart Turn model",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/sora-2/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Sora 2",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/sora-2/image-to-video/pro",
-    "category": "image-to-video",
-    "display_name": "Sora 2",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/sora-2/text-to-video",
-    "category": "text-to-video",
-    "display_name": "Sora 2",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/sora-2/text-to-video/pro",
-    "category": "text-to-video",
-    "display_name": "Sora 2",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/sora-2/video-to-video/remix",
-    "category": "video-to-video",
-    "display_name": "Sora 2",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7496,9 +8888,201 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/stable-avatar",
-    "category": "audio-to-video",
-    "display_name": "Stable Avatar",
+    "endpoint_id": "fal-ai/stable-audio-3-trainer",
+    "category": "training",
+    "display_name": "Stable Audio 3 Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Audio to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/base/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Base Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/base/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Base Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/base/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Medium Base Audio to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/base/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3 Medium Base Text to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/medium/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small Music Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small Music Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/base/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small Music Base Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/base/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small Music Base Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/base/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small Music Base Audio to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/base/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/music/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3 Small Music Text to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/base/audio-inpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Base Audio Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/base/audio-outpainting",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Base Audio Outpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/base/audio-to-audio",
+    "category": "audio-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Base Audio to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/base/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Base Text to Audio",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/stable-audio-3/small/sfx/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Stable Audio 3 Small SFX Text to Audio",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7568,57 +9152,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/star-vector",
-    "category": "image-to-image",
-    "display_name": "StarVector",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/steady-dancer",
-    "category": "video-to-video",
-    "display_name": "Steady Dancer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/step1x-edit",
-    "category": "image-to-image",
-    "display_name": "Step1X Edit",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/stepx-edit2",
     "category": "image-to-image",
     "display_name": "Stepx Edit2",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/swin2sr",
-    "category": "image-to-image",
-    "display_name": "SWIN2SR",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/switti",
-    "category": "text-to-image",
-    "display_name": "Switti 1024",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/switti/512",
-    "category": "text-to-image",
-    "display_name": "Switti 512",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7656,6 +9192,22 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/sync-lipsync/v3",
+    "category": "video-to-video",
+    "display_name": "sync-3 Lipsync",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/sync-lipsync/v3/image-to-video",
+    "category": "image-to-video",
+    "display_name": "sync-3 Avatar Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/t2v-turbo",
     "category": "text-to-video",
     "display_name": "T2V Turbo - Video Crafter",
@@ -7664,9 +9216,25 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/thera",
+    "endpoint_id": "fal-ai/tada/1b/text-to-speech",
+    "category": "audio-to-audio",
+    "display_name": "Tada TTS 1B",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/tada/3b/text-to-speech",
+    "category": "audio-to-audio",
+    "display_name": "Tada",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/telestyle-v2",
     "category": "image-to-image",
-    "display_name": "Thera",
+    "display_name": "Telestyle V2 Style Transfer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -7688,30 +9256,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/topaz/upscale/image",
-    "category": "image-to-image",
-    "display_name": "Topaz",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/topaz/upscale/video",
-    "category": "video-to-video",
-    "display_name": "Topaz Video Upscale",
-    "status": "active",
-    "implemented": true,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/transpixar",
-    "category": "text-to-video",
-    "display_name": "TransPixar V1",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/trellis",
     "category": "image-to-3d",
     "display_name": "Trellis",
@@ -7721,6 +9265,30 @@
   },
   {
     "endpoint_id": "fal-ai/trellis-2",
+    "category": "image-to-3d",
+    "display_name": "Trellis 2",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/trellis-2-lora",
+    "category": "image-to-3d",
+    "display_name": "TRELLIS.2 LoRA Inference",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/trellis-2-lora-trainer",
+    "category": "training",
+    "display_name": "TRELLIS.2 Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/trellis-2/retexture",
     "category": "image-to-3d",
     "display_name": "Trellis 2",
     "status": "active",
@@ -7752,14 +9320,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/ultrashape",
-    "category": "3d-to-3d",
-    "display_name": "Ultrashape",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/uno",
     "category": "image-to-image",
     "display_name": "Uno",
@@ -7776,28 +9336,20 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/veo2",
-    "category": "text-to-video",
-    "display_name": "Veo 2",
+    "endpoint_id": "fal-ai/vecglypher",
+    "category": "text-to-image",
+    "display_name": "Vecglypher",
     "status": "active",
     "implemented": false,
-    "direct": true
+    "direct": false
   },
   {
-    "endpoint_id": "fal-ai/veo2/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Veo 2 (Image to Video)",
+    "endpoint_id": "fal-ai/vecglypher/image-to-svg",
+    "category": "image-to-image",
+    "display_name": "Vecglypher",
     "status": "active",
     "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/veo3",
-    "category": "text-to-video",
-    "display_name": "Veo 3",
-    "status": "active",
-    "implemented": false,
-    "direct": true
+    "direct": false
   },
   {
     "endpoint_id": "fal-ai/veo3.1",
@@ -7848,6 +9400,14 @@
     "direct": true
   },
   {
+    "endpoint_id": "fal-ai/veo3.1/fast/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Veo 3.1 Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "fal-ai/veo3.1/first-last-frame-to-video",
     "category": "image-to-video",
     "display_name": "Veo 3.1",
@@ -7864,6 +9424,30 @@
     "direct": true
   },
   {
+    "endpoint_id": "fal-ai/veo3.1/lite",
+    "category": "text-to-video",
+    "display_name": "Veo3.1 Lite Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "fal-ai/veo3.1/lite/first-last-frame-to-video",
+    "category": "image-to-video",
+    "display_name": "Veo3.1 Lite FLF",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "fal-ai/veo3.1/lite/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Veo3.1 Lite Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "fal-ai/veo3.1/reference-to-video",
     "category": "image-to-video",
     "display_name": "Veo 3.1",
@@ -7872,28 +9456,12 @@
     "direct": true
   },
   {
-    "endpoint_id": "fal-ai/veo3/fast",
-    "category": "text-to-video",
-    "display_name": "Veo 3 Fast",
+    "endpoint_id": "fal-ai/vggt-1b",
+    "category": "image-to-json",
+    "display_name": "VGGT-1B",
     "status": "active",
     "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/veo3/fast/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Veo 3 Fast [Image to Video]",
-    "status": "active",
-    "implemented": false,
-    "direct": true
-  },
-  {
-    "endpoint_id": "fal-ai/veo3/image-to-video",
-    "category": "image-to-video",
-    "display_name": "Veo3",
-    "status": "active",
-    "implemented": false,
-    "direct": true
+    "direct": false
   },
   {
     "endpoint_id": "fal-ai/vibevoice",
@@ -7915,14 +9483,6 @@
     "endpoint_id": "fal-ai/vibevoice/7b",
     "category": "text-to-speech",
     "display_name": "VibeVoice 7B",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/video-as-prompt",
-    "category": "video-to-video",
-    "display_name": "Video As Prompt",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8056,7 +9616,31 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/vidu/q3/image-to-video/turbo",
+    "category": "image-to-video",
+    "display_name": "Vidu",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/vidu/q3/reference-to-video/mix",
+    "category": "image-to-video",
+    "display_name": "Vidu",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/vidu/q3/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Vidu",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/vidu/q3/text-to-video/turbo",
     "category": "text-to-video",
     "display_name": "Vidu",
     "status": "active",
@@ -8096,9 +9680,33 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/void-video-inpainting",
+    "category": "video-to-video",
+    "display_name": "Void Video Inpainting",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/wan-22-image-trainer",
     "category": "training",
     "display_name": "Wan 2.2 14B Image Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan-22-trainer/i2v-a14b",
+    "category": "training",
+    "display_name": "Wan-2.2 LoRA Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan-22-trainer/t2v-a14b",
+    "category": "training",
+    "display_name": "Wan-2.2 LoRA Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8121,14 +9729,6 @@
   },
   {
     "endpoint_id": "fal-ai/wan-22-vace-fun-a14b/outpainting",
-    "category": "video-to-video",
-    "display_name": "Wan 2.2 VACE Fun A14B",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-22-vace-fun-a14b/pose",
     "category": "video-to-video",
     "display_name": "Wan 2.2 VACE Fun A14B",
     "status": "active",
@@ -8176,22 +9776,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/wan-alpha",
-    "category": "text-to-video",
-    "display_name": "Wan Alpha",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-ati",
-    "category": "image-to-video",
-    "display_name": "Wan Ati",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/wan-effects",
     "category": "image-to-video",
     "display_name": "Wan Effects",
@@ -8203,14 +9787,6 @@
     "endpoint_id": "fal-ai/wan-flf2v",
     "category": "image-to-video",
     "display_name": "Wan-2.1 First-Last-Frame-to-Video",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-fun-control",
-    "category": "video-to-video",
-    "display_name": "Wan 2.2 Fun Control",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8232,9 +9808,9 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/wan-move",
-    "category": "image-to-video",
-    "display_name": "Wan Move [480p]",
+    "endpoint_id": "fal-ai/wan-motion",
+    "category": "video-to-video",
+    "display_name": "Wan Motion",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8272,22 +9848,6 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/wan-trainer",
-    "category": "training",
-    "display_name": "Wan-2.1 LoRA Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-trainer/flf2v-720p",
-    "category": "training",
-    "display_name": "Wan-2.1 LoRA Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
     "endpoint_id": "fal-ai/wan-trainer/i2v-720p",
     "category": "training",
     "display_name": "Wan-2.1 LoRA Trainer",
@@ -8307,22 +9867,6 @@
     "endpoint_id": "fal-ai/wan-trainer/t2v-14b",
     "category": "training",
     "display_name": "Wan-2.1 LoRA Trainer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-vace",
-    "category": "video-to-video",
-    "display_name": "Vace",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-vace-1-3b",
-    "category": "video-to-video",
-    "display_name": "Wan Vace 1 3b",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8387,22 +9931,6 @@
     "endpoint_id": "fal-ai/wan-vace-apps/video-edit",
     "category": "video-to-video",
     "display_name": "Wan VACE Video Edit",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan-vision-enhancer",
-    "category": "video-to-video",
-    "display_name": "Wan Vision Enhancer",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/wan/v2.1/1.3b/text-to-video",
-    "category": "text-to-video",
-    "display_name": "Wan-2.1 1.3B Text-to-Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8552,9 +10080,65 @@
     "direct": false
   },
   {
-    "endpoint_id": "fal-ai/whisper",
-    "category": "speech-to-text",
-    "display_name": "Whisper",
+    "endpoint_id": "fal-ai/wan/v2.7/edit",
+    "category": "image-to-image",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/edit-video",
+    "category": "video-to-video",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/pro/edit",
+    "category": "image-to-image",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Wan 2.7 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Wan",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/wan/v2.7/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Wan Text to Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8568,9 +10152,41 @@
     "direct": false
   },
   {
+    "endpoint_id": "fal-ai/workflow-utilities/audio-compressor",
+    "category": "audio-to-audio",
+    "display_name": "Workflow Utilities Audio Compressor",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "fal-ai/workflow-utilities/auto-subtitle",
     "category": "video-to-video",
-    "display_name": "Workflow Utilities",
+    "display_name": "Workflow Utilities Auto Subtitle",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/blend-video",
+    "category": "video-to-video",
+    "display_name": "Workflow Utilities Blend Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/extract-nth-frame",
+    "category": "image-to-image",
+    "display_name": "Workflow Utilities Extract Nth Frame",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/impulse-response",
+    "category": "audio-to-audio",
+    "display_name": "Workflow Utilities Impulse Response",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8578,7 +10194,39 @@
   {
     "endpoint_id": "fal-ai/workflow-utilities/interleave-video",
     "category": "unknown",
-    "display_name": "Workflow Utilities",
+    "display_name": "Workflow Utilities Interleave Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/pick-image-by-index",
+    "category": "workflow",
+    "display_name": "Workflow Utilities Pick Image By Index",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/reverse-video",
+    "category": "video-to-video",
+    "display_name": "Workflow Utilities Reverse Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/scale-video",
+    "category": "video-to-video",
+    "display_name": "Workflow Utilities Scale Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/workflow-utilities/trim-video",
+    "category": "video-to-video",
+    "display_name": "Workflow Utilities Trim Video",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8587,22 +10235,6 @@
     "endpoint_id": "fal-ai/x-ailab/nsfw",
     "category": "vision",
     "display_name": "NSFW Checker",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/yue",
-    "category": "text-to-audio",
-    "display_name": "YuE: Lyrics to Song",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "fal-ai/z-image-base-trainer",
-    "category": "training",
-    "display_name": "Z-Image Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8634,7 +10266,7 @@
   {
     "endpoint_id": "fal-ai/z-image/base/lora",
     "category": "text-to-image",
-    "display_name": "Z Image Base (LoRA)",
+    "display_name": "Z Image Base Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8642,7 +10274,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo",
     "category": "text-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8650,7 +10282,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/controlnet",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Controlnet",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8658,7 +10290,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/controlnet/lora",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Controlnet Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8666,7 +10298,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/image-to-image",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Image To Image",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8674,7 +10306,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/image-to-image/lora",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Image To Image Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8682,7 +10314,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/inpaint",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Inpaint",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8690,7 +10322,7 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/inpaint/lora",
     "category": "image-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Inpaint Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8698,7 +10330,23 @@
   {
     "endpoint_id": "fal-ai/z-image/turbo/lora",
     "category": "text-to-image",
-    "display_name": "Z-Image Turbo",
+    "display_name": "Z Image Turbo Lora",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/z-image/turbo/tiling",
+    "category": "text-to-image",
+    "display_name": "Z-Image Turbo Seamless Tiling",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "fal-ai/z-image/turbo/tiling/lora",
+    "category": "text-to-image",
+    "display_name": "Z-Image Turbo Seamless Tiling Lora",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8712,65 +10360,241 @@
     "direct": false
   },
   {
-    "endpoint_id": "half-moon-ai/ai-baby-and-aging-generator/multi",
-    "category": "image-to-image",
-    "display_name": "Ai Baby And Aging Generator",
+    "endpoint_id": "fal-ai/zonos2",
+    "category": "text-to-speech",
+    "display_name": "Zonos2 Text to Speech",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "half-moon-ai/ai-baby-and-aging-generator/single",
-    "category": "image-to-image",
-    "display_name": "Ai Baby And Aging Generator",
+    "endpoint_id": "google/gemini-omni-flash",
+    "category": "text-to-video",
+    "display_name": "Gemini Omni Flash",
     "status": "active",
     "implemented": false,
-    "direct": false
+    "direct": true
   },
   {
-    "endpoint_id": "half-moon-ai/ai-detector/detect-image",
-    "category": "vision",
-    "display_name": "Ai Detector",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "half-moon-ai/ai-detector/detect-text",
-    "category": "text-to-text",
-    "display_name": "Ai Detector",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "half-moon-ai/ai-face-swap/faceswapimage",
-    "category": "image-to-image",
-    "display_name": "Ai Face Swap",
-    "status": "active",
-    "implemented": false,
-    "direct": false
-  },
-  {
-    "endpoint_id": "half-moon-ai/ai-face-swap/faceswapvideo",
+    "endpoint_id": "google/gemini-omni-flash/edit",
     "category": "video-to-video",
-    "display_name": "Ai Face Swap",
+    "display_name": "Gemini Omni Flash",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Gemini Omni Flash",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Gemini Omni Flash",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/v1.1/edit",
+    "category": "video-to-video",
+    "display_name": "Gemini Omni Flash 1.1 Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/v1.1/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Gemini Omni Flash 1.1 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/v1.1/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Gemini Omni Flash 1.1 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/gemini-omni-flash/v1.1/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Gemini Omni Flash 1.1 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/nano-banana-2-lite",
+    "category": "text-to-image",
+    "display_name": "Nano Banana 2 Lite",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/nano-banana-lite",
+    "category": "text-to-image",
+    "display_name": "Nano Banana Lite",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/nano-banana-lite/edit",
+    "category": "image-to-image",
+    "display_name": "Nano Banana Lite Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "google/virtual-try-on",
+    "category": "image-to-image",
+    "display_name": "Google Virtual Try On",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Hi3D Image to 3D",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "half-moon-ai/ai-home/edit",
+    "endpoint_id": "hitem3d/hi3d/image-to-relief",
     "category": "image-to-image",
-    "display_name": "Ai Home",
+    "display_name": "Hi3D Image to Relief",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "half-moon-ai/ai-home/style",
+    "endpoint_id": "hitem3d/hi3d/multi-view-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Hi3D Multiview to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/multicolor",
+    "category": "3d-to-3d",
+    "display_name": "Hi3D 3D to Multicolor",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/split",
+    "category": "3d-to-3d",
+    "display_name": "Hi3D 3D Part Splitter",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/texture",
+    "category": "3d-to-3d",
+    "display_name": "Hi3D Texture",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/v3.0/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Hi3D Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "hitem3d/hi3d/v3.0/multi-view-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Hi3D Multiview to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4",
+    "category": "text-to-image",
+    "display_name": "Ideogram V4.0 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/fast",
+    "category": "text-to-image",
+    "display_name": "V4.0q [fast]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/image-to-image",
     "category": "image-to-image",
-    "display_name": "Ai Home",
+    "display_name": "Ideogram V4.0q Image to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/image-to-image/lora",
+    "category": "image-to-image",
+    "display_name": "Ideogram V4.0q Image to Image LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/instant",
+    "category": "text-to-image",
+    "display_name": "V4.0q [instant]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/lora",
+    "category": "text-to-image",
+    "display_name": "Ideogram V4.0q Text to Image (LoRA)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/tiling",
+    "category": "image-to-image",
+    "display_name": "Ideogram V4.0q Tiling",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/tiling/lora",
+    "category": "image-to-image",
+    "display_name": "Ideogram V4.0q Tiling LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "ideogram/v4/trainer",
+    "category": "training",
+    "display_name": "Ideogram V4.0q LoRA Trainer",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8789,6 +10613,358 @@
     "display_name": "ImagineArt 1.5 Pro Preview",
     "status": "active",
     "implemented": true,
+    "direct": false
+  },
+  {
+    "endpoint_id": "imagineart/imagineart-2.0-edit-preview/image-to-image",
+    "category": "image-to-image",
+    "display_name": "Imagineart 2.0 Edit Preview",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "imagineart/imagineart-2.0-preview/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Imagineart 2.0 Preview",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "krea/v2/large/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Large",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "krea/v2/medium/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Medium",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "krea/v2/medium/turbo/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Krea 2 Medium Text to Image Turbo",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/audio-to-video/fast",
+    "category": "audio-to-video",
+    "display_name": "Ltx 2.5 Audio to Video Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/audio-to-video/pro",
+    "category": "audio-to-video",
+    "display_name": "Ltx 2.5 Audio to Video Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/image-to-video/fast",
+    "category": "image-to-video",
+    "display_name": "LTX 2.5 Image to Video Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/image-to-video/pro",
+    "category": "image-to-video",
+    "display_name": "LTX 2.5 Image to Video Pro",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/text-to-video/fast",
+    "category": "text-to-video",
+    "display_name": "Ltx 2.5 Text to Video Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "lightricks/ltx-2.5/text-to-video/pro",
+    "category": "text-to-video",
+    "display_name": "Ltx 2.5 Text to Video Fast",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/ray/v3.2/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Luma Ray 3.2 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/ray/v3.2/reframe",
+    "category": "video-to-video",
+    "display_name": "Luma Ray 3.2 Reframe",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/ray/v3.2/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Luma Ray 3.2 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/ray/v3.2/video-to-video",
+    "category": "video-to-video",
+    "display_name": "Luma Ray 3.2 Video to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/uni-1/v1/edit",
+    "category": "image-to-image",
+    "display_name": "Luma Uni-1 Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/uni-1/v1/max",
+    "category": "text-to-image",
+    "display_name": "Luma Uni-1 Text to Image Max",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/uni-1/v1/max/edit",
+    "category": "image-to-image",
+    "display_name": "Luma Uni-1 Edit Max",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "luma/agent/uni-1/v1/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Luma Uni-1 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "meshy/v7/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "V7 Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "meshy/v7/multi-image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "V7 Multi Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "meshy/v7/text-to-3d",
+    "category": "text-to-3d",
+    "display_name": "V7 Text to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "meta/muse-image/edit",
+    "category": "image-to-image",
+    "display_name": "Meta Muse Image Edit",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "meta/muse-image/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Meta Muse Image Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "microsoft/mai-image-2.5",
+    "category": "text-to-image",
+    "display_name": "Mai Image 2.5 Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "microsoft/mai-image-2.5-pro",
+    "category": "text-to-image",
+    "display_name": "MAI Image 2.5 Pro (Text to Image)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "microsoft/mai-image-2.5-pro/edit",
+    "category": "image-to-image",
+    "display_name": "MAI Image 2.5 Pro (Edit)",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "microsoft/mai-image-2.5/edit",
+    "category": "image-to-image",
+    "display_name": "Mai Image 2.5",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3-max/image-to-video",
+    "category": "image-to-video",
+    "display_name": "H3 Max Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3-max/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "H3 Max Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3-max/text-to-video",
+    "category": "text-to-video",
+    "display_name": "MiniMax H3 Max Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/flf2v/trainer",
+    "category": "training",
+    "display_name": "MiniMax H3 First Last Frame LoRA Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/i2v/trainer",
+    "category": "training",
+    "display_name": "MiniMax H3 Image to Video Audio LoRA Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/image-to-video",
+    "category": "image-to-video",
+    "display_name": "MiniMax H3 Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/image-to-video/lora",
+    "category": "image-to-video",
+    "display_name": "MiniMax H3 Image to Video LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/ref2va/trainer",
+    "category": "training",
+    "display_name": "MiniMax H3 Reference to Video LoRA Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "MiniMax H3 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/reference-to-video/lora",
+    "category": "video-to-video",
+    "display_name": "MiniMax H3 Reference to Video LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/t2v/trainer",
+    "category": "training",
+    "display_name": "MiniMax H3 Text to Video LoRA Trainer",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/text-to-video",
+    "category": "text-to-video",
+    "display_name": "MiniMax H3 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/h3/text-to-video/lora",
+    "category": "text-to-video",
+    "display_name": "MiniMax H3 Text to Video LoRA",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "minimax/music-3",
+    "category": "text-to-audio",
+    "display_name": "MiniMax Music 3",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirage-api/avatar-x/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Mirage Avatar X",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirage-api/avatar-x/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Avatar X",
+    "status": "active",
+    "implemented": false,
     "direct": false
   },
   {
@@ -8819,6 +10995,38 @@
     "endpoint_id": "mirelo-ai/sfx-v1/video-to-video",
     "category": "video-to-video",
     "display_name": "Mirelo SFX",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirelo-ai/sfx1.6/extend-audio",
+    "category": "audio-to-audio",
+    "display_name": "Mirelo SFX1.6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirelo-ai/sfx1.6/inpaint-audio",
+    "category": "audio-to-audio",
+    "display_name": "Mirelo SFX1.6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirelo-ai/sfx1.6/text-to-audio",
+    "category": "text-to-audio",
+    "display_name": "Mirelo SFX1.6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "mirelo-ai/sfx1.6/video-to-video",
+    "category": "video-to-video",
+    "display_name": "Mirelo SFX1.6",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8856,6 +11064,78 @@
     "direct": false
   },
   {
+    "endpoint_id": "nvidia/cosmos-3-super/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Cosmos 3 Super Image to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/cosmos-3-super/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Cosmos 3 Super",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/nemotron-3-nano-omni",
+    "category": "llm",
+    "display_name": "Nemotron 3 Nano Omni",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/nemotron-3-nano-omni/audio",
+    "category": "audio-to-text",
+    "display_name": "Nemotron 3 Nano Omni",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/nemotron-3-nano-omni/video",
+    "category": "video-to-text",
+    "display_name": "Nemotron 3 Nano Omni",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/nemotron-3-nano-omni/vision",
+    "category": "image-to-text",
+    "display_name": "Nemotron 3 Nano Omni",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "nvidia/nemotron-asr-multilingual/asr",
+    "category": "speech-to-text",
+    "display_name": "Nemotron Asr Multilingual",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "openai/gpt-image-2",
+    "category": "text-to-image",
+    "display_name": "GPT Image 2 API",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "openai/gpt-image-2/edit",
+    "category": "image-to-image",
+    "display_name": "GPT Image 2 API",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "openrouter/router",
     "category": "llm",
     "display_name": "OpenRouter",
@@ -8867,6 +11147,14 @@
     "endpoint_id": "openrouter/router/audio",
     "category": "unknown",
     "display_name": "OpenRouter [Audio]",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "openrouter/router/enterprise",
+    "category": "llm",
+    "display_name": "OpenRouter [Enterprise]",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -8936,6 +11224,78 @@
     "direct": false
   },
   {
+    "endpoint_id": "pixelcut/background-removal",
+    "category": "image-to-image",
+    "display_name": "Pixelcut Background Remover",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "pixelcut/product-photo",
+    "category": "image-to-image",
+    "display_name": "Pixelcut Product Photo",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "pixelcut/video-background-removal",
+    "category": "video-to-video",
+    "display_name": "Pixelcut Video Background Removal",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/create-style",
+    "category": "training",
+    "display_name": "Recraft V4 Styles Create Style",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/pro/create-style",
+    "category": "training",
+    "display_name": "Recraft V4 Styles Pro Create Style",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/style/pro/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Styles Pro Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/style/pro/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Styles Pro Text to Vector",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/style/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Styles Text to Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "recraft/v4/style/text-to-vector",
+    "category": "text-to-image",
+    "display_name": "Recraft V4 Styles Text to Vector",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "resemble-ai/chatterboxhd/speech-to-speech",
     "category": "speech-to-speech",
     "display_name": "Chatterboxhd",
@@ -8947,6 +11307,30 @@
     "endpoint_id": "resemble-ai/chatterboxhd/text-to-speech",
     "category": "text-to-speech",
     "display_name": "Chatterboxhd",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "reve/2.1/edit",
+    "category": "image-to-image",
+    "display_name": "Reve 2.1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "reve/2.1/remix",
+    "category": "image-to-image",
+    "display_name": "Reve 2.1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "reve/2.1/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Reve 2.1",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -9024,25 +11408,233 @@
     "direct": false
   },
   {
-    "endpoint_id": "sonauto/v2/extend",
-    "category": "audio-to-audio",
-    "display_name": "Sonauto V2",
+    "endpoint_id": "sonilo/v1.1/text-to-music",
+    "category": "text-to-audio",
+    "display_name": "Sonilo V1.1 Text to Music",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "sonauto/v2/inpaint",
+    "endpoint_id": "sonilo/v1.1/text-to-sound-effects",
     "category": "text-to-audio",
-    "display_name": "Sonauto V2",
+    "display_name": "V1.1 Text to Sound Effects",
     "status": "active",
     "implemented": false,
     "direct": false
   },
   {
-    "endpoint_id": "sonauto/v2/text-to-music",
-    "category": "text-to-audio",
-    "display_name": "Sonauto V2",
+    "endpoint_id": "sonilo/v1.1/video-to-music",
+    "category": "video-to-audio",
+    "display_name": "V1.1",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "sonilo/v1.1/video-to-sound-effects",
+    "category": "video-to-audio",
+    "display_name": "V1.1 Video to Sound Effects",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "sonilo/v1.1/video-to-video-music",
+    "category": "video-to-video",
+    "display_name": "V1.1 Video to Video Music",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "sonilo/v1.1/video-to-video-sound-effects",
+    "category": "video-to-video",
+    "display_name": "V1.1 Video to Video Sound Effects",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/adjust/image",
+    "category": "image-to-image",
+    "display_name": "Topaz Adjust Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/colorize/video",
+    "category": "video-to-video",
+    "display_name": "Topaz Colorize Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/deblur/video",
+    "category": "video-to-video",
+    "display_name": "Topaz Deblur Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/denoise/image",
+    "category": "image-to-image",
+    "display_name": "Topaz Denoise Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/denoise/video",
+    "category": "video-to-video",
+    "display_name": "Topaz Denoise Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/interpolate/video",
+    "category": "video-to-video",
+    "display_name": "Topaz Interpolate Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/restore/image",
+    "category": "image-to-image",
+    "display_name": "Topaz Restore Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/sdr-to-hdr/video",
+    "category": "video-to-video",
+    "display_name": "Topaz Sdr To Hdr Video",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/sharpen/image",
+    "category": "image-to-image",
+    "display_name": "Topaz Sharpen Image",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/image/creative",
+    "category": "image-to-image",
+    "display_name": "Topaz Upscale Image Creative",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/image/generative",
+    "category": "image-to-image",
+    "display_name": "Topaz Upscale Image Generative",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/image/precision",
+    "category": "image-to-image",
+    "display_name": "Topaz Upscale Image Precision",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/image/transparent",
+    "category": "image-to-image",
+    "display_name": "Topaz Upscale Image Transparent",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/video/creative",
+    "category": "video-to-video",
+    "display_name": "Topaz Upscale Video Creative",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/video/generative",
+    "category": "video-to-video",
+    "display_name": "Topaz Upscale Video Generative",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "topaz/upscale/video/precision",
+    "category": "video-to-video",
+    "display_name": "Topaz Upscale Video Precision",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/h3.1/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Tripo H3.1 Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/h3.1/multiview-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Tripo H3.1 Multiview to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/h3.1/text-to-3d",
+    "category": "text-to-3d",
+    "display_name": "Tripo H3.1 Text to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/p1/image-to-3d",
+    "category": "image-to-3d",
+    "display_name": "Tripo P1 Image to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/p1/text-to-3d",
+    "category": "text-to-3d",
+    "display_name": "Tripo P1 Text to 3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/tripo/remesh",
+    "category": "3d-to-3d",
+    "display_name": "Tripo3D Remesh",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/tripo/segment",
+    "category": "3d-to-3d",
+    "display_name": "Tripo3D Segment",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -9059,6 +11651,14 @@
     "endpoint_id": "tripo3d/tripo/v2.5/multiview-to-3d",
     "category": "image-to-3d",
     "display_name": "Tripo3D",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "tripo3d/triposplat",
+    "category": "image-to-3d",
+    "display_name": "Triposplat",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -9107,6 +11707,22 @@
     "endpoint_id": "veed/lipsync",
     "category": "video-to-video",
     "display_name": "Lipsync",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "veed/lipsync/v2",
+    "category": "video-to-video",
+    "display_name": "VEED Lipsync",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
+    "endpoint_id": "veed/subtitles",
+    "category": "video-to-video",
+    "display_name": "Subtitles",
     "status": "active",
     "implemented": false,
     "direct": false
@@ -9168,6 +11784,14 @@
     "direct": false
   },
   {
+    "endpoint_id": "wan/v2.6/reference-to-video/flash",
+    "category": "video-to-video",
+    "display_name": "V2.6",
+    "status": "active",
+    "implemented": false,
+    "direct": false
+  },
+  {
     "endpoint_id": "wan/v2.6/text-to-image",
     "category": "text-to-image",
     "display_name": "Wan v2.6 Text to Image",
@@ -9200,9 +11824,49 @@
     "direct": true
   },
   {
+    "endpoint_id": "xai/grok-imagine-image/quality/edit",
+    "category": "image-to-image",
+    "display_name": "Grok Imagine Image Editing Quality",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-image/quality/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Grok Imagine Image",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-image/v2.0/edit",
+    "category": "image-to-image",
+    "display_name": "Grok Imagine Image 2.0",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-image/v2.0/text-to-image",
+    "category": "text-to-image",
+    "display_name": "Grok Imagine Image 2.0",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "xai/grok-imagine-video/edit-video",
     "category": "video-to-video",
     "display_name": "Grok Imagine Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-video/extend-video",
+    "category": "video-to-video",
+    "display_name": "Grok Imagine Extend Video",
     "status": "active",
     "implemented": false,
     "direct": true
@@ -9216,9 +11880,49 @@
     "direct": true
   },
   {
+    "endpoint_id": "xai/grok-imagine-video/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Grok Imagine Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
     "endpoint_id": "xai/grok-imagine-video/text-to-video",
     "category": "text-to-video",
     "display_name": "Grok Imagine Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-video/v1.5/image-to-video",
+    "category": "image-to-video",
+    "display_name": "Grok Imagine Video 1.5",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-video/v1.5/reference-to-video",
+    "category": "image-to-video",
+    "display_name": "Grok Imagine Video 1.5 Reference to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/grok-imagine-video/v1.5/text-to-video",
+    "category": "text-to-video",
+    "display_name": "Grok Imagine Video 1.5 Text to Video",
+    "status": "active",
+    "implemented": false,
+    "direct": true
+  },
+  {
+    "endpoint_id": "xai/tts/v1",
+    "category": "text-to-speech",
+    "display_name": "xAI Text to Speech",
     "status": "active",
     "implemented": false,
     "direct": true
