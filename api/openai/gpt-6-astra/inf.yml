@@ -14,6 +14,11 @@ metadata:
         - llm
         - reasoning
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 env: {}
 kernel: python-3.11
 secrets:

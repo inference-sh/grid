@@ -4,6 +4,7 @@ from pydantic import Field
 
 from inferencesh import BaseApp
 from inferencesh.models.llm import LLMInput, LLMOutput, LLMDelta
+from inferencesh.openai import OpenAIChatMixin
 from .openai_llm import stream_completion
 
 OPENAI_KEY = os.getenv("OPENAI_KEY")
@@ -23,14 +24,14 @@ class AppOutput(LLMOutput):
     pass
 
 
-class App(BaseApp):
+class App(OpenAIChatMixin, BaseApp):
 
-    async def setup(self, metadata):
+    async def setup(self):
         if not OPENAI_KEY:
             raise ValueError("OPENAI_KEY environment variable is required")
         print(f"OpenAI ready model={MODEL}")
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         last_output = None
 
         async for output, delta in stream_completion(

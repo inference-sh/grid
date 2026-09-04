@@ -1,9 +1,9 @@
 """Opper stream processing helpers for LLM inference."""
 
 import asyncio
-from typing import List, Optional, Dict, Any, AsyncGenerator
+from typing import List, Optional, Dict, Any, AsyncGenerator, Tuple
 from inferencesh import File
-from inferencesh.models.llm import build_openai_messages, build_tools
+from inferencesh.models.llm import build_openai_messages, build_tools, openai_response_format, openai_tool_choice
 from inferencesh import OutputMeta, TextMeta
 
 
@@ -90,8 +90,9 @@ def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
             current["function"]["arguments"] += delta.function.arguments
 
 
-def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
-    """Process a single chunk and update state dict. Returns finish_reason if present."""
+def process_chunk(chunk, state: Dict[str, Any]) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
+    """Fold one chunk into state.
+    Returns (finish_reason, delta_dict); delta_dict is LLMDelta-shaped or None."""
     check_chunk_error(chunk)
 
     usage_attr = getattr(chunk, "usage", None)
@@ -104,16 +105,19 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
             state["output_tokens"] = completion_tokens
 
     if not chunk.choices:
-        return None
+        return None, None
 
     delta = chunk.choices[0].delta
     finish_reason = chunk.choices[0].finish_reason
+    llm_delta: Dict[str, Any] = {}
 
     if delta.content:
         state["response"] += delta.content
+        llm_delta["response"] = delta.content
 
     if hasattr(delta, "reasoning") and delta.reasoning:
         state["reasoning"] += delta.reasoning
+        llm_delta["reasoning"] = delta.reasoning
 
     if hasattr(delta, "reasoning_details") and delta.reasoning_details:
         state["reasoning_details"].extend(delta.reasoning_details)
@@ -121,8 +125,11 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Optional[str]:
     if delta.tool_calls:
         for tc in delta.tool_calls:
             process_tool_call_delta(tc, state["tool_calls"])
+        llm_delta["tool_calls"] = [
+            tc.model_dump(exclude_none=True) if hasattr(tc, "model_dump") else tc for tc in delta.tool_calls
+        ]
 
-    return finish_reason
+    return finish_reason, llm_delta if llm_delta else None
 
 
 def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -201,9 +208,16 @@ def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     if stream:
         params["stream_options"] = {"include_usage": True}
 
+    # Opper's compat endpoint declares tool_choice and response_format in its
+    # OpenAPI schema; pass them through in OpenAI spelling and let the
+    # upstream provider reject what it cannot honour.
     if tools:
         params["tools"] = tools
-        params["tool_choice"] = "auto"
+        params["tool_choice"] = openai_tool_choice(input_data.tool_choice)
+
+    response_format = openai_response_format(input_data.response_format)
+    if response_format is not None:
+        params["response_format"] = response_format
 
     extra_body = {}
     reasoning_config = get_reasoning_config(input_data)
@@ -256,8 +270,15 @@ async def complete(client, input_data, model: str) -> Dict[str, Any]:
     return build_output(state)
 
 
-async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
-    """Stream a completion from Opper and yield output dicts."""
+async def stream_completion(
+    client, input_data, model: str, *, with_deltas: bool = False,
+) -> AsyncGenerator[Any, None]:
+    """Stream a completion from Opper.
+
+    with_deltas=False (default): yields accumulated output dicts.
+    with_deltas=True: yields (output_dict, delta_dict | None) tuples, where
+    delta_dict has LLMDelta-shaped keys (response, reasoning, tool_calls).
+    """
     params = _build_params(input_data, model, stream=True)
 
     try:
@@ -277,8 +298,9 @@ async def stream_completion(client, input_data, model: str) -> AsyncGenerator[Di
                 raise RuntimeError("Stream timed out - no chunks received for 120 seconds")
             last_chunk_time = now
 
-            finish_reason = process_chunk(chunk, state)
-            yield build_output(state)
+            _, chunk_delta = process_chunk(chunk, state)
+            output = build_output(state)
+            yield (output, chunk_delta) if with_deltas else output
     finally:
         if hasattr(stream, "aclose"):
             await stream.aclose()

@@ -1,11 +1,12 @@
 import os
-from typing import AsyncGenerator, List, Optional
+from typing import AsyncGenerator, List, Optional, Union
 from pydantic import Field
 
 from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
+    LLMDelta,
     ReasoningCapabilityMixin,
     ReasoningMixin,
     ToolsCapabilityMixin,
@@ -13,6 +14,7 @@ from inferencesh.models.llm import (
     ImageCapabilityMixin,
     FileCapabilityMixin
 )
+from inferencesh.openai import OpenAIChatMixin
 from .opper import stream_completion, complete
 from openai import AsyncOpenAI
 
@@ -34,26 +36,31 @@ class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     pass
 
 
-class App(BaseApp):
+class App(OpenAIChatMixin, BaseApp):
     def __init__(self):
         super().__init__()
         self.client = None
 
-    async def setup(self, metadata):
+    async def setup(self):
         if not OPPER_API_KEY:
             raise ValueError("OPPER_KEY environment variable is required")
         self.client = AsyncOpenAI(base_url=OPPER_BASE_URL, api_key=OPPER_API_KEY)
         print("Opper client initialization complete!")
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         if not self.client:
             raise RuntimeError("Opper client not initialized. Call setup() first.")
 
         print(f"Calling Opper API with model {DEFAULT_MODEL}, stream={input_data.stream}")
 
         if input_data.stream:
-            async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
-                yield AppOutput(**output)
+            last_output = None
+            async for output, delta in stream_completion(self.client, input_data, DEFAULT_MODEL, with_deltas=True):
+                if delta:
+                    yield LLMDelta(**delta)
+                last_output = output
+            if last_output:
+                yield AppOutput(**last_output)
         else:
             output = await complete(self.client, input_data, DEFAULT_MODEL)
             yield AppOutput(**output)

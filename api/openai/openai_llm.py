@@ -23,6 +23,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 import httpx
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.llm_types_gen import ResponseFormat, ResponseFormatType, ToolChoice, ToolChoiceMode
 from inferencesh.models.llm import (
     ContextMessageRole,
     LLMUsage,
@@ -217,6 +218,35 @@ def build_reasoning(input_data, supports_none: bool, with_summary: bool) -> Opti
     return cfg or None
 
 
+def responses_tool_choice(choice: Optional[ToolChoice]) -> Any:
+    """LLMInput.tool_choice -> Responses API tool_choice.
+
+    Same strings as Chat Completions; a named function is flat
+    {"type": "function", "name": ...} rather than nested under "function".
+    """
+    if choice is None:
+        return "auto"
+    if choice.mode == ToolChoiceMode.FUNCTION:
+        return {"type": "function", "name": choice.name}
+    return choice.mode.value  # none | auto | required
+
+
+def responses_text_format(fmt: Optional[ResponseFormat]) -> Optional[Dict[str, Any]]:
+    """LLMInput.response_format -> Responses API text.format. None for plain text.
+
+    The Responses API flattens the schema spec: {"type": "json_schema",
+    "name", "schema", "strict"} directly, not nested under "json_schema".
+    """
+    if fmt is None or fmt.type == ResponseFormatType.TEXT:
+        return None
+    if fmt.type == ResponseFormatType.JSON_OBJECT:
+        return {"type": "json_object"}
+    spec: Dict[str, Any] = {"type": "json_schema", "name": fmt.name or "response", "schema": fmt.json_schema}
+    if fmt.strict is not None:
+        spec["strict"] = fmt.strict
+    return spec
+
+
 def build_request_body(
     input_data,
     model: str,
@@ -247,8 +277,12 @@ def build_request_body(
         body["instructions"] = instructions
     if tools:
         body["tools"] = tools
-        body["tool_choice"] = "auto"
+        body["tool_choice"] = responses_tool_choice(input_data.tool_choice)
         body["parallel_tool_calls"] = True
+
+    text_format = responses_text_format(input_data.response_format)
+    if text_format is not None:
+        body["text"] = {"format": text_format}
 
     reasoning = build_reasoning(input_data, supports_none_reasoning, with_summary)
     if reasoning:

@@ -5,18 +5,27 @@ from __future__ import annotations
 import asyncio
 import json
 import time
-from typing import List, Optional, Dict, Any, AsyncGenerator
+from typing import List, Optional, Dict, Any, AsyncGenerator, Tuple
 
 import httpx
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.llm_types_gen import ResponseFormatType, ToolChoiceMode
 from inferencesh.models.llm import build_openai_messages, build_tools
 
 MINIMAX_BASE_URL = "https://api.minimax.io/v1"
 STREAM_SILENCE_TIMEOUT = 60
 
 
-async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenerator[Dict[str, Any], None]:
+async def stream_completion(
+    api_key: str, input_data, model: str, *, with_deltas: bool = False,
+) -> AsyncGenerator[Any, None]:
+    """Stream a completion from MiniMax.
+
+    with_deltas=False (default): yields accumulated output dicts.
+    with_deltas=True: yields (output_dict, delta_dict | None) tuples, where
+    delta_dict has LLMDelta-shaped keys (response, reasoning, tool_calls).
+    """
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -63,8 +72,9 @@ async def stream_completion(api_key: str, input_data, model: str) -> AsyncGenera
                     continue
 
                 chunks_received += 1
-                _parse_sse_chunk(data, state)
-                yield _build_output(state)
+                _, chunk_delta = _parse_sse_chunk(data, state)
+                output = _build_output(state)
+                yield (output, chunk_delta) if with_deltas else output
 
         except httpx.ReadTimeout:
             raise RuntimeError(f"Stream timed out — no data for {STREAM_SILENCE_TIMEOUT}s after {chunks_received} chunks")
@@ -116,9 +126,20 @@ def _build_request_body(input_data, model: str) -> Dict[str, Any]:
     if ms_max is not None:
         body["max_tokens"] = ms_max
 
-    if tools:
+    # MiniMax does not document tool_choice or response_format on its
+    # OpenAI-compatible endpoint. "auto" is the long-standing default and
+    # "none" is honoured client-side by not sending tools; anything else is
+    # rejected rather than sent on faith.
+    choice = input_data.tool_choice
+    if choice is not None and choice.mode in (ToolChoiceMode.REQUIRED, ToolChoiceMode.FUNCTION):
+        raise ValueError(f"MiniMax does not support tool_choice mode '{choice.mode.value}'")
+    if tools and not (choice is not None and choice.mode == ToolChoiceMode.NONE):
         body["tools"] = tools
         body["tool_choice"] = "auto"
+
+    fmt = input_data.response_format
+    if fmt is not None and fmt.type != ResponseFormatType.TEXT:
+        raise ValueError(f"MiniMax does not support response_format type '{fmt.type.value}'")
 
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
     if reasoning_effort and reasoning_effort != "none":
@@ -143,7 +164,9 @@ def _create_initial_state() -> Dict[str, Any]:
     }
 
 
-def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[str]:
+def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
+    """Fold one SSE chunk into state.
+    Returns (finish_reason, delta_dict); delta_dict is LLMDelta-shaped or None."""
     error = data.get("error")
     if error:
         msg = error.get("message", str(error)) if isinstance(error, dict) else str(error)
@@ -163,19 +186,22 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
 
     choices = data.get("choices", [])
     if not choices:
-        return None
+        return None, None
 
     choice = choices[0]
     finish_reason = choice.get("finish_reason")
     delta = choice.get("delta", {})
+    llm_delta: Dict[str, Any] = {}
 
     content = delta.get("content")
     if content:
         state["response"] += content
+        llm_delta["response"] = content
 
     reasoning = delta.get("reasoning") or delta.get("reasoning_content")
     if reasoning:
         state["reasoning"] += reasoning
+        llm_delta["reasoning"] = reasoning
 
     reasoning_details = delta.get("reasoning_details")
     if reasoning_details:
@@ -185,8 +211,9 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[st
     if tool_calls:
         for tc in tool_calls:
             _process_tool_call_delta(tc, state["tool_calls"])
+        llm_delta["tool_calls"] = tool_calls
 
-    return finish_reason
+    return finish_reason, llm_delta if llm_delta else None
 
 
 def _process_tool_call_delta(tc: Dict[str, Any], tool_calls: List[Dict[str, Any]]) -> None:
