@@ -1,0 +1,393 @@
+{
+  "$defs": {
+    "ChatMessageRole": {
+      "enum": [
+        "system",
+        "user",
+        "assistant",
+        "tool",
+        "injection",
+        "compaction"
+      ],
+      "title": "ChatMessageRole",
+      "type": "string"
+    },
+    "ContextMessage": {
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/ChatMessageRole"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
+        },
+        "tools": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tools"
+        },
+        "tool_calls": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Calls"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Call Id"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "title": "ContextMessage",
+      "type": "object"
+    },
+    "ReasoningEffortEnum": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "none"
+      ],
+      "title": "ReasoningEffortEnum",
+      "type": "string"
+    }
+  },
+  "description": "gpt-5.6-luna via the OpenAI Responses API: text, image and file input, tools, reasoning.",
+  "properties": {
+    "context_size": {
+      "default": 1050000,
+      "description": "The context size for the model.",
+      "title": "Context Size",
+      "type": "integer"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model"
+    },
+    "context": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Images"
+    },
+    "files": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Files"
+    },
+    "attachments": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attachments"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tools"
+    },
+    "reasoning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reasoning"
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Call Id"
+    },
+    "top_k": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Top K"
+    },
+    "min_p": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Min P"
+    },
+    "frequency_penalty": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frequency Penalty"
+    },
+    "presence_penalty": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Presence Penalty"
+    },
+    "repetition_penalty": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Repetition Penalty"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Seed"
+    },
+    "reasoning_max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reasoning Max Tokens"
+    },
+    "system_prompt": {
+      "default": "you are a helpful assistant that can answer questions and help with tasks.",
+      "title": "System Prompt",
+      "type": "string"
+    },
+    "text": {
+      "default": "",
+      "title": "Text",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/ChatMessageRole",
+      "default": "user"
+    },
+    "temperature": {
+      "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
+    },
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "stop": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stop"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

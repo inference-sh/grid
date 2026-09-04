@@ -1,0 +1,27 @@
+namespace: openai
+name: gpt-6-astra
+description: GPT-6 Astra — OpenAI's frontier model. 1M context, 128k output, adaptive reasoning (low to max), vision, file input and tool use via the Responses API. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    provider: openai
+    tags:
+        - openai
+        - gpt-6
+        - astra
+        - llm
+        - reasoning
+category: chat
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

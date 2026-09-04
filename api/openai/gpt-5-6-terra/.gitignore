@@ -1,0 +1,5 @@
+.infsh/
+__pycache__/
+*.pyc
+input.json
+setup.json

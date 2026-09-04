@@ -1,0 +1,26 @@
+namespace: openai
+name: gpt-5-6-terra
+description: GPT-5.6 Terra — OpenAI's balanced GPT-5.6 model. 1M context, 128k output, reasoning effort none to max, vision, file input and tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    provider: openai
+    tags:
+        - openai
+        - gpt-5.6
+        - llm
+        - reasoning
+category: chat
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
