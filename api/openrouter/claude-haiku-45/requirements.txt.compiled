@@ -22,7 +22,7 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.7.31
+inferencesh==0.7.33
     # via -r requirements.txt
 pydantic==2.13.0b3
     # via

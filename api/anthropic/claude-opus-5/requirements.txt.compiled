@@ -30,7 +30,7 @@ idna==3.18
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.7.12
+inferencesh==0.7.33
     # via -r requirements.txt
 jiter==0.16.0
     # via anthropic
