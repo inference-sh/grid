@@ -77,8 +77,7 @@
           "anyOf": [
             {
               "items": {
-                "additionalProperties": true,
-                "type": "object"
+                "$ref": "#/$defs/Tool"
               },
               "type": "array"
             },
@@ -133,6 +132,271 @@
       ],
       "title": "ReasoningEffortEnum",
       "type": "string"
+    },
+    "ResponseFormat": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ResponseFormatType"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "json_schema": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Json Schema"
+        },
+        "strict": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Strict"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "ResponseFormat",
+      "type": "object"
+    },
+    "ResponseFormatType": {
+      "enum": [
+        "text",
+        "json_object",
+        "json_schema"
+      ],
+      "title": "ResponseFormatType",
+      "type": "string"
+    },
+    "Tool": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ToolCallType"
+        },
+        "function": {
+          "$ref": "#/$defs/ToolFunction"
+        }
+      },
+      "required": [
+        "type",
+        "function"
+      ],
+      "title": "Tool",
+      "type": "object"
+    },
+    "ToolCallType": {
+      "enum": [
+        "function"
+      ],
+      "title": "ToolCallType",
+      "type": "string"
+    },
+    "ToolChoice": {
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/ToolChoiceMode"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "ToolChoice",
+      "type": "object"
+    },
+    "ToolChoiceMode": {
+      "enum": [
+        "none",
+        "auto",
+        "required",
+        "function"
+      ],
+      "title": "ToolChoiceMode",
+      "type": "string"
+    },
+    "ToolFunction": {
+      "properties": {
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/ToolParameters"
+        },
+        "required": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "ToolFunction",
+      "type": "object"
+    },
+    "ToolParamType": {
+      "enum": [
+        "object",
+        "string",
+        "integer",
+        "number",
+        "boolean",
+        "array",
+        "null"
+      ],
+      "title": "ToolParamType",
+      "type": "string"
+    },
+    "ToolParameterProperty": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ToolParamType"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "properties": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/ToolParameterProperty"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Properties"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolParameterProperty"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "required": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "ToolParameterProperty",
+      "type": "object"
+    },
+    "ToolParameters": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ToolParamType"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ToolParameterProperty"
+          },
+          "title": "Properties"
+        },
+        "required": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required"
+        }
+      },
+      "required": [
+        "type",
+        "properties"
+      ],
+      "title": "ToolParameters",
+      "type": "object"
     }
   },
   "description": "OpenRouter input model with reasoning and tools support.",
@@ -161,101 +425,19 @@
       "default": null,
       "title": "Model"
     },
-    "context": {
-      "default": [],
-      "items": {
-        "$ref": "#/$defs/ContextMessage"
-      },
-      "title": "Context",
-      "type": "array"
+    "temperature": {
+      "default": 0.7,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Temperature",
+      "type": "number"
     },
-    "images": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Images"
-    },
-    "files": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Files"
-    },
-    "attachments": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Attachments"
-    },
-    "tools": {
-      "anyOf": [
-        {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Tools"
-    },
-    "reasoning": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Reasoning"
-    },
-    "tool_call_id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Tool Call Id"
+    "top_p": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Top P",
+      "type": "number"
     },
     "top_k": {
       "anyOf": [
@@ -329,6 +511,30 @@
       "default": null,
       "title": "Seed"
     },
+    "stop": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stop"
+    },
+    "max_tokens": {
+      "default": 64000,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "reasoning_effort": {
+      "$ref": "#/$defs/ReasoningEffortEnum",
+      "default": "none"
+    },
     "reasoning_max_tokens": {
       "anyOf": [
         {
@@ -346,38 +552,40 @@
       "title": "System Prompt",
       "type": "string"
     },
-    "text": {
-      "default": "",
-      "title": "Text",
-      "type": "string"
+    "context": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
     },
     "role": {
       "$ref": "#/$defs/ChatMessageRole",
       "default": "user"
     },
-    "temperature": {
-      "default": 0.7,
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Temperature",
-      "type": "number"
+    "text": {
+      "default": "",
+      "title": "Text",
+      "type": "string"
     },
-    "top_p": {
-      "default": 0.95,
-      "maximum": 1.0,
-      "minimum": 0.0,
-      "title": "Top P",
-      "type": "number"
+    "reasoning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reasoning"
     },
-    "max_tokens": {
-      "default": 64000,
-      "title": "Max Tokens",
-      "type": "integer"
-    },
-    "stop": {
+    "attachments": {
       "anyOf": [
         {
           "items": {
+            "format": "file",
             "type": "string"
           },
           "type": "array"
@@ -387,11 +595,89 @@
         }
       ],
       "default": null,
-      "title": "Stop"
+      "title": "Attachments"
     },
-    "reasoning_effort": {
-      "$ref": "#/$defs/ReasoningEffortEnum",
-      "default": "none"
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Images"
+    },
+    "files": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Files"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tools"
+    },
+    "tool_choice": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolChoice"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "response_format": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResponseFormat"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Call Id"
     }
   },
   "title": "AppInput",

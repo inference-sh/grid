@@ -96,18 +96,6 @@
     },
     "LLMUsage": {
       "properties": {
-        "output_meta": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/OutputMeta"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Structured metadata about inputs/outputs for pricing calculation"
-        },
         "stop_reason": {
           "default": "",
           "title": "Stop Reason",
@@ -371,21 +359,21 @@
       "description": "Structured metadata about inputs/outputs for pricing calculation"
     },
     "response": {
-      "description": "the generated text response",
+      "default": "",
       "title": "Response",
       "type": "string"
     },
-    "usage": {
+    "reasoning": {
       "anyOf": [
         {
-          "$ref": "#/$defs/LLMUsage"
+          "type": "string"
         },
         {
           "type": "null"
         }
       ],
       "default": null,
-      "description": "token usage statistics"
+      "title": "Reasoning"
     },
     "tool_calls": {
       "anyOf": [
@@ -401,13 +389,20 @@
         }
       ],
       "default": null,
-      "description": "tool calls for function calling",
       "title": "Tool Calls"
+    },
+    "usage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LLMUsage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     }
   },
-  "required": [
-    "response"
-  ],
-  "title": "LLMOutput",
+  "title": "AppOutput",
   "type": "object"
 }

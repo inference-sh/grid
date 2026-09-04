@@ -1,0 +1,2638 @@
+{
+  "openai": {
+    "description": "OpenAI Chat Completions compatible entry point.",
+    "input_schema": {
+      "$defs": {
+        "ChatMessage": {
+          "properties": {
+            "role": {
+              "enum": [
+                "system",
+                "developer",
+                "user",
+                "assistant",
+                "tool"
+              ],
+              "title": "Role",
+              "type": "string"
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/TextContentPart"
+                      },
+                      {
+                        "$ref": "#/$defs/ImageContentPart"
+                      },
+                      {
+                        "$ref": "#/$defs/FileContentPart"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content"
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            },
+            "tool_calls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/RequestToolCall"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tool Calls"
+            },
+            "tool_call_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tool Call Id"
+            },
+            "reasoning": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reasoning"
+            }
+          },
+          "required": [
+            "role"
+          ],
+          "title": "ChatMessage",
+          "type": "object"
+        },
+        "FileContentPart": {
+          "properties": {
+            "type": {
+              "const": "file",
+              "title": "Type",
+              "type": "string"
+            },
+            "file": {
+              "$ref": "#/$defs/FileData"
+            }
+          },
+          "required": [
+            "type",
+            "file"
+          ],
+          "title": "FileContentPart",
+          "type": "object"
+        },
+        "FileData": {
+          "properties": {
+            "file_data": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "File Data"
+            },
+            "file_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "File Id"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Filename"
+            }
+          },
+          "title": "FileData",
+          "type": "object"
+        },
+        "FunctionCallByName": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "FunctionCallByName",
+          "type": "object"
+        },
+        "FunctionDefinition": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Description"
+            },
+            "parameters": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Parameters"
+            },
+            "strict": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Strict"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "FunctionDefinition",
+          "type": "object"
+        },
+        "ImageContentPart": {
+          "properties": {
+            "type": {
+              "const": "image_url",
+              "title": "Type",
+              "type": "string"
+            },
+            "image_url": {
+              "$ref": "#/$defs/ImageURL"
+            }
+          },
+          "required": [
+            "type",
+            "image_url"
+          ],
+          "title": "ImageContentPart",
+          "type": "object"
+        },
+        "ImageURL": {
+          "properties": {
+            "url": {
+              "title": "Url",
+              "type": "string"
+            },
+            "detail": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "auto",
+                    "low",
+                    "high"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Detail"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "title": "ImageURL",
+          "type": "object"
+        },
+        "JSONSchemaSpec": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "schema": {
+              "additionalProperties": true,
+              "title": "Schema",
+              "type": "object"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Description"
+            },
+            "strict": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Strict"
+            }
+          },
+          "required": [
+            "name",
+            "schema"
+          ],
+          "title": "JSONSchemaSpec",
+          "type": "object"
+        },
+        "NamedToolChoice": {
+          "properties": {
+            "type": {
+              "const": "function",
+              "default": "function",
+              "title": "Type",
+              "type": "string"
+            },
+            "function": {
+              "$ref": "#/$defs/NamedToolChoiceFunction"
+            }
+          },
+          "required": [
+            "function"
+          ],
+          "title": "NamedToolChoice",
+          "type": "object"
+        },
+        "NamedToolChoiceFunction": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "NamedToolChoiceFunction",
+          "type": "object"
+        },
+        "RequestFunctionCall": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "arguments": {
+              "title": "Arguments",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "arguments"
+          ],
+          "title": "RequestFunctionCall",
+          "type": "object"
+        },
+        "RequestToolCall": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "type": {
+              "const": "function",
+              "default": "function",
+              "title": "Type",
+              "type": "string"
+            },
+            "function": {
+              "$ref": "#/$defs/RequestFunctionCall"
+            }
+          },
+          "required": [
+            "id",
+            "function"
+          ],
+          "title": "RequestToolCall",
+          "type": "object"
+        },
+        "ResponseFormat": {
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "json_object",
+                "json_schema"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "json_schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/JSONSchemaSpec"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "ResponseFormat",
+          "type": "object"
+        },
+        "StreamOptions": {
+          "properties": {
+            "include_usage": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Include Usage"
+            }
+          },
+          "title": "StreamOptions",
+          "type": "object"
+        },
+        "TextContentPart": {
+          "properties": {
+            "type": {
+              "const": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "text": {
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "title": "TextContentPart",
+          "type": "object"
+        },
+        "ToolDefinition": {
+          "properties": {
+            "type": {
+              "const": "function",
+              "default": "function",
+              "title": "Type",
+              "type": "string"
+            },
+            "function": {
+              "$ref": "#/$defs/FunctionDefinition"
+            }
+          },
+          "required": [
+            "function"
+          ],
+          "title": "ToolDefinition",
+          "type": "object"
+        }
+      },
+      "additionalProperties": true,
+      "description": "``POST /v1/chat/completions`` request body.",
+      "properties": {
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/ChatMessage"
+          },
+          "title": "Messages",
+          "type": "array"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temperature"
+        },
+        "top_p": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top P"
+        },
+        "frequency_penalty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frequency Penalty"
+        },
+        "presence_penalty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Presence Penalty"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "stop": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stop"
+        },
+        "max_tokens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tokens"
+        },
+        "max_completion_tokens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Completion Tokens"
+        },
+        "reasoning_effort": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "minimal",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning Effort"
+        },
+        "tools": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ToolDefinition"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tools"
+        },
+        "tool_choice": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/NamedToolChoice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Choice"
+        },
+        "response_format": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResponseFormat"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "functions": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Functions"
+        },
+        "function_call": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "auto"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/FunctionCallByName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Function Call"
+        },
+        "stream": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stream"
+        },
+        "stream_options": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StreamOptions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "user": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User"
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metadata"
+        },
+        "store": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Store"
+        },
+        "service_tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Tier"
+        },
+        "parallel_tool_calls": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parallel Tool Calls"
+        },
+        "prompt_cache_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Cache Key"
+        },
+        "prompt_cache_retention": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Cache Retention"
+        },
+        "prompt_cache_options": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Cache Options"
+        },
+        "safety_identifier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Safety Identifier"
+        },
+        "verbosity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verbosity"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N"
+        },
+        "logprobs": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logprobs"
+        },
+        "top_logprobs": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top Logprobs"
+        },
+        "logit_bias": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logit Bias"
+        },
+        "audio": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio"
+        },
+        "modalities": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modalities"
+        },
+        "prediction": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prediction"
+        },
+        "web_search_options": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Web Search Options"
+        },
+        "moderation": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Moderation"
+        }
+      },
+      "required": [
+        "messages"
+      ],
+      "title": "ChatCompletionInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ChatCompletionMessage": {
+          "properties": {
+            "role": {
+              "const": "assistant",
+              "default": "assistant",
+              "title": "Role",
+              "type": "string"
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content"
+            },
+            "reasoning": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reasoning"
+            },
+            "refusal": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Refusal"
+            },
+            "tool_calls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/ResponseToolCall"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tool Calls"
+            }
+          },
+          "title": "ChatCompletionMessage",
+          "type": "object"
+        },
+        "Choice": {
+          "properties": {
+            "index": {
+              "default": 0,
+              "title": "Index",
+              "type": "integer"
+            },
+            "message": {
+              "$ref": "#/$defs/ChatCompletionMessage"
+            },
+            "finish_reason": {
+              "default": "stop",
+              "enum": [
+                "stop",
+                "length",
+                "tool_calls",
+                "content_filter"
+              ],
+              "title": "Finish Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ],
+          "title": "Choice",
+          "type": "object"
+        },
+        "CompletionTokensDetails": {
+          "properties": {
+            "reasoning_tokens": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reasoning Tokens"
+            }
+          },
+          "title": "CompletionTokensDetails",
+          "type": "object"
+        },
+        "CompletionUsage": {
+          "properties": {
+            "prompt_tokens": {
+              "default": 0,
+              "title": "Prompt Tokens",
+              "type": "integer"
+            },
+            "completion_tokens": {
+              "default": 0,
+              "title": "Completion Tokens",
+              "type": "integer"
+            },
+            "total_tokens": {
+              "default": 0,
+              "title": "Total Tokens",
+              "type": "integer"
+            },
+            "completion_tokens_details": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CompletionTokensDetails"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "prompt_tokens_details": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PromptTokensDetails"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "title": "CompletionUsage",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "PromptTokensDetails": {
+          "properties": {
+            "cached_tokens": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cached Tokens"
+            }
+          },
+          "title": "PromptTokensDetails",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "ResponseFunctionCall": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "arguments": {
+              "title": "Arguments",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "arguments"
+          ],
+          "title": "ResponseFunctionCall",
+          "type": "object"
+        },
+        "ResponseToolCall": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "type": {
+              "const": "function",
+              "default": "function",
+              "title": "Type",
+              "type": "string"
+            },
+            "function": {
+              "$ref": "#/$defs/ResponseFunctionCall"
+            }
+          },
+          "required": [
+            "id",
+            "function"
+          ],
+          "title": "ResponseToolCall",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "description": "``POST /v1/chat/completions`` response body.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "object": {
+          "const": "chat.completion",
+          "default": "chat.completion",
+          "title": "Object",
+          "type": "string"
+        },
+        "created": {
+          "title": "Created",
+          "type": "integer"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "choices": {
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompletionUsage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "system_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "System Fingerprint"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "id",
+        "created",
+        "model",
+        "choices"
+      ],
+      "title": "ChatCompletion",
+      "type": "object"
+    }
+  },
+  "run": {
+    "description": "",
+    "input_schema": {
+      "$defs": {
+        "ChatMessageRole": {
+          "enum": [
+            "system",
+            "user",
+            "assistant",
+            "tool",
+            "injection",
+            "compaction"
+          ],
+          "title": "ChatMessageRole",
+          "type": "string"
+        },
+        "ContextMessage": {
+          "properties": {
+            "role": {
+              "$ref": "#/$defs/ChatMessageRole"
+            },
+            "text": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Text"
+            },
+            "reasoning": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reasoning"
+            },
+            "images": {
+              "anyOf": [
+                {
+                  "items": {
+                    "format": "file",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Images"
+            },
+            "files": {
+              "anyOf": [
+                {
+                  "items": {
+                    "format": "file",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Files"
+            },
+            "tools": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/Tool"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tools"
+            },
+            "tool_calls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tool Calls"
+            },
+            "tool_call_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tool Call Id"
+            }
+          },
+          "required": [
+            "role"
+          ],
+          "title": "ContextMessage",
+          "type": "object"
+        },
+        "ReasoningEffortEnum": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "none"
+          ],
+          "title": "ReasoningEffortEnum",
+          "type": "string"
+        },
+        "ResponseFormat": {
+          "properties": {
+            "type": {
+              "$ref": "#/$defs/ResponseFormatType"
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            },
+            "json_schema": {
+              "anyOf": [
+                {},
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Json Schema"
+            },
+            "strict": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Strict"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "ResponseFormat",
+          "type": "object"
+        },
+        "ResponseFormatType": {
+          "enum": [
+            "text",
+            "json_object",
+            "json_schema"
+          ],
+          "title": "ResponseFormatType",
+          "type": "string"
+        },
+        "Tool": {
+          "properties": {
+            "type": {
+              "$ref": "#/$defs/ToolCallType"
+            },
+            "function": {
+              "$ref": "#/$defs/ToolFunction"
+            }
+          },
+          "required": [
+            "type",
+            "function"
+          ],
+          "title": "Tool",
+          "type": "object"
+        },
+        "ToolCallType": {
+          "enum": [
+            "function"
+          ],
+          "title": "ToolCallType",
+          "type": "string"
+        },
+        "ToolChoice": {
+          "properties": {
+            "mode": {
+              "$ref": "#/$defs/ToolChoiceMode"
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "title": "ToolChoice",
+          "type": "object"
+        },
+        "ToolChoiceMode": {
+          "enum": [
+            "none",
+            "auto",
+            "required",
+            "function"
+          ],
+          "title": "ToolChoiceMode",
+          "type": "string"
+        },
+        "ToolFunction": {
+          "properties": {
+            "name": {
+              "default": "",
+              "title": "Name",
+              "type": "string"
+            },
+            "description": {
+              "default": "",
+              "title": "Description",
+              "type": "string"
+            },
+            "parameters": {
+              "$ref": "#/$defs/ToolParameters"
+            },
+            "required": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Required"
+            }
+          },
+          "required": [
+            "parameters"
+          ],
+          "title": "ToolFunction",
+          "type": "object"
+        },
+        "ToolParamType": {
+          "enum": [
+            "object",
+            "string",
+            "integer",
+            "number",
+            "boolean",
+            "array",
+            "null"
+          ],
+          "title": "ToolParamType",
+          "type": "string"
+        },
+        "ToolParameterProperty": {
+          "properties": {
+            "type": {
+              "$ref": "#/$defs/ToolParamType"
+            },
+            "title": {
+              "default": "",
+              "title": "Title",
+              "type": "string"
+            },
+            "description": {
+              "default": "",
+              "title": "Description",
+              "type": "string"
+            },
+            "properties": {
+              "anyOf": [
+                {
+                  "additionalProperties": {
+                    "$ref": "#/$defs/ToolParameterProperty"
+                  },
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Properties"
+            },
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ToolParameterProperty"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "required": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Required"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "ToolParameterProperty",
+          "type": "object"
+        },
+        "ToolParameters": {
+          "properties": {
+            "type": {
+              "$ref": "#/$defs/ToolParamType"
+            },
+            "title": {
+              "default": "",
+              "title": "Title",
+              "type": "string"
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ToolParameterProperty"
+              },
+              "title": "Properties"
+            },
+            "required": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Required"
+            }
+          },
+          "required": [
+            "type",
+            "properties"
+          ],
+          "title": "ToolParameters",
+          "type": "object"
+        }
+      },
+      "description": "OpenRouter input model with reasoning and tools support.",
+      "properties": {
+        "reasoning_exclude": {
+          "default": false,
+          "description": "Exclude reasoning tokens from response",
+          "title": "Reasoning Exclude",
+          "type": "boolean"
+        },
+        "context_size": {
+          "default": 262144,
+          "description": "The context size for the model.",
+          "title": "Context Size",
+          "type": "integer"
+        },
+        "temperature": {
+          "default": 0.6,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "top_p": {
+          "default": 0.95,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Top P",
+          "type": "number"
+        },
+        "top_k": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top K"
+        },
+        "min_p": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min P"
+        },
+        "frequency_penalty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frequency Penalty"
+        },
+        "presence_penalty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Presence Penalty"
+        },
+        "repetition_penalty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repetition Penalty"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "stop": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stop"
+        },
+        "max_tokens": {
+          "default": 64000,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/ReasoningEffortEnum",
+          "default": "none"
+        },
+        "reasoning_max_tokens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning Max Tokens"
+        },
+        "system_prompt": {
+          "default": "you are a helpful assistant that can answer questions and help with tasks.",
+          "title": "System Prompt",
+          "type": "string"
+        },
+        "context": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ContextMessage"
+          },
+          "title": "Context",
+          "type": "array"
+        },
+        "role": {
+          "$ref": "#/$defs/ChatMessageRole",
+          "default": "user"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning"
+        },
+        "attachments": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attachments"
+        },
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Images"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "file",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
+        },
+        "tools": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tools"
+        },
+        "tool_choice": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolChoice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "response_format": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResponseFormat"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Call Id"
+        }
+      },
+      "title": "AppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "LLMUsage": {
+          "properties": {
+            "stop_reason": {
+              "default": "",
+              "title": "Stop Reason",
+              "type": "string"
+            },
+            "time_to_first_token": {
+              "default": 0.0,
+              "title": "Time To First Token",
+              "type": "number"
+            },
+            "tokens_per_second": {
+              "default": 0.0,
+              "title": "Tokens Per Second",
+              "type": "number"
+            },
+            "prompt_tokens": {
+              "default": 0,
+              "title": "Prompt Tokens",
+              "type": "integer"
+            },
+            "completion_tokens": {
+              "default": 0,
+              "title": "Completion Tokens",
+              "type": "integer"
+            },
+            "total_tokens": {
+              "default": 0,
+              "title": "Total Tokens",
+              "type": "integer"
+            },
+            "reasoning_tokens": {
+              "default": 0,
+              "title": "Reasoning Tokens",
+              "type": "integer"
+            },
+            "reasoning_time": {
+              "default": 0.0,
+              "title": "Reasoning Time",
+              "type": "number"
+            }
+          },
+          "title": "LLMUsage",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "description": "OpenRouter output model with reasoning, tool calls, and usage information.",
+      "properties": {
+        "images": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Images"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
+        "response": {
+          "default": "",
+          "title": "Response",
+          "type": "string"
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning"
+        },
+        "tool_calls": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Calls"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LLMUsage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "AppOutput",
+      "type": "object"
+    }
+  }
+}
