@@ -437,6 +437,30 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
 # Request building
 # ---------------------------------------------------------------------------
 
+# tool_choice / response_format are read with getattr: this module is shared
+# by apps whose pinned SDK predates the fields on LLMInput.
+
+def _openai_tool_choice(choice) -> Any:
+    """LLMInput.tool_choice -> OpenAI/OpenRouter tool_choice."""
+    if choice is None:
+        return "auto"
+    if choice.mode == "function":
+        return {"type": "function", "function": {"name": choice.name}}
+    return choice.mode.value  # none | auto | required
+
+
+def _openai_response_format(fmt) -> Optional[Dict[str, Any]]:
+    """LLMInput.response_format -> OpenAI/OpenRouter response_format."""
+    if fmt is None or fmt.type == "text":
+        return None
+    if fmt.type == "json_object":
+        return {"type": "json_object"}
+    spec: Dict[str, Any] = {"name": fmt.name or "response", "schema": fmt.json_schema}
+    if fmt.strict is not None:
+        spec["strict"] = fmt.strict
+    return {"type": "json_schema", "json_schema": spec}
+
+
 def _build_request_body(
     input_data,
     model: str,
@@ -501,7 +525,11 @@ def _build_request_body(
 
     if tools:
         body["tools"] = tools
-        body["tool_choice"] = "auto"
+        body["tool_choice"] = _openai_tool_choice(getattr(input_data, "tool_choice", None))
+
+    response_format = _openai_response_format(getattr(input_data, "response_format", None))
+    if response_format is not None:
+        body["response_format"] = response_format
 
     reasoning_config = get_reasoning_config(input_data)
     if reasoning_config:
