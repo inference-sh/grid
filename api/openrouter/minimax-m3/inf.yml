@@ -1,12 +1,11 @@
-namespace: minimax
-name: m3
+namespace: openrouter
+name: minimax-m3
 description: MiniMax-M3 is a frontier multimodal model with 1M context window. Supports text, image, and video inputs for coding, reasoning, and long-horizon agentic tasks.
 metadata:
     capabilities:
         - reasoning
         - image
         - file
-    checksum: 17d016b7e031176e3c54c3d45fdc5df045746fb0b0343efe607e3283d03f361a
 category: chat
 functions:
     - name: run
