@@ -3,6 +3,11 @@ name: magistral-small-2506
 description: A high-performance system for complex reasoning, coding, and math problems, featuring strong multilingual support.
 metadata: {}
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/13m3l4i2.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/r3zxnke6.png

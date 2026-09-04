@@ -3,6 +3,11 @@ name: phi-4-14b
 description: A powerful tool developed by Microsoft and trained on high-quality data to excel at complex tasks like advanced math, coding, and general problem-solving, offering detailed reasoning alongside solutions.
 metadata: {}
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1gjxm90o.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/0l1go28v.png

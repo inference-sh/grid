@@ -5,6 +5,11 @@ metadata:
     capabilities:
         - reasoning
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/21kwn0ic.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hbaftj9o.png

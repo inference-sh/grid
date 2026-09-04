@@ -2,15 +2,18 @@ import os
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp
+from inferencesh.openai import OpenAIChatMixin
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
+    LLMDelta,
     ImageCapabilityMixin,
     build_messages,
+    build_tools,
     stream_generate,
     ResponseTransformer
 )
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Union
 from pydantic import Field
 
 from llama_cpp import Llama
@@ -83,7 +86,7 @@ jinja_formatter = Jinja2ChatFormatter(
     bos_token="<bos>"
 )
 
-class App(BaseApp):
+class App(OpenAIChatMixin, BaseApp):
     def __init__(self):
         super().__init__()
         self.last_context_size = None
@@ -122,7 +125,7 @@ class App(BaseApp):
         log_layers(self.model)
 
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         # If context_size changed, re-setup the model
         if not hasattr(self, 'last_context_size') or input_data.context_size != self.last_context_size:
             print(f"Context size changed (was {getattr(self, 'last_context_size', None)}, now {input_data.context_size}), triggering re-setup.")
@@ -143,16 +146,25 @@ class App(BaseApp):
             transformer=transformer,
             temperature=input_data.temperature,
             top_p=input_data.top_p,
+            response_format=input_data.response_format,
+            tool_choice=input_data.tool_choice,
+            tools=build_tools(input_data.tools) if input_data.tools else None,
             stop=['<end_of_turn>', '<eos>'],
             output_cls=AppOutput,
+            with_deltas=True,
         )
         
+        last_output = None
         try:
-            for output in generator:
-                yield output
+            for output, delta in generator:
+                if delta is not None:
+                    yield delta
+                last_output = output
         except Exception as e:
             print(f"[ERROR] Exception caught in run method: {type(e).__name__}: {str(e)}")
             raise
+        if last_output is not None:
+            yield last_output
 
     async def unload(self):
         del self.model

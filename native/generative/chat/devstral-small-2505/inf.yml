@@ -3,6 +3,11 @@ name: devstral-small-2505
 description: An agent for software engineering tasks, created by Mistral AI and All Hands AI.
 metadata: {}
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/p4vw9alj.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/k7f9p4ai.png

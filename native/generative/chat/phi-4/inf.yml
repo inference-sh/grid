@@ -3,6 +3,11 @@ name: phi-4
 description: A powerful language model that excels at understanding and generating text across more than 20 languages. It is particularly effective for tasks like summarizing content, answering questions, translating, and interpreting both audio and images, including charts and tables.
 metadata: {}
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cpjpunfp.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/qrtjx13s.png
