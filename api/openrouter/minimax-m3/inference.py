@@ -14,6 +14,7 @@ from inferencesh.models.llm import (
     ImageCapabilityMixin,
     FileCapabilityMixin
 )
+from inferencesh.openai import OpenAIChatMixin
 from .openrouter import stream_completion
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -31,35 +32,19 @@ class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     images: Optional[List[str]] = None
 
 
-class App(BaseApp):
+class App(OpenAIChatMixin, BaseApp):
 
-    async def setup(self, metadata):
+    async def setup(self):
         if not OPENROUTER_API_KEY:
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
         print("OpenRouter ready")
 
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
-        prev_response = ""
-        prev_reasoning = ""
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         last_output = None
-
-        async for output in stream_completion(OPENROUTER_API_KEY, input_data, DEFAULT_MODEL):
-            response = output.get("response", "")
-            reasoning = output.get("reasoning", "")
-
-            response_delta = response[len(prev_response):]
-            reasoning_delta = reasoning[len(prev_reasoning):] if reasoning else None
-
-            if response_delta or reasoning_delta:
-                yield LLMDelta(
-                    response=response_delta,
-                    reasoning=reasoning_delta if reasoning_delta else None,
-                )
-
-            prev_response = response
-            prev_reasoning = reasoning or ""
+        async for output, delta in stream_completion(OPENROUTER_API_KEY, input_data, DEFAULT_MODEL, with_deltas=True):
+            if delta:
+                yield LLMDelta(**delta)
             last_output = output
-
         if last_output:
             yield AppOutput(**last_output)
 

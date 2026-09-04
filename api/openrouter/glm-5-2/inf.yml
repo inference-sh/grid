@@ -4,6 +4,11 @@ description: GLM 5.2 - zhipu's latest flagship language model with 1M context vi
 metadata:
     checksum: fd367cb543aa840336a04da518a86fb77ea1f87cf24c71d9bc23b7f7817c7edc
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/6ii0m22p.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/kjdtxcnv.png

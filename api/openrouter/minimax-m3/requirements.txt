@@ -1,5 +1,5 @@
 pydantic >= 2.0.0
 
 
-inferencesh >= 0.7.25
+inferencesh >= 0.7.30
 openai >= 1.0.0

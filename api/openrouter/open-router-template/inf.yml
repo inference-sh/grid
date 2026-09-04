@@ -5,6 +5,11 @@ metadata:
     capabilities:
         - reasoning
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: ""
     thumbnail: ""
