@@ -1,17 +1,19 @@
 import os
-from typing import AsyncGenerator, List, Optional
+from typing import AsyncGenerator, List, Optional, Union
 from pydantic import Field
 
 from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
+    LLMDelta,
     ReasoningCapabilityMixin,
     ReasoningMixin,
     ToolsCapabilityMixin,
     ToolCallsMixin,
     ImageCapabilityMixin,
 )
+from inferencesh.openai import OpenAIChatMixin
 from .gemini_chat_helper import create_vertex_client, setup_logger, stream_completion
 
 DEFAULT_MODEL = "gemini-2.5-flash"
@@ -28,16 +30,21 @@ class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
     pass
 
 
-class App(BaseApp):
+class App(OpenAIChatMixin, BaseApp):
 
     async def setup(self):
         self.logger = setup_logger(__name__)
         self.client = create_vertex_client()
         self.logger.info("Gemini 2.5 Flash (Vertex AI) ready")
 
-    async def run(self, input_data: AppInput) -> AsyncGenerator[AppOutput, None]:
-        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
-            yield AppOutput(**output)
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
+        last_output = None
+        async for output, delta in stream_completion(self.client, input_data, DEFAULT_MODEL, with_deltas=True):
+            if delta:
+                yield LLMDelta(**delta)
+            last_output = output
+        if last_output:
+            yield AppOutput(**last_output)
 
     async def unload(self):
         pass

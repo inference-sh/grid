@@ -19,6 +19,12 @@ from google.genai.types import HttpOptions
 from google.oauth2.credentials import Credentials
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.llm_types_gen import (
+    ResponseFormat,
+    ResponseFormatType,
+    ToolChoice,
+    ToolChoiceMode,
+)
 from inferencesh.models.llm import (
     LLMInput,
     ContextMessageRole,
@@ -200,12 +206,17 @@ def convert_tools_to_gemini(
     return [types.Tool(function_declarations=declarations)]
 
 
-def build_thinking_config(input_data) -> Optional[types.ThinkingConfig]:
+def build_thinking_config(input_data, can_disable_thinking: bool = True) -> Optional[types.ThinkingConfig]:
+    """Map reasoning_effort / reasoning_max_tokens to a ThinkingConfig.
+
+    can_disable_thinking=False for models that reject thinking_budget=0
+    (Gemini 2.5 Pro): reasoning_effort=none then leaves the model default.
+    """
     reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
 
     if reasoning_effort == ReasoningEffortEnum.NONE or reasoning_effort == "none":
-        return types.ThinkingConfig(thinking_budget=0)
+        return types.ThinkingConfig(thinking_budget=0) if can_disable_thinking else None
 
     if reasoning_max is not None and reasoning_max > 0:
         return types.ThinkingConfig(thinking_budget=reasoning_max)
@@ -217,6 +228,51 @@ def build_thinking_config(input_data) -> Optional[types.ThinkingConfig]:
     return None
 
 
+_FUNCTION_CALLING_MODE = {
+    ToolChoiceMode.NONE: types.FunctionCallingConfigMode.NONE,
+    ToolChoiceMode.AUTO: types.FunctionCallingConfigMode.AUTO,
+    ToolChoiceMode.REQUIRED: types.FunctionCallingConfigMode.ANY,
+    ToolChoiceMode.FUNCTION: types.FunctionCallingConfigMode.ANY,
+}
+
+
+def build_tool_config(tool_choice: Optional[ToolChoice], has_tools: bool) -> Optional[types.ToolConfig]:
+    """LLMInput.tool_choice -> Gemini tool_config.function_calling_config.
+
+    required -> ANY; function -> ANY restricted to allowed_function_names.
+    """
+    if tool_choice is None:
+        return None
+    if tool_choice.mode in (ToolChoiceMode.REQUIRED, ToolChoiceMode.FUNCTION) and not has_tools:
+        raise ValueError(f"tool_choice={tool_choice.mode.value} requires tools")
+    cfg = types.FunctionCallingConfig(mode=_FUNCTION_CALLING_MODE[tool_choice.mode])
+    if tool_choice.mode == ToolChoiceMode.FUNCTION:
+        if not tool_choice.name:
+            raise ValueError("tool_choice.mode=function requires name")
+        cfg.allowed_function_names = [tool_choice.name]
+    return types.ToolConfig(function_calling_config=cfg)
+
+
+def build_response_format_config(response_format: Optional[ResponseFormat], has_tools: bool) -> Dict[str, Any]:
+    """LLMInput.response_format -> GenerateContentConfig kwargs.
+
+    json_object -> response_mime_type application/json; json_schema adds
+    response_json_schema. Gemini does not combine structured output with
+    function calling, so that pairing is rejected instead of silently
+    dropping one side.
+    """
+    if response_format is None or response_format.type == ResponseFormatType.TEXT:
+        return {}
+    if has_tools:
+        raise ValueError("response_format json is not supported together with tools on Gemini")
+    cfg: Dict[str, Any] = {"response_mime_type": "application/json"}
+    if response_format.type == ResponseFormatType.JSON_SCHEMA:
+        if not response_format.json_schema:
+            raise ValueError("response_format.type=json_schema requires json_schema")
+        cfg["response_json_schema"] = response_format.json_schema
+    return cfg
+
+
 def create_initial_state() -> Dict[str, Any]:
     return {
         "response": "",
@@ -226,6 +282,37 @@ def create_initial_state() -> Dict[str, Any]:
         "output_tokens": 0,
         "thinking_tokens": 0,
     }
+
+
+def apply_parts(parts, state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Fold a chunk's parts into state; return the LLMDelta-shaped increment.
+
+    Gemini streams whole function calls, so each becomes one indexed
+    tool_call delta carrying the complete arguments JSON.
+    """
+    delta: Dict[str, Any] = {}
+    for part in (parts or []):
+        if getattr(part, "thought", False) and part.text:
+            state["thinking"] += part.text
+            delta["reasoning"] = delta.get("reasoning", "") + part.text
+        elif part.text is not None:
+            state["response"] += part.text
+            if part.text:
+                delta["response"] = delta.get("response", "") + part.text
+        elif getattr(part, "function_call", None):
+            fc = part.function_call
+            index = len(state["tool_calls"])
+            tool_call = {
+                "id": f"call_{fc.name}_{index}",
+                "type": "function",
+                "function": {
+                    "name": fc.name,
+                    "arguments": json.dumps(dict(fc.args)) if fc.args else "{}",
+                },
+            }
+            state["tool_calls"].append(tool_call)
+            delta.setdefault("tool_calls", []).append({"index": index, **tool_call})
+    return delta or None
 
 
 def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -248,9 +335,15 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
 
 
 async def stream_completion(
-    client, input_data, model: str, max_tokens: int = 65536
-) -> AsyncGenerator[Dict[str, Any], None]:
-    """Stream a chat completion from Vertex AI Gemini API."""
+    client, input_data, model: str, max_tokens: int = 65536,
+    *, can_disable_thinking: bool = True, with_deltas: bool = False,
+) -> AsyncGenerator[Any, None]:
+    """Stream a chat completion from Vertex AI Gemini API.
+
+    with_deltas=False (default): yields accumulated output dicts.
+    with_deltas=True: yields (output_dict, delta_dict | None) tuples; the
+    delta has LLMDelta-shaped keys (response, reasoning, tool_calls).
+    """
     system_prompt, contents = convert_messages_to_gemini(input_data)
     tools = convert_tools_to_gemini(input_data.tools) if input_data.tools else None
 
@@ -273,8 +366,12 @@ async def stream_completion(
 
     if tools:
         config_kwargs["tools"] = tools
+    tool_config = build_tool_config(input_data.tool_choice, has_tools=bool(tools))
+    if tool_config is not None:
+        config_kwargs["tool_config"] = tool_config
+    config_kwargs.update(build_response_format_config(input_data.response_format, has_tools=bool(tools)))
 
-    thinking_config = build_thinking_config(input_data)
+    thinking_config = build_thinking_config(input_data, can_disable_thinking=can_disable_thinking)
     if thinking_config:
         config_kwargs["thinking_config"] = thinking_config
 
@@ -313,24 +410,8 @@ async def stream_completion(
             candidate = chunk.candidates[0]
             parts = getattr(candidate.content, "parts", None) if candidate.content else None
 
-            for part in (parts or []):
-                if getattr(part, "thought", False) and part.text:
-                    state["thinking"] += part.text
-                elif part.text is not None:
-                    state["response"] += part.text
-                elif getattr(part, "function_call", None):
-                    fc = part.function_call
-                    tool_call = {
-                        "id": f"call_{fc.name}_{len(state['tool_calls'])}",
-                        "type": "function",
-                        "function": {
-                            "name": fc.name,
-                            "arguments": json.dumps(dict(fc.args)) if fc.args else "{}",
-                        },
-                    }
-                    state["tool_calls"].append(tool_call)
-
-            yield build_output(state)
+            delta = apply_parts(parts, state)
+            yield (build_output(state), delta) if with_deltas else build_output(state)
 
     except Exception as e:
         error_str = str(e)
