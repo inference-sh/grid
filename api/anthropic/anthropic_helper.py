@@ -12,6 +12,12 @@ import logging
 from typing import AsyncGenerator, List, Optional, Dict, Any, Tuple
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.llm_types_gen import (
+    ResponseFormat,
+    ResponseFormatType,
+    ToolChoice,
+    ToolChoiceMode,
+)
 from inferencesh.models.llm import (
     LLMInput,
     ContextMessageRole,
@@ -344,6 +350,34 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+def anthropic_tool_choice(choice: Optional[ToolChoice]) -> Optional[Dict[str, Any]]:
+    """LLMInput.tool_choice -> Anthropic tool_choice. None when the API default (auto) applies."""
+    if choice is None or choice.mode == ToolChoiceMode.AUTO:
+        return None
+    if choice.mode == ToolChoiceMode.NONE:
+        return {"type": "none"}
+    if choice.mode == ToolChoiceMode.REQUIRED:
+        return {"type": "any"}
+    if not choice.name:
+        raise ValueError("tool_choice mode 'function' requires a tool name")
+    return {"type": "tool", "name": choice.name}
+
+
+def anthropic_output_format(fmt: Optional[ResponseFormat]) -> Optional[Dict[str, Any]]:
+    """LLMInput.response_format -> Anthropic output_config.format.
+
+    Anthropic's structured output is schema-driven; a bare json_object mode
+    has no native equivalent and is rejected rather than approximated.
+    """
+    if fmt is None or fmt.type == ResponseFormatType.TEXT:
+        return None
+    if fmt.type == ResponseFormatType.JSON_OBJECT:
+        raise ValueError("response_format json_object is not supported by Anthropic; use json_schema with a schema")
+    if not fmt.json_schema:
+        raise ValueError("response_format json_schema requires json_schema")
+    return {"type": "json_schema", "schema": fmt.json_schema}
+
+
 def build_params(
     input_data,
     model: str,
@@ -352,6 +386,8 @@ def build_params(
     """Build common request parameters for Anthropic API."""
     system_prompt, messages = convert_messages_to_anthropic(input_data)
     tools = convert_tools_to_anthropic(input_data.tools) if input_data.tools else None
+    tool_choice = anthropic_tool_choice(input_data.tool_choice)
+    output_format = anthropic_output_format(input_data.response_format)
 
     params: Dict[str, Any] = {
         "model": model,
@@ -365,13 +401,19 @@ def build_params(
 
     if tools:
         params["tools"] = tools
+        if tool_choice is not None:
+            params["tool_choice"] = tool_choice
+    elif tool_choice is not None and tool_choice["type"] != "none":
+        raise ValueError("tool_choice requires tools")
 
     thinking = build_thinking_param(input_data, model=model)
     if thinking is not None:
         params["thinking"] = thinking
 
-    output_config = build_output_config(input_data, model=model)
-    if output_config is not None:
+    output_config = build_output_config(input_data, model=model) or {}
+    if output_format is not None:
+        output_config["format"] = output_format
+    if output_config:
         params["output_config"] = output_config
 
     params["cache_control"] = {"type": "ephemeral"}
@@ -379,10 +421,74 @@ def build_params(
     return params
 
 
+def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Fold one Anthropic stream event into state.
+
+    Returns the LLMDelta-shaped increment this event produced (response,
+    reasoning, tool_calls with index/id/type/function fragments), or None.
+    """
+    delta: Dict[str, Any] = {}
+
+    if event.type == "content_block_start":
+        block = event.content_block
+        if block.type == "tool_use":
+            state["current_tool"] = {
+                "id": block.id,
+                "type": "function",
+                "function": {"name": block.name, "arguments": ""},
+            }
+            state["tool_calls"].append(state["current_tool"])
+            delta["tool_calls"] = [{
+                "index": len(state["tool_calls"]) - 1,
+                "id": block.id,
+                "type": "function",
+                "function": {"name": block.name, "arguments": ""},
+            }]
+
+    elif event.type == "content_block_delta":
+        d = event.delta
+        if d.type == "text_delta" and d.text:
+            state["response"] += d.text
+            delta["response"] = d.text
+        elif d.type == "thinking_delta" and d.thinking:
+            state["thinking"] += d.thinking
+            delta["reasoning"] = d.thinking
+        elif d.type == "input_json_delta" and state["current_tool"] and d.partial_json:
+            state["current_tool"]["function"]["arguments"] += d.partial_json
+            delta["tool_calls"] = [{
+                "index": len(state["tool_calls"]) - 1,
+                "function": {"arguments": d.partial_json},
+            }]
+
+    elif event.type == "content_block_stop":
+        state["current_tool"] = None
+
+    elif event.type == "message_delta":
+        usage = getattr(event, "usage", None)
+        if usage:
+            state["output_tokens"] = getattr(usage, "output_tokens", 0)
+
+    elif event.type == "message_start":
+        msg = getattr(event, "message", None)
+        if msg:
+            usage = getattr(msg, "usage", None)
+            if usage:
+                state["input_tokens"] = getattr(usage, "input_tokens", 0)
+                state["cache_read_input_tokens"] = getattr(usage, "cache_read_input_tokens", 0)
+                state["cache_creation_input_tokens"] = getattr(usage, "cache_creation_input_tokens", 0)
+
+    return delta or None
+
+
 async def stream_completion(
-    client, input_data, model: str, max_tokens: int = 64000
-) -> AsyncGenerator[Dict[str, Any], None]:
-    """Stream a completion from Anthropic API and yield output dicts."""
+    client, input_data, model: str, max_tokens: int = 64000, *, with_deltas: bool = False,
+) -> AsyncGenerator[Any, None]:
+    """Stream a completion from Anthropic API.
+
+    with_deltas=False (default): yields accumulated output dicts.
+    with_deltas=True: yields (output_dict, delta_dict | None) tuples; delta_dict
+    has LLMDelta-shaped keys.
+    """
     params = build_params(input_data, model, max_tokens)
 
     logger.info(f"Calling Anthropic API: model={model}, messages={len(params['messages'])}")
@@ -406,44 +512,9 @@ async def stream_completion(
                 raise RuntimeError("Stream timed out - no events for 120 seconds")
             last_chunk_time = now
 
-            if event.type == "content_block_start":
-                block = event.content_block
-                if block.type == "tool_use":
-                    state["current_tool"] = {
-                        "id": block.id,
-                        "type": "function",
-                        "function": {"name": block.name, "arguments": ""},
-                    }
-                    state["tool_calls"].append(state["current_tool"])
-
-            elif event.type == "content_block_delta":
-                delta = event.delta
-                if delta.type == "text_delta":
-                    state["response"] += delta.text
-                elif delta.type == "thinking_delta":
-                    state["thinking"] += delta.thinking
-                elif delta.type == "input_json_delta":
-                    if state["current_tool"]:
-                        state["current_tool"]["function"]["arguments"] += delta.partial_json
-
-            elif event.type == "content_block_stop":
-                state["current_tool"] = None
-
-            elif event.type == "message_delta":
-                usage = getattr(event, "usage", None)
-                if usage:
-                    state["output_tokens"] = getattr(usage, "output_tokens", 0)
-
-            elif event.type == "message_start":
-                msg = getattr(event, "message", None)
-                if msg:
-                    usage = getattr(msg, "usage", None)
-                    if usage:
-                        state["input_tokens"] = getattr(usage, "input_tokens", 0)
-                        state["cache_read_input_tokens"] = getattr(usage, "cache_read_input_tokens", 0)
-                        state["cache_creation_input_tokens"] = getattr(usage, "cache_creation_input_tokens", 0)
-
-            yield build_output(state)
+            delta = apply_stream_event(event, state)
+            output = build_output(state)
+            yield (output, delta) if with_deltas else output
 
     except Exception as e:
         if "overloaded" in str(e).lower():

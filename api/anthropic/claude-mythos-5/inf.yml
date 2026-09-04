@@ -7,6 +7,11 @@ metadata:
         - image
     checksum: ad46bf7c25467da49542b53b62112151b6efd702e9b9164c34cf5178ae54fe11
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/qyi08kmp.png
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/3ocolek1.png
