@@ -60,3 +60,53 @@ class TestDeltaExtraction:
         state = minimax_llm._create_initial_state()
         fr, d = minimax_llm._parse_sse_chunk({"choices": [], "usage": {"prompt_tokens": 3, "completion_tokens": 2}}, state)
         assert (fr, d) == (None, None) and state["input_tokens"] == 3
+
+
+# ── inline <think> handling ───────────────────────────────────────────
+
+from minimax_llm import _create_initial_state, _parse_sse_chunk, _split_think
+
+
+def _chunk(content=None, reasoning_content=None):
+    d = {}
+    if content is not None: d["content"] = content
+    if reasoning_content is not None: d["reasoning_content"] = reasoning_content
+    return {"choices": [{"delta": d, "finish_reason": None}]}
+
+
+class TestSplitThink:
+    def test_block_removed_and_extracted(self):
+        assert _split_think("<think>plan</think>answer") == ("answer", "plan")
+        assert _split_think("<think>plan</think>\n\nanswer") == ("answer", "plan")
+
+    def test_unterminated_block_is_thinking(self):
+        assert _split_think("<think>still going") == ("", "still going")
+
+    def test_partial_trailing_tag_held_back(self):
+        assert _split_think("hello <thi") == ("hello ", "")
+        assert _split_think("hello </thi") == ("hello ", "")
+        assert _split_think("hello <") == ("hello ", "")
+
+    def test_plain_text_untouched(self):
+        assert _split_think("just text") == ("just text", "")
+
+
+class TestThinkDeltas:
+    def test_inline_think_split_across_chunks_without_reasoning_field(self):
+        st = _create_initial_state(); deltas = []
+        for piece in ["<thi", "nk>pla", "n</think>ans", "wer"]:
+            _, d = _parse_sse_chunk(_chunk(content=piece), st)
+            deltas.append(d)
+        assert st["response"] == "answer" and st["reasoning"] == "plan"
+        assert "".join(d.get("response", "") for d in deltas if d) == "answer"
+        assert "".join(d.get("reasoning", "") for d in deltas if d) == "plan"
+        assert all("<" not in d.get("response", "") for d in deltas if d)
+
+    def test_reasoning_field_wins_over_inline_block(self):
+        st = _create_initial_state()
+        _, d1 = _parse_sse_chunk(_chunk(content="<think>dup", reasoning_content="real"), st)
+        _, d2 = _parse_sse_chunk(_chunk(content="</think>ok"), st)
+        assert st["reasoning"] == "real"          # not "real" + "dup"
+        assert st["response"] == "ok"
+        assert d1 == {"reasoning": "real"}
+        assert d2 == {"response": "ok"}

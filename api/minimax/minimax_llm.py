@@ -155,13 +155,57 @@ def _build_request_body(input_data, model: str) -> Dict[str, Any]:
 
 def _create_initial_state() -> Dict[str, Any]:
     return {
+        "raw_content": "",
         "response": "",
         "reasoning": "",
+        "reasoning_field": "",
         "reasoning_details": [],
         "tool_calls": [],
         "input_tokens": 0,
         "output_tokens": 0,
     }
+
+
+_THINK_OPEN, _THINK_CLOSE = "<think>", "</think>"
+
+
+def _split_think(raw: str) -> Tuple[str, str]:
+    """Split MiniMax content into (response, thinking).
+
+    M3 emits reasoning inline as <think>...</think> in `content` in addition
+    to the reasoning_content field. Runs over the full accumulated content on
+    every chunk, so tags split across chunk boundaries resolve naturally. A
+    trailing partial tag (e.g. "<thi") is held back from response until the
+    next chunk decides what it is, keeping response deltas append-only.
+    """
+    response, thinking = [], []
+    i = 0
+    while True:
+        start = raw.find(_THINK_OPEN, i)
+        if start == -1:
+            tail = raw[i:]
+            # Hold back a suffix that could be the beginning of a tag.
+            for k in range(min(len(tail), len(_THINK_CLOSE) - 1), 0, -1):
+                if _THINK_OPEN.startswith(tail[-k:]) or _THINK_CLOSE.startswith(tail[-k:]):
+                    tail = tail[:-k]
+                    break
+            response.append(tail)
+            break
+        response.append(raw[i:start])
+        end = raw.find(_THINK_CLOSE, start + len(_THINK_OPEN))
+        if end == -1:
+            thinking.append(raw[start + len(_THINK_OPEN):])  # still thinking
+            break
+        thinking.append(raw[start + len(_THINK_OPEN):end])
+        i = end + len(_THINK_CLOSE)
+    text, think = "".join(response), "".join(thinking)
+    if think:
+        text = text.lstrip("\n")  # newline MiniMax emits between </think> and the answer
+    return text, think
+
+
+def _increment(prev: str, cur: str) -> str:
+    return cur[len(prev):] if cur.startswith(prev) else ""
 
 
 def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
@@ -193,15 +237,28 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Tuple[Optio
     delta = choice.get("delta", {})
     llm_delta: Dict[str, Any] = {}
 
-    content = delta.get("content")
-    if content:
-        state["response"] += content
-        llm_delta["response"] = content
-
     reasoning = delta.get("reasoning") or delta.get("reasoning_content")
     if reasoning:
-        state["reasoning"] += reasoning
-        llm_delta["reasoning"] = reasoning
+        state["reasoning_field"] += reasoning
+
+    content = delta.get("content")
+    if content:
+        state["raw_content"] += content
+
+    if reasoning or content:
+        response, thinking = _split_think(state["raw_content"])
+        inc = _increment(state["response"], response)
+        if inc:
+            llm_delta["response"] = inc
+        state["response"] = response
+
+        # reasoning_content is authoritative when the provider sends it;
+        # the inline block is only used when it is the sole source.
+        new_reasoning = state["reasoning_field"] or thinking
+        inc = _increment(state["reasoning"], new_reasoning)
+        if inc:
+            llm_delta["reasoning"] = inc
+        state["reasoning"] = new_reasoning
 
     reasoning_details = delta.get("reasoning_details")
     if reasoning_details:
