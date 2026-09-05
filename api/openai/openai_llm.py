@@ -192,10 +192,7 @@ def build_tools(tools: Optional[List[Dict[str, Any]]]) -> Optional[List[Dict[str
 
 
 def _effort_value(input_data) -> Optional[str]:
-    effort = getattr(input_data, "reasoning_effort", None)
-    ms = getattr(input_data, "model_settings", None)
-    if ms is not None and getattr(ms, "reasoning_effort", None):
-        effort = ms.reasoning_effort
+    effort = input_data.reasoning_effort
     if isinstance(effort, Enum):
         effort = effort.value
     return effort or None
@@ -258,11 +255,8 @@ def build_request_body(
     instructions, items = build_input(input_data)
     tools = build_tools(input_data.tools) if input_data.tools else None
 
-    # max_tokens: model_settings overrides the flat field; cap at the model limit.
-    requested = getattr(input_data, "max_tokens", None) or max_output_tokens
-    ms = getattr(input_data, "model_settings", None)
-    if ms is not None and getattr(ms, "max_tokens", None):
-        requested = ms.max_tokens
+    # max_tokens capped at the model limit.
+    requested = input_data.max_tokens or max_output_tokens
 
     body: Dict[str, Any] = {
         "model": model,

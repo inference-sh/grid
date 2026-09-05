@@ -94,37 +94,20 @@ def _build_request_body(input_data, model: str) -> Dict[str, Any]:
         "max_tokens": getattr(input_data, "max_tokens", 32768),
     }
 
-    ms = getattr(input_data, "model_settings", None)
-
-    def _get(name, default=None):
-        if ms is not None:
-            v = getattr(ms, name, None)
-            if v is not None:
-                return v
-        return getattr(input_data, name, default)
-
-    if _get("temperature") is not None:
-        body["temperature"] = _get("temperature")
-    if _get("top_p") is not None:
-        body["top_p"] = _get("top_p")
-    top_k = _get("top_k")
-    if top_k is not None and top_k >= 0:
-        body["top_k"] = top_k
-    freq_pen = _get("frequency_penalty")
-    if freq_pen is not None:
-        body["frequency_penalty"] = freq_pen
-    pres_pen = _get("presence_penalty")
-    if pres_pen is not None:
-        body["presence_penalty"] = pres_pen
-    seed = _get("seed")
-    if seed is not None:
-        body["seed"] = seed
-    user_stop = _get("stop")
-    if user_stop:
-        body["stop"] = user_stop
-    ms_max = _get("max_tokens") if ms else None
-    if ms_max is not None:
-        body["max_tokens"] = ms_max
+    if input_data.temperature is not None:
+        body["temperature"] = input_data.temperature
+    if input_data.top_p is not None:
+        body["top_p"] = input_data.top_p
+    if input_data.top_k is not None and input_data.top_k >= 0:
+        body["top_k"] = input_data.top_k
+    if input_data.frequency_penalty is not None:
+        body["frequency_penalty"] = input_data.frequency_penalty
+    if input_data.presence_penalty is not None:
+        body["presence_penalty"] = input_data.presence_penalty
+    if input_data.seed is not None:
+        body["seed"] = input_data.seed
+    if input_data.stop:
+        body["stop"] = input_data.stop
 
     # MiniMax does not document tool_choice or response_format on its
     # OpenAI-compatible endpoint. "auto" is the long-standing default and
