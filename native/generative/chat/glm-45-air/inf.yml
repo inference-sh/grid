@@ -3,6 +3,7 @@ name: glm-45-air
 description: A highly efficient foundation for building intelligent agents, capable of sophisticated multi-step problem solving and logical analysis. It offers powerful AI capabilities in a compact and cost-effective design.
 metadata:
     capabilities:
+        - tools
         - reasoning
 category: chat
 functions:

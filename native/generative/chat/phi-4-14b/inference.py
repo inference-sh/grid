@@ -3,6 +3,7 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
 from inferencesh import BaseApp
 from inferencesh.openai import OpenAIChatMixin
+from inferencesh.llm_types_gen import ToolChoiceMode
 from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
@@ -11,7 +12,6 @@ from inferencesh.models.llm import (
     ReasoningCapabilityMixin,
     ToolsCapabilityMixin,
     build_messages,
-    build_tools,
     stream_generate,
     ResponseTransformer
 )
@@ -116,6 +116,10 @@ class App(OpenAIChatMixin, BaseApp):
             raise
 
     async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, LLMOutput], None]:
+        # This model's llama.cpp chat handler has no tool-calling support;
+        # llama-cpp-python would silently drop tools. Reject instead.
+        if input_data.tools or (input_data.tool_choice and input_data.tool_choice.mode in (ToolChoiceMode.REQUIRED, ToolChoiceMode.FUNCTION)):
+            raise ValueError("phi-4-14b does not support tool calling (tools / tool_choice)")
         # If context_size changed, re-setup the model
         if not hasattr(self, 'last_context_size') or input_data.context_size != self.last_context_size:
             print(f"Context size changed (was {getattr(self, 'last_context_size', None)}, now {input_data.context_size}), triggering re-setup.")
@@ -137,8 +141,6 @@ class App(OpenAIChatMixin, BaseApp):
             temperature=input_data.temperature,
             top_p=input_data.top_p,
             response_format=input_data.response_format,
-            tool_choice=input_data.tool_choice,
-            tools=build_tools(input_data.tools) if input_data.tools else None,
             stop=['<|im_end|>', '<end_of_turn>'],
             output_cls=AppOutput,
             with_deltas=True,
