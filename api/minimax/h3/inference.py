@@ -113,10 +113,14 @@ class App(BaseApp):
         content = [{"type": "text", "text": input_data.prompt}]
 
         if input_data.image:
-            item = {"type": "image_url", "image_url": {"url": input_data.image.uri}}
-            if input_data.last_image:
-                item["role"] = "first_frame"
-            content.append(item)
+            # MiniMax-H3 requires a role on every positional image. Without it
+            # the API rejects the request with "content[1].role must not be
+            # empty", so a plain image-to-video call must still say first_frame.
+            content.append({
+                "type": "image_url",
+                "image_url": {"url": input_data.image.uri},
+                "role": "first_frame",
+            })
 
         if input_data.last_image:
             content.append({
