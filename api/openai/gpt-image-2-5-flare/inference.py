@@ -1,0 +1,245 @@
+"""
+GPT Image 2.5 Flare - OpenAI Image Generation
+
+Generate and edit images using OpenAI's gpt-image-2.5-flare model.
+Supports text-to-image generation, image editing with reference images, mask-based editing,
+and transparent backgrounds. Adds the xhigh and max quality tiers introduced with GPT Image 2.5.
+"""
+
+from typing import Literal, Optional
+
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, ImageMeta
+from pydantic import Field
+
+from .openai_helper import (
+    OutputFormatType,
+    create_openai_client,
+    setup_logger,
+    validate_and_fix_dimensions,
+    make_size_string,
+    save_base64_image,
+)
+
+MODEL = "gpt-image-2.5-flare"
+
+# GPT Image 2.5 adds xhigh and max on top of the gpt-image-2 tiers.
+QualityType = Literal["auto", "low", "medium", "high", "xhigh", "max"]
+ModerationLevel = Literal["auto", "low"]
+BackgroundType = Literal["auto", "transparent", "opaque"]
+
+
+class AppInput(BaseAppInput):
+    """Input schema for GPT Image 2.5 Flare generation."""
+
+    prompt: str = Field(
+        description="Text prompt describing the desired image.",
+        examples=["A cat wearing a tiny top hat, oil painting style"],
+    )
+    images: Optional[list[File]] = Field(
+        default=None,
+        description="Optional reference image(s) for editing. When a mask is provided, it applies to the first image.",
+    )
+    mask: Optional[File] = Field(
+        default=None,
+        description="Optional mask image indicating areas to edit (requires input images). "
+        "Transparent areas in the mask indicate where the image should be edited. Applied to the first image.",
+    )
+    width: int = Field(
+        default=1024,
+        ge=256,
+        le=3840,
+        description="Output image width in pixels. Must be a multiple of 16.",
+    )
+    height: int = Field(
+        default=1024,
+        ge=256,
+        le=3840,
+        description="Output image height in pixels. Must be a multiple of 16.",
+    )
+    quality: QualityType = Field(
+        default="auto",
+        description="Rendering quality. 'low' for fast drafts, 'high' for final assets, "
+        "'xhigh' and 'max' for maximum detail at higher cost.",
+    )
+    n: int = Field(
+        default=1,
+        ge=1,
+        le=10,
+        description="Number of images to generate (1-10).",
+    )
+    output_format: OutputFormatType = Field(
+        default="png",
+        description="Output file format.",
+    )
+    output_compression: Optional[int] = Field(
+        default=None,
+        ge=0,
+        le=100,
+        description="Compression level for jpeg/webp (0-100). Ignored for png.",
+    )
+    moderation: ModerationLevel = Field(
+        default="auto",
+        description="Content moderation strictness. 'auto' applies standard filtering; 'low' is less restrictive.",
+    )
+    background: BackgroundType = Field(
+        default="auto",
+        description="Background transparency. 'transparent' produces an alpha-channel image (requires png or webp output; "
+        "prompt for an isolated subject, not a scene). 'opaque' forces a solid background. 'auto' lets the model decide.",
+    )
+
+
+class AppOutput(BaseAppOutput):
+    """Output schema for GPT Image 2.5 Flare generation."""
+
+    images: list[File] = Field(description="The generated image files.")
+
+
+class App(BaseApp):
+    """GPT Image 2.5 Flare image generation application."""
+
+    async def setup(self):
+        """Initialize the OpenAI client."""
+        self.logger = setup_logger(__name__)
+        self.client = create_openai_client()
+        self.logger.info(f"{MODEL} initialized")
+
+    async def run(self, input_data: AppInput) -> AppOutput:
+        """Generate or edit images."""
+        width, height = validate_and_fix_dimensions(
+            input_data.width, input_data.height, logger=self.logger
+        )
+
+        if input_data.background == "transparent" and input_data.output_format == "jpeg":
+            raise ValueError(
+                "Transparent backgrounds require png or webp output_format; jpeg has no alpha channel"
+            )
+
+        is_edit = input_data.images is not None and len(input_data.images) > 0
+        mode = "edit" if is_edit else "generate"
+        size_str = make_size_string(width, height)
+
+        self.logger.info(f"Starting {mode} — prompt: {input_data.prompt[:100]}")
+        self.logger.info(
+            f"Size: {size_str}, quality: {input_data.quality}, "
+            f"n: {input_data.n}, format: {input_data.output_format}, "
+            f"background: {input_data.background}"
+        )
+
+        if is_edit:
+            response = await self._edit(input_data, size_str)
+        else:
+            response = await self._generate(input_data, size_str)
+
+        # Save images
+        output_images: list[File] = []
+        for i, img in enumerate(response.data):
+            path = save_base64_image(img.b64_json, input_data.output_format)
+            output_images.append(File(path=path))
+            self.logger.info(f"Saved image {i + 1}/{len(response.data)}")
+
+        if not output_images:
+            raise RuntimeError("No images generated")
+
+        # Read actual dimensions from first output
+        out_w, out_h = width, height
+        try:
+            from PIL import Image as PILImage
+
+            with PILImage.open(output_images[0].path) as img:
+                out_w, out_h = img.size
+        except Exception:
+            pass
+
+        extra = {
+            "mode": mode,
+            "quality": input_data.quality,
+            "background": input_data.background,
+            "model": MODEL,
+        }
+        usage = getattr(response, "usage", None)
+        if usage is not None:
+            extra["input_tokens"] = getattr(usage, "input_tokens", None)
+            extra["output_tokens"] = getattr(usage, "output_tokens", None)
+            details = getattr(usage, "input_tokens_details", None)
+            if details is not None:
+                extra["input_text_tokens"] = getattr(details, "text_tokens", None)
+                extra["input_image_tokens"] = getattr(details, "image_tokens", None)
+            self.logger.info(
+                f"Usage — input: {extra['input_tokens']}, output: {extra['output_tokens']}"
+            )
+
+        output_meta = OutputMeta(
+            outputs=[
+                ImageMeta(
+                    width=out_w,
+                    height=out_h,
+                    count=len(output_images),
+                    extra=extra,
+                )
+            ]
+        )
+
+        self.logger.info(f"Generated {len(output_images)} image(s) — {out_w}x{out_h}")
+
+        return AppOutput(
+            images=output_images,
+            output_meta=output_meta,
+        )
+
+    async def _generate(self, input_data: AppInput, size_str: str):
+        """Text-to-image generation via the Images API."""
+        kwargs: dict = {
+            "model": MODEL,
+            "prompt": input_data.prompt,
+            "n": input_data.n,
+            "size": size_str,
+            "quality": input_data.quality,
+            "output_format": input_data.output_format,
+            "background": input_data.background,
+            "moderation": input_data.moderation,
+        }
+        if input_data.output_compression is not None and input_data.output_format != "png":
+            kwargs["output_compression"] = input_data.output_compression
+
+        return await self.client.images.generate(**kwargs)
+
+    async def _edit(self, input_data: AppInput, size_str: str):
+        """Image editing via the Images API. Supports multiple reference images."""
+        open_files = []
+        try:
+            image_files = []
+            for img in input_data.images:
+                if img is None:
+                    continue
+                f = open(img.path, "rb")
+                open_files.append(f)
+                image_files.append(f)
+
+            if not image_files:
+                raise ValueError("No valid images provided for editing")
+
+            kwargs: dict = {
+                "model": MODEL,
+                "prompt": input_data.prompt,
+                "image": image_files if len(image_files) > 1 else image_files[0],
+                "n": input_data.n,
+                "size": size_str,
+                "quality": input_data.quality,
+                "output_format": input_data.output_format,
+                "background": input_data.background,
+            }
+            if input_data.output_compression is not None and input_data.output_format != "png":
+                kwargs["output_compression"] = input_data.output_compression
+
+            if input_data.mask and input_data.mask.exists():
+                mask_f = open(input_data.mask.path, "rb")
+                open_files.append(mask_f)
+                kwargs["mask"] = mask_f
+
+            return await self.client.images.edit(
+                **kwargs,
+                extra_body={"moderation": input_data.moderation},
+            )
+        finally:
+            for f in open_files:
+                f.close()

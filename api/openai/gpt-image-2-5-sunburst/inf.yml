@@ -1,0 +1,28 @@
+namespace: openai
+name: gpt-image-2-5-sunburst
+description: GPT Image 2.5 Sunburst — OpenAI's most capable image model, built for premium creative and editing workflows with tighter control across edits. Text-to-image, reference-image editing, mask inpainting, transparent backgrounds, quality up to max.
+metadata:
+    provider: openai
+    tags:
+        - openai
+        - image-generation
+        - text-to-image
+        - image-editing
+        - gpt-image-2-5
+        - transparent-background
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5dv050qz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/smpnf4qb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/yota0g0w.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key for GPT Image 2.5 access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

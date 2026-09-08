@@ -1,0 +1,28 @@
+namespace: openai
+name: gpt-image-2-5-flare
+description: GPT Image 2.5 Flare — OpenAI's fast, high-quality everyday image model. Higher quality than GPT Image 2 at 50% lower latency. Text-to-image, reference-image editing, mask inpainting, transparent backgrounds, quality up to max.
+metadata:
+    provider: openai
+    tags:
+        - openai
+        - image-generation
+        - text-to-image
+        - image-editing
+        - gpt-image-2-5
+        - transparent-background
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5dv050qz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/smpnf4qb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/yota0g0w.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key for GPT Image 2.5 access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

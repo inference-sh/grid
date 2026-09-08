@@ -4,7 +4,8 @@ OpenAI models via the native OpenAI API. Two families live here:
 
 - **Chat / LLM apps** (`gpt-6-astra`, `gpt-5-6-*`) — share `openai_llm.py`, stream the
   Responses API over raw SSE and yield `LLMDelta` chunks (INF-630 delta streaming).
-- **Image apps** (`gpt-image-2`) — share `openai_helper.py` and use the OpenAI SDK.
+- **Image apps** (`gpt-image-2`, `gpt-image-2-5-flare`, `gpt-image-2-5-sunburst`) — share
+  `openai_helper.py` and use the OpenAI SDK.
 
 Both helpers are symlinked into each app directory. Editing a helper changes every app that
 links it — **redeploy all of them**, a deployed app keeps the copy bundled at deploy time.
@@ -90,6 +91,25 @@ partner_output_per_million:       120000000
 
 Anything with two fewer zeros is the 100x unit error. Verify with
 `belt app pricing openai/<app>` against a sibling before approving a publish.
+
+## Image apps
+
+| App | Model ID | Quality tiers | Extras |
+|-----|----------|---------------|--------|
+| `openai/gpt-image-2` | `gpt-image-2` | auto, low, medium, high | transparent background (preview) |
+| `openai/gpt-image-2-5-flare` | `gpt-image-2.5-flare` | auto, low, medium, high, xhigh, max | transparent background, 50% lower latency than gpt-image-2 |
+| `openai/gpt-image-2-5-sunburst` | `gpt-image-2.5-sunburst` | auto, low, medium, high, xhigh, max | transparent background, tighter edit control |
+
+All three: text-to-image and edit via the Images API, up to 16 reference images, mask inpainting,
+custom `WIDTHxHEIGHT` sizes (multiples of 16, max edge 3840, ratio <= 3:1), png/jpeg/webp output.
+Mode is inferred: no `images` → generate, `images` → edit.
+
+Token rates are identical ($5 text in / $8 image in / $30 image out per MTok) but the tile grid
+per quality tier differs between 2 and 2.5 — see each app's `pricing.md`. The 2.5 apps record
+`input_tokens` / `output_tokens` from the API response in `output_meta.extra`.
+
+The quality `Literal` for 2.5 lives in each app's `inference.py`, not in `openai_helper.py`,
+because gpt-image-2 rejects `xhigh` / `max`.
 
 ## Auth
 
