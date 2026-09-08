@@ -1,6 +1,6 @@
 namespace: openai
 name: gpt-image-2
-description: Generate and edit images using OpenAI's GPT Image 2 model. Supports text-to-image, image editing with reference images, and mask-based inpainting.
+description: Generate and edit images using OpenAI's GPT Image 2 model. Supports text-to-image, image editing with reference images, mask-based inpainting, and transparent backgrounds.
 metadata:
     checksum: 58278c85048d23bf553c2030580aa5507775b59ab819be805f29a7d0b56e337f
     provider: openai
@@ -10,6 +10,7 @@ metadata:
         - text-to-image
         - image-editing
         - gpt-image-2
+        - transparent-background
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5dv050qz.png

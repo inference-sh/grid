@@ -111,6 +111,17 @@
       ],
       "title": "Moderation",
       "type": "string"
+    },
+    "background": {
+      "default": "auto",
+      "description": "Background transparency. 'transparent' produces an alpha-channel image (requires png or webp output; prompt for an isolated subject, not a scene). 'opaque' forces a solid background. 'auto' lets the model decide.",
+      "enum": [
+        "auto",
+        "transparent",
+        "opaque"
+      ],
+      "title": "Background",
+      "type": "string"
     }
   },
   "required": [

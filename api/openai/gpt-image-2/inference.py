@@ -21,6 +21,7 @@ from .openai_helper import (
 )
 
 ModerationLevel = Literal["auto", "low"]
+BackgroundType = Literal["auto", "transparent", "opaque"]
 
 
 class AppInput(BaseAppInput):
@@ -75,6 +76,11 @@ class AppInput(BaseAppInput):
         default="auto",
         description="Content moderation strictness. 'auto' applies standard filtering; 'low' is less restrictive.",
     )
+    background: BackgroundType = Field(
+        default="auto",
+        description="Background transparency. 'transparent' produces an alpha-channel image (requires png or webp output; "
+        "prompt for an isolated subject, not a scene). 'opaque' forces a solid background. 'auto' lets the model decide.",
+    )
 
 
 class AppOutput(BaseAppOutput):
@@ -98,6 +104,11 @@ class App(BaseApp):
             input_data.width, input_data.height, logger=self.logger
         )
 
+        if input_data.background == "transparent" and input_data.output_format == "jpeg":
+            raise ValueError(
+                "Transparent backgrounds require png or webp output_format; jpeg has no alpha channel"
+            )
+
         is_edit = input_data.images is not None and len(input_data.images) > 0
         mode = "edit" if is_edit else "generate"
         size_str = make_size_string(width, height)
@@ -105,7 +116,8 @@ class App(BaseApp):
         self.logger.info(f"Starting {mode} — prompt: {input_data.prompt[:100]}")
         self.logger.info(
             f"Size: {size_str}, quality: {input_data.quality}, "
-            f"n: {input_data.n}, format: {input_data.output_format}"
+            f"n: {input_data.n}, format: {input_data.output_format}, "
+            f"background: {input_data.background}"
         )
 
         if is_edit:
@@ -142,6 +154,7 @@ class App(BaseApp):
                     extra={
                         "mode": mode,
                         "quality": input_data.quality,
+                        "background": input_data.background,
                         "model": "gpt-image-2",
                     },
                 )
@@ -164,6 +177,7 @@ class App(BaseApp):
             "size": size_str,
             "quality": input_data.quality,
             "output_format": input_data.output_format,
+            "background": input_data.background,
             "moderation": input_data.moderation,
         }
         if input_data.output_compression is not None and input_data.output_format != "png":
@@ -194,7 +208,11 @@ class App(BaseApp):
                 "n": input_data.n,
                 "size": size_str,
                 "quality": input_data.quality,
+                "output_format": input_data.output_format,
+                "background": input_data.background,
             }
+            if input_data.output_compression is not None and input_data.output_format != "png":
+                kwargs["output_compression"] = input_data.output_compression
 
             if input_data.mask and input_data.mask.exists():
                 mask_f = open(input_data.mask.path, "rb")

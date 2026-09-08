@@ -39,5 +39,5 @@ Long edge gets the full grid size, short edge scales proportionally. The `(2M + 
 - `auto` quality and size let the model choose based on prompt
 - Partial image streaming adds 100 output tokens per partial
 - Edit requests with reference images incur additional input image tokens (always high fidelity)
-- Transparent backgrounds NOT supported on gpt-image-2
+- Transparent backgrounds supported in preview via `background: transparent` (png/webp only, no extra cost — same tokens as opaque)
 - JPEG output is faster than PNG
