@@ -1,0 +1,9 @@
+{
+  "prompt": "A radio host clears his throat, \"Excuse me, pardon that.\" He settles into a warm, professional tone, \"Good evening everyone, and welcome back to the show. We have got a wonderful lineup tonight.\"",
+  "voice_reference": "https://cloud.inference.sh/t/71ckmsn3/qaz4i64e.wav",
+  "cfg_scale": 2.5,
+  "stg_scale": 1.5,
+  "duration": 0,
+  "duration_multiplier": 1.1,
+  "seed": 7
+}

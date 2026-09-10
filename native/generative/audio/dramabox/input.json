@@ -1,0 +1,8 @@
+{
+  "prompt": "A woman speaks warmly, \"Hello, how are you today?\" She laughs, \"Hahaha, it is so good to see you!\"",
+  "cfg_scale": 2.5,
+  "stg_scale": 1.5,
+  "duration": 0,
+  "duration_multiplier": 1.1,
+  "seed": 42
+}

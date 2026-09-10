@@ -1,0 +1,28 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh # required for inference.sh
+
+# Upstream DramaBox pins (github.com/resemble-ai/DramaBox requirements.txt, minus gradio/spaces)
+torch==2.8.0
+torchaudio==2.8.0
+safetensors>=0.4.0
+accelerate>=0.25.0
+peft>=0.7.0
+av>=12.0.0
+einops>=0.7.0
+PyYAML>=6.0
+sentencepiece>=0.1.99
+transformers>=4.51.0
+huggingface_hub>=0.20.0,<1.0
+hf_transfer
+bitsandbytes>=0.45.0
+soundfile>=0.12.0
+numpy
+resemble-perth==1.0.1
+
+# Transitive imports not declared upstream (ltx_core schedulers/media_io, resemble-perth)
+scipy
+pillow
+tqdm
+librosa
+# setuptools 81+ drops pkg_resources, which resemble-perth still imports
+setuptools<81

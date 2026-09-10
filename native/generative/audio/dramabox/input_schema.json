@@ -1,0 +1,70 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "Scene-style prompt: <speaker description>, \"<dialogue>\" <stage direction> \"<more dialogue>\". Text inside quotes is spoken; text outside quotes directs delivery (e.g. She sighs deeply.). Laughs and sounds go inside quotes as one word (\"Hahaha\", \"Mmmm\", \"Ugh\"). End the prompt at the last closing quote. Long prompts are chunked automatically.",
+      "examples": [
+        "A woman speaks warmly, \"Hello, how are you today?\" She laughs, \"Hahaha, it is so good to see you!\""
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "voice_reference": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional voice reference to clone (10+ seconds recommended; first 10 s are used). Match the speaker description to the reference's gender and age.",
+      "title": "Voice Reference"
+    },
+    "cfg_scale": {
+      "default": 2.5,
+      "description": "Classifier-free guidance. Lower = more natural, higher = more text-faithful.",
+      "maximum": 10.0,
+      "minimum": 1.0,
+      "title": "Cfg Scale",
+      "type": "number"
+    },
+    "stg_scale": {
+      "default": 1.5,
+      "description": "Skip-token guidance scale.",
+      "maximum": 5.0,
+      "minimum": 0.0,
+      "title": "Stg Scale",
+      "type": "number"
+    },
+    "duration": {
+      "default": 0.0,
+      "description": "Target output length in seconds. 0 = estimate automatically from the prompt.",
+      "maximum": 300.0,
+      "minimum": 0.0,
+      "title": "Duration",
+      "type": "number"
+    },
+    "duration_multiplier": {
+      "default": 1.1,
+      "description": "Headroom applied to the auto-estimated duration (ignored when duration is set).",
+      "maximum": 2.0,
+      "minimum": 0.5,
+      "title": "Duration Multiplier",
+      "type": "number"
+    },
+    "seed": {
+      "default": 42,
+      "description": "Random seed for reproducible output.",
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

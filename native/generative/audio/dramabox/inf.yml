@@ -1,0 +1,19 @@
+namespace: infsh
+name: dramabox
+description: Expressive text-to-speech with voice cloning. The prompt controls emotion, laughs, sighs, pauses and delivery.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+    DRAMABOX_COMPILE: "0"
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 32
+        type: any
+    ram: 32
