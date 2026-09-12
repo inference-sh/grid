@@ -12,6 +12,7 @@ AI video generation platform specializing in talking avatars, video translation,
 | [video-translate](video-translate/) | `POST /v3/video-translations` | video | Translate videos into 30+ languages with lip-sync |
 | [lipsync](lipsync/) | `POST /v3/lipsyncs` | video | Re-sync lip movements to new audio |
 | [text-to-speech](text-to-speech/) | `POST /v3/voices/speech` | audio | Text-to-speech with Starfish engine |
+| [voice-clone](voice-clone/) | `POST /v3/voices/clone` | audio | Instant voice clone from a sample + speech in the cloned voice |
 
 ## Authentication
 
@@ -41,6 +42,7 @@ See [pricing.md](pricing.md) for full details.
 | Lipsync (speed) | $0.033/sec |
 | Lipsync (precision) | $0.067/sec |
 | Text-to-Speech | $0.00067/sec |
+| Voice Clone (instant) | included — limited clone slots |
 
 ## References
 

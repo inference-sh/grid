@@ -7,7 +7,9 @@ Handles authentication, async polling, and result downloading.
 
 import os
 import asyncio
+import base64
 import logging
+import mimetypes
 import tempfile
 import httpx
 
@@ -58,6 +60,22 @@ async def get_endpoint(client: httpx.AsyncClient, path: str) -> dict:
     if resp.status_code >= 400:
         logger.error(f"HeyGen API {resp.status_code}: {resp.text}")
     resp.raise_for_status()
+    data = resp.json()
+    return data.get("data", data)
+
+
+async def delete_endpoint(client: httpx.AsyncClient, path: str) -> dict:
+    """DELETE a HeyGen v3 endpoint. A 404 is treated as success — HeyGen returns
+    voice_not_found for an already-deleted resource, which is the desired end state."""
+    url = f"{BASE_URL}{path}"
+    logger.info(f"DELETE {url}")
+    resp = await client.delete(url)
+    if resp.status_code == 404:
+        logger.info(f"{path} already gone (404) — treating as deleted")
+        return {"deleted": True, "already_gone": True}
+    if resp.status_code >= 400:
+        logger.error(f"HeyGen API {resp.status_code}: {resp.text}")
+        resp.raise_for_status()
     data = resp.json()
     return data.get("data", data)
 
@@ -138,11 +156,21 @@ async def list_avatars(client: httpx.AsyncClient, limit: int = 20) -> list:
     return data.get("avatar_looks", data.get("items", []))
 
 
-async def list_voices(client: httpx.AsyncClient, limit: int = 20, engine: str = None) -> list:
-    """List available voices, optionally filtered by engine."""
+async def list_voices(
+    client: httpx.AsyncClient,
+    limit: int = 20,
+    engine: str = None,
+    voice_type: str = None,
+) -> list:
+    """List available voices, optionally filtered by engine and type.
+
+    voice_type: 'public' for the shared catalog, 'private' for this workspace's clones.
+    """
     url = f"/v3/voices?limit={limit}"
     if engine:
         url += f"&engine={engine}"
+    if voice_type:
+        url += f"&type={voice_type}"
     data = await get_endpoint(client, url)
     if isinstance(data, list):
         return data
@@ -169,6 +197,47 @@ async def poll_avatar(client: httpx.AsyncClient, look_id: str) -> dict:
 
         await asyncio.sleep(POLL_INTERVAL)
         elapsed += POLL_INTERVAL
+
+
+async def poll_voice(client: httpx.AsyncClient, voice_id: str) -> dict:
+    """Poll GET /v3/voices/{voice_id} until the clone status is complete or failed.
+
+    Only cloned voices carry a status; catalog voices return None, which means ready.
+    """
+    path = f"/v3/voices/{voice_id}"
+    elapsed = 0.0
+    while True:
+        data = await get_endpoint(client, path)
+        status = data.get("status")
+        logger.info(f"Voice {voice_id} status: {status or 'complete'} ({elapsed:.0f}s)")
+
+        if status is None or status == "complete":
+            return data
+        elif status == "failed":
+            msg = data.get("failure_message", "Unknown error")
+            raise RuntimeError(f"Voice clone failed: {msg}")
+
+        await asyncio.sleep(POLL_INTERVAL)
+        elapsed += POLL_INTERVAL
+
+
+def build_audio_ref(file_obj) -> dict:
+    """Build a HeyGen audio input from an inferencesh File.
+
+    Prefers a public URL; falls back to inline base64 so locally-staged uploads
+    still work (voice-clone samples are short enough for this to be safe).
+    """
+    if file_obj.uri and file_obj.uri.startswith("http"):
+        return {"type": "url", "url": file_obj.uri}
+
+    path = file_obj.path
+    if not path:
+        raise RuntimeError("Audio input has neither a public URL nor a local path")
+    media_type = mimetypes.guess_type(path)[0] or "audio/mpeg"
+    with open(path, "rb") as f:
+        data = base64.b64encode(f.read()).decode("ascii")
+    print(f"Sending {len(data)} base64 chars as {media_type} (no public URL on input)")
+    return {"type": "base64", "media_type": media_type, "data": data}
 
 
 def build_asset_ref(file_obj) -> dict:

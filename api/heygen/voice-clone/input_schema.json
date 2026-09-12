@@ -1,0 +1,72 @@
+{
+  "description": "Clone a voice from a sample, then optionally speak text in it.",
+  "properties": {
+    "audio": {
+      "description": "Reference recording of the voice to clone. 30-60 seconds of clean, single-speaker speech works best.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text to speak in the cloned voice. Leave empty to only create the voice and return its ID.",
+      "examples": [
+        "Merhaba, bu benim klonlanm\u0131\u015f sesim. Nas\u0131l duyuluyor?"
+      ],
+      "title": "Text"
+    },
+    "voice_name": {
+      "default": "cloned voice",
+      "description": "Display name for the cloned voice.",
+      "maxLength": 100,
+      "title": "Voice Name",
+      "type": "string"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Language hint for the clone (e.g. 'tr', 'en'). Auto-detected if omitted.",
+      "title": "Language"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speech speed multiplier for the generated audio (0.5-2.0).",
+      "maximum": 2.0,
+      "minimum": 0.5,
+      "title": "Speed",
+      "type": "number"
+    },
+    "remove_background_noise": {
+      "default": true,
+      "description": "Clean background noise out of the reference recording before cloning.",
+      "title": "Remove Background Noise",
+      "type": "boolean"
+    },
+    "keep_voice": {
+      "default": false,
+      "description": "Keep the cloned voice in the workspace so its ID can be reused later. Off by default: the clone is deleted after the audio is generated, because the HeyGen account holds a limited number of clone slots. Forced on when no text is given.",
+      "title": "Keep Voice",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

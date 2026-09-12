@@ -40,6 +40,19 @@ All pricing is per-second of output duration. Billed against prepaid USD wallet 
 |--------|-----------------|
 | Starfish | $0.00067 |
 
+## Voice Clone (voice-clone)
+
+| Item | Cost |
+|------|------|
+| Instant clone creation | No per-call charge |
+| Speech from a cloned voice | $0.00067/sec (same as Text-to-Speech) |
+
+Instant clones do not cost per call, but each account has a limited clone
+allowance. HeyGen's docs do not publish the number; the API spec's error example
+shows 10, and support can raise it. `voice-clone` deletes the clone after
+generating audio unless `keep_voice` is set, so one-shot use consumes no slot.
+Past the allowance the API returns `400 resource_limit_reached`.
+
 ## Avatar Creation (create-avatar)
 
 | Type | Price per call |

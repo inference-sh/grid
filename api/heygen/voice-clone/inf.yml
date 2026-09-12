@@ -1,0 +1,25 @@
+namespace: heygen
+name: voice-clone
+description: Clone a voice from a single short recording with HeyGen Instant Clone, and speak any text in it in the same call. The cloned voice ID also works with heygen/text-to-speech and avatar videos.
+metadata:
+    provider: heygen
+    tags:
+        - voice-clone
+        - voice-cloning
+        - tts
+        - text-to-speech
+        - voice
+        - audio
+        - heygen
+category: audio
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HEYGEN_KEY
+      description: HeyGen API key from dashboard
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4
