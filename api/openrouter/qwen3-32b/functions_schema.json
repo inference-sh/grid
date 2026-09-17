@@ -1,6 +1,7 @@
 {
   "openai": {
     "description": "OpenAI Chat Completions compatible entry point.",
+    "capabilities": [],
     "input_schema": {
       "$defs": {
         "ChatMessage": {
@@ -1541,6 +1542,9 @@
   },
   "run": {
     "description": "",
+    "capabilities": [
+      "llm"
+    ],
     "input_schema": {
       "$defs": {
         "ChatMessageRole": {
@@ -1985,18 +1989,6 @@
           "title": "Min P",
           "type": "number"
         },
-        "model": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Model"
-        },
         "frequency_penalty": {
           "anyOf": [
             {
@@ -2086,6 +2078,44 @@
           "title": "System Prompt",
           "type": "string"
         },
+        "tools": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tools"
+        },
+        "tool_choice": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolChoice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "response_format": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResponseFormat"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "context": {
           "default": [],
           "items": {
@@ -2162,44 +2192,6 @@
           ],
           "default": null,
           "title": "Files"
-        },
-        "tools": {
-          "anyOf": [
-            {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Tools"
-        },
-        "tool_choice": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ToolChoice"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
-        "response_format": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ResponseFormat"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
         },
         "tool_call_id": {
           "anyOf": [

@@ -1,5 +1,5 @@
 pydantic >= 2.0.0 # required for inference.sh
-inferencesh # required for inference.sh
+inferencesh >= 0.7.36
 
 # fal.ai integration
 fal-client>=0.4.0

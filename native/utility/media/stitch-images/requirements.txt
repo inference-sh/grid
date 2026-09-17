@@ -1,3 +1,3 @@
 pydantic >= 2.0.0 # required for inference.sh
-inferencesh # required for inference.sh
+inferencesh >= 0.7.36
 Pillow >= 8.0.0 # required for image processing

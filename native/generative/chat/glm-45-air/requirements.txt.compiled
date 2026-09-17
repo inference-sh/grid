@@ -36,7 +36,7 @@ idna==3.19
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.7.33
+inferencesh==0.7.36
     # via -r requirements.txt
 jinja2==3.1.6
     # via llama-cpp-python

@@ -1,7 +1,7 @@
 pydantic >= 2.0.0
 
 # -e /home/ubuntu/inference/sdk-python
-inferencesh >= 0.7.33
+inferencesh >= 0.7.36
 huggingface_hub
 hf-transfer
 pillow
