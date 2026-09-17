@@ -62,6 +62,21 @@ class App(BaseApp):
 
         return request_data
 
+    def _probe_duration(self, path: str) -> float:
+        """Probe a local video file for its duration in seconds using ffprobe. Returns 0.0 on failure."""
+        import subprocess
+        import json
+        try:
+            probe = subprocess.run(
+                ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", path],
+                capture_output=True, text=True, timeout=30,
+            )
+            if probe.returncode == 0:
+                return float(json.loads(probe.stdout).get("format", {}).get("duration", 0))
+        except Exception as e:
+            self.logger.warning(f"Could not probe video duration: {e}")
+        return 0.0
+
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Upscale video using Topaz model."""
         try:
@@ -126,7 +141,14 @@ class App(BaseApp):
             self.logger.info(f"Video processing completed successfully")
 
             # Build output metadata for pricing
-            duration = result.get("duration", 5.0)
+            # Upscaling preserves length: upstream duration, else probe the output, else the input
+            duration = float(result.get("duration") or 0)
+            if duration <= 0:
+                duration = self._probe_duration(video_path) or self._probe_duration(input_data.video.path)
+            if duration <= 0:
+                # No real signal: bill the 1s minimum rather than guess a length
+                self.logger.warning("Could not determine video duration, billing 1s minimum")
+                duration = 1.0
             output_meta = OutputMeta(
                 outputs=[
                     VideoMeta(

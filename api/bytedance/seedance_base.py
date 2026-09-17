@@ -345,9 +345,25 @@ class SeedanceApp(BaseApp):
 
         except Exception as e:
             self.logger.error(f"Error during video generation: {e}")
-            raise RuntimeError(f"Video generation failed: {str(e)}")
+            raise RuntimeError(f"Video generation failed: {str(e)}{self._sensitive_image_hint(e)}")
         finally:
             self.current_task_id = None
+
+    def _sensitive_image_hint(self, error: Exception) -> str:
+        """Explain InputImageSensitiveContentDetected.* rejections (e.g. PrivacyInformation)."""
+        if "InputImageSensitiveContentDetected" not in str(error):
+            return ""
+        hint = (
+            " Hint: the provider screens input images that may show a real person, "
+            "even when they are AI-generated."
+        )
+        if not self.is_studio:
+            hint += (
+                " The Studio variants (e.g. bytedance/seedance-2-5-studio) upload "
+                "references to a private asset library as trusted assets, which is "
+                "meant for character references like this."
+            )
+        return hint
 
 
 class SeedanceStudioApp(SeedanceApp):

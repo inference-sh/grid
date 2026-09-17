@@ -308,6 +308,28 @@ def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:
     return download_result(url, suffix=".mp4", logger=logger)
 
 
+def probe_media_duration(path: str, logger: Optional[logging.Logger] = None) -> float:
+    """
+    Probe a local audio/video file for its duration in seconds using ffprobe.
+
+    Requires `ffmpeg` in the app's packages.txt. Returns 0.0 on failure.
+    """
+    import subprocess
+    import json as _json
+
+    try:
+        probe = subprocess.run(
+            ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", path],
+            capture_output=True, text=True, timeout=30,
+        )
+        if probe.returncode == 0:
+            return float(_json.loads(probe.stdout).get("format", {}).get("duration", 0))
+    except Exception as e:
+        if logger:
+            logger.warning(f"Could not probe media duration: {e}")
+    return 0.0
+
+
 async def run_prediction(
     model: str,
     input_data: Dict[str, Any],

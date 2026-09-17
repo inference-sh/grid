@@ -8,7 +8,7 @@ from typing import Optional
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, get_generation_url, download_video, upload_file
+from .pruna_helper import run_prediction, get_generation_url, download_video, upload_file, probe_media_duration
 
 
 class VoiceEnum(str, Enum):
@@ -158,6 +158,17 @@ class App(BaseApp):
         if not input_data.image.exists():
             raise RuntimeError(f"Input image does not exist: {input_data.image.path}")
 
+        # Reject unsupported image formats up front with a clear message
+        with open(input_data.image.path, "rb") as f:
+            head = f.read(12)
+        is_supported = (
+            head.startswith(b"\xff\xd8\xff")
+            or head.startswith(b"\x89PNG\r\n\x1a\n")
+            or (head[:4] == b"RIFF" and head[8:12] == b"WEBP")
+        )
+        if not is_supported:
+            raise RuntimeError("Input `image` is not a supported format. Accepted formats: jpg, jpeg, png, webp.")
+
         if input_data.image.uri and input_data.image.uri.startswith("http"):
             request_data["image"] = input_data.image.uri
         else:
@@ -198,12 +209,20 @@ class App(BaseApp):
             request_data["seed"] = input_data.seed
 
         # Avatar generation is slower - use async polling
-        result = await run_prediction(
-            model=self.model,
-            input_data=request_data,
-            use_sync=False,
-            logger=self.logger,
-        )
+        try:
+            result = await run_prediction(
+                model=self.model,
+                input_data=request_data,
+                use_sync=False,
+                logger=self.logger,
+            )
+        except RuntimeError as e:
+            # Upstream error strings are not documented; name the field when the error mentions the image
+            if "image" in str(e).lower():
+                raise RuntimeError(
+                    f"{e} (check the `image` input; accepted formats: jpg, jpeg, png, webp)"
+                ) from e
+            raise
 
         # Download result
         generation_url = get_generation_url(result)
@@ -223,8 +242,16 @@ class App(BaseApp):
         }
         width, height = dims_map.get(input_data.resolution.value, (720, 1280))
 
-        # Try to get actual video duration from result
-        video_seconds = float(result.get("duration", 10))
+        # Actual video duration: upstream result, else probe the output, else the input audio
+        video_seconds = float(result.get("duration") or 0)
+        if video_seconds <= 0:
+            video_seconds = probe_media_duration(video_path, logger=self.logger)
+        if video_seconds <= 0 and input_data.audio:
+            video_seconds = probe_media_duration(input_data.audio.path, logger=self.logger)
+        if video_seconds <= 0:
+            # No real signal: bill the 1s minimum rather than guess a length
+            self.logger.warning("Could not determine output video duration, billing 1s minimum")
+            video_seconds = 1.0
 
         output_meta = OutputMeta(
             outputs=[

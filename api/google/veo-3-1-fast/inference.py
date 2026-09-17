@@ -1,5 +1,5 @@
 from inferencesh import BaseApp, BaseAppSetup, BaseAppOutput, File, OutputMeta, VideoMeta
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 
 from .vertex_helper import (
@@ -47,7 +47,7 @@ class RunInput(BaseModel):
     )
     aspect_ratio: VideoAspectRatioEnum = Field(
         default=VideoAspectRatioEnum.ratio_16_9,
-        description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+        description="Video aspect ratio. 16:9 for landscape, 9:16 for portrait. Ignored when a first frame image is provided: the ratio is then taken from the image (portrait image -> 9:16, otherwise 16:9)."
     )
     duration: int = Field(
         default=8,
@@ -73,6 +73,14 @@ class RunInput(BaseModel):
         default=PersonGenerationEnum.allow_adult,
         description="Person generation setting. allow_adult: only adults, disallow: no people/faces."
     )
+
+    @field_validator("duration")
+    @classmethod
+    def _validate_duration(cls, v: int) -> int:
+        # Upstream only accepts discrete durations
+        if v not in (4, 6, 8):
+            raise ValueError(f"duration must be 4, 6, or 8 seconds (got {v})")
+        return v
 
 
 class RunOutput(BaseAppOutput):

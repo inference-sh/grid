@@ -8,7 +8,10 @@ from typing import Optional
 from enum import Enum
 import logging
 
-from .pruna_helper import run_prediction, get_generation_url, download_video, upload_file
+from .pruna_helper import run_prediction, get_generation_url, download_video, upload_file, probe_media_duration
+
+# Upstream wan-i2v takes no duration parameter; clips are a fixed ~5 seconds
+FIXED_CLIP_SECONDS = 5.0
 
 
 class ResolutionEnum(str, Enum):
@@ -33,7 +36,7 @@ class AppInput(BaseAppInput):
         default=5,
         ge=1,
         le=10,
-        description="Video duration in seconds (1-10)."
+        description="Ignored. The upstream model does not accept a duration and always returns a fixed-length clip (about 5 seconds). Billing uses the actual length of the returned video."
     )
     seed: Optional[int] = Field(
         default=None,
@@ -62,7 +65,9 @@ class App(BaseApp):
         """Generate video using WAN-I2V."""
         try:
             self.logger.info(f"Generating video from image: {input_data.prompt[:100]}...")
-            self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration}s")
+            self.logger.info(f"Resolution: {input_data.resolution.value}")
+            if input_data.duration != 5:
+                self.logger.warning(f"duration={input_data.duration} is ignored: upstream returns a fixed-length clip")
 
             # Handle image input
             if not input_data.image.exists():
@@ -100,6 +105,12 @@ class App(BaseApp):
 
             video_path = download_video(generation_url, logger=self.logger)
 
+            # Bill the delivered length, never the requested duration (upstream ignores it)
+            video_seconds = float(result.get("duration") or 0) or probe_media_duration(video_path, logger=self.logger)
+            if video_seconds <= 0:
+                self.logger.warning(f"Could not determine output duration, billing fixed clip length {FIXED_CLIP_SECONDS}s")
+                video_seconds = FIXED_CLIP_SECONDS
+
             # Read input image dimensions
             from PIL import Image as PILImage
             with PILImage.open(input_data.image.path) as pil_img:
@@ -125,7 +136,7 @@ class App(BaseApp):
                         width=width,
                         height=height,
                         resolution=resolution_map.get(input_data.resolution.value, VideoResolution.VIDEO_RES480_P),
-                        seconds=float(input_data.duration),
+                        seconds=video_seconds,
                     )
                 ],
             )

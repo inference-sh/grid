@@ -145,10 +145,24 @@ class KlingAPIError(Exception):
         self.code = code
         self.message = message
         self.request_id = request_id
-        super().__init__(f"[{code}] {message}")
+        super().__init__(self._format(code, message))
+
+    @staticmethod
+    def _format(code: int, message: str) -> str:
+        if code in PROVIDER_ACCOUNT_CODES:
+            # Our Kling account, not the user's balance: hide the upstream "balance" wording
+            return (
+                f"[{code}] Temporary provider-side issue on our end. "
+                "This is not related to your account or balance. "
+                "Please retry later or contact support if it persists."
+            )
+        label = ERROR_CODES.get(code)
+        if not label or label.lower() in (message or "").lower():
+            return f"[{code}] {message}"
+        return f"[{code}] {label}: {message}" if message else f"[{code}] {label}"
 
 
-# Error code definitions for reference
+# Error code definitions
 ERROR_CODES = {
     0: "Success",
     1000: "Authentication failed",
@@ -173,6 +187,9 @@ ERROR_CODES = {
     5001: "Server temporarily unavailable",
     5002: "Server internal timeout",
 }
+
+# Codes about the provider account (ours), never the end user's balance
+PROVIDER_ACCOUNT_CODES = {1100, 1101, 1102}
 
 
 # =============================================================================
