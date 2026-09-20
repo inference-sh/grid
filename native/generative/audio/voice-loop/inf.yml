@@ -1,0 +1,17 @@
+namespace: infsh
+name: voice-loop
+description: Live voice loop. Send microphone audio over a stream and hear it come back with an effect (robot, echo, chipmunk, deep, none) as it arrives. A test app for streams.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1
