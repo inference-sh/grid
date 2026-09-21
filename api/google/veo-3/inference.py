@@ -148,7 +148,7 @@ class App(BaseApp):
             payload = build_veo_payload(
                 prompt=input_data.prompt,
                 aspect_ratio=aspect_ratio,
-                duration_seconds=delivered_seconds,
+                duration_seconds=input_data.duration,
                 resolution=input_data.resolution.value,
                 generate_audio=input_data.generate_audio,
                 sample_count=input_data.num_videos,
