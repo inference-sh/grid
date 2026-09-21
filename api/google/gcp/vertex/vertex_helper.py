@@ -18,7 +18,7 @@ import io
 import random
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, Tuple, Callable, TypeVar, Awaitable
+from typing import Optional, Dict, Any, List, Tuple, Callable, TypeVar, Awaitable
 from PIL import Image
 import aiohttp
 
@@ -1241,6 +1241,7 @@ def build_veo_payload(
     person_generation: str = "allow_adult",
     enable_prompt_rewriting: bool = True,
     add_watermark: bool = False,
+    reference_image_paths: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """
     Build request payload for Veo video generation.
@@ -1255,6 +1256,9 @@ def build_veo_payload(
         first_frame_path: Optional path to first frame image
         last_frame_path: Optional path to last frame image
         video_path: Optional path to video file for video extension (1-30s MP4)
+        reference_image_paths: Optional asset reference images (up to 3) that guide
+            the subject/content of the video. Sent as referenceImages with
+            referenceType "asset"; Veo requires an 8s duration with them.
         storage_uri: Optional GCS URI for output (e.g., "gs://bucket/path/")
         person_generation: Person generation setting
         enable_prompt_rewriting: Whether to allow prompt rewriting
@@ -1276,6 +1280,12 @@ def build_veo_payload(
         # Add last frame if provided
         if last_frame_path:
             instance["lastFrame"] = prepare_image_for_veo(last_frame_path, aspect_ratio)
+
+    if reference_image_paths:
+        instance["referenceImages"] = [
+            {"image": prepare_image_for_veo(path, aspect_ratio), "referenceType": "asset"}
+            for path in reference_image_paths[:3]
+        ]
 
     parameters: Dict[str, Any] = {
         "aspectRatio": aspect_ratio,

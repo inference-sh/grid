@@ -144,10 +144,22 @@ class App(BaseApp):
             self.logger.info(f"Generate audio: {input_data.generate_audio}, Num videos: {input_data.num_videos}")
 
             # Build request payload
+            # Reference images guide the subject; they were declared in the schema
+            # but never sent, so uploads were silently ignored.
+            reference_image_paths = []
+            for ref in input_data.reference_images or []:
+                if not ref.exists():
+                    raise RuntimeError(f"Reference image does not exist: {ref.path}")
+                reference_image_paths.append(ref.path)
+            if len(reference_image_paths) > 3:
+                raise RuntimeError("Veo accepts at most 3 reference images")
+            if reference_image_paths and input_data.duration != 8:
+                raise RuntimeError("Reference images require duration 8")
+
             payload = build_veo_payload(
                 prompt=input_data.prompt,
                 aspect_ratio=aspect_ratio,
-                duration_seconds=input_data.duration,
+                duration_seconds=delivered_seconds,
                 resolution=input_data.resolution.value,
                 generate_audio=input_data.generate_audio,
                 sample_count=input_data.num_videos,
@@ -155,6 +167,7 @@ class App(BaseApp):
                 last_frame_path=last_frame_path,
                 video_path=video_path,
                 person_generation=input_data.person_generation.value,
+                reference_image_paths=reference_image_paths,
             )
 
             # Start the long-running operation
@@ -229,6 +242,14 @@ class App(BaseApp):
                 # Save to temp file
                 video_path = save_video_to_temp(video_bytes, "mp4")
                 output_videos.append(File(path=video_path))
+
+                # Bill the delivered length. An extension returns the source
+                # plus ~7s, not the requested duration; fall back to the
+                # request only when the file cannot be probed.
+                delivered_seconds = VideoMeta.from_file(video_path).seconds
+                if delivered_seconds <= 0:
+                    self.logger.warning("ffprobe read no duration; billing the requested duration")
+                    delivered_seconds = float(input_data.duration)
                 self.logger.info(f"Saved video to: {video_path}")
 
                 # Calculate dimensions for metadata
@@ -250,7 +271,7 @@ class App(BaseApp):
                 output_meta_videos.append(VideoMeta(
                     width=width,
                     height=height,
-                    seconds=input_data.duration,
+                    seconds=delivered_seconds,
                     resolution=input_data.resolution.value,
                     extra={"generate_audio": input_data.generate_audio}
                 ))

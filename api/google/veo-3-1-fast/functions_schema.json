@@ -1,6 +1,8 @@
 {
   "run": {
     "description": "Generate video using Veo 3.1 Fast model via Vertex AI.",
+    "kind": "run",
+    "capabilities": [],
     "input_schema": {
       "$defs": {
         "PersonGenerationEnum": {
@@ -101,7 +103,7 @@
         "aspect_ratio": {
           "$ref": "#/$defs/VideoAspectRatioEnum",
           "default": "16:9",
-          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait."
+          "description": "Video aspect ratio. 16:9 for landscape, 9:16 for portrait. Ignored when a first frame image is provided: the ratio is then taken from the image (portrait image -> 9:16, otherwise 16:9)."
         },
         "duration": {
           "default": 8,
