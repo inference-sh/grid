@@ -1,6 +1,8 @@
 {
   "run": {
     "description": "Generate talking head video.",
+    "kind": "run",
+    "capabilities": [],
     "input_schema": {
       "$defs": {
         "ResolutionEnum": {

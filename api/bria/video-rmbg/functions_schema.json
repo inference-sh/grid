@@ -1,6 +1,8 @@
 {
   "run": {
     "description": "",
+    "kind": "run",
+    "capabilities": [],
     "input_schema": {
       "properties": {
         "video_url": {

@@ -1,6 +1,8 @@
 {
   "run": {
     "description": "Generate video using WAN-T2V.",
+    "kind": "run",
+    "capabilities": [],
     "input_schema": {
       "$defs": {
         "AspectRatioEnum": {
@@ -40,7 +42,7 @@
         },
         "duration": {
           "default": 5,
-          "description": "Video duration in seconds (1-10).",
+          "description": "Ignored. The upstream model does not accept a duration and always returns a fixed-length clip (about 5 seconds). Billing uses the actual length of the returned video.",
           "maximum": 10,
           "minimum": 1,
           "title": "Duration",
