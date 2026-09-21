@@ -1,0 +1,431 @@
+{
+  "$defs": {
+    "AudioMeta": {
+      "description": "Metadata for audio inputs/outputs.",
+      "properties": {
+        "type": {
+          "default": "audio",
+          "title": "Type",
+          "type": "string"
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "App-specific key-value pairs for custom pricing factors",
+          "title": "Extra"
+        },
+        "seconds": {
+          "default": 0,
+          "description": "Duration in seconds",
+          "title": "Seconds",
+          "type": "number"
+        },
+        "sample_rate": {
+          "default": 0,
+          "description": "Sample rate in Hz",
+          "title": "Sample Rate",
+          "type": "integer"
+        }
+      },
+      "title": "AudioMeta",
+      "type": "object"
+    },
+    "ChoiceAnswer": {
+      "properties": {
+        "choice": {
+          "description": "The highest-probability option.",
+          "title": "Choice",
+          "type": "string"
+        },
+        "confidence": {
+          "description": "0 to 1, from how peaked `probabilities` is. Gate actions on it; thresholds scale with risk.",
+          "title": "Confidence",
+          "type": "number"
+        },
+        "probabilities": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Every option mapped to its probability. Sums to 1.",
+          "title": "Probabilities",
+          "type": "object"
+        }
+      },
+      "required": [
+        "choice",
+        "confidence",
+        "probabilities"
+      ],
+      "title": "ChoiceAnswer",
+      "type": "object"
+    },
+    "ImageMeta": {
+      "description": "Metadata for image inputs/outputs.",
+      "properties": {
+        "type": {
+          "default": "image",
+          "title": "Type",
+          "type": "string"
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "App-specific key-value pairs for custom pricing factors",
+          "title": "Extra"
+        },
+        "width": {
+          "default": 0,
+          "description": "Image width in pixels",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 0,
+          "description": "Image height in pixels",
+          "title": "Height",
+          "type": "integer"
+        },
+        "resolution_mp": {
+          "default": 0,
+          "description": "Resolution in megapixels (width * height / 1_000_000)",
+          "title": "Resolution Mp",
+          "type": "number"
+        },
+        "steps": {
+          "default": 0,
+          "description": "Number of diffusion steps",
+          "title": "Steps",
+          "type": "integer"
+        },
+        "count": {
+          "default": 1,
+          "description": "Number of images",
+          "title": "Count",
+          "type": "integer"
+        }
+      },
+      "title": "ImageMeta",
+      "type": "object"
+    },
+    "NoulAnswer": {
+      "properties": {
+        "noul": {
+          "description": "Probability the answer is yes. Near 1 strong yes, near 0 strong no, near 0.5 uncertain. Threshold it in code.",
+          "title": "Noul",
+          "type": "number"
+        }
+      },
+      "required": [
+        "noul"
+      ],
+      "title": "NoulAnswer",
+      "type": "object"
+    },
+    "OutputMeta": {
+      "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+      "properties": {
+        "inputs": {
+          "description": "Metadata about consumed inputs",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/TextMeta"
+              },
+              {
+                "$ref": "#/$defs/ImageMeta"
+              },
+              {
+                "$ref": "#/$defs/VideoMeta"
+              },
+              {
+                "$ref": "#/$defs/AudioMeta"
+              },
+              {
+                "$ref": "#/$defs/RawMeta"
+              }
+            ]
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "outputs": {
+          "description": "Metadata about produced outputs",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/TextMeta"
+              },
+              {
+                "$ref": "#/$defs/ImageMeta"
+              },
+              {
+                "$ref": "#/$defs/VideoMeta"
+              },
+              {
+                "$ref": "#/$defs/AudioMeta"
+              },
+              {
+                "$ref": "#/$defs/RawMeta"
+              }
+            ]
+          },
+          "title": "Outputs",
+          "type": "array"
+        }
+      },
+      "title": "OutputMeta",
+      "type": "object"
+    },
+    "RawMeta": {
+      "description": "Metadata for raw inputs/outputs used for custom pricing.",
+      "properties": {
+        "type": {
+          "default": "raw",
+          "title": "Type",
+          "type": "string"
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "App-specific key-value pairs for custom pricing factors",
+          "title": "Extra"
+        },
+        "cost": {
+          "default": 0,
+          "description": "Cost in dollar cents",
+          "title": "Cost",
+          "type": "number"
+        }
+      },
+      "title": "RawMeta",
+      "type": "object"
+    },
+    "ScoreAnswer": {
+      "properties": {
+        "score": {
+          "description": "Probability-weighted position on the levels, 0 to the top level number. Can land between levels.",
+          "title": "Score",
+          "type": "number"
+        },
+        "normalized": {
+          "description": "`score` divided by the top level number: 0 to 1, comparable across scales of different length.",
+          "title": "Normalized",
+          "type": "number"
+        },
+        "confidence": {
+          "description": "0 to 1, from how peaked `probabilities` is.",
+          "title": "Confidence",
+          "type": "number"
+        },
+        "probabilities": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Each level number (as a string) mapped to its probability. Sums to 1.",
+          "title": "Probabilities",
+          "type": "object"
+        },
+        "legend": {
+          "additionalProperties": true,
+          "description": "Each level number mapped back to its description.",
+          "title": "Legend",
+          "type": "object"
+        }
+      },
+      "required": [
+        "score",
+        "normalized",
+        "confidence",
+        "probabilities",
+        "legend"
+      ],
+      "title": "ScoreAnswer",
+      "type": "object"
+    },
+    "TextMeta": {
+      "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+      "properties": {
+        "type": {
+          "default": "text",
+          "title": "Type",
+          "type": "string"
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "App-specific key-value pairs for custom pricing factors",
+          "title": "Extra"
+        },
+        "tokens": {
+          "default": 0,
+          "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+          "title": "Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "TextMeta",
+      "type": "object"
+    },
+    "VideoMeta": {
+      "description": "Metadata for video inputs/outputs.",
+      "properties": {
+        "type": {
+          "default": "video",
+          "title": "Type",
+          "type": "string"
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "App-specific key-value pairs for custom pricing factors",
+          "title": "Extra"
+        },
+        "width": {
+          "default": 0,
+          "description": "Video width in pixels",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 0,
+          "description": "Video height in pixels",
+          "title": "Height",
+          "type": "integer"
+        },
+        "resolution_mp": {
+          "default": 0,
+          "description": "Resolution in megapixels per frame",
+          "title": "Resolution Mp",
+          "type": "number"
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+          "title": "Resolution"
+        },
+        "seconds": {
+          "default": 0,
+          "description": "Duration in seconds",
+          "title": "Seconds",
+          "type": "number"
+        },
+        "fps": {
+          "default": 0,
+          "description": "Frames per second",
+          "title": "Fps",
+          "type": "integer"
+        }
+      },
+      "title": "VideoMeta",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "choices": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ChoiceAnswer"
+      },
+      "description": "Choice answers by question id.",
+      "title": "Choices",
+      "type": "object"
+    },
+    "scores": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ScoreAnswer"
+      },
+      "description": "Score answers by question id.",
+      "title": "Scores",
+      "type": "object"
+    },
+    "nouls": {
+      "additionalProperties": {
+        "$ref": "#/$defs/NoulAnswer"
+      },
+      "description": "Noul answers by question id.",
+      "title": "Nouls",
+      "type": "object"
+    },
+    "model": {
+      "description": "The versioned model that answered, e.g. `jev-1.13.0`.",
+      "title": "Model",
+      "type": "string"
+    },
+    "input_tokens": {
+      "default": 0,
+      "description": "Input tokens (billed).",
+      "title": "Input Tokens",
+      "type": "integer"
+    },
+    "output_tokens": {
+      "default": 0,
+      "description": "Output tokens (free upstream).",
+      "title": "Output Tokens",
+      "type": "integer"
+    },
+    "output_meta": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OutputMeta"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Structured metadata about inputs/outputs for pricing calculation"
+    }
+  },
+  "required": [
+    "model"
+  ],
+  "title": "AppOutput",
+  "type": "object"
+}

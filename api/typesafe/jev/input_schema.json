@@ -1,0 +1,289 @@
+{
+  "$defs": {
+    "ChoiceOption": {
+      "properties": {
+        "name": {
+          "description": "Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What this option covers. Omit when the name is clear on its own. An object can carry a rubric, e.g. {what, not_for, examples}, or a taxonomy subtree.",
+          "title": "Description"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ChoiceOption",
+      "type": "object"
+    },
+    "ChoiceQuestion": {
+      "description": "Which of these options? For a fixed set of unordered options.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "description": "What the model should decide, written as a complete question. Reference parts of a structured state by path in backticks, e.g. `ticket.messages[0].text`. An object can hold the question in one field and data it refers to in others.",
+          "title": "Instructions"
+        },
+        "options": {
+          "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
+          "items": {
+            "$ref": "#/$defs/ChoiceOption"
+          },
+          "maxItems": 255,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "instructions",
+        "options"
+      ],
+      "title": "ChoiceQuestion",
+      "type": "object"
+    },
+    "NoulCriteria": {
+      "properties": {
+        "true": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What a yes (value near 1) means.",
+          "title": "True"
+        },
+        "false": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What a no (value near 0) means.",
+          "title": "False"
+        }
+      },
+      "title": "NoulCriteria",
+      "type": "object"
+    },
+    "NoulQuestion": {
+      "description": "Is this true? For a clean yes/no where the probability itself is the signal.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous. Reference parts of a structured state by path in backticks.",
+          "title": "Instructions"
+        },
+        "criteria": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoulCriteria"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional. Pins down a subtle yes/no boundary."
+        }
+      },
+      "required": [
+        "id",
+        "instructions"
+      ],
+      "title": "NoulQuestion",
+      "type": "object"
+    },
+    "ScoreQuestion": {
+      "description": "Which level? For a position on a spectrum you can describe.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "description": "What the model should rate, written as a complete question. Reference parts of a structured state by path in backticks.",
+          "title": "Instructions"
+        },
+        "levels": {
+          "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0. Describe situations, not degrees: each level is judged on its own and the model never sees its number or its neighbours.",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              }
+            ]
+          },
+          "maxItems": 10,
+          "minItems": 2,
+          "title": "Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "instructions",
+        "levels"
+      ],
+      "title": "ScoreQuestion",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "state": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "items": {},
+          "type": "array"
+        }
+      ],
+      "description": "The content to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Text only. Every question sees the same state. Send only what the questions need; unrelated detail costs accuracy.",
+      "examples": [
+        "Our API started returning 500 errors 20 minutes ago and we can't process any customer orders."
+      ],
+      "title": "State"
+    },
+    "choices": {
+      "description": "Choice questions: pick one option from a set.",
+      "items": {
+        "$ref": "#/$defs/ChoiceQuestion"
+      },
+      "title": "Choices",
+      "type": "array"
+    },
+    "scores": {
+      "description": "Score questions: place the state on ordered levels.",
+      "items": {
+        "$ref": "#/$defs/ScoreQuestion"
+      },
+      "title": "Scores",
+      "type": "array"
+    },
+    "nouls": {
+      "description": "Noul questions: probability that the answer is yes.",
+      "items": {
+        "$ref": "#/$defs/NoulQuestion"
+      },
+      "title": "Nouls",
+      "type": "array"
+    },
+    "model": {
+      "default": "jev-latest",
+      "description": "Model name or alias: `jev-latest`, `jev-preview`, or a pinned version such as `jev-1.13.0`. Pin a version if you tuned thresholds against it.",
+      "title": "Model",
+      "type": "string"
+    }
+  },
+  "required": [
+    "state"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

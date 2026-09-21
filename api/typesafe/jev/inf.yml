@@ -1,0 +1,22 @@
+namespace: typesafe
+name: jev
+title: Jev
+description: TypeSafe's System One model. Send a state and typed questions (choice, score, noul); get calibrated, structured answers your code can act on directly.
+metadata: {}
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: TYPESAFE_KEY
+      description: TypeSafe API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4

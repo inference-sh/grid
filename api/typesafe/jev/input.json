@@ -1,0 +1,59 @@
+{
+  "state": {
+    "ticket": {
+      "subject": "Duplicate charge",
+      "messages": [
+        {"from": "customer", "text": "I was charged twice for order A-104. This is the third time I'm writing. Please refund the duplicate today."},
+        {"from": "support", "text": "We are checking the charges."}
+      ]
+    },
+    "order": {
+      "id": "A-104",
+      "charges": [
+        {"amount_usd": 49, "status": "captured"},
+        {"amount_usd": 49, "status": "captured"}
+      ]
+    },
+    "refund_policy": "Duplicate charges are eligible for a refund."
+  },
+  "choices": [
+    {
+      "id": "department",
+      "instructions": {
+        "question": "Which team should handle `ticket`?",
+        "focus": "Classify the customer's primary request, not every topic mentioned."
+      },
+      "options": [
+        {"name": "billing", "description": {"what": "Charges, invoices, refunds, or subscriptions", "not_for": "Order tracking or account access", "examples": ["I was charged twice", "Where is my refund?"]}},
+        {"name": "orders", "description": "Order status, delivery, cancellation, or returns"},
+        {"name": "account", "description": "Login, password, profile, or security"},
+        {"name": "other"}
+      ]
+    }
+  ],
+  "scores": [
+    {
+      "id": "frustration",
+      "instructions": "How frustrated does the customer appear in `ticket.messages[0].text`?",
+      "levels": [
+        "Calm, just stating facts",
+        "Frustrated but civil",
+        "Very angry, strong language"
+      ]
+    }
+  ],
+  "nouls": [
+    {
+      "id": "refund_requested",
+      "instructions": "Does `ticket.messages[0].text` request a refund?"
+    },
+    {
+      "id": "policy_supports_refund",
+      "instructions": "Does `refund_policy` support the refund requested in `ticket.messages[0].text`, given `order.charges`?",
+      "criteria": {
+        "true": "The policy covers this situation and the charges show it occurred",
+        "false": "The policy does not cover it, or the charges do not show it"
+      }
+    }
+  ]
+}
