@@ -1,0 +1,81 @@
+{
+  "stream": {
+    "description": "",
+    "kind": "stream",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "effect": {
+          "type": "string",
+          "enum": [
+            "none",
+            "robot",
+            "echo",
+            "chipmunk",
+            "deep"
+          ],
+          "default": "robot",
+          "description": "Effect applied to the audio on its way back"
+        },
+        "gain": {
+          "type": "number",
+          "default": 1,
+          "description": "Output gain"
+        },
+        "audio": {
+          "type": "array",
+          "format": "stream",
+          "items": {
+            "type": "string",
+            "format": "binary",
+            "contentMediaType": "audio/pcm;format=s16le;rate=16000;channels=1"
+          },
+          "description": "Microphone audio, a frame every 20 ms or so"
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "type": "array",
+          "format": "stream",
+          "items": {
+            "type": "string",
+            "format": "binary",
+            "contentMediaType": "audio/pcm;format=s16le;rate=16000;channels=1"
+          },
+          "description": "The same audio with the effect applied"
+        },
+        "effect": {
+          "type": "string",
+          "enum": [
+            "none",
+            "robot",
+            "echo",
+            "chipmunk",
+            "deep"
+          ],
+          "default": "robot",
+          "description": "Effect in use"
+        },
+        "frames": {
+          "type": "number",
+          "default": 0,
+          "description": "Audio frames received"
+        },
+        "seconds": {
+          "type": "number",
+          "default": 0,
+          "description": "Audio received, in seconds"
+        },
+        "peak": {
+          "type": "number",
+          "default": 0,
+          "description": "Loudest input sample, 0..1"
+        },
+        "output_meta": {}
+      }
+    }
+  }
+}

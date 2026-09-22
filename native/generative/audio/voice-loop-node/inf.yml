@@ -1,0 +1,17 @@
+namespace: infsh
+name: voice-loop-node
+description: Live voice loop in Node. Send microphone audio over a stream and hear it come back with an effect (robot, echo, chipmunk, deep, none) as it arrives. The Node twin of voice-loop, a test app for streams.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: node-22
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1

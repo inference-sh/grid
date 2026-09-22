@@ -1,0 +1,35 @@
+# inference.sh
+*.infsh
+.infsh/
+
+# Node.js
+node_modules/
+package-lock.json
+dist/
+build/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+!.gitignore
+!src/
+!package.json
+!inf.yml
+!inference.js
+
+skills
+README.md

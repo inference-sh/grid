@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@inferencesh/app": "^0.1.13",
+    "zod": "^3.23.0"
+  }
+}
