@@ -1,0 +1,24 @@
+namespace: xai
+name: grok-imagine-video-1-5
+description: Generate videos with xAI's Grok Imagine Video 1.5. Text-to-video, image-to-video and reference-to-video at 480p, 720p or 1080p, 1-15 seconds, with generated audio.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - video-generation
+        - text-to-video
+        - image-to-video
+        - reference-to-video
+        - xai
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

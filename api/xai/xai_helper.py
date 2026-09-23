@@ -178,6 +178,7 @@ async def retry_on_rate_limit(
     func: Callable[[], T],
     config: Optional[RetryConfig] = None,
     logger: Optional[logging.Logger] = None,
+    in_thread: bool = False,
 ) -> T:
     """
     Execute a sync function with exponential backoff retry on 429 errors.
@@ -189,6 +190,8 @@ async def retry_on_rate_limit(
         func: Sync callable to execute (should be a zero-argument lambda or partial)
         config: Optional RetryConfig, uses DEFAULT_RETRY_CONFIG if not provided
         logger: Optional logger for retry messages
+        in_thread: Run func in a worker thread so a slow call does not block
+            the event loop (and with it cancellation)
 
     Returns:
         The result of func() on success
@@ -210,7 +213,7 @@ async def retry_on_rate_limit(
 
     for attempt in range(1, config.max_attempts + 1):
         try:
-            return func()
+            return await asyncio.to_thread(func) if in_thread else func()
         except Exception as e:
             if is_rate_limit_error(e):
                 last_exception = e
@@ -237,6 +240,54 @@ async def retry_on_rate_limit(
         raise last_exception
 
     raise RuntimeError("Unexpected state in retry_on_rate_limit")
+
+
+# =============================================================================
+# VIDEO POLLING
+# =============================================================================
+
+async def wait_for_video(
+    client: Client,
+    request_id: str,
+    logger: logging.Logger,
+    is_cancelled: Callable[[], bool],
+    interval: float = 5.0,
+):
+    """
+    Poll a deferred video request until it finishes.
+
+    Replaces the SDK's blocking video.generate(): that call sleeps on the event
+    loop, so a cancel cannot be seen, and it gives up after the SDK's own
+    10-minute timeout. Here there is no timeout (the platform owns it) and a
+    cancel stops polling within one interval.
+
+    Returns an xai_sdk VideoResponse. Raises XAIGenerationError when the job
+    fails or expires.
+    """
+    from xai_sdk.proto import deferred_pb2
+    from xai_sdk.video import VideoResponse
+
+    waited = 0.0
+    while True:
+        if is_cancelled():
+            raise RuntimeError(f"Cancelled while waiting for video {request_id}")
+        r = await asyncio.to_thread(client.video.get, request_id)
+        if r.status == deferred_pb2.DeferredStatus.DONE:
+            if not r.HasField("response"):
+                raise XAIGenerationError("xAI finished the video request but returned no response.")
+            return VideoResponse(r.response)
+        if r.status == deferred_pb2.DeferredStatus.EXPIRED:
+            raise XAIGenerationError("xAI's video request expired before it finished.")
+        if r.status == deferred_pb2.DeferredStatus.FAILED:
+            code, message = "unknown", "no error details"
+            if r.HasField("response") and r.response.HasField("error"):
+                code, message = r.response.error.code, r.response.error.message
+            print(f"xAI video {request_id} failed: code={code} message={message}")
+            raise XAIGenerationError(f"xAI video generation failed ({code}): {message}")
+        if waited and int(waited) % 30 == 0:
+            logger.info(f"Video {request_id} still pending after {waited:.0f}s")
+        await asyncio.sleep(interval)
+        waited += interval
 
 
 # =============================================================================

@@ -1,0 +1,24 @@
+namespace: xai
+name: grok-imagine-image-2-0
+description: Generate and edit images with xAI's Grok Imagine Image 2.0. Text-to-image or editing with up to 5 source images, low or medium quality, 1K or 2K output.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - image-generation
+        - text-to-image
+        - image-editing
+        - multi-image-editing
+        - xai
+category: image
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Grok Imagine access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

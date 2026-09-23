@@ -1,0 +1,88 @@
+{
+  "description": "Input schema for Grok Imagine Video 1.5.",
+  "properties": {
+    "prompt": {
+      "description": "What happens in the video: subject, motion and camera. With reference images, refer to them as <IMAGE_0>, <IMAGE_1>, ...",
+      "examples": [
+        "A red fox trots through fresh snow at dawn, slow tracking shot"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first frame. The video animates from this image and keeps its aspect ratio unless aspect_ratio is set.",
+      "title": "Image"
+    },
+    "reference_images": {
+      "description": "Optional reference images for characters, objects or style. Reference-to-video supports up to 720p.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "duration": {
+      "default": 8,
+      "description": "Video length in seconds (1-15).",
+      "maximum": 15,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "resolution": {
+      "default": "480p",
+      "description": "Output resolution. Price per second: 480p $0.08, 720p $0.14, 1080p $0.25. 1080p is not available with reference images.",
+      "enum": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "enum": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Aspect ratio. Defaults to the first frame's ratio, or 16:9 without one. Setting it with a first frame stretches the image.",
+      "title": "Aspect Ratio"
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Generate an audio track with the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

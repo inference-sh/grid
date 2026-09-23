@@ -1,0 +1,78 @@
+{
+  "description": "Input schema for Grok Imagine Image 2.0.",
+  "properties": {
+    "prompt": {
+      "description": "What to generate, or how to change the source images. With several source images, refer to them as <IMAGE_0>, <IMAGE_1>, ... in the order given.",
+      "examples": [
+        "A watercolor painting of a lighthouse at dawn"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "description": "Source images to edit (up to 5, JPEG/PNG/WebP). Leave empty to generate from the prompt alone.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Images",
+      "type": "array"
+    },
+    "quality": {
+      "default": "low",
+      "description": "'low' is fast and cheaper; 'medium' spends more compute per image for finer detail.",
+      "enum": [
+        "low",
+        "medium"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "1k",
+      "description": "Output resolution. Price per image: low 1k $0.04, low 2k $0.06, medium 1k $0.06, medium 2k $0.08.",
+      "enum": [
+        "1k",
+        "2k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "aspect_ratio": {
+      "default": "auto",
+      "description": "Aspect ratio of the output. 'auto' lets the model choose; when editing it follows the first source image.",
+      "enum": [
+        "auto",
+        "1:1",
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "2:1",
+        "1:2",
+        "19.5:9",
+        "9:19.5",
+        "20:9",
+        "9:20"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images to generate (1-10).",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
