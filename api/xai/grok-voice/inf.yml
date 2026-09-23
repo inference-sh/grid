@@ -1,0 +1,29 @@
+namespace: xai
+name: grok-voice
+description: Talk with Grok. Stream microphone audio over a socket and hear xAI's speech-to-speech model answer as it speaks, with both sides transcribed; the conversation is the task's output.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - voice
+        - realtime
+        - speech-to-speech
+        - audio
+        - xai
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: talk
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for the Voice Agent API
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

@@ -1,0 +1,937 @@
+{
+  "talk": {
+    "description": "",
+    "kind": "stream",
+    "capabilities": [],
+    "input_schema": {
+      "$defs": {
+        "Say": {
+          "description": "Words the assistant speaks verbatim, as a turn of its own.",
+          "properties": {
+            "type": {
+              "const": "say",
+              "default": "say",
+              "title": "Type",
+              "type": "string"
+            },
+            "text": {
+              "description": "What the assistant says, word for word",
+              "title": "Text",
+              "type": "string"
+            },
+            "interruptible": {
+              "default": true,
+              "description": "False drops the caller's audio until it has been said",
+              "title": "Interruptible",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "title": "Say",
+          "type": "object"
+        },
+        "UserText": {
+          "description": "A typed user message. The assistant answers it out loud.",
+          "properties": {
+            "type": {
+              "const": "text",
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "text": {
+              "description": "What the user says",
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "title": "UserText",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "audio": {
+          "description": "Microphone audio, a frame every 20 ms or so",
+          "format": "stream",
+          "items": {
+            "contentMediaType": "audio/pcm;format=s16le;rate=24000;channels=1",
+            "format": "binary",
+            "type": "string"
+          },
+          "title": "Audio",
+          "type": "array"
+        },
+        "events": {
+          "description": "Typed messages: text from the user, or words for the assistant",
+          "format": "stream",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/UserText"
+              },
+              {
+                "$ref": "#/$defs/Say"
+              }
+            ]
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "instructions": {
+          "default": "You are a helpful assistant.",
+          "description": "System prompt. Grok's voice models take plain instructions; workarounds written for other models are unnecessary.",
+          "title": "Instructions",
+          "type": "string"
+        },
+        "voice": {
+          "default": "eve",
+          "description": "A built-in voice; `voices` lists them with what xAI says about each",
+          "enum": [
+            "eve",
+            "ara",
+            "rex",
+            "sal",
+            "leo",
+            "altair",
+            "atlas",
+            "aurora",
+            "carina",
+            "castor",
+            "celeste",
+            "cosmo",
+            "helios",
+            "helix",
+            "iris",
+            "kepler",
+            "liora",
+            "lumen",
+            "luna",
+            "lux",
+            "naksh",
+            "orion",
+            "perseus",
+            "rigel",
+            "sirius",
+            "ursa",
+            "zagan",
+            "zenith"
+          ],
+          "title": "Voice",
+          "type": "string"
+        },
+        "custom_voice": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The id of a voice cloned with xAI's Custom Voices API. Set, it is used instead of voice.",
+          "title": "Custom Voice"
+        },
+        "model": {
+          "default": "grok-voice-latest",
+          "description": "grok-voice-latest follows the newest model; pin a versioned name such as grok-voice-think-fast-2.0 for stability",
+          "title": "Model",
+          "type": "string"
+        },
+        "reasoning": {
+          "default": "high",
+          "description": "Whether the model thinks before it answers. 'none' answers faster.",
+          "enum": [
+            "high",
+            "none"
+          ],
+          "title": "Reasoning",
+          "type": "string"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "BCP-47 hint for what the user speaks, such as en, ja or es-MX (Spanish and Portuguese need a region). Left empty it is detected.",
+          "title": "Language"
+        },
+        "speed": {
+          "default": 1.0,
+          "description": "Playback speed of the assistant's voice",
+          "maximum": 1.5,
+          "minimum": 0.7,
+          "title": "Speed",
+          "type": "number"
+        },
+        "silence_ms": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Silence that ends the user's turn, in ms. Left empty Grok decides.",
+          "title": "Silence Ms"
+        },
+        "web_search": {
+          "default": false,
+          "description": "Let the assistant search the web",
+          "title": "Web Search",
+          "type": "boolean"
+        },
+        "x_search": {
+          "default": false,
+          "description": "Let the assistant search X",
+          "title": "X Search",
+          "type": "boolean"
+        }
+      },
+      "title": "TalkInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "Message": {
+          "properties": {
+            "role": {
+              "enum": [
+                "user",
+                "assistant"
+              ],
+              "title": "Role",
+              "type": "string"
+            },
+            "text": {
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "role",
+            "text"
+          ],
+          "title": "Message",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "audio": {
+          "description": "The assistant's voice",
+          "format": "stream",
+          "items": {
+            "contentMediaType": "audio/pcm;format=s16le;rate=24000;channels=1",
+            "format": "binary",
+            "type": "string"
+          },
+          "title": "Audio",
+          "type": "array"
+        },
+        "user_text": {
+          "default": "",
+          "description": "What Grok hears the user saying, refined as they speak",
+          "title": "User Text",
+          "type": "string"
+        },
+        "assistant_text": {
+          "default": "",
+          "description": "What the assistant is saying, as it says it",
+          "title": "Assistant Text",
+          "type": "string"
+        },
+        "messages": {
+          "description": "The conversation so far, a message per turn",
+          "items": {
+            "$ref": "#/$defs/Message"
+          },
+          "title": "Messages",
+          "type": "array"
+        },
+        "seconds": {
+          "default": 0,
+          "description": "How long the session has run",
+          "title": "Seconds",
+          "type": "number"
+        },
+        "partial": {
+          "default": true,
+          "description": "True while the conversation goes on; False on the result",
+          "title": "Partial",
+          "type": "boolean"
+        },
+        "end_reason": {
+          "default": "",
+          "description": "Why the session ended, on the result: the caller closed it, or Grok did (for example after 15 minutes without audio)",
+          "title": "End Reason",
+          "type": "string"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "TalkOutput",
+      "type": "object"
+    }
+  },
+  "voices": {
+    "description": "The voices `talk` can use: xAI's built-in roster and this account's custom voices.",
+    "kind": "run",
+    "capabilities": [],
+    "input_schema": {
+      "properties": {},
+      "title": "VoicesInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        },
+        "Voice": {
+          "properties": {
+            "id": {
+              "description": "What to pass as voice or custom_voice",
+              "title": "Id",
+              "type": "string"
+            },
+            "name": {
+              "default": "",
+              "description": "Display name",
+              "title": "Name",
+              "type": "string"
+            },
+            "description": {
+              "default": "",
+              "description": "Tone and character, as xAI describes it",
+              "title": "Description",
+              "type": "string"
+            },
+            "custom": {
+              "default": false,
+              "description": "A voice cloned by this account",
+              "title": "Custom",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "title": "Voice",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "voices": {
+          "description": "Built-in voices, then this account's custom voices",
+          "items": {
+            "$ref": "#/$defs/Voice"
+          },
+          "title": "Voices",
+          "type": "array"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "voices"
+      ],
+      "title": "VoicesOutput",
+      "type": "object"
+    }
+  }
+}
