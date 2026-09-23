@@ -1,0 +1,32 @@
+namespace: xai
+name: grok-build-0-1
+description: Grok Build 0.1 — xAI's agentic coding model. 256k context, reasoning, image input and tool use via the xAI Responses API. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: xai
+    tags:
+        - xai
+        - grok
+        - grok-build
+        - code
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
