@@ -13,13 +13,14 @@ from pydantic import Field
 from .xai_helper import (
     AspectRatioAutoType,
     XAIError,
-    ContentModerationError,
+    MODERATION_NOTICE,
+    collect_images,
+    upstream_cost_usd,
     create_xai_client,
     setup_logger,
     resolve_aspect_ratio,
     get_image_dimensions,
     encode_image_base64,
-    save_image_from_response,
     retry_on_rate_limit,
 )
 
@@ -50,7 +51,9 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     """Output schema for Grok Imagine Pro image generation."""
 
-    images: list[File] = Field(description="The generated image files.")
+    images: list[File] = Field(description="The generated image files. Excludes images withheld by xAI content moderation.")
+    moderated_count: int = Field(default=0, description="Number of generated images withheld by xAI content moderation.")
+    notice: Optional[str] = Field(default=None, description="Set when xAI content moderation withheld some or all images.")
 
 
 class App(BaseApp):
@@ -91,46 +94,55 @@ class App(BaseApp):
                 kwargs["image_url"] = encode_image_base64(input_data.image)
 
             # Generate images (with 429 retry)
-            output_images = []
             if input_data.n == 1:
                 response = await retry_on_rate_limit(
                     lambda: self.client.image.sample(**kwargs),
                     logger=self.logger,
                 )
-                output_images.append(save_image_from_response(response))
+                responses = [response]
             else:
                 kwargs["n"] = input_data.n
                 responses = await retry_on_rate_limit(
                     lambda: self.client.image.sample_batch(**kwargs),
                     logger=self.logger,
                 )
-                for response in responses:
-                    output_images.append(save_image_from_response(response))
 
-            if not output_images:
+            # Moderated images are generated and billed by xAI, so they are
+            # billed here too: the run succeeds with those images left out.
+            output_images, moderated_count = collect_images(responses, self.logger)
+            generated_count = len(output_images) + moderated_count
+            # Batch responses share one usage record, so the first holds the request's cost.
+            cost_usd = upstream_cost_usd(responses[0]) if responses else None
+            if generated_count == 0:
                 raise RuntimeError("No images generated")
 
             # Determine dimensions based on aspect ratio
             width, height = get_image_dimensions(aspect_ratio)
 
+            # Pricing reads inputs[0].count and outputs[0].count, so each side is one item.
             output_meta = OutputMeta(
+                inputs=[ImageMeta(count=1, extra={"type": "image_input"})] if input_data.image else [],
                 outputs=[
                     ImageMeta(
                         width=width,
                         height=height,
+                        count=generated_count,
                         extra={
                             "mode": mode,
                             "aspect_ratio": aspect_ratio,
+                            "moderated_count": moderated_count,
+                            "upstream_cost_usd": cost_usd,
                         }
                     )
-                    for _ in output_images
                 ]
             )
 
-            self.logger.info(f"Generated {len(output_images)} image(s) successfully")
+            self.logger.info(f"Generated {generated_count} image(s), {moderated_count} withheld by moderation, xAI cost ${cost_usd}")
 
             return AppOutput(
                 images=output_images,
+                moderated_count=moderated_count,
+                notice=MODERATION_NOTICE.format(what=f"{moderated_count} of {generated_count} image(s)") if moderated_count else None,
                 output_meta=output_meta,
             )
 

@@ -472,6 +472,51 @@ def classify_xai_error(error: Exception) -> Exception:
     return error
 
 
+MODERATION_NOTICE = (
+    "xAI's content moderation blocked the {what}. The prompt or input may violate xAI's "
+    "content policy. xAI bills blocked generations, so this run is charged."
+)
+
+
+def is_moderated(response) -> bool:
+    """True when xAI generated the output but withheld it for violating moderation rules."""
+    return not getattr(response, "respect_moderation", True)
+
+
+def upstream_cost_usd(response) -> Optional[float]:
+    """
+    xAI's reported cost for the whole request, or None when it is not reported.
+
+    Supplementary only: pricing formulas bill from inputs and outputs, and this
+    is stored next to them so the two can be compared.
+    """
+    try:
+        usage = response.usage
+        if usage.HasField("cost_in_usd_ticks"):
+            return usage.cost_in_usd_ticks * 1e-10
+    except Exception:
+        pass
+    return None
+
+
+def collect_images(responses, logger: logging.Logger) -> tuple[list[File], int]:
+    """
+    Save every image that passed moderation.
+
+    Returns (files, moderated_count). xAI bills moderated images like any other,
+    so callers bill len(files) + moderated_count images.
+    """
+    files, moderated = [], 0
+    for response in responses:
+        if is_moderated(response):
+            moderated += 1
+            continue
+        files.append(save_image_from_response(response))
+    if moderated:
+        logger.warning(f"xAI content moderation withheld {moderated}/{len(responses)} image(s)")
+    return files, moderated
+
+
 def save_image_from_response(response) -> File:
     """
     Save an xAI SDK image response to a temporary file.

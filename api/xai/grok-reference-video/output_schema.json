@@ -286,10 +286,37 @@
   "description": "Output schema for Grok reference-to-video generation.",
   "properties": {
     "video": {
-      "description": "The generated video file.",
-      "format": "file",
-      "title": "Video",
-      "type": "string"
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The generated video file. Null when xAI content moderation withheld the video.",
+      "title": "Video"
+    },
+    "moderated": {
+      "default": false,
+      "description": "True when xAI content moderation withheld the generated video.",
+      "title": "Moderated",
+      "type": "boolean"
+    },
+    "notice": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Set when xAI content moderation withheld the video.",
+      "title": "Notice"
     },
     "output_meta": {
       "anyOf": [
@@ -304,9 +331,6 @@
       "description": "Structured metadata about inputs/outputs for pricing calculation"
     }
   },
-  "required": [
-    "video"
-  ],
   "title": "AppOutput",
   "type": "object"
 }

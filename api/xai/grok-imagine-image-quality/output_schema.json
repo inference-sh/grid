@@ -286,13 +286,32 @@
   "description": "Output schema for Grok Imagine Quality image generation.",
   "properties": {
     "images": {
-      "description": "The generated image files.",
+      "description": "The generated image files. Excludes images withheld by xAI content moderation.",
       "items": {
         "format": "file",
         "type": "string"
       },
       "title": "Images",
       "type": "array"
+    },
+    "moderated_count": {
+      "default": 0,
+      "description": "Number of generated images withheld by xAI content moderation.",
+      "title": "Moderated Count",
+      "type": "integer"
+    },
+    "notice": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Set when xAI content moderation withheld some or all images.",
+      "title": "Notice"
     },
     "output_meta": {
       "anyOf": [

@@ -16,6 +16,9 @@ import requests
 from .xai_helper import (
     VideoAspectRatioType,
     XAIError,
+    MODERATION_NOTICE,
+    is_moderated,
+    upstream_cost_usd,
     create_xai_client,
     setup_logger,
     encode_image_base64,
@@ -57,7 +60,9 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     """Output schema for Grok reference-to-video generation."""
 
-    video: File = Field(description="The generated video file.")
+    video: Optional[File] = Field(default=None, description="The generated video file. Null when xAI content moderation withheld the video.")
+    moderated: bool = Field(default=False, description="True when xAI content moderation withheld the generated video.")
+    notice: Optional[str] = Field(default=None, description="Set when xAI content moderation withheld the video.")
 
 
 class App(BaseApp):
@@ -102,17 +107,25 @@ class App(BaseApp):
                 logger=self.logger,
             )
 
-            # Download video from URL
-            video_url = response.url
-            if not video_url:
-                raise RuntimeError("No video URL in response")
+            # A moderated video is generated and billed by xAI, so the run
+            # succeeds and is billed with the video left out.
+            moderated = is_moderated(response)
+            cost_usd = upstream_cost_usd(response)
+            video_file = None
+            if moderated:
+                self.logger.warning("xAI content moderation withheld the video")
+            else:
+                video_url = response.url
+                if not video_url:
+                    raise RuntimeError("No video URL in response")
 
-            self.logger.info(f"Downloading video from: {video_url}")
-            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as f:
-                video_response = requests.get(video_url, timeout=300)
-                video_response.raise_for_status()
-                f.write(video_response.content)
-                video_path = f.name
+                self.logger.info(f"Downloading video from: {video_url}")
+                with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as f:
+                    video_response = requests.get(video_url, timeout=300)
+                    video_response.raise_for_status()
+                    f.write(video_response.content)
+                    video_path = f.name
+                video_file = File(path=video_path)
 
             # Get duration from response or use input
             duration_seconds = getattr(response, 'duration', float(input_data.duration))
@@ -147,6 +160,7 @@ class App(BaseApp):
                         fps=24,
                         extra={
                             "mode": "reference-to-video",
+                            "upstream_cost_usd": cost_usd,
                             "aspect_ratio": input_data.aspect_ratio,
                             "reference_count": len(input_data.reference_images),
                         }
@@ -154,10 +168,12 @@ class App(BaseApp):
                 ]
             )
 
-            self.logger.info(f"Video generated successfully: {video_path}")
+            self.logger.info(f"Video generated: moderated={moderated}, billed {float(duration_seconds)}s output, xAI cost ${cost_usd}")
 
             return AppOutput(
-                video=File(path=video_path),
+                video=video_file,
+                moderated=moderated,
+                notice=MODERATION_NOTICE.format(what="video") if moderated else None,
                 output_meta=output_meta,
             )
 
