@@ -1,0 +1,18 @@
+namespace: infsh
+name: live-transcribe
+description: Live dictation. Stream microphone audio and watch the transcript appear and refine as you speak; a pause settles each phrase, and the finished transcript is the task's output.
+metadata: {}
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: transcribe
+resources:
+    gpu:
+        count: 1
+        vram: 8
+        type: any
+    ram: 4

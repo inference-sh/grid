@@ -1,0 +1,4 @@
+inferencesh>=0.8.2
+faster-whisper>=1.1.0
+numpy
+pydantic>=2
