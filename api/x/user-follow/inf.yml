@@ -9,7 +9,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/165se9bl.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.follow.write
       description: Follow users on X.com
 resources:

@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/te2c36h0.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: google.drive
       description: Full Google Drive access
 resources:

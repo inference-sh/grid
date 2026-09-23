@@ -9,7 +9,7 @@ images:
     banner: ""
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: discord.bot
       description: Send messages to Discord channels via bot
 resources:

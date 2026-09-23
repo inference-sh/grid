@@ -9,7 +9,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/rgqyi7pw.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.tweet.write
       description: Delete posts on X.com
 resources:

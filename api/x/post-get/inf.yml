@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/h04u68hr.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.tweet.read
       description: Read posts from X.com
 resources:

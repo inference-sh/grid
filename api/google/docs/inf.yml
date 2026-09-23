@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/3sb011la.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: google.docs
       description: Full Google Docs access
 resources:

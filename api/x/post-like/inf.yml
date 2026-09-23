@@ -9,7 +9,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/ag0t36cq.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.like.write
       description: Like posts on X.com
 resources:

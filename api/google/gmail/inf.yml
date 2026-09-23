@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/i49xwgwc.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: google.gmail.send
       description: Send emails on your behalf
     - key: google.gmail.modify

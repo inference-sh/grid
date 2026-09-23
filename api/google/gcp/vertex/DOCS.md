@@ -32,7 +32,7 @@ Each model directory needs:
 | File | Description |
 |------|-------------|
 | `inference.py` | Main app logic (App class with setup/run methods) |
-| `inf.yml` | App metadata (name, description, resources, integrations) |
+| `inf.yml` | App metadata (name, description, resources, credentials) |
 | `input_schema.json` | Generated from AppInput pydantic model |
 | `output_schema.json` | Generated from AppOutput pydantic model |
 | `requirements.txt` | Python dependencies |
@@ -113,7 +113,7 @@ images:
     thumbnail: ""
     banner: ""
 metadata: {}
-integrations:
+credentials:
   - key: gcp.vertex_ai
     description: Access Vertex AI models
 resources:

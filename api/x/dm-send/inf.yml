@@ -9,7 +9,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/39gzabtr.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.dm.write
       description: Send direct messages on X.com
 resources:

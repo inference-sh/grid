@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/hgmya0qf.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.user.read
       description: Read user profiles from X.com
 resources:

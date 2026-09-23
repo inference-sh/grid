@@ -14,7 +14,7 @@ secrets:
     - key: GCP_VIDEO_OUTPUT_BUCKET
       description: GCS bucket URI for video output (e.g. gs://bucket-name/veo-output/)
       optional: true
-integrations:
+credentials:
     - key: gcp.vertex_ai
       description: Access Vertex AI models (Veo, etc.)
 resources:

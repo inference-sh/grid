@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/lm9k2f86.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: google.calendar
       description: Full Google Calendar access
 resources:

@@ -132,7 +132,7 @@ Each app follows this structure:
 
 ```
 app-name/
-├── inf.yml           # App config (name, description, integrations, resources)
+├── inf.yml           # App config (name, description, credentials, resources)
 ├── inference.py      # Main app logic
 ├── requirements.txt  # Python dependencies
 ├── packages.txt      # System packages (optional)
@@ -153,7 +153,7 @@ images:
 env: {}
 kernel: python-3.11
 
-integrations:
+credentials:
   - key: x.scope.permission
     description: What this integration allows
 

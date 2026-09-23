@@ -9,7 +9,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/6w6519xr.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: x.tweet.write
       description: Create threaded posts with text and media on X.com
 resources:

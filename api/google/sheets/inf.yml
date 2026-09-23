@@ -10,7 +10,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/vgbkz22d.png
 env: {}
 kernel: python-3.11
-integrations:
+credentials:
     - key: google.sheets
       description: Full Google Sheets access
 resources:
