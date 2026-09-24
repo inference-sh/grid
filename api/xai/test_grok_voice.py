@@ -241,3 +241,46 @@ def test_billing_counts_each_typed_message_as_a_text_input():
 
     inputs = yields[-1].output_meta.inputs
     assert [i.type for i in inputs] == ["audio", "text", "text"]
+
+
+# ---------------------------------------------------------------------- idle
+
+
+def test_a_session_nobody_speaks_in_ends_itself_and_is_billed():
+    caller = FakeCaller(close_after=30)
+    yields, err, _ = talk([READY, "hang"], caller, idle_minutes=0.005)   # 0.3 s
+
+    assert err is None
+    assert yields[-1].end_reason == "ended after 0.005 minutes with nobody speaking"
+    assert yields[-1].output_meta.inputs[0].seconds < 2, "ended long before the caller would have"
+    assert {"error": {"field": None, "message": "ended after 0.005 minutes with nobody speaking"}} in caller.patches()
+
+
+def test_speech_and_answers_keep_a_session_alive():
+    speech = {"type": "input_audio_buffer.speech_started"}
+    script = [READY, speech, {"type": "response.created"}, "hang"]   # Grok is still answering
+    caller = FakeCaller(close_after=0.8)
+    yields, err, _ = talk(script, caller, idle_minutes=0.005)
+
+    assert err is None
+    assert yields[-1].end_reason == "the caller closed the session"
+
+
+def test_idle_minutes_zero_never_ends_a_session():
+    yields, _, _ = talk([READY, "hang"], FakeCaller(close_after=0.5), idle_minutes=0)
+
+    assert yields[-1].end_reason == "the caller closed the session"
+
+
+# ------------------------------------------------------------------ barge-in
+
+
+def test_talking_over_an_answer_drops_its_queued_audio_once():
+    speech = {"type": "input_audio_buffer.speech_started"}
+    script = [READY, speech, b"\x00\x01" * 480, speech, speech, "hang"]
+    caller = FakeCaller(close_after=0.4)
+    talk(script, caller)
+
+    # Nothing queued before the first speech; one clear after audio went out,
+    # and none again until more audio does.
+    assert [p for p in caller.patches() if "$clear" in p] == [{"$clear": "audio"}]

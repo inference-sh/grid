@@ -76,7 +76,6 @@ QUIET_EVENTS = {
     "response.content_part.done",
     "response.output_audio.delta",
     "response.output_audio.done",
-    "input_audio_buffer.speech_started",
     "input_audio_buffer.speech_stopped",
     "input_audio_buffer.committed",
     "ping",
@@ -131,6 +130,12 @@ class TalkInput(BaseAppInput):
         description="BCP-47 hint for what the user speaks, such as en, ja or es-MX (Spanish and Portuguese need a region). Left empty it is detected.",
     )
     speed: float = Field(default=1.0, ge=0.7, le=1.5, description="Playback speed of the assistant's voice")
+    idle_minutes: float = Field(
+        default=2.0,
+        ge=0,
+        le=60,
+        description="End the session after this long with nobody speaking or typing (0: never). Grok bills every minute the session is open, silent or not.",
+    )
     silence_ms: Optional[int] = Field(
         default=None, ge=0, le=10000, description="Silence that ends the user's turn, in ms. Left empty Grok decides."
     )
@@ -258,6 +263,7 @@ class App(BaseApp):
                     audio_in += len(update.value)
                     await grok.send(update.value)
                 elif update.field == "events":
+                    activity["at"] = time.monotonic()
                     text_inputs += 1
                     await grok.send(json.dumps(_item(update.value)))
                     if isinstance(update.value, UserText):
@@ -290,7 +296,15 @@ class App(BaseApp):
                         text = event.get("content") or event.get("transcript") or ""
                         if conversation.heard(event.get("item_id"), text):
                             await live.send(user_text=conversation.user_text)
+                    elif kind == "input_audio_buffer.speech_started":
+                        activity["at"] = time.monotonic()
+                        # The user talked over the answer: Grok stops, but the
+                        # caller may have seconds of it queued. Drop them.
+                        if audio_out > activity["cleared_at"]:
+                            activity["cleared_at"] = audio_out
+                            await live.clear("audio")
                     elif kind == "response.created":
+                        activity["responding"] = True
                         if conversation.turn_of_user():
                             snapshots.put_nowait(None)
                         await live.send(assistant_text="")
@@ -303,6 +317,8 @@ class App(BaseApp):
                             conversation.assistant_text = text
                             await live.send(assistant_text=text)
                     elif kind == "response.done":
+                        activity["responding"] = False
+                        activity["at"] = time.monotonic()
                         usage = (event.get("response") or {}).get("usage")
                         if usage:
                             self.logger.info("turn usage: %s", json.dumps(usage))
@@ -330,6 +346,22 @@ class App(BaseApp):
             reason = grok_error.get("message") or "Grok closed the session"
             snapshots.put_nowait(_Ended(reason) if ready.is_set() else RuntimeError(reason))
 
+        async def idle_watch() -> None:
+            # Silence still streams, so Grok does not see an idle session;
+            # nobody speaking or typing (and Grok not answering) is idle.
+            while True:
+                limit = input_data.idle_minutes * 60      # read each time: it can change mid-stream
+                await asyncio.sleep(min(5.0, limit / 4) if limit > 0 else 5.0)
+                if limit <= 0 or activity["responding"] or time.monotonic() - activity["at"] < limit:
+                    continue
+                minutes = f"{input_data.idle_minutes:g} minute{'' if input_data.idle_minutes == 1 else 's'}"
+                reason = f"ended after {minutes} with nobody speaking"
+                self.logger.info("%s", reason)
+                if not socket.closed:
+                    await socket.send({"error": {"field": None, "message": reason}})
+                snapshots.put_nowait(_Ended(reason))
+                return
+
         def snapshot(partial: bool = True) -> TalkOutput:
             return TalkOutput(
                 user_text=conversation.user_text,
@@ -340,9 +372,11 @@ class App(BaseApp):
             )
 
         grok_error: Dict[str, str] = {}
+        activity: Dict[str, Any] = {"at": time.monotonic(), "responding": False, "cleared_at": 0}
         end_reason = "the caller closed the session"
         uplink_task = asyncio.create_task(uplink())
         downlink_task = asyncio.create_task(downlink())
+        idle_task = asyncio.create_task(idle_watch())
         try:
             while True:
                 item = await snapshots.get()
@@ -356,9 +390,9 @@ class App(BaseApp):
                 yield snapshot()
         finally:
             self._socket = None
-            for task in (uplink_task, downlink_task):
+            for task in (uplink_task, downlink_task, idle_task):
                 task.cancel()
-            await asyncio.gather(uplink_task, downlink_task, return_exceptions=True)
+            await asyncio.gather(uplink_task, downlink_task, idle_task, return_exceptions=True)
             await grok.close()
 
         # The caller is gone: whatever was mid-turn is the last of the conversation.
