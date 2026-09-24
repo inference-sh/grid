@@ -1,0 +1,23 @@
+namespace: infsh
+name: pagerduty
+description: PagerDuty Events API v2 — trigger, acknowledge and resolve incidents, and record change events
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    PAGERDUTY_EVENTS_URL: https://events.pagerduty.com
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2
+title: PagerDuty
+secrets:
+    - key: PAGERDUTY_KEY
+      description: PagerDuty Events API v2 integration key for the service to page
+      optional: false
