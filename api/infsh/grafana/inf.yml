@@ -1,0 +1,24 @@
+namespace: infsh
+name: grafana
+description: Grafana API — alerts, silences, annotations, datasources, and Loki log queries through the datasource proxy
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    GRAFANA_URL: https://telemetry.inference.sh
+kernel: python-3.11
+default_function: list_alerts
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2
+title: Grafana
+secrets:
+    - key: GRAFANA_API_KEY
+      description: Grafana service account token for the instance this app talks to
+      optional: false
