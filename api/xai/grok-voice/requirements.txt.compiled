@@ -8,7 +8,7 @@ charset-normalizer==3.5.1
     # via requests
 idna==3.20
     # via requests
-inferencesh==0.8.4
+inferencesh==0.10.1
     # via -r requirements.txt
 pydantic==2.14.0b2
     # via

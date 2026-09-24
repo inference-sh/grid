@@ -138,14 +138,14 @@ def test_a_non_fatal_grok_error_reaches_the_caller_and_the_session_goes_on():
 
     assert err is None
     assert yields[-1].end_reason == "the caller closed the session"
-    assert {"error": {"field": None, "message": "Grok: unknown voice"}} in caller.patches()
+    assert {"$error": {"field": None, "message": "Grok: unknown voice"}} in caller.patches()
 
 
 def test_the_caller_is_told_why_grok_ended_the_session():
     caller = FakeCaller()
     talk([READY, TIMEOUT, "close"], caller)
 
-    errors = [p["error"]["message"] for p in caller.patches() if "error" in p]
+    errors = [p["$error"]["message"] for p in caller.patches() if "$error" in p]
     assert errors == ["Grok: Conversation timed out after 900.0 seconds due to inactivity"]
 
 
@@ -253,7 +253,7 @@ def test_a_session_nobody_speaks_in_ends_itself_and_is_billed():
     assert err is None
     assert yields[-1].end_reason == "ended after 0.005 minutes with nobody speaking"
     assert yields[-1].output_meta.inputs[0].seconds < 2, "ended long before the caller would have"
-    assert {"error": {"field": None, "message": "ended after 0.005 minutes with nobody speaking"}} in caller.patches()
+    assert {"$error": {"field": None, "message": "ended after 0.005 minutes with nobody speaking"}} in caller.patches()
 
 
 def test_speech_and_answers_keep_a_session_alive():

@@ -330,8 +330,7 @@ class App(BaseApp):
                         err = event.get("error") or {}
                         grok_error["message"] = f"Grok: {err.get('message') or json.dumps(err)}"
                         self.logger.warning("%s", grok_error["message"])
-                        if not socket.closed:
-                            await socket.send({"error": {"field": None, "message": grok_error["message"]}})
+                        await live.error(grok_error["message"])
                     elif kind not in QUIET_EVENTS:
                         self.logger.info("grok event %s: %s", kind, message[:300])
             except asyncio.CancelledError:
@@ -357,8 +356,7 @@ class App(BaseApp):
                 minutes = f"{input_data.idle_minutes:g} minute{'' if input_data.idle_minutes == 1 else 's'}"
                 reason = f"ended after {minutes} with nobody speaking"
                 self.logger.info("%s", reason)
-                if not socket.closed:
-                    await socket.send({"error": {"field": None, "message": reason}})
+                await live.error(reason)
                 snapshots.put_nowait(_Ended(reason))
                 return
 
