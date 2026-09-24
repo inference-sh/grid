@@ -28,7 +28,7 @@ idna==3.11
     #   yarl
 importlib-metadata==8.7.1
     # via opentelemetry-api
-inferencesh==0.8.4
+inferencesh==0.9.0
     # via -r requirements.txt
 multidict==6.7.1
     # via
@@ -76,11 +76,12 @@ typing-extensions==4.15.0
     #   pydantic
     #   pydantic-core
     #   typing-inspection
+    #   xai-sdk
 typing-inspection==0.4.2
     # via pydantic
 urllib3==2.6.3
     # via requests
-xai-sdk==1.10.0
+xai-sdk==1.19.0
     # via -r requirements.txt
 yarl==1.23.0
     # via aiohttp

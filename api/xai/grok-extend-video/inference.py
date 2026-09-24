@@ -5,6 +5,7 @@ Extend existing videos using xAI's Grok Imagine Video model.
 Takes an existing video and generates additional frames to continue it.
 """
 
+import asyncio
 from typing import Optional, Literal
 
 import tempfile
@@ -21,6 +22,7 @@ from .xai_helper import (
     create_xai_client,
     setup_logger,
     retry_on_rate_limit,
+    wait_for_video,
     get_video_dimensions,
 )
 
@@ -61,8 +63,17 @@ class App(BaseApp):
         self.model = "grok-imagine-video"
         self.logger.info(f"Grok Extend Video initialized with model: {self.model}")
 
+    async def on_cancel(self):
+        self._cancel = True
+        return True
+
+    def _cancelled(self) -> bool:
+        ctx = getattr(self, "context", None)
+        return self._cancel or bool(ctx is not None and getattr(ctx, "cancel_requested", False))
+
     async def run(self, input_data: AppInput) -> AppOutput:
         """Extend a video using Grok Imagine Video."""
+        self._cancel = False
         try:
             self.logger.info(f"Starting video extension")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
@@ -83,12 +94,13 @@ class App(BaseApp):
                 kwargs["duration"] = input_data.duration
                 self.logger.info(f"Duration: {input_data.duration}s")
 
-            # Extend video (SDK handles polling automatically, with 429 retry)
-            self.logger.info("Starting video extension (SDK will poll automatically)...")
-            response = await retry_on_rate_limit(
-                lambda: self.client.video.extend(**kwargs),
-                logger=self.logger,
+            # Start the job, then poll it without blocking the event loop: no
+            # timeout (the platform owns it) and a cancel stops polling.
+            start = await retry_on_rate_limit(
+                lambda: self.client.video.extend_start(**kwargs), logger=self.logger, in_thread=True,
             )
+            self.logger.info(f"Video request started: {start.request_id}")
+            response = await wait_for_video(self.client, start.request_id, self.logger, self._cancelled)
 
             # A moderated video is generated and billed by xAI, so the run
             # succeeds and is billed with the video left out.
@@ -104,7 +116,7 @@ class App(BaseApp):
 
                 self.logger.info(f"Downloading extended video from: {video_url}")
                 with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as f:
-                    video_response = requests.get(video_url, timeout=300)
+                    video_response = await asyncio.to_thread(requests.get, video_url, timeout=300)
                     video_response.raise_for_status()
                     f.write(video_response.content)
                     video_path = f.name

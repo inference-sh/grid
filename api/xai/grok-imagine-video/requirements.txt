@@ -1,4 +1,4 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
-xai_sdk # xAI official SDK
+xai-sdk >= 1.19.0 # xAI official SDK (video.start/extend_start)
 requests # for downloading videos
