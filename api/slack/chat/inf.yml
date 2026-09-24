@@ -1,0 +1,24 @@
+namespace: slack
+name: chat
+description: Post, edit and delete Slack messages, and list channels — outbound messaging for agents and monitors
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    SLACK_API_URL: https://slack.com/api
+kernel: python-3.11
+default_function: post_message
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2
+title: Slack Chat
+secrets:
+    - key: SLACK_BOT_TOKEN
+      description: Slack bot user OAuth token (xoxb-...) with chat:write and channels:read
+      optional: false
