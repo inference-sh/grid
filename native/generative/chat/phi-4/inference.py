@@ -8,12 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ImageCapabilityMixin,
-    ReasoningCapabilityMixin,
-    ToolsCapabilityMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from pydantic import Field
@@ -45,7 +42,7 @@ configs = {
     },
 }
 
-class AppInput(LLMInput, ImageCapabilityMixin, ReasoningCapabilityMixin, ToolsCapabilityMixin):
+class AppInput(LLMInput):
     """Phi-4 input model with image, reasoning and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",

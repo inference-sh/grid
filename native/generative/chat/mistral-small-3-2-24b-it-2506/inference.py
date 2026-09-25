@@ -8,14 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ImageCapabilityMixin,
-    ToolsCapabilityMixin,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolCallsMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from pydantic import Field
 
@@ -62,7 +57,7 @@ with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "
 with open(os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt"), "r") as f:
     SYSTEM_PROMPT = f.read()
 
-class AppInput(LLMInput, ImageCapabilityMixin, ToolsCapabilityMixin, ReasoningCapabilityMixin):
+class AppInput(LLMInput):
     """Mistral Small 3.2 24B IT 2506 input model with image and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
@@ -70,7 +65,7 @@ class AppInput(LLMInput, ImageCapabilityMixin, ToolsCapabilityMixin, ReasoningCa
     )
     pass
 
-class AppOutput(ToolCallsMixin, ReasoningMixin, LLMOutput):
+class AppOutput(LLMOutput):
     """Mistral Small 3.2 24B IT 2506 output model with token usage and timing information."""
     pass
 

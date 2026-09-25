@@ -7,11 +7,6 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
-    ImageCapabilityMixin,
 )
 from inferencesh.openai import OpenAIChatMixin
 from .gemini_chat_helper import create_vertex_client, setup_logger, stream_completion
@@ -19,14 +14,14 @@ from .gemini_chat_helper import create_vertex_client, setup_logger, stream_compl
 DEFAULT_MODEL = "gemini-2.0-flash-lite-001"
 
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin):
+class AppInput(LLMInput):
     context_size: int = Field(default=1048576, description="The context size for the model.")
     temperature: float = Field(default=1.0, ge=0.0, le=2.0)
     top_k: int = Field(default=40, ge=-1, description="Top-k sampling. -1 to disable.")
     top_p: float = Field(default=0.95, ge=0.0, le=1.0)
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
+class AppOutput(LLMOutput, BaseAppOutput):
     pass
 
 

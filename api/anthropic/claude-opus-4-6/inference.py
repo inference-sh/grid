@@ -7,11 +7,6 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
-    ImageCapabilityMixin,
 )
 from inferencesh.openai import OpenAIChatMixin
 from .anthropic_helper import stream_completion, complete
@@ -21,12 +16,12 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_KEY")
 DEFAULT_MODEL = "claude-opus-4-6"
 
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin):
+class AppInput(LLMInput):
     context_size: int = Field(default=1000000, description="The context size for the model.")
     stream: bool = Field(default=True, description="Stream the response or return complete response")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
+class AppOutput(LLMOutput, BaseAppOutput):
     pass
 
 

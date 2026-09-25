@@ -7,12 +7,6 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
-    ImageCapabilityMixin,
-    FileCapabilityMixin
 )
 from inferencesh.openai import OpenAIChatMixin
 from .minimax_llm import stream_completion
@@ -21,12 +15,12 @@ MINIMAX_KEY = os.getenv("MINIMAX_KEY")
 DEFAULT_MODEL = "MiniMax-M3"
 
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin, FileCapabilityMixin):
+class AppInput(LLMInput):
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=1048576, description="The context size for the model.")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
+class AppOutput(LLMOutput, BaseAppOutput):
     images: Optional[List[str]] = None
 
 

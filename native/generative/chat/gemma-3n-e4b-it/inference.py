@@ -8,10 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ImageCapabilityMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from pydantic import Field
@@ -48,7 +47,7 @@ configs = {
     }
 }
 
-class AppInput(LLMInput, ImageCapabilityMixin):
+class AppInput(LLMInput):
     """Gemma 3N E4B IT input model with image and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",

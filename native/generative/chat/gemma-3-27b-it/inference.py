@@ -8,10 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ImageCapabilityMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from llama_cpp import Llama
@@ -43,7 +42,7 @@ configs = {
     }
 }
 
-class AppInput(LLMInput, ImageCapabilityMixin):
+class AppInput(LLMInput):
     """Gemma 3 27B IT input model with image support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",

@@ -7,12 +7,6 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
-    ImageCapabilityMixin,
-    FileCapabilityMixin
 )
 from inferencesh.openai import OpenAIChatMixin
 from .opper import stream_completion, complete
@@ -24,14 +18,14 @@ OPPER_API_KEY = os.getenv("OPPER_KEY")
 DEFAULT_MODEL = "anthropic/claude-sonnet-4-5"
 
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin, ImageCapabilityMixin, FileCapabilityMixin):
+class AppInput(LLMInput):
     """Opper input model with reasoning and tools support."""
     reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
     context_size: int = Field(default=200000, description="The context size for the model.")
     stream: bool = Field(default=True, description="Stream the response (True) or return complete response (False)")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
+class AppOutput(LLMOutput, BaseAppOutput):
     """Opper output model with reasoning, tool calls, and usage information."""
     pass
 

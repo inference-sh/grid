@@ -8,10 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ImageCapabilityMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from llama_cpp import Llama

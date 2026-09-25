@@ -8,11 +8,9 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
     build_messages,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from pydantic import Field
@@ -40,7 +38,7 @@ configs = {
     }
 }
 
-class AppInput(LLMInput, ReasoningCapabilityMixin):
+class AppInput(LLMInput):
     """Qwen3 30B A3B input model with image and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
@@ -48,7 +46,7 @@ class AppInput(LLMInput, ReasoningCapabilityMixin):
     )
     pass
 
-class AppOutput(ReasoningMixin, LLMOutput):
+class AppOutput(LLMOutput):
     """Qwen3 30B A3B output model with token usage and timing information."""
     pass
 

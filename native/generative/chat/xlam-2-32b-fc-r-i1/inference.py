@@ -7,12 +7,10 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
     build_messages,
     build_tools,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from pydantic import Field
@@ -39,7 +37,7 @@ configs = {
     },
 }
 
-class AppInput(LLMInput, ToolsCapabilityMixin):
+class AppInput(LLMInput):
     """xLAM 2 32B FC R I1 input model with image and reasoning support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
@@ -47,7 +45,7 @@ class AppInput(LLMInput, ToolsCapabilityMixin):
     )
     pass
 
-class AppOutput(ToolCallsMixin, LLMOutput):
+class AppOutput(LLMOutput):
     """xLAM 2 32B FC R I1 output model with token usage and timing information."""
     pass
 

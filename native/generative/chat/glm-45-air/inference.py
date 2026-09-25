@@ -7,14 +7,10 @@ from inferencesh.models.llm import (
     LLMInput,
     LLMOutput,
     LLMDelta,
-    ReasoningCapabilityMixin,
-    ReasoningMixin,
-    ToolsCapabilityMixin,
-    ToolCallsMixin,
     build_messages,
     build_tools,
     stream_generate,
-    ResponseTransformer
+    ResponseTransformer,
 )
 from typing import AsyncGenerator, Union
 from pydantic import Field
@@ -76,7 +72,7 @@ jinja_formatter = Jinja2ChatFormatter(
     bos_token="<bos>"
 )
 
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
+class AppInput(LLMInput):
     """GLM-4.5-Air input model with image and tools support."""
     system_prompt: str = Field(
         description="The system prompt to use for the model",
@@ -84,7 +80,7 @@ class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
     )
     pass
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput):
+class AppOutput(LLMOutput):
     """GLM-4.5-Air output model with token usage and timing information."""
     pass
 
