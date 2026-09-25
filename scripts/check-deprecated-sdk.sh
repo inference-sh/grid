@@ -13,16 +13,19 @@ cd "$(dirname "$0")/.."
 pattern='CapabilityMixin|ReasoningMixin|ToolCallsMixin|def setup\(self,[^)]*\bmetadata\b'
 baseline=scripts/deprecated-sdk-baseline.txt
 
-current=$(git grep --untracked -lE "$pattern" -- '*.py' '*.sh' ':!.claude' ':!scripts/check-deprecated-sdk.sh' | sort)
+# git grep exits 1 when nothing matches (the goal); keep real errors (>1) fatal.
+current=$(git grep --untracked -lE "$pattern" -- '*.py' '*.sh' ':!.claude' ':!scripts/check-deprecated-sdk.sh' || [ $? -eq 1 ])
+# One path per line, nothing at all when there are none.
+offenders() { [ -z "$current" ] || printf '%s\n' "$current" | sort; }
 
 if [ "${1:-}" = "--update" ]; then
-    printf '%s\n' "$current" > "$baseline"
+    offenders > "$baseline"
     echo "baseline: $(wc -l < "$baseline") files"
     exit 0
 fi
 
-new=$(comm -23 <(printf '%s\n' "$current") <(sort "$baseline"))
-fixed=$(comm -13 <(printf '%s\n' "$current") <(sort "$baseline"))
+new=$(comm -23 <(offenders) <(sort "$baseline"))
+fixed=$(comm -13 <(offenders) <(sort "$baseline"))
 
 if [ -n "$fixed" ]; then
     echo "no longer offending (run with --update to drop from the baseline):"
