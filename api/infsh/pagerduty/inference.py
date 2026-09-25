@@ -10,7 +10,6 @@ Free to run — every function reports empty usage metas so pricing zeroes it.
 """
 
 import logging
-import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Literal, Optional
 

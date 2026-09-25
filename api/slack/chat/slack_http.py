@@ -50,7 +50,10 @@ def get_bot_token() -> str:
 
 def resolve_base_url() -> str:
     """The Slack API base, from app env only. The request never picks where the token goes."""
-    return (os.environ.get("SLACK_API_URL") or DEFAULT_BASE_URL).strip().rstrip("/")
+    candidate = (os.environ.get("SLACK_API_URL") or DEFAULT_BASE_URL).strip().rstrip("/")
+    if not candidate.startswith(("http://", "https://")):
+        raise ValueError(f"SLACK_API_URL must start with http:// or https://, got {candidate!r}")
+    return candidate
 
 
 class SlackClient:
