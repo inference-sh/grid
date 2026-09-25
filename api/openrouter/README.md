@@ -18,7 +18,7 @@ This will:
 
 1. Run `belt app init <app-dir>` to create the proper app skeleton
 2. Fetch the model's capabilities, pricing, and context length from the OpenRouter API
-3. Overlay `inference.py`, `inf.yml`, `__init__.py`, and `requirements.txt` with the right mixins for the model's modality
+3. Overlay `inference.py`, `inf.yml`, `__init__.py`, and `requirements.txt`; `inf.yml` capabilities come from the model's input modalities and supported parameters
 4. Symlink the shared `openrouter.py` helper
 5. Generate `MODEL.md` with pricing and supported parameters
 
@@ -26,16 +26,7 @@ If `app-dir` is omitted, it derives one from the model ID (e.g. `anthropic/claud
 
 ## How it works
 
-All apps share a single `openrouter.py` helper (symlinked into each app dir) that handles streaming, tool calls, reasoning, and usage tracking. Each app is just ~60 lines that set `DEFAULT_MODEL` and declare the right input mixins.
-
-The scaffold auto-detects modality from the API and picks mixins accordingly:
-
-| Modality | Extra Mixins |
-|----------|-------------|
-| `text->text` | _(none)_ |
-| `text+image->text` | `ImageCapabilityMixin` |
-| `text+image+file->text` | `ImageCapabilityMixin`, `FileCapabilityMixin` |
-| `text+image+file+audio+video->text` | `ImageCapabilityMixin`, `FileCapabilityMixin` |
+All apps share a single `openrouter.py` helper (symlinked into each app dir) that handles streaming, tool calls, reasoning, and usage tracking. It also defines the app base: `OpenRouterChatApp` (setup, the delta-streaming run body, and the `openai` function) and `OpenRouterOutput`. Each app's `inference.py` only sets `DEFAULT_MODEL`, declares `AppInput` (context size, sampling defaults) and a typed `run` that delegates to `self._stream`. A change to the run protocol edits `openrouter.py` and `or-scaffold.sh`, not every app.
 
 ## After scaffolding
 
@@ -94,7 +85,7 @@ in `openrouter.py`. For other models, add hooks in `_MODEL_HOOKS` as needed.
 ### Adding sampling fields to a new app
 
 ```python
-class AppInput(LLMInput, ReasoningCapabilityMixin, ToolsCapabilityMixin):
+class AppInput(LLMInput):
     # Override LLMInput defaults with vendor-recommended values
     temperature: float = Field(default=0.6, ge=0.0, le=2.0)
     top_p: float = Field(default=0.95, ge=0.0, le=1.0)

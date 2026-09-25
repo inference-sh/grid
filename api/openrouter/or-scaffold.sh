@@ -9,8 +9,8 @@
 #
 # 1. Runs `belt app init` to create the proper app skeleton
 # 2. Fetches model capabilities & pricing from the OpenRouter API
-# 3. Overwrites inference.py, inf.yml, __init__.py, requirements.txt
-#    with OpenRouter-specific versions based on model capabilities
+# 3. Overwrites inference.py (model config on top of OpenRouterChatApp), inf.yml,
+#    __init__.py, requirements.txt
 # 4. Symlinks the shared openrouter.py helper
 # 5. Generates MODEL.md with pricing and capability reference
 #
@@ -32,7 +32,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- Step 1: Derive app dir name from model ID if not provided ---
 if [[ -z "$APP_DIR" ]]; then
-    APP_DIR=$(echo "$MODEL_ID" | sed 's|.*/||' | sed 's|:.*||' | tr '.' '' | tr -cs 'a-z0-9-' '-' | sed 's/-$//')
+    APP_DIR=$(echo "$MODEL_ID" | sed 's|.*/||' | sed 's|:.*||' | tr -d '.' | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9-' '-' | sed 's/-$//')
 fi
 
 # --- Step 2: belt app init (creates the proper skeleton) ---
@@ -102,105 +102,67 @@ max_completion = top_provider.get("max_completion_tokens", 64000) or 64000
 prompt_per_m = prompt_price * 1_000_000
 completion_per_m = completion_price * 1_000_000
 
-# --- Determine capabilities from modality ---
-capabilities = ["reasoning"]
-has_image = "image" in input_modalities
-has_file = "file" in input_modalities
-
-if has_image:
+# --- Capabilities from the model's modalities and supported parameters ---
+has_reasoning = "reasoning" in supported_params
+capabilities = []
+if has_reasoning:
+    capabilities.append("reasoning")
+if "image" in input_modalities:
     capabilities.append("image")
-if has_file:
+if "file" in input_modalities:
     capabilities.append("file")
-
-# --- Build mixin imports based on capabilities ---
-extra_imports = []
-input_mixins = ["LLMInput", "ReasoningCapabilityMixin", "ToolsCapabilityMixin"]
-if has_image:
-    extra_imports.append("ImageCapabilityMixin")
-    input_mixins.append("ImageCapabilityMixin")
-if has_file:
-    extra_imports.append("FileCapabilityMixin")
-    input_mixins.append("FileCapabilityMixin")
-
-all_imports = [
-    "LLMInput",
-    "LLMOutput",
-    "ReasoningCapabilityMixin",
-    "ReasoningMixin",
-    "ToolsCapabilityMixin",
-    "ToolCallsMixin",
-] + extra_imports
-
-import_block = ",\n    ".join(all_imports)
-mixin_str = ", ".join(input_mixins)
+if "tools" in supported_params:
+    capabilities.append("tools")
 
 short_desc = description.split(".")[0].strip() + "." if "." in description else description[:200]
 
 # --- Overlay files onto belt-initialized app ---
 
-# inference.py
+# inference.py: model config only; setup and the streaming run body live in
+# OpenRouterChatApp (openrouter.py).
+reasoning_field = (
+    '\n    reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")'
+    if has_reasoning else ""
+)
 with open(os.path.join(out_dir, "inference.py"), "w") as f:
-    f.write(f'''import os
-from typing import AsyncGenerator, List, Optional
+    f.write(f'''from typing import AsyncGenerator, Union
 from pydantic import Field
 
-from inferencesh import BaseApp, BaseAppOutput
-from inferencesh.models.llm import (
-    {import_block}
-)
-from .openrouter import stream_completion
-from openai import AsyncOpenAI
-
-# OpenRouter configuration
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+from inferencesh.models.llm import LLMDelta, LLMInput
+from .openrouter import OpenRouterChatApp, OpenRouterOutput
 
 DEFAULT_MODEL = "{model_id}"
 
 
-class AppInput({mixin_str}):
-    """OpenRouter input model with reasoning and tools support."""
-    reasoning_exclude: bool = Field(default=False, description="Exclude reasoning tokens from response")
+class AppInput(LLMInput):
+    """OpenRouter input model for {name}."""{reasoning_field}
     context_size: int = Field(default={context_length}, description="The context size for the model.")
 
 
-class AppOutput(ReasoningMixin, ToolCallsMixin, LLMOutput, BaseAppOutput):
+class AppOutput(OpenRouterOutput):
     """OpenRouter output model with reasoning, tool calls, and usage information."""
-    images: Optional[List[str]] = None
 
 
-class App(BaseApp):
-    def __init__(self):
-        super().__init__()
-        self.client = None
-
-    async def setup(self, metadata):
-        if not OPENROUTER_API_KEY:
-            raise ValueError("OPENROUTER_API_KEY environment variable is required")
-        self.client = AsyncOpenAI(base_url=OPENROUTER_BASE_URL, api_key=OPENROUTER_API_KEY)
-        print("OpenRouter client initialization complete!")
-
-    async def run(self, input_data: AppInput, metadata) -> AsyncGenerator[AppOutput, None]:
-        if not self.client:
-            raise RuntimeError("OpenRouter client not initialized. Call setup() first.")
-
-        async for output in stream_completion(self.client, input_data, DEFAULT_MODEL):
-            yield AppOutput(**output)
-
-    async def unload(self):
-        self.client = None
+class App(OpenRouterChatApp):
+    async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
+        async for out in self._stream(input_data, AppOutput, DEFAULT_MODEL):
+            yield out
 ''')
 
 # inf.yml
-caps_yaml = "\n".join(f"        - {c}" for c in capabilities)
+caps_yaml = "".join(f"\n        - {c}" for c in capabilities)
+caps_block = f"\n    capabilities:{caps_yaml}" if capabilities else " {}"
 with open(os.path.join(out_dir, "inf.yml"), "w") as f:
     f.write(f'''namespace: openrouter
 name: {app_dir}
 description: {short_desc}
-metadata:
-    capabilities:
-{caps_yaml}
+metadata:{caps_block}
 category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
 images:
     card: ""
     thumbnail: ""
@@ -223,7 +185,7 @@ with open(os.path.join(out_dir, "__init__.py"), "w") as f:
 
 # requirements.txt
 with open(os.path.join(out_dir, "requirements.txt"), "w") as f:
-    f.write("pydantic >= 2.0.0\n\n\ninferencesh >= 0.6.30\nopenai >= 1.0.0\n")
+    f.write("pydantic >= 2.0.0\n\n\ninferencesh >= 0.7.36\nhttpx >= 0.27.0, < 1.0\n")
 
 # Symlink openrouter.py (remove belt's default if exists)
 symlink_path = os.path.join(out_dir, "openrouter.py")

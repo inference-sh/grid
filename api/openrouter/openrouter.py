@@ -9,12 +9,13 @@ import json
 import logging
 import os
 import time
-from typing import List, Optional, Dict, Any, AsyncGenerator
+from typing import List, Optional, Dict, Any, AsyncGenerator, Type, Union
 
 import httpx
 
-from inferencesh import File, OutputMeta, TextMeta
-from inferencesh.models.llm import build_openai_messages, build_tools, openai_response_format, openai_tool_choice
+from inferencesh import BaseApp, File, OutputMeta, TextMeta
+from inferencesh.models.llm import LLMDelta, LLMOutput, build_openai_messages, build_tools, openai_response_format, openai_tool_choice
+from inferencesh.openai import OpenAIChatMixin
 from inferencesh.models.output_meta import RawMeta
 
 logger = logging.getLogger(__name__)
@@ -636,3 +637,32 @@ async def stream_completion(
             raise RuntimeError(f"Stream timed out — {detail}")
         finally:
             await resp.aclose()
+
+
+# ---------------------------------------------------------------------------
+# App base
+# ---------------------------------------------------------------------------
+# Every app in this namespace subclasses these. inference.py keeps only the
+# model-specific config and a typed run() (function discovery and the openai
+# adapter read AppInput/AppOutput from run's hints).
+
+class OpenRouterOutput(LLMOutput):
+    images: Optional[List[File]] = None
+
+
+class OpenRouterChatApp(OpenAIChatMixin, BaseApp):
+    async def setup(self):
+        if not os.getenv("OPENROUTER_API_KEY"):
+            raise ValueError("OPENROUTER_API_KEY environment variable is required")
+        print("OpenRouter ready")
+
+    async def _stream(
+        self, input_data, output_type: Type[OpenRouterOutput], model: str,
+    ) -> AsyncGenerator[Union[LLMDelta, OpenRouterOutput], None]:
+        last_output = None
+        async for output, delta in stream_completion(os.environ["OPENROUTER_API_KEY"], input_data, model, with_deltas=True):
+            if delta:
+                yield LLMDelta(**delta)
+            last_output = output
+        if last_output:
+            yield output_type(**last_output)
