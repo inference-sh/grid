@@ -18,7 +18,7 @@ This will:
 
 1. Run `belt app init <app-dir>` to create the proper app skeleton
 2. Fetch the model's capabilities, pricing, and context length from the OpenRouter API
-3. Overlay `inference.py`, `inf.yml`, `__init__.py`, and `requirements.txt`; `inf.yml` capabilities come from the model's input modalities and supported parameters
+3. Overlay `inference.py`, `inf.yml`, `__init__.py`, and `requirements.txt`; `inf.yml` capabilities (`reasoning`, `image`, `file`) come from the model's supported parameters and input modalities
 4. Symlink the shared `openrouter.py` helper
 5. Generate `MODEL.md` with pricing and supported parameters
 

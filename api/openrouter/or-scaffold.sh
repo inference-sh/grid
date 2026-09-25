@@ -102,7 +102,7 @@ max_completion = top_provider.get("max_completion_tokens", 64000) or 64000
 prompt_per_m = prompt_price * 1_000_000
 completion_per_m = completion_price * 1_000_000
 
-# --- Capabilities from the model's modalities and supported parameters ---
+# --- Capabilities: the reasoning/image/file labels the rest of the fleet declares ---
 has_reasoning = "reasoning" in supported_params
 capabilities = []
 if has_reasoning:
@@ -111,8 +111,6 @@ if "image" in input_modalities:
     capabilities.append("image")
 if "file" in input_modalities:
     capabilities.append("file")
-if "tools" in supported_params:
-    capabilities.append("tools")
 
 short_desc = description.split(".")[0].strip() + "." if "." in description else description[:200]
 
