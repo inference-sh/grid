@@ -39,15 +39,7 @@ SOURCE_HELP = (
 
 
 class EventInput(BaseAppInput):
-    """Shared by every call: which PagerDuty region to send to."""
-
-    base_url: Optional[str] = Field(
-        default=None,
-        description="Events API base, for the EU service region "
-        "(https://events.eu.pagerduty.com). Defaults to the app's configured "
-        "PAGERDUTY_EVENTS_URL, or the US endpoint. The routing key always comes from "
-        "your team's PAGERDUTY_KEY secret, never from the request.",
-    )
+    """Shared by every call. The endpoint and routing key come from app env and secrets."""
 
 
 class Link(BaseModel):
@@ -185,7 +177,7 @@ class App(BaseApp):
             f"triggering {input_data.severity} incident from {input_data.source}: "
             f"{input_data.summary[:120]}"
         )
-        result = await self.client.enqueue(body, base_url=input_data.base_url)
+        result = await self.client.enqueue(body)
         dedup_key = str(result.get("dedup_key") or input_data.dedup_key or "")
         self.logger.info(f"triggered incident dedup_key={dedup_key}")
 
@@ -201,7 +193,6 @@ class App(BaseApp):
         self.logger.info(f"acknowledging {input_data.dedup_key}")
         result = await self.client.enqueue(
             {"event_action": "acknowledge", "dedup_key": input_data.dedup_key},
-            base_url=input_data.base_url,
         )
         return AcknowledgeAlertOutput(
             dedup_key=input_data.dedup_key,
@@ -215,7 +206,6 @@ class App(BaseApp):
         self.logger.info(f"resolving {input_data.dedup_key}")
         result = await self.client.enqueue(
             {"event_action": "resolve", "dedup_key": input_data.dedup_key},
-            base_url=input_data.base_url,
         )
         return ResolveAlertOutput(
             dedup_key=input_data.dedup_key,
@@ -240,7 +230,7 @@ class App(BaseApp):
             body["links"] = [{"href": l.href, "text": l.text} for l in input_data.links]
 
         self.logger.info(f"sending change event: {input_data.summary[:120]}")
-        result = await self.client.enqueue_change(body, base_url=input_data.base_url)
+        result = await self.client.enqueue_change(body)
         return SendChangeEventOutput(
             status=str(result.get("status") or ""),
             message=str(result.get("message") or ""),

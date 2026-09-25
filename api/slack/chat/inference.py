@@ -5,7 +5,7 @@ separates this from a conversation transport, and it is what a monitor or a
 triage agent needs when it decides at 03:00 that something is worth writing
 down.
 
-The bot token is the team's own SLACK_BOT_TOKEN secret, never a request field.
+The bot token comes from the team's Slack integration (credential), never a request field.
 Free to run — every function reports empty usage metas so pricing zeroes it.
 """
 
@@ -37,12 +37,6 @@ THREAD_HELP = (
 
 class SlackInput(BaseAppInput):
     """Every function shares the workspace connection."""
-
-    base_url: Optional[str] = Field(
-        default=None,
-        description="Slack API base. Defaults to https://slack.com/api. The bot token "
-        "always comes from your team's SLACK_BOT_TOKEN secret, never from the request.",
-    )
 
 
 class PostMessageInput(SlackInput):
@@ -184,11 +178,11 @@ class App(BaseApp):
             f"{' in thread ' + input_data.thread_ts if input_data.thread_ts else ''}: "
             f"{input_data.text[:100]}"
         )
-        result = await self.client.call("chat.postMessage", body, base_url=input_data.base_url)
+        result = await self.client.call("chat.postMessage", body)
 
         ts = str(result.get("ts") or "")
         channel_id = str(result.get("channel") or "")
-        permalink = await self.client.permalink(channel_id, ts, base_url=input_data.base_url)
+        permalink = await self.client.permalink(channel_id, ts)
         self.logger.info(f"posted ts={ts} channel={channel_id}")
 
         return PostMessageOutput(
@@ -206,7 +200,7 @@ class App(BaseApp):
         body["blocks"] = input_data.blocks if input_data.blocks else []
 
         self.logger.info(f"updating {input_data.ts} in {input_data.channel}")
-        result = await self.client.call("chat.update", body, base_url=input_data.base_url)
+        result = await self.client.call("chat.update", body)
         return UpdateMessageOutput(
             ts=str(result.get("ts") or input_data.ts),
             channel=str(result.get("channel") or ""),
@@ -219,7 +213,6 @@ class App(BaseApp):
         result = await self.client.call(
             "chat.delete",
             {"channel": _channel(input_data.channel), "ts": input_data.ts},
-            base_url=input_data.base_url,
         )
         return DeleteMessageOutput(
             ts=str(result.get("ts") or input_data.ts),
@@ -239,7 +232,7 @@ class App(BaseApp):
             params["cursor"] = input_data.cursor
 
         result = await self.client.call(
-            "conversations.list", params, base_url=input_data.base_url, method="GET"
+            "conversations.list", params, method="GET"
         )
         channels = [
             Channel(

@@ -10,7 +10,7 @@ logs from a helper.
 
 import asyncio
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import httpx
 
@@ -24,8 +24,8 @@ ERROR_HELP = {
     "not_in_channel": "the bot is not in that channel — invite it with /invite @yourbot",
     "channel_not_found": "no such channel, or the bot cannot see it; private channels "
     "require the bot to be a member",
-    "invalid_auth": "the SLACK_BOT_TOKEN secret is not a valid token",
-    "token_revoked": "the SLACK_BOT_TOKEN secret has been revoked; reinstall the app",
+    "invalid_auth": "the Slack integration's bot token is not valid",
+    "token_revoked": "the Slack integration's bot token has been revoked; reinstall the app",
     "account_inactive": "the token belongs to a deactivated workspace or user",
     "missing_scope": "the bot token lacks a required OAuth scope — chat:write to post, "
     "channels:read for list_channels, chat:write.customize to override name or icon",
@@ -38,28 +38,19 @@ ERROR_HELP = {
 
 
 def get_bot_token() -> str:
-    """The workspace bot token, from the team's SLACK_BOT_TOKEN secret.
-
-    Deliberately not an app input: a bot token is a credential, and the
-    platform already stores one per team.
-    """
+    """The workspace bot token, injected by the team's Slack integration."""
     token = os.environ.get("SLACK_BOT_TOKEN")
     if not token:
         raise RuntimeError(
-            "SLACK_BOT_TOKEN is not set. This app reads the workspace bot token from your "
-            "team's secret of that name — create a Slack app, install it to the workspace, "
-            "copy the Bot User OAuth Token (starts with xoxb-) and set it with "
-            "`belt secrets set SLACK_BOT_TOKEN <token>`. A secret whose record exists but "
-            "holds an empty value is not injected at all."
+            "SLACK_BOT_TOKEN is not set. Connect the Slack integration in Settings and "
+            "provide its bot token (xoxb-...)."
         )
     return token.strip()
 
 
-def resolve_base_url(base_url: Optional[str]) -> str:
-    candidate = (base_url or os.environ.get("SLACK_API_URL") or DEFAULT_BASE_URL).strip().rstrip("/")
-    if not candidate.startswith(("http://", "https://")):
-        raise ValueError(f"base_url must start with http:// or https://, got {candidate!r}")
-    return candidate
+def resolve_base_url() -> str:
+    """The Slack API base, from app env only. The request never picks where the token goes."""
+    return (os.environ.get("SLACK_API_URL") or DEFAULT_BASE_URL).strip().rstrip("/")
 
 
 class SlackClient:
@@ -75,11 +66,10 @@ class SlackClient:
         method_name: str,
         payload: Dict[str, Any],
         *,
-        base_url: Optional[str] = None,
         method: str = "POST",
     ) -> Dict[str, Any]:
         """Call a Web API method and return its body, raising on ok: false."""
-        url = f"{resolve_base_url(base_url)}/{method_name}"
+        url = f"{resolve_base_url()}/{method_name}"
         headers = {"Authorization": f"Bearer {get_bot_token()}"}
 
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -122,9 +112,7 @@ class SlackClient:
 
         raise RuntimeError(f"Slack {method_name} exhausted {MAX_ATTEMPTS} attempts")
 
-    async def permalink(
-        self, channel: str, ts: str, *, base_url: Optional[str] = None
-    ) -> str:
+    async def permalink(self, channel: str, ts: str) -> str:
         """Best-effort permalink. A missing link must not fail a successful post."""
         if not channel or not ts:
             return ""
@@ -132,7 +120,6 @@ class SlackClient:
             body = await self.call(
                 "chat.getPermalink",
                 {"channel": channel, "message_ts": ts},
-                base_url=base_url,
                 method="GET",
             )
             return str(body.get("permalink") or "")

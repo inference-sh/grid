@@ -22,3 +22,6 @@ secrets:
     - key: GRAFANA_API_KEY
       description: Grafana service account token for the instance this app talks to
       optional: false
+    - key: GRAFANA_URL
+      description: Base URL of the Grafana this app talks to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL.
+      optional: true

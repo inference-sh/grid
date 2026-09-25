@@ -18,7 +18,8 @@ resources:
         type: none
     ram: 2
 title: Slack Chat
-secrets:
-    - key: SLACK_BOT_TOKEN
-      description: Slack bot user OAuth token (xoxb-...) with chat:write and channels:read
-      optional: false
+credentials:
+    - key: slack.channels.write
+      description: Post, edit and delete messages in channels
+    - key: slack.channels.read
+      description: List channels for list_channels and name lookup

@@ -10,19 +10,6 @@
           "maxLength": 255,
           "title": "Dedup Key",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Events API base, for the EU service region (https://events.eu.pagerduty.com). Defaults to the app's configured PAGERDUTY_EVENTS_URL, or the US endpoint. The routing key always comes from your team's PAGERDUTY_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -365,19 +352,6 @@
           "maxLength": 255,
           "title": "Dedup Key",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Events API base, for the EU service region (https://events.eu.pagerduty.com). Defaults to the app's configured PAGERDUTY_EVENTS_URL, or the US endpoint. The routing key always comes from your team's PAGERDUTY_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -793,19 +767,6 @@
           "default": null,
           "description": "When the change happened, RFC3339. Defaults to now.",
           "title": "Timestamp"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Events API base, for the EU service region (https://events.eu.pagerduty.com). Defaults to the app's configured PAGERDUTY_EVENTS_URL, or the US endpoint. The routing key always comes from your team's PAGERDUTY_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -1275,19 +1236,6 @@
           "default": null,
           "description": "When the problem started, RFC3339. Defaults to now. Use the condition's real start so the incident timeline is not skewed by triage time.",
           "title": "Timestamp"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Events API base, for the EU service region (https://events.eu.pagerduty.com). Defaults to the app's configured PAGERDUTY_EVENTS_URL, or the US endpoint. The routing key always comes from your team's PAGERDUTY_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [

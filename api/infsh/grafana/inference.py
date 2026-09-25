@@ -4,9 +4,10 @@ Logs live here rather than in their own app because querying Loki goes through
 Grafana's datasource proxy — same host, same token, same permissions. A
 separate Loki app would have been a Grafana client wearing another name.
 
-Point it at any Grafana: base_url is a per-request input, the token comes from
-the caller's own GRAFANA_API_KEY secret, and datasources are resolved by uid or
-name, never by an id that only means something on one instance.
+Point it at any Grafana: the URL and token both come from the team's own
+GRAFANA_URL and GRAFANA_API_KEY secrets, never from the request, and datasources
+are resolved by uid or name, never by an id that only means something on one
+instance.
 
 Free to run — every function reports empty usage metas so pricing zeroes it.
 """
@@ -32,11 +33,6 @@ ALERTMANAGER_PREFIX = "/api/alertmanager/grafana/api/v2"
 
 FREE = OutputMeta(inputs=[], outputs=[])
 
-BASE_URL_HELP = (
-    "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's "
-    "configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY "
-    "secret, never from the request."
-)
 DATASOURCE_HELP = (
     "Loki datasource, by uid or name as it appears in Grafana (numeric ids also work). "
     "Run list_datasources to see what this Grafana has."
@@ -45,9 +41,7 @@ SINCE_HELP = "Window ending now: a number followed by s, m, h, d or w. Ignored w
 
 
 class GrafanaInput(BaseAppInput):
-    """Every function takes the Grafana to talk to."""
-
-    base_url: Optional[str] = Field(default=None, description=BASE_URL_HELP)
+    """Shared by every function. The Grafana URL and token come from secrets and app env."""
 
 
 class WindowInput(GrafanaInput):
@@ -347,7 +341,7 @@ class App(BaseApp):
     async def list_datasources(self, input_data: ListDatasourcesInput) -> ListDatasourcesOutput:
         """List the datasources this Grafana exposes — start here to find a uid."""
         payload = await self.client.request(
-            "GET", "/api/datasources", base_url=input_data.base_url
+            "GET", "/api/datasources"
         )
         found = [
             Datasource(
@@ -373,7 +367,7 @@ class App(BaseApp):
         params += [("filter", _filter_expression(m)) for m in input_data.filters]
 
         payload = await self.client.request(
-            "GET", f"{ALERTMANAGER_PREFIX}/alerts", base_url=input_data.base_url, params=params
+            "GET", f"{ALERTMANAGER_PREFIX}/alerts", params=params
         )
         alerts = [_alert(item) for item in (payload or [])][: input_data.limit]
         self.logger.info(f"list_alerts returned {len(alerts)} alerts")
@@ -387,7 +381,6 @@ class App(BaseApp):
         payload = await self.client.request(
             "GET",
             f"{ALERTMANAGER_PREFIX}/silences",
-            base_url=input_data.base_url,
             params=params or None,
         )
 
@@ -422,7 +415,7 @@ class App(BaseApp):
         }
 
         payload = await self.client.request(
-            "POST", f"{ALERTMANAGER_PREFIX}/silences", base_url=input_data.base_url, json_body=body
+            "POST", f"{ALERTMANAGER_PREFIX}/silences", json_body=body
         )
         silence_id = (payload or {}).get("silenceID") or (payload or {}).get("id") or ""
         self.logger.info(
@@ -440,7 +433,6 @@ class App(BaseApp):
         await self.client.request(
             "DELETE",
             f"{ALERTMANAGER_PREFIX}/silence/{input_data.silence_id}",
-            base_url=input_data.base_url,
         )
         self.logger.info(f"deleted silence {input_data.silence_id}")
         return DeleteSilenceOutput(
@@ -458,7 +450,7 @@ class App(BaseApp):
             body["timeEnd"] = millis(parse_rfc3339(input_data.time_end, "time_end"))
 
         payload = await self.client.request(
-            "POST", "/api/annotations", base_url=input_data.base_url, json_body=body
+            "POST", "/api/annotations", json_body=body
         )
         annotation_id = int((payload or {}).get("id") or 0)
         self.logger.info(f"created annotation {annotation_id} tags={input_data.tags}")
@@ -473,7 +465,7 @@ class App(BaseApp):
     async def query_logs(self, input_data: QueryLogsInput) -> QueryLogsOutput:
         """Query logs over a time range (LogQL query_range)."""
         start, end = resolve_window(input_data.since, input_data.start, input_data.end)
-        prefix = await self.client.datasource_path(input_data.datasource, input_data.base_url)
+        prefix = await self.client.datasource_path(input_data.datasource)
         self.logger.info(
             f"query_logs {input_data.query!r} {start.isoformat()} to {end.isoformat()} "
             f"limit={input_data.limit} direction={input_data.direction}"
@@ -482,7 +474,6 @@ class App(BaseApp):
         payload = await self.client.request(
             "GET",
             f"{prefix}/loki/api/v1/query_range",
-            base_url=input_data.base_url,
             params={
                 "query": input_data.query,
                 "start": to_nanos(start),
@@ -528,14 +519,14 @@ class App(BaseApp):
         self, input_data: QueryLogsInstantInput
     ) -> QueryLogsInstantOutput:
         """Evaluate a log query at a single instant — use this for metric queries."""
-        prefix = await self.client.datasource_path(input_data.datasource, input_data.base_url)
+        prefix = await self.client.datasource_path(input_data.datasource)
         params: Dict[str, Any] = {"query": input_data.query, "limit": input_data.limit}
         if input_data.time:
             params["time"] = to_nanos(parse_rfc3339(input_data.time, "time"))
 
         self.logger.info(f"query_logs_instant {input_data.query!r}")
         payload = await self.client.request(
-            "GET", f"{prefix}/loki/api/v1/query", base_url=input_data.base_url, params=params
+            "GET", f"{prefix}/loki/api/v1/query", params=params
         )
 
         data = (payload or {}).get("data") or {}
@@ -571,11 +562,10 @@ class App(BaseApp):
     async def log_labels(self, input_data: LogLabelsInput) -> LogLabelsOutput:
         """List log label names present in the window."""
         start, end = resolve_window(input_data.since, input_data.start, input_data.end)
-        prefix = await self.client.datasource_path(input_data.datasource, input_data.base_url)
+        prefix = await self.client.datasource_path(input_data.datasource)
         payload = await self.client.request(
             "GET",
             f"{prefix}/loki/api/v1/labels",
-            base_url=input_data.base_url,
             params={"start": to_nanos(start), "end": to_nanos(end)},
         )
         values = (payload or {}).get("data") or []
@@ -585,11 +575,10 @@ class App(BaseApp):
     async def log_label_values(self, input_data: LogLabelValuesInput) -> LogLabelValuesOutput:
         """List the values a log label takes in the window."""
         start, end = resolve_window(input_data.since, input_data.start, input_data.end)
-        prefix = await self.client.datasource_path(input_data.datasource, input_data.base_url)
+        prefix = await self.client.datasource_path(input_data.datasource)
         payload = await self.client.request(
             "GET",
             f"{prefix}/loki/api/v1/label/{input_data.label}/values",
-            base_url=input_data.base_url,
             params={"start": to_nanos(start), "end": to_nanos(end)},
         )
         values = (payload or {}).get("data") or []
@@ -601,11 +590,10 @@ class App(BaseApp):
     async def log_series(self, input_data: LogSeriesInput) -> LogSeriesOutput:
         """List the log label sets matching a stream selector."""
         start, end = resolve_window(input_data.since, input_data.start, input_data.end)
-        prefix = await self.client.datasource_path(input_data.datasource, input_data.base_url)
+        prefix = await self.client.datasource_path(input_data.datasource)
         payload = await self.client.request(
             "GET",
             f"{prefix}/loki/api/v1/series",
-            base_url=input_data.base_url,
             params={
                 "match[]": input_data.selector,
                 "start": to_nanos(start),

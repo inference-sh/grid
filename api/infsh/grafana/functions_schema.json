@@ -43,19 +43,6 @@
           "default": null,
           "description": "End of the annotated region, RFC3339. Omit for a point in time.",
           "title": "Time End"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -462,19 +449,6 @@
           "default": null,
           "description": "Start the silence at this RFC3339 time instead of now.",
           "title": "Starts At"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -817,19 +791,6 @@
           "description": "Silence to expire immediately, from create_silence or list_silences. Deleting a silence lets its alerts notify again.",
           "title": "Silence Id",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -1229,19 +1190,6 @@
           "minimum": 1,
           "title": "Limit",
           "type": "integer"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "title": "ListAlertsInput",
@@ -1631,21 +1579,7 @@
     "kind": "run",
     "capabilities": [],
     "input_schema": {
-      "properties": {
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
-        }
-      },
+      "properties": {},
       "title": "ListDatasourcesInput",
       "type": "object"
     },
@@ -2055,19 +1989,6 @@
           },
           "title": "Filters",
           "type": "array"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "title": "ListSilencesInput",
@@ -2493,19 +2414,6 @@
           "title": "Label",
           "type": "string"
         },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
-        },
         "since": {
           "default": "15m",
           "description": "Window ending now: a number followed by s, m, h, d or w. Ignored when start is given.",
@@ -2883,19 +2791,6 @@
     "capabilities": [],
     "input_schema": {
       "properties": {
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
-        },
         "since": {
           "default": "15m",
           "description": "Window ending now: a number followed by s, m, h, d or w. Ignored when start is given.",
@@ -3271,19 +3166,6 @@
           ],
           "title": "Selector",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         },
         "since": {
           "default": "15m",
@@ -3692,19 +3574,6 @@
           "minimum": 100,
           "title": "Max Line Length",
           "type": "integer"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         },
         "since": {
           "default": "15m",
@@ -4170,19 +4039,6 @@
           "description": "Loki datasource, by uid or name as it appears in Grafana (numeric ids also work). Run list_datasources to see what this Grafana has.",
           "title": "Datasource",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Grafana to talk to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL. The token always comes from your team's GRAFANA_API_KEY secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [

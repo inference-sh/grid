@@ -21,3 +21,6 @@ secrets:
     - key: PAGERDUTY_KEY
       description: PagerDuty Events API v2 integration key for the service to page
       optional: false
+    - key: PAGERDUTY_EVENTS_URL
+      description: Events API base for a non-US service region, e.g. https://events.eu.pagerduty.com. Defaults to the US endpoint.
+      optional: true

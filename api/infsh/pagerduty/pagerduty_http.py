@@ -11,7 +11,7 @@ logs from a helper.
 import asyncio
 import os
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import httpx
 
@@ -39,12 +39,15 @@ def get_routing_key() -> str:
     return key.strip()
 
 
-def resolve_base_url(base_url: Optional[str]) -> str:
-    candidate = (
-        base_url or os.environ.get("PAGERDUTY_EVENTS_URL") or DEFAULT_EVENTS_URL
-    ).strip().rstrip("/")
+def resolve_base_url() -> str:
+    """The Events API base, from the PAGERDUTY_EVENTS_URL secret or app env.
+
+    Never a request field: the routing key goes wherever this points. Set the
+    secret to https://events.eu.pagerduty.com for the EU service region.
+    """
+    candidate = (os.environ.get("PAGERDUTY_EVENTS_URL") or DEFAULT_EVENTS_URL).strip().rstrip("/")
     if not candidate.startswith(("http://", "https://")):
-        raise ValueError(f"base_url must start with http:// or https://, got {candidate!r}")
+        raise ValueError(f"PAGERDUTY_EVENTS_URL must start with http:// or https://, got {candidate!r}")
     return candidate
 
 
@@ -71,16 +74,16 @@ class PagerDutyClient:
     async def aclose(self) -> None:
         await self._client.aclose()
 
-    async def enqueue(self, body: Dict[str, Any], *, base_url: Optional[str] = None) -> Any:
+    async def enqueue(self, body: Dict[str, Any]) -> Any:
         """Send an alert event (trigger, acknowledge or resolve)."""
-        return await self._post("/v2/enqueue", body, base_url)
+        return await self._post("/v2/enqueue", body)
 
-    async def enqueue_change(self, body: Dict[str, Any], *, base_url: Optional[str] = None) -> Any:
+    async def enqueue_change(self, body: Dict[str, Any]) -> Any:
         """Send a change event. These never page."""
-        return await self._post("/v2/change/enqueue", body, base_url)
+        return await self._post("/v2/change/enqueue", body)
 
-    async def _post(self, path: str, body: Dict[str, Any], base_url: Optional[str]) -> Any:
-        url = f"{resolve_base_url(base_url)}{path}"
+    async def _post(self, path: str, body: Dict[str, Any]) -> Any:
+        url = f"{resolve_base_url()}{path}"
         payload = {**body, "routing_key": get_routing_key()}
 
         for attempt in range(1, MAX_ATTEMPTS + 1):

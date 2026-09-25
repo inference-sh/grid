@@ -14,19 +14,6 @@
           "description": "Timestamp of the message to delete.",
           "title": "Ts",
           "type": "string"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Slack API base. Defaults to https://slack.com/api. The bot token always comes from your team's SLACK_BOT_TOKEN secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -405,19 +392,6 @@
           "description": "Skip archived channels.",
           "title": "Exclude Archived",
           "type": "boolean"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Slack API base. Defaults to https://slack.com/api. The bot token always comes from your team's SLACK_BOT_TOKEN secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "title": "ListChannelsInput",
@@ -876,19 +850,6 @@
           "default": null,
           "description": "Override the bot's avatar with an emoji, e.g. :rotating_light:. Needs chat:write.customize.",
           "title": "Icon Emoji"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Slack API base. Defaults to https://slack.com/api. The bot token always comes from your team's SLACK_BOT_TOKEN secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [
@@ -1258,19 +1219,6 @@
           "default": null,
           "description": "Replacement Block Kit blocks. Omitted, existing blocks are cleared and the message becomes plain text.",
           "title": "Blocks"
-        },
-        "base_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Slack API base. Defaults to https://slack.com/api. The bot token always comes from your team's SLACK_BOT_TOKEN secret, never from the request.",
-          "title": "Base Url"
         }
       },
       "required": [

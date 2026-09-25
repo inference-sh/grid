@@ -28,8 +28,8 @@ def get_api_key() -> str:
     """The Grafana token, from the team's own GRAFANA_API_KEY secret.
 
     Deliberately not an app input: the platform already stores secrets per
-    team, so each team points this app at its own Grafana with its own token
-    and no credential travels through a task payload.
+    team, so each team points this app at its own Grafana (GRAFANA_URL) with
+    its own token and no credential travels through a task payload.
     """
     key = os.environ.get("GRAFANA_API_KEY")
     if not key:
@@ -43,16 +43,19 @@ def get_api_key() -> str:
     return key.strip()
 
 
-def resolve_base_url(base_url: Optional[str]) -> str:
-    """Which Grafana to talk to: the caller's, else the GRAFANA_URL default."""
-    candidate = (base_url or os.environ.get("GRAFANA_URL") or "").strip().rstrip("/")
+def resolve_base_url() -> str:
+    """Which Grafana to talk to: the team's GRAFANA_URL secret, else the app env default.
+
+    Never a request field: the token goes wherever this points.
+    """
+    candidate = (os.environ.get("GRAFANA_URL") or "").strip().rstrip("/")
     if not candidate:
         raise RuntimeError(
-            "No Grafana URL. Pass base_url on the request, or set a GRAFANA_URL "
-            "default in the app's env."
+            "No Grafana URL. Set it with `belt secrets set GRAFANA_URL <url>`, or set a "
+            "GRAFANA_URL default in the app's env."
         )
     if not candidate.startswith(("http://", "https://")):
-        raise ValueError(f"base_url must start with http:// or https://, got {candidate!r}")
+        raise ValueError(f"GRAFANA_URL must start with http:// or https://, got {candidate!r}")
     return candidate
 
 
@@ -122,9 +125,8 @@ class GrafanaClient:
     def __init__(self, cancelled=None, timeout: float = 120.0):
         self._client = httpx.AsyncClient(timeout=timeout)
         self._cancelled = cancelled or (lambda: False)
-        # (base_url, datasource) -> proxy path prefix. Keyed, so one caller's
-        # Grafana can never answer for another's.
-        self._datasource_paths: dict[tuple[str, str], str] = {}
+        # datasource -> proxy path prefix
+        self._datasource_paths: dict[str, str] = {}
 
     async def aclose(self) -> None:
         await self._client.aclose()
@@ -134,7 +136,6 @@ class GrafanaClient:
         method: str,
         path: str,
         *,
-        base_url: Optional[str] = None,
         params: Optional[Any] = None,
         json_body: Optional[Any] = None,
     ) -> Any:
@@ -142,7 +143,7 @@ class GrafanaClient:
 
         Returns parsed JSON, or None for an empty body (DELETE returns one).
         """
-        url = f"{resolve_base_url(base_url)}{path}"
+        url = f"{resolve_base_url()}{path}"
         headers = {"Authorization": f"Bearer {get_api_key()}"}
 
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -165,32 +166,30 @@ class GrafanaClient:
 
         raise RuntimeError(f"Grafana request to {url} exhausted {MAX_ATTEMPTS} attempts")
 
-    async def datasource_path(self, datasource: str, base_url: Optional[str]) -> str:
+    async def datasource_path(self, datasource: str) -> str:
         """Proxy path prefix for a datasource, by uid, name or numeric id.
 
         Datasource ids differ per Grafana instance, so nothing here may be
         hardcoded: the uid is asked for by name when it is not already one.
         """
-        resolved_base = resolve_base_url(base_url)
         wanted = (datasource or "").strip()
         if not wanted:
             raise ValueError("datasource must be a uid, a name, or a numeric id")
 
-        cache_key = (resolved_base, wanted)
-        if cache_key in self._datasource_paths:
-            return self._datasource_paths[cache_key]
+        if wanted in self._datasource_paths:
+            return self._datasource_paths[wanted]
 
         if wanted.isdigit():
             path = f"/api/datasources/proxy/{wanted}"
         else:
-            path = f"/api/datasources/proxy/uid/{await self._uid_for(wanted, resolved_base)}"
+            path = f"/api/datasources/proxy/uid/{await self._uid_for(wanted)}"
 
-        self._datasource_paths[cache_key] = path
+        self._datasource_paths[wanted] = path
         return path
 
-    async def _uid_for(self, wanted: str, base_url: str) -> str:
+    async def _uid_for(self, wanted: str) -> str:
         """Match a datasource by uid first, then by name, case-insensitively."""
-        datasources = await self.request("GET", "/api/datasources", base_url=base_url)
+        datasources = await self.request("GET", "/api/datasources")
         available = []
         for item in datasources or []:
             uid, name = str(item.get("uid") or ""), str(item.get("name") or "")
@@ -198,7 +197,7 @@ class GrafanaClient:
             if wanted == uid or wanted.lower() == name.lower():
                 return uid
         raise RuntimeError(
-            f"No datasource {wanted!r} on {base_url}. Available: {'; '.join(available) or 'none'}"
+            f"No datasource {wanted!r} on {resolve_base_url()}. Available: {'; '.join(available) or 'none'}"
         )
 
 
