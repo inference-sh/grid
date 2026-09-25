@@ -80,17 +80,15 @@ class App(BaseApp):
             compile_model=compile_model,
             bnb_4bit=True,  # unsloth Gemma checkpoint is pre-quantized
         )
-        self._perth = None
+        import perth
+        self._perth = perth.PerthImplicitWatermarker()
         self.logger.info("DramaBox ready")
 
     def _watermark(self, wav, sr: int):
         """Resemble Perth watermark on mono, re-broadcast to the original channel count."""
         import numpy as np
-        import perth
         import torch
 
-        if self._perth is None:
-            self._perth = perth.PerthImplicitWatermarker()
         mono = wav.mean(dim=0).numpy() if wav.shape[0] > 1 else wav[0].numpy()
         mono_wm = self._perth.apply_watermark(mono, sample_rate=sr)
         mono_wm = torch.from_numpy(np.asarray(mono_wm, dtype=np.float32)).unsqueeze(0)
@@ -136,10 +134,7 @@ class App(BaseApp):
             waveform, sr = self.server.generate(input_data.prompt, **gen_kwargs)
 
         wav = waveform.detach().cpu().float()
-        try:
-            wav = self._watermark(wav, sr)
-        except Exception as e:
-            self.logger.warning(f"Perth watermark skipped ({e})")
+        wav = self._watermark(wav, sr)
 
         output_path = "/tmp/output.wav"
         sf.write(output_path, wav.T.numpy(), sr)
