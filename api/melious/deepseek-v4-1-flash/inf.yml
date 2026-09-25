@@ -1,0 +1,32 @@
+namespace: melious
+name: deepseek-v4-1-flash
+title: DeepSeek V4.1 Flash
+description: DeepSeek V4.1 Flash — 552B multimodal MoE with 1M context, image input and controllable reasoning. Frontier agentic and coding performance. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: melious
+    tags:
+        - melious
+        - deepseek
+        - deepseek-v4.1-flash
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

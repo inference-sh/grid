@@ -1,0 +1,32 @@
+namespace: melious
+name: qwen3-6-27b
+title: Qwen 3.6 27B
+description: Qwen 3.6 27B — dense 27B vision-language model with 262K context and thinking mode. Strong coding and multimodal reasoning, Apache 2.0. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: melious
+    tags:
+        - melious
+        - qwen
+        - qwen3.6-27b
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

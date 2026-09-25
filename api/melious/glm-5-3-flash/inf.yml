@@ -1,0 +1,32 @@
+namespace: melious
+name: glm-5-3-flash
+title: GLM 5.3 Flash
+description: GLM 5.3 Flash — ZAI's 320B MoE (18B active), the first natively multimodal GLM-5 model. 1M context, image input, low cost. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: melious
+    tags:
+        - melious
+        - glm
+        - glm-5.3-flash
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

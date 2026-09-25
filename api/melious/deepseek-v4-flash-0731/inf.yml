@@ -1,0 +1,31 @@
+namespace: melious
+name: deepseek-v4-flash-0731
+title: DeepSeek V4 Flash 0731
+description: DeepSeek V4 Flash 0731 — 304B MoE with 1M context and low/high/max reasoning effort. Strong agentic coding and tool use. Text-only. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+    provider: melious
+    tags:
+        - melious
+        - deepseek
+        - deepseek-v4-flash-0731
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

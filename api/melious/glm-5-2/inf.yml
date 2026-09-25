@@ -1,0 +1,31 @@
+namespace: melious
+name: glm-5-2
+title: GLM 5.2
+description: GLM 5.2 — ZAI's 744B MoE with 1M context and hybrid reasoning for coding and agentic tasks. MIT license. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+    provider: melious
+    tags:
+        - melious
+        - glm
+        - glm-5.2
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

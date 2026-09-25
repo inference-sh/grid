@@ -1,0 +1,31 @@
+namespace: melious
+name: glm-5-3
+title: GLM 5.3
+description: GLM 5.3 — ZAI's 744B MoE post-trained for complex coding and long-horizon agentic tasks. 1M context, thinking on by default. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+    provider: melious
+    tags:
+        - melious
+        - glm
+        - glm-5.3
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

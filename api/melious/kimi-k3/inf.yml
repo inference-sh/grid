@@ -1,0 +1,32 @@
+namespace: melious
+name: kimi-k3
+title: Kimi K3
+description: Kimi K3 — Moonshot's 2.8T open-weight multimodal agentic model with native vision and 1M context for long-horizon coding and reasoning. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: melious
+    tags:
+        - melious
+        - kimi
+        - kimi-k3
+        - llm
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
