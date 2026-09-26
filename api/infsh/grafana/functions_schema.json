@@ -383,7 +383,7 @@
               "type": "string"
             },
             "value": {
-              "description": "Value to match against.",
+              "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
               "type": "string"
             },
@@ -1131,7 +1131,7 @@
               "type": "string"
             },
             "value": {
-              "description": "Value to match against.",
+              "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
               "type": "string"
             },
@@ -1950,7 +1950,7 @@
               "type": "string"
             },
             "value": {
-              "description": "Value to match against.",
+              "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
               "type": "string"
             },
@@ -2099,7 +2099,7 @@
               "type": "string"
             },
             "value": {
-              "description": "Value to match against.",
+              "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
               "type": "string"
             },
@@ -2397,6 +2397,512 @@
         "count"
       ],
       "title": "ListSilencesOutput",
+      "type": "object"
+    }
+  },
+  "log_digest": {
+    "description": "Group a window's log lines into distinct problems with counts.\n\nquery_logs answers \"what do the lines say\"; this answers \"how many\ndifferent things are wrong\". Reading raw lines makes attention track\nvolume, so a loop that logs four hundred times buries a data-loss bug\nthat logs twenty. Collapsed to signatures, each problem costs one line.",
+    "kind": "run",
+    "capabilities": [],
+    "input_schema": {
+      "properties": {
+        "query": {
+          "description": "LogQL query whose lines get grouped. Same syntax as query_logs \u2014 a stream selector plus filters, e.g. {job=~\".+\"} |~ \"(?i)error\". Cast it wide: the point of a digest is to see every distinct problem in the window, and narrowing the selector is how a real one gets missed.",
+          "examples": [
+            "{job=~\".+\"} |~ \"(?i)error\""
+          ],
+          "title": "Query",
+          "type": "string"
+        },
+        "limit": {
+          "default": 5000,
+          "description": "Maximum lines to fetch and group. Groups summarise them, so this can be far larger than a query_logs limit. If lines_scanned equals this, the window was truncated and the counts are floors.",
+          "maximum": 20000,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "max_groups": {
+          "default": 100,
+          "description": "Maximum groups to return. Anything beyond this is reported as groups_omitted rather than silently dropped.",
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Groups",
+          "type": "integer"
+        },
+        "sort": {
+          "default": "count",
+          "description": "count ranks by how often each group fired; first_seen orders by when each problem started, which is how you find what began first in a cascade.",
+          "enum": [
+            "count",
+            "first_seen",
+            "last_seen"
+          ],
+          "title": "Sort",
+          "type": "string"
+        },
+        "example_length": {
+          "default": 400,
+          "description": "Characters of the first raw line kept per group. Zero omits examples.",
+          "maximum": 4000,
+          "minimum": 0,
+          "title": "Example Length",
+          "type": "integer"
+        },
+        "since": {
+          "default": "15m",
+          "description": "Window ending now: a number followed by s, m, h, d or w. Ignored when start is given.",
+          "title": "Since",
+          "type": "string"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Absolute window start, RFC3339 (2026-09-24T08:00:00Z). Overrides since.",
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Absolute window end, RFC3339. Defaults to now.",
+          "title": "End"
+        },
+        "datasource": {
+          "default": "loki",
+          "description": "Loki datasource, by uid or name as it appears in Grafana (numeric ids also work). Run list_datasources to see what this Grafana has.",
+          "title": "Datasource",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "LogDigestInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "LogGroup": {
+          "properties": {
+            "signature": {
+              "description": "The message with ids, timestamps, addresses and large numbers replaced by placeholders. Two lines sharing a signature are the same problem.",
+              "title": "Signature",
+              "type": "string"
+            },
+            "count": {
+              "description": "Lines in this group.",
+              "title": "Count",
+              "type": "integer"
+            },
+            "fields": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Fields the whole group shares, such as component, level or status.",
+              "title": "Fields",
+              "type": "object"
+            },
+            "distinct": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "description": "How many distinct values other fields took, e.g. {'app_ref': 6}. One team across 40 errors is a user problem; 6 apps across 40 is a shared one.",
+              "title": "Distinct",
+              "type": "object"
+            },
+            "first_seen": {
+              "description": "First occurrence in the window, RFC3339 UTC.",
+              "title": "First Seen",
+              "type": "string"
+            },
+            "last_seen": {
+              "description": "Last occurrence in the window, RFC3339 UTC.",
+              "title": "Last Seen",
+              "type": "string"
+            },
+            "example": {
+              "description": "First raw line in the group, truncated.",
+              "title": "Example",
+              "type": "string"
+            }
+          },
+          "required": [
+            "signature",
+            "count",
+            "fields",
+            "distinct",
+            "first_seen",
+            "last_seen",
+            "example"
+          ],
+          "title": "LogGroup",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "groups": {
+          "description": "Distinct problems found, ordered by sort.",
+          "items": {
+            "$ref": "#/$defs/LogGroup"
+          },
+          "title": "Groups",
+          "type": "array"
+        },
+        "total_lines": {
+          "description": "Distinct lines grouped, after duplicates.",
+          "title": "Total Lines",
+          "type": "integer"
+        },
+        "duplicate_lines": {
+          "description": "Lines dropped as exact (timestamp, line) duplicates from another stream. A large number here means the shipper is double-writing, and any count taken with query_logs or count_over_time on this selector is inflated.",
+          "title": "Duplicate Lines",
+          "type": "integer"
+        },
+        "total_groups": {
+          "description": "Distinct groups found before max_groups.",
+          "title": "Total Groups",
+          "type": "integer"
+        },
+        "groups_omitted": {
+          "description": "Groups beyond max_groups. Nonzero means raise max_groups or narrow the window before concluding anything about what is in the window.",
+          "title": "Groups Omitted",
+          "type": "integer"
+        },
+        "truncated": {
+          "description": "True when limit was hit, so every count is a lower bound.",
+          "title": "Truncated",
+          "type": "boolean"
+        },
+        "window_start": {
+          "description": "Window start actually queried, RFC3339 UTC.",
+          "title": "Window Start",
+          "type": "string"
+        },
+        "window_end": {
+          "description": "Window end actually queried, RFC3339 UTC.",
+          "title": "Window End",
+          "type": "string"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "groups",
+        "total_lines",
+        "duplicate_lines",
+        "total_groups",
+        "groups_omitted",
+        "truncated",
+        "window_start",
+        "window_end"
+      ],
+      "title": "LogDigestOutput",
       "type": "object"
     }
   },

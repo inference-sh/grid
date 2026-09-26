@@ -10,10 +10,11 @@ a logger here would not reach task logs.
 """
 
 import asyncio
+import json
 import os
 import re
 from datetime import datetime, timedelta, timezone
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 import httpx
 
@@ -224,3 +225,78 @@ def _result(response: httpx.Response, method: str, url: str) -> Any:
         return response.json()
     except ValueError:
         return {"raw": response.text[:2000]}
+
+
+# --- log digest ---------------------------------------------------------------
+#
+# Counting lines answers "how loud"; grouping answers "how many problems".
+# A window where one benign retry loop logs 400 times and a data-loss bug logs
+# 20 reads, line by line, as one problem. Collapsed to signatures it reads as
+# two, and the reader can see both.
+
+_UUID_RE = re.compile(
+    r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.I
+)
+_TS_RE = re.compile(
+    r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
+)
+# Opaque ids: 16+ chars mixing letters and digits. Catches base36/base62 ids and
+# long hex alike, without eating ordinary words.
+_ID_RE = re.compile(r"\b(?=[0-9a-z]*\d)(?=[0-9a-z]*[a-z])[0-9a-z]{16,}\b", re.I)
+_HEX_RE = re.compile(r"\b[0-9a-f]{16,}\b", re.I)
+_IPV4_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}\b")
+_IPV6_RE = re.compile(r"\b(?:[0-9a-f]{0,4}:){2,7}[0-9a-f]{0,4}\b", re.I)
+_DUR_RE = re.compile(r"\b\d+(?:\.\d+)?(?:ns|µs|us|ms|s|m|h)\b")
+_SIZE_RE = re.compile(r"\b\d+(?:\.\d+)?(?:B|KB|MB|GB|KiB|MiB|GiB)\b")
+# Only 6+ digit numbers. Shorter ones carry meaning — HTTP status, SQLSTATE,
+# task outcome codes — and collapsing 403 into 500 merges two different problems.
+_NUM_RE = re.compile(r"\b\d{6,}\b")
+
+_MESSAGE_KEYS = ("message", "msg", "error", "err", "event", "reason", "detail")
+GROUP_KEYS = ("component", "logger", "caller", "source", "service", "level", "status")
+SKIP_DISTINCT = {"level", "time", "timestamp", "ts", "message", "msg"}
+
+
+def normalize_line(text: str) -> str:
+    """Replace the parts of a log line that vary per occurrence."""
+    out = _UUID_RE.sub("<id>", text)
+    out = _TS_RE.sub("<ts>", out)
+    out = _IPV6_RE.sub("<ip>", out)
+    out = _IPV4_RE.sub("<ip>", out)
+    out = _ID_RE.sub("<id>", out)
+    out = _HEX_RE.sub("<id>", out)
+    out = _DUR_RE.sub("<dur>", out)
+    out = _SIZE_RE.sub("<size>", out)
+    out = _NUM_RE.sub("<n>", out)
+    return re.sub(r"\s+", " ", out).strip()
+
+
+def parse_record(text: str) -> Dict[str, Any]:
+    """Best-effort structured view of a log line. Plain text stays plain text."""
+    stripped = text.strip()
+    if stripped.startswith("{"):
+        try:
+            parsed = json.loads(stripped)
+            if isinstance(parsed, dict):
+                return parsed
+        except ValueError:
+            pass
+    return {"message": text}
+
+
+def record_message(record: Dict[str, Any]) -> str:
+    """The human-readable part of a record, whatever the producer called it."""
+    for key in _MESSAGE_KEYS:
+        value = record.get(key)
+        if isinstance(value, str) and value:
+            return value
+        if isinstance(value, dict):
+            nested = record_message(value)
+            if nested:
+                return nested
+    method, path = record.get("method"), record.get("path")
+    if method and path:
+        return f"{method} {path}"
+    if path:
+        return str(path)
+    return ""

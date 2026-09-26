@@ -17,13 +17,18 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Literal, Optional
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .grafana_http import (
+    GROUP_KEYS,
+    SKIP_DISTINCT,
     GrafanaClient,
     from_nanos,
     millis,
+    normalize_line,
+    parse_record,
     parse_rfc3339,
+    record_message,
     resolve_window,
     rfc3339,
     to_nanos,
@@ -83,8 +88,18 @@ class ListDatasourcesOutput(BaseAppOutput):
 class Matcher(BaseModel):
     """One label condition. A silence matches an alert when every matcher does."""
 
+    # Label values arrive as strings from Grafana, but plenty of them look like
+    # numbers — status=401, code=500 — and a caller filling this in will send
+    # 401, not "401". Rejecting that is a trap: the caller cannot see why, and
+    # the way out it finds is to drop the matcher, which silently widens the
+    # silence. Coerce instead.
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     name: str = Field(description="Label name, e.g. alertname, severity or app_ref.")
-    value: str = Field(description="Value to match against.")
+    value: str = Field(
+        description="Value to match against. Numbers are accepted and used as text, "
+        "so status=401 works whether you send 401 or \"401\"."
+    )
     is_regex: bool = Field(default=False, description="Treat value as a regular expression.")
     is_equal: bool = Field(
         default=True, description="False inverts the match (label must NOT equal value)."
@@ -262,6 +277,82 @@ class QueryLogsOutput(BaseAppOutput):
         description="Lines Loki scanned. Zero with no results means the selector matched "
         "no stream; nonzero means it scanned data and nothing matched the filters."
     )
+
+
+DIGEST_HELP = (
+    "LogQL query whose lines get grouped. Same syntax as query_logs — a stream "
+    'selector plus filters, e.g. {job=~".+"} |~ "(?i)error". Cast it wide: the '
+    "point of a digest is to see every distinct problem in the window, and "
+    "narrowing the selector is how a real one gets missed."
+)
+
+
+class LogDigestInput(WindowInput):
+    query: str = Field(description=DIGEST_HELP, examples=['{job=~".+"} |~ "(?i)error"'])
+    limit: int = Field(
+        default=5000,
+        ge=1,
+        le=20000,
+        description="Maximum lines to fetch and group. Groups summarise them, so this can "
+        "be far larger than a query_logs limit. If lines_scanned equals this, the window "
+        "was truncated and the counts are floors.",
+    )
+    max_groups: int = Field(
+        default=100,
+        ge=1,
+        le=1000,
+        description="Maximum groups to return. Anything beyond this is reported as "
+        "groups_omitted rather than silently dropped.",
+    )
+    sort: Literal["count", "first_seen", "last_seen"] = Field(
+        default="count",
+        description="count ranks by how often each group fired; first_seen orders by when "
+        "each problem started, which is how you find what began first in a cascade.",
+    )
+    example_length: int = Field(
+        default=400,
+        ge=0,
+        le=4000,
+        description="Characters of the first raw line kept per group. Zero omits examples.",
+    )
+
+
+class LogGroup(BaseModel):
+    signature: str = Field(
+        description="The message with ids, timestamps, addresses and large numbers "
+        "replaced by placeholders. Two lines sharing a signature are the same problem."
+    )
+    count: int = Field(description="Lines in this group.")
+    fields: Dict[str, str] = Field(
+        description="Fields the whole group shares, such as component, level or status."
+    )
+    distinct: Dict[str, int] = Field(
+        description="How many distinct values other fields took, e.g. {'app_ref': 6}. "
+        "One team across 40 errors is a user problem; 6 apps across 40 is a shared one."
+    )
+    first_seen: str = Field(description="First occurrence in the window, RFC3339 UTC.")
+    last_seen: str = Field(description="Last occurrence in the window, RFC3339 UTC.")
+    example: str = Field(description="First raw line in the group, truncated.")
+
+
+class LogDigestOutput(BaseAppOutput):
+    groups: List[LogGroup] = Field(description="Distinct problems found, ordered by sort.")
+    total_lines: int = Field(description="Distinct lines grouped, after duplicates.")
+    duplicate_lines: int = Field(
+        description="Lines dropped as exact (timestamp, line) duplicates from another "
+        "stream. A large number here means the shipper is double-writing, and any count "
+        "taken with query_logs or count_over_time on this selector is inflated."
+    )
+    total_groups: int = Field(description="Distinct groups found before max_groups.")
+    groups_omitted: int = Field(
+        description="Groups beyond max_groups. Nonzero means raise max_groups or narrow "
+        "the window before concluding anything about what is in the window."
+    )
+    truncated: bool = Field(
+        description="True when limit was hit, so every count is a lower bound."
+    )
+    window_start: str = Field(description="Window start actually queried, RFC3339 UTC.")
+    window_end: str = Field(description="Window end actually queried, RFC3339 UTC.")
 
 
 class QueryLogsInstantInput(GrafanaInput):
@@ -512,6 +603,124 @@ class App(BaseApp):
             window_start=start.isoformat(),
             window_end=end.isoformat(),
             lines_scanned=scanned,
+            output_meta=FREE,
+        )
+
+    async def log_digest(self, input_data: LogDigestInput) -> LogDigestOutput:
+        """Group a window's log lines into distinct problems with counts.
+
+        query_logs answers "what do the lines say"; this answers "how many
+        different things are wrong". Reading raw lines makes attention track
+        volume, so a loop that logs four hundred times buries a data-loss bug
+        that logs twenty. Collapsed to signatures, each problem costs one line.
+        """
+        start, end = resolve_window(input_data.since, input_data.start, input_data.end)
+        prefix = await self.client.datasource_path(input_data.datasource)
+        self.logger.info(
+            f"log_digest {input_data.query!r} {start.isoformat()} to {end.isoformat()} "
+            f"limit={input_data.limit}"
+        )
+
+        payload = await self.client.request(
+            "GET",
+            f"{prefix}/loki/api/v1/query_range",
+            params={
+                "query": input_data.query,
+                "start": to_nanos(start),
+                "end": to_nanos(end),
+                "limit": input_data.limit,
+                "direction": "backward",
+            },
+        )
+
+        # The same event can arrive on more than one stream — a log shipper
+        # watching two paths for one file, say. Counting both would double every
+        # number in the digest, so identical (timestamp, line) pairs collapse.
+        seen: set = set()
+        entries: List[tuple] = []
+        duplicates = 0
+        for stream in ((payload or {}).get("data") or {}).get("result") or []:
+            for item in stream.get("values") or []:
+                nanos, text = int(item[0]), item[1]
+                if (nanos, text) in seen:
+                    duplicates += 1
+                    continue
+                seen.add((nanos, text))
+                entries.append((nanos, text, stream.get("stream") or {}))
+        entries.sort(key=lambda item: item[0])
+
+        groups: Dict[tuple, Dict[str, Any]] = {}
+        for nanos, text, labels in entries:
+            record = parse_record(text)
+            message = record_message(record) or text
+            shared = {}
+            for key in GROUP_KEYS:
+                value = record.get(key, labels.get(key))
+                if value not in (None, ""):
+                    shared[key] = str(value)
+            signature = normalize_line(message)[:400]
+            key = (signature, tuple(sorted(shared.items())))
+
+            group = groups.get(key)
+            if group is None:
+                group = groups[key] = {
+                    "signature": signature,
+                    "fields": shared,
+                    "count": 0,
+                    "first": nanos,
+                    "last": nanos,
+                    "example": text[: input_data.example_length],
+                    "distinct": {},
+                }
+            group["count"] += 1
+            group["last"] = max(group["last"], nanos)
+            for field, value in list(record.items()) + list(labels.items()):
+                if field in shared or field in SKIP_DISTINCT:
+                    continue
+                if isinstance(value, (dict, list)):
+                    continue
+                group["distinct"].setdefault(field, set()).add(str(value))
+
+        ranked = list(groups.values())
+        if input_data.sort == "count":
+            ranked.sort(key=lambda g: (-g["count"], g["first"]))
+        elif input_data.sort == "first_seen":
+            ranked.sort(key=lambda g: g["first"])
+        else:
+            ranked.sort(key=lambda g: -g["last"])
+
+        kept = ranked[: input_data.max_groups]
+        self.logger.info(
+            f"log_digest grouped {len(entries)} lines into {len(ranked)} groups, "
+            f"returning {len(kept)}, dropped {duplicates} duplicate lines"
+        )
+
+        return LogDigestOutput(
+            groups=[
+                LogGroup(
+                    signature=g["signature"],
+                    count=g["count"],
+                    fields=g["fields"],
+                    # Only fields that actually varied say anything; a field with one
+                    # value across the group is already in fields or is noise.
+                    distinct={
+                        name: len(values)
+                        for name, values in sorted(g["distinct"].items())
+                        if len(values) > 1
+                    },
+                    first_seen=from_nanos(g["first"]),
+                    last_seen=from_nanos(g["last"]),
+                    example=g["example"],
+                )
+                for g in kept
+            ],
+            total_lines=len(entries),
+            duplicate_lines=duplicates,
+            total_groups=len(ranked),
+            groups_omitted=max(0, len(ranked) - len(kept)),
+            truncated=len(entries) >= input_data.limit,
+            window_start=start.isoformat(),
+            window_end=end.isoformat(),
             output_meta=FREE,
         )
 
