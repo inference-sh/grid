@@ -52,8 +52,8 @@ def resolve_base_url() -> str:
     candidate = (os.environ.get("GRAFANA_URL") or "").strip().rstrip("/")
     if not candidate:
         raise RuntimeError(
-            "No Grafana URL. Set it with `belt secrets set GRAFANA_URL <url>`, or set a "
-            "GRAFANA_URL default in the app's env."
+            "No Grafana URL. Connect the grafana credential: `belt credentials connect grafana`, "
+            "or `belt secrets attach GRAFANA_URL grafana` if the key is already in the vault."
         )
     if not candidate.startswith(("http://", "https://")):
         raise ValueError(f"GRAFANA_URL must start with http:// or https://, got {candidate!r}")

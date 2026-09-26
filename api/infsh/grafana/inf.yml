@@ -7,8 +7,6 @@ images:
     card: ""
     thumbnail: ""
     banner: ""
-env:
-    GRAFANA_URL: https://telemetry.inference.sh
 kernel: python-3.11
 default_function: list_alerts
 resources:
@@ -18,10 +16,15 @@ resources:
         type: none
     ram: 2
 title: Grafana
-secrets:
-    - key: GRAFANA_API_KEY
-      description: Grafana service account token for the instance this app talks to
-      optional: false
-    - key: GRAFANA_URL
-      description: Base URL of the Grafana this app talks to, e.g. https://grafana.example.com. Defaults to the app's configured GRAFANA_URL.
-      optional: true
+# One credential, two values: a service-account token is only valid on the
+# Grafana that issued it, so the URL and the token travel together and are
+# never mismatched. Deploying this catalogues the provider and, for a team
+# that already holds both keys as secrets, links them and connects it.
+credentials:
+    - provider: grafana
+      name: Grafana
+      website: grafana.com
+      description: The Grafana this app talks to — its base URL and a service account token issued by it
+      secrets:
+          - GRAFANA_URL
+          - GRAFANA_API_KEY
