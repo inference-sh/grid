@@ -97,8 +97,14 @@ class Matcher(BaseModel):
 
     name: str = Field(description="Label name, e.g. alertname, severity or app_ref.")
     value: str = Field(
-        description="Value to match against. Numbers are accepted and used as text, "
-        "so status=401 works whether you send 401 or \"401\"."
+        description="Value to match against. Numbers are accepted and used as text, so "
+        "status=401 works whether you send 401 or \"401\".",
+        # coerce_numbers_to_str handles the Python side. The platform validates
+        # a tool call against this JSON schema before the app ever runs, so the
+        # schema has to say numbers are welcome too — with a bare "string" the
+        # call was rejected at "/matchers/N/value: expected string, but got
+        # number" and the coercion below never got a chance.
+        json_schema_extra=lambda schema: schema.update({"type": ["string", "number"]}),
     )
     is_regex: bool = Field(default=False, description="Treat value as a regular expression.")
     is_equal: bool = Field(

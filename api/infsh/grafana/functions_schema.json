@@ -385,7 +385,10 @@
             "value": {
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
-              "type": "string"
+              "type": [
+                "string",
+                "number"
+              ]
             },
             "is_regex": {
               "default": false,
@@ -1133,7 +1136,10 @@
             "value": {
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
-              "type": "string"
+              "type": [
+                "string",
+                "number"
+              ]
             },
             "is_regex": {
               "default": false,
@@ -1952,7 +1958,10 @@
             "value": {
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
-              "type": "string"
+              "type": [
+                "string",
+                "number"
+              ]
             },
             "is_regex": {
               "default": false,
@@ -2101,7 +2110,10 @@
             "value": {
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
               "title": "Value",
-              "type": "string"
+              "type": [
+                "string",
+                "number"
+              ]
             },
             "is_regex": {
               "default": false,
