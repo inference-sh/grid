@@ -14,10 +14,10 @@ Free to run — every function reports empty usage metas so pricing zeroes it.
 
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
 
 from .grafana_http import (
     GROUP_KEYS,
@@ -88,37 +88,38 @@ class ListDatasourcesOutput(BaseAppOutput):
 class Matcher(BaseModel):
     """One label condition. A silence matches an alert when every matcher does."""
 
-    # Label values arrive as strings from Grafana, but plenty of them look like
-    # numbers — status=401, code=500 — and a caller filling this in will send
-    # 401, not "401". Rejecting that is a trap: the caller cannot see why, and
-    # the way out it finds is to drop the matcher, which silently widens the
-    # silence. Coerce instead.
-    model_config = ConfigDict(coerce_numbers_to_str=True)
-
     name: str = Field(description="Label name, e.g. alertname, severity or app_ref.")
-    value: str = Field(
+    # Label values are text in Grafana, but plenty of them look like numbers —
+    # status=401, code=500 — and a caller filling this in sends 401 as often as
+    # "401". The type says so, and pydantic derives the schema from it (anyOf
+    # string / integer / number), so what callers are told and what is accepted
+    # cannot drift apart. The validator below makes it text either way.
+    #
+    # This used to be `value: str` with the schema rewritten by hand through
+    # json_schema_extra. The hand-written schema was valid JSON Schema and
+    # still took the oncall agent down for a night: nothing derived it, so
+    # nothing checked it against what actually consumes it.
+    value: Union[str, int, float] = Field(
         description="Value to match against. Numbers are accepted and used as text, so "
         "status=401 works whether you send 401 or \"401\".",
-        # coerce_numbers_to_str handles the Python side. The platform validates
-        # a tool call against this JSON schema before the app ever runs, so the
-        # schema has to say numbers are welcome too — with a bare "string" the
-        # call was rejected at "/matchers/N/value: expected string, but got
-        # number" and the coercion below never got a chance.
-        #
-        # anyOf, not a type array: Anthropic rejects `"type": ["string",
-        # "number"]` as invalid JSON Schema when the function is offered as an
-        # agent tool ("tools.N.custom.input_schema: JSON schema is invalid"),
-        # which killed every oncall-triage run for a night. anyOf says the same
-        # thing in the subset every validator agrees on.
-        json_schema_extra=lambda schema: (
-            schema.pop("type", None),
-            schema.update({"anyOf": [{"type": "string"}, {"type": "number"}]}),
-        ),
     )
     is_regex: bool = Field(default=False, description="Treat value as a regular expression.")
     is_equal: bool = Field(
         default=True, description="False inverts the match (label must NOT equal value)."
     )
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def _value_is_text(cls, v):
+        # Before pydantic's own coercion, which would quietly turn True into 1:
+        # bool is an int in Python, and nobody means a label value by it.
+        if isinstance(v, bool):
+            raise ValueError("value must be text or a number, not a boolean")
+        if isinstance(v, float) and v.is_integer():
+            return str(int(v))
+        if isinstance(v, (int, float)):
+            return str(v)
+        return v
 
 
 class ListAlertsInput(GrafanaInput):
