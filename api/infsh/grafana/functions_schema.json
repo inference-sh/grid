@@ -383,12 +383,16 @@
               "type": "string"
             },
             "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
-              "title": "Value",
-              "type": [
-                "string",
-                "number"
-              ]
+              "title": "Value"
             },
             "is_regex": {
               "default": false,
@@ -1134,12 +1138,16 @@
               "type": "string"
             },
             "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
-              "title": "Value",
-              "type": [
-                "string",
-                "number"
-              ]
+              "title": "Value"
             },
             "is_regex": {
               "default": false,
@@ -1956,12 +1964,16 @@
               "type": "string"
             },
             "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
-              "title": "Value",
-              "type": [
-                "string",
-                "number"
-              ]
+              "title": "Value"
             },
             "is_regex": {
               "default": false,
@@ -2108,12 +2120,16 @@
               "type": "string"
             },
             "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
               "description": "Value to match against. Numbers are accepted and used as text, so status=401 works whether you send 401 or \"401\".",
-              "title": "Value",
-              "type": [
-                "string",
-                "number"
-              ]
+              "title": "Value"
             },
             "is_regex": {
               "default": false,

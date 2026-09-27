@@ -104,7 +104,16 @@ class Matcher(BaseModel):
         # schema has to say numbers are welcome too — with a bare "string" the
         # call was rejected at "/matchers/N/value: expected string, but got
         # number" and the coercion below never got a chance.
-        json_schema_extra=lambda schema: schema.update({"type": ["string", "number"]}),
+        #
+        # anyOf, not a type array: Anthropic rejects `"type": ["string",
+        # "number"]` as invalid JSON Schema when the function is offered as an
+        # agent tool ("tools.N.custom.input_schema: JSON schema is invalid"),
+        # which killed every oncall-triage run for a night. anyOf says the same
+        # thing in the subset every validator agrees on.
+        json_schema_extra=lambda schema: (
+            schema.pop("type", None),
+            schema.update({"anyOf": [{"type": "string"}, {"type": "number"}]}),
+        ),
     )
     is_regex: bool = Field(default=False, description="Treat value as a regular expression.")
     is_equal: bool = Field(
