@@ -89,6 +89,12 @@ class SeedanceApp(BaseApp):
     # multimodal tasks with video input (editing/extension). Auto-coerce
     # to prevent API rejections.
     force_adaptive_ratio: ClassVar[bool] = False
+    # Draft mode (2.5): `draft` renders a cheap 480p preview and returns its
+    # task id; `draft_task_id` renders the final video from that draft, reusing
+    # its prompt, inputs, duration, ratio, seed and audio setting. A final from
+    # a draft only accepts draft_final_resolution.
+    supports_draft: ClassVar[bool] = False
+    draft_final_resolution: ClassVar[str] = "1080p"
 
     async def setup(self, metadata):
         """Initialize the BytePlus client."""
@@ -236,6 +242,7 @@ class SeedanceApp(BaseApp):
 
         extra = {
             "mode": mode,
+            "draft": bool(getattr(input_data, "draft", False)),
             "ratio": actual_ratio,
             "generate_audio": input_data.generate_audio,
             "seed": seed,
@@ -275,7 +282,16 @@ class SeedanceApp(BaseApp):
             self.cancel_flag = False
             self.current_task_id = None
 
+            draft = bool(getattr(input_data, "draft", False))
+            draft_task_id = (getattr(input_data, "draft_task_id", None) or "").strip()
+            if draft and draft_task_id:
+                raise RuntimeError("Set either draft (to make a 480p preview) or draft_task_id (to render the final video from a draft), not both.")
+            if draft_task_id:
+                return await self._render_from_draft(input_data, draft_task_id)
+
             mode = self._determine_mode(input_data)
+            if mode == "text-to-video" and not (input_data.prompt or "").strip():
+                raise RuntimeError("A prompt is required for text-to-video generation.")
             suffix = " (studio)" if self.is_studio else ""
             self.logger.info(f"Starting {mode} generation{suffix}")
             self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
@@ -294,8 +310,14 @@ class SeedanceApp(BaseApp):
                     self.logger.info(f"Coercing ratio from '{ratio}' to 'adaptive' (required for {mode} on this model)")
                     ratio = "adaptive"
 
+            resolution = input_data.resolution.value
+            if draft:
+                if resolution != "480p":
+                    self.logger.info(f"Draft mode: rendering at 480p instead of {resolution}")
+                resolution = "480p"
+
             api_params = {
-                "resolution": input_data.resolution.value,
+                "resolution": resolution,
                 "ratio": ratio,
                 "duration": input_data.duration,
                 "generate_audio": input_data.generate_audio,
@@ -307,9 +329,15 @@ class SeedanceApp(BaseApp):
             task_type = getattr(input_data, "task_type", None)
             if task_type and hasattr(task_type, "value") and task_type.value != "auto":
                 api_params["omni_reference_task_type"] = task_type.value
+            extra_body = {}
             output_format = getattr(input_data, "output_format", None)
             if output_format:
-                api_params["extra_body"] = {"output_format": output_format}
+                extra_body["output_format"] = output_format
+            if draft:
+                # Sent in extra_body so it works on every SDK version.
+                extra_body["draft"] = True
+            if extra_body:
+                api_params["extra_body"] = extra_body
             self.current_task_id = create_content_task(
                 self.client,
                 model=self._select_model(input_data),
@@ -317,30 +345,16 @@ class SeedanceApp(BaseApp):
                 logger=self.logger,
                 **api_params,
             )
+            task_id = self.current_task_id
 
-            result = await poll_task_status(
-                self.client,
-                self.current_task_id,
-                logger=self.logger,
-                poll_interval=2.0,
-                cancel_flag_getter=lambda: self.cancel_flag,
-            )
-
-            video_url = None
-            if hasattr(result, 'content') and hasattr(result.content, 'video_url'):
-                video_url = result.content.video_url
-            elif hasattr(result, 'video_url'):
-                video_url = result.video_url
-
-            if not video_url:
-                self.logger.error(f"Could not extract video URL from result: {result}")
-                raise RuntimeError("Failed to get video URL from response")
-
-            video_path = download_video(video_url, self.logger)
+            result, video_path = await self._wait_for_video()
             output_meta = self._build_output_meta(input_data, result, mode, video_path)
 
             self.logger.info(f"Video generated successfully: {video_path}")
 
+            if draft:
+                self.logger.info(f"Draft task id: {task_id}")
+                return self.OutputType(video=File(path=video_path), output_meta=output_meta, draft_task_id=task_id)
             return self.OutputType(video=File(path=video_path), output_meta=output_meta)
 
         except Exception as e:
@@ -348,6 +362,109 @@ class SeedanceApp(BaseApp):
             raise RuntimeError(f"Video generation failed: {str(e)}{self._sensitive_image_hint(e)}")
         finally:
             self.current_task_id = None
+
+    async def _wait_for_video(self):
+        """Poll the current task to completion and download its video."""
+        result = await poll_task_status(
+            self.client,
+            self.current_task_id,
+            logger=self.logger,
+            poll_interval=2.0,
+            cancel_flag_getter=lambda: self.cancel_flag,
+        )
+
+        video_url = None
+        if hasattr(result, 'content') and hasattr(result.content, 'video_url'):
+            video_url = result.content.video_url
+        elif hasattr(result, 'video_url'):
+            video_url = result.video_url
+
+        if not video_url:
+            self.logger.error(f"Could not extract video URL from result: {result}")
+            raise RuntimeError("Failed to get video URL from response")
+
+        return result, download_video(video_url, self.logger)
+
+    async def _render_from_draft(self, input_data, draft_task_id: str):
+        """Render the final video from a draft task.
+
+        The draft carries the prompt, inputs, duration, ratio, seed and audio
+        setting, so the request is only the draft reference plus resolution
+        (and output format). Every other input is ignored.
+        """
+        if not self.supports_draft:
+            raise RuntimeError(f"{self.display_name} does not support draft mode.")
+
+        resolution = self.draft_final_resolution
+        if input_data.resolution.value != resolution:
+            self.logger.info(f"Final from draft: rendering at {resolution} instead of {input_data.resolution.value} (the only resolution a draft final supports)")
+        self.logger.info(f"Rendering final video from draft {draft_task_id}")
+
+        api_params = {"resolution": resolution}
+        if input_data.safety_identifier:
+            api_params["safety_identifier"] = input_data.safety_identifier
+        output_format = getattr(input_data, "output_format", None)
+        if output_format:
+            api_params["extra_body"] = {"output_format": output_format}
+
+        self.current_task_id = create_content_task(
+            self.client,
+            model=self._select_model(input_data),
+            content=[{"type": "draft_task", "draft_task": {"id": draft_task_id}}],
+            logger=self.logger,
+            **api_params,
+        )
+
+        result, video_path = await self._wait_for_video()
+        output_meta = self._build_draft_final_meta(input_data, result, video_path)
+
+        self.logger.info(f"Final video generated from draft: {video_path}")
+        return self.OutputType(video=File(path=video_path), output_meta=output_meta)
+
+    def _build_draft_final_meta(self, input_data, result, video_path: str) -> OutputMeta:
+        """Output metadata for a final rendered from a draft.
+
+        The request has no inputs of its own (they were billed with the draft),
+        and duration, ratio and audio come from the draft, so everything is read
+        from the result and the output file.
+        """
+        probe = probe_video(video_path)
+        resolution = getattr(result, 'resolution', None) or self.draft_final_resolution
+        ratio = getattr(result, 'ratio', None) or "16:9"
+        if ratio == 'adaptive':
+            ratio = '16:9'
+        usage = getattr(result, 'usage', None)
+        completion_tokens = getattr(usage, 'completion_tokens', None) if usage else None
+        total_tokens = getattr(usage, 'total_tokens', None) if usage else None
+        generate_audio = getattr(result, 'generate_audio', None)
+        self.logger.info(f"BytePlus usage — completion_tokens: {completion_tokens}, total_tokens: {total_tokens}, mode: draft-final, probe: {probe}")
+
+        extra = {
+            "mode": "draft-final",
+            "draft": False,
+            "draft_task_id": input_data.draft_task_id.strip(),
+            "ratio": ratio,
+            "generate_audio": generate_audio if generate_audio is not None else probe.get("has_audio", True),
+            "seed": getattr(result, 'seed', None),
+            "completion_tokens": completion_tokens,
+            "total_tokens": total_tokens,
+        }
+        if self.is_studio:
+            extra["studio"] = True
+
+        return OutputMeta(
+            inputs=[],
+            outputs=[
+                VideoMeta(
+                    width=probe.get("width", 1920),
+                    height=probe.get("height", 1080),
+                    resolution=RESOLUTION_MAP.get(resolution, VideoResolution.VIDEO_RES1080_P),
+                    seconds=float(probe.get("seconds", getattr(result, 'duration', 5) or 5)),
+                    fps=probe.get("fps", 24),
+                    extra=extra,
+                )
+            ]
+        )
 
     def _sensitive_image_hint(self, error: Exception) -> str:
         """Explain InputImageSensitiveContentDetected.* rejections (e.g. PrivacyInformation)."""

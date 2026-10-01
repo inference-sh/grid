@@ -44,7 +44,8 @@
   "description": "Input schema for Seedance 2.5 Studio video generation.\n\nSame as Seedance 2.5, but all references are automatically uploaded to the\nprivate virtual portrait library for enhanced character consistency.\n\nThree task categories (auto-detected from parameters):\n- First frame / First & last frame: set image (and optionally end_image)\n- Multi-reference: set reference_images / reference_videos / reference_audios (audio-only supported)\n- Text-to-video: provide prompt only\n\nThe API determines the specific task type (Video Editing, Video Extension,\nor Video Reference) automatically. For Video Editing tasks, duration must\nbe -1. For First & Last Frame, Video Editing, Video Extension, and\nfirst-frame image-to-video tasks, ratio must be 'adaptive'.",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content. Use @Image1, @Image2, @Video1, @Video2, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). For video editing, use editing verbs ('Edit @Video1 to remove...'). Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
+      "default": "",
+      "description": "Text prompt describing the video content (not needed with draft_task_id). Use @Image1, @Image2, @Video1, @Video2, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). For video editing, use editing verbs ('Edit @Video1 to remove...'). Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
       "examples": [
         "@Image1 is the character reference. @Video1 provides the motion. A marble statue stands in a sunlit hall, camera slowly orbiting."
       ],
@@ -162,6 +163,25 @@
       "title": "Safety Filter",
       "type": "boolean"
     },
+    "draft": {
+      "default": false,
+      "description": "Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p later. Iterate on drafts, then render only the one you want.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "draft_task_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Render the final 1080p video from a draft (the draft_task_id of an earlier draft run, valid for 7 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Resolution is always 1080p.",
+      "title": "Draft Task Id"
+    },
     "safety_identifier": {
       "anyOf": [
         {
@@ -176,9 +196,6 @@
       "title": "Safety Identifier"
     }
   },
-  "required": [
-    "prompt"
-  ],
   "title": "AppInput",
   "type": "object"
 }

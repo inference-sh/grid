@@ -30,7 +30,8 @@
   "description": "Input schema for Seedance 1.5 Pro video generation.",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content and motion. Be descriptive about actions and camera movements.",
+      "default": "",
+      "description": "Text prompt describing the video content and motion. Be descriptive about actions and camera movements. Not needed with draft_task_id.",
       "examples": [
         "At breakneck speed, drones thread through intricate obstacles, delivering an immersive flying experience."
       ],
@@ -66,11 +67,27 @@
       "description": "Whether to fix the camera position during video generation. Set to true for static camera shots.",
       "title": "Camera Fixed",
       "type": "boolean"
+    },
+    "draft": {
+      "default": false,
+      "description": "Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at full resolution later.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "draft_task_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Render the final video from a draft (the draft_task_id of an earlier draft run, valid for 7 days) at the chosen resolution. Prompt, image, duration and camera setting are reused from the draft; those inputs are ignored here.",
+      "title": "Draft Task Id"
     }
   },
-  "required": [
-    "prompt"
-  ],
   "title": "AppInput",
   "type": "object"
 }

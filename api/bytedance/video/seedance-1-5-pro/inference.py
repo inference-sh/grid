@@ -47,7 +47,8 @@ class AppInput(BaseAppInput):
     """Input schema for Seedance 1.5 Pro video generation."""
 
     prompt: str = Field(
-        description="Text prompt describing the video content and motion. Be descriptive about actions and camera movements.",
+        default="",
+        description="Text prompt describing the video content and motion. Be descriptive about actions and camera movements. Not needed with draft_task_id.",
         examples=["At breakneck speed, drones thread through intricate obstacles, delivering an immersive flying experience."]
     )
     image: Optional[File] = Field(
@@ -66,12 +67,24 @@ class AppInput(BaseAppInput):
         default=False,
         description="Whether to fix the camera position during video generation. Set to true for static camera shots."
     )
+    draft: bool = Field(
+        default=False,
+        description="Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at full resolution later."
+    )
+    draft_task_id: Optional[str] = Field(
+        default=None,
+        description="Render the final video from a draft (the draft_task_id of an earlier draft run, valid for 7 days) at the chosen resolution. Prompt, image, duration and camera setting are reused from the draft; those inputs are ignored here."
+    )
 
 
 class AppOutput(BaseAppOutput):
     """Output schema for Seedance 1.5 Pro video generation."""
 
     video: File = Field(description="The generated video file.")
+    draft_task_id: Optional[str] = Field(
+        default=None,
+        description="Set on a draft run: pass it as draft_task_id to render this take as the final video."
+    )
 
 
 class App(BaseApp):
@@ -106,14 +119,14 @@ class App(BaseApp):
 
         return True
 
-    def _build_content(self, input_data: AppInput) -> list:
+    def _build_content(self, input_data: AppInput, resolution: str) -> list:
         """Build content list for BytePlus API."""
         content = []
 
         # Build text prompt with parameters
         text_content = build_text_content(
             input_data.prompt,
-            resolution=input_data.resolution.value,
+            resolution=resolution,
             duration=str(input_data.duration.value),
             camerafixed=str(input_data.camera_fixed).lower(),
         )
@@ -134,21 +147,42 @@ class App(BaseApp):
             self.cancel_flag = False
             self.current_task_id = None
 
-            mode = "image-to-video" if input_data.image else "text-to-video"
-            self.logger.info(f"Starting {mode} generation")
-            self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
-            self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration.value}s, Camera fixed: {input_data.camera_fixed}")
+            draft = input_data.draft
+            draft_task_id = (input_data.draft_task_id or "").strip()
+            if draft and draft_task_id:
+                raise RuntimeError("Set either draft (to make a 480p preview) or draft_task_id (to render the final video from a draft), not both.")
 
-            # Build content
-            content = self._build_content(input_data)
+            if draft_task_id:
+                # The draft carries prompt, image, duration and camera setting;
+                # the request is only the draft reference plus resolution.
+                mode = "draft-final"
+                self.logger.info(f"Rendering final video from draft {draft_task_id} at {input_data.resolution.value}")
+                self.current_task_id = create_content_task(
+                    self.client,
+                    model=self.model_id,
+                    content=[{"type": "draft_task", "draft_task": {"id": draft_task_id}}],
+                    logger=self.logger,
+                    resolution=input_data.resolution.value,
+                )
+            else:
+                mode = "image-to-video" if input_data.image else "text-to-video"
+                if mode == "text-to-video" and not input_data.prompt.strip():
+                    raise RuntimeError("A prompt is required for text-to-video generation.")
+                self.logger.info(f"Starting {mode} generation{' (draft)' if draft else ''}")
+                self.logger.info(f"Prompt: {input_data.prompt[:100]}...")
+                self.logger.info(f"Resolution: {input_data.resolution.value}, Duration: {input_data.duration.value}s, Camera fixed: {input_data.camera_fixed}")
 
-            # Create task
-            self.current_task_id = create_content_task(
-                self.client,
-                model=self.model_id,
-                content=content,
-                logger=self.logger,
-            )
+                content = self._build_content(input_data, resolution="480p" if draft else input_data.resolution.value)
+
+                self.current_task_id = create_content_task(
+                    self.client,
+                    model=self.model_id,
+                    content=content,
+                    logger=self.logger,
+                    # extra_body so it works on every SDK version
+                    extra_body={"draft": True} if draft else None,
+                )
+            task_id = self.current_task_id
 
             # Poll for completion
             result = await poll_task_status(
@@ -175,9 +209,9 @@ class App(BaseApp):
             video_path = download_video(video_url, self.logger)
 
             # Extract metadata from response
-            duration_seconds = getattr(result, 'duration', float(input_data.duration.value))
+            duration_seconds = getattr(result, 'duration', None) or float(input_data.duration.value)
             fps = getattr(result, 'framespersecond', 24)
-            resolution_str = getattr(result, 'resolution', input_data.resolution.value)
+            resolution_str = getattr(result, 'resolution', None) or ("480p" if draft else input_data.resolution.value)
             seed = getattr(result, 'seed', None)
 
             # Extract token usage from response (for billing)
@@ -209,7 +243,7 @@ class App(BaseApp):
 
             # Build input metadata for pricing
             input_metas = []
-            if input_data.image:
+            if input_data.image and mode != "draft-final":
                 input_metas.append(ImageMeta())
 
             # Build output metadata for pricing
@@ -224,6 +258,7 @@ class App(BaseApp):
                         fps=fps,
                         extra={
                             "mode": mode,
+                            "draft": draft,
                             "camera_fixed": input_data.camera_fixed,
                             "seed": seed,
                             "completion_tokens": completion_tokens,
@@ -239,6 +274,7 @@ class App(BaseApp):
             return AppOutput(
                 video=File(path=video_path),
                 output_meta=output_meta,
+                draft_task_id=task_id if draft else None,
             )
 
         except Exception as e:

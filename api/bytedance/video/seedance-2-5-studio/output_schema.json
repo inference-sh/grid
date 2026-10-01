@@ -290,6 +290,19 @@
       "title": "Video",
       "type": "string"
     },
+    "draft_task_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Set on a draft run: pass it as draft_task_id to render this take as the final 1080p video.",
+      "title": "Draft Task Id"
+    },
     "output_meta": {
       "anyOf": [
         {

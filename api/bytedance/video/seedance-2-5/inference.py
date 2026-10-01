@@ -2,7 +2,7 @@
 Seedance 2.5 - BytePlus Video Generation
 
 Professional multimodal video generation supporting text, images, video, and audio references.
-Supports 480p/720p resolution, durations up to 30s, and MOV output format.
+Supports 480p/720p/1080p resolution, durations up to 30s, MOV output, and draft mode (480p preview, then a 1080p final from the draft).
 Uses BytePlus ARK SDK with async task polling.
 """
 
@@ -57,7 +57,8 @@ class AppInput(BaseAppInput):
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video content. Use @Image1, @Image2, @Video1, @Video2, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). For video editing, use editing verbs ('Edit @Video1 to remove...'). Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
+        default="",
+        description="Text prompt describing the video content (not needed with draft_task_id). Use @Image1, @Image2, @Video1, @Video2, @Audio1 to reference inputs in order (e.g. '@Image1 is the style reference, @Video1 provides the motion'). For video editing, use editing verbs ('Edit @Video1 to remove...'). Supports English, Spanish, Indonesian, Portuguese, Japanese, Malay, Thai, Arabic, Vietnamese, and Korean.",
         examples=["@Image1 is the character reference. @Video1 provides the motion. A marble statue stands in a sunlit hall, camera slowly orbiting."]
     )
     image: Optional[File] = Field(
@@ -115,6 +116,14 @@ class AppInput(BaseAppInput):
         default=TaskTypeEnum.auto,
         description="Guide the generation task type. 'auto' lets the API detect from prompt content. Set explicitly to avoid misdetection errors — e.g. when the API wrongly classifies a reference task as video editing and rejects duration/ratio settings."
     )
+    draft: bool = Field(
+        default=False,
+        description="Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p later. Iterate on drafts, then render only the one you want."
+    )
+    draft_task_id: Optional[str] = Field(
+        default=None,
+        description="Render the final 1080p video from a draft (the draft_task_id of an earlier draft run, valid for 7 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Resolution is always 1080p."
+    )
     safety_identifier: Optional[str] = Field(
         default=None,
         description="Unique identifier of end user for platform safety policy. Must be fixed and unique per user, max 64 chars. Recommended: hash of username, user ID, or email."
@@ -123,6 +132,10 @@ class AppInput(BaseAppInput):
 
 class AppOutput(BaseAppOutput):
     video: File = Field(description="The generated video file.")
+    draft_task_id: Optional[str] = Field(
+        default=None,
+        description="Set on a draft run: pass it as draft_task_id to render this take as the final 1080p video."
+    )
 
 
 class App(SeedanceApp):
@@ -130,6 +143,7 @@ class App(SeedanceApp):
     model_id: ClassVar[str] = "dreamina-seedance-2-5-260628"
     supports_audio_only: ClassVar[bool] = True
     force_adaptive_ratio: ClassVar[bool] = True
+    supports_draft: ClassVar[bool] = True
     OutputType: ClassVar[Any] = AppOutput
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
