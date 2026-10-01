@@ -191,6 +191,49 @@ def convert_messages_to_anthropic(
     return system_prompt, merged
 
 
+_COMBINATORS = ("anyOf", "oneOf", "allOf")
+
+
+def normalize_input_schema(schema: Any) -> Dict[str, Any]:
+    """Coerce a caller-supplied JSON Schema into one Anthropic accepts as input_schema.
+
+    Anthropic requires top-level "type": "object" and rejects anyOf/oneOf/allOf at
+    the top level. Callers send schemas from zod/pydantic/MCP servers that violate
+    both, so: missing/invalid schemas become an empty object, top-level combinators
+    are flattened into one object (properties merged; required is the intersection
+    for anyOf/oneOf, the union for allOf), and a missing type is set to object.
+    """
+    if not isinstance(schema, dict):
+        return {"type": "object", "properties": {}}
+    schema = dict(schema)
+
+    for key in _COMBINATORS:
+        branches = schema.pop(key, None)
+        if not isinstance(branches, list):
+            continue
+        objects = [b for b in branches if isinstance(b, dict) and b.get("type") != "null"]
+        properties = dict(schema.get("properties") or {})
+        required_sets = []
+        for branch in objects:
+            properties.update(branch.get("properties") or {})
+            required_sets.append(set(branch.get("required") or []))
+        if properties:
+            schema["properties"] = properties
+        if required_sets:
+            if key == "allOf":
+                merged = set.union(*required_sets)
+            else:
+                merged = set.intersection(*required_sets)
+            merged |= set(schema.get("required") or [])
+            if merged:
+                schema["required"] = sorted(merged)
+
+    if schema.get("type") != "object":
+        schema["type"] = "object"
+    schema.setdefault("properties", {})
+    return schema
+
+
 def convert_tools_to_anthropic(
     tools: Optional[List[Dict[str, Any]]],
 ) -> Optional[List[Dict[str, Any]]]:
@@ -204,7 +247,7 @@ def convert_tools_to_anthropic(
             {
                 "name": func_def.get("name", ""),
                 "description": func_def.get("description", ""),
-                "input_schema": func_def.get("parameters", {"type": "object", "properties": {}}),
+                "input_schema": normalize_input_schema(func_def.get("parameters")),
             }
         )
     return result

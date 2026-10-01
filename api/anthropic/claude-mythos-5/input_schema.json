@@ -300,6 +300,18 @@
         "type": {
           "$ref": "#/$defs/ToolParamType"
         },
+        "anyOf": {
+          "items": {
+            "$ref": "#/$defs/ToolParameterProperty"
+          },
+          "title": "Anyof",
+          "type": "array"
+        },
+        "enum": {
+          "items": {},
+          "title": "Enum",
+          "type": "array"
+        },
         "title": {
           "default": "",
           "title": "Title",
@@ -353,7 +365,9 @@
         }
       },
       "required": [
-        "type"
+        "type",
+        "anyOf",
+        "enum"
       ],
       "title": "ToolParameterProperty",
       "type": "object"

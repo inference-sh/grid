@@ -170,3 +170,54 @@ async def test_stream_completion_default_shape_unchanged():
     client = FakeClient([ev_text("A")])
     outs = [x async for x in h.stream_completion(client, LLMInput(text="hi"), "claude-sonnet-5")]
     assert outs == [{"response": "A"}]
+
+
+# ── tool input_schema normalization ───────────────────────────────────
+
+class TestNormalizeInputSchema:
+    def test_missing_or_invalid_schema_becomes_empty_object(self):
+        for bad in (None, {}, "x", []):
+            assert h.normalize_input_schema(bad) == {"type": "object", "properties": {}}
+
+    def test_missing_type_is_set_to_object(self):
+        out = h.normalize_input_schema({"properties": {"q": {"type": "string"}}, "required": ["q"]})
+        assert out == {"type": "object", "properties": {"q": {"type": "string"}}, "required": ["q"]}
+
+    def test_top_level_anyof_is_flattened(self):
+        out = h.normalize_input_schema({
+            "anyOf": [
+                {"type": "object", "properties": {"a": {"type": "string"}, "id": {"type": "string"}}, "required": ["id", "a"]},
+                {"type": "object", "properties": {"b": {"type": "integer"}, "id": {"type": "string"}}, "required": ["id", "b"]},
+                {"type": "null"},
+            ],
+            "$defs": {"X": {"type": "string"}},
+        })
+        assert not any(k in out for k in ("anyOf", "oneOf", "allOf"))
+        assert out["type"] == "object"
+        assert set(out["properties"]) == {"a", "b", "id"}
+        assert out["required"] == ["id"]
+        assert out["$defs"] == {"X": {"type": "string"}}
+
+    def test_top_level_allof_unions_required(self):
+        out = h.normalize_input_schema({
+            "allOf": [
+                {"properties": {"a": {"type": "string"}}, "required": ["a"]},
+                {"properties": {"b": {"type": "string"}}, "required": ["b"]},
+            ],
+        })
+        assert out["required"] == ["a", "b"]
+        assert out["type"] == "object"
+
+    def test_valid_schema_is_untouched_and_not_mutated(self):
+        schema = {"type": "object", "properties": {"x": {"anyOf": [{"type": "string"}, {"type": "null"}]}}}
+        assert h.normalize_input_schema(schema) == schema
+        anyof = {"anyOf": [{"type": "object", "properties": {}}]}
+        h.normalize_input_schema(anyof)
+        assert "anyOf" in anyof
+
+    def test_convert_tools_applies_normalization(self):
+        tools = h.convert_tools_to_anthropic([
+            {"type": "function", "function": {"name": "f", "parameters": {"properties": {}}}},
+            {"type": "function", "function": {"name": "g"}},
+        ])
+        assert all(t["input_schema"]["type"] == "object" for t in tools)
