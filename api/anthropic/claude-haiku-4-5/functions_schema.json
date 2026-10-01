@@ -1556,7 +1556,8 @@
             "assistant",
             "tool",
             "injection",
-            "compaction"
+            "compaction",
+            "event"
           ],
           "title": "ChatMessageRole",
           "type": "string"
@@ -1847,19 +1848,43 @@
         "ToolParameterProperty": {
           "properties": {
             "type": {
-              "$ref": "#/$defs/ToolParamType"
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ToolParamType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             },
             "anyOf": {
-              "items": {
-                "$ref": "#/$defs/ToolParameterProperty"
-              },
-              "title": "Anyof",
-              "type": "array"
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/ToolParameterProperty"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Anyof"
             },
             "enum": {
-              "items": {},
-              "title": "Enum",
-              "type": "array"
+              "anyOf": [
+                {
+                  "items": {},
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Enum"
             },
             "title": {
               "default": "",
@@ -1913,11 +1938,6 @@
               "title": "Required"
             }
           },
-          "required": [
-            "type",
-            "anyOf",
-            "enum"
-          ],
           "title": "ToolParameterProperty",
           "type": "object"
         },
@@ -1932,10 +1952,18 @@
               "type": "string"
             },
             "properties": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/$defs/ToolParameterProperty"
-              },
+              "anyOf": [
+                {
+                  "additionalProperties": {
+                    "$ref": "#/$defs/ToolParameterProperty"
+                  },
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
               "title": "Properties"
             },
             "required": {
@@ -1955,8 +1983,7 @@
             }
           },
           "required": [
-            "type",
-            "properties"
+            "type"
           ],
           "title": "ToolParameters",
           "type": "object"
