@@ -68,6 +68,12 @@
       "title": "Camera Fixed",
       "type": "boolean"
     },
+    "generate_audio": {
+      "default": true,
+      "description": "Generate synchronized audio with the video. Turning it off halves the price.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
     "draft": {
       "default": false,
       "description": "Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at full resolution later.",

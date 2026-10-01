@@ -67,6 +67,10 @@ class AppInput(BaseAppInput):
         default=False,
         description="Whether to fix the camera position during video generation. Set to true for static camera shots."
     )
+    generate_audio: bool = Field(
+        default=True,
+        description="Generate synchronized audio with the video. Turning it off halves the price."
+    )
     draft: bool = Field(
         default=False,
         description="Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at full resolution later."
@@ -141,6 +145,21 @@ class App(BaseApp):
 
         return content
 
+    @staticmethod
+    def _has_audio(path: str) -> bool:
+        """Whether the video has an audio stream (ffprobe; True if unreadable)."""
+        import subprocess
+        try:
+            r = subprocess.run(
+                ["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0", path],
+                capture_output=True, text=True, timeout=10,
+            )
+            if r.returncode == 0:
+                return bool(r.stdout.strip())
+        except Exception:
+            pass
+        return True
+
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Generate video using Seedance 1.5 Pro."""
         try:
@@ -174,13 +193,19 @@ class App(BaseApp):
 
                 content = self._build_content(input_data, resolution="480p" if draft else input_data.resolution.value)
 
+                # Top-level fields go in extra_body so they work on every SDK
+                # version. Audio is the model's default, so only "off" is sent.
+                extra_body = {}
+                if draft:
+                    extra_body["draft"] = True
+                if not input_data.generate_audio:
+                    extra_body["generate_audio"] = False
                 self.current_task_id = create_content_task(
                     self.client,
                     model=self.model_id,
                     content=content,
                     logger=self.logger,
-                    # extra_body so it works on every SDK version
-                    extra_body={"draft": True} if draft else None,
+                    extra_body=extra_body or None,
                 )
             task_id = self.current_task_id
 
@@ -259,6 +284,9 @@ class App(BaseApp):
                         extra={
                             "mode": mode,
                             "draft": draft,
+                            # A final reuses the draft's audio setting, so it
+                            # is only known from the output for those.
+                            "generate_audio": self._has_audio(video_path) if mode == "draft-final" else input_data.generate_audio,
                             "camera_fixed": input_data.camera_fixed,
                             "seed": seed,
                             "completion_tokens": completion_tokens,
