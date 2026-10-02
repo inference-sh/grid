@@ -165,7 +165,7 @@ psutil==5.9.8
 ptyprocess==0.7.0
 pure-eval==0.2.2
 py-cpuinfo==9.0.0
-pyarrow==15.0.2
+pyarrow==23.0.1
 pyarrow-hotfix==0.6
 pyasn1==0.6.4
 pyasn1_modules==0.4.0

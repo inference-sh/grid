@@ -101,7 +101,7 @@ propcache==0.5.2
 protobuf==7.35.1
 psutil==7.2.2
 py3langid==0.3.0
-pyarrow==19.0.1
+pyarrow==23.0.1
 pycparser==3.0
 pydantic==2.13.4
 pydantic-core==2.46.4
@@ -148,7 +148,7 @@ torchdiffeq==0.2.5
 torchmetrics==1.9.0
 torchvision==0.21.0
 tqdm==4.70.0
-transformers==4.49.0
+transformers==4.55.4
 triton==3.2.0
 typeguard==4.6.0
 typer==0.27.0
