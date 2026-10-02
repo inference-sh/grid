@@ -3,7 +3,7 @@ inferencesh >= 0.2.7
 diffusers>=0.38.0
 torch
 numpy
-Pillow
+Pillow>=12.3.0
 transformers>=4.53.0
 protobuf
 sentencepiece

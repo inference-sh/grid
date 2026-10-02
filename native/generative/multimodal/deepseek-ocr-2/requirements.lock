@@ -36,7 +36,7 @@ nvidia-nvjitlink-cu12==12.8.93
 nvidia-nvshmem-cu12==3.4.5
 nvidia-nvtx-cu12==12.8.90
 packaging==26.2
-pillow==12.2.0
+pillow==12.3.0
 psutil==7.2.2
 pydantic==2.13.4
 pydantic-core==2.46.4

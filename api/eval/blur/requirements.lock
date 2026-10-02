@@ -7,7 +7,7 @@ ninja==1.13.0
 numpy==2.4.3
 opencv-python-headless==4.13.0.92
 packaging==26.0
-pillow==12.1.1
+pillow==12.3.0
 pydantic==2.12.5
 pydantic-core==2.41.5
 requests==2.33.0

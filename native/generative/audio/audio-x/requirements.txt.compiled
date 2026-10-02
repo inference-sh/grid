@@ -385,7 +385,7 @@ pedalboard==0.9.16
     #   aeiou
 pexpect==4.9.0
     # via ipython
-pillow==10.4.0
+pillow==12.3.0
     # via
     #   aeiou
     #   bokeh

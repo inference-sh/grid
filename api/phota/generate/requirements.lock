@@ -5,7 +5,7 @@ idna==3.11
 inferencesh==0.6.31
 ninja==1.13.0
 packaging==26.0
-pillow==12.2.0
+pillow==12.3.0
 pydantic==2.13.0
 pydantic-core==2.46.0
 requests==2.33.1

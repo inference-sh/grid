@@ -13,7 +13,7 @@ git+https://github.com/huggingface/transformers.git
 
 # Additional dependencies
 sentencepiece
-Pillow
+Pillow>=12.3.0
 tokenizers
 numpy
 peft>=0.7.0

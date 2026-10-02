@@ -118,7 +118,7 @@ param==2.4.1
 parso==0.8.7
 pedalboard==0.9.16
 pexpect==4.9.0
-pillow==10.4.0
+pillow==12.3.0
 platformdirs==4.11.0
 plotly==6.9.0
 pooch==1.9.0

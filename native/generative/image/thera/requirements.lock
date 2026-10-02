@@ -53,7 +53,7 @@ opt-einsum==3.3.0
 optax==0.2.0
 orbax-checkpoint==0.2.4
 packaging==26.2
-pillow==10.0.0
+pillow==10.4.0
 platformdirs==4.11.0
 protobuf==7.35.1
 pydantic==2.13.4

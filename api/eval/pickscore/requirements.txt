@@ -2,4 +2,4 @@ pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 transformers>=4.53.0
 torch
-Pillow
+Pillow>=12.3.0

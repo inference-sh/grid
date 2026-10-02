@@ -8,4 +8,4 @@ fal-client>=0.4.0
 requests>=2.28.0
 
 # Image processing
-pillow>=9.0.0
+pillow>=12.3.0

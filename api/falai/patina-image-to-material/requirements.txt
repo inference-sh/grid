@@ -8,4 +8,4 @@ fal-client>=0.4.0
 requests>=2.28.0
 
 # Image metadata (output size for pricing)
-pillow
+pillow>=12.3.0

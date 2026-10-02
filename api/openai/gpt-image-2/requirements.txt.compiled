@@ -34,7 +34,7 @@ jiter==0.14.0
     # via openai
 openai==2.34.0
     # via -r requirements.txt
-pillow==12.2.0
+pillow==12.3.0
     # via -r requirements.txt
 pydantic==2.13.3
     # via

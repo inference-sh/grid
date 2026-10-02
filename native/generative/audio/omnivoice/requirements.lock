@@ -57,7 +57,7 @@ omnivoice==0.1.4
 orjson==3.11.8
 packaging==26.1
 pandas==3.0.2
-pillow==12.2.0
+pillow==12.3.0
 platformdirs==4.9.6
 pooch==1.9.0
 protobuf==7.34.1

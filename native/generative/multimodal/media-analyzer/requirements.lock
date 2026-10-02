@@ -14,7 +14,7 @@ mutagen==1.47.0
 ninja==1.13.0
 openai==2.6.0
 packaging==25.0
-pillow==12.0.0
+pillow==12.3.0
 pydantic==2.12.3
 pydantic-core==2.41.4
 requests==2.32.5

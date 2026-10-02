@@ -48,7 +48,7 @@ opentelemetry-semantic-conventions==0.62b1
     # via opentelemetry-sdk
 packaging==25.0
     # via xai-sdk
-pillow==12.2.0
+pillow==12.3.0
     # via -r requirements.txt
 propcache==0.4.1
     # via

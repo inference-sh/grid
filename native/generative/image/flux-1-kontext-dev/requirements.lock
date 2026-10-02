@@ -46,7 +46,7 @@ nvidia-nvtx-cu12==12.8.90
 optimum-quanto==0.2.7
 packaging==26.0
 peft==0.18.1
-pillow==12.1.1
+pillow==12.3.0
 protobuf==7.34.0
 psutil==7.2.2
 pydantic==2.12.5

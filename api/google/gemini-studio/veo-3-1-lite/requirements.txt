@@ -5,4 +5,4 @@ inferencesh # required for inference.sh
 google-genai>=1.0.0
 
 # Image processing
-Pillow>=10.0.0
+Pillow>=12.3.0

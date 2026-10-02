@@ -3,7 +3,7 @@ inferencesh # required for inference.sh
 
 # Google Gemini API
 google-genai>=1.0.0
-pillow
+pillow>=12.3.0
 
 # Required by vertex_helper (symlinked)
 aiohttp>=3.14.3
