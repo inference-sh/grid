@@ -16,12 +16,56 @@ from separator import Separator
 from codeclm.utils.offload_profiler import OffloadProfiler, OffloadParamParse
 
 
+import ast
+import operator
+
+
+_SAFE_BINOPS = {
+    ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+    ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+_SAFE_UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
+
+
+def _safe_eval(expr, names=None):
+    """Evaluate literals and arithmetic (e.g. "[(512,10,5)] + [(512,3,2)] * 4") without the builtin eval.
+
+    Only constants, list/tuple/dict/set displays, + - * / // % ** and, when given,
+    lookups of the names in `names` are allowed.
+    """
+    names = names or {}
+
+    def _ev(node):
+        if isinstance(node, ast.Expression):
+            return _ev(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if isinstance(node, ast.Tuple):
+            return tuple(_ev(e) for e in node.elts)
+        if isinstance(node, ast.List):
+            return [_ev(e) for e in node.elts]
+        if isinstance(node, ast.Set):
+            return {_ev(e) for e in node.elts}
+        if isinstance(node, ast.Dict):
+            return {_ev(k): _ev(v) for k, v in zip(node.keys, node.values)}
+        if isinstance(node, ast.BinOp) and type(node.op) in _SAFE_BINOPS:
+            return _SAFE_BINOPS[type(node.op)](_ev(node.left), _ev(node.right))
+        if isinstance(node, ast.UnaryOp) and type(node.op) in _SAFE_UNARYOPS:
+            return _SAFE_UNARYOPS[type(node.op)](_ev(node.operand))
+        if isinstance(node, ast.Name) and node.id in names:
+            return names[node.id]
+        raise ValueError(f"unsupported expression: {expr!r}")
+
+    return _ev(ast.parse(str(expr).strip(), mode="eval"))
+
+
 class LeVoInference(torch.nn.Module):
     def __init__(self, ckpt_path):
         super().__init__()
 
         torch.backends.cudnn.enabled = False 
-        OmegaConf.register_new_resolver("eval", lambda x: eval(x))
+        OmegaConf.register_new_resolver("eval", lambda x: _safe_eval(x))
         OmegaConf.register_new_resolver("concat", lambda *x: [xxx for xx in x for xxx in xx])
         OmegaConf.register_new_resolver("get_fname", lambda: 'default')
         OmegaConf.register_new_resolver("load_yaml", lambda x: list(OmegaConf.load(x)))

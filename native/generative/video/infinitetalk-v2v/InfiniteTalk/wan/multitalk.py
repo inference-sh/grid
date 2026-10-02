@@ -479,7 +479,7 @@ class InfiniteTalkPipeline:
             audio_embedding_path = audio_embedding_paths[human_idx]
             if not os.path.exists(audio_embedding_path):
                 continue
-            full_audio_emb = torch.load(audio_embedding_path)
+            full_audio_emb = torch.load(audio_embedding_path, weights_only=True)
             if torch.isnan(full_audio_emb).any():
                 continue
             if full_audio_emb.shape[0] <= frame_num:

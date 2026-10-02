@@ -26,6 +26,50 @@ from ..data.ark_dataset import ArkDataset
 logger = logging.getLogger(__name__)
 
 
+import ast
+import operator
+
+
+_SAFE_BINOPS = {
+    ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+    ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+_SAFE_UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
+
+
+def _safe_eval(expr, names=None):
+    """Evaluate literals and arithmetic (e.g. "[(512,10,5)] + [(512,3,2)] * 4") without the builtin eval.
+
+    Only constants, list/tuple/dict/set displays, + - * / // % ** and, when given,
+    lookups of the names in `names` are allowed.
+    """
+    names = names or {}
+
+    def _ev(node):
+        if isinstance(node, ast.Expression):
+            return _ev(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if isinstance(node, ast.Tuple):
+            return tuple(_ev(e) for e in node.elts)
+        if isinstance(node, ast.List):
+            return [_ev(e) for e in node.elts]
+        if isinstance(node, ast.Set):
+            return {_ev(e) for e in node.elts}
+        if isinstance(node, ast.Dict):
+            return {_ev(k): _ev(v) for k, v in zip(node.keys, node.values)}
+        if isinstance(node, ast.BinOp) and type(node.op) in _SAFE_BINOPS:
+            return _SAFE_BINOPS[type(node.op)](_ev(node.left), _ev(node.right))
+        if isinstance(node, ast.UnaryOp) and type(node.op) in _SAFE_UNARYOPS:
+            return _SAFE_UNARYOPS[type(node.op)](_ev(node.operand))
+        if isinstance(node, ast.Name) and node.id in names:
+            return names[node.id]
+        raise ValueError(f"unsupported expression: {expr!r}")
+
+    return _ev(ast.parse(str(expr).strip(), mode="eval"))
+
+
 class LabelEncoder(object):
     def __init__(self, dictionary: Dictionary) -> None:
         self.dictionary = dictionary
@@ -249,19 +293,19 @@ class MERTPretrainingTask(FairseqTask):
             self.state.add_factory("dictionaries", self.load_dictionaries)
 
         self.blank_symbol = "<s>"        
-        self.augmentation_effects = eval(self.cfg.augmentation_effects)
-        self.augmentation_probs = eval(self.cfg.augmentation_probs)
+        self.augmentation_effects = _safe_eval(self.cfg.augmentation_effects)
+        self.augmentation_probs = _safe_eval(self.cfg.augmentation_probs)
         if len(self.augmentation_effects) > 0:
             assert len(self.augmentation_effects) == len(self.augmentation_probs)
             logger.info(f"Applying audio augmentation {self.augmentation_effects}, probabilities: {self.augmentation_probs}")
         
-        self.inbatch_noise_augment_number_range = eval(self.cfg.inbatch_noise_augment_number_range)
-        self.inbatch_noise_augment_len_range = eval(self.cfg.inbatch_noise_augment_len_range)
+        self.inbatch_noise_augment_number_range = _safe_eval(self.cfg.inbatch_noise_augment_number_range)
+        self.inbatch_noise_augment_len_range = _safe_eval(self.cfg.inbatch_noise_augment_len_range)
 
         self.max_sample_size = self.cfg.max_sample_size
 
-        self.dynamic_crops = eval(self.cfg.dynamic_crops)
-        self.dynamic_crops_epoches = eval(self.cfg.dynamic_crops_epoches)
+        self.dynamic_crops = _safe_eval(self.cfg.dynamic_crops)
+        self.dynamic_crops_epoches = _safe_eval(self.cfg.dynamic_crops_epoches)
         assert len(self.dynamic_crops) == len(self.dynamic_crops_epoches)
         if len(self.dynamic_crops) > 0:
             assert self.dynamic_crops_epoches[0] == 1

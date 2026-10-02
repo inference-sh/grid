@@ -13,6 +13,7 @@ import argparse
 import itertools
 import json
 import os
+import subprocess
 import random
 import re
 
@@ -193,7 +194,11 @@ def evaluate_chat_model():
                   f'--result-file {results_file} ' \
                   f'--out-dir {args.out_dir}'
             print(cmd)
-            os.system(cmd)
+            subprocess.run(['python', 'eval/vlm/eval/pope/eval_pope.py',
+                            '--annotation-dir', 'eval/vlm/data/pope/coco',
+                            '--question-file', 'eval/vlm/data/pope/llava_pope_test.jsonl',
+                            '--result-file', results_file,
+                            '--out-dir', args.out_dir])
 
 
 if __name__ == '__main__':

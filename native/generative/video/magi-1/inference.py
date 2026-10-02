@@ -5,7 +5,6 @@ sys.path.append(os.path.dirname(__file__))
 
 import gc
 import json
-import pickle
 import random
 from enum import Enum
 from typing import Optional
@@ -92,7 +91,7 @@ def broadcast_config(config_json: Optional[dict]) -> dict:
         device = get_device()
 
         if dist.get_rank() == 0:
-            data = pickle.dumps(config_json)
+            data = json.dumps(config_json).encode("utf-8")
             size = torch.tensor([len(data)], dtype=torch.long, device=device)
         else:
             size = torch.empty(1, dtype=torch.long, device=device)
@@ -106,7 +105,7 @@ def broadcast_config(config_json: Optional[dict]) -> dict:
 
         dist.broadcast(tensor, src=0)
 
-        return pickle.loads(bytearray(tensor.cpu().tolist()))
+        return json.loads(bytes(tensor.cpu().tolist()).decode("utf-8"))
     return config_json
 
 

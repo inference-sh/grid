@@ -1,4 +1,5 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+import re
 import subprocess
 
 class AppInput(BaseAppInput):
@@ -16,17 +17,22 @@ class App(BaseApp):
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Extract the duration of the input media file using ffmpeg."""
         
-        # Use shell command to extract duration
-        cmd = f"ffmpeg -i {input_data.media_file.path} 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,// | sed 's@\\..*@@g' | awk '{{ split($1, A, \":\"); split(A[3], B, \".\"); print 3600*A[1] + 60*A[2] + B[1] }}'"
-        
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        
-        if result.returncode != 0 or not result.stdout.strip():
+        # ffmpeg prints "Duration: HH:MM:SS.xx" to stderr; parse it without a shell.
+        result = subprocess.run(
+            ["ffmpeg", "-i", input_data.media_file.path], capture_output=True, text=True
+        )
+        output = result.stderr + result.stdout
+        line = next((l for l in output.splitlines() if "Duration" in l), None)
+        if line is None:
             raise Exception(f"Error processing media file: {result.stderr}")
-        
-        # Parse the output to get duration in seconds
-        duration_seconds = float(result.stdout.strip())
-        
+
+        # Whole seconds, matching the previous `cut | sed | awk` pipeline (fraction dropped).
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+)", line)
+        duration_seconds = (
+            float(int(match.group(1)) * 3600 + int(match.group(2)) * 60 + int(match.group(3)))
+            if match else 0.0
+        )
+
         # Format duration as HH:MM:SS
         hours, remainder = divmod(duration_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)

@@ -51,6 +51,50 @@ logger = logging.getLogger(__name__)
 MASK_REPLACE_TYPE_CHOICES = ChoiceEnum(["in_batch", "in_sample"])
 AUDIO_FEAT_EXTRACTOR_TYPE_CHOICES = ChoiceEnum(["w2v_conv", "hstft_conv", "melspec"])
 
+import ast
+import operator
+
+
+_SAFE_BINOPS = {
+    ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+    ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+_SAFE_UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
+
+
+def _safe_eval(expr, names=None):
+    """Evaluate literals and arithmetic (e.g. "[(512,10,5)] + [(512,3,2)] * 4") without the builtin eval.
+
+    Only constants, list/tuple/dict/set displays, + - * / // % ** and, when given,
+    lookups of the names in `names` are allowed.
+    """
+    names = names or {}
+
+    def _ev(node):
+        if isinstance(node, ast.Expression):
+            return _ev(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if isinstance(node, ast.Tuple):
+            return tuple(_ev(e) for e in node.elts)
+        if isinstance(node, ast.List):
+            return [_ev(e) for e in node.elts]
+        if isinstance(node, ast.Set):
+            return {_ev(e) for e in node.elts}
+        if isinstance(node, ast.Dict):
+            return {_ev(k): _ev(v) for k, v in zip(node.keys, node.values)}
+        if isinstance(node, ast.BinOp) and type(node.op) in _SAFE_BINOPS:
+            return _SAFE_BINOPS[type(node.op)](_ev(node.left), _ev(node.right))
+        if isinstance(node, ast.UnaryOp) and type(node.op) in _SAFE_UNARYOPS:
+            return _SAFE_UNARYOPS[type(node.op)](_ev(node.operand))
+        if isinstance(node, ast.Name) and node.id in names:
+            return names[node.id]
+        raise ValueError(f"unsupported expression: {expr!r}")
+
+    return _ev(ast.parse(str(expr).strip(), mode="eval"))
+
+
 @dataclass
 class MERTConfig(FairseqDataclass):
     label_rate: float = II("task.label_rate")
@@ -842,7 +886,7 @@ class MERTModel(BaseFairseqModel):
 
             dictionaries = [dictionaries[0] for _ in range(total_n_codebooks)]
 
-        feature_enc_layers = eval(cfg.conv_feature_layers)  # noqa
+        feature_enc_layers = _safe_eval(cfg.conv_feature_layers)  # noqa
         
         if self.cfg.feature_extractor_cqt:
             self.feature_extractor_cqt = nnAudioFeatures.cqt.CQT(sr=task_cfg.sample_rate, hop_length=task_cfg.sample_rate//50, fmin=32.7, 
@@ -1013,24 +1057,24 @@ class MERTModel(BaseFairseqModel):
         
         self.num_updates = 0
 
-        self.mask_dynamic_prob_step = eval(cfg.mask_dynamic_prob_step)
-        self.mask_dynamic_prob = eval(cfg.mask_dynamic_prob)
+        self.mask_dynamic_prob_step = _safe_eval(cfg.mask_dynamic_prob_step)
+        self.mask_dynamic_prob = _safe_eval(cfg.mask_dynamic_prob)
 
         if len(self.mask_dynamic_prob_step) > 0 and len(self.mask_dynamic_prob) > 0:
             self.initialize_dynamic_mask_prob()
         else:
             self.mask_dynamic_prob_stage = -1
     
-        self.mask_dynamic_len_step = eval(cfg.mask_dynamic_len_step)
-        self.mask_dynamic_len = eval(cfg.mask_dynamic_len)
+        self.mask_dynamic_len_step = _safe_eval(cfg.mask_dynamic_len_step)
+        self.mask_dynamic_len = _safe_eval(cfg.mask_dynamic_len)
         if len(self.mask_dynamic_len_step) > 0 and len(self.mask_dynamic_len) > 0:
             self.initialize_dynamic_mask_len()
         else:
             self.mask_dynamic_len_stage = -1
 
         self.mixture_prob = cfg.mixture_prob
-        self.inbatch_noise_augment_len_range = eval(cfg.inbatch_noise_augment_len_range)
-        self.inbatch_noise_augment_number_range = eval(cfg.inbatch_noise_augment_number_range)
+        self.inbatch_noise_augment_len_range = _safe_eval(cfg.inbatch_noise_augment_len_range)
+        self.inbatch_noise_augment_number_range = _safe_eval(cfg.inbatch_noise_augment_number_range)
         self.inbatch_noise_augment_volume = cfg.inbatch_noise_augment_volume
         
         if os.path.isfile(cfg.pretrained_weights):

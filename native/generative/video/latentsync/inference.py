@@ -1,4 +1,5 @@
 import os
+import runpy
 import subprocess
 import tempfile
 from pathlib import Path
@@ -146,10 +147,6 @@ class App(BaseApp):
                 
                 print(f"Running inference with args: {sys.argv}")
                 
-                # Execute the do_inference.py script
-                with open(inference_script, 'r') as f:
-                    script_content = f.read()
-                
                 # Add the current directory to the Python path if needed
                 if current_dir not in sys.path:
                     sys.path.append(current_dir)
@@ -162,7 +159,7 @@ class App(BaseApp):
                     print(f"Added {latentsync_dir} to Python path")
                     
                 # Execute the script
-                exec(script_content, {'__name__': '__main__'})
+                runpy.run_path(inference_script, run_name='__main__')
                 
                 # Restore original argv
                 sys.argv = original_argv

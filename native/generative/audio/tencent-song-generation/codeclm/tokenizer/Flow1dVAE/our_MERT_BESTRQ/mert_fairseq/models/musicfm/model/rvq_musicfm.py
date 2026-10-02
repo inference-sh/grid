@@ -17,6 +17,50 @@ except:
     from modules.conv import Conv2dSubsampling
 
 
+import ast
+import operator
+
+
+_SAFE_BINOPS = {
+    ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+    ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+}
+_SAFE_UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
+
+
+def _safe_eval(expr, names=None):
+    """Evaluate literals and arithmetic (e.g. "[(512,10,5)] + [(512,3,2)] * 4") without the builtin eval.
+
+    Only constants, list/tuple/dict/set displays, + - * / // % ** and, when given,
+    lookups of the names in `names` are allowed.
+    """
+    names = names or {}
+
+    def _ev(node):
+        if isinstance(node, ast.Expression):
+            return _ev(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if isinstance(node, ast.Tuple):
+            return tuple(_ev(e) for e in node.elts)
+        if isinstance(node, ast.List):
+            return [_ev(e) for e in node.elts]
+        if isinstance(node, ast.Set):
+            return {_ev(e) for e in node.elts}
+        if isinstance(node, ast.Dict):
+            return {_ev(k): _ev(v) for k, v in zip(node.keys, node.values)}
+        if isinstance(node, ast.BinOp) and type(node.op) in _SAFE_BINOPS:
+            return _SAFE_BINOPS[type(node.op)](_ev(node.left), _ev(node.right))
+        if isinstance(node, ast.UnaryOp) and type(node.op) in _SAFE_UNARYOPS:
+            return _SAFE_UNARYOPS[type(node.op)](_ev(node.operand))
+        if isinstance(node, ast.Name) and node.id in names:
+            return names[node.id]
+        raise ValueError(f"unsupported expression: {expr!r}")
+
+    return _ev(ast.parse(str(expr).strip(), mode="eval"))
+
+
 class RVQDataset(Dataset):
     def __init__(
         self,
@@ -237,7 +281,7 @@ if __name__ == "__main__":
             x = preprocess(wavs)
             model.train()
             quantized_prompt_embeds, codes, _, commitment_loss, codebook_loss, rvq_usage = model(x)
-            loss = eval(config['train']['loss'])
+            loss = _safe_eval(config['train']['loss'], {'commitment_loss': commitment_loss, 'codebook_loss': codebook_loss, 'rvq_usage': rvq_usage})
             loss.backward()
             optimizer.step()
 
@@ -254,7 +298,7 @@ if __name__ == "__main__":
                         wavs = wavs.to(device)
                         x = preprocess(wavs)
                         quantized_prompt_embeds, codes, _, commitment_loss, codebook_loss, rvq_usage = model(x)
-                        valid_loss = eval(config['train']['loss'])
+                        valid_loss = _safe_eval(config['train']['loss'], {'commitment_loss': commitment_loss, 'codebook_loss': codebook_loss, 'rvq_usage': rvq_usage})
                         
                         results['loss/valid'] += valid_loss.item()
                         results['commitment_loss/valid'] += commitment_loss.item()

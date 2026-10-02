@@ -17,6 +17,12 @@ import requests
 from typing import Optional
 
 
+def _parse_frame_rate(value: str) -> float:
+    """Parse an ffprobe rate such as "30000/1001" or "25" without eval."""
+    num, _, den = str(value).partition("/")
+    return float(num) / float(den or 1)
+
+
 BASE_URL = "https://api.topazlabs.com/video"
 
 
@@ -232,7 +238,7 @@ def get_video_info(file_path: str) -> dict:
                 "width": int(video_stream.get("width", 0)),
                 "height": int(video_stream.get("height", 0)),
                 "duration": float(fmt.get("duration", 0)),
-                "frame_rate": eval(video_stream.get("r_frame_rate", "30/1")),
+                "frame_rate": _parse_frame_rate(video_stream.get("r_frame_rate", "30/1")),
                 "frame_count": int(video_stream.get("nb_frames", 0)),
                 "size": int(fmt.get("size", 0)),
                 "container": os.path.splitext(file_path)[1].lstrip(".") or "mp4",

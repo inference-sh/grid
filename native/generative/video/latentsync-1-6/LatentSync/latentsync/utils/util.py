@@ -49,10 +49,11 @@ def read_video(video_path: str, change_fps=True, use_decord=True):
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
         os.makedirs(temp_dir, exist_ok=True)
-        command = (
-            f"ffmpeg -loglevel error -y -nostdin -i {video_path} -r 25 -crf 18 {os.path.join(temp_dir, 'video.mp4')}"
-        )
-        subprocess.run(command, shell=True)
+        command = [
+            "ffmpeg", "-loglevel", "error", "-y", "-nostdin", "-i", video_path, "-r", "25", "-crf", "18",
+            os.path.join(temp_dir, "video.mp4"),
+        ]
+        subprocess.run(command)
         target_video_path = os.path.join(temp_dir, "video.mp4")
     else:
         target_video_path = video_path
@@ -269,16 +270,22 @@ def count_video_time(video_path):
 
 def check_ffmpeg_installed():
     # Run the ffmpeg command with the -version argument to check if it's installed
-    result = subprocess.run("ffmpeg -version", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    if not result.returncode == 0:
+    try:
+        result = subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except FileNotFoundError:
+        result = None
+    if result is None or not result.returncode == 0:
         raise FileNotFoundError("ffmpeg not found, please install it by:\n    $ conda install -c conda-forge ffmpeg")
 
 
 def check_model_and_download(ckpt_path: str, huggingface_model_id: str = "ByteDance/LatentSync-1.5"):
     if not os.path.exists(ckpt_path):
         ckpt_path_obj = Path(ckpt_path)
-        download_cmd = f"huggingface-cli download {huggingface_model_id} {Path(*ckpt_path_obj.parts[1:])} --local-dir {Path(ckpt_path_obj.parts[0])}"
-        subprocess.run(download_cmd, shell=True)
+        download_cmd = [
+            "huggingface-cli", "download", huggingface_model_id, str(Path(*ckpt_path_obj.parts[1:])),
+            "--local-dir", str(Path(ckpt_path_obj.parts[0])),
+        ]
+        subprocess.run(download_cmd)
 
 
 class dummy_context:

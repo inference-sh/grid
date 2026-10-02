@@ -11,6 +11,7 @@
 
 import argparse
 import os
+import subprocess
 import re
 
 from eval.vlm.utils import load_model_and_tokenizer, build_transform, process_conversation
@@ -71,4 +72,4 @@ if __name__ == '__main__':
         fin.close()
         fout.close()
 
-    os.system(f"python -m eval.vlm.eval.mme.calculation --out-dir {args.out_dir}")
+    subprocess.run(["python", "-m", "eval.vlm.eval.mme.calculation", "--out-dir", args.out_dir])

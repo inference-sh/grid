@@ -54,11 +54,12 @@ def inference_video_from_fileslist(
         video_name = os.path.basename(video_path)[:-4]
         audio_name = os.path.basename(audio_path)[:-4]
         video_out_path = os.path.join(output_dir, f"{video_name}__{audio_name}.mp4")
-        inference_command = (
-            f"python -m scripts.inference --enable_deepcache --guidance_scale {guidance_scale} --unet_config_path {unet_config_path} "
-            f"--video_path {video_path} --audio_path {audio_path} --video_out_path {video_out_path} --inference_ckpt_path {ckpt_path}"
-        )
-        subprocess.run(inference_command, shell=True)
+        inference_command = [
+            "python", "-m", "scripts.inference", "--enable_deepcache", "--guidance_scale", str(guidance_scale),
+            "--unet_config_path", unet_config_path, "--video_path", video_path, "--audio_path", audio_path,
+            "--video_out_path", video_out_path, "--inference_ckpt_path", ckpt_path,
+        ]
+        subprocess.run(inference_command)
 
 
 if __name__ == "__main__":

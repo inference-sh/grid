@@ -627,7 +627,7 @@ class TmeDataset(Dataset):
             self.data_ids = list(self.data_index_dict.keys())
         
             with open(prompt_format_path) as fp:
-                self.prompt_formats = yaml.load(fp, Loader=yaml.FullLoader)
+                self.prompt_formats = yaml.safe_load(fp)
 
             #加载tag types，并分成一般的tag_types和关键的key_tag_types
             if '*' in tag_types:

@@ -443,9 +443,8 @@ def evaluate_chat_model():
                 print('python eval/vqa/infographicsvqa_eval.py -g ' +
                       ds_collections[ds_name]['annotation'] + ' -s ' +
                       results_file)
-                os.system('python eval/vqa/infographicsvqa_eval.py -g ' +
-                          ds_collections[ds_name]['annotation'] + ' -s ' +
-                          results_file)
+                subprocess.run(['python', 'eval/vqa/infographicsvqa_eval.py', '-g',
+                                ds_collections[ds_name]['annotation'], '-s', results_file])
             elif ds_collections[ds_name]['metric'] == 'relaxed_accuracy':
                 relaxed_accuracy = evaluate_relaxed_accuracy(merged_outputs)
                 print(ds_name, "\relaxed_accuracy")
@@ -457,11 +456,12 @@ def evaluate_chat_model():
                     print('python eval/vlm/eval/vqa/convert_gqa_for_eval.py --src ' +
                           results_file + ' --dst ' + dst_file)
                     python_path = 'python'
-                    os.system(python_path + ' eval/vlm/eval/vqa/convert_gqa_for_eval.py --src ' +
-                              results_file + ' --dst ' + dst_file)
+                    subprocess.run([python_path, 'eval/vlm/eval/vqa/convert_gqa_for_eval.py', '--src',
+                                    results_file, '--dst', dst_file])
                     command = f'cd ./eval/vlm/data/gqa/ && {python_path} eval.py --tier testdev_balanced && cd ../../../../'
                     print(command)
-                    accuracy = subprocess.check_output(command, shell=True, universal_newlines=True)
+                    accuracy = subprocess.check_output([python_path, 'eval.py', '--tier', 'testdev_balanced'],
+                                                       cwd='./eval/vlm/data/gqa/', universal_newlines=True)
                 else:
                     accuracy = {'accuracy': evaluate_exact_match_accuracy(merged_outputs)}
                 print(ds_name, "\naccuracy")

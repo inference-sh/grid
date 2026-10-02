@@ -24,8 +24,12 @@ def inference_video_from_dir(input_dir, output_dir, unet_config_path, ckpt_path)
         video_path = os.path.join(input_dir, video_name)
         audio_path = os.path.join(input_dir, video_name.replace(".mp4", "_audio.wav"))
         video_out_path = os.path.join(output_dir, video_name.replace(".mp4", "_out.mp4"))
-        inference_command = f"python inference.py --unet_config_path {unet_config_path} --video_path {video_path} --audio_path {audio_path} --video_out_path {video_out_path} --inference_ckpt_path {ckpt_path} --seed 1247"
-        subprocess.run(inference_command, shell=True)
+        inference_command = [
+            "python", "inference.py", "--unet_config_path", unet_config_path, "--video_path", video_path,
+            "--audio_path", audio_path, "--video_out_path", video_out_path, "--inference_ckpt_path", ckpt_path,
+            "--seed", "1247",
+        ]
+        subprocess.run(inference_command)
 
 
 if __name__ == "__main__":
