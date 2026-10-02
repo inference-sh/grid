@@ -38,7 +38,7 @@ setuptools
 
 # Data handling
 pandas
-pyarrow
+pyarrow>=23.0.1
 
 
 # Network
