@@ -162,7 +162,7 @@ opencv-python==4.9.0.80
     # via
     #   -r requirements.txt
     #   albumentations
-opencv-python-headless==4.7.0.72
+opencv-python-headless==4.9.0.80
     # via
     #   -r requirements.txt
     #   controlnet-aux

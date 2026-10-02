@@ -10,7 +10,7 @@ insightface==0.7.3
 numpy==1.26.2
 opencv_contrib_python==4.9.0.80
 opencv_python==4.9.0.80
-opencv_python_headless==4.7.0.72
+opencv_python_headless==4.9.0.80
 Pillow==10.1.0
 # 2.7.0 lacks kernels for the newer GPUs now in the fleet
 # (`CUDA error: no kernel image is available for execution on the device`)
