@@ -25,9 +25,12 @@ pip install -U yt-dlp
 
 
 def download_video(video_url, video_path):
-    download_video_command = f"yt-dlp -f bestvideo+bestaudio --skip-unavailable-fragments --merge-output-format mp4 '{video_url}' --output '{video_path}' --external-downloader aria2c --external-downloader-args '-x 16 -k 1M'"
+    download_video_command = [
+        "yt-dlp", "-f", "bestvideo+bestaudio", "--skip-unavailable-fragments", "--merge-output-format", "mp4",
+        video_url, "--output", video_path, "--external-downloader", "aria2c", "--external-downloader-args", "-x 16 -k 1M",
+    ]
     try:
-        subprocess.run(download_video_command, shell=True)  # ignore_security_alert_wait_for_fix RCE
+        subprocess.run(download_video_command)
     except KeyboardInterrupt:
         print("Stopped")
         exit()

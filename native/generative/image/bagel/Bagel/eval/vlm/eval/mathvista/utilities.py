@@ -11,7 +11,6 @@
 
 import json
 import os
-import pickle
 import re
 import time
 
@@ -51,11 +50,6 @@ def read_jsonl(file):
     with open(file, 'r') as f:
         data = [json.loads(line) for line in f]
     return data
-
-
-def read_pickle(path):
-    with open(path, 'rb') as f:
-        return pickle.load(f)
 
 
 def save_json(data, path):

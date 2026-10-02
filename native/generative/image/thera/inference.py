@@ -1,12 +1,11 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
-import pickle
 import numpy as np
 import jax
 from PIL import Image
 from huggingface_hub import hf_hub_download
 from .model import build_thera
-from .super_resolve import process
+from .super_resolve import process, load_checkpoint
 
 import sys
 print(f"Python version: {sys.version}")
@@ -31,16 +30,16 @@ class App(BaseApp):
         self.REPO_ID_EDSR = "prs-eth/thera-edsr-pro"
         self.REPO_ID_RDN = "prs-eth/thera-rdn-pro"
         # Load EDSR model
-        model_path = hf_hub_download(repo_id=self.REPO_ID_EDSR, filename="model.pkl")
+        model_path = hf_hub_download(repo_id=self.REPO_ID_EDSR, filename="model.pkl", revision="f33e8d319e1301214baef2f3c2dc2a4cef14b6b7")
         with open(model_path, 'rb') as fh:
-            check = pickle.load(fh)
+            check = load_checkpoint(fh)
             self.params_edsr, backbone, size = check['model'], check['backbone'], check['size']
             self.model_edsr = build_thera(3, backbone, size)
 
         # Load RDN model
-        model_path = hf_hub_download(repo_id=self.REPO_ID_RDN, filename="model.pkl")
+        model_path = hf_hub_download(repo_id=self.REPO_ID_RDN, filename="model.pkl", revision="b292ac8a13048d9419af0c04693255b8d7a47a11")
         with open(model_path, 'rb') as fh:
-            check = pickle.load(fh)
+            check = load_checkpoint(fh)
             self.params_rdn, backbone, size = check['model'], check['backbone'], check['size']
             self.model_rdn = build_thera(3, backbone, size)
 

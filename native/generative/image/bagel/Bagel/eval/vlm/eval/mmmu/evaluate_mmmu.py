@@ -9,10 +9,12 @@
 #
 # This modified file is released under the same license.
 
+import ast
 import argparse
 import itertools
 import json
 import os
+import subprocess
 import random
 
 import torch
@@ -78,7 +80,7 @@ class MMMUDataset(torch.utils.data.Dataset):
         pil_images = data['image']
         question_type = data['question_type']
 
-        choices = eval(data['options'])
+        choices = ast.literal_eval(data['options'])
         answer = data['answer'] if 'answer' in data else None
 
         choice_list = []
@@ -229,7 +231,10 @@ def evaluate_chat_model():
                       f'--answer_path eval/vlm/eval/mmmu/answer_dict_val.json ' \
                       f'--out-dir {args.out_dir}'
                 print(cmd)
-                os.system(cmd)
+                subprocess.run(['python', '-m', 'eval.vlm.eval.mmmu.main_eval_only',
+                                '--output_path', output_path,
+                                '--answer_path', 'eval/vlm/eval/mmmu/answer_dict_val.json',
+                                '--out-dir', args.out_dir])
             output_path = os.path.join(args.out_dir, "results.jsonl")
             writer = open(output_path, 'w')
             for item in merged_outputs:

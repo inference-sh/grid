@@ -1,4 +1,3 @@
-import pickle
 import json
 import os
 
@@ -11,7 +10,7 @@ from gradio_dualvision import DualVisionApp
 from gradio_dualvision.gradio_patches.radio import Radio
 from huggingface_hub import hf_hub_download
 from model import build_thera
-from super_resolve import process
+from super_resolve import process, load_checkpoint
 
 REPO_ID_EDSR = "prs-eth/thera-edsr-pro"
 REPO_ID_RDN = "prs-eth/thera-rdn-pro"
@@ -20,15 +19,15 @@ MAX_SIZE = int(os.getenv('THERA_DEMO_CROP', 10_000))
 print(f"JAX devices: {jax.devices()}")
 print(f"JAX device type: {jax.devices()[0].device_kind}")
 
-model_path = hf_hub_download(repo_id=REPO_ID_EDSR, filename="model.pkl")
+model_path = hf_hub_download(repo_id=REPO_ID_EDSR, filename="model.pkl", revision="f33e8d319e1301214baef2f3c2dc2a4cef14b6b7")
 with open(model_path, 'rb') as fh:
-    check = pickle.load(fh)
+    check = load_checkpoint(fh)
     params_edsr, backbone, size = check['model'], check['backbone'], check['size']
     model_edsr = build_thera(3, backbone, size)
 
-model_path = hf_hub_download(repo_id=REPO_ID_RDN, filename="model.pkl")
+model_path = hf_hub_download(repo_id=REPO_ID_RDN, filename="model.pkl", revision="b292ac8a13048d9419af0c04693255b8d7a47a11")
 with open(model_path, 'rb') as fh:
-    check = pickle.load(fh)
+    check = load_checkpoint(fh)
     params_rdn, backbone, size = check['model'], check['backbone'], check['size']
     model_rdn = build_thera(3, backbone, size)
 

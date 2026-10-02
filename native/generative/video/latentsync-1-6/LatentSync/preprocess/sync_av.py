@@ -40,8 +40,11 @@ def gather_paths(input_dir, output_dir):
 
 
 def adjust_offset(video_input: str, video_output: str, av_offset: int, fps: int = 25):
-    command = f"ffmpeg -loglevel error -y -i {video_input} -itsoffset {av_offset/fps} -i {video_input} -map 0:v -map 1:a -c copy -q:v 0 -q:a 0 {video_output}"
-    subprocess.run(command, shell=True)
+    command = [
+        "ffmpeg", "-loglevel", "error", "-y", "-i", video_input, "-itsoffset", str(av_offset / fps),
+        "-i", video_input, "-map", "0:v", "-map", "1:a", "-c", "copy", "-q:v", "0", "-q:a", "0", video_output,
+    ]
+    subprocess.run(command)
 
 
 def func(sync_conf_threshold, paths, device_id, process_temp_dir):

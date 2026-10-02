@@ -63,12 +63,15 @@ def combine_video_audio(video_frames, video_input_path, video_output_path, proce
 
     write_video(video_temp, video_frames, fps=25)
 
-    command = f"ffmpeg -y -loglevel error -i {video_input_path} -q:a 0 -map a {audio_temp}"
-    subprocess.run(command, shell=True)
+    command = ["ffmpeg", "-y", "-loglevel", "error", "-i", video_input_path, "-q:a", "0", "-map", "a", audio_temp]
+    subprocess.run(command)
 
     os.makedirs(os.path.dirname(video_output_path), exist_ok=True)
-    command = f"ffmpeg -y -loglevel error -i {video_temp} -i {audio_temp} -c:v libx264 -c:a aac -map 0:v -map 1:a -q:v 0 -q:a 0 {video_output_path}"
-    subprocess.run(command, shell=True)
+    command = [
+        "ffmpeg", "-y", "-loglevel", "error", "-i", video_temp, "-i", audio_temp, "-c:v", "libx264", "-c:a", "aac",
+        "-map", "0:v", "-map", "1:a", "-q:v", "0", "-q:a", "0", video_output_path,
+    ]
+    subprocess.run(command)
 
     os.remove(audio_temp)
     os.remove(video_temp)

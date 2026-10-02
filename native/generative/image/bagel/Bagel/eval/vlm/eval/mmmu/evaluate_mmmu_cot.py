@@ -9,6 +9,7 @@
 #
 # This modified file is released under the same license.
 
+import ast
 import argparse
 import json
 import os
@@ -102,7 +103,7 @@ class MMMUDataset(torch.utils.data.Dataset):
         pil_images = data['image']
         question_type = data['question_type'] # "open", "multiple-choice"
 
-        choices = eval(data['options'])
+        choices = ast.literal_eval(data['options'])
         answer = data['answer'] if 'answer' in data else None
 
         choice_list = []

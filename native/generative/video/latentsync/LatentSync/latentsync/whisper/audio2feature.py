@@ -122,7 +122,7 @@ class Audio2Feature:
 
         if os.path.isfile(audio_embeds_cache_path):
             try:
-                audio_feat = torch.load(audio_embeds_cache_path)
+                audio_feat = torch.load(audio_embeds_cache_path, weights_only=True)
             except Exception as e:
                 print(f"{type(e).__name__} - {e} - {audio_embeds_cache_path}")
                 os.remove(audio_embeds_cache_path)

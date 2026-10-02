@@ -21,8 +21,8 @@ def remove_outdated_files(input_dir, begin_date, end_date):
     for subdir in os.listdir(input_dir):
         if subdir >= begin_date and subdir <= end_date:
             subdir_path = os.path.join(input_dir, subdir)
-            command = f"rm -rf {subdir_path}"
-            subprocess.run(command, shell=True)
+            command = ["rm", "-rf", subdir_path]
+            subprocess.run(command)
             print(f"Deleted: {subdir_path}")
 
 

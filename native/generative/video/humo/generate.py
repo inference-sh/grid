@@ -518,7 +518,7 @@ class Generator():
                 self.audio_processor.whisper.to(device='cpu')
             else:
                 audio_emb_path = audio_path.replace(".wav", ".pt")
-                audio_emb = torch.load(audio_emb_path).to(device=device)
+                audio_emb = torch.load(audio_emb_path, weights_only=True).to(device=device)
                 audio_emb = self.audio_emb_enc(audio_emb, wav_enc_type="whisper")
                 self.logger.info("使用预先提取好的音频特征: %s", audio_emb_path)
         else:

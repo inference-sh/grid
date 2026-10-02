@@ -16,6 +16,32 @@ MEAN = jnp.array([.4488, .4371, .4040])
 VAR = jnp.array([.25, .25, .25])
 PATCH_SIZE = 256
 
+# Globals the Thera checkpoints (prs-eth/thera-*-pro model.pkl) are allowed to reference.
+# Anything else in the pickle is rejected instead of being imported/called.
+_CHECKPOINT_ALLOWED_GLOBALS = {
+    ("flax.core.frozen_dict", "FrozenDict"),
+    ("jax._src.array", "_reconstruct_array"),
+    ("numpy", "dtype"),
+    ("numpy", "ndarray"),
+    ("numpy.core.multiarray", "_reconstruct"),
+    ("numpy._core.multiarray", "_reconstruct"),
+    ("optax._src.base", "EmptyState"),
+    ("optax._src.transform", "ScaleByAdamState"),
+    ("optax._src.transform", "ScaleByScheduleState"),
+}
+
+
+class _CheckpointUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if (module, name) not in _CHECKPOINT_ALLOWED_GLOBALS:
+            raise pickle.UnpicklingError(f"checkpoint references disallowed global {module}.{name}")
+        return super().find_class(module, name)
+
+
+def load_checkpoint(fh):
+    """Load a Thera checkpoint pickle, allowing only the classes it is known to contain."""
+    return _CheckpointUnpickler(fh).load()
+
 
 def process_single(source, apply_encoder, apply_decoder, params, target_shape):
     t = jnp.float32((target_shape[0] / source.shape[1])**-2)[None]
@@ -72,7 +98,7 @@ def main(args: Namespace):
         raise ValueError('Must specify either size or scale')
 
     with open(args.checkpoint, 'rb') as fh:
-        check = pickle.load(fh)
+        check = load_checkpoint(fh)
         params, backbone, size = check['model'], check['backbone'], check['size']
 
     model = build_thera(3, backbone, size)

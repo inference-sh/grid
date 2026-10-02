@@ -13,6 +13,7 @@ import argparse
 import itertools
 import json
 import os
+import subprocess
 import random
 
 import torch
@@ -168,11 +169,14 @@ def evaluate_chat_model():
             else:
                 cmd = f'python eval/vlm/eval/mathvista/extract_answer_mp.py --output_file {results_file} --output_dir {args.out_dir}'
             print(cmd)
-            os.system(cmd)
+            subprocess.run(['python', 'eval/vlm/eval/mathvista/extract_answer_mp.py',
+                            '--output_file', results_file, '--output_dir', args.out_dir])
 
             cmd = f'python eval/vlm/eval/mathvista/calculate_score.py --output_file {results_file} --output_dir {args.out_dir} --score_file score.json'
             print(cmd)
-            os.system(cmd)
+            subprocess.run(['python', 'eval/vlm/eval/mathvista/calculate_score.py',
+                            '--output_file', results_file, '--output_dir', args.out_dir,
+                            '--score_file', 'score.json'])
 
 
 if __name__ == '__main__':
