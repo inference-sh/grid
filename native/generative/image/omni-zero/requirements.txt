@@ -23,6 +23,4 @@ tokenizers==0.15.2
 onnxruntime-gpu==1.22.0
 onnx==1.19.0
 hf_transfer
-gradio>=5.31.0
-spaces
 xformers
