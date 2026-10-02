@@ -206,7 +206,7 @@ tqdm==4.68.4
     #   inferencesh
     #   peft
     #   transformers
-transformers==5.3.0
+transformers==5.5.4
     # via
     #   -r requirements.txt
     #   peft
