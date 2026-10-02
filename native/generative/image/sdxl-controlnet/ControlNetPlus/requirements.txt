@@ -179,7 +179,7 @@ pyparsing==3.1.2
 python-dateutil==2.9.0.post0
 python-json-logger==2.0.7
 python-multipart==0.0.9
-pytorch-lightning==2.2.1
+pytorch-lightning==2.6.6
 pytz==2024.1
 PyWavelets==1.4.1
 PyYAML==6.0.1

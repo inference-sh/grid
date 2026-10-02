@@ -149,7 +149,7 @@ pyparsing==3.3.2
 pystoi==0.4.1
 python-dateutil==2.9.0.post0
 python-multipart==0.0.32
-pytorch-lightning==2.1.0
+pytorch-lightning==2.6.6
 pytz==2026.3.post1
 pyviz-comms==3.0.6
 pywavelets==1.4.1
