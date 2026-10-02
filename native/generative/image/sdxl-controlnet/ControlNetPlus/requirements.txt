@@ -34,7 +34,7 @@ dadaptation==3.2
 datasets==2.18.0
 debugpy==1.8.1
 decorator==5.1.1
-deepspeed==0.14.0
+deepspeed==0.16.0
 defusedxml==0.7.1
 diffusers==0.27.2
 dill==0.3.8
