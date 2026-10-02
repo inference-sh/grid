@@ -157,7 +157,7 @@ gin-config==0.5.0
     # via prefigure
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.57
+gitpython==3.1.62
     # via wandb
 gradio==4.44.1
     # via -r requirements.txt

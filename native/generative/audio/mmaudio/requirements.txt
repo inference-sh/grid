@@ -4,7 +4,7 @@ torch >= 2.5.1
 huggingface_hub >= 0.26
 hf_transfer
 cython
-gitpython >= 3.1.58
+gitpython >= 3.1.59
 tensorboard >= 2.11
 numpy >= 1.21, <2.1
 Pillow >= 9.5
