@@ -59,7 +59,7 @@ opencv-contrib-python==4.13.0.92
 opencv-python-headless==4.13.0.92
 packaging==26.0
 peft==0.18.1
-pillow==12.1.1
+pillow==12.3.0
 protobuf==7.34.0
 psutil==7.2.2
 pycparser==3.0

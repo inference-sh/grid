@@ -30,7 +30,7 @@ inferencesh==0.6.31
     # via -r requirements.txt
 msgpack==1.1.2
     # via fal-client
-pillow==12.2.0
+pillow==12.3.0
     # via -r requirements.txt
 pydantic==2.13.0
     # via

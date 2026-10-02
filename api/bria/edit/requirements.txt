@@ -1,2 +1,2 @@
 httpx<1.0
-Pillow
+Pillow>=12.3.0

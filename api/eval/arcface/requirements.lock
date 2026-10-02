@@ -26,7 +26,7 @@ onnx==1.21.0
 onnxruntime-gpu==1.24.4
 opencv-python-headless==4.13.0.92
 packaging==26.0
-pillow==12.1.1
+pillow==12.3.0
 prettytable==3.17.0
 protobuf==7.34.1
 pydantic==2.12.5

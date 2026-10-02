@@ -3,5 +3,5 @@ inferencesh # required for inference.sh
 torch
 torchvision
 numpy
-Pillow
+Pillow>=12.3.0
 scipy

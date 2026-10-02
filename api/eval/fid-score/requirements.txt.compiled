@@ -72,7 +72,7 @@ nvidia-nvshmem-cu13==3.4.5
     # via torch
 nvidia-nvtx==13.0.85
     # via cuda-toolkit
-pillow==12.1.1
+pillow==12.3.0
     # via
     #   -r requirements.txt
     #   torchvision

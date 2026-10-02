@@ -76,7 +76,7 @@ packaging==26.0
     #   matplotlib
     #   onnxruntime-gpu
     #   scikit-image
-pillow==12.1.1
+pillow==12.3.0
     # via
     #   -r requirements.txt
     #   imageio

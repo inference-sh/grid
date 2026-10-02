@@ -12,7 +12,7 @@ inferencesh==0.6.26
     # via -r requirements.txt
 oauthlib==3.3.1
     # via requests-oauthlib
-pillow==12.1.1
+pillow==12.3.0
     # via -r requirements.txt
 pydantic==2.13.0b2
     # via

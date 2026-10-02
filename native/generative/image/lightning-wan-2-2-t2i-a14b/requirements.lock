@@ -37,7 +37,7 @@ nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 packaging==25.0
 peft==0.17.0
-pillow==11.3.0
+pillow==12.3.0
 psutil==7.0.0
 pydantic==2.10.6
 pydantic-core==2.27.2

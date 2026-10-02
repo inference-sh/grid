@@ -3,7 +3,7 @@ inferencesh
 torch>=2.3.0
 torchvision>=0.18.0
 torchaudio>=2.3.0
-pillow
+pillow>=12.3.0
 numpy>=1.23.5,<2
 flit-core
 videoseal

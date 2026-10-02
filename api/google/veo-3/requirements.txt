@@ -5,7 +5,7 @@ inferencesh # required for inference.sh
 google-genai>=1.0.0
 
 # Image processing
-Pillow>=10.0.0
+Pillow>=12.3.0
 
 # Async HTTP for Vertex AI REST API
 aiohttp>=3.14.3

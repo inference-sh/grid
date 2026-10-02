@@ -16,7 +16,7 @@ numpy==2.4.3
     #   opencv-python-headless
 opencv-python-headless==4.13.0.92
     # via -r requirements.txt
-pillow==12.1.1
+pillow==12.3.0
     # via -r requirements.txt
 pydantic==2.13.0b2
     # via

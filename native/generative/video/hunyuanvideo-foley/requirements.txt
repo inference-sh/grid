@@ -24,7 +24,7 @@ huggingface_hub
 -e audiotools_pkg
 
 # Video/Image processing
-pillow
+pillow>=12.3.0
 av
 einops
 

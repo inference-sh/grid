@@ -176,7 +176,7 @@ packaging==26.2
     #   onnxruntime-gpu
     #   scikit-image
     #   transformers
-pillow==10.1.0
+pillow==10.4.0
     # via
     #   -r requirements.txt
     #   controlnet-aux

@@ -187,7 +187,7 @@ packaging==26.2
     #   huggingface-hub
     #   transformers
     #   wandb
-pillow==10.0.0
+pillow==10.4.0
     # via
     #   -r requirements.txt
     #   flaxmodels

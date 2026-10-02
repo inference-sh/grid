@@ -16,7 +16,7 @@ idna==3.13
     # via
     #   anyio
     #   httpx
-pillow==12.2.0
+pillow==12.3.0
     # via -r requirements.txt
 typing-extensions==4.15.0
     # via anyio

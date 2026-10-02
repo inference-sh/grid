@@ -25,7 +25,7 @@ optimum-quanto==0.2.6
 scenedetect
 moviepy==1.0.3
 decord
-Pillow
+Pillow>=12.3.0
 einops
 librosa
 soundfile

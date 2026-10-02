@@ -30,7 +30,7 @@ nvidia-nvjitlink==13.0.88
 nvidia-nvshmem-cu13==3.4.5
 nvidia-nvtx==13.0.85
 packaging==26.0
-pillow==12.1.1
+pillow==12.3.0
 pydantic==2.12.5
 pydantic-core==2.41.5
 requests==2.33.0

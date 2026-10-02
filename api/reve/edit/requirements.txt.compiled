@@ -10,7 +10,7 @@ idna==3.18
     # via requests
 inferencesh==0.7.9
     # via -r requirements.txt
-pillow==12.2.0
+pillow==12.3.0
     # via -r requirements.txt
 pydantic==2.14.0a1
     # via

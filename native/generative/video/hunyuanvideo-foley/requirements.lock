@@ -100,7 +100,7 @@ pandas==2.3.2
 parso==0.8.5
 pathspec==0.12.1
 pexpect==4.9.0
-pillow==10.4.0
+pillow==12.3.0
 platformdirs==4.4.0
 pooch==1.8.2
 pre-commit==4.3.0

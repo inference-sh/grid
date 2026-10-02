@@ -185,7 +185,7 @@ packaging==26.0
     #   transformers
 pandas==3.0.2
     # via gradio
-pillow==12.2.0
+pillow==12.3.0
     # via gradio
 platformdirs==4.9.6
     # via pooch

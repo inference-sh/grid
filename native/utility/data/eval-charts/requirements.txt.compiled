@@ -26,7 +26,7 @@ numpy==2.4.3
     #   matplotlib
 packaging==26.0
     # via matplotlib
-pillow==12.1.1
+pillow==12.3.0
     # via matplotlib
 pydantic==2.13.0b2
     # via

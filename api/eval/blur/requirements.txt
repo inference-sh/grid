@@ -1,5 +1,5 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
-Pillow
+Pillow>=12.3.0
 opencv-python-headless
 numpy
