@@ -47,7 +47,7 @@ rich==15.0.0
 safetensors==0.7.0
 scikit-learn==1.8.0
 scipy==1.17.1
-sentence-transformers==5.5.0
+sentence-transformers==5.7.0
 setuptools==81.0.0
 setuptools-scm==10.0.5
 shellingham==1.5.4
