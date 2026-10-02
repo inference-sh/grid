@@ -65,7 +65,6 @@ numpy==1.24.4
     #   decord
     #   matplotlib
     #   opencv-python
-    #   pyarrow
     #   scipy
     #   torchvision
     #   transformers
@@ -135,8 +134,6 @@ protobuf==7.36.0rc1
     # via wandb
 psutil==7.2.2
     # via accelerate
-pyarrow==11.0.0
-    # via -r requirements.txt
 pydantic==2.14.0a1
     # via
     #   -r requirements.txt
