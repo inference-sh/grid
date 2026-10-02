@@ -132,7 +132,7 @@ scipy==1.17.1
     # via
     #   scikit-learn
     #   sentence-transformers
-sentence-transformers==5.4.1
+sentence-transformers==5.7.0
     # via -r requirements.txt
 setuptools==81.0.0
     # via torch
@@ -143,7 +143,9 @@ sympy==1.14.0
 threadpoolctl==3.6.0
     # via scikit-learn
 tokenizers==0.23.0rc0
-    # via transformers
+    # via
+    #   sentence-transformers
+    #   transformers
 torch==2.11.0
     # via
     #   -r requirements.txt
