@@ -10,8 +10,6 @@ einops
 einops_exts
 ema-pytorch==0.2.3
 encodec==0.1.1
-gradio==4.44.1
-gradio_client==1.3.0
 huggingface_hub>=0.16.0
 importlib-resources==5.12.0
 k-diffusion==0.1.1

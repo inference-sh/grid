@@ -9,8 +9,6 @@ accelerate==1.14.0
     #   k-diffusion
 aeiou==0.0.21
     # via -r requirements.txt
-aiofiles==23.2.1
-    # via gradio
 aiohappyeyeballs==2.7.1
     # via aiohttp
 aiohttp==3.14.3
@@ -19,16 +17,8 @@ aiosignal==1.4.0
     # via aiohttp
 alias-free-torch==0.0.6
     # via -r requirements.txt
-annotated-doc==0.0.5
-    # via
-    #   fastapi
-    #   typer
 annotated-types==0.8.0
     # via pydantic
-anyio==4.14.2
-    # via
-    #   gradio
-    #   starlette
 argbind==0.3.9
     # via
     #   descript-audio-codec
@@ -56,7 +46,6 @@ braceexpand==0.1.7
     # via webdataset
 certifi==2026.7.22
     # via
-    #   httpx
     #   requests
     #   sentry-sdk
 cffi==2.1.0
@@ -66,9 +55,7 @@ charset-normalizer==3.4.9
 clean-fid==0.1.35
     # via k-diffusion
 click==8.4.2
-    # via
-    #   uvicorn
-    #   wandb
+    # via wandb
 clip-anytorch==2.6.0
     # via k-diffusion
 colorcet==3.2.1
@@ -114,16 +101,12 @@ encodec==0.1.1
     # via -r requirements.txt
 executing==2.2.1
     # via stack-data
-fastapi==0.140.13
-    # via gradio
 fastcore==2.1.12
     # via aeiou
 ffmpeg-python==0.2.0
     # via -r requirements.txt
 ffmpy==1.0.0
-    # via
-    #   descript-audiotools
-    #   gradio
+    # via descript-audiotools
 filelock==3.32.0
     # via
     #   huggingface-hub
@@ -143,7 +126,6 @@ frozenlist==1.8.0
     #   aiosignal
 fsspec==2026.7.0
     # via
-    #   gradio-client
     #   huggingface-hub
     #   pytorch-lightning
     #   torch
@@ -159,35 +141,20 @@ gitdb==4.0.12
     # via gitpython
 gitpython==3.1.62
     # via wandb
-gradio==4.44.1
-    # via -r requirements.txt
-gradio-client==1.3.0
-    # via
-    #   -r requirements.txt
-    #   gradio
 grpcio==1.83.0
     # via tensorboard
-h11==0.16.0
-    # via uvicorn
 hf-xet==1.6.0.dev0
     # via huggingface-hub
 holoviews==1.18.0a6
     # via aeiou
-httpx==1.0.dev3
-    # via
-    #   gradio
-    #   gradio-client
 huggingface-hub==0.36.2
     # via
     #   -r requirements.txt
     #   accelerate
-    #   gradio
-    #   gradio-client
     #   tokenizers
     #   transformers
 idna==3.18
     # via
-    #   anyio
     #   requests
     #   yarl
 imageio==2.37.4
@@ -196,7 +163,6 @@ importlib-resources==5.12.0
     # via
     #   -r requirements.txt
     #   descript-audiotools
-    #   gradio
 inferencesh==0.7.12
     # via -r requirements.txt
 ipython==9.15.0
@@ -210,7 +176,6 @@ jedi==0.20.0
 jinja2==3.1.6
     # via
     #   bokeh
-    #   gradio
     #   torch
 joblib==1.5.3
     # via
@@ -261,14 +226,12 @@ markdown2==2.5.5
     # via descript-audiotools
 markupsafe==2.1.5
     # via
-    #   gradio
     #   jinja2
     #   werkzeug
 matplotlib==3.11.1
     # via
     #   aeiou
     #   descript-audiotools
-    #   gradio
 matplotlib-inline==0.2.2
     # via ipython
 mdurl==0.1.2
@@ -312,7 +275,6 @@ numpy==1.26.4
     #   descript-audiotools
     #   einx
     #   encodec
-    #   gradio
     #   holoviews
     #   imageio
     #   kornia
@@ -383,14 +345,10 @@ opentelemetry-sdk==1.44.0
     # via sentry-sdk
 opentelemetry-semantic-conventions==0.65b0
     # via opentelemetry-sdk
-orjson==3.11.9
-    # via gradio
 packaging==26.2
     # via
     #   accelerate
     #   bokeh
-    #   gradio
-    #   gradio-client
     #   holoviews
     #   huggingface-hub
     #   kornia
@@ -409,7 +367,6 @@ pandas==2.0.2
     # via
     #   -r requirements.txt
     #   aeiou
-    #   gradio
     #   holoviews
     #   panel
 panel==1.0.0a3
@@ -433,7 +390,6 @@ pillow==10.4.0
     #   aeiou
     #   bokeh
     #   clean-fid
-    #   gradio
     #   imageio
     #   k-diffusion
     #   matplotlib
@@ -477,14 +433,10 @@ pyct==0.6.0
 pydantic==2.14.0a1
     # via
     #   -r requirements.txt
-    #   fastapi
-    #   gradio
     #   inferencesh
     #   wandb
 pydantic-core==2.47.0
     # via pydantic
-pydub==0.25.1
-    # via gradio
 pygments==2.20.0
     # via
     #   ipython
@@ -504,8 +456,6 @@ python-dateutil==2.9.0.post0
     # via
     #   matplotlib
     #   pandas
-python-multipart==0.0.32
-    # via gradio
 pytorch-lightning==2.6.6
     # via
     #   -r requirements.txt
@@ -523,7 +473,6 @@ pyyaml==6.0.3
     #   accelerate
     #   argbind
     #   bokeh
-    #   gradio
     #   huggingface-hub
     #   pytorch-lightning
     #   transformers
@@ -551,15 +500,11 @@ requests==2.34.2
     #   v-diffusion-pytorch
     #   wandb
 rich==15.0.0
-    # via
-    #   descript-audiotools
-    #   typer
+    # via descript-audiotools
 rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
-ruff==0.16.0
-    # via gradio
 safetensors==0.8.0
     # via
     #   -r requirements.txt
@@ -590,8 +535,6 @@ scipy==1.17.1
     #   torchdiffeq
     #   torchsde
     #   umap-learn
-semantic-version==2.10.0
-    # via gradio
 sentencepiece==0.2.2
     # via -r requirements.txt
 sentry-sdk==3.0.0a7
@@ -602,8 +545,6 @@ setuptools==80.9.0
     #   panel
     #   tensorboard
     #   triton
-shellingham==1.5.4
-    # via typer
 six==1.17.0
     # via python-dateutil
 smmap==5.0.3
@@ -616,8 +557,6 @@ soxr==1.1.0
     # via librosa
 stack-data==0.6.3
     # via ipython
-starlette==1.3.1
-    # via fastapi
 sympy==1.14.0
     # via
     #   einx
@@ -636,8 +575,6 @@ tokenizers==0.21.4
     # via
     #   -r requirements.txt
     #   transformers
-tomlkit==0.12.0
-    # via gradio
 torch==2.8.0
     # via
     #   -r requirements.txt
@@ -719,16 +656,10 @@ transformers==4.55.4
     # via -r requirements.txt
 triton==3.4.0
     # via torch
-typer==0.27.0
-    # via gradio
 typing-extensions==4.16.0
     # via
     #   aiohttp
     #   aiosignal
-    #   anyio
-    #   fastapi
-    #   gradio
-    #   gradio-client
     #   grpcio
     #   huggingface-hub
     #   ipython
@@ -743,25 +674,19 @@ typing-extensions==4.16.0
     #   pytorch-lightning
     #   referencing
     #   soundfile
-    #   starlette
     #   torch
     #   typing-inspection
     #   wandb
 typing-inspection==0.4.2
-    # via
-    #   fastapi
-    #   pydantic
+    # via pydantic
 tzdata==2026.3
     # via pandas
 umap-learn==0.5.12
     # via aeiou
 urllib3==2.7.0
     # via
-    #   gradio
     #   requests
     #   sentry-sdk
-uvicorn==0.51.0
-    # via gradio
 v-diffusion-pytorch==0.0.2
     # via -r requirements.txt
 vector-quantize-pytorch==1.9.14
@@ -781,8 +706,6 @@ webdataset==0.2.48
     #   aeiou
 webencodings==0.5.1
     # via bleach
-websockets==12.0
-    # via gradio-client
 werkzeug==3.1.8
     # via tensorboard
 x-transformers==1.42.11

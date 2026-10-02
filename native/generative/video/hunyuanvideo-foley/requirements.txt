@@ -40,8 +40,6 @@ setuptools
 pandas
 pyarrow
 
-# Web interface
-gradio==3.50.2
 
 # Network
 urllib3==2.4.0

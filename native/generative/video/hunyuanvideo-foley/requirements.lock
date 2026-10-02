@@ -36,8 +36,6 @@ flatten-dict==0.4.2
 fonttools==4.59.2
 fsspec==2025.7.0
 future==1.0.0
-gradio==3.50.2
-gradio-client==0.6.1
 grpcio==1.74.0
 h11==0.16.0
 hf-transfer==0.1.9
