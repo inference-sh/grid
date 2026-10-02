@@ -142,7 +142,7 @@ tqdm==4.67.3
     #   huggingface-hub
     #   inferencesh
     #   transformers
-transformers==5.4.0
+transformers==5.5.4
     # via -r requirements.txt
 triton==3.6.0
     # via torch
