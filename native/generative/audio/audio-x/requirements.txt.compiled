@@ -323,7 +323,6 @@ numpy==1.26.4
     #   pedalboard
     #   pyloudnorm
     #   pystoi
-    #   pytorch-lightning
     #   pywavelets
     #   scikit-image
     #   scikit-learn
@@ -507,7 +506,7 @@ python-dateutil==2.9.0.post0
     #   pandas
 python-multipart==0.0.32
     # via gradio
-pytorch-lightning==2.1.0
+pytorch-lightning==2.6.6
     # via
     #   -r requirements.txt
     #   prefigure
