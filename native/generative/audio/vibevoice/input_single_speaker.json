@@ -1,6 +1,0 @@
-{
-  "script": "Hello everyone! Welcome to my podcast. Today I want to talk about the fascinating world of artificial intelligence and how it's changing our daily lives. AI has made incredible progress in recent years, from language models to computer vision.",
-  "num_speakers": 1,
-  "cfg_scale": 1.3,
-  "inference_steps": 8
-}

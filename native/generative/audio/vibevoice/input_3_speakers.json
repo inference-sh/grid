@@ -1,6 +1,0 @@
-{
-  "script": "Welcome to our tech discussion! Speaker 1: Today we're talking about AI advancements. Speaker 2: That's fascinating! The progress has been incredible. Speaker 3: I agree, and I think we're just getting started.",
-  "num_speakers": 3,
-  "cfg_scale": 1.2,
-  "inference_steps": 5
-}
