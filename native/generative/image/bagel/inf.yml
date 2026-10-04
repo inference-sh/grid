@@ -16,3 +16,4 @@ resources:
         vram: 32000000000
         type: any
     ram: 5000000000
+title: BAGEL Image Understanding & Generation

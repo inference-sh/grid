@@ -25,3 +25,4 @@ resources:
         vram: 12000000000
         type: any
     ram: 4000000000
+title: Mistral Small 3.2 24B Instruct

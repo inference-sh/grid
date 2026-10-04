@@ -23,3 +23,4 @@ resources:
         vram: 15032385536
         type: any
     ram: 34359738368
+title: Qwen3 30B A3B

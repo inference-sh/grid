@@ -25,3 +25,4 @@ resources:
         vram: 0
         type: none
     ram: 4000000000
+title: Grok TTS

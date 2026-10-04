@@ -15,3 +15,4 @@ resources:
         vram: 12884901888
         type: any
     ram: 5368709120
+title: Chatterbox TTS

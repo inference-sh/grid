@@ -18,3 +18,4 @@ resources:
         vram: 40000000000
         type: any
     ram: 0
+title: FLUX.2 [klein]

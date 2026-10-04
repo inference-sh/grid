@@ -26,3 +26,4 @@ resources:
         vram: 0
         type: none
     ram: 0
+title: Claude Haiku 4.5

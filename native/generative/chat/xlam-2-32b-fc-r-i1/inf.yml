@@ -24,3 +24,4 @@ resources:
         vram: 12000000000
         type: any
     ram: 4000000000
+title: xLAM 2 32B

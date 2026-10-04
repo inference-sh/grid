@@ -25,3 +25,4 @@ resources:
         vram: 0
         type: ""
     ram: 0
+title: GLM-4.6

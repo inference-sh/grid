@@ -23,3 +23,4 @@ resources:
         vram: 18000000000
         type: any
     ram: 4000000000
+title: Gemma 3 27B Instruct

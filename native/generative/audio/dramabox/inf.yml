@@ -17,3 +17,4 @@ resources:
         vram: 32
         type: any
     ram: 32
+title: DramaBox Text-to-Speech

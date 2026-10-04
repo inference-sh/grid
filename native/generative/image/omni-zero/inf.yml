@@ -16,3 +16,4 @@ resources:
         vram: 24000000000
         type: any
     ram: 12000000000
+title: OmniZero

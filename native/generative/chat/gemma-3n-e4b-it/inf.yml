@@ -24,3 +24,4 @@ resources:
         vram: 4294967296
         type: any
     ram: 4294967296
+title: Gemma 3n E4B Instruct

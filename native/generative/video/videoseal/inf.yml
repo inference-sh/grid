@@ -16,3 +16,4 @@ resources:
         vram: 8000000000
         type: any
     ram: 0
+title: VideoSeal Watermarking

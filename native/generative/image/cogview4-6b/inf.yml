@@ -16,3 +16,4 @@ resources:
         vram: 35000000000
         type: any
     ram: 64000000000
+title: CogView4 6B

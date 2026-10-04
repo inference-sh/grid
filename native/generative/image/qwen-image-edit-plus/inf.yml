@@ -16,3 +16,4 @@ resources:
         vram: 24000000000
         type: any
     ram: 32000000000
+title: Qwen-Image-Edit Plus

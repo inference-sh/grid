@@ -16,3 +16,4 @@ resources:
         vram: 8000000000
         type: any
     ram: 64000000000
+title: Harrier OSS v1 Text Embeddings

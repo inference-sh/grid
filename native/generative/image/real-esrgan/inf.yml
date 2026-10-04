@@ -15,3 +15,4 @@ resources:
         vram: 8589934592
         type: any
     ram: 4294967296
+title: Real-ESRGAN Upscaler

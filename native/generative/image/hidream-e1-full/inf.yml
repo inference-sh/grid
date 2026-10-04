@@ -16,3 +16,4 @@ resources:
         vram: 16000000000
         type: any
     ram: 32000000000
+title: HiDream-E1 Full

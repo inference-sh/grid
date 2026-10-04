@@ -17,3 +17,4 @@ resources:
         vram: 0
         type: any
     ram: 8000000000
+title: Falconsai NSFW Detection

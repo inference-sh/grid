@@ -16,3 +16,4 @@ resources:
         vram: 16000000000
         type: any
     ram: 12000000000
+title: Audio-X Generator
