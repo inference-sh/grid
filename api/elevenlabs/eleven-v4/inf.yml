@@ -1,0 +1,29 @@
+namespace: elevenlabs
+name: eleven-v4
+title: Eleven v4
+description: ElevenLabs Eleven v4 text to speech. The newest and most expressive model, with 90+ languages and audio tags; send a text for an audio file, or stream text over a socket and hear it as it is written.
+metadata:
+    provider: elevenlabs
+    tags:
+        - elevenlabs
+        - text-to-speech
+        - tts
+        - audio
+        - eleven-v4
+        - realtime
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9o2826ou.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/vugdmknt.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/bz88oi3y.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

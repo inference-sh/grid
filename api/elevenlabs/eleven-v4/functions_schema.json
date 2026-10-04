@@ -122,16 +122,6 @@
           "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
           "title": "Voice Id"
         },
-        "model": {
-          "default": "eleven_v4_turbo",
-          "description": "eleven_v4_turbo starts speaking in about 100 ms; eleven_v4 is slower and the most expressive.",
-          "enum": [
-            "eleven_v4_turbo",
-            "eleven_v4"
-          ],
-          "title": "Model",
-          "type": "string"
-        },
         "language_code": {
           "anyOf": [
             {
@@ -508,10 +498,9 @@
     "kind": "run",
     "capabilities": [],
     "input_schema": {
-      "description": "Input schema for ElevenLabs TTS.",
       "properties": {
         "text": {
-          "description": "Text to convert to speech. Max 10,000 characters for v4, 5,000 for v3, 40,000 for v2 models.",
+          "description": "Text to convert to speech, up to 10,000 characters. Audio tags such as [laughs], [whispers] or [excited] in the text are performed, not read aloud.",
           "title": "Text",
           "type": "string"
         },
@@ -558,25 +547,6 @@
           "description": "Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
           "title": "Voice Id"
         },
-        "model": {
-          "default": "eleven_v3",
-          "description": "Model to use. v4 is the newest and most expressive, with 90+ languages and free-form audio tags; it takes stability and similarity_boost only. v3 is the previous generation with 70+ languages and audio tags, multilingual_v2 is high quality, turbo/flash are faster with lower latency.",
-          "enum": [
-            "eleven_v4",
-            "eleven_v3",
-            "eleven_multilingual_v2",
-            "eleven_turbo_v2_5",
-            "eleven_flash_v2_5"
-          ],
-          "title": "Model",
-          "type": "string"
-        },
-        "audio_tags": {
-          "default": false,
-          "description": "Enable audio tags in text for emotion/style control (v4 and v3 only). Use tags like [laughs], [whispers], [excited], [sad], [slow], [fast], [shouts], [sighs] inline in your text.",
-          "title": "Audio Tags",
-          "type": "boolean"
-        },
         "output_format": {
           "default": "mp3_44100_128",
           "description": "Audio output format. mp3_44100_128 is standard quality MP3.",
@@ -606,20 +576,6 @@
           "minimum": 0.0,
           "title": "Similarity Boost",
           "type": "number"
-        },
-        "style": {
-          "default": 0.0,
-          "description": "Style exaggeration (0-1). Increases expressiveness but may reduce stability.",
-          "maximum": 1.0,
-          "minimum": 0.0,
-          "title": "Style",
-          "type": "number"
-        },
-        "use_speaker_boost": {
-          "default": true,
-          "description": "Enable speaker boost for enhanced clarity.",
-          "title": "Use Speaker Boost",
-          "type": "boolean"
         }
       },
       "required": [
@@ -913,7 +869,6 @@
           "type": "object"
         }
       },
-      "description": "Output schema for ElevenLabs TTS.",
       "properties": {
         "audio": {
           "description": "Generated speech audio file",
@@ -937,7 +892,7 @@
       "required": [
         "audio"
       ],
-      "title": "AppOutput",
+      "title": "SpeechOutput",
       "type": "object"
     }
   }

@@ -1,0 +1,28 @@
+namespace: elevenlabs
+name: eleven-v3
+title: Eleven v3
+description: ElevenLabs Eleven v3 text to speech. Expressive speech in 70+ languages with audio tags for emotion and delivery.
+metadata:
+    provider: elevenlabs
+    tags:
+        - elevenlabs
+        - text-to-speech
+        - tts
+        - audio
+        - eleven-v3
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/31oqrhjg.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/6g4y33on.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/3z99nudg.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

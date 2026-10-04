@@ -1,0 +1,29 @@
+namespace: elevenlabs
+name: eleven-flash-v2-5
+title: Eleven Flash v2.5
+description: ElevenLabs Eleven Flash v2.5 text to speech. The fastest and lowest-cost ElevenLabs model, for long texts and high volume.
+metadata:
+    provider: elevenlabs
+    tags:
+        - elevenlabs
+        - text-to-speech
+        - tts
+        - audio
+        - eleven-flash-v2-5
+        - low-latency
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/19gxivcr.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/npmfg8p0.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/v0smm6we.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

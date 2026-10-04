@@ -1,0 +1,29 @@
+namespace: elevenlabs
+name: eleven-multilingual-v2
+title: Eleven Multilingual v2
+description: ElevenLabs Eleven Multilingual v2 text to speech. Stable, high-quality multilingual speech for long-form content.
+metadata:
+    provider: elevenlabs
+    tags:
+        - elevenlabs
+        - text-to-speech
+        - tts
+        - audio
+        - eleven-multilingual-v2
+        - multilingual
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/7ae7q651.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/4l3itcso.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/jp3wfs12.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

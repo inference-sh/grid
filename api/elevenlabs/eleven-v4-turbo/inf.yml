@@ -1,0 +1,30 @@
+namespace: elevenlabs
+name: eleven-v4-turbo
+title: Eleven v4 Turbo
+description: ElevenLabs Eleven v4 Turbo text to speech. The low-latency v4 model; send a text for an audio file, or stream text over a socket and hear it as it is written.
+metadata:
+    provider: elevenlabs
+    tags:
+        - elevenlabs
+        - text-to-speech
+        - tts
+        - audio
+        - eleven-v4-turbo
+        - realtime
+        - low-latency
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/spe7uk3l.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/hhrifp27.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/fp565gdc.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ELEVENLABS_KEY
+      description: ElevenLabs API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000
