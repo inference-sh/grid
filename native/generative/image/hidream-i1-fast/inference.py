@@ -37,79 +37,11 @@ SCHEDULER_MAPPING = {
     SchedulerType.FLASH_FLOW: FlashFlowMatchEulerDiscreteScheduler
 }
 
-# Model configurations
-MODEL_CONFIGS = {
-    # Fast GGUF variants (Steps-16, Shift-3.0, CFG-1, Scheduler-Normal)
-    "fast-f16": {
-        "repo": "fast", "filename": "hidream-i1-fast-BF16.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q8": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q8_0.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q6k": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q6_K.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q5km": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q5_K_M.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q5ks": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q5_K_S.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q51": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q5_1.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q50": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q5_0.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q4km": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q4_K_M.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q4ks": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q4_K_S.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q41": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q4_1.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q40": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q4_0.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q3km": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q3_K_M.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q3ks": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q3_K_S.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
-    "fast-q2k": {
-        "repo": "fast", "filename": "hidream-i1-fast-Q2_K.gguf",
-        "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
-        "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
-    },
+# Model configuration (Steps-16, Shift-3.0, CFG-1, Scheduler-Normal)
+MODEL_CONFIG = {
+    "repo": "fast", "filename": "hidream-i1-fast-BF16.gguf",
+    "guidance_scale": 1.0, "num_inference_steps": 16, "shift": 3.0,
+    "scheduler": FlashFlowMatchEulerDiscreteScheduler, "type": "gguf"
 }
 
 MAX_TOTAL_PIXELS = 1920 * 1080  # Maximum total pixels allowed
@@ -183,23 +115,8 @@ class App(BaseApp):
         print(f"[DEBUG] torch.cuda.is_available(): {torch.cuda.is_available()}")
         print(f"[DEBUG] Accelerator device: {self.accelerator.device}")
         
-        # Set up variant and model type
-        self.variant = getattr(metadata, "app_variant", "default")
-        
-        # Map variants to model configs
-        variant_mapping = {
-            "default": "fast-f16",
-            # Fast GGUF variants
-            "fast-q8": "fast-q8", "fast-q6k": "fast-q6k",
-            "fast-q5km": "fast-q5km", "fast-q5ks": "fast-q5ks", "fast-q51": "fast-q51", "fast-q50": "fast-q50",
-            "fast-q4km": "fast-q4km", "fast-q4ks": "fast-q4ks", "fast-q41": "fast-q41", "fast-q40": "fast-q40",
-            "fast-q3km": "fast-q3km", "fast-q3ks": "fast-q3ks", "fast-q2k": "fast-q2k"
-        }
-        
-        self.model = variant_mapping.get(self.variant, "fast-f16")
-        self.config = MODEL_CONFIGS[self.model]
-        
-        print(f"[DEBUG] Using model variant: {self.variant} -> {self.model}")
+        self.config = MODEL_CONFIG
+
         print(f"[DEBUG] Model type: {self.config['type']}")
         
         # Store config for later use in run method

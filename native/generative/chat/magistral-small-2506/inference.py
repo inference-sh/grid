@@ -21,28 +21,8 @@ from huggingface_hub import hf_hub_download
 import os.path
 from llama_cpp.llama_chat_format import Jinja2ChatFormatter
 
-configs = {
-    "default": {
-        "repo_id": "lmstudio-community/Magistral-Small-2506-GGUF",
-        "model_filename": "Magistral-Small-2506-F16.gguf",
-    },
-    "q8_0": {
-        "repo_id": "lmstudio-community/Magistral-Small-2506-GGUF",
-        "model_filename": "Magistral-Small-2506-Q8_0.gguf",
-    },
-    "q6_k": {
-        "repo_id": "lmstudio-community/Magistral-Small-2506-GGUF",
-        "model_filename": "Magistral-Small-2506-Q6_K.gguf",
-    },
-    "q4_k_m": {
-        "repo_id": "lmstudio-community/Magistral-Small-2506-GGUF",
-        "model_filename": "Magistral-Small-2506-Q4_K_M.gguf",
-    },
-    "q3_k_l": {
-        "repo_id": "lmstudio-community/Magistral-Small-2506-GGUF",
-        "model_filename": "Magistral-Small-2506-Q3_K_L.gguf",
-    },
-}
+MODEL_REPO = "lmstudio-community/Magistral-Small-2506-GGUF"
+MODEL_FILENAME = "Magistral-Small-2506-F16.gguf"
 
 # Load the template and system prompt
 with open(os.path.join(os.path.dirname(__file__), "templates/template.jinja"), "r") as f:
@@ -90,7 +70,6 @@ class App(OpenAIChatMixin, BaseApp):
         self.last_context_size = None
 
     async def setup(self, metadata):
-        self.variant_config = configs[metadata.app_variant]
         # Use context_size from input if provided, else default
         n_ctx = 4096
         self.last_context_size = n_ctx
@@ -98,8 +77,8 @@ class App(OpenAIChatMixin, BaseApp):
             # Check if model file is available locally
             try:
                 local_path = hf_hub_download(
-                    repo_id=self.variant_config["repo_id"],
-                    filename=self.variant_config["model_filename"],
+                    repo_id=MODEL_REPO,
+                    filename=MODEL_FILENAME,
                     local_files_only=True
                 )
                 print(f"Model is already available locally at: {local_path}")
@@ -114,8 +93,8 @@ class App(OpenAIChatMixin, BaseApp):
                 print("Downloading and initializing Magistral model...")
 
             self.model = Llama.from_pretrained(
-                repo_id=self.variant_config["repo_id"],
-                filename=self.variant_config["model_filename"],
+                repo_id=MODEL_REPO,
+                filename=MODEL_FILENAME,
                 verbose=False,
                 n_gpu_layers=-1,
                 n_ctx=n_ctx,

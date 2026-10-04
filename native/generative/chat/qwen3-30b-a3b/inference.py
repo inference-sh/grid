@@ -19,24 +19,8 @@ from llama_cpp import Llama
 
 import os.path
 
-configs = {
-    "default": {
-        "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
-        "model_filename": "Qwen3-30B-A3B-Q8_0.gguf",
-    },  
-    "q6_k": {
-        "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
-        "model_filename": "Qwen3-30B-A3B-Q6_K.gguf",
-    },
-    "q4_k_m": {
-        "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
-        "model_filename": "Qwen3-30B-A3B-Q4_K_M.gguf",
-    },
-    "q3_k_l": {
-        "repo_id": "lmstudio-community/Qwen3-30B-A3B-GGUF",
-        "model_filename": "Qwen3-30B-A3B-Q3_K_L.gguf",
-    }
-}
+MODEL_REPO = "lmstudio-community/Qwen3-30B-A3B-GGUF"
+MODEL_FILENAME = "Qwen3-30B-A3B-Q8_0.gguf"
 
 class AppInput(LLMInput):
     """Qwen3 30B A3B input model with image and tools support."""
@@ -75,15 +59,14 @@ class App(OpenAIChatMixin, BaseApp):
         self.last_context_size = None
 
     async def setup(self, metadata):
-        self.variant_config = configs[metadata.app_variant]
         # Use context_size from input if provided, else default
         n_ctx = 4096
         self.last_context_size = n_ctx
 
         print("Downloading and initializing Qwen3 model...")
         self.model = Llama.from_pretrained(
-            repo_id=self.variant_config['repo_id'],
-            filename=self.variant_config['model_filename'],
+            repo_id=MODEL_REPO,
+            filename=MODEL_FILENAME,
             verbose=False,
             n_gpu_layers=-1,
             n_ctx=n_ctx,

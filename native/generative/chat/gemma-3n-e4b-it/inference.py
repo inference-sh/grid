@@ -28,24 +28,8 @@ import os.path
 # }
 
 
-configs = {
-    "default": {
-        "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",
-        "model_filename": "gemma-3n-E4B-it-F16.gguf",
-    },
-    "q8_0": {
-        "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",
-        "model_filename": "gemma-3n-E4B-it-Q8_0.gguf",
-    },
-    "q6_k": {
-        "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",
-        "model_filename": "gemma-3n-E4B-it-Q6_K.gguf",
-    },
-    "q4_k_m": {
-        "repo_id": "unsloth/gemma-3n-E4B-it-GGUF",
-        "model_filename": "gemma-3n-E4B-it-Q4_K_M.gguf",
-    }
-}
+MODEL_REPO = "unsloth/gemma-3n-E4B-it-GGUF"
+MODEL_FILENAME = "gemma-3n-E4B-it-F16.gguf"
 
 class AppInput(LLMInput):
     """Gemma 3N E4B IT input model with image and tools support."""
@@ -91,7 +75,6 @@ class App(OpenAIChatMixin, BaseApp):
         self.last_context_size = None
 
     async def setup(self, metadata):
-        self.variant_config = configs[metadata.app_variant]
         # Use context_size from input if provided, else default
         n_ctx = 4096
         # We don't have the projection model for this model yet
@@ -112,8 +95,8 @@ class App(OpenAIChatMixin, BaseApp):
 
         print("Downloading and initializing Gemma model...")
         self.model = Llama.from_pretrained(
-            repo_id=self.variant_config['repo_id'],
-            filename=self.variant_config['model_filename'],
+            repo_id=MODEL_REPO,
+            filename=MODEL_FILENAME,
             n_gpu_layers=-1,
             n_ctx=n_ctx,
             verbose=True,

@@ -50,22 +50,8 @@ class App(BaseApp):
         self.accelerator = Accelerator()
         self.device = self.accelerator.device
         
-        # Get variant from metadata (not environment variables!)
-        variant = getattr(metadata, "app_variant", "default")
-        
-        # Map variant key to model type
-        if variant == "default":
-            model_type = "flux-dev"  # Default uses flux-dev
-        elif variant == "flux-dev-fp8":
-            model_type = "flux-dev-fp8"
-        elif variant == "flux-schnell":
-            model_type = "flux-schnell"
-        elif variant == "flux-krea-dev":
-            model_type = "flux-krea-dev"
-        else:
-            # Fallback to default
-            model_type = "flux-dev"
-            
+        model_type = "flux-dev"
+
         offload = False
         
         # Initialize USO pipeline

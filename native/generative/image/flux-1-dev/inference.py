@@ -52,20 +52,7 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     image_output: File = Field(description="The generated image.")
 
-MODEL_VARIANTS = {
-    "default": "flux1-dev-F16.gguf",
-    "q2_k": "flux1-dev-Q2_K.gguf",
-    "q3_k_s": "flux1-dev-Q3_K_S.gguf",
-    "q4_0": "flux1-dev-Q4_0.gguf",
-    "q4_1": "flux1-dev-Q4_1.gguf",
-    "q4_k_s": "flux1-dev-Q4_K_S.gguf",
-    "q5_0": "flux1-dev-Q5_0.gguf",
-    "q5_1": "flux1-dev-Q5_1.gguf",
-    "q5_k_s": "flux1-dev-Q5_K_S.gguf",
-    "q6_k": "flux1-dev-Q6_K.gguf",
-    "q8_0": "flux1-dev-Q8_0.gguf",
-}
-DEFAULT_VARIANT = "default"
+MODEL_FILENAME = "flux1-dev-F16.gguf"
 
 def get_civit_download_url(model_id):
     url = f"https://civitai.com/models/{model_id}"
@@ -228,11 +215,7 @@ class App(BaseApp):
         
         logging.basicConfig(level=logging.INFO)
         repo_id = "city96/FLUX.1-dev-gguf"
-        variant = getattr(metadata, "app_variant", DEFAULT_VARIANT)
-        if variant not in MODEL_VARIANTS:
-            logging.warning(f"Unknown variant '{variant}', falling back to default '{DEFAULT_VARIANT}'")
-            variant = DEFAULT_VARIANT
-        filename = MODEL_VARIANTS[variant]
+        filename = MODEL_FILENAME
         self.original_model_id = "black-forest-labs/FLUX.1-dev"
         logging.info(f"Downloading {filename} from {repo_id}...")
         ckpt_path = hf_hub_download(repo_id=repo_id, filename=filename)
