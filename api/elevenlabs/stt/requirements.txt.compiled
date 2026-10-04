@@ -26,7 +26,7 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.6.26
+inferencesh==0.17.0
     # via -r requirements.txt
 pydantic==2.13.0b2
     # via
@@ -37,7 +37,7 @@ pydantic-core==2.42.0
     # via
     #   elevenlabs
     #   pydantic
-requests==2.32.5
+requests==2.34.2
     # via
     #   elevenlabs
     #   inferencesh
@@ -57,4 +57,6 @@ typing-inspection==0.4.2
 urllib3==2.6.3
     # via requests
 websockets==16.0
-    # via elevenlabs
+    # via
+    #   -r requirements.txt
+    #   elevenlabs

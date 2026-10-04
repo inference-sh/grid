@@ -1,4 +1,4 @@
-httpx>=0.27.0,<1.0
 pydantic>=2
 inferencesh>=0.10.1
+httpx>=0.27.0,<1.0
 websockets>=14,<17

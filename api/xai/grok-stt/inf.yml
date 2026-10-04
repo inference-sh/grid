@@ -1,0 +1,30 @@
+namespace: xai
+name: grok-stt
+title: Grok Speech to Text
+description: Transcribe speech with xAI's Grok Speech to Text. Send a recording and get the transcript with word timings and speakers, or stream a microphone over a socket and read the transcript as it is spoken.
+metadata:
+    provider: xai
+    tags:
+        - grok
+        - speech-to-text
+        - stt
+        - transcription
+        - realtime
+        - audio
+        - xai
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/azxi2lea.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/he8th6uw.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/ppubecl2.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: XAI_API_KEY
+      description: xAI API key for Speech to Text access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

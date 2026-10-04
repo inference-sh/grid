@@ -1,0 +1,31 @@
+namespace: openai
+name: gpt-transcribe
+title: GPT Transcribe
+description: Transcribe speech with OpenAI. Send a recording and get its transcript from GPT Transcribe, or stream a microphone over a socket and read the transcript as it is spoken with GPT Live Transcribe.
+metadata:
+    provider: openai
+    tags:
+        - openai
+        - speech-to-text
+        - stt
+        - transcription
+        - realtime
+        - audio
+        - gpt-transcribe
+        - gpt-live-transcribe
+category: audio
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/cla8smtk.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/u7dcx29a.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/q7tb9913.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key for transcription access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

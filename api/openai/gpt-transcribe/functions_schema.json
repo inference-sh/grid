@@ -9,14 +9,14 @@
           "description": "Microphone audio, a frame every 20 ms or so",
           "format": "stream",
           "items": {
-            "contentMediaType": "audio/pcm;format=s16le;rate=16000;channels=1",
+            "contentMediaType": "audio/pcm;format=s16le;rate=24000;channels=1",
             "format": "binary",
             "type": "string"
           },
           "title": "Audio",
           "type": "array"
         },
-        "language_code": {
+        "prompt": {
           "anyOf": [
             {
               "type": "string"
@@ -26,30 +26,56 @@
             }
           ],
           "default": null,
-          "description": "Language code (e.g., 'en', 'es', 'fra'). Leave empty for auto-detection.",
-          "title": "Language Code"
+          "description": "What is being recorded, or where: context that helps with what is said",
+          "title": "Prompt"
         },
-        "keyterms": {
-          "description": "Names and terms the transcript should prefer, up to 50 of at most 20 characters each. ElevenLabs charges 20% more for a session that uses them.",
+        "languages": {
+          "description": "The languages expected, as ISO 639-1 codes such as en or fr. Left empty the language is detected.",
           "items": {
-            "maxLength": 20,
             "type": "string"
           },
-          "maxItems": 50,
+          "title": "Languages",
+          "type": "array"
+        },
+        "keyterms": {
+          "description": "Product names, acronyms and other literal terms that may be said. Each on one line, without < or >.",
+          "items": {
+            "type": "string"
+          },
           "title": "Keyterms",
           "type": "array"
         },
+        "delay": {
+          "anyOf": [
+            {
+              "enum": [
+                "minimal",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How long the model listens before it writes: lower shows words sooner, higher gets more of them right. Left empty OpenAI decides.",
+          "title": "Delay"
+        },
         "silence_ms": {
-          "default": 1500,
-          "description": "Silence that commits a segment, in ms",
-          "maximum": 3000,
-          "minimum": 300,
+          "default": 700,
+          "description": "Silence that ends a turn, in ms",
+          "maximum": 5000,
+          "minimum": 200,
           "title": "Silence Ms",
           "type": "integer"
         },
         "idle_minutes": {
           "default": 2.0,
-          "description": "End the session after this long with nobody speaking (0: never). ElevenLabs bills every minute of audio it is sent, silent or not.",
+          "description": "End the session after this long with nobody speaking (0: never). OpenAI bills every minute of audio it is sent, silent or not.",
           "maximum": 60,
           "minimum": 0,
           "title": "Idle Minutes",
@@ -242,33 +268,6 @@
           "title": "RawMeta",
           "type": "object"
         },
-        "Segment": {
-          "description": "A committed stretch of speech. Its times are seconds from the start of the stream.",
-          "properties": {
-            "text": {
-              "description": "What was said",
-              "title": "Text",
-              "type": "string"
-            },
-            "start": {
-              "default": 0,
-              "description": "Seconds from the start of the stream",
-              "title": "Start",
-              "type": "number"
-            },
-            "end": {
-              "default": 0,
-              "description": "Seconds from the start of the stream",
-              "title": "End",
-              "type": "number"
-            }
-          },
-          "required": [
-            "text"
-          ],
-          "title": "Segment",
-          "type": "object"
-        },
         "TextMeta": {
           "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
           "properties": {
@@ -299,6 +298,33 @@
             }
           },
           "title": "TextMeta",
+          "type": "object"
+        },
+        "Turn": {
+          "description": "A finished turn. Its times are where its audio began and ended in the stream, in seconds.",
+          "properties": {
+            "text": {
+              "description": "What was said",
+              "title": "Text",
+              "type": "string"
+            },
+            "start": {
+              "default": 0,
+              "description": "Seconds of audio before the turn",
+              "title": "Start",
+              "type": "number"
+            },
+            "end": {
+              "default": 0,
+              "description": "Seconds of audio up to the end of the turn",
+              "title": "End",
+              "type": "number"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "title": "Turn",
           "type": "object"
         },
         "VideoMeta": {
@@ -374,34 +400,21 @@
       "properties": {
         "text": {
           "default": "",
-          "description": "The transcript so far: committed segments plus the live tail",
+          "description": "The transcript so far: finished turns plus the live tail",
           "title": "Text",
           "type": "string"
         },
-        "segments": {
-          "description": "The committed segments, in order",
+        "turns": {
+          "description": "The finished turns, in order",
           "items": {
-            "$ref": "#/$defs/Segment"
+            "$ref": "#/$defs/Turn"
           },
-          "title": "Segments",
+          "title": "Turns",
           "type": "array"
-        },
-        "language_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The language ElevenLabs detected",
-          "title": "Language Code"
         },
         "seconds": {
           "default": 0,
-          "description": "Audio sent to ElevenLabs so far, pauses included",
+          "description": "Audio sent to OpenAI so far",
           "title": "Seconds",
           "type": "number"
         },
@@ -435,29 +448,18 @@
     }
   },
   "run": {
-    "description": "Transcribe audio to text.",
+    "description": "Transcribe a recording.",
     "kind": "run",
     "capabilities": [],
     "input_schema": {
-      "description": "Input schema for ElevenLabs STT.",
       "properties": {
         "audio": {
-          "description": "Audio file to transcribe (MP3, WAV, FLAC, OGG, AAC, M4A).",
+          "description": "The recording: mp3, mp4, mpeg, mpga, m4a, wav, webm, flac or ogg, up to 25 MB",
           "format": "file",
           "title": "Audio",
           "type": "string"
         },
-        "model": {
-          "default": "scribe_v2",
-          "description": "Model version. scribe_v2 is latest with improved accuracy.",
-          "enum": [
-            "scribe_v1",
-            "scribe_v2"
-          ],
-          "title": "Model",
-          "type": "string"
-        },
-        "language_code": {
+        "prompt": {
           "anyOf": [
             {
               "type": "string"
@@ -467,20 +469,24 @@
             }
           ],
           "default": null,
-          "description": "Language code (e.g., 'eng', 'spa', 'fra'). Leave empty for auto-detection.",
-          "title": "Language Code"
+          "description": "What the recording is, or where it was made: context that helps with what is said in it",
+          "title": "Prompt"
         },
-        "diarize": {
-          "default": false,
-          "description": "Enable speaker diarization to identify who is speaking.",
-          "title": "Diarize",
-          "type": "boolean"
+        "languages": {
+          "description": "The languages expected, as ISO 639-1 codes such as en or fr. Left empty the language is detected.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "array"
         },
-        "tag_audio_events": {
-          "default": false,
-          "description": "Tag audio events like laughter, applause, music, etc.",
-          "title": "Tag Audio Events",
-          "type": "boolean"
+        "keyterms": {
+          "description": "Product names, acronyms and other literal terms that may be said. Each on one line, without < or >.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Keyterms",
+          "type": "array"
         }
       },
       "required": [
@@ -774,55 +780,25 @@
           "type": "object"
         }
       },
-      "description": "Output schema for ElevenLabs STT.",
       "properties": {
         "text": {
-          "description": "Full transcription text",
+          "description": "The transcript",
           "title": "Text",
           "type": "string"
         },
-        "language_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Detected language code",
-          "title": "Language Code"
+        "languages": {
+          "description": "The languages OpenAI detected; empty when it could not tell",
+          "items": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "array"
         },
-        "language_probability": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Language detection confidence",
-          "title": "Language Probability"
-        },
-        "words": {
-          "anyOf": [
-            {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Word-level timestamps and speaker info",
-          "title": "Words"
+        "duration": {
+          "default": 0,
+          "description": "Length of the audio, in seconds",
+          "title": "Duration",
+          "type": "number"
         },
         "output_meta": {
           "anyOf": [

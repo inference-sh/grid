@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "audio": {
+      "description": "The recording: mp3, mp4, mpeg, mpga, m4a, wav, webm, flac or ogg, up to 25 MB",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What the recording is, or where it was made: context that helps with what is said in it",
+      "title": "Prompt"
+    },
+    "languages": {
+      "description": "The languages expected, as ISO 639-1 codes such as en or fr. Left empty the language is detected.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Languages",
+      "type": "array"
+    },
+    "keyterms": {
+      "description": "Product names, acronyms and other literal terms that may be said. Each on one line, without < or >.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Keyterms",
+      "type": "array"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

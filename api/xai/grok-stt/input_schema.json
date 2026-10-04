@@ -1,0 +1,77 @@
+{
+  "properties": {
+    "audio": {
+      "description": "The recording: wav, mp3, ogg, opus, flac, aac, m4a, mp4 or mkv, up to 500 MB",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "enum": [
+            "ar",
+            "cs",
+            "da",
+            "nl",
+            "en",
+            "fil",
+            "fr",
+            "de",
+            "hi",
+            "id",
+            "it",
+            "ja",
+            "ko",
+            "mk",
+            "ms",
+            "fa",
+            "pl",
+            "pt",
+            "ro",
+            "ru",
+            "es",
+            "sv",
+            "th",
+            "tr",
+            "vi"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What is spoken. Speech is transcribed in any supported language without it; naming it writes numbers, currencies and units the way they are written (\"$167,983.15\").",
+      "title": "Language"
+    },
+    "diarize": {
+      "default": false,
+      "description": "Tell speakers apart: each word carries a speaker number",
+      "title": "Diarize",
+      "type": "boolean"
+    },
+    "keyterms": {
+      "description": "Names and terms the transcript should prefer, up to 100 of at most 50 characters each",
+      "items": {
+        "maxLength": 50,
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Keyterms",
+      "type": "array"
+    },
+    "filler_words": {
+      "default": false,
+      "description": "Keep fillers such as \"um\" and \"uh\"",
+      "title": "Filler Words",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
