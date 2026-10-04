@@ -13,9 +13,9 @@ metadata:
         - reference-to-video
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/0nli1wn3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/g6nyljyc.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/tpnukj32.png
 env: {}
 kernel: python-3.11
 secrets:

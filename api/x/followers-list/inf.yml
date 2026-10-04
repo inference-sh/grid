@@ -4,9 +4,9 @@ description: List followers of a user. Returns profiles with bios, follower coun
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/u2yj6oc1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/1gajhytx.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/vlkoybcv.png
 env: {}
 kernel: python-3.11
 credentials:

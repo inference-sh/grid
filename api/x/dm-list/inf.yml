@@ -4,9 +4,9 @@ description: List recent DM events. Returns direct message text, sender, and tim
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/g8rhxwws.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/hx1ksrpa.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y85itviy.png
 env: {}
 kernel: python-3.11
 credentials:

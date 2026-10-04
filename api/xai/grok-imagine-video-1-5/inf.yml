@@ -11,6 +11,10 @@ metadata:
         - reference-to-video
         - xai
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9sb4d0x8.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/5q76fqll.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/fnbbyvhj.png
 env: {}
 kernel: python-3.11
 secrets:

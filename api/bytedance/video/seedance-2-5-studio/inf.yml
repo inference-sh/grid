@@ -17,6 +17,10 @@ metadata:
         - studio
         - asset-library
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/j2k54hwe.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/g4xh18hz.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/41amkae4.png
 env: {}
 kernel: python-3.11
 secrets:

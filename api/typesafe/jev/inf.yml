@@ -5,9 +5,9 @@ description: TypeSafe's System One model. Send a state and typed questions (choi
 metadata: {}
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/mnwjugy0.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/m7fgmt29.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2x4d7cej.png
 env: {}
 kernel: python-3.11
 secrets:

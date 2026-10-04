@@ -15,6 +15,10 @@ metadata:
         - bytedance
         - byteplus
 category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/xiwpq9v1.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/t1vt8ypg.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nnkvrb3w.png
 env: {}
 kernel: python-3.11
 secrets:

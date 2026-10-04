@@ -4,9 +4,9 @@ description: Grafana API — alerts, silences, annotations, datasources, and Lok
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/3xj23isg.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/a9g51yzl.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/6yvx6e3o.png
 kernel: python-3.11
 default_function: list_alerts
 resources:

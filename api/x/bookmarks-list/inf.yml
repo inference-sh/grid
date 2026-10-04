@@ -4,9 +4,9 @@ description: List your bookmarked posts. Returns saved posts with text, author, 
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/5wyjzv3y.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vsvzxq98.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/a33q1944.png
 env: {}
 kernel: python-3.11
 credentials:

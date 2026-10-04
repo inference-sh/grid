@@ -4,9 +4,9 @@ description: Get engagement analytics for specific posts. Returns impressions, e
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ooyff75l.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ejd70ri1.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/sgjw5zfz.png
 env: {}
 kernel: python-3.11
 credentials:

@@ -19,9 +19,9 @@ metadata:
         - asset-library
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/5ciefr4w.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/00sthdlq.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/k7hjmav9.jpg
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/sl3ezwya.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/y5k0z6zr.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/w65mt2s2.png
 env: {}
 kernel: python-3.11
 secrets:

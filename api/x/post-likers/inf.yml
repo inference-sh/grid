@@ -4,9 +4,9 @@ description: List users who liked a specific post. Returns user profiles with fo
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/k4n79lwd.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x2fzbgnk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/kpo1y1w3.png
 env: {}
 kernel: python-3.11
 credentials:

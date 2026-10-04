@@ -12,9 +12,9 @@ metadata:
         - transcription
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/edmaa0fu.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/vgtaxm3j.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/y05w0y66.png
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/rjmqj04k.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/15vo9wk8.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/moauoxv6.png
 env: {}
 kernel: python-3.11
 secrets:

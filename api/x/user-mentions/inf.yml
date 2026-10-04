@@ -4,9 +4,9 @@ description: Get your recent mentions. Returns posts that mention the authentica
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/x0pgwt38.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/8i8hoy9l.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/klcdmxe1.png
 env: {}
 kernel: python-3.11
 credentials:

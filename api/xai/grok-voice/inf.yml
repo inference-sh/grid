@@ -12,9 +12,9 @@ metadata:
         - xai
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/4gwwuk7k.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/mdzcr81l.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/1t8gdqkj.png
 env: {}
 kernel: python-3.11
 default_function: talk

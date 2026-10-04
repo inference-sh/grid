@@ -5,9 +5,9 @@ metadata:
     checksum: 1875898a894c8cd7cacda68e564809baae597b993265574eba0faa9b49b6e486
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vex7zpdv4hmmr7pp5w9y.jpeg
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vedrh4wwg8c9hshf2crq.jpeg
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kkw2vecncsch5dp0585px734.jpeg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/qim92txu.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/zmk7gz4b.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q2i7ozny.png
 env: {}
 kernel: python-3.11
 secrets:

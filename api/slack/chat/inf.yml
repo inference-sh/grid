@@ -4,9 +4,9 @@ description: Post, edit and delete Slack messages, and list channels — outboun
 metadata: {}
 category: other
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/6c51lzmi.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/pdtptzny.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/vl4xxi56.png
 env:
     SLACK_API_URL: https://slack.com/api
 kernel: python-3.11

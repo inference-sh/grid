@@ -12,9 +12,9 @@ metadata:
         - heygen
 category: audio
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/s1zz6j60.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/oqbp42jc.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/ieqltpf1.jpg
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/ipzj6hc3.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/7rxyhe5c.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/o4a7ys7k.png
 env: {}
 kernel: python-3.11
 secrets:

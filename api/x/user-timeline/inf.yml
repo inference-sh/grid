@@ -4,9 +4,9 @@ description: Get your home timeline. Returns recent posts from accounts you foll
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/hmsr8j7z.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/dv04qsh0.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/51q3dc6x.png
 env: {}
 kernel: python-3.11
 credentials:

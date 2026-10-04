@@ -12,9 +12,9 @@ metadata:
         - heygen
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/71ckmsn3/qqrj82q5.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/jy3k8xz1.jpg
-    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/pvx6xby2.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/6q4kqe0a.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/nnyfon5u.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/tjuh5bhh.png
 env: {}
 kernel: python-3.11
 secrets:

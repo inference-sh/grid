@@ -12,3 +12,7 @@ resources:
         vram: 0
         type: none
     ram: 0
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/2klh2sou.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/thz8g0y8.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/flxt3len.png

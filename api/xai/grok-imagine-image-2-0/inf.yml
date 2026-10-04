@@ -11,6 +11,10 @@ metadata:
         - multi-image-editing
         - xai
 category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/9fy2ztt2.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/yzwkjaxd.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/etfr4o87.png
 env: {}
 kernel: python-3.11
 secrets:

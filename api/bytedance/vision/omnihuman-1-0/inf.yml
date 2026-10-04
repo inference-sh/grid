@@ -13,9 +13,9 @@ metadata:
         - byteplus
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0fazsny335g3ds8q9mxw8k.png
-    thumbnail: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0fazxccmawd5hra28bv3sh.png
-    banner: https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg0faqbkx8tbb9axchf7wkwj.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/0ys3eoin.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/b5kdkdqc.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ilpwf8y7.png
 env: {}
 kernel: python-3.11
 secrets:

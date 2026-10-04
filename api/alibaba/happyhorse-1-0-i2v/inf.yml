@@ -5,9 +5,9 @@ metadata:
     checksum: 5d8aee00faf947e0ffc026bdc535d356f9a03855894d6ba9126cb61e8f6186ca
 category: video
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/n9z0dd32.jpg
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/fapkozh0.jpg
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/r209zwl2.jpg
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/cevm5eb2.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pgs10cor.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2ex0xt3h.png
 env: {}
 kernel: python-3.11
 secrets:

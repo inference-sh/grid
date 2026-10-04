@@ -4,9 +4,9 @@ description: Expressive text-to-speech with voice cloning. The prompt controls e
 metadata: {}
 category: audio
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/xwop0n7r.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/8nz8f30q.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/cm3nx9iv.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     DRAMABOX_COMPILE: "0"

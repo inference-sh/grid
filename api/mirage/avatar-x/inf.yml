@@ -12,9 +12,9 @@ metadata:
         - avatar-x
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/coji0579.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/13iplrpu.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/ncrkx5us.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -5,9 +5,9 @@ metadata:
     checksum: 66d2d44e1dbfe8ea126896974b124514e0ceb9e62dd6789848a8cd7c3c7a2cd0
 category: text
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/8x74v832.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/djgojz29.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/v725h9nx.png
 env: {}
 kernel: python-3.11
 resources:

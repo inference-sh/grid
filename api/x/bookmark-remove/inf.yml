@@ -4,9 +4,9 @@ description: Remove a bookmarked post on X.com.
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/f1szxt0y.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ayvfw5dk.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/r96eesa5.png
 env: {}
 kernel: python-3.11
 credentials:

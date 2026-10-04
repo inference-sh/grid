@@ -4,9 +4,9 @@ description: Get trending topics by location. Use WOEID 1 for worldwide, or a sp
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/p933g1bq.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/n8sca7vv.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7olsh504.png
 env: {}
 kernel: python-3.11
 credentials:

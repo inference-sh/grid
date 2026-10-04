@@ -4,9 +4,9 @@ description: Publish long-form articles on X.com from markdown. Supports heading
 metadata: {}
 category: social
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/3ys37u8m.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/x3d3cllk.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/nj6lw7r7.png
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/67xfsp2h.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/alrp0zf4.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/175wpcgj.png
 env: {}
 kernel: python-3.11
 credentials:

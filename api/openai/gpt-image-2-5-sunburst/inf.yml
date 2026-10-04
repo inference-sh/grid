@@ -12,9 +12,9 @@ metadata:
         - transparent-background
 category: image
 images:
-    card: https://cloud.inference.sh/app/files/t/65hmp52a/5dv050qz.png
-    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/smpnf4qb.png
-    banner: https://cloud.inference.sh/app/files/t/65hmp52a/yota0g0w.png
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/tlz4112u.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/8t720wat.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/za92bc5s.png
 env: {}
 kernel: python-3.11
 secrets:

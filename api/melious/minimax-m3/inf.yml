@@ -19,6 +19,10 @@ functions:
       description: Chat completion (inference.sh LLMInput/LLMOutput)
     - name: openai
       description: OpenAI Chat Completions compatible entry point
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/s8dq8dyz.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/mud5xzok.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/0tj4zmwu.png
 env: {}
 kernel: python-3.11
 secrets:
