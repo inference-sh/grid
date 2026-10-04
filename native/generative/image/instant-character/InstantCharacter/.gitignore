@@ -1,8 +1,0 @@
-*__pycache__*
-style_lora/*
-*.bin
-*.safetensors
-flux*.png
-output/
-infer_style.py
-checkpoints/style_lora/

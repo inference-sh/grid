@@ -1,6 +1,0 @@
-{
-  "video_path": "example_string",
-  "audio_path": "example_string",
-  "inference_steps": 20,
-  "guidance_scale": 1.5
-}

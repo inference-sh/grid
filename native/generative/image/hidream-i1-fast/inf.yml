@@ -12,7 +12,7 @@ kernel: python-3.12
 resources:
     gpu:
         count: 1
-        vram: 16000000000
+        vram: 35000000000
         type: any
     ram: 32000000000
 title: HiDream-I1 Fast
