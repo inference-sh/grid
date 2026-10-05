@@ -118,6 +118,106 @@ def test_only_the_v4_apps_speak_live():
         assert hasattr(load(name)[0].App, "realtime") == live, name
 
 
+# ------------------------------------------------------------ a conversation
+
+
+class FakeHttp:
+    """httpx.AsyncClient, answering one POST and recording it."""
+
+    def __init__(self, status=200, content=b"ID3 audio", text=""):
+        self.status, self.content, self.text, self.request = status, content, text, None
+
+    def __call__(self, **kwargs):
+        return self
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        return False
+
+    async def post(self, url, params=None, headers=None, json=None):
+        self.request = {"url": url, "params": params, "headers": headers, "json": json}
+        return types.SimpleNamespace(status_code=self.status, content=self.content, text=self.text)
+
+
+def dialogue(name, monkeypatch, http=None, **input_fields):
+    app_module, tts = load(name)
+    http = http or FakeHttp()
+    monkeypatch.setattr(tts.httpx, "AsyncClient", http)
+    monkeypatch.setattr(tts, "get_audio_duration", lambda path, logger=None: 4.2)
+
+    async def go():
+        app = app_module.App()
+        await app.setup()
+        return await app.dialogue(tts.DialogueInput(**input_fields))
+
+    try:
+        return asyncio.run(go()), None, http
+    except Exception as err:  # noqa: BLE001 - the error is the result under test
+        return None, err, http
+
+
+LINES = [
+    {"text": "[excited] Did you hear the news?", "voice": "jessica"},
+    {"text": "[interrupting] I did!", "voice_id": "custom123"},
+]
+
+
+@pytest.mark.parametrize("name", ["eleven-v4", "eleven-v3"])
+def test_a_dialogue_is_one_request_on_the_apps_model_billed_by_its_characters(name, monkeypatch):
+    model = APPS[name][0]
+    _, tts = load(name)
+    out, err, http = dialogue(name, monkeypatch, segments=LINES, language_code="en")
+
+    assert err is None
+    assert http.request["url"] == "https://api.elevenlabs.io/v1/text-to-dialogue"
+    assert http.request["params"] == {"output_format": "mp3_44100_128"}
+    assert http.request["headers"] == {"xi-api-key": "test"}
+    assert http.request["json"] == {
+        "inputs": [
+            {"text": "[excited] Did you hear the news?", "voice_id": tts.get_voice_id("jessica")},
+            {"text": "[interrupting] I did!", "voice_id": "custom123"},
+        ],
+        "model_id": model,
+        "language_code": "en",
+    }
+    with open(out.audio.path, "rb") as audio:
+        assert audio.read() == b"ID3 audio"
+    meta = out.output_meta.outputs[0]
+    assert (meta.seconds, meta.extra) == (4.2, {"characters": 53, "model": model})
+
+
+def test_only_the_v4_and_v3_apps_have_dialogue():
+    with_dialogue = {name for name in APPS if hasattr(load(name)[0].App, "dialogue")}
+
+    assert with_dialogue == {"eleven-v4", "eleven-v3"}, "v4 Turbo speaks dialogue over the socket only; the v2 models have none"
+
+
+def test_a_dialogue_holds_the_models_character_limit_across_its_lines(monkeypatch):
+    lines = [{"text": "a" * 3000, "voice": "george"}, {"text": "b" * 2001, "voice": "aria"}]
+    out, err, http = dialogue("eleven-v3", monkeypatch, segments=lines)
+
+    assert out is None and http.request is None, "nothing is sent"
+    assert isinstance(err, ValueError) and "5001 characters; eleven_v3 takes 5000" in str(err)
+
+
+def test_a_dialogue_takes_up_to_ten_voices(monkeypatch):
+    lines = [{"text": "Hi.", "voice_id": f"voice{i}"} for i in range(11)]
+    _, err, http = dialogue("eleven-v4", monkeypatch, segments=lines)
+
+    assert http.request is None
+    assert isinstance(err, ValueError) and "up to 10 different voices; this one has 11" in str(err)
+
+
+def test_an_elevenlabs_refusal_fails_the_dialogue_with_what_it_said(monkeypatch):
+    http = FakeHttp(status=422, text='{"detail": "voice not found"}')
+    out, err, _ = dialogue("eleven-v4", monkeypatch, http=http, segments=LINES)
+
+    assert out is None
+    assert isinstance(err, RuntimeError) and "422" in str(err) and "voice not found" in str(err)
+
+
 # ------------------------------------------------------------ the live function
 
 

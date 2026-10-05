@@ -2,9 +2,11 @@
 
 ElevenLabs' newest and most expressive model: 90+ languages and free-form audio tags.
 
-`run` takes the whole text and returns an audio file. `realtime` is a live
-function: the caller streams text as it is written and hears it spoken; what
-its socket carries is described in elevenlabs_tts.py.
+`run` takes the whole text and returns an audio file. `dialogue` takes the
+lines of a conversation, each with its own voice, and returns one file spoken
+in a single take. `realtime` is a live function: the caller streams text as it
+is written and hears it spoken; what its socket carries is described in
+elevenlabs_tts.py.
 """
 
 import logging
@@ -14,7 +16,17 @@ from inferencesh import BaseApp, Socket
 from pydantic import Field
 
 from .elevenlabs_helper import get_api_key
-from .elevenlabs_tts import RealtimeInput, RealtimeOutput, SpeechInput, SpeechOutput, relay, speak, stop_reading
+from .elevenlabs_tts import (
+    DialogueInput,
+    RealtimeInput,
+    RealtimeOutput,
+    SpeechInput,
+    SpeechOutput,
+    converse,
+    relay,
+    speak,
+    stop_reading,
+)
 
 MODEL = "eleven_v4"
 MAX_CHARS = 10000
@@ -37,6 +49,10 @@ class App(BaseApp):
     async def run(self, input_data: AppInput) -> SpeechOutput:
         """Generate speech from text."""
         return await speak(self, MODEL, MAX_CHARS, input_data)
+
+    async def dialogue(self, input_data: DialogueInput) -> SpeechOutput:
+        """Generate a conversation between several voices."""
+        return await converse(self, MODEL, MAX_CHARS, input_data)
 
     async def realtime(self, input_data: RealtimeInput, socket: Socket) -> AsyncGenerator[RealtimeOutput, None]:
         """Speak text as it is written."""

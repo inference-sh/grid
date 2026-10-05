@@ -2,9 +2,10 @@
 eleven-v4-turbo, eleven-v3, eleven-multilingual-v2, eleven-flash-v2-5).
 
 Each app is one model at one price. This module holds what they have in
-common: the voices, the inputs, `speak` (a whole text in, an audio file out)
-and `relay` (the live function of the v4 models: text streamed in, speech
-streamed back over ElevenLabs' Text to Dialogue WebSocket).
+common: the voices, the inputs, `speak` (a whole text in, an audio file out),
+`converse` (several voices in one take, for the v4 and v3 apps) and `relay`
+(the live function of the v4 models: text streamed in, speech streamed back
+over ElevenLabs' Text to Dialogue WebSocket).
 
 Symlink this file into the app folder next to elevenlabs_helper.py.
 
@@ -27,16 +28,20 @@ import asyncio
 import base64
 import json
 import os
+import tempfile
 import time
-from typing import Any, AsyncGenerator, Dict, Literal, Optional, Union
+from typing import Any, AsyncGenerator, Dict, List, Literal, Optional, Union
 from urllib.parse import urlencode
 
+import httpx
 from inferencesh import AudioMeta, BaseAppInput, BaseAppOutput, File, Live, OutputMeta, PCM16, Socket, Stream
 from pydantic import BaseModel, Field
 
 from .elevenlabs_helper import get_audio_duration, get_voice_id, text_to_speech
 
 DIALOGUE_URL = "wss://api.elevenlabs.io/v1/text-to-dialogue/stream-input"
+DIALOGUE_REST_URL = "https://api.elevenlabs.io/v1/text-to-dialogue"
+MAX_DIALOGUE_VOICES = 10
 SAMPLE_RATE = 24000
 BYTES_PER_SECOND = SAMPLE_RATE * 2
 KEEP_ALIVE_SECONDS = 10.0           # ElevenLabs ends a session it hears nothing from for 20 seconds
@@ -68,6 +73,16 @@ PremadeVoice = Literal[
 ]
 
 
+OutputFormat = Literal[
+    "mp3_44100_128",
+    "mp3_44100_192",
+    "pcm_16000",
+    "pcm_22050",
+    "pcm_24000",
+    "pcm_44100",
+]
+
+
 class SpeechInput(BaseAppInput):
     """What every model takes. An app overrides `text` to state its own limit."""
 
@@ -80,14 +95,7 @@ class SpeechInput(BaseAppInput):
         default=None,
         description="Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
     )
-    output_format: Literal[
-        "mp3_44100_128",
-        "mp3_44100_192",
-        "pcm_16000",
-        "pcm_22050",
-        "pcm_24000",
-        "pcm_44100",
-    ] = Field(
+    output_format: OutputFormat = Field(
         default="mp3_44100_128",
         description="Audio output format. mp3_44100_128 is standard quality MP3.",
     )
@@ -155,11 +163,77 @@ async def speak(app: Any, model: str, max_chars: int, input_data: SpeechInput) -
         voice_settings=voice_settings,
         logger=app.logger,
     )
-    if input_data.output_format.startswith("pcm_"):
-        seconds = os.path.getsize(path) / (int(input_data.output_format.split("_")[1]) * 2)
-    else:
-        seconds = get_audio_duration(path, app.logger)
+    seconds = _audio_seconds(app, path, input_data.output_format)
     return SpeechOutput(audio=File(path=path), output_meta=speech_meta(model, len(input_data.text), seconds))
+
+
+def _audio_seconds(app: Any, path: str, output_format: str) -> float:
+    if output_format.startswith("pcm_"):
+        return os.path.getsize(path) / (int(output_format.split("_")[1]) * 2)
+    return get_audio_duration(path, app.logger)
+
+
+# ------------------------------------------------------------ dialogue
+
+
+class DialogueSegment(BaseModel):
+    """One speaker's line."""
+
+    text: str = Field(description="What this speaker says. Audio tags such as [laughs], [interrupting] or [whispers] are performed, not read aloud.")
+    voice: PremadeVoice = Field(default="george", description="Premade voice for this line. Ignored if voice_id is provided.")
+    voice_id: Optional[str] = Field(
+        default=None,
+        description="Custom voice ID (e.g. from elevenlabs/voice-clone). Overrides the voice field when provided.",
+    )
+
+
+class DialogueInput(BaseAppInput):
+    segments: List[DialogueSegment] = Field(
+        min_length=1,
+        description="The lines of the conversation, in order, each with its own voice. Up to 10 different voices. ElevenLabs recommends at most 2,000 characters in total for a reliable take; split a longer script into several runs.",
+    )
+    output_format: OutputFormat = Field(
+        default="mp3_44100_128",
+        description="Audio output format. mp3_44100_128 is standard quality MP3.",
+    )
+    language_code: Optional[str] = Field(
+        default=None, description="Language of the text as an ISO 639-1 code such as en. Left empty it is detected."
+    )
+
+
+async def converse(app: Any, model: str, max_chars: int, input_data: DialogueInput) -> SpeechOutput:
+    """Several voices in one take: a list of lines in, one audio file out."""
+    inputs = [
+        {"text": segment.text, "voice_id": segment.voice_id or get_voice_id(segment.voice)}
+        for segment in input_data.segments
+    ]
+    characters = sum(len(segment.text) for segment in input_data.segments)
+    voices = {line["voice_id"] for line in inputs}
+    if characters > max_chars:
+        raise ValueError(f"The lines add up to {characters} characters; {model} takes {max_chars} in one dialogue")
+    if len(voices) > MAX_DIALOGUE_VOICES:
+        raise ValueError(f"A dialogue takes up to {MAX_DIALOGUE_VOICES} different voices; this one has {len(voices)}")
+
+    body: Dict[str, Any] = {"inputs": inputs, "model_id": model}
+    if input_data.language_code:
+        body["language_code"] = input_data.language_code
+
+    app.logger.info("dialogue: %d lines, %d voices, %d characters with %s", len(inputs), len(voices), characters, model)
+    async with httpx.AsyncClient(timeout=httpx.Timeout(600, connect=30)) as client:
+        response = await client.post(
+            DIALOGUE_REST_URL,
+            params={"output_format": input_data.output_format},
+            headers={"xi-api-key": app.api_key},
+            json=body,
+        )
+    if response.status_code != 200:
+        raise RuntimeError(f"ElevenLabs answered {response.status_code}: {response.text[:500]}")
+
+    suffix = ".pcm" if input_data.output_format.startswith("pcm_") else ".mp3"
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as audio:
+        audio.write(response.content)
+    seconds = _audio_seconds(app, audio.name, input_data.output_format)
+    return SpeechOutput(audio=File(path=audio.name), output_meta=speech_meta(model, characters, seconds))
 
 
 # ------------------------------------------------------------ the live function
