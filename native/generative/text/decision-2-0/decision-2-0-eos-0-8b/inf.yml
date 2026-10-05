@@ -1,0 +1,25 @@
+namespace: infsh
+name: decision-2-0-eos-0-8b
+title: Decision 2.0 Eos 0.8B
+description: A small, fast Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 0.75B parameters, 16,384-token input, about 6.0 ms per question.
+metadata:
+    tags:
+        - decision-model
+        - classification
+        - routing
+        - scoring
+        - guardrails
+        - vllm-semantic-router
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 8
+        type: any
+    ram: 8
