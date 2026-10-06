@@ -5,9 +5,9 @@ description: Gemini Nano Banana 2.1 via Vertex AI — Google's newest image mode
 metadata: {}
 category: image
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/wd3du0j7.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/cme0dxf8.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/0l2zx934.png
 env: {}
 kernel: python-3.11
 credentials:
