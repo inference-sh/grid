@@ -794,9 +794,9 @@ def build_image_generation_config(
     aspect_ratio: str,
     resolution: str,
     output_format: str = "png",
-    temperature: float = 1.0,
-    top_p: float = 0.95,
-    top_k: int = 64,
+    temperature: Optional[float] = 1.0,
+    top_p: Optional[float] = 0.95,
+    top_k: Optional[int] = 64,
     max_output_tokens: int = 32768,
     safety_tolerance: str = "BLOCK_MEDIUM_AND_ABOVE",
     enable_google_search: bool = False,
@@ -809,9 +809,9 @@ def build_image_generation_config(
         aspect_ratio: Output aspect ratio
         resolution: Output resolution (1K, 2K, 4K)
         output_format: Output image format (png, jpeg, webp, heic, heif)
-        temperature: Sampling temperature
-        top_p: Nucleus sampling probability
-        top_k: Top-k sampling parameter
+        temperature: Sampling temperature (None to omit, for models that reject it)
+        top_p: Nucleus sampling probability (None to omit)
+        top_k: Top-k sampling parameter (None to omit)
         max_output_tokens: Maximum output tokens
         safety_tolerance: Safety filter threshold
         enable_google_search: Whether to enable Google Search grounding
@@ -841,12 +841,12 @@ def build_image_generation_config(
     config_kwargs = {
         'response_modalities': response_modalities,
         'image_config': image_config,
-        'temperature': temperature,
-        'top_p': top_p,
-        'top_k': top_k,
         'max_output_tokens': max_output_tokens,
         'safety_settings': build_safety_settings(safety_tolerance),
     }
+    for key, value in (('temperature', temperature), ('top_p', top_p), ('top_k', top_k)):
+        if value is not None:
+            config_kwargs[key] = value
 
     if enable_google_search:
         config_kwargs['tools'] = [{"google_search": {}}]
