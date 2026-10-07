@@ -111,6 +111,7 @@ class VideoResolutionEnum(str, Enum):
 class PersonGenerationEnum(str, Enum):
     """Person generation settings for video."""
     allow_adult = "allow_adult"
+    allow_all = "allow_all"
     disallow = "disallow"
 
 

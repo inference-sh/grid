@@ -9,6 +9,7 @@
           "description": "Person generation settings for video.",
           "enum": [
             "allow_adult",
+            "allow_all",
             "disallow"
           ],
           "title": "PersonGenerationEnum",
@@ -135,7 +136,7 @@
         "person_generation": {
           "$ref": "#/$defs/PersonGenerationEnum",
           "default": "allow_adult",
-          "description": "Person generation setting. allow_adult: only adults, disallow: no people/faces."
+          "description": "Person generation setting. allow_adult: adults only. allow_all: adults and children; needed when the prompt or an input image shows a child, including illustrated or animated characters. disallow: no people/faces."
         }
       },
       "required": [
