@@ -71,7 +71,7 @@ class RunInput(BaseModel):
     )
     person_generation: PersonGenerationEnum = Field(
         default=PersonGenerationEnum.allow_adult,
-        description="Person generation setting. allow_adult: only adults, disallow: no people/faces."
+        description="Person generation setting. allow_adult: adults only. allow_all: adults and children; needed when the prompt or an input image shows a child, including illustrated or animated characters. disallow: no people/faces."
     )
 
     @field_validator("duration")

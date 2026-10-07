@@ -47,7 +47,7 @@ idna==3.11
     #   httpx
     #   requests
     #   yarl
-inferencesh==0.7.37
+inferencesh==0.18.0
     # via -r requirements.txt
 multidict==6.7.1
     # via
