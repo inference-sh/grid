@@ -1,4 +1,5 @@
 import os
+import logging
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
 from typing import List, Optional
@@ -159,7 +160,7 @@ def _build_service():
 class App(BaseApp):
 
     async def setup(self):
-        pass
+        self.logger = logging.getLogger(__name__)
 
     async def list_events(self, input_data: ListEventsInput) -> ListEventsOutput:
         """List events from a Google Calendar."""
