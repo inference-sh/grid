@@ -50,7 +50,7 @@ while IFS= read -r helper; do
         key="$hdir/$fname"
         canonical[$key]="$helper"
     fi
-done < <(find . -name '*.py' ! -name 'inference.py' ! -name '__init__.py' -not -path '*/\.*'  -not -path './archive/*')
+done < <(find . -name '*.py' ! -name 'inference.py' ! -name '__init__.py' -not -path '*/\.*' -not -path './archive/*')
 
 linked=0
 skipped=0
