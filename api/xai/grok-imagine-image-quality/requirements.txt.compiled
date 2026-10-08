@@ -41,7 +41,7 @@ idna==3.13
     #   yarl
 importlib-metadata==8.7.1
     # via opentelemetry-api
-inferencesh==0.8.4
+inferencesh==0.19.1
     # via -r requirements.txt
 multidict==6.7.1
     # via
