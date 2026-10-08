@@ -3,6 +3,8 @@ name: forced-alignment
 description: ElevenLabs Forced Alignment - Align text to audio with word timestamps
 metadata:
     checksum: 1a6bf37fbb41d798b8612c337cbb4dbad47192af56fd98300e478d131bac8942
+    tags:
+        - forced-alignment
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cjippfhk.png

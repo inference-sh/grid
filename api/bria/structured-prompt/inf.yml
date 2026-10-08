@@ -3,6 +3,8 @@ name: structured-prompt
 description: Generate structured prompt JSON from text or images using Bria
 metadata:
     checksum: e3172d97d118293633f2e4ef336467394f231d386ad30aee2ba08393f1374200
+    tags:
+        - prompt-enhancement
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4m8ztb6l.png

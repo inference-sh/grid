@@ -5,6 +5,8 @@ metadata:
     capabilities:
         - image
     checksum: ""
+    tags:
+        - vision
 category: chat
 functions:
     - name: run

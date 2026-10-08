@@ -3,6 +3,9 @@ name: domain-search
 description: domain research api — search for available domains and check registration status
 metadata:
     checksum: 33989797b48bb87263edd6472744981064c0a5aef653cd5174dfe05cb4e2ca19
+    tags:
+        - web-search
+        - domain-search
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4iztnioe.png
