@@ -1,0 +1,31 @@
+{
+  "state": "Listing title: Framed print, The Great Wave off Kanagawa, 40 x 30 cm",
+  "images": ["https://cloud.inference.sh/t/71ckmsn3/56yl4v8z.jpg"],
+  "choices": [
+    {
+      "id": "category",
+      "instructions": "Which category fits this listing?",
+      "options": [
+        {"name": "art", "description": "Paintings, prints, posters and sculpture"},
+        {"name": "electronics", "description": "Phones, computers, audio and accessories"},
+        {"name": "clothing", "description": "Apparel, shoes and wearable accessories"},
+        {"name": "other"}
+      ]
+    }
+  ],
+  "scores": [
+    {
+      "id": "match",
+      "instructions": "How well does the image match the listing title?",
+      "levels": [
+        "The image shows something unrelated to the title",
+        "The image is loosely related to the title",
+        "The image shows exactly what the title describes"
+      ]
+    }
+  ],
+  "nouls": [
+    {"id": "has_people", "instructions": "Does the image show people?"},
+    {"id": "is_photo", "instructions": "Is the image a photograph of a real scene?", "criteria": {"true": "a camera photo", "false": "a drawing, painting, print or render"}}
+  ]
+}

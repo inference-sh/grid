@@ -1,7 +1,7 @@
-namespace: infsh
+namespace: vllm-sr
 name: decision-2-0-vega-27b
 title: Decision 2.0 Vega 27B
-description: The largest and strongest Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 29.37B parameters, 32,768-token input, about 71.4 ms per question.
+description: The largest Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one pass. 29.37B parameters, 32k-token input.
 metadata:
     tags:
         - decision-model

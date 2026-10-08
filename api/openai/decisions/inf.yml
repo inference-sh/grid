@@ -1,0 +1,29 @@
+namespace: openai
+name: decisions
+title: OpenAI Decisions
+description: OpenAI's Decisions API on GPT-6 Luna. Send text and images with typed questions (choice, score, yes/no); get a probability for every answer in near real time, with no text generation. Direct API.
+metadata:
+    provider: openai
+    tags:
+        - openai
+        - decision-model
+        - classification
+        - vision
+        - routing
+        - guardrails
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

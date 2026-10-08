@@ -1,0 +1,25 @@
+namespace: perplexity
+name: decider-v1-1-27b
+title: Perplexity Decider v1.1 27B
+description: Perplexity's open decision model for text and images. Send a state, up to 4 images and typed questions (choice, score, yes/no); get a calibrated probability for every answer, with no text generation.
+metadata:
+    tags:
+        - decision-model
+        - classification
+        - vision
+        - multimodal
+        - routing
+        - guardrails
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.12
+resources:
+    gpu:
+        count: 1
+        vram: 80
+        type: any
+    ram: 96

@@ -1,0 +1,25 @@
+namespace: autotrust
+name: jev-27b-vl
+title: JEV-27B-VL
+description: AutoTrust's open decision model with vision. Send text and up to 8 images with typed questions (choice, score, yes/no); get a calibrated probability for every answer, with no text generation.
+metadata:
+    tags:
+        - decision-model
+        - classification
+        - vision
+        - multimodal
+        - routing
+        - guardrails
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 80
+        type: any
+    ram: 64

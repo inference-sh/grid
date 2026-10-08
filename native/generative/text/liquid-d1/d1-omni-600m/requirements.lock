@@ -4,17 +4,18 @@ annotated-types==0.8.0
 anyio==4.15.1
 build==1.6.1
 certifi==2026.7.22
+cffi==2.1.1
 charset-normalizer==3.5.2
 click==8.5.0
 cuda-bindings==12.9.9
 cuda-pathfinder==1.8.3
 cuda-toolkit==12.9.1
 cython==3.3.0
-filelock==4.0.10
+filelock==4.0.12
 flit-core==4.1.0
 fsspec==2026.9.0
 h11==0.16.0
-hf-xet==1.7.0.dev1
+hf-xet==1.7.0
 httpcore==1.0.9
 httpcore2==2.13.1
 httpx==0.28.1
@@ -62,8 +63,9 @@ nvidia-nvtx==13.0.85
 nvidia-nvtx-cu12==12.9.79
 packaging==26.3
 pathspec==1.1.1
-peft==0.21.2
+pillow==12.3.0
 psutil==7.2.2
+pycparser==3.0
 pydantic==2.14.0b2
 pydantic-core==2.49.0
 pygments==2.21.0
@@ -74,17 +76,20 @@ requests==2.34.2
 rich==15.0.0
 safetensors==0.9.0rc1
 scikit-build-core==1.1.1
+scipy==1.17.1
 setuptools==84.0.0
 setuptools-scm==10.3.4
 shellingham==1.5.4
+soundfile==0.14.0
 sympy==1.14.0
 tokenizers==0.23.2
 torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+torchvision @ https://download.pytorch.org/whl/cu129/torchvision-0.28.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
 tqdm==4.70.1
 transformers==5.18.0
 triton==3.7.1
 truststore==0.10.4
-typer==0.27.2
+typer==0.27.3
 typing-extensions==4.16.0
 typing-inspection==0.4.4
 urllib3==2.8.0

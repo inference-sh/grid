@@ -1,11 +1,15 @@
 # OpenAI — Direct API Provider
 
-OpenAI models via the native OpenAI API. Two families live here:
+OpenAI models via the native OpenAI API. Three families live here:
 
 - **Chat / LLM apps** (`gpt-6-astra`, `gpt-5-6-*`) — share `openai_llm.py`, stream the
   Responses API over raw SSE and yield `LLMDelta` chunks (INF-630 delta streaming).
 - **Image apps** (`gpt-image-2`, `gpt-image-2-5-flare`, `gpt-image-2-5-sunburst`) — share
   `openai_helper.py` and use the OpenAI SDK.
+
+- **Decisions** (`decisions`) — self-contained, no helper. Calls `POST /v1/decisions` over httpx
+  with `gpt-6-luna` and returns a probability for every answer. Schema matches `typesafe/jev`
+  plus `images`; a noul is sent as a predicate. $0.10 per 1M input tokens, nothing for output.
 
 Both helpers are symlinked into each app directory. Editing a helper changes every app that
 links it — **redeploy all of them**, a deployed app keeps the copy bundled at deploy time.
