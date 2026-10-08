@@ -1,6 +1,6 @@
 accelerate==1.15.0
 annotated-types==0.7.0
-anyio==4.14.1
+anyio==4.14.2
 build==1.6.1
 byteplus-python-sdk-v2==3.0.53
 certifi==2026.6.17

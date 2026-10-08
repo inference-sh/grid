@@ -1,7 +1,7 @@
 accelerate==1.13.0
 annotated-doc==0.0.4
 annotated-types==0.7.0
-anyio==4.13.0
+anyio==4.14.2
 audioread==3.1.0
 braceexpand==0.1.7
 brotli==1.2.0

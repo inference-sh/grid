@@ -4,7 +4,7 @@ annotated-types==0.7.0
     # via pydantic
 anthropic==0.115.0
     # via -r requirements.txt
-anyio==4.14.1
+anyio==4.14.2
     # via
     #   anthropic
     #   httpx

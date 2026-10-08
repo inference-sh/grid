@@ -1,7 +1,7 @@
 accelerate==1.15.0
 annotated-types==0.7.0
 anthropic==0.108.0
-anyio==4.13.0
+anyio==4.14.2
 build==1.6.1
 certifi==2026.5.20
 charset-normalizer==3.4.7
