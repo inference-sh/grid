@@ -50,7 +50,7 @@ nvidia-nccl-cu12==2.21.5
 nvidia-nvjitlink-cu12==12.4.127
 nvidia-nvtx-cu12==12.4.127
 omegaconf==2.3.0
-onnxruntime-gpu==1.20.1
+onnxruntime-gpu==1.20.2
 opencv-python-headless==4.11.0.86
 packaging==26.2
 pillow==12.3.0
