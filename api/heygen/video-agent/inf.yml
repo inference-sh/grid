@@ -6,6 +6,7 @@ metadata:
     provider: heygen
     tags:
         - text-to-video
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/n420u1aa.png

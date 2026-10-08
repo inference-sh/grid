@@ -4,7 +4,9 @@ description: A tool that combines understanding and creation capabilities, notab
 metadata:
     checksum: a76a3c8a78efa2efaedb1a5ccc733459f07d3d30105df738acbca1277f72314b
     tags:
+        - reasoning
         - text-to-image
+        - image-to-image
         - image-editing
 category: image
 images:

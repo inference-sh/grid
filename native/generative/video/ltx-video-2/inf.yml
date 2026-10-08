@@ -5,6 +5,7 @@ metadata:
     tags:
         - text-to-video
         - image-to-video
+        - lora
         - open-weights
         - native-audio
 category: other

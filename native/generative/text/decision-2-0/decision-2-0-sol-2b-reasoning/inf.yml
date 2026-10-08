@@ -1,4 +1,4 @@
-namespace: infsh
+namespace: vllm-sr
 name: decision-2-0-sol-2b-reasoning
 title: Decision 2.0 Sol 2B Reasoning
 description: The reasoning variant of Decision 2.0 Sol 2B, stronger on multi-step problems (arithmetic, code execution, causal and logical questions) at the same speed from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 1.88B parameters, 16,384-token input, about 7.5 ms per question.

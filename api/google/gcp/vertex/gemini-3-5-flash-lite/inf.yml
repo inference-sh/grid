@@ -7,6 +7,7 @@ metadata:
         - image
     checksum: 31808e09e84b33b8cec13ae85294eeb8fe93d82787680e05d769b1cc6d169c88
     tags:
+        - vision
         - reasoning
 category: chat
 functions:

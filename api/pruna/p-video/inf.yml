@@ -6,7 +6,6 @@ metadata:
     tags:
         - text-to-video
         - image-to-video
-        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/011kwlkh.png

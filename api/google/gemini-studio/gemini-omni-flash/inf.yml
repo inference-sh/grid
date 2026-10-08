@@ -5,6 +5,8 @@ metadata:
     checksum: f5234d8ade5a5818a443252b14a82b3f09c1b856dff5d0e6454cf7ce4d1b0e7c
     tags:
         - text-to-video
+        - image-to-video
+        - reference-to-video
         - native-audio
 category: video
 images:

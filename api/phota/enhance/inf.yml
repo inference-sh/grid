@@ -3,7 +3,7 @@ name: enhance
 description: Automatically enhance photo quality — lighting, composition, color, and sharpness
 metadata:
     tags:
-        - image-upscaling
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bm4n0mk8.png

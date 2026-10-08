@@ -4,6 +4,7 @@ description: Creates high-definition images from text descriptions, primarily de
 metadata:
     tags:
         - text-to-image
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4i6ui4da.png

@@ -4,7 +4,6 @@ description: A rapid image generator that produces high-quality images in variou
 metadata:
     tags:
         - text-to-image
-        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/fruexz2x.png

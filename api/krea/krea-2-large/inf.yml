@@ -6,6 +6,7 @@ metadata:
     provider: krea
     tags:
         - text-to-image
+        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/l2w981nk.png

@@ -5,6 +5,7 @@ metadata:
     checksum: dc8d0d5caf0482e998c026d2738220eaa7a7dd35a0e2be0054b31bd25753a95f
     tags:
         - text-to-image
+        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/i6jjjr6h.png

@@ -4,6 +4,7 @@ description: Generate videos using reference images for style and content guidan
 metadata:
     provider: xai
     tags:
+        - text-to-video
         - reference-to-video
 category: video
 images:

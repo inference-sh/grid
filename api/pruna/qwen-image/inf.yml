@@ -5,6 +5,7 @@ metadata:
     checksum: 6e63a74e52177541418d3bb53d7eb90b318393595a2b66999485d930623fca4c
     tags:
         - text-to-image
+        - image-to-image
         - lora
 category: image
 images:

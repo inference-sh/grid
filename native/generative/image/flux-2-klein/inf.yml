@@ -5,6 +5,7 @@ description: |
 metadata:
     tags:
         - text-to-image
+        - image-to-image
         - image-editing
         - open-weights
 category: other

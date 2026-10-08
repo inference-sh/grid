@@ -6,7 +6,6 @@ metadata:
     provider: elevenlabs
     tags:
         - text-to-speech
-        - realtime
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/19gxivcr.png

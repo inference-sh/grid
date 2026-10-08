@@ -4,6 +4,7 @@ description: FLUX.2 Dev Turbo is an open-weight, guidance and step distilled tex
 metadata:
     tags:
         - text-to-image
+        - image-to-image
         - open-weights
 category: other
 images:

@@ -6,6 +6,7 @@ metadata:
         - reasoning
         - image
     tags:
+        - vision
         - reasoning
         - coding
 category: chat

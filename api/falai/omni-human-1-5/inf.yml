@@ -4,6 +4,7 @@ description: Generates realistic videos from a static picture by making the pers
 metadata:
     tags:
         - talking-avatar
+        - lip-sync
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/pl0b3abu.png

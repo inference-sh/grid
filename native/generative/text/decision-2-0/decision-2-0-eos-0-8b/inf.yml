@@ -1,4 +1,4 @@
-namespace: infsh
+namespace: vllm-sr
 name: decision-2-0-eos-0-8b
 title: Decision 2.0 Eos 0.8B
 description: A small, fast Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 0.75B parameters, 16,384-token input, about 6.0 ms per question.

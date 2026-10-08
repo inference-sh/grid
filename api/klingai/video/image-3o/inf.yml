@@ -6,6 +6,7 @@ metadata:
     provider: klingai
     tags:
         - text-to-image
+        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/dszp9osu.png

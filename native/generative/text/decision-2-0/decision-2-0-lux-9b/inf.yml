@@ -1,4 +1,4 @@
-namespace: infsh
+namespace: vllm-sr
 name: decision-2-0-lux-9b
 title: Decision 2.0 Lux 9B
 description: The 9B Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 7.94B parameters, 16,384-token input, about 18.4 ms per question.
