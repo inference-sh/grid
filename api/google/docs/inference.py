@@ -1,4 +1,5 @@
 import os
+import logging
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
 from pydantic import Field
 from typing import List, Optional, Any
@@ -117,6 +118,9 @@ def _build_service():
 
 
 class App(BaseApp):
+
+    async def setup(self):
+        self.logger = logging.getLogger(__name__)
 
     async def get_document(self, input_data: GetDocumentInput) -> GetDocumentOutput:
         """Retrieve a Google Doc and return its ID, title, and plain text body."""

@@ -1,5 +1,6 @@
 import os
 import io
+import logging
 from typing import List, Optional
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
@@ -107,6 +108,7 @@ class App(BaseApp):
     service: object = None
 
     async def setup(self):
+        self.logger = logging.getLogger(__name__)
         token = os.environ.get("GOOGLE_OAUTH_ACCESS_TOKEN")
         if not token:
             raise ValueError("GOOGLE_OAUTH_ACCESS_TOKEN not found in environment")
