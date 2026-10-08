@@ -57,7 +57,7 @@ sympy==1.14.0
 torch==2.14.0
 tqdm==4.70.1
 triton==3.8.0
-typing-extensions==4.15.0
+typing-extensions==4.16.0
 typing-inspection==0.4.4
 urllib3==2.8.0
 vcs-versioning==2.4.1
