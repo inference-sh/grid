@@ -100,18 +100,34 @@ def load_model(logger) -> Any:
     return model
 
 
-def predict(model: Any, rows: List[Dict[str, Any]]) -> tuple:
-    """Probabilities per row and the input tokens used. Halves a batch whose padded size is over BATCH_TOKENS."""
-    batch = model.prepare(rows, max_length=MAX_INPUT_TOKENS)
-    padded = batch.inputs["input_ids"].numel()
-    if len(rows) > 1 and padded > BATCH_TOKENS:
-        del batch
-        half = len(rows) // 2
-        left, left_tokens = predict(model, rows[:half])
-        right, right_tokens = predict(model, rows[half:])
-        return left + right, left_tokens + right_tokens
-    probabilities = (model(batch) / model.temperature).softmax(-1).cpu().tolist()
-    return [values[:count] for values, count in zip(probabilities, batch.counts)], batch.input_tokens
+def predict(model: Any, rows: List[Dict[str, Any]], ids: List[str]) -> tuple:
+    """Probabilities per row and the input tokens used, in batches of at most BATCH_SIZE rows and
+    BATCH_TOKENS padded tokens. Every row carries the same state and images, so the padded width of
+    the first batch sizes the rest: a batch that is too wide is prepared once more, at most once."""
+    probabilities: List[List[float]] = []
+    input_tokens = 0
+    per_batch = BATCH_SIZE
+    start = 0
+    while start < len(rows):
+        chunk = rows[start:start + per_batch]
+        try:
+            batch = model.prepare(chunk, max_length=MAX_INPUT_TOKENS)
+        except ValueError as error:
+            # DecisionModel.prepare raises ValueError for an over-length question.
+            raise RuntimeError(
+                f"{error} This model's input limit is {MAX_INPUT_TOKENS} tokens per question "
+                f"(state, images, question and options); questions: {ids[start:start + per_batch]}"
+            ) from error
+        fits = max(1, min(BATCH_SIZE, BATCH_TOKENS // batch.inputs["input_ids"].shape[1]))
+        if len(chunk) > fits:
+            per_batch = fits
+            del batch
+            continue
+        values = (model(batch) / model.temperature).softmax(-1).cpu().tolist()
+        probabilities += [row[:count] for row, count in zip(values, batch.counts)]
+        input_tokens += batch.input_tokens
+        start += len(chunk)
+    return probabilities, input_tokens
 
 
 def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
@@ -130,21 +146,9 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
     started = time.monotonic()
-    answers: Dict[str, Dict[str, Any]] = {}
-    input_tokens = 0
     with torch.inference_mode():
-        for start in range(0, len(rows), BATCH_SIZE):
-            try:
-                distributions, tokens = predict(model, rows[start:start + BATCH_SIZE])
-            except ValueError as error:
-                # DecisionModel.prepare raises ValueError for an over-length question.
-                raise RuntimeError(
-                    f"{error} This model's input limit is {MAX_INPUT_TOKENS} tokens per question "
-                    f"(state, images, question and options); questions: {ids[start:start + BATCH_SIZE]}"
-                ) from error
-            input_tokens += tokens
-            for qid, values in zip(ids[start:start + BATCH_SIZE], distributions):
-                answers[qid] = answer(questions[qid], values)
+        distributions, input_tokens = predict(model, rows, ids)
+    answers = {qid: answer(questions[qid], values) for qid, values in zip(ids, distributions)}
     elapsed_ms = (time.monotonic() - started) * 1000
 
     logger.info(

@@ -18,6 +18,7 @@ Model: https://huggingface.co/LiquidAI/d1-omni-600M (LFM Open License v1.0)
 import asyncio
 import importlib
 import logging
+import sys
 import time
 from typing import Any, Dict, List, Optional
 
@@ -89,15 +90,21 @@ def load_audio(file: File) -> Any:
     return samples
 
 
-def state_is_truncated(model: Any, state: Any, questions: Dict[str, Dict[str, Any]], text_length: int) -> bool:
-    """True if any question over this state is longer than `text_length` tokens before the model cuts it."""
-    # The repository's own prompt code, from the package its model class was loaded from.
-    prompt = importlib.import_module(".prompt", type(model).__module__.rpartition(".")[0])
+def state_is_truncated(model: Any, state: Any, questions: Dict[str, Dict[str, Any]], text_length: int, mode: str) -> bool:
+    """True if the model will cut the state for any question. The model gives each question its own
+    tokens first and the state the room left, so the state is tokenized once and each question alone."""
+    # The repository's own prompt code and modeling module, from the package its model class was loaded from.
+    package = type(model).__module__.rpartition(".")[0]
+    prompt = importlib.import_module(".prompt", package)
+    noul_default = None if mode == "text" else sys.modules[type(model).__module__].YES_NO
+    state_tokens = len(model.tokenizer(prompt.escape(prompt.serialize(state)), add_special_tokens=False)["input_ids"])
     unbounded = 10 ** 9
-    return any(
-        len(prompt.encode(model.tokenizer, state, prompt.as_question(q), unbounded)[0]) > text_length
-        for q in questions.values()
-    )
+    for question in questions.values():
+        # With an empty state the ids are the BOS, the state marker and the question.
+        empty = prompt.encode(model.tokenizer, "", prompt.as_question(question), unbounded, noul_default, mode == "audio")[0]
+        if state_tokens > text_length - len(empty):
+            return True
+    return False
 
 
 def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
@@ -110,7 +117,8 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
 
     config = model.config
     text_length = config.image_text_length if images else config.audio_text_length if audio is not None else config.max_length
-    truncated = state_is_truncated(model, input_data.state, questions, text_length)
+    mode = "image" if images else "audio" if audio is not None else "text"
+    truncated = state_is_truncated(model, input_data.state, questions, text_length, mode)
     if truncated:
         logger.warning(f"state cut to fit {text_length} tokens per question")
 
