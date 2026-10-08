@@ -1,0 +1,25 @@
+namespace: liquid
+name: d1-3b
+title: d1-3B
+description: Liquid AI's open 3B decision model for text and images. Send a state and up to 8 images with typed questions (choice, score, yes/no); get a probability for every answer in one pass, no generation.
+metadata:
+    tags:
+        - decision-model
+        - classification
+        - vision
+        - multimodal
+        - routing
+        - guardrails
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 16
+        type: any
+    ram: 16

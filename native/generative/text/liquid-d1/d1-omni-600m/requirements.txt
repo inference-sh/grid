@@ -1,10 +1,14 @@
 pydantic>=2.0.0
 inferencesh>=0.7.36
-# CUDA 12.9 build. The PyPI wheels of torch 2.13+ are built for CUDA 13 and do not start on
+# CUDA 12.9 builds. The PyPI wheels of torch 2.13+ are built for CUDA 13 and do not start on
 # workers whose NVIDIA driver stops at CUDA 12; the CUDA 12.6 builds have no kernels for newer GPUs.
 torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
-transformers>=5.17,<5.19
+torchvision @ https://download.pytorch.org/whl/cu129/torchvision-0.28.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+transformers>=5.15,<5.19
 safetensors
 accelerate
 huggingface_hub
-peft
+pillow
+numpy
+scipy
+soundfile

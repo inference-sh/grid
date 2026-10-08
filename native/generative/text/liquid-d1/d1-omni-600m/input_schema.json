@@ -1,0 +1,240 @@
+{
+  "$defs": {
+    "ChoiceOption": {
+      "properties": {
+        "name": {
+          "description": "Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.",
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What this option covers. Omit when the name is clear on its own.",
+          "title": "Description"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ChoiceOption",
+      "type": "object"
+    },
+    "ChoiceQuestion": {
+      "description": "Which of these options? For a fixed set of unordered options.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "description": "What the model should decide, written as a complete question.",
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "options": {
+          "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
+          "items": {
+            "$ref": "#/$defs/ChoiceOption"
+          },
+          "maxItems": 255,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "instructions",
+        "options"
+      ],
+      "title": "ChoiceQuestion",
+      "type": "object"
+    },
+    "NoulCriteria": {
+      "properties": {
+        "true": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What a yes (value near 1) means.",
+          "title": "True"
+        },
+        "false": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What a no (value near 0) means.",
+          "title": "False"
+        }
+      },
+      "title": "NoulCriteria",
+      "type": "object"
+    },
+    "NoulQuestion": {
+      "description": "Is this true? For a clean yes/no where the probability itself is the signal.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "criteria": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoulCriteria"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional. Pins down a subtle yes/no boundary."
+        }
+      },
+      "required": [
+        "id",
+        "instructions"
+      ],
+      "title": "NoulQuestion",
+      "type": "object"
+    },
+    "ScoreQuestion": {
+      "description": "Which level? For a position on a spectrum you can describe.",
+      "properties": {
+        "id": {
+          "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "instructions": {
+          "description": "What the model should rate, written as a complete question.",
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "levels": {
+          "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 2,
+          "title": "Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "instructions",
+        "levels"
+      ],
+      "title": "ScoreQuestion",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "state": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "items": {},
+          "type": "array"
+        }
+      ],
+      "default": "",
+      "description": "The text to evaluate: a string, or a JSON object / array of related context. Every question sees the same state. May be empty when `images` or `audio` carries the content. A state over the model's limit is cut at the end and `state_truncated` is set: the state and one question share 16,384 tokens for text, 15,360 with audio, 896 with images.",
+      "examples": [
+        "Seller title: wireless earbuds, barely used"
+      ],
+      "title": "State"
+    },
+    "images": {
+      "description": "Up to 4 images the questions are about. Cannot be combined with `audio`.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "title": "Images",
+      "type": "array"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "One speech clip the questions are about, up to 30 seconds (WAV, FLAC, OGG or MP3). Trained on English requests to an assistant. Cannot be combined with `images`.",
+      "title": "Audio"
+    },
+    "choices": {
+      "description": "Choice questions: pick one option from a set.",
+      "items": {
+        "$ref": "#/$defs/ChoiceQuestion"
+      },
+      "title": "Choices",
+      "type": "array"
+    },
+    "scores": {
+      "description": "Score questions: place the state on ordered levels.",
+      "items": {
+        "$ref": "#/$defs/ScoreQuestion"
+      },
+      "title": "Scores",
+      "type": "array"
+    },
+    "nouls": {
+      "description": "Noul questions: probability that the answer is yes.",
+      "items": {
+        "$ref": "#/$defs/NoulQuestion"
+      },
+      "title": "Nouls",
+      "type": "array"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

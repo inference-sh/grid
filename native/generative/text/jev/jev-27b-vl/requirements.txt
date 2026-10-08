@@ -1,0 +1,11 @@
+pydantic>=2.0.0
+inferencesh>=0.7.36
+# CUDA 12 builds. The PyPI wheels of torch 2.13 and vllm 0.31 are built for CUDA 13 and do
+# not start on workers whose NVIDIA driver stops at CUDA 12.
+torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+torchvision @ https://download.pytorch.org/whl/cu129/torchvision-0.28.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+torchaudio @ https://download.pytorch.org/whl/cu129/torchaudio-2.11.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+torchcodec @ https://download.pytorch.org/whl/cu129/torchcodec-0.15.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+vllm @ https://github.com/vllm-project/vllm/releases/download/v0.31.0/vllm-0.31.0%2Bcu129-cp38-abi3-manylinux_2_28_x86_64.whl
+httpx>=0.27.0,<1.0
+huggingface_hub
