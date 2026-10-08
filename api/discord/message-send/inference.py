@@ -1,3 +1,4 @@
+import logging
 import os
 import httpx
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
@@ -44,6 +45,7 @@ class App(BaseApp):
 
     async def setup(self):
         """Initialize the Discord bot client."""
+        self.logger = logging.getLogger(__name__)
         self.bot_token = os.environ.get("DISCORD_BOT_TOKEN")
         if not self.bot_token:
             raise ValueError(
