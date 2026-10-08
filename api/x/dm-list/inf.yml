@@ -1,7 +1,10 @@
 namespace: x
 name: dm-list
 description: List recent DM events. Returns direct message text, sender, and timestamps.
-metadata: {}
+metadata:
+    tags:
+        - social-media
+        - messaging
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/g8rhxwws.png

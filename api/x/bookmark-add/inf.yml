@@ -1,7 +1,9 @@
 namespace: x
 name: bookmark-add
 description: Bookmark a post on X.com.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/hem0okfl.png

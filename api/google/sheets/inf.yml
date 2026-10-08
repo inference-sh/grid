@@ -3,6 +3,8 @@ name: sheets
 description: Read, write, and manage Google Sheets spreadsheets
 metadata:
     checksum: 5febb2a682ebe78c691162e7f58cfbe79bebfb104a60949f83072d5b44b96460
+    tags:
+        - productivity
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0s1z75ek.png

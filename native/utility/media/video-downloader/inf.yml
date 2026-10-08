@@ -9,6 +9,8 @@ metadata:
         - quality-selection
         - codec-conversion
     version: 1.0.0
+    tags:
+        - media-utilities
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/gckjjd7y.png

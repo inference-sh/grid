@@ -1,7 +1,9 @@
 namespace: x
 name: post-like
 description: Like a post on X.com by post ID. Succeeds silently if already liked.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/shvus0pt.png

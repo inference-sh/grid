@@ -1,7 +1,9 @@
 namespace: eval
 name: pickscore
 description: PickScore v1 — scores how well an image matches a text prompt (CLIP-H finetuned on Pick-a-Pic)
-metadata: {}
+metadata:
+    tags:
+        - evaluation
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/sw5xot8z.png

@@ -1,7 +1,9 @@
 namespace: x
 name: following-list
 description: List accounts a user follows. Returns profiles with bios, follower counts, and join dates.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bdqmvksy.png

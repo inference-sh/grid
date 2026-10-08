@@ -1,7 +1,10 @@
 namespace: x
 name: dm-send
 description: Send a direct message on X.com. Requires the recipient's user ID (not username). Text-only messages; media attachments are not supported.
-metadata: {}
+metadata:
+    tags:
+        - social-media
+        - messaging
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/c5fe0bwt.png

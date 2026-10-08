@@ -1,7 +1,9 @@
 namespace: infsh
 name: pagerduty
 description: PagerDuty Events API v2 — trigger, acknowledge and resolve incidents, and record change events
-metadata: {}
+metadata:
+    tags:
+        - monitoring
 category: other
 images:
     card: ""

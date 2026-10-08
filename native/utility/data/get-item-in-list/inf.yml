@@ -1,7 +1,9 @@
 namespace: infsh
 name: get-item-in-list
 description: Returns a specific element from a list based on its position.
-metadata: {}
+metadata:
+    tags:
+        - workflow-utilities
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bh511nm6.png

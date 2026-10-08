@@ -3,6 +3,9 @@ name: frame-interpolation
 description: video frame interpolation — slowmo and fps boost with apollo, chronos, and aion models
 metadata:
     checksum: c286124fdc687df97cf4f292ef2381860b50b82ce67d5e251aef87b3866c77e4
+    tags:
+        - frame-interpolation
+        - video-enhancement
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5adjmmco.png

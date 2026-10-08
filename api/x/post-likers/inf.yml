@@ -1,7 +1,9 @@
 namespace: x
 name: post-likers
 description: List users who liked a specific post. Returns user profiles with follower counts.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/k4n79lwd.png

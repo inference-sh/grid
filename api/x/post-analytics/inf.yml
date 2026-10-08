@@ -1,7 +1,9 @@
 namespace: x
 name: post-analytics
 description: Get engagement analytics for specific posts. Returns impressions, engagements, and other metrics over a time period.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ooyff75l.png

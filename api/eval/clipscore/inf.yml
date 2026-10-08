@@ -1,7 +1,9 @@
 namespace: eval
 name: clipscore
 description: CLIPScore — cosine similarity between CLIP text and image embeddings for prompt adherence
-metadata: {}
+metadata:
+    tags:
+        - evaluation
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/engeotg8.png

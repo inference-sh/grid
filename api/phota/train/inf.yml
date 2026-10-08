@@ -1,7 +1,9 @@
 namespace: phota
 name: train
 description: Train a Phota identity profile from 30-50 face images, poll status, list and delete profiles
-metadata: {}
+metadata:
+    tags:
+        - training
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0sfjfrdm.png

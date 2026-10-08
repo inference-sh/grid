@@ -3,6 +3,8 @@ name: user-get
 description: Get a user profile from X.com by ID or username. Returns bio, follower/following counts, tweet count, verified status, and profile image URL.
 metadata:
     checksum: b203d26931b21d2fa5ae2eaaa85b4a3bfc414a6da0d8ff4b717816969a7f61f6
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1vexg2s3.png

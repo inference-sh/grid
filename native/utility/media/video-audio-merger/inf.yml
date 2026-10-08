@@ -1,7 +1,9 @@
 namespace: infsh
 name: video-audio-merger
 description: Merge video and audio files easily, with the flexibility to keep the original audio from the video.
-metadata: {}
+metadata:
+    tags:
+        - media-utilities
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/usbwg3qh.png

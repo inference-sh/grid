@@ -3,6 +3,8 @@ name: paper
 description: get a specific arxiv paper by its id with full metadata including title, authors, abstract, and links
 metadata:
     checksum: b32acb6c4c12b7f4ecceaaa4a0a07e883caa058d292eb77a381b8cdec3614c6d
+    tags:
+        - research-papers
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/pfb4wyep.png

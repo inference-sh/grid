@@ -3,6 +3,9 @@ name: gmail
 description: Read, send, draft, and organize Gmail messages
 metadata:
     checksum: 256d0485b6e66725f07a55f44e41446ad12e1d21ff876a43c08d8e85bb0b15e9
+    tags:
+        - productivity
+        - messaging
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/v88ev8p8.png

@@ -1,7 +1,9 @@
 namespace: eval
 name: arcface
 description: ArcFace identity similarity — cosine similarity between face embeddings of two images
-metadata: {}
+metadata:
+    tags:
+        - evaluation
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/34wgunyn.png
