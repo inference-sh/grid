@@ -154,7 +154,7 @@ nvidia-nvtx-cu12==12.4.127
     # via torch
 omegaconf==2.3.0
     # via -r requirements.txt
-onnxruntime-gpu==1.20.1
+onnxruntime-gpu==1.20.2
     # via -r requirements.txt
 opencv-python-headless==4.11.0.86
     # via
