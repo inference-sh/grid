@@ -31,7 +31,7 @@
                 }
               ],
               "default": null,
-              "description": "What this option covers. Omit when the name is clear on its own. An object can carry a rubric, e.g. {what, not_for, examples}.",
+              "description": "What this option covers. Omit when the name is clear on its own.",
               "title": "Description"
             }
           },
@@ -64,7 +64,7 @@
                   "type": "array"
                 }
               ],
-              "description": "What the model should decide, written as a complete question. An object can hold the question in one field and data it refers to in others.",
+              "description": "What the model should decide, written as a complete question.",
               "title": "Instructions"
             },
             "options": {
@@ -106,7 +106,7 @@
                 }
               ],
               "default": null,
-              "description": "What a yes (value near 1) means. Defaults to `Yes`.",
+              "description": "What a yes (value near 1) means.",
               "title": "True"
             },
             "false": {
@@ -127,7 +127,7 @@
                 }
               ],
               "default": null,
-              "description": "What a no (value near 0) means. Defaults to `No`.",
+              "description": "What a no (value near 0) means.",
               "title": "False"
             }
           },
@@ -338,7 +338,7 @@
               "type": "string"
             },
             "confidence": {
-              "description": "0 to 1, from how peaked `probabilities` is. Gate actions on it; thresholds scale with risk.",
+              "description": "0 to 1: how sure the model is of `choice`. Gate actions on it; thresholds scale with risk.",
               "title": "Confidence",
               "type": "number"
             },
@@ -346,7 +346,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Every option mapped to its probability. Sums to 1.",
+              "description": "Every option mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             }
@@ -529,7 +529,7 @@
               "type": "number"
             },
             "confidence": {
-              "description": "0 to 1, from how peaked `probabilities` is.",
+              "description": "0 to 1: how sure the model is of the most likely level.",
               "title": "Confidence",
               "type": "number"
             },
@@ -537,7 +537,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Each level number (as a string) mapped to its probability. Sums to 1.",
+              "description": "Each level number (as a string) mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             },
@@ -661,6 +661,29 @@
         }
       },
       "properties": {
+        "model": {
+          "description": "The model that answered, e.g. `Decision-2.0-Sol-2B`.",
+          "title": "Model",
+          "type": "string"
+        },
+        "input_tokens": {
+          "default": 0,
+          "description": "Input tokens, summed over the questions.",
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
         "choices": {
           "additionalProperties": {
             "$ref": "#/$defs/ChoiceAnswer"
@@ -684,29 +707,6 @@
           "description": "Noul answers by question id.",
           "title": "Nouls",
           "type": "object"
-        },
-        "model": {
-          "description": "The model that answered, e.g. `Decision-2.0-Sol-2B`.",
-          "title": "Model",
-          "type": "string"
-        },
-        "input_tokens": {
-          "default": 0,
-          "description": "Input tokens, summed over the questions.",
-          "title": "Input Tokens",
-          "type": "integer"
-        },
-        "output_meta": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/OutputMeta"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Structured metadata about inputs/outputs for pricing calculation"
         }
       },
       "required": [

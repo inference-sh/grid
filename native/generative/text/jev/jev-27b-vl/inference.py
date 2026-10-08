@@ -40,11 +40,12 @@ import socket
 import sys
 import time
 from collections import deque
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 import httpx
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
-from pydantic import BaseModel, Field, model_validator
+from inferencesh import BaseApp, File
+from inferencesh.models.decision import DecisionOutput, DecisionVisionInput, Structured
+from pydantic import Field
 
 MODEL_ID = "autotrust/JEV-27B-VL"
 # setup() executes the repository's serve_decide.py. Review the diff before moving this.
@@ -59,57 +60,10 @@ MAX_NUM_SEQS = 8
 NATIVE_SCORE_LEVELS = 6
 SERVER_LOG_TAIL = 40
 
-# Plain text, or JSON structure the model reads by key.
-Structured = Union[str, Dict[str, Any], List[Any]]
 
+# ── Input and output ─────────────────────────────────────────────────────────
 
-# ── Questions ────────────────────────────────────────────────────────────────
-
-class ChoiceOption(BaseModel):
-    name: str = Field(min_length=1, description="Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.")
-    description: Optional[Structured] = Field(
-        default=None,
-        description="What this option covers, sent on the option's line after the name. One line saying what separates it from similar options works best. Omit when the name is clear on its own.",
-    )
-
-
-class ChoiceQuestion(BaseModel):
-    """Which of these options? For a fixed set of unordered options."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(description="What the model should decide, written as a complete question.")
-    options: List[ChoiceOption] = Field(
-        min_length=2,
-        max_length=255,
-        description="The answer options (2 to 255). The model was trained on up to 16; more are read with untrained labels. Add an `other` option when the list might not cover every input.",
-    )
-
-
-class ScoreQuestion(BaseModel):
-    """Which level? For a position on a spectrum you can describe."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(description="What the model should rate, written as a complete question.")
-    levels: List[Structured] = Field(
-        min_length=2,
-        max_length=10,
-        description="Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0. Six levels use the model's native 0-5 score; any other number is read as a choice over the levels.",
-    )
-
-
-class NoulCriteria(BaseModel):
-    true: Optional[Structured] = Field(default=None, description="What a yes (value near 1) means.")
-    false: Optional[Structured] = Field(default=None, description="What a no (value near 0) means.")
-
-
-class NoulQuestion(BaseModel):
-    """Is this true? For a clean yes/no where the probability itself is the signal."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(
-        description="The yes/no question, phrased so that yes is the outcome you want the probability of, e.g. `Does the image show food or cooking?`",
-    )
-    criteria: Optional[NoulCriteria] = Field(default=None, description="Optional. Pins down a subtle yes/no boundary.")
-
-
-class AppInput(BaseAppInput):
+class AppInput(DecisionVisionInput):
     state: Structured = Field(
         default="",
         description="The text to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Every question sees the same state and images. May be empty when `images` carries the content. Input over the model's token limit is rejected, never truncated.",
@@ -120,54 +74,9 @@ class AppInput(BaseAppInput):
         max_length=MAX_IMAGES,
         description="Up to 8 images the questions are about, placed before the state. Large images cost more tokens and time; about 448 px on the long side is enough for most decisions.",
     )
-    choices: List[ChoiceQuestion] = Field(default_factory=list, description="Choice questions: pick one option from a set.")
-    scores: List[ScoreQuestion] = Field(default_factory=list, description="Score questions: place the state on ordered levels.")
-    nouls: List[NoulQuestion] = Field(default_factory=list, description="Noul questions: probability that the answer is yes.")
-
-    @model_validator(mode="after")
-    def _check_questions(self):
-        ids = [q.id for q in (*self.choices, *self.scores, *self.nouls)]
-        if not ids:
-            raise ValueError("ask at least one question in `choices`, `scores` or `nouls`")
-        dupes = sorted({i for i in ids if ids.count(i) > 1})
-        if dupes:
-            raise ValueError(f"question ids must be unique across choices, scores and nouls; repeated: {dupes}")
-        for q in (*self.choices, *self.scores, *self.nouls):
-            if q.instructions == "":
-                raise ValueError(f"question '{q.id}' has empty instructions")
-        for q in self.choices:
-            names = [o.name for o in q.options]
-            if len(set(names)) != len(names):
-                raise ValueError(f"choice '{q.id}' has repeated option names")
-        if self.state == "" and not self.images:
-            raise ValueError("send a `state`, `images`, or both")
-        return self
 
 
-# ── Answers ──────────────────────────────────────────────────────────────────
-
-class ChoiceAnswer(BaseModel):
-    choice: str = Field(description="The highest-probability option.")
-    confidence: float = Field(description="0 to 1, from how peaked `probabilities` is: 1 minus its entropy over the maximum entropy. Gate actions on it; thresholds scale with risk.")
-    probabilities: Dict[str, float] = Field(description="Every option mapped to its probability. Sums to 1.")
-
-
-class ScoreAnswer(BaseModel):
-    score: float = Field(description="Probability-weighted position on the levels, 0 to the top level number. Can land between levels.")
-    normalized: float = Field(description="`score` divided by the top level number: 0 to 1, comparable across scales of different length.")
-    confidence: float = Field(description="0 to 1, from how peaked `probabilities` is.")
-    probabilities: Dict[str, float] = Field(description="Each level number (as a string) mapped to its probability. Sums to 1.")
-    legend: Dict[str, Any] = Field(description="Each level number mapped back to its description.")
-
-
-class NoulAnswer(BaseModel):
-    noul: float = Field(description="Probability the answer is yes. Near 1 strong yes, near 0 strong no, near 0.5 uncertain. Threshold it in code.")
-
-
-class AppOutput(BaseAppOutput):
-    choices: Dict[str, ChoiceAnswer] = Field(default_factory=dict, description="Choice answers by question id.")
-    scores: Dict[str, ScoreAnswer] = Field(default_factory=dict, description="Score answers by question id.")
-    nouls: Dict[str, NoulAnswer] = Field(default_factory=dict, description="Noul answers by question id.")
+class AppOutput(DecisionOutput):
     model: str = Field(description="The model that answered: `autotrust/JEV-27B-VL`.")
     input_tokens: int = Field(default=0, description="Prompt tokens, summed over the questions. Image tokens are included.")
 
@@ -189,22 +98,24 @@ def image_part(image: File) -> Dict[str, str]:
         return {"image": f"data:{content_type};base64,{base64.b64encode(f.read()).decode()}"}
 
 
-def build_state(input_data: AppInput) -> Union[str, List[Any]]:
+def encode_state(input_data: AppInput) -> bytes:
+    """The /v1/decide `state` as JSON: the text, or the images then the text. Every question's
+    request carries it, so it is encoded once here; with images it is megabytes of base64."""
     text = as_text(input_data.state)
     if not input_data.images:
-        return text
+        return json.dumps(text).encode()
     parts: List[Any] = [image_part(image) for image in input_data.images]
     if text:
         parts.append("\n" + text)
-    return parts
+    return json.dumps(parts).encode()
 
 
-def build_requests(input_data: AppInput) -> List[Tuple[str, str, Dict[str, Any]]]:
-    """One (question id, question type, /v1/decide body without state) per question."""
-    requests: List[Tuple[str, str, Dict[str, Any]]] = []
+def build_requests(input_data: AppInput) -> List[Tuple[str, Dict[str, Any], int]]:
+    """One (question id, /v1/decide body without state, probabilities expected back) per question."""
+    requests: List[Tuple[str, Dict[str, Any], int]] = []
     for q in input_data.choices:
         options = [as_line(o.name) if o.description is None else f"{as_line(o.name)}: {as_line(o.description)}" for o in q.options]
-        requests.append((q.id, "choice", {"kind": "choice", "question": as_text(q.instructions), "options": options}))
+        requests.append((q.id, {"kind": "choice", "question": as_text(q.instructions), "options": options}, len(options)))
     for q in input_data.scores:
         levels = [as_line(level) for level in q.levels]
         if len(levels) == NATIVE_SCORE_LEVELS:
@@ -212,13 +123,13 @@ def build_requests(input_data: AppInput) -> List[Tuple[str, str, Dict[str, Any]]
             body = {"kind": "score", "question": f"{as_text(q.instructions)} Levels: {legend}"}
         else:
             body = {"kind": "choice", "question": as_text(q.instructions), "options": [f"{i}: {level}" for i, level in enumerate(levels)]}
-        requests.append((q.id, "score", body))
+        requests.append((q.id, body, len(levels)))
     for q in input_data.nouls:
         question = as_text(q.instructions)
         criteria = q.criteria.model_dump(exclude_none=True) if q.criteria else {}
         if criteria:
             question += " (" + "; ".join(f"{key}: {as_line(criteria[key])}" for key in ("true", "false") if key in criteria) + ")"
-        requests.append((q.id, "noul", {"kind": "noul", "question": question}))
+        requests.append((q.id, {"kind": "noul", "question": question}, 2))
     return requests
 
 
@@ -227,51 +138,29 @@ def confidence(probabilities: List[float]) -> float:
     return max(0.0, 1.0 - entropy / math.log(len(probabilities)))
 
 
-def build_output(input_data: AppInput, results: Dict[str, Dict[str, Any]]) -> AppOutput:
-    choices: Dict[str, ChoiceAnswer] = {}
-    scores: Dict[str, ScoreAnswer] = {}
-    nouls: Dict[str, NoulAnswer] = {}
+def build_answers(input_data: AppInput, probabilities: Dict[str, List[float]]) -> Dict[str, Dict[str, Any]]:
+    """Each question's probabilities, in option order, as an answer in the decision contract's form."""
+    answers: Dict[str, Dict[str, Any]] = {}
     for q in input_data.choices:
-        probabilities = results[q.id]["probabilities"]
+        values = probabilities[q.id]
         names = [o.name for o in q.options]
-        choices[q.id] = ChoiceAnswer(
-            choice=names[max(range(len(names)), key=probabilities.__getitem__)],
-            confidence=confidence(probabilities),
-            probabilities=dict(zip(names, probabilities)),
-        )
+        answers[q.id] = {
+            "choice": names[max(range(len(names)), key=values.__getitem__)],
+            "confidence": confidence(values),
+            "probabilities": dict(zip(names, values)),
+        }
     for q in input_data.scores:
-        probabilities = results[q.id]["probabilities"]
-        score = sum(i * p for i, p in enumerate(probabilities))
-        scores[q.id] = ScoreAnswer(
-            score=score,
-            normalized=score / (len(q.levels) - 1),
-            confidence=confidence(probabilities),
-            probabilities={str(i): p for i, p in enumerate(probabilities)},
-            legend={str(i): level for i, level in enumerate(q.levels)},
-        )
+        values = probabilities[q.id]
+        answers[q.id] = {
+            "score": sum(i * p for i, p in enumerate(values)),
+            "confidence": confidence(values),
+            "probabilities": {str(i): p for i, p in enumerate(values)},
+            "legend": {str(i): level for i, level in enumerate(q.levels)},
+        }
     for q in input_data.nouls:
         # /v1/decide returns noul probabilities for ["false", "true"].
-        nouls[q.id] = NoulAnswer(noul=results[q.id]["probabilities"][1])
-
-    input_tokens = sum(int((r.get("usage") or {}).get("prompt_tokens") or 0) for r in results.values())
-    return AppOutput(
-        choices=choices,
-        scores=scores,
-        nouls=nouls,
-        model=MODEL_ID,
-        input_tokens=input_tokens,
-        output_meta=OutputMeta(
-            inputs=[TextMeta(tokens=input_tokens)],
-            outputs=[TextMeta(tokens=0)],
-        ),
-    )
-
-
-def expected_options(input_data: AppInput) -> Dict[str, int]:
-    counts = {q.id: len(q.options) for q in input_data.choices}
-    counts.update({q.id: len(q.levels) for q in input_data.scores})
-    counts.update({q.id: 2 for q in input_data.nouls})
-    return counts
+        answers[q.id] = {"noul": probabilities[q.id][1]}
+    return answers
 
 
 # ── App ──────────────────────────────────────────────────────────────────────
@@ -336,8 +225,10 @@ class App(BaseApp):
                 self.server_log.append(line)
                 self.logger.info(f"[vllm] {line}")
 
-    async def _decide(self, qid: str, state: Union[str, List[Any]], body: Dict[str, Any]) -> Dict[str, Any]:
-        response = await self.client.post("/v1/decide", json={"state": state, **body})
+    async def _decide(self, qid: str, state: bytes, body: Dict[str, Any]) -> Dict[str, Any]:
+        # The body is the question's fields with the already encoded state spliced in first.
+        content = b'{"state":' + state + b"," + json.dumps(body).encode()[1:]
+        response = await self.client.post("/v1/decide", content=content, headers={"Content-Type": "application/json"})
         if response.status_code != 200:
             try:
                 error = response.json().get("error") or {}
@@ -355,24 +246,24 @@ class App(BaseApp):
             if not image.exists():
                 raise RuntimeError(f"image does not exist at path: {image.path}")
 
-        state = await asyncio.to_thread(build_state, input_data)
+        state = await asyncio.to_thread(encode_state, input_data)
         requests = build_requests(input_data)
         started = time.monotonic()
-        answers = await asyncio.gather(*(self._decide(qid, state, body) for qid, _, body in requests))
+        results = await asyncio.gather(*(self._decide(qid, state, body) for qid, body, _ in requests))
         elapsed_ms = (time.monotonic() - started) * 1000
 
-        results = {qid: answer for (qid, _, _), answer in zip(requests, answers)}
-        for qid, count in expected_options(input_data).items():
-            got = results[qid].get("probabilities") or []
-            if len(got) != count:
-                raise RuntimeError(f"question '{qid}' came back with {len(got)} probabilities for {count} options; keys: {list(results[qid].keys())}")
+        probabilities: Dict[str, List[float]] = {}
+        for (qid, _, expected), result in zip(requests, results):
+            probabilities[qid] = result.get("probabilities") or []
+            if len(probabilities[qid]) != expected:
+                raise RuntimeError(f"question '{qid}' came back with {len(probabilities[qid])} probabilities for {expected} options; keys: {list(result.keys())}")
+        input_tokens = sum(int((result.get("usage") or {}).get("prompt_tokens") or 0) for result in results)
 
-        output = build_output(input_data, results)
         self.logger.info(
-            f"answered by {MODEL_ID}: {output.input_tokens} prompt tokens, {len(requests)} questions, "
+            f"answered by {MODEL_ID}: {input_tokens} prompt tokens, {len(requests)} questions, "
             f"{len(input_data.images)} images, {elapsed_ms:.1f} ms"
         )
-        return output
+        return AppOutput.from_answers(build_answers(input_data, probabilities), input_data, model=MODEL_ID, input_tokens=input_tokens)
 
     async def unload(self):
         if hasattr(self, "client"):

@@ -4,6 +4,7 @@
       "properties": {
         "name": {
           "description": "Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.",
+          "minLength": 1,
           "title": "Name",
           "type": "string"
         },
@@ -25,7 +26,7 @@
             }
           ],
           "default": null,
-          "description": "What this option covers. Omit when the name is clear on its own. An object can carry a rubric, e.g. {what, not_for, examples}, or a taxonomy subtree.",
+          "description": "What this option covers. Omit when the name is clear on its own.",
           "title": "Description"
         }
       },
@@ -40,6 +41,7 @@
       "properties": {
         "id": {
           "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
           "title": "Id",
           "type": "string"
         },
@@ -57,7 +59,7 @@
               "type": "array"
             }
           ],
-          "description": "What the model should decide, written as a complete question. Reference parts of a structured state by path in backticks, e.g. `ticket.messages[0].text`. An object can hold the question in one field and data it refers to in others.",
+          "description": "What the model should decide, written as a complete question.",
           "title": "Instructions"
         },
         "options": {
@@ -132,6 +134,7 @@
       "properties": {
         "id": {
           "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
           "title": "Id",
           "type": "string"
         },
@@ -149,7 +152,7 @@
               "type": "array"
             }
           ],
-          "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous. Reference parts of a structured state by path in backticks.",
+          "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
           "title": "Instructions"
         },
         "criteria": {
@@ -177,6 +180,7 @@
       "properties": {
         "id": {
           "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
+          "minLength": 1,
           "title": "Id",
           "type": "string"
         },
@@ -194,11 +198,11 @@
               "type": "array"
             }
           ],
-          "description": "What the model should rate, written as a complete question. Reference parts of a structured state by path in backticks.",
+          "description": "What the model should rate, written as a complete question.",
           "title": "Instructions"
         },
         "levels": {
-          "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0. Describe situations, not degrees: each level is judged on its own and the model never sees its number or its neighbours.",
+          "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
           "items": {
             "anyOf": [
               {
@@ -250,6 +254,12 @@
       ],
       "title": "State"
     },
+    "model": {
+      "default": "jev-latest",
+      "description": "Model name or alias: `jev-latest`, `jev-preview`, or a pinned version such as `jev-1.13.0`. Pin a version if you tuned thresholds against it.",
+      "title": "Model",
+      "type": "string"
+    },
     "choices": {
       "description": "Choice questions: pick one option from a set.",
       "items": {
@@ -273,12 +283,6 @@
       },
       "title": "Nouls",
       "type": "array"
-    },
-    "model": {
-      "default": "jev-latest",
-      "description": "Model name or alias: `jev-latest`, `jev-preview`, or a pinned version such as `jev-1.13.0`. Pin a version if you tuned thresholds against it.",
-      "title": "Model",
-      "type": "string"
     }
   },
   "required": [

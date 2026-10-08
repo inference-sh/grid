@@ -27,10 +27,11 @@ import asyncio
 import logging
 import sys
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
-from pydantic import BaseModel, Field, model_validator
+from inferencesh import BaseApp, File
+from inferencesh.models.decision import DecisionOutput, DecisionVisionInput, Structured
+from pydantic import Field
 
 MODEL_ID = "perplexity-ai/pplx-decider-v1.1-27b"
 # setup() imports source/src/autojev from the repository. Review the diff before moving this.
@@ -43,59 +44,10 @@ BATCH_SIZE = 8
 BATCH_TOKENS = 32768
 MAX_IMAGES = 4
 
-# Plain text, or JSON structure the model reads by key.
-Structured = Union[str, Dict[str, Any], List[Any]]
 
+# ── Input and output ─────────────────────────────────────────────────────────
 
-# ── Questions ────────────────────────────────────────────────────────────────
-
-class ChoiceOption(BaseModel):
-    name: str = Field(min_length=1, description="Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.")
-    description: Optional[Structured] = Field(
-        default=None,
-        description="What this option covers. Omit when the name is clear on its own. An object can carry a rubric, e.g. {what, not_for, examples}.",
-    )
-
-
-class ChoiceQuestion(BaseModel):
-    """Which of these options? For a fixed set of unordered options."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(
-        description="What the model should decide, written as a complete question. An object can hold the question in one field and data it refers to in others.",
-    )
-    options: List[ChoiceOption] = Field(
-        min_length=2,
-        max_length=255,
-        description="The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
-    )
-
-
-class ScoreQuestion(BaseModel):
-    """Which level? For a position on a spectrum you can describe."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(description="What the model should rate, written as a complete question.")
-    levels: List[Structured] = Field(
-        min_length=2,
-        max_length=10,
-        description="Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
-    )
-
-
-class NoulCriteria(BaseModel):
-    true: Optional[Structured] = Field(default=None, description="What a yes (value near 1) means. Defaults to `Yes / true`.")
-    false: Optional[Structured] = Field(default=None, description="What a no (value near 0) means. Defaults to `No / false`.")
-
-
-class NoulQuestion(BaseModel):
-    """Is this true? For a clean yes/no where the probability itself is the signal."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(
-        description="The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
-    )
-    criteria: Optional[NoulCriteria] = Field(default=None, description="Optional. Pins down a subtle yes/no boundary.")
-
-
-class AppInput(BaseAppInput):
+class AppInput(DecisionVisionInput):
     state: Structured = Field(
         default="",
         description="The text to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Every question sees the same state and images. May be empty when `images` carries the content. Input over the model's token limit is rejected, never truncated.",
@@ -106,54 +58,9 @@ class AppInput(BaseAppInput):
         max_length=MAX_IMAGES,
         description="Up to 4 images the questions are about (PNG, JPEG or WebP). Every question sees them, placed before the state.",
     )
-    choices: List[ChoiceQuestion] = Field(default_factory=list, description="Choice questions: pick one option from a set.")
-    scores: List[ScoreQuestion] = Field(default_factory=list, description="Score questions: place the state on ordered levels.")
-    nouls: List[NoulQuestion] = Field(default_factory=list, description="Noul questions: probability that the answer is yes.")
-
-    @model_validator(mode="after")
-    def _check_questions(self):
-        ids = [q.id for q in (*self.choices, *self.scores, *self.nouls)]
-        if not ids:
-            raise ValueError("ask at least one question in `choices`, `scores` or `nouls`")
-        dupes = sorted({i for i in ids if ids.count(i) > 1})
-        if dupes:
-            raise ValueError(f"question ids must be unique across choices, scores and nouls; repeated: {dupes}")
-        for q in (*self.choices, *self.scores, *self.nouls):
-            if q.instructions == "":
-                raise ValueError(f"question '{q.id}' has empty instructions")
-        for q in self.choices:
-            names = [o.name for o in q.options]
-            if len(set(names)) != len(names):
-                raise ValueError(f"choice '{q.id}' has repeated option names")
-        if self.state == "" and not self.images:
-            raise ValueError("send a `state`, `images`, or both")
-        return self
 
 
-# ── Answers ──────────────────────────────────────────────────────────────────
-
-class ChoiceAnswer(BaseModel):
-    choice: str = Field(description="The highest-probability option.")
-    confidence: float = Field(description="0 to 1: how far the top probability is above an even split. Gate actions on it; thresholds scale with risk.")
-    probabilities: Dict[str, float] = Field(description="Every option mapped to its probability. Sums to 1.")
-
-
-class ScoreAnswer(BaseModel):
-    score: float = Field(description="Probability-weighted position on the levels, 0 to the top level number. Can land between levels.")
-    normalized: float = Field(description="`score` divided by the top level number: 0 to 1, comparable across scales of different length.")
-    confidence: float = Field(description="0 to 1, from how tightly `probabilities` sits around its top level.")
-    probabilities: Dict[str, float] = Field(description="Each level number (as a string) mapped to its probability. Sums to 1.")
-    legend: Dict[str, Any] = Field(description="Each level number mapped back to its description.")
-
-
-class NoulAnswer(BaseModel):
-    noul: float = Field(description="Probability the answer is yes. Near 1 strong yes, near 0 strong no, near 0.5 uncertain. Threshold it in code.")
-
-
-class AppOutput(BaseAppOutput):
-    choices: Dict[str, ChoiceAnswer] = Field(default_factory=dict, description="Choice answers by question id.")
-    scores: Dict[str, ScoreAnswer] = Field(default_factory=dict, description="Score answers by question id.")
-    nouls: Dict[str, NoulAnswer] = Field(default_factory=dict, description="Noul answers by question id.")
+class AppOutput(DecisionOutput):
     model: str = Field(description="The model that answered: `perplexity-ai/pplx-decider-v1.1-27b`.")
     input_tokens: int = Field(default=0, description="Input tokens, summed over the questions. Image tokens are included.")
 
@@ -193,26 +100,6 @@ def load_model(logger) -> Any:
     return model
 
 
-def build_questions(input_data: AppInput) -> Dict[str, Dict[str, Any]]:
-    questions: Dict[str, Dict[str, Any]] = {}
-    for q in input_data.choices:
-        questions[q.id] = {
-            "type": "choice",
-            "instructions": q.instructions,
-            "criteria": {o.name: o.description for o in q.options},
-        }
-    for q in input_data.scores:
-        questions[q.id] = {"type": "score", "instructions": q.instructions, "criteria": q.levels}
-    for q in input_data.nouls:
-        question: Dict[str, Any] = {"type": "noul", "instructions": q.instructions}
-        if q.criteria is not None:
-            criteria = q.criteria.model_dump(exclude_none=True)
-            if criteria:
-                question["criteria"] = criteria
-        questions[q.id] = question
-    return questions
-
-
 def predict(model: Any, rows: List[Dict[str, Any]]) -> tuple:
     """Probabilities per row and the input tokens used. Halves a batch whose padded size is over BATCH_TOKENS."""
     batch = model.prepare(rows, max_length=MAX_INPUT_TOKENS)
@@ -236,7 +123,7 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
         if not image.exists():
             raise RuntimeError(f"image does not exist at path: {image.path}")
     images = [open_image(image.path) for image in input_data.images]
-    questions = build_questions(input_data)
+    questions = input_data.questions()
     ids = list(questions)
     rows = [{"state": input_data.state, "question": questions[qid], "images": images} for qid in ids]
 
@@ -260,40 +147,11 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
                 answers[qid] = answer(questions[qid], values)
     elapsed_ms = (time.monotonic() - started) * 1000
 
-    choices: Dict[str, ChoiceAnswer] = {}
-    scores: Dict[str, ScoreAnswer] = {}
-    nouls: Dict[str, NoulAnswer] = {}
-    top_level = {q.id: len(q.levels) - 1 for q in input_data.scores}
-    for qid, result in answers.items():
-        kind = result["type"]
-        if kind == "choice":
-            choices[qid] = ChoiceAnswer(choice=result["choice"], confidence=result["confidence"], probabilities=result["probabilities"])
-        elif kind == "score":
-            scores[qid] = ScoreAnswer(
-                score=result["score"],
-                normalized=result["score"] / top_level[qid],
-                confidence=result["confidence"],
-                probabilities=result["probabilities"],
-                legend=result["legend"],
-            )
-        else:
-            nouls[qid] = NoulAnswer(noul=result["noul"])
-
     logger.info(
         f"answered by {MODEL_ID}: {input_tokens} input tokens, {len(rows)} questions, "
         f"{len(images)} images, {elapsed_ms:.1f} ms, peak {vram_gb(peak=True):.1f} GB VRAM"
     )
-    return AppOutput(
-        choices=choices,
-        scores=scores,
-        nouls=nouls,
-        model=MODEL_ID,
-        input_tokens=input_tokens,
-        output_meta=OutputMeta(
-            inputs=[TextMeta(tokens=input_tokens)],
-            outputs=[TextMeta(tokens=0)],
-        ),
-    )
+    return AppOutput.from_answers(answers, input_data, model=MODEL_ID, input_tokens=input_tokens)
 
 
 # ── App ──────────────────────────────────────────────────────────────────────

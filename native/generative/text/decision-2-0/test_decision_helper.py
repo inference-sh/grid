@@ -8,7 +8,7 @@ import logging
 import pytest
 from pydantic import ValidationError
 
-from decision_helper import AppInput, build_questions, decide
+from decision_helper import AppInput, decide
 
 LOGGER = logging.getLogger("test")
 
@@ -63,7 +63,7 @@ def full_answers() -> dict:
 
 
 def test_build_questions_rebuilds_the_keyed_map():
-    questions = build_questions(full_input())
+    questions = full_input().questions()
     assert list(questions) == ["team", "urgency", "refund", "policy"]
     assert questions["team"] == {
         "type": "choice",

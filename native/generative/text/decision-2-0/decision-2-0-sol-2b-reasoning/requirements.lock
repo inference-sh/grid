@@ -21,7 +21,7 @@ httpx==0.28.1
 httpx2==2.13.1
 huggingface-hub==1.33.0
 idna==3.20
-inferencesh==0.17.0
+inferencesh==0.20.0
 jinja2==3.1.6
 markdown-it-py==4.2.0
 markupsafe==3.0.4
@@ -57,7 +57,7 @@ regex==2026.9.29
 requests==2.34.2
 rich==15.0.0
 safetensors==0.9.0rc1
-scikit-build-core==1.0.3
+scikit-build-core==1.1.1
 setuptools==84.0.0
 setuptools-scm==10.3.4
 shellingham==1.5.4
@@ -72,6 +72,6 @@ typer==0.27.2
 typing-extensions==4.16.0
 typing-inspection==0.4.4
 urllib3==2.8.0
-vcs-versioning==2.5.0
+vcs-versioning==2.6.0
 wheel==0.48.0
 wheel-stub==0.5.0

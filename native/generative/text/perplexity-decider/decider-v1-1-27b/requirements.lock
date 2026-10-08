@@ -29,7 +29,7 @@ httpx2==2.13.1
 huggingface-hub==1.33.0
 id==1.6.1
 idna==3.20
-inferencesh==0.19.0
+inferencesh==0.20.0
 jinja2==3.1.6
 kernels==0.16.1
 kernels-data==0.16.2

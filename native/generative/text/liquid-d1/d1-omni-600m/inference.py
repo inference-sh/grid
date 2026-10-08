@@ -3,7 +3,8 @@ d1-omni-600M — Liquid AI's open 587M decision model for text, images and speec
 
 One request evaluates one `state` (text or JSON, plus up to 4 images or one audio clip)
 against any number of typed questions and returns a probability for every option. No text is
-generated. Schemas are shared with the other liquid/d1-* apps: see d1_helper.py.
+generated. Input and output are the SDK's decision contract
+(inferencesh.models.decision).
 
 The model truncates as it was trained: the state is cut on the right to the room left after
 the question (16,384 tokens for text, 15,360 with audio, 896 with images). run() reports that
@@ -20,24 +21,11 @@ import logging
 import time
 from typing import Any, Dict, List, Optional
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
+from inferencesh import BaseApp, File
+from inferencesh.models.decision import DecisionOutput, DecisionVisionInput, Structured
 from pydantic import Field, model_validator
 
-from .d1_helper import (
-    ChoiceAnswer,
-    ChoiceQuestion,
-    NoulAnswer,
-    NoulQuestion,
-    ScoreAnswer,
-    ScoreQuestion,
-    Structured,
-    build_answers,
-    build_questions,
-    check_questions,
-    load_model,
-    open_images,
-    vram_gb,
-)
+from .d1_helper import load_model, open_images, text_questions, vram_gb
 
 MODEL_ID = "LiquidAI/d1-omni-600M"
 # The repository runs its own code (trust_remote_code). Review the diff before moving this.
@@ -50,7 +38,7 @@ SAMPLE_RATE = 16000
 MAX_AUDIO_SECONDS = 30
 
 
-class AppInput(BaseAppInput):
+class AppInput(DecisionVisionInput):
     state: Structured = Field(
         default="",
         description="The text to evaluate: a string, or a JSON object / array of related context. Every question sees the same state. May be empty when `images` or `audio` carries the content. A state over the model's limit is cut at the end and `state_truncated` is set: the state and one question share 16,384 tokens for text, 15,360 with audio, 896 with images.",
@@ -65,24 +53,18 @@ class AppInput(BaseAppInput):
         default=None,
         description="One speech clip the questions are about, up to 30 seconds (WAV, FLAC, OGG or MP3). Trained on English requests to an assistant. Cannot be combined with `images`.",
     )
-    choices: List[ChoiceQuestion] = Field(default_factory=list, description="Choice questions: pick one option from a set.")
-    scores: List[ScoreQuestion] = Field(default_factory=list, description="Score questions: place the state on ordered levels.")
-    nouls: List[NoulQuestion] = Field(default_factory=list, description="Noul questions: probability that the answer is yes.")
+
+    def has_content(self) -> bool:
+        return super().has_content() or self.audio is not None
 
     @model_validator(mode="after")
-    def _check(self):
-        check_questions(self.choices, self.scores, self.nouls)
+    def _one_medium(self):
         if self.images and self.audio is not None:
             raise ValueError("send `images` or `audio`, not both")
-        if self.state == "" and not self.images and self.audio is None:
-            raise ValueError("send a `state`, `images` or `audio`")
         return self
 
 
-class AppOutput(BaseAppOutput):
-    choices: Dict[str, ChoiceAnswer] = Field(default_factory=dict, description="Choice answers by question id.")
-    scores: Dict[str, ScoreAnswer] = Field(default_factory=dict, description="Score answers by question id.")
-    nouls: Dict[str, NoulAnswer] = Field(default_factory=dict, description="Noul answers by question id.")
+class AppOutput(DecisionOutput):
     model: str = Field(description="The model that answered: `LiquidAI/d1-omni-600M`.")
     input_tokens: int = Field(default=0, description="Positions read, summed over the questions. Image and audio positions are included.")
     state_truncated: bool = Field(default=False, description="True when the state did not fit and its end was cut for at least one question.")
@@ -124,7 +106,7 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
 
     images = open_images(input_data.images)
     audio = load_audio(input_data.audio) if input_data.audio is not None else None
-    questions = build_questions(input_data.choices, input_data.scores, input_data.nouls)
+    questions = text_questions(input_data)
 
     config = model.config
     text_length = config.image_text_length if images else config.audio_text_length if audio is not None else config.max_length
@@ -144,12 +126,8 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
         f"answered by {MODEL_ID}: {input_tokens} input tokens, {len(questions)} questions, "
         f"{len(images)} images, {seconds:.1f} s audio, {elapsed_ms:.1f} ms, peak {vram_gb(peak=True):.1f} GB VRAM"
     )
-    return AppOutput(
-        **build_answers(result["answers"], questions),
-        model=MODEL_ID,
-        input_tokens=input_tokens,
-        state_truncated=truncated,
-        output_meta=OutputMeta(inputs=[TextMeta(tokens=input_tokens)], outputs=[TextMeta(tokens=0)]),
+    return AppOutput.from_answers(
+        result["answers"], input_data, model=MODEL_ID, input_tokens=input_tokens, state_truncated=truncated
     )
 
 

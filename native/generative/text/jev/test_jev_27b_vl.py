@@ -11,7 +11,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "jev-27b-vl"))
 import inference as app_module  # noqa: E402
-from inference import App, AppInput, build_output, build_requests, build_state, confidence  # noqa: E402
+from inference import App, AppInput, AppOutput, build_answers, build_requests, confidence, encode_state  # noqa: E402
 
 LEVELS_6 = ["none", "slight", "some", "clear", "strong", "extreme"]
 
@@ -35,23 +35,24 @@ def make_input(**overrides):
 
 
 def test_requests_map_each_type_to_decide():
-    bodies = {qid: (kind, body) for qid, kind, body in build_requests(make_input())}
-    assert bodies["team"] == ("choice", {"kind": "choice", "question": "Which team?", "options": ["billing: Charges and refunds", "orders", "other"]})
-    assert bodies["urgency"][1]["kind"] == "score"
-    assert bodies["urgency"][1]["question"] == "How urgent? Levels: 0 = none; 1 = slight; 2 = some; 3 = clear; 4 = strong; 5 = extreme"
-    assert bodies["tone"][1] == {"kind": "choice", "question": "How angry?", "options": ["0: calm", "1: annoyed", "2: furious"]}
-    assert bodies["refund"][1] == {"kind": "noul", "question": "Is a refund requested?"}
-    assert bodies["legal"][1]["question"] == "Is a lawyer mentioned? (true: explicit mention; false: no mention)"
+    bodies = {qid: (body, expected) for qid, body, expected in build_requests(make_input())}
+    assert bodies["team"] == ({"kind": "choice", "question": "Which team?", "options": ["billing: Charges and refunds", "orders", "other"]}, 3)
+    assert bodies["urgency"][0]["kind"] == "score"
+    assert bodies["urgency"][0]["question"] == "How urgent? Levels: 0 = none; 1 = slight; 2 = some; 3 = clear; 4 = strong; 5 = extreme"
+    assert bodies["urgency"][1] == 6
+    assert bodies["tone"] == ({"kind": "choice", "question": "How angry?", "options": ["0: calm", "1: annoyed", "2: furious"]}, 3)
+    assert bodies["refund"] == ({"kind": "noul", "question": "Is a refund requested?"}, 2)
+    assert bodies["legal"][0]["question"] == "Is a lawyer mentioned? (true: explicit mention; false: no mention)"
 
 
 def test_state_is_text_without_images_and_parts_with_them(tmp_path):
-    assert build_state(make_input()) == json.dumps({"ticket": "charged twice"})
+    assert json.loads(encode_state(make_input())) == json.dumps({"ticket": "charged twice"})
     path = tmp_path / "a.png"
     path.write_bytes(b"\x89PNG")
-    state = build_state(make_input(state="Seller title: earbuds", images=[str(path)]))
+    state = json.loads(encode_state(make_input(state="Seller title: earbuds", images=[str(path)])))
     assert state[0]["image"].startswith("data:image/png;base64,")
     assert state[1] == "\nSeller title: earbuds"
-    assert len(build_state(make_input(state="", images=[str(path)]))) == 1
+    assert len(json.loads(encode_state(make_input(state="", images=[str(path)])))) == 1
 
 
 def test_validation():
@@ -64,14 +65,15 @@ def test_validation():
 
 
 def test_answers_are_typed_and_metered():
-    results = {
-        "team": {"probabilities": [0.7, 0.2, 0.1], "usage": {"prompt_tokens": 50}},
-        "urgency": {"probabilities": [0, 0, 0, 0.5, 0.5, 0], "usage": {"prompt_tokens": 60}},
-        "tone": {"probabilities": [0.0, 0.5, 0.5], "usage": {"prompt_tokens": 40}},
-        "refund": {"probabilities": [0.1, 0.9], "usage": {"prompt_tokens": 30}},
-        "legal": {"probabilities": [0.99, 0.01], "usage": {"prompt_tokens": 30}},
+    probabilities = {
+        "team": [0.7, 0.2, 0.1],
+        "urgency": [0, 0, 0, 0.5, 0.5, 0],
+        "tone": [0.0, 0.5, 0.5],
+        "refund": [0.1, 0.9],
+        "legal": [0.99, 0.01],
     }
-    out = build_output(make_input(), results)
+    data = make_input()
+    out = AppOutput.from_answers(build_answers(data, probabilities), data, model="m", input_tokens=210)
     assert out.choices["team"].choice == "billing"
     assert out.choices["team"].probabilities == {"billing": 0.7, "orders": 0.2, "other": 0.1}
     assert out.scores["urgency"].score == pytest.approx(3.5)

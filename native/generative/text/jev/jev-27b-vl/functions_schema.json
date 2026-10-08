@@ -31,7 +31,7 @@
                 }
               ],
               "default": null,
-              "description": "What this option covers, sent on the option's line after the name. One line saying what separates it from similar options works best. Omit when the name is clear on its own.",
+              "description": "What this option covers. Omit when the name is clear on its own.",
               "title": "Description"
             }
           },
@@ -68,7 +68,7 @@
               "title": "Instructions"
             },
             "options": {
-              "description": "The answer options (2 to 255). The model was trained on up to 16; more are read with untrained labels. Add an `other` option when the list might not cover every input.",
+              "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
               "items": {
                 "$ref": "#/$defs/ChoiceOption"
               },
@@ -157,7 +157,7 @@
                   "type": "array"
                 }
               ],
-              "description": "The yes/no question, phrased so that yes is the outcome you want the probability of, e.g. `Does the image show food or cooking?`",
+              "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
               "title": "Instructions"
             },
             "criteria": {
@@ -207,7 +207,7 @@
               "title": "Instructions"
             },
             "levels": {
-              "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0. Six levels use the model's native 0-5 score; any other number is read as a choice over the levels.",
+              "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
               "items": {
                 "anyOf": [
                   {
@@ -346,7 +346,7 @@
               "type": "string"
             },
             "confidence": {
-              "description": "0 to 1, from how peaked `probabilities` is: 1 minus its entropy over the maximum entropy. Gate actions on it; thresholds scale with risk.",
+              "description": "0 to 1: how sure the model is of `choice`. Gate actions on it; thresholds scale with risk.",
               "title": "Confidence",
               "type": "number"
             },
@@ -354,7 +354,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Every option mapped to its probability. Sums to 1.",
+              "description": "Every option mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             }
@@ -537,7 +537,7 @@
               "type": "number"
             },
             "confidence": {
-              "description": "0 to 1, from how peaked `probabilities` is.",
+              "description": "0 to 1: how sure the model is of the most likely level.",
               "title": "Confidence",
               "type": "number"
             },
@@ -545,7 +545,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Each level number (as a string) mapped to its probability. Sums to 1.",
+              "description": "Each level number (as a string) mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             },
@@ -669,6 +669,29 @@
         }
       },
       "properties": {
+        "model": {
+          "description": "The model that answered: `autotrust/JEV-27B-VL`.",
+          "title": "Model",
+          "type": "string"
+        },
+        "input_tokens": {
+          "default": 0,
+          "description": "Prompt tokens, summed over the questions. Image tokens are included.",
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
         "choices": {
           "additionalProperties": {
             "$ref": "#/$defs/ChoiceAnswer"
@@ -692,29 +715,6 @@
           "description": "Noul answers by question id.",
           "title": "Nouls",
           "type": "object"
-        },
-        "model": {
-          "description": "The model that answered: `autotrust/JEV-27B-VL`.",
-          "title": "Model",
-          "type": "string"
-        },
-        "input_tokens": {
-          "default": 0,
-          "description": "Prompt tokens, summed over the questions. Image tokens are included.",
-          "title": "Input Tokens",
-          "type": "integer"
-        },
-        "output_meta": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/OutputMeta"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Structured metadata about inputs/outputs for pricing calculation"
         }
       },
       "required": [

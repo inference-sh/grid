@@ -14,11 +14,19 @@
               "type": "string"
             },
             {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "When this option applies. Omit when the name is clear on its own.",
+          "description": "What this option covers. Omit when the name is clear on its own.",
           "title": "Description"
         }
       },
@@ -38,16 +46,28 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "What the model should decide, written as a complete question.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "options": {
-          "description": "The answer options (at least 2). Give the full list, and add an `other` option when the list might not cover every input.",
+          "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
           "items": {
             "$ref": "#/$defs/ChoiceOption"
           },
+          "maxItems": 255,
           "minItems": 2,
           "title": "Options",
           "type": "array"
@@ -69,6 +89,14 @@
               "type": "string"
             },
             {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
@@ -80,6 +108,14 @@
           "anyOf": [
             {
               "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
             },
             {
               "type": "null"
@@ -94,7 +130,7 @@
       "type": "object"
     },
     "NoulQuestion": {
-      "description": "Is this true? For a clean yes/no where the probability itself is the signal. OpenAI calls this a predicate.",
+      "description": "Is this true? For a clean yes/no where the probability itself is the signal.",
       "properties": {
         "id": {
           "description": "Your key for this question; the answer comes back under it. Not sent to the model.",
@@ -103,10 +139,21 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "criteria": {
           "anyOf": [
@@ -118,7 +165,7 @@
             }
           ],
           "default": null,
-          "description": "Optional. Pins down a subtle yes/no boundary; appended to the instructions."
+          "description": "Optional. Pins down a subtle yes/no boundary."
         }
       },
       "required": [
@@ -138,16 +185,40 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "What the model should rate, written as a complete question.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "levels": {
-          "description": "Ordered level descriptions, low end to high end. A level's number is its index, starting at 0.",
+          "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
           "items": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              }
+            ]
           },
+          "maxItems": 10,
           "minItems": 2,
           "title": "Levels",
           "type": "array"
@@ -194,6 +265,12 @@
       "title": "Images",
       "type": "array"
     },
+    "model": {
+      "default": "gpt-6-luna",
+      "description": "The OpenAI model that evaluates the questions. The Decisions API supports `gpt-6-luna` only for now.",
+      "title": "Model",
+      "type": "string"
+    },
     "choices": {
       "description": "Choice questions: pick one option from a set.",
       "items": {
@@ -217,12 +294,6 @@
       },
       "title": "Nouls",
       "type": "array"
-    },
-    "model": {
-      "default": "gpt-6-luna",
-      "description": "The OpenAI model that evaluates the questions. The Decisions API supports `gpt-6-luna` only for now.",
-      "title": "Model",
-      "type": "string"
     }
   },
   "title": "AppInput",

@@ -19,6 +19,14 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -43,10 +51,21 @@
               "type": "string"
             },
             "instructions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
+                }
+              ],
               "description": "What the model should decide, written as a complete question.",
-              "minLength": 1,
-              "title": "Instructions",
-              "type": "string"
+              "title": "Instructions"
             },
             "options": {
               "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
@@ -75,6 +94,14 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -86,6 +113,14 @@
               "anyOf": [
                 {
                   "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
                 },
                 {
                   "type": "null"
@@ -109,10 +144,21 @@
               "type": "string"
             },
             "instructions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
+                }
+              ],
               "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
-              "minLength": 1,
-              "title": "Instructions",
-              "type": "string"
+              "title": "Instructions"
             },
             "criteria": {
               "anyOf": [
@@ -144,15 +190,38 @@
               "type": "string"
             },
             "instructions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {},
+                  "type": "array"
+                }
+              ],
               "description": "What the model should rate, written as a complete question.",
-              "minLength": 1,
-              "title": "Instructions",
-              "type": "string"
+              "title": "Instructions"
             },
             "levels": {
               "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
               "items": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "items": {},
+                    "type": "array"
+                  }
+                ]
               },
               "maxItems": 10,
               "minItems": 2,
@@ -291,7 +360,7 @@
               "type": "string"
             },
             "confidence": {
-              "description": "The probability of `choice`, 0 to 1. Gate actions on it; thresholds scale with risk.",
+              "description": "0 to 1: how sure the model is of `choice`. Gate actions on it; thresholds scale with risk.",
               "title": "Confidence",
               "type": "number"
             },
@@ -299,7 +368,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Every option mapped to its probability. Sums to 1.",
+              "description": "Every option mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             }
@@ -482,7 +551,7 @@
               "type": "number"
             },
             "confidence": {
-              "description": "The probability of the most likely level, 0 to 1.",
+              "description": "0 to 1: how sure the model is of the most likely level.",
               "title": "Confidence",
               "type": "number"
             },
@@ -490,7 +559,7 @@
               "additionalProperties": {
                 "type": "number"
               },
-              "description": "Each level number (as a string) mapped to its probability. Sums to 1.",
+              "description": "Each level number (as a string) mapped to its probability.",
               "title": "Probabilities",
               "type": "object"
             },
@@ -614,30 +683,6 @@
         }
       },
       "properties": {
-        "choices": {
-          "additionalProperties": {
-            "$ref": "#/$defs/ChoiceAnswer"
-          },
-          "description": "Choice answers by question id.",
-          "title": "Choices",
-          "type": "object"
-        },
-        "scores": {
-          "additionalProperties": {
-            "$ref": "#/$defs/ScoreAnswer"
-          },
-          "description": "Score answers by question id.",
-          "title": "Scores",
-          "type": "object"
-        },
-        "nouls": {
-          "additionalProperties": {
-            "$ref": "#/$defs/NoulAnswer"
-          },
-          "description": "Noul answers by question id.",
-          "title": "Nouls",
-          "type": "object"
-        },
         "model": {
           "description": "The model that answered: `LiquidAI/d1-omni-600M`.",
           "title": "Model",
@@ -666,6 +711,30 @@
           ],
           "default": null,
           "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
+        "choices": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ChoiceAnswer"
+          },
+          "description": "Choice answers by question id.",
+          "title": "Choices",
+          "type": "object"
+        },
+        "scores": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ScoreAnswer"
+          },
+          "description": "Score answers by question id.",
+          "title": "Scores",
+          "type": "object"
+        },
+        "nouls": {
+          "additionalProperties": {
+            "$ref": "#/$defs/NoulAnswer"
+          },
+          "description": "Noul answers by question id.",
+          "title": "Nouls",
+          "type": "object"
         }
       },
       "required": [

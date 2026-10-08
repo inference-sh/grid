@@ -14,6 +14,14 @@
               "type": "string"
             },
             {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
@@ -38,10 +46,21 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "What the model should decide, written as a complete question.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "options": {
           "description": "The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
@@ -70,6 +89,14 @@
               "type": "string"
             },
             {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
@@ -81,6 +108,14 @@
           "anyOf": [
             {
               "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
             },
             {
               "type": "null"
@@ -104,10 +139,21 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "criteria": {
           "anyOf": [
@@ -139,15 +185,38 @@
           "type": "string"
         },
         "instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
           "description": "What the model should rate, written as a complete question.",
-          "minLength": 1,
-          "title": "Instructions",
-          "type": "string"
+          "title": "Instructions"
         },
         "levels": {
           "description": "Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
           "items": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              }
+            ]
           },
           "maxItems": 10,
           "minItems": 2,

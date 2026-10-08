@@ -3,8 +3,8 @@ d1-3B — Liquid AI's open 3B decision model for text and images, run on our own
 
 One request evaluates one `state` (text or JSON, plus up to 8 images) against any number of
 typed questions and returns a probability for every option. The state and images are read
-once and shared by all questions; no text is generated. Schemas are shared with the other
-liquid/d1-* apps: see d1_helper.py.
+once and shared by all questions; no text is generated. Input and output are the SDK's
+decision contract (inferencesh.models.decision).
 
 Metering: inputs=[TextMeta(tokens=<input tokens, image tokens included>)], outputs=[TextMeta(tokens=0)].
 
@@ -17,24 +17,11 @@ import logging
 import time
 from typing import Any, Dict, List
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, TextMeta
-from pydantic import Field, model_validator
+from inferencesh import BaseApp, File
+from inferencesh.models.decision import DecisionOutput, DecisionVisionInput, Structured
+from pydantic import Field
 
-from .d1_helper import (
-    ChoiceAnswer,
-    ChoiceQuestion,
-    NoulAnswer,
-    NoulQuestion,
-    ScoreAnswer,
-    ScoreQuestion,
-    Structured,
-    build_answers,
-    build_questions,
-    check_questions,
-    load_model,
-    open_images,
-    vram_gb,
-)
+from .d1_helper import load_model, open_images, text_questions, vram_gb
 
 MODEL_ID = "LiquidAI/d1-3B"
 # The repository runs its own code (trust_remote_code). Review the diff before moving this.
@@ -48,7 +35,7 @@ MAX_IMAGES = 8
 IMAGE_TOKENS = 3000
 
 
-class AppInput(BaseAppInput):
+class AppInput(DecisionVisionInput):
     state: Structured = Field(
         default="",
         description="The text to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Every question sees the same state and images. May be empty when `images` carries the content. Input over the model's 32,768-token limit is rejected, never truncated.",
@@ -59,22 +46,9 @@ class AppInput(BaseAppInput):
         max_length=MAX_IMAGES,
         description="Up to 8 images the questions are about. Every question sees them, placed before the state. Images over 1 megapixel are downscaled.",
     )
-    choices: List[ChoiceQuestion] = Field(default_factory=list, description="Choice questions: pick one option from a set.")
-    scores: List[ScoreQuestion] = Field(default_factory=list, description="Score questions: place the state on ordered levels.")
-    nouls: List[NoulQuestion] = Field(default_factory=list, description="Noul questions: probability that the answer is yes.")
-
-    @model_validator(mode="after")
-    def _check(self):
-        check_questions(self.choices, self.scores, self.nouls)
-        if self.state == "" and not self.images:
-            raise ValueError("send a `state`, `images`, or both")
-        return self
 
 
-class AppOutput(BaseAppOutput):
-    choices: Dict[str, ChoiceAnswer] = Field(default_factory=dict, description="Choice answers by question id.")
-    scores: Dict[str, ScoreAnswer] = Field(default_factory=dict, description="Score answers by question id.")
-    nouls: Dict[str, NoulAnswer] = Field(default_factory=dict, description="Noul answers by question id.")
+class AppOutput(DecisionOutput):
     model: str = Field(description="The model that answered: `LiquidAI/d1-3B`.")
     input_tokens: int = Field(default=0, description="Input tokens read: the state and images once, plus each question. Image tokens are included.")
 
@@ -98,7 +72,7 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
     import torch
 
     images = open_images(input_data.images)
-    questions = build_questions(input_data.choices, input_data.scores, input_data.nouls)
+    questions = text_questions(input_data)
     state = None if input_data.state == "" else input_data.state
     check_length(model, state, questions, len(images))
 
@@ -113,12 +87,7 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
         f"answered by {MODEL_ID}: {input_tokens} input tokens, {len(questions)} questions, "
         f"{len(images)} images, {elapsed_ms:.1f} ms, peak {vram_gb(peak=True):.1f} GB VRAM"
     )
-    return AppOutput(
-        **build_answers(result["answers"], questions),
-        model=MODEL_ID,
-        input_tokens=input_tokens,
-        output_meta=OutputMeta(inputs=[TextMeta(tokens=input_tokens)], outputs=[TextMeta(tokens=0)]),
-    )
+    return AppOutput.from_answers(result["answers"], input_data, model=MODEL_ID, input_tokens=input_tokens)
 
 
 class App(BaseApp):

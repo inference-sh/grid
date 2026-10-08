@@ -27,13 +27,10 @@ Models: https://huggingface.co/collections/vllm-sr/decision-20-6ab7cf7bdfb506bf8
 """
 
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
-from inferencesh import BaseAppInput, BaseAppOutput, OutputMeta, TextMeta
-from pydantic import BaseModel, Field, model_validator
-
-# Plain text, or JSON structure the model reads by key.
-Structured = Union[str, Dict[str, Any], List[Any]]
+from inferencesh.models.decision import DecisionInput, DecisionOutput, Structured
+from pydantic import Field
 
 MAX_IDS_IN_ERROR = 8
 
@@ -45,105 +42,16 @@ ERROR_HELP = {
 }
 
 
-# ── Questions ────────────────────────────────────────────────────────────────
+# ── Input and output ─────────────────────────────────────────────────────────
 
-class ChoiceOption(BaseModel):
-    name: str = Field(min_length=1, description="Option name. Returned as `choice` and used as the key in `probabilities`. Sent to the model.")
-    description: Optional[Structured] = Field(
-        default=None,
-        description="What this option covers. Omit when the name is clear on its own. An object can carry a rubric, e.g. {what, not_for, examples}.",
-    )
-
-
-class ChoiceQuestion(BaseModel):
-    """Which of these options? For a fixed set of unordered options."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(
-        description="What the model should decide, written as a complete question. An object can hold the question in one field and data it refers to in others.",
-    )
-    options: List[ChoiceOption] = Field(
-        min_length=2,
-        max_length=255,
-        description="The answer options (2 to 255). Give the full list, and add an `other` option when the list might not cover every input.",
-    )
-
-
-class ScoreQuestion(BaseModel):
-    """Which level? For a position on a spectrum you can describe."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(description="What the model should rate, written as a complete question.")
-    levels: List[Structured] = Field(
-        min_length=2,
-        max_length=10,
-        description="Ordered level descriptions, low end to high end (2 to 10). A level's number is its index, starting at 0.",
-    )
-
-
-class NoulCriteria(BaseModel):
-    true: Optional[Structured] = Field(default=None, description="What a yes (value near 1) means. Defaults to `Yes`.")
-    false: Optional[Structured] = Field(default=None, description="What a no (value near 0) means. Defaults to `No`.")
-
-
-class NoulQuestion(BaseModel):
-    """Is this true? For a clean yes/no where the probability itself is the signal."""
-    id: str = Field(min_length=1, description="Your key for this question; the answer comes back under it. Not sent to the model.")
-    instructions: Structured = Field(
-        description="The yes/no question, or a statement to judge. Make the boundary between yes and no unambiguous.",
-    )
-    criteria: Optional[NoulCriteria] = Field(default=None, description="Optional. Pins down a subtle yes/no boundary.")
-
-
-class AppInput(BaseAppInput):
+class AppInput(DecisionInput):
     state: Structured = Field(
         description="The content to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Text only. Every question sees the same state. Input over the model's token limit is rejected, never truncated.",
         examples=["The order arrived damaged yesterday. The customer has a receipt and asks for a replacement today."],
     )
-    choices: List[ChoiceQuestion] = Field(default_factory=list, description="Choice questions: pick one option from a set.")
-    scores: List[ScoreQuestion] = Field(default_factory=list, description="Score questions: place the state on ordered levels.")
-    nouls: List[NoulQuestion] = Field(default_factory=list, description="Noul questions: probability that the answer is yes.")
-
-    @model_validator(mode="after")
-    def _check_questions(self):
-        ids = [q.id for q in (*self.choices, *self.scores, *self.nouls)]
-        if not ids:
-            raise ValueError("ask at least one question in `choices`, `scores` or `nouls`")
-        dupes = sorted({i for i in ids if ids.count(i) > 1})
-        if dupes:
-            raise ValueError(f"question ids must be unique across choices, scores and nouls; repeated: {dupes}")
-        for q in (*self.choices, *self.scores, *self.nouls):
-            if q.instructions == "":
-                raise ValueError(f"question '{q.id}' has empty instructions")
-        for q in self.choices:
-            names = [o.name for o in q.options]
-            if len(set(names)) != len(names):
-                raise ValueError(f"choice '{q.id}' has repeated option names")
-        return self
 
 
-# ── Answers ──────────────────────────────────────────────────────────────────
-
-class ChoiceAnswer(BaseModel):
-    choice: str = Field(description="The highest-probability option.")
-    confidence: float = Field(description="0 to 1, from how peaked `probabilities` is. Gate actions on it; thresholds scale with risk.")
-    probabilities: Dict[str, float] = Field(description="Every option mapped to its probability. Sums to 1.")
-
-
-class ScoreAnswer(BaseModel):
-    score: float = Field(description="Probability-weighted position on the levels, 0 to the top level number. Can land between levels.")
-    normalized: float = Field(description="`score` divided by the top level number: 0 to 1, comparable across scales of different length.")
-    confidence: float = Field(description="0 to 1, from how peaked `probabilities` is.")
-    probabilities: Dict[str, float] = Field(description="Each level number (as a string) mapped to its probability. Sums to 1.")
-    legend: Dict[str, Any] = Field(description="Each level number mapped back to its description.")
-
-
-class NoulAnswer(BaseModel):
-    noul: float = Field(description="Probability the answer is yes. Near 1 strong yes, near 0 strong no, near 0.5 uncertain. Threshold it in code.")
-
-
-class AppOutput(BaseAppOutput):
-    choices: Dict[str, ChoiceAnswer] = Field(default_factory=dict, description="Choice answers by question id.")
-    scores: Dict[str, ScoreAnswer] = Field(default_factory=dict, description="Score answers by question id.")
-    nouls: Dict[str, NoulAnswer] = Field(default_factory=dict, description="Noul answers by question id.")
+class AppOutput(DecisionOutput):
     model: str = Field(description="The model that answered, e.g. `Decision-2.0-Sol-2B`.")
     input_tokens: int = Field(default=0, description="Input tokens, summed over the questions.")
 
@@ -191,31 +99,11 @@ def load_model(model_id: str, revision: str, batch_tokens: int, logger) -> Any:
     return model
 
 
-def build_questions(input_data: AppInput) -> Dict[str, Dict[str, Any]]:
-    questions: Dict[str, Dict[str, Any]] = {}
-    for q in input_data.choices:
-        questions[q.id] = {
-            "type": "choice",
-            "instructions": q.instructions,
-            "criteria": {o.name: o.description for o in q.options},
-        }
-    for q in input_data.scores:
-        questions[q.id] = {"type": "score", "instructions": q.instructions, "criteria": q.levels}
-    for q in input_data.nouls:
-        question: Dict[str, Any] = {"type": "noul", "instructions": q.instructions}
-        if q.criteria is not None:
-            criteria = q.criteria.model_dump(exclude_none=True)
-            if criteria:
-                question["criteria"] = criteria
-        questions[q.id] = question
-    return questions
-
-
 def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
     """Evaluate the state against every question. Blocking: call it in a thread."""
     import torch
 
-    questions = build_questions(input_data)
+    questions = input_data.questions()
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
     started = time.monotonic()
@@ -223,9 +111,6 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
     elapsed_ms = (time.monotonic() - started) * 1000
 
     answers = data.get("answers") or {}
-    missing = sorted(set(questions) - set(answers))
-    if missing:
-        raise RuntimeError(f"the model returned no answer for: {missing}")
     failed: Dict[str, List[str]] = {}
     for qid, answer in answers.items():
         if answer.get("error"):
@@ -243,32 +128,6 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
             suffix = f" This model's input limit is {getattr(model, 'max_input_tokens', None)} tokens per question."
         raise RuntimeError(f"{count} of {len(questions)} questions could not be answered. " + "; ".join(parts) + "." + suffix)
 
-    top_level = {q.id: len(q.levels) - 1 for q in input_data.scores}
-    choices: Dict[str, ChoiceAnswer] = {}
-    scores: Dict[str, ScoreAnswer] = {}
-    nouls: Dict[str, NoulAnswer] = {}
-    for qid, answer in answers.items():
-        kind = answer.get("type")
-        if kind == "choice":
-            choices[qid] = ChoiceAnswer(
-                choice=answer.get("choice") or "",
-                confidence=answer.get("confidence", 0.0),
-                probabilities=answer.get("probabilities") or {},
-            )
-        elif kind == "score":
-            score = answer.get("score", 0.0)
-            scores[qid] = ScoreAnswer(
-                score=score,
-                normalized=score / top_level[qid] if top_level.get(qid) else 0.0,
-                confidence=answer.get("confidence", 0.0),
-                probabilities=answer.get("probabilities") or {},
-                legend=answer.get("legend") or {},
-            )
-        elif kind == "noul":
-            nouls[qid] = NoulAnswer(noul=answer.get("noul", 0.0))
-        else:
-            raise RuntimeError(f"answer '{qid}' has unknown type {kind!r}; keys: {list(answer.keys())}")
-
     usage = data.get("usage") or {}
     input_tokens = int(usage.get("input_tokens") or 0)
     model_name = data.get("model") or getattr(model, "model_name", "")
@@ -277,14 +136,4 @@ def decide(model: Any, input_data: AppInput, logger) -> AppOutput:
         f"{len(questions)} questions, {elapsed_ms:.1f} ms, peak {vram_gb(peak=True):.1f} GB VRAM"
     )
 
-    return AppOutput(
-        choices=choices,
-        scores=scores,
-        nouls=nouls,
-        model=model_name,
-        input_tokens=input_tokens,
-        output_meta=OutputMeta(
-            inputs=[TextMeta(tokens=input_tokens)],
-            outputs=[TextMeta(tokens=0)],
-        ),
-    )
+    return AppOutput.from_answers(answers, input_data, model=model_name, input_tokens=input_tokens)
