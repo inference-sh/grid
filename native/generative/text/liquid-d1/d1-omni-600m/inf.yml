@@ -4,13 +4,12 @@ title: d1-omni-600M
 description: Liquid AI's 587M decision model for text, images and speech. Send a state with images or an audio clip and typed questions (choice, score, yes/no); get a probability for every answer. Research release
 metadata:
     tags:
-        - decision-model
         - classification
-        - vision
-        - multimodal
         - routing
-        - guardrails
-category: text
+        - moderation
+        - vision
+        - open-weights
+category: decision
 images:
     card: ""
     thumbnail: ""

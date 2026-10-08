@@ -5,13 +5,11 @@ description: OpenAI's Decisions API on GPT-6 Luna. Send text and images with typ
 metadata:
     provider: openai
     tags:
-        - openai
-        - decision-model
         - classification
-        - vision
         - routing
-        - guardrails
-category: text
+        - moderation
+        - vision
+category: decision
 images:
     card: ""
     thumbnail: ""

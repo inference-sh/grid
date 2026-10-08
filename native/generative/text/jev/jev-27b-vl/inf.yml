@@ -4,13 +4,12 @@ title: JEV-27B-VL
 description: AutoTrust's open decision model with vision. Send text and up to 8 images with typed questions (choice, score, yes/no); get a calibrated probability for every answer, with no text generation.
 metadata:
     tags:
-        - decision-model
         - classification
-        - vision
-        - multimodal
         - routing
-        - guardrails
-category: text
+        - moderation
+        - vision
+        - open-weights
+category: decision
 images:
     card: ""
     thumbnail: ""
