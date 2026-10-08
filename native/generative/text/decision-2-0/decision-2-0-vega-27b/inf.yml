@@ -4,13 +4,11 @@ title: Decision 2.0 Vega 27B
 description: The largest Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one pass. 29.37B parameters, 32k-token input.
 metadata:
     tags:
-        - decision-model
         - classification
         - routing
-        - scoring
-        - guardrails
-        - vllm-semantic-router
-category: text
+        - moderation
+        - open-weights
+category: decision
 images:
     card: ""
     thumbnail: ""

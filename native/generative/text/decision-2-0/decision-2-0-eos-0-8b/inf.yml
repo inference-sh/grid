@@ -4,13 +4,11 @@ title: Decision 2.0 Eos 0.8B
 description: A small, fast Decision 2.0 model from vLLM Semantic Router. Send a state and typed questions (choice, score, yes/no); get a probability for every answer in one forward pass, with no text generation. 0.75B parameters, 16,384-token input, about 6.0 ms per question.
 metadata:
     tags:
-        - decision-model
         - classification
         - routing
-        - scoring
-        - guardrails
-        - vllm-semantic-router
-category: text
+        - moderation
+        - open-weights
+category: decision
 images:
     card: ""
     thumbnail: ""

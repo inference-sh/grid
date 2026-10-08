@@ -4,13 +4,12 @@ title: Perplexity Decider v1.1 27B
 description: Perplexity's open decision model for text and images. Send a state, up to 4 images and typed questions (choice, score, yes/no); get a calibrated probability for every answer, with no text generation.
 metadata:
     tags:
-        - decision-model
         - classification
-        - vision
-        - multimodal
         - routing
-        - guardrails
-category: text
+        - moderation
+        - vision
+        - open-weights
+category: decision
 images:
     card: ""
     thumbnail: ""
