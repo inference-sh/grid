@@ -3,6 +3,8 @@ name: slides
 description: Read, create, and edit Google Slides presentations
 metadata:
     checksum: 3f6c1338c8fd3fd33419e682a3d6ce34bca2fb7389fd90be315d238791cd91ed
+    tags:
+        - productivity
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/hzjlbxlc.png

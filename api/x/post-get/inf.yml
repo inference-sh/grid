@@ -3,6 +3,8 @@ name: post-get
 description: Get a post by ID from X.com. Returns text, author ID, creation date, and engagement metrics (likes, retweets, replies, quotes).
 metadata:
     checksum: a59eef5a3620c0170027cfff37ffcfb5c2a783bca2b23f4c558a04ca677fc134
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/sayxrxk9.png

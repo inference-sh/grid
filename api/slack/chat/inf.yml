@@ -1,7 +1,9 @@
 namespace: slack
 name: chat
 description: Post, edit and delete Slack messages, and list channels — outbound messaging for agents and monitors
-metadata: {}
+metadata:
+    tags:
+        - messaging
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/6c51lzmi.png

@@ -1,7 +1,10 @@
 namespace: exa
 name: answer
 description: Generate LLM-powered answers informed by Exa search results
-metadata: {}
+metadata:
+    tags:
+        - deep-research
+        - web-search
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/d5qv5wh3.png

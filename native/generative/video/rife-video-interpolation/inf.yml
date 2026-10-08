@@ -3,6 +3,9 @@ name: rife-video-interpolation
 description: Increases video smoothness by using AI to generate and insert extra frames, effectively raising the video's frame rate.
 metadata:
     checksum: c7af64c2b8f81ee0a1a78dc9cee0d17b244f31127909ae3f3989efa76f72ffc6
+    tags:
+        - frame-interpolation
+        - open-weights
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/h46letf9.png

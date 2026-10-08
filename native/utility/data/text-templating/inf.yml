@@ -1,7 +1,9 @@
 namespace: infsh
 name: text-templating
 description: Dynamically generate content by combining a fixed template with specific data inputs.
-metadata: {}
+metadata:
+    tags:
+        - workflow-utilities
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/eamftffo.png

@@ -3,6 +3,8 @@ name: video-utilities
 description: video utilities — motion deblur, colorization, and sdr to hdr conversion
 metadata:
     checksum: 9f77cdfce0c9de877d76175a87616ac63596d92f6b78ff0ef8f2a1f0d61f52db
+    tags:
+        - video-enhancement
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/orbubzxa.png

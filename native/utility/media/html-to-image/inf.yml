@@ -1,7 +1,9 @@
 namespace: infsh
 name: html-to-image
 description: Turns web content into customizable PNG or JPEG images.
-metadata: {}
+metadata:
+    tags:
+        - rendering
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0calzhcn.png

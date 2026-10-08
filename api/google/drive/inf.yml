@@ -3,6 +3,8 @@ name: drive
 description: List, upload, download, and manage Google Drive files
 metadata:
     checksum: 55479b5e26de68f488d230b2acee36e8f6d2b9d814e130188ac87ba40a0c7f75
+    tags:
+        - productivity
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0dnrh72d.png

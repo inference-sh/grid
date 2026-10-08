@@ -1,7 +1,9 @@
 namespace: infsh
 name: hyperframes-render
 description: Render HeyGen Hyperframes compositions to video — supports clips, GSAP timelines, track layering
-metadata: {}
+metadata:
+    tags:
+        - rendering
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tur3pa41.png

@@ -1,7 +1,10 @@
 namespace: eval
 name: charts
 description: Research-quality chart generation (bar, grouped bar, scatter) using matplotlib
-metadata: {}
+metadata:
+    tags:
+        - rendering
+        - evaluation
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/vaqbxe6v.png

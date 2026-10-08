@@ -1,7 +1,9 @@
 namespace: infsh
 name: extract-last-frame
 description: Save a specific frame from the end of a video as a static image file.
-metadata: {}
+metadata:
+    tags:
+        - media-utilities
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/wp8yucob.png

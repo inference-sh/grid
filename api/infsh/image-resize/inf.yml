@@ -1,7 +1,9 @@
 namespace: infsh
 name: image-resize
 description: Resize images by width, height, scale factor, or megapixel target
-metadata: {}
+metadata:
+    tags:
+        - media-utilities
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/32xaumum.png

@@ -1,7 +1,10 @@
 namespace: x
 name: post-render
 description: Render X/Twitter post cards as PNG images — dark/light theme, profile picture, engagement metrics
-metadata: {}
+metadata:
+    tags:
+        - social-media
+        - rendering
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0wd2608h.png

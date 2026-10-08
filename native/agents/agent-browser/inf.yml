@@ -1,7 +1,9 @@
 namespace: infsh
 name: agent-browser
 description: Browser automation for AI agents. Navigate, interact with @e refs, take screenshots, record video with cursor indicator, execute JavaScript. Supports proxy configuration.
-metadata: {}
+metadata:
+    tags:
+        - browser-automation
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bxa5xkzf.png

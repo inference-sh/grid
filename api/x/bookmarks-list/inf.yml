@@ -1,7 +1,9 @@
 namespace: x
 name: bookmarks-list
 description: List your bookmarked posts. Returns saved posts with text, author, and engagement metrics.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5wyjzv3y.png

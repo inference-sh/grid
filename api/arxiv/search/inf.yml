@@ -3,6 +3,8 @@ name: search
 description: search arxiv papers by query with field prefixes, boolean operators, category filtering, and sorting
 metadata:
     checksum: a806c27b8661de87a6e2ff655cf47a0c6e4512b71230e6e313d1e8026fbb374e
+    tags:
+        - research-papers
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/yrqy7xyl.png

@@ -3,6 +3,8 @@ name: research
 description: deep research api — multi-step web research with source-backed citations and configurable effort levels
 metadata:
     checksum: ef3c4a59aa37a0307dea27d5d219864b93763c7099834c1dc26c75e2c60d6633
+    tags:
+        - deep-research
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/213f4qbm.png

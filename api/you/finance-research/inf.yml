@@ -3,6 +3,8 @@ name: finance-research
 description: finance research api — agentic financial research with filings, macro data, and institutional-grade sources
 metadata:
     checksum: 7f028bd54adee988fb6b29f2c8308cc4481db64f12d7d6ee46aefc7eff645d31
+    tags:
+        - deep-research
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/xdto6oxs.png

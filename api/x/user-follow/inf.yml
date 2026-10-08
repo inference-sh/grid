@@ -1,7 +1,9 @@
 namespace: x
 name: user-follow
 description: Follow a user on X.com by user ID. Succeeds silently if already following.
-metadata: {}
+metadata:
+    tags:
+        - social-media
 category: social
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/zjr2px0w.png

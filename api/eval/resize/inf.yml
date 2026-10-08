@@ -1,7 +1,10 @@
 namespace: eval
 name: resize
 description: Crop and resize images — center crop to square, face-aware crop, or custom resize
-metadata: {}
+metadata:
+    tags:
+        - media-utilities
+        - evaluation
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/o3nemt5o.png

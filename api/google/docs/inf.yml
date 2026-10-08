@@ -3,6 +3,8 @@ name: docs
 description: Read, create, and edit Google Docs documents
 metadata:
     checksum: 511bcc8efaebb7b201c1ea6ceb295bcdfdec71eeeae75bd7ad4f929541da0286
+    tags:
+        - productivity
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/v11etvwq.png

@@ -1,7 +1,9 @@
 namespace: infsh
 name: shell
 description: Execute shell commands in a sandboxed environment. Run grep, sed, ls, find, and other CLI tools with configurable working directory and timeout.
-metadata: {}
+metadata:
+    tags:
+        - code-execution
 category: utilities
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1r30znr9.png

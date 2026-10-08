@@ -1,7 +1,9 @@
 namespace: infsh
 name: html-to-video
 description: Render HTML/CSS/JS animations to video — supports GSAP timelines, CSS animations, Web Animations API
-metadata: {}
+metadata:
+    tags:
+        - rendering
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/u3yjy25v.png

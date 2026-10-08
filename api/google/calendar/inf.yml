@@ -3,6 +3,8 @@ name: calendar
 description: Create, read, update, and delete Google Calendar events
 metadata:
     checksum: c02f9fbf0d13161c5225d7ee76142ab02b3d2d99acf7a07027d98d33a7628d31
+    tags:
+        - productivity
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/l4bti63v.png
