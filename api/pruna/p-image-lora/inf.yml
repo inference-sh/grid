@@ -3,6 +3,10 @@ name: p-image-lora
 description: Pruna's flagship fast text-to-image with custom LoRA style support
 metadata:
     checksum: 48ae61d4beb4b6579cfd2dbc0dc7df0b67512dd977a32a6f9e6aff6d514b461e
+    tags:
+        - text-to-image
+        - image-to-image
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/73m2en6e.png

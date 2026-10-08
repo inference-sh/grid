@@ -5,12 +5,8 @@ metadata:
     checksum: a16a7ff1bae59b99e1109aaed571460c0e8e7e2d5a884f1c2cc7dfc7cc514616
     provider: bytedance
     tags:
-        - omnihuman
-        - avatar
-        - audio-to-video
         - lip-sync
-        - bytedance
-        - byteplus
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/i7q1yjq3.png

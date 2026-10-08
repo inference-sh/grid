@@ -4,12 +4,7 @@ description: Generate cinematic quality images from text prompts with accurate t
 metadata:
     provider: bytedance
     tags:
-        - seedream
-        - image-generation
         - text-to-image
-        - bytedance
-        - byteplus
-        - 2k
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2l4pfw9g.png

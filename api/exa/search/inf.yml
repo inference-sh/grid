@@ -1,7 +1,9 @@
 namespace: exa
 name: search
 description: Intelligent web search using Exa's neural and keyword search capabilities
-metadata: {}
+metadata:
+    tags:
+        - web-search
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/525zjt06.png

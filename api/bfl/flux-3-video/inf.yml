@@ -5,14 +5,10 @@ metadata:
     checksum: e22ec2c981f5a9cb5b78fe48fdadf1627ca0f01c1f26edbd03463bcfcaf2cdd7
     provider: black-forest-labs
     tags:
-        - bfl
-        - flux
-        - flux-3
-        - video-generation
         - text-to-video
         - image-to-video
-        - video-continuation
-        - audio
+        - video-extension
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/t7qoll2d.png

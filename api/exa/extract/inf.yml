@@ -1,7 +1,9 @@
 namespace: exa
 name: extract
 description: Extract and analyze web page content using Exa's advanced content retrieval
-metadata: {}
+metadata:
+    tags:
+        - web-scraping
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/49rdkjzk.png

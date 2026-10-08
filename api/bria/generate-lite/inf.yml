@@ -3,6 +3,8 @@ name: generate-lite
 description: Fast image generation from text prompts using Bria Fibo Lite
 metadata:
     checksum: bbfe5d0c303e3777631614ad021aa9192916fe1ab65547a4b24b62e3a1ce1942
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/qnb3fk7b.png

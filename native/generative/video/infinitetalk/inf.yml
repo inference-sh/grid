@@ -3,6 +3,9 @@ name: infinitetalk
 description: Creates audio-driven video dubbing by generating video frames for sparse-frame video.
 metadata:
     checksum: b35504c40d2103ed31c8eb7ed02e966d42b196b69cda09ff48cac81bacac95b9
+    tags:
+        - lip-sync
+        - talking-avatar
 category: video
 images:
     card: ""

@@ -5,6 +5,9 @@ metadata:
     capabilities:
         - reasoning
     checksum: b4d9dc90d6f0e6d1ab61a5a5b6ee28a4055651a004b9b547b0c9529103001b39
+    tags:
+        - reasoning
+        - open-weights
 category: chat
 functions:
     - name: run

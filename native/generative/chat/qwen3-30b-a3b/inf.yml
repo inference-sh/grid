@@ -4,6 +4,9 @@ description: A powerful language application that excels at multilingual communi
 metadata:
     capabilities:
         - reasoning
+    tags:
+        - reasoning
+        - open-weights
 category: chat
 functions:
     - name: run

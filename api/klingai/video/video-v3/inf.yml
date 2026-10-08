@@ -5,13 +5,10 @@ metadata:
     checksum: 12a4018c590e4f1a5ab0db7615b6aca168f6fac5fb20a087c44fba1e8f753951
     provider: klingai
     tags:
-        - kling
-        - video-generation
         - text-to-video
         - image-to-video
-        - 4k
-        - audio
-        - v3
+        - video-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/fmemthkn.png

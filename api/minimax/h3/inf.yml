@@ -5,13 +5,9 @@ metadata:
     checksum: 02607e44c1dde5997cd54440439fa70b6eff27e1fa8905f20cb2b581de11e72f
     provider: minimax
     tags:
-        - minimax
-        - hailuo
-        - video-generation
         - text-to-video
         - image-to-video
-        - 2k
-        - h3
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/1lqjgpik.png

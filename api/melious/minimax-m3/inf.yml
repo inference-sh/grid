@@ -8,11 +8,9 @@ metadata:
         - image
     provider: melious
     tags:
-        - melious
-        - minimax
-        - minimax-m3
-        - llm
+        - vision
         - reasoning
+        - coding
 category: chat
 functions:
     - name: run

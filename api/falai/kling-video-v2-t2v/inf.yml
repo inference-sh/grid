@@ -4,8 +4,6 @@ description: Generate videos from text prompts using Kling v2.0 Master model.
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-v2
         - text-to-video
 category: video
 images:

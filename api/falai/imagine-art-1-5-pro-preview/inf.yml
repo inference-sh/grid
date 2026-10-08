@@ -1,7 +1,9 @@
 namespace: falai
 name: imagine-art-1-5-pro-preview
 description: Advanced text-to-image model creating ultra-high-fidelity 4K visuals with lifelike realism and refined aesthetics.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/h7n9wd1t.png

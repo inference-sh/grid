@@ -3,6 +3,10 @@ name: infinitetalk-v2v
 description: Generates realistic, talking videos from any video or image using uploaded audio, featuring accurate lip synchronization and natural body movements.
 metadata:
     checksum: 2122fd251ba2276837c4cd753752fa0c82aa109e3f1a490d42aa3a98b75340de
+    tags:
+        - video-to-video
+        - lip-sync
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4fupgnn4.png

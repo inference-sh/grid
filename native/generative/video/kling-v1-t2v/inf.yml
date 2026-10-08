@@ -4,6 +4,8 @@ description: Kling V1 Text-to-Video - Generate high-quality videos from text pro
 metadata:
     api_type: text2video
     model_name: kling-v1
+    tags:
+        - text-to-video
 category: video
 images:
     card: ""

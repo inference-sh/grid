@@ -5,10 +5,7 @@ metadata:
     checksum: a077fa62e63d7b50692e54bf2feaac0668d0c37f5fe913384d006f118afc48ca
     provider: krea
     tags:
-        - krea
-        - image-generation
         - text-to-image
-        - krea-2
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/6yqwszmw.png

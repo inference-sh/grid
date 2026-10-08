@@ -5,10 +5,8 @@ metadata:
     checksum: eee037f8a9b2be2f905ab0aadaee2fe5883da4f8316b2d638095b4cfa9d0fcc8
     provider: runway
     tags:
-        - runway
-        - image-generation
         - text-to-image
-        - gen4
+        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/16kt5sxs.png

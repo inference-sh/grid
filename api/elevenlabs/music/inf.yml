@@ -3,6 +3,8 @@ name: music
 description: ElevenLabs Music - Generate studio-quality music from text prompts
 metadata:
     checksum: 556c3ea7941547682842c4f0b2c8b333e32bb0678c656afa5ddb5c871413283b
+    tags:
+        - music-generation
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/uaw9e24d.png

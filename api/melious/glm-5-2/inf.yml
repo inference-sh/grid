@@ -7,11 +7,9 @@ metadata:
         - reasoning
     provider: melious
     tags:
-        - melious
-        - glm
-        - glm-5.2
-        - llm
         - reasoning
+        - coding
+        - open-weights
 category: chat
 functions:
     - name: run

@@ -1,7 +1,9 @@
 namespace: inworld
 name: speech-to-text
 description: Inworld Speech to Text - Multi-provider speech transcription with word timestamps
-metadata: {}
+metadata:
+    tags:
+        - speech-to-text
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/gfgkf130.png

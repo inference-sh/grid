@@ -3,6 +3,8 @@ name: video-green-screen
 description: Apply green or blue screen effect to video foreground
 metadata:
     checksum: a8bbe00bbcaed5f89739d25415295841afaaa62603eec2ea16cf09ab05c6ec3c
+    tags:
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/79h3yquv.png

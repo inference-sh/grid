@@ -8,11 +8,9 @@ metadata:
         - image
     provider: melious
     tags:
-        - melious
-        - qwen
-        - qwen3.6-27b
-        - llm
+        - vision
         - reasoning
+        - coding
 category: chat
 functions:
     - name: run

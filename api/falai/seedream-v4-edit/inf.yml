@@ -1,7 +1,9 @@
 namespace: falai
 name: seedream-v4-edit
 description: Creates and edits images using a single, unified system.
-metadata: {}
+metadata:
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5f4peigf.png

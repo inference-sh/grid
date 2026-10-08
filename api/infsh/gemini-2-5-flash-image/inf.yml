@@ -3,6 +3,9 @@ name: gemini-2-5-flash-image
 description: Gemini 2.5 Flash Image (Nano Banana) is a model that allows you to edit an image with multiple provided source images.
 metadata:
     checksum: 4927bac0a0f2c038f41d53a4d01e592dba34012a7ed99e7d72a70826ee4fe628
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cyyjfigm.png

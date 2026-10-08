@@ -8,11 +8,10 @@ metadata:
         - image
     provider: melious
     tags:
-        - melious
-        - kimi
-        - kimi-k3
-        - llm
+        - vision
         - reasoning
+        - coding
+        - open-weights
 category: chat
 functions:
     - name: run

@@ -5,10 +5,8 @@ metadata:
     checksum: f51824fa267e24cfcce9c36a349d67647999aa318792c0925c928123229c05ea
     provider: klingai
     tags:
-        - kling
-        - audio
         - sound-effects
-        - video-editing
+        - video-to-audio
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/fc73b1fy.png

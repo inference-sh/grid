@@ -1,7 +1,9 @@
 namespace: infsh
 name: flux-1-fill
 description: Fills designated areas in existing images based on a descriptive text input.
-metadata: {}
+metadata:
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/8gyqoy6e.png

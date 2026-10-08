@@ -1,7 +1,9 @@
 namespace: infsh
 name: chatterbox
 description: Converts written text into spoken audio.
-metadata: {}
+metadata:
+    tags:
+        - text-to-speech
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/t3wzlv8p.png

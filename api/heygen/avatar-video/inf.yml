@@ -5,11 +5,7 @@ metadata:
     checksum: 93b7cf4b0e6efaf2ec6425a11f4c2186254922927d33c1f97ce56527c74823b6
     provider: heygen
     tags:
-        - avatar
-        - talking-head
-        - video-generation
-        - text-to-speech
-        - heygen
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/6q4kqe0a.png

@@ -8,10 +8,7 @@ metadata:
         - image
     provider: melious
     tags:
-        - melious
-        - glm
-        - glm-5.3-flash
-        - llm
+        - vision
         - reasoning
 category: chat
 functions:

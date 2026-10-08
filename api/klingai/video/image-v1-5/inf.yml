@@ -5,11 +5,7 @@ metadata:
     checksum: 6fa5b0065e9d3e832274c562f5149d788bae82269e55213678f369e3a049309f
     provider: klingai
     tags:
-        - kling
-        - kolors
-        - image-generation
-        - face-reference
-        - character-consistency
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/n4nemho0.png

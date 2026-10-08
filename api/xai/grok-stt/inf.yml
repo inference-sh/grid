@@ -5,13 +5,8 @@ description: Transcribe speech with xAI's Grok Speech to Text. Send a recording 
 metadata:
     provider: xai
     tags:
-        - grok
         - speech-to-text
-        - stt
-        - transcription
         - realtime
-        - audio
-        - xai
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/azxi2lea.png

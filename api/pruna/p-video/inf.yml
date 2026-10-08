@@ -3,6 +3,10 @@ name: p-video
 description: Fast text-to-video and image-to-video in 720p/1080p with audio support
 metadata:
     checksum: ec518d0b8d54325c4277c53630915e96c99e11b36ad5222c296834c2fed03481
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/011kwlkh.png

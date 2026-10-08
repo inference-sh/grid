@@ -7,10 +7,7 @@ metadata:
         - image
     provider: xai
     tags:
-        - xai
-        - grok
-        - grok-4.3
-        - llm
+        - vision
         - reasoning
 category: chat
 functions:

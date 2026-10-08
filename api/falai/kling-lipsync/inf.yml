@@ -4,10 +4,7 @@ description: Lip-sync a source video to audio or text input using Kling's lipsyn
 metadata:
     provider: kling
     tags:
-        - kling
-        - lipsync
         - lip-sync
-        - video
 category: video
 images:
     card: ""

@@ -3,6 +3,8 @@ name: stt
 description: ElevenLabs Speech to Text (Scribe) - High-accuracy transcription with diarization
 metadata:
     checksum: ce09a1055bdfd8c66436f83d3d7874df8371647702975f02aff66347a315a0e0
+    tags:
+        - speech-to-text
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/t7z30svu.png

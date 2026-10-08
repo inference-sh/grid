@@ -5,12 +5,7 @@ metadata:
     checksum: 5d6fd394c0e3e26ba172cb47abdea3a65cff3ac85ef3207bb20f31d7229cb224
     provider: mirage
     tags:
-        - avatar
-        - talking-head
-        - text-to-video
-        - spokesperson
-        - ugc
-        - captions
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/kaqxlp62.png

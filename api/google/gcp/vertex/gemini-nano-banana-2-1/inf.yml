@@ -2,7 +2,10 @@ namespace: google
 name: gemini-nano-banana-2-1
 title: Gemini Nano Banana 2.1
 description: Gemini Nano Banana 2.1 via Vertex AI — Google's newest image model. Better design, mask editing and subject consistency than Nano Banana 2, and faster. Up to 4K, web search grounding.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/wd3du0j7.png

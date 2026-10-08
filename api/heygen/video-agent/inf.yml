@@ -5,10 +5,7 @@ metadata:
     checksum: befe638898c93278734451a5976aa61f5e742ec114fa796d7c8d52d550ecadfa
     provider: heygen
     tags:
-        - video-agent
-        - prompt-to-video
-        - ai-video
-        - heygen
+        - text-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/n420u1aa.png

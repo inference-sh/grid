@@ -3,6 +3,10 @@ name: flux-dev-lora
 description: Text-to-image and image-to-image generation with custom LoRA weights from HuggingFace
 metadata:
     checksum: de73203a93f9f3e4e0f91f4cfa02f11582de792fe0069e6ce354683399be9ef2
+    tags:
+        - text-to-image
+        - image-to-image
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/v1l0m7la.png

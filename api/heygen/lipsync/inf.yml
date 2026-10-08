@@ -5,11 +5,7 @@ metadata:
     checksum: 6fdfad8151decedff9bffdb8a8670665bed2ce874de24fd3c4e2d931421207aa
     provider: heygen
     tags:
-        - lipsync
         - lip-sync
-        - audio-sync
-        - video-editing
-        - heygen
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/srjhegev.png

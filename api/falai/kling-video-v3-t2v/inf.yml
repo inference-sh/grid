@@ -4,10 +4,8 @@ description: Generate videos from text prompts using Kling Video V3. Supports pr
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-v3
         - text-to-video
-        - audio
+        - native-audio
 category: video
 images:
     card: ""

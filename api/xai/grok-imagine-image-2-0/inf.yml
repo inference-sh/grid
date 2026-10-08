@@ -4,12 +4,9 @@ description: Generate and edit images with xAI's Grok Imagine Image 2.0. Text-to
 metadata:
     provider: xai
     tags:
-        - grok
-        - image-generation
         - text-to-image
+        - image-to-image
         - image-editing
-        - multi-image-editing
-        - xai
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/9fy2ztt2.png

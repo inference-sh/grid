@@ -3,6 +3,8 @@ name: add-object
 description: Add an object to an image using a text description
 metadata:
     checksum: 57b70aa7fe2e30ebf807c57d0770b4b3d038214a6d7471d111726cf5b611592c
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/odz3j40q.png

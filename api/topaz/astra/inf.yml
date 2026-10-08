@@ -3,6 +3,8 @@ name: astra
 description: creative video upscaling — ai-guided upscaling with prompt and creativity controls
 metadata:
     checksum: 20d83f8094d733ad592cb49ef93601e0e846d70225936a1c597d8b9263ac816e
+    tags:
+        - video-upscaling
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2y9t0stk.png

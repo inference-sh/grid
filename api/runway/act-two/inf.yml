@@ -5,11 +5,7 @@ metadata:
     checksum: 3ea5d2171b7646ded73f7d3925f510e92e84e80d57ad3febbf1fb31228eab9cb
     provider: runway
     tags:
-        - runway
-        - video-generation
-        - character-performance
-        - act-two
-        - animation
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/esvmbsx9.png

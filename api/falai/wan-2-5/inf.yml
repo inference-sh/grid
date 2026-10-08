@@ -1,7 +1,9 @@
 namespace: falai
 name: wan-2-5
 description: Creates high-quality, animated videos instantly from any static image.
-metadata: {}
+metadata:
+    tags:
+        - image-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/y1xn913h.png

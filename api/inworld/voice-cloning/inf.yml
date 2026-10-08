@@ -1,7 +1,9 @@
 namespace: inworld
 name: voice-cloning
 description: Clone a voice from 5-15 seconds of audio using Inworld instant voice cloning. Use the cloned voice ID with any Inworld TTS model.
-metadata: {}
+metadata:
+    tags:
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/v6r5ux6w.png

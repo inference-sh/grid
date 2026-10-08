@@ -3,6 +3,8 @@ name: p-video-replace
 description: Replace characters in videos using reference images. Preserves motion, timing, camera, and scene.
 metadata:
     checksum: bcb51430ca40c60307416eaea3d9b9912b1ac524249e31235383641af80e3886
+    tags:
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/8ad521f9.png

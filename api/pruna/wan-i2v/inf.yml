@@ -3,6 +3,8 @@ name: wan-i2v
 description: Transform static images into animated videos with text prompts
 metadata:
     checksum: cad02a935d039c789ad5260be1fee76e8c0f7270afa9adbdb5233be8b2998def
+    tags:
+        - image-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/rfj8m0cr.png

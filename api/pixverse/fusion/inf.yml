@@ -5,10 +5,7 @@ metadata:
     checksum: 9b1d193c8b0dde8804e73c55f26e6e895dbe96eb7a138b98a49b918f283ab61b
     provider: pixverse
     tags:
-        - pixverse
-        - fusion
         - reference-to-video
-        - composition
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/yhgkslea.png

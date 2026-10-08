@@ -1,7 +1,9 @@
 namespace: falai
 name: topaz-video-upscaler
 description: Enhances and increases the resolution of your videos, turning lower quality footage into sharp, high-definition results.
-metadata: {}
+metadata:
+    tags:
+        - video-upscaling
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0ymuylkb.png

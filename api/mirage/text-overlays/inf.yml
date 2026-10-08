@@ -5,12 +5,7 @@ metadata:
     checksum: 38ffc0f4b8f5bfb2c94339a6905773993e6cef8eaeb8f64f73caec4972b7c44c
     provider: mirage
     tags:
-        - text-overlay
-        - video-editing
-        - ads
-        - hook-testing
-        - captions
-        - mirage
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/08ci1uvz.png

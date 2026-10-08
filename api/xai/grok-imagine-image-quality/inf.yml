@@ -4,12 +4,8 @@ description: Generate and edit high-quality images using xAI's Grok Imagine Qual
 metadata:
     provider: xai
     tags:
-        - grok
-        - image-generation
         - text-to-image
         - image-editing
-        - xai
-        - high-quality
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/k4j20lpa.png

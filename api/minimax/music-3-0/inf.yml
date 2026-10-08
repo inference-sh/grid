@@ -5,9 +5,7 @@ metadata:
     checksum: 3695a560383eadcda349b81683832f7a0d1f61f13bbf7f465ff3c4843c819d61
     provider: minimax
     tags:
-        - music
         - music-generation
-        - minimax
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/h8s9dccf.png

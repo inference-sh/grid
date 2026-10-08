@@ -3,6 +3,8 @@ name: create
 description: Reve Create — Generate images from text with best-in-class prompt adherence and text rendering.
 metadata:
     checksum: 7d58e9cfb8100674a3e19cbb74bbe1f2aa5e142a4585f5574cd556491247421d
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/jy8ny8yc.png

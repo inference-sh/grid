@@ -3,6 +3,8 @@ name: flux-dev
 description: Advanced text-to-image generation with multiple aspect ratios, speed optimizations, and high-quality outputs
 metadata:
     checksum: d923b0219b414bb67774fd63633ba71e2594fd1c8f199d48395002e8b0ad7afa
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/jtihduzj.png

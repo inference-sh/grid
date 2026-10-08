@@ -4,10 +4,8 @@ description: Generate videos from images using Kling Video V3. Supports pro and 
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-v3
         - image-to-video
-        - audio
+        - native-audio
 category: video
 images:
     card: ""

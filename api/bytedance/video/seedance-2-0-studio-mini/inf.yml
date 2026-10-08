@@ -5,18 +5,10 @@ metadata:
     checksum: b60dcdbb51029704be20ae070f0bfc10bb03a5419c6c2f8cca2ab89f387991a5
     provider: bytedance
     tags:
-        - seedance
-        - video-generation
         - text-to-video
         - image-to-video
-        - multimodal
-        - audio
-        - mini
-        - cost-effective
-        - bytedance
-        - byteplus
-        - studio
-        - asset-library
+        - reference-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bpaf3zaz.png

@@ -3,6 +3,8 @@ name: starlight
 description: generative video upscaling — precision, hq, mini, sharp, and fast models
 metadata:
     checksum: 7db9a289b92db97d70fdee95fc07f79ea73e189783c90a6cd196736325c3e9e5
+    tags:
+        - video-upscaling
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/89n6y6kt.png

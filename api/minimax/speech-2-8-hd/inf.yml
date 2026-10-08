@@ -5,10 +5,7 @@ metadata:
     checksum: 4f1ae8fa03e1b9b4f4cf791402cb4378b8c6e9f996b896c29cc5387120d49401
     provider: minimax
     tags:
-        - tts
         - text-to-speech
-        - speech
-        - minimax
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/vliurct3.png

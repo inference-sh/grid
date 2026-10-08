@@ -8,11 +8,9 @@ metadata:
         - image
     provider: melious
     tags:
-        - melious
-        - deepseek
-        - deepseek-v4.1-flash
-        - llm
+        - vision
         - reasoning
+        - coding
 category: chat
 functions:
     - name: run

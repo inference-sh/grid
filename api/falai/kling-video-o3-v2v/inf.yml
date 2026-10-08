@@ -4,8 +4,6 @@ description: Transform videos using Kling O3 model. Supports edit and reference 
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-o3
         - video-to-video
 category: video
 images:

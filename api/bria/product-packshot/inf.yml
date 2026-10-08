@@ -3,6 +3,8 @@ name: product-packshot
 description: Generate professional 2000x2000 product packshot images
 metadata:
     checksum: 00614a4ddc68d515a2ec2109f8f6233281cd7ad008a3e90d3b22ff986f26e28d
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/frq9d151.png

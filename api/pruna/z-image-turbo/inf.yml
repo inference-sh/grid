@@ -3,6 +3,8 @@ name: z-image-turbo
 description: Ultra-fast turbo image generation with minimal latency
 metadata:
     checksum: 8090dbc6f35a0c4b034ca9e2bfd9b898f6d0ecba8537444c04b48497ab8e4d49
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/9xdk74b6.png

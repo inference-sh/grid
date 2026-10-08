@@ -8,6 +8,9 @@ metadata:
         - files
         - tools
     checksum: 07021803a3c422f9a63f8ef945142fbef8bce795f2094276ad68627c4730e660
+    tags:
+        - vision
+        - reasoning
 category: chat
 functions:
     - name: run

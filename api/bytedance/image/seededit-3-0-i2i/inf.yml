@@ -4,11 +4,8 @@ description: Edit and transform existing images using text prompts with precise 
 metadata:
     provider: bytedance
     tags:
-        - seededit
-        - image-editing
         - image-to-image
-        - bytedance
-        - byteplus
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4p63wu9s.png

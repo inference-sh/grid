@@ -1,7 +1,10 @@
 namespace: falai
 name: gemini-3-pro-image-preview
 description: Generate high-quality images and edit them through conversation, excelling at rendering text accurately and understanding complex prompts.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/rr36kn2l.png

@@ -3,6 +3,8 @@ name: video-replace-background
 description: Replace video background with an image or another video
 metadata:
     checksum: f7b325896bcc37f09ede0e789197b9df67a2b3d012c4b5845ea957f6ef9f704f
+    tags:
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/b01yites.png

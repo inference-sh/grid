@@ -3,6 +3,8 @@ name: proteus
 description: proteus video upscaling and enhancement — precision upscaling, deinterlacing, face recovery, and cgi enhancement
 metadata:
     checksum: b978ae80aea943e761b6d8bef088da4602cb1979fd3cd353ef4024216df02228
+    tags:
+        - video-upscaling
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/y36ihdvu.png

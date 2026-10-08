@@ -1,7 +1,10 @@
 namespace: alibaba
 name: qwen-image-2-pro
 description: Qwen-Image-2.0 Pro offers enhanced text rendering, fine-grained realism, photorealistic scenes, and stronger semantic adherence for professional image generation and editing
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/jdume67q.png

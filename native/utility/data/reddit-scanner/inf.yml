@@ -1,7 +1,9 @@
 namespace: infsh
 name: reddit-scanner
 description: Scan a subreddit for posts and comments, return cleaned CSV data
-metadata: {}
+metadata:
+    tags:
+        - web-scraping
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/053zsc8b.png

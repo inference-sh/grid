@@ -5,11 +5,7 @@ description: ElevenLabs Eleven v4 text to speech. The newest and most expressive
 metadata:
     provider: elevenlabs
     tags:
-        - elevenlabs
         - text-to-speech
-        - tts
-        - audio
-        - eleven-v4
         - realtime
 category: audio
 images:

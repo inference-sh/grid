@@ -3,6 +3,8 @@ name: colorize
 description: Colorize black and white images with natural or stylized colors
 metadata:
     checksum: e7b83948e3bdd0b4652e0a2263d0190bc21b82364c1bf59141c62b32a31fda51
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/olk1o4n7.png

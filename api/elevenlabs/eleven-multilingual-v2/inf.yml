@@ -5,12 +5,7 @@ description: ElevenLabs Eleven Multilingual v2 text to speech. Stable, high-qual
 metadata:
     provider: elevenlabs
     tags:
-        - elevenlabs
         - text-to-speech
-        - tts
-        - audio
-        - eleven-multilingual-v2
-        - multilingual
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/7ae7q651.png

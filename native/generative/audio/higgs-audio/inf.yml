@@ -15,6 +15,9 @@ metadata:
         - English
         - Chinese
         - Multilingual
+    tags:
+        - text-to-speech
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2bdpzg6p.png

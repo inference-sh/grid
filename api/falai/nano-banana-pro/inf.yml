@@ -1,7 +1,10 @@
 namespace: falai
 name: nano-banana-pro
 description: Advanced tool for generating and editing images.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/8ud87rro.png

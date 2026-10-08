@@ -1,7 +1,11 @@
 namespace: alibaba
 name: wan-2-7-image
 description: Wan 2.7 Image is Alibaba's fast image generation model supporting text-to-image, image editing, and multi-reference image generation with up to 2K resolution
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cpvwrfk1.png

@@ -5,16 +5,8 @@ metadata:
     checksum: 9c481d23e8a6d2a1e68b25f45032090eba4af840f016f2ce73a85ee840a2b17f
     provider: fal-ai
     tags:
-        - patina
-        - pbr
-        - material
-        - normal
-        - roughness
-        - basecolor
-        - albedo
-        - height
-        - metalness
         - image-to-image
+        - pbr-materials
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/th42irvr.png

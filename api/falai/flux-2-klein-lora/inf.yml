@@ -1,7 +1,11 @@
 namespace: falai
 name: flux-2-klein-lora
 description: Text-to-image and image-to-image generation with FLUX.2 [klein] LoRA support. Available in 4B and 9B parameter sizes. Custom style adaptation and fine-tuned model variations from Black Forest Labs.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-to-image
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/t64y67e0.png

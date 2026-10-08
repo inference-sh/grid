@@ -6,6 +6,8 @@ metadata:
         - reasoning
         - image
     checksum: ""
+    tags:
+        - reasoning
 category: chat
 functions:
     - name: run

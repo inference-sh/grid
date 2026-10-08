@@ -1,7 +1,10 @@
 namespace: falai
 name: fabric-1-0
 description: Creates videos where an image appears to talk using advanced lip-sync technology.
-metadata: {}
+metadata:
+    tags:
+        - lip-sync
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/15353pui.png

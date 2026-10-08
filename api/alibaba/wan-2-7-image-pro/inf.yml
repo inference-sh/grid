@@ -1,7 +1,10 @@
 namespace: alibaba
 name: wan-2-7-image-pro
 description: Wan 2.7 Image Pro is Alibaba's professional image generation model supporting text-to-image, image editing, and multi-reference generation with up to 4K high-definition output
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/m9toxgq2.png

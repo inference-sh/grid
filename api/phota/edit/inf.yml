@@ -1,7 +1,9 @@
 namespace: phota
 name: edit
 description: Edit images with text prompts while preserving identity of known subjects
-metadata: {}
+metadata:
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/vznw9y4f.png

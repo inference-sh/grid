@@ -4,10 +4,7 @@ description: Extend existing videos using xAI's Grok Imagine Video model. Takes 
 metadata:
     provider: xai
     tags:
-        - grok
         - video-extension
-        - video-generation
-        - xai
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/1erbhz2r.png

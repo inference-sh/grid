@@ -3,6 +3,10 @@ name: p-image-edit-lora
 description: Fast image editing with custom LoRA styles for unique transformations
 metadata:
     checksum: 3cc6f4b5a806aa289cb37b760d0b3e05f6244b411bd286eee90612b282edce1e
+    tags:
+        - image-to-image
+        - image-editing
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/4yezliy1.png

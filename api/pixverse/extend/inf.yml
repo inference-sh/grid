@@ -5,9 +5,7 @@ metadata:
     checksum: 71c49e894c4f89233a803a7ec5ecc307f1d4c0a5b0ac78273f71006774708233
     provider: pixverse
     tags:
-        - pixverse
         - video-extension
-        - extend
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5haytfib.png

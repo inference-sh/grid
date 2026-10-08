@@ -4,13 +4,8 @@ description: Clone a voice from a single short recording with HeyGen Instant Clo
 metadata:
     provider: heygen
     tags:
-        - voice-clone
-        - voice-cloning
-        - tts
         - text-to-speech
-        - voice
-        - audio
-        - heygen
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/2tqkcy4d.png

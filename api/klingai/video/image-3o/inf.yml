@@ -5,12 +5,7 @@ metadata:
     checksum: 9b745430773f4f643f1cb5a1cd3616683699e460a19028e3caf48a099dc20da6
     provider: klingai
     tags:
-        - kling
-        - kolors
-        - image-generation
-        - 4k
-        - series
-        - omni
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/dszp9osu.png

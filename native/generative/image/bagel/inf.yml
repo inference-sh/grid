@@ -3,6 +3,9 @@ name: bagel
 description: A tool that combines understanding and creation capabilities, notable for its high-quality image generation and advanced image editing using simple language.
 metadata:
     checksum: a76a3c8a78efa2efaedb1a5ccc733459f07d3d30105df738acbca1277f72314b
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/l28x0hcf.png

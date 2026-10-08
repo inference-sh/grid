@@ -3,6 +3,8 @@ name: text-to-dialogue
 description: ElevenLabs Text to Dialogue - Generate immersive multi-voice dialogue
 metadata:
     checksum: 8901afa47f4fefdedf4300561d39718ad2baa8a68a56c710cfc1a6e9b6fdf9dd
+    tags:
+        - text-to-speech
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tl566sjt.png

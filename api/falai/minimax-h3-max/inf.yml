@@ -4,10 +4,6 @@ description: MiniMax H3 Max — fal's post-trained H3 for stronger prompt adhere
 metadata:
     provider: minimax
     tags:
-        - minimax
-        - hailuo
-        - h3-max
-        - video-generation
         - text-to-video
         - image-to-video
         - reference-to-video

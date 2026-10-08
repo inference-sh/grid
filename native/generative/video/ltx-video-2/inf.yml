@@ -1,7 +1,12 @@
 namespace: infsh
 name: ltx-video-2
 description: LTX 2.0 audio-video foundation model. Generates videos with synced audio. Supports T2V, I2V, long video generation with multi-prompt sliding windows, and LoRA adapters.
-metadata: {}
+metadata:
+    tags:
+        - text-to-video
+        - image-to-video
+        - open-weights
+        - native-audio
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/b11x2gv3.png

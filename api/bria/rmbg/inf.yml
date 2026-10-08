@@ -3,6 +3,8 @@ name: rmbg
 description: Remove the background from an image, producing a transparent cutout. The general-purpose background removal — for product-specific cutouts, use product-cutout instead. Output can be passed to replace-background, blur-background, or any editing app.
 metadata:
     checksum: 6fa783eed1bce151547320ca95bfc5dc57402815f5b84bf0b3d14d04c7a90581
+    tags:
+        - background-removal
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/w280jqif.png

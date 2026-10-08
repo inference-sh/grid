@@ -5,10 +5,7 @@ metadata:
     checksum: f84cd13c95e4feec67ca38f1d8dffc40863b83c3f3cc1a6bfec8d39c0fb604e2
     provider: pixverse
     tags:
-        - pixverse
-        - video-editing
-        - modify
-        - swap
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/jubuwaiv.png

@@ -1,7 +1,10 @@
 namespace: falai
 name: nano-banana
 description: Allows you to edit images by combining features and elements from multiple source images.
-metadata: {}
+metadata:
+    tags:
+        - image-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/b6mf51bx.png

@@ -4,11 +4,7 @@ description: Generate videos using reference images for style and content guidan
 metadata:
     provider: xai
     tags:
-        - grok
-        - video-generation
         - reference-to-video
-        - style-transfer
-        - xai
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5oe7mhic.png

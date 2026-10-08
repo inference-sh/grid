@@ -5,11 +5,8 @@ metadata:
     checksum: 4dfb71bb6538321f9146387762bdf32759d2ed139e775e15abf82ef0c754978f
     provider: krea
     tags:
-        - krea
-        - lora
         - training
-        - krea-2
-        - turbo
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/d9b82wns.png

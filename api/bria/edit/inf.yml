@@ -3,6 +3,8 @@ name: edit
 description: Edit an image using natural language text instructions
 metadata:
     checksum: 9e848f594b6546cc9b374ae7bef136c69dcaec75043170d3376b5321440115b3
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/td00z6cs.png

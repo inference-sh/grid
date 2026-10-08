@@ -3,6 +3,8 @@ name: p-video-avatar
 description: Generate talking head videos from a portrait image with text or audio-driven speech
 metadata:
     checksum: e79334e21027b8ef8a88b44b5866d37c3eb15cc926ac1135e59c7c5564bcbe16
+    tags:
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/nj63zhyt.png

@@ -5,12 +5,10 @@ metadata:
     checksum: 6c664bfa3d82dc925dc7995b7289261596e120f42dfad6eea08f94f8d7238cf4
     provider: klingai
     tags:
-        - kling
-        - video-generation
         - text-to-video
         - image-to-video
-        - video-editing
-        - omni
+        - reference-to-video
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/41y6yl5t.png
