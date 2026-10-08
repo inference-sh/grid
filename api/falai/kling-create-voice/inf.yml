@@ -4,9 +4,7 @@ description: Clone a voice from an audio or video sample using Kling's voice cre
 metadata:
     provider: kling
     tags:
-        - kling
         - voice-cloning
-        - tts
 category: audio
 images:
     card: ""

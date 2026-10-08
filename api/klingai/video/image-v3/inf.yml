@@ -5,10 +5,6 @@ metadata:
     checksum: 8145103c24d3d96662bb728830c01a61aa5d50c6bd06e411a0be62432be69f46
     provider: klingai
     tags:
-        - kling
-        - kolors
-        - image-generation
-        - 2k
         - text-to-image
 category: image
 images:

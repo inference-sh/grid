@@ -3,6 +3,8 @@ name: voice-design
 description: ElevenLabs Voice Design - Create custom AI voices from text descriptions
 metadata:
     checksum: ca90a53ce1c21698d58f38e55e1f30fec36fdbee70d413e4c3416e1c26aa7da8
+    tags:
+        - voice-design
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/i15w1hdi.png

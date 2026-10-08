@@ -1,7 +1,9 @@
 namespace: falai
 name: wan-2-5-i2v
 description: Generates high-quality video content from static images.
-metadata: {}
+metadata:
+    tags:
+        - image-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cjeqw5tc.png

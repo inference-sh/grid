@@ -5,10 +5,7 @@ metadata:
     checksum: 600fbad59c56aeefb2c35a672179a9d49dc434bb641fff0b67184f7b7cfad868
     provider: minimax
     tags:
-        - music
-        - music-cover
-        - style-transfer
-        - minimax
+        - music-generation
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/t31ug13k.png

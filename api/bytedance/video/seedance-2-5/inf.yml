@@ -4,16 +4,10 @@ description: Professional multimodal video generation from text, images, video, 
 metadata:
     provider: bytedance
     tags:
-        - seedance
-        - video-generation
         - text-to-video
         - image-to-video
-        - multimodal
-        - audio
-        - 4k
-        - 1080p
-        - bytedance
-        - byteplus
+        - reference-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/xiwpq9v1.png

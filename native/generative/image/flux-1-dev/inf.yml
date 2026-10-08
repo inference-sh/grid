@@ -3,6 +3,8 @@ name: flux-1-dev
 description: Generates images from text descriptions for non-commercial purposes.
 metadata:
     checksum: b91ba032664dbbf46295de4ba2a2a4175b4f1d39a4f4b6c90df66f06648d096a
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/lo77vhg2.png

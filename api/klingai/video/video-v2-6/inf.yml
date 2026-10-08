@@ -5,12 +5,9 @@ metadata:
     checksum: 3eb6a1fa5377246af8575d526188134d29f099d2e46b2e161fd55b185e6876d2
     provider: klingai
     tags:
-        - kling
-        - video-generation
         - text-to-video
         - image-to-video
-        - audio
-        - voice
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/zjdaazcq.png

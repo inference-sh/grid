@@ -3,6 +3,8 @@ name: p-image-upscale
 description: AI-powered image upscaling up to 128 megapixels with detail and realism enhancement
 metadata:
     checksum: 2de3eaa72b10e35481101cfb875b0721eaf2e858a932533df3d311dee9118d43
+    tags:
+        - image-upscaling
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/p001mzch.png

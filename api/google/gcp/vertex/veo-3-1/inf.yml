@@ -3,6 +3,11 @@ name: veo-3-1
 description: Veo 3.1 via Vertex AI - Advanced video generation with frame interpolation, reference images, and audio generation
 metadata:
     checksum: d4eb1a2d282b14d56936e6435fcebd76475c1667dd010d22ac140092fb37fe5b
+    tags:
+        - text-to-video
+        - image-to-video
+        - reference-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ikofrmtu.png

@@ -3,6 +3,8 @@ name: contents
 description: contents api — fetch clean markdown or html from any url, batch up to 10 pages per request
 metadata:
     checksum: 28c3d5422a52d76d947f7cbfb08e390b6c57cb149fca915b520a62b65ad0bf3d
+    tags:
+        - web-scraping
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/b6120pus.png

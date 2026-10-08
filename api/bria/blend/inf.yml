@@ -3,6 +3,8 @@ name: blend
 description: Seamlessly blend a foreground image onto a background image
 metadata:
     checksum: 39f5c4ae48d25c0243e69909429847d1fb84ef43ce0f2ffa32fc13a5a8c2d433
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/ynj911l4.png

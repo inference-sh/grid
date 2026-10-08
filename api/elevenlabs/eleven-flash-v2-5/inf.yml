@@ -5,12 +5,8 @@ description: ElevenLabs Eleven Flash v2.5 text to speech. The fastest and lowest
 metadata:
     provider: elevenlabs
     tags:
-        - elevenlabs
         - text-to-speech
-        - tts
-        - audio
-        - eleven-flash-v2-5
-        - low-latency
+        - realtime
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/19gxivcr.png

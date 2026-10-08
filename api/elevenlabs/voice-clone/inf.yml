@@ -3,6 +3,8 @@ name: voice-clone
 description: ElevenLabs Voice Clone - Instantly clone a voice from audio samples
 metadata:
     checksum: fcd4115600a0341f636ba0d03fc6a55c13cc6842b46fa8901c16686f96ac3163
+    tags:
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/vczz9h5w.png

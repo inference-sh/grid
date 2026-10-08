@@ -3,6 +3,10 @@ name: z-image-turbo-lora
 description: Fast generation with LoRA support for unique styles and personalized outputs
 metadata:
     checksum: 1495ce6ff299ed2cee77f6341be813a2f9a6547f0953c41f3370f8dc29878d78
+    tags:
+        - text-to-image
+        - image-to-image
+        - lora
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/15dcdp42.png

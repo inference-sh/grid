@@ -4,12 +4,9 @@ description: Generate and edit videos using xAI's Grok Imagine Video model. Supp
 metadata:
     provider: xai
     tags:
-        - grok
-        - video-generation
         - text-to-video
         - image-to-video
-        - video-editing
-        - xai
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/9bay0tiv.png

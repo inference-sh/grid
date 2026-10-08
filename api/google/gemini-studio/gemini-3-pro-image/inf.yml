@@ -3,6 +3,9 @@ name: gemini-3-pro-image
 description: Gemini 3 Pro Image via Vertex AI with fal.ai (Nano Banana Pro) fallback on rate limits
 metadata:
     checksum: d04e92056cd3d829c79b59b7ec955736e1ad4c9e36673aef3a7f4f8bbe23806c
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/s02rp9si.png

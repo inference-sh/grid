@@ -5,14 +5,8 @@ description: Transcribe speech with OpenAI. Send a recording and get its transcr
 metadata:
     provider: openai
     tags:
-        - openai
         - speech-to-text
-        - stt
-        - transcription
         - realtime
-        - audio
-        - gpt-transcribe
-        - gpt-live-transcribe
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/cla8smtk.png

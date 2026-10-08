@@ -3,6 +3,10 @@ name: ovi-ti2v
 description: Creates videos with synchronized audio from text descriptions or images, supporting both text-to-video and image-to-video generation with built-in speech.
 metadata:
     checksum: 241e10ee8a57ab88b115c57816f7ae978e522f59968750a9d815431cd8f0e207
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/fnzt9d9y.png

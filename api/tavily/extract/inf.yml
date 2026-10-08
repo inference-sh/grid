@@ -3,6 +3,8 @@ name: extract
 description: Extracts clean, readable content, including text and images, from specified webpages, supporting batch processing for multiple URLs.
 metadata:
     checksum: 6404c00f2cd1971f539239e1496bcf9f7ff3617365fd613f8f5b1a52204f9157
+    tags:
+        - web-scraping
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/48pkeqob.png

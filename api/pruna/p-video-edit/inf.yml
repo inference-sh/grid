@@ -1,6 +1,9 @@
 namespace: pruna
 name: p-video-edit
 description: Edit videos from text prompts with optional reference images. Up to 15s input, standard or draft quality.
+metadata:
+    tags:
+        - video-to-video
 category: video
 kernel: python-3.11
 secrets:

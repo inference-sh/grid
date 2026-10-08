@@ -4,10 +4,8 @@ description: Generate videos with audio from text prompts using ByteDance's Seed
 metadata:
     provider: bytedance
     tags:
-        - seedance
         - text-to-video
-        - audio
-        - bytedance
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tpur0y60.png

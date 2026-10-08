@@ -5,10 +5,7 @@ metadata:
     checksum: f998f1512f9ecc08c665fa322fac48dbb99534f96ba3da7d41f8928476beedce
     provider: klingai
     tags:
-        - kling
         - lip-sync
-        - dubbing
-        - video-editing
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bipykyxo.png

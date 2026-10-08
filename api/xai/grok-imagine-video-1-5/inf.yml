@@ -4,12 +4,9 @@ description: Generate videos with xAI's Grok Imagine Video 1.5. Text-to-video, i
 metadata:
     provider: xai
     tags:
-        - grok
-        - video-generation
         - text-to-video
         - image-to-video
         - reference-to-video
-        - xai
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/9sb4d0x8.png

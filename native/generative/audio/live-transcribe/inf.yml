@@ -1,7 +1,10 @@
 namespace: infsh
 name: live-transcribe
 description: Live dictation. Stream microphone audio and watch the transcript appear and refine as you speak; a pause settles each phrase, and the finished transcript is the task's output.
-metadata: {}
+metadata:
+    tags:
+        - speech-to-text
+        - realtime
 category: audio
 images:
     card: ""

@@ -3,6 +3,8 @@ name: reseason
 description: Change the season of an image (spring, summer, autumn, winter)
 metadata:
     checksum: 22c882af23ecfb389e01a5de391fa5f595ffb1ecda7b088450833d60763fcffb
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/dgk9adn3.png

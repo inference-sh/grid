@@ -3,6 +3,8 @@ name: kokoro-tts
 description: Kokoro TTS - Lightweight text-to-speech with multiple languages and voices
 metadata:
     checksum: 1a26b5a10f295bb45be17b9bd076a83d0f384971f23b39db51d33e9ac0cad784
+    tags:
+        - text-to-speech
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5qxuby2i.png

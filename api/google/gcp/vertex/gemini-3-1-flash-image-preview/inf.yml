@@ -3,6 +3,9 @@ name: gemini-3-1-flash-image
 description: Gemini 3.1 Flash Image (NanoBanana 2) via Vertex AI - Advanced image generation model powered by Google Cloud
 metadata:
     checksum: 01a6e49ebc83590144619262db6a51faecedf362587743ab7b569e977ce87e69
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bhufrnsc.png

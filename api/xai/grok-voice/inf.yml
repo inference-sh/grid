@@ -4,12 +4,8 @@ description: Talk with Grok. Stream microphone audio over a socket and hear xAI'
 metadata:
     provider: xai
     tags:
-        - grok
-        - voice
-        - realtime
         - speech-to-speech
-        - audio
-        - xai
+        - realtime
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/4gwwuk7k.png

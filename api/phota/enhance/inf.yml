@@ -1,7 +1,9 @@
 namespace: phota
 name: enhance
 description: Automatically enhance photo quality — lighting, composition, color, and sharpness
-metadata: {}
+metadata:
+    tags:
+        - image-upscaling
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/bm4n0mk8.png

@@ -1,7 +1,11 @@
 namespace: infsh
 name: magistral-small-2506
 description: A high-performance system for complex reasoning, coding, and math problems, featuring strong multilingual support.
-metadata: {}
+metadata:
+    tags:
+        - reasoning
+        - coding
+        - open-weights
 category: chat
 functions:
     - name: run

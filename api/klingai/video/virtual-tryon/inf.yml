@@ -5,10 +5,7 @@ metadata:
     checksum: e1f0a7ac810d62a4c9a24aca7adf5d689e22aa95252e4221120014afe04f22f2
     provider: klingai
     tags:
-        - kling
         - virtual-try-on
-        - fashion
-        - e-commerce
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ep0tl0bi.png

@@ -3,6 +3,8 @@ name: deepseek-ocr-2
 description: Next-gen document OCR with improved math, tables, and reading order. Converts images and PDFs to structured markdown.
 metadata:
     checksum: 1de9f406dd02cf88a4452df57d34689e7661041e861cbd5319e088535843856e
+    tags:
+        - ocr
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/41o482i3.png

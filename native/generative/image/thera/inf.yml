@@ -3,6 +3,8 @@ name: thera
 description: Upscales images to any size without blurriness or jagged edges, maintaining high detail through its unique neural heat field technology.
 metadata:
     checksum: de9b2bd22879581a84faa999da70dedf5749276b91c6c057bef1c390f88c9bf5
+    tags:
+        - image-upscaling
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/wg55lx6q.png

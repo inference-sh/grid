@@ -5,12 +5,8 @@ metadata:
     checksum: 7e6770d95d1def5d5560f69ee26286165fea0f2cbc1105c8c62729bbbfef83e7
     provider: mirage
     tags:
-        - talking-head
-        - avatar
-        - lipsync
-        - video-generation
-        - image-to-video
-        - mirage
+        - lip-sync
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/33h94d58.png

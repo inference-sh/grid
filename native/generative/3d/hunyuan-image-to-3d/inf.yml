@@ -3,6 +3,9 @@ name: hunyuan-image-to-3d
 description: Generates detailed, high-resolution 3D assets quickly from simple text descriptions or reference images.
 metadata:
     checksum: 3ed00eecc1d3b7429983ed78a761b284dcf0c30870af51ae48203a16799f1de4
+    tags:
+        - text-to-3d
+        - image-to-3d
 category: 3d
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/43fc18si.png

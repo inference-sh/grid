@@ -3,6 +3,9 @@ name: video-rmbg
 description: Remove background from videos with optional color replacement
 metadata:
     checksum: fae66b3c334ec24ee0e1602032e0874c32af2b43ccf30a6a6929aaebc060ba8c
+    tags:
+        - background-removal
+        - video-to-video
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/zavfxyre.png

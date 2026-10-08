@@ -5,12 +5,9 @@ metadata:
     checksum: 58278c85048d23bf553c2030580aa5507775b59ab819be805f29a7d0b56e337f
     provider: openai
     tags:
-        - openai
-        - image-generation
         - text-to-image
+        - image-to-image
         - image-editing
-        - gpt-image-2
-        - transparent-background
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5dv050qz.png

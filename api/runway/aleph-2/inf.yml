@@ -5,10 +5,7 @@ metadata:
     checksum: 14b8a6e8c6d10e4dc1aa41f7cd561db933b973f14a8d94a958e807e7d578fc77
     provider: runway
     tags:
-        - runway
-        - video-generation
         - video-to-video
-        - aleph
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/aomb8fuq.png

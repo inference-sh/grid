@@ -1,7 +1,10 @@
 namespace: infsh
 name: rodin-3d-generator
 description: Generates high-quality 3D models simply by using text descriptions or uploading an image.
-metadata: {}
+metadata:
+    tags:
+        - text-to-3d
+        - image-to-3d
 category: 3d
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5qzgdczb.png

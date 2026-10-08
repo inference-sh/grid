@@ -5,6 +5,9 @@ metadata:
     capabilities:
         - image
         - audio
+    tags:
+        - vision
+        - open-weights
 category: chat
 functions:
     - name: run

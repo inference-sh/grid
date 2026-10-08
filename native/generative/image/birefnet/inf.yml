@@ -1,7 +1,9 @@
 namespace: infsh
 name: birefnet
 description: Removes backgrounds from images quickly and accurately.
-metadata: {}
+metadata:
+    tags:
+        - background-removal
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tcya3lsw.png

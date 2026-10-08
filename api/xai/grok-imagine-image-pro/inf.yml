@@ -4,11 +4,8 @@ description: Generate and edit images using xAI's Grok Imagine Pro model. Suppor
 metadata:
     provider: xai
     tags:
-        - grok
-        - image-generation
         - text-to-image
         - image-editing
-        - xai
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/0dptpu5k.png

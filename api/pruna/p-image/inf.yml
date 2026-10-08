@@ -3,6 +3,8 @@ name: p-image
 description: Pruna's flagship fast text-to-image with multiple aspect ratios and prompt enhancement
 metadata:
     checksum: 2f034a8b12ebd4dc43ce273b18100bd521b217412cb78d7a83d3e959d98bfbdd
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/n9fmyho2.png

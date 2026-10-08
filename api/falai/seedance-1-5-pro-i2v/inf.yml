@@ -4,10 +4,8 @@ description: Generate videos with audio from images using ByteDance's Seedance 1
 metadata:
     provider: bytedance
     tags:
-        - seedance
         - image-to-video
-        - audio
-        - bytedance
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4c3xq4tu.png

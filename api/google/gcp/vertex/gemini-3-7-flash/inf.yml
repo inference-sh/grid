@@ -5,6 +5,9 @@ metadata:
     capabilities:
         - reasoning
         - image
+    tags:
+        - reasoning
+        - coding
 category: chat
 functions:
     - name: run

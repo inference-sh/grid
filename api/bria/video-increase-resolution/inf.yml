@@ -3,6 +3,8 @@ name: video-increase-resolution
 description: Upscale video resolution up to 8K using AI super-resolution
 metadata:
     checksum: 459a12749236128563652d05b8a39c928e71fe5d1b9f543ffc30a52f2a6881db
+    tags:
+        - video-upscaling
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/5ozb832o.png

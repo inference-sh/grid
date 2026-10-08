@@ -5,10 +5,7 @@ metadata:
     checksum: 4a20e35fb51601b3b5f5725212f28cc91ca094368f0e93bc280f443ac0386b8c
     provider: pixverse
     tags:
-        - pixverse
-        - avatar
-        - talking-head
-        - tts
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/9noku4oz.png

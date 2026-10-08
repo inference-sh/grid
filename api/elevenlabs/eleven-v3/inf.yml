@@ -5,11 +5,7 @@ description: ElevenLabs Eleven v3 text to speech. Expressive speech in 70+ langu
 metadata:
     provider: elevenlabs
     tags:
-        - elevenlabs
         - text-to-speech
-        - tts
-        - audio
-        - eleven-v3
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/31oqrhjg.png

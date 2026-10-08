@@ -5,11 +5,8 @@ metadata:
     checksum: 95c36b6ca017fea0b0951e66f97661ff8f1c5d3ebd9bb319ff08e4b27b252325
     provider: runway
     tags:
-        - runway
-        - video-generation
         - text-to-video
         - image-to-video
-        - gen4
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/i70zk7yo.png

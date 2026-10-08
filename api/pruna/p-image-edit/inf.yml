@@ -3,6 +3,9 @@ name: p-image-edit
 description: Fast image editing with text instructions and multi-image support
 metadata:
     checksum: b77d6605dfe9af27e5428306bab758de85a3ab07237ff14c49c0754bdbd6e45b
+    tags:
+        - image-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/s6h6vci2.png

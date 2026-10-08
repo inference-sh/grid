@@ -1,7 +1,10 @@
 namespace: infsh
 name: dramabox
 description: Expressive text-to-speech with voice cloning. The prompt controls emotion, laughs, sighs, pauses and delivery.
-metadata: {}
+metadata:
+    tags:
+        - text-to-speech
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/xwop0n7r.png

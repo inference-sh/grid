@@ -3,6 +3,8 @@ name: voice-remix
 description: ElevenLabs Voice Remix - Modify voice characteristics like accent, gender, style, pacing
 metadata:
     checksum: abc0260dc3850bd40cf895fe7d7b72d6c1692ffc77aaa924f8876771af017073
+    tags:
+        - voice-design
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2t82b7gs.png

@@ -1,7 +1,10 @@
 namespace: falai
 name: nano-banana-2
 description: Google's state-of-the-art fast image generation and editing model. Supports text-to-image and image editing modes.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 env: {}
 kernel: python-3.11

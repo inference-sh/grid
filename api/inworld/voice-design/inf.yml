@@ -1,7 +1,9 @@
 namespace: inworld
 name: voice-design
 description: Design a custom voice from a text description using Inworld AI. Describe the voice you want and get up to 3 previews. Publish the one you like to use with any Inworld TTS model.
-metadata: {}
+metadata:
+    tags:
+        - voice-design
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/u5x7uq1q.png

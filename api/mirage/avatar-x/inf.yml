@@ -4,12 +4,8 @@ description: Generate an expressive talking-head video from a portrait image or 
 metadata:
     provider: mirage
     tags:
-        - talking-head
-        - avatar
-        - lipsync
-        - video-generation
-        - mirage
-        - avatar-x
+        - lip-sync
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/coji0579.png

@@ -5,13 +5,9 @@ metadata:
     checksum: 0d96c66be9ca480bddacf86f160d622687fe2039a66d88c970cd4e176e6ece0e
     provider: fal-ai
     tags:
-        - patina
-        - pbr
-        - material
-        - tileable
-        - extraction
-        - image-to-material
+        - text-to-image
         - image-to-image
+        - pbr-materials
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/xxwf69yw.png

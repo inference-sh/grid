@@ -4,11 +4,7 @@ description: Convert text into natural speech using xAI's Text to Speech API. Su
 metadata:
     provider: xai
     tags:
-        - grok
         - text-to-speech
-        - tts
-        - audio
-        - xai
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ii7vvwer.png

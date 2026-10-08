@@ -1,7 +1,9 @@
 namespace: falai
 name: omni-human-1-5
 description: Generates realistic videos from a static picture by making the person speak the words from an uploaded audio file, complete with synchronized lip movement and emotion. Requires an audio file (created using a separate text-to-speech tool) as input.
-metadata: {}
+metadata:
+    tags:
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/pl0b3abu.png

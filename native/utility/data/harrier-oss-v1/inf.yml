@@ -3,6 +3,8 @@ name: harrier-oss-v1
 description: Multilingual text embedding using Microsoft's Harrier OSS v1 models. Supports retrieval, clustering, semantic similarity, classification, and reranking with state-of-the-art MTEB v2 scores.
 metadata:
     checksum: 9a3daee221078a078858861317c2c221e6852b90dca83580325bbee5ab0eeb29
+    tags:
+        - embeddings
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/8to8rhfa.png

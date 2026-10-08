@@ -1,7 +1,11 @@
 namespace: falai
 name: reve
 description: Reve - Image generation, editing, and style remix via text prompts
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2wmec1zv.png

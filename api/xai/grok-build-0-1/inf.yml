@@ -7,12 +7,9 @@ metadata:
         - image
     provider: xai
     tags:
-        - xai
-        - grok
-        - grok-build
-        - code
-        - llm
+        - vision
         - reasoning
+        - coding
 category: chat
 functions:
     - name: run

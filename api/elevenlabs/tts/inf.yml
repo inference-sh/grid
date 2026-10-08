@@ -3,6 +3,8 @@ name: tts
 description: ElevenLabs Text to Speech - High-quality multilingual voice synthesis
 metadata:
     checksum: 458fe5c193da1a84eea9be38e91199784fa453e20bd23480730ff259db54be95
+    tags:
+        - text-to-speech
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2hu12480.png

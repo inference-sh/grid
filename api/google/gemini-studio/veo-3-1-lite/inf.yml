@@ -3,6 +3,10 @@ name: veo-3-1-lite
 description: Veo 3.1 Lite via Gemini API - Lightweight video generation with text and image input, audio support
 metadata:
     checksum: a71d5ee7958aeb6894ed8bc072760d901d1f0232c4b41ef4b88c50618cc327e3
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/f31gygrz.png

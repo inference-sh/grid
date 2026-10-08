@@ -1,7 +1,10 @@
 namespace: infsh
 name: omnivoice
 description: Zero-shot text-to-speech with voice cloning for 600+ languages.
-metadata: {}
+metadata:
+    tags:
+        - text-to-speech
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/9qm4xi4z.png

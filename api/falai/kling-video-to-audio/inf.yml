@@ -4,9 +4,8 @@ description: Add sound effects and background music to videos using Kling's audi
 metadata:
     provider: kling
     tags:
-        - kling
+        - sound-effects
         - video-to-audio
-        - audio
 category: audio
 images:
     card: ""

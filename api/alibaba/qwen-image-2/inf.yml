@@ -1,7 +1,10 @@
 namespace: alibaba
 name: qwen-image-2
 description: Qwen-Image-2.0 is Alibaba's multimodal image generation model that integrates image generation and editing with enhanced text-rendering, realistic textures, and photorealistic scenes
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/zg54duec.png

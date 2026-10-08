@@ -3,6 +3,8 @@ name: wan-image-small
 description: Fast, efficient text-to-image optimized for rapid prototyping and batch generation
 metadata:
     checksum: 7258d0aece337c99e7500212a4628ca0ab9d8ccd4e0fb43b75830b0c7103144d
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/u7y2yni4.png

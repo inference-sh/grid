@@ -7,6 +7,9 @@ metadata:
         - image
         - file
     checksum: b74040864df06a0c28b86928148b093fac485dfa941c961e4638ac9fe5007ca3
+    tags:
+        - reasoning
+        - coding
 category: chat
 functions:
     - name: run

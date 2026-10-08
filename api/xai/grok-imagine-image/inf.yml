@@ -5,11 +5,8 @@ metadata:
     checksum: ed07d4d5702141b4125442ae9e4da9525de4cf2dbee647352a37761c78d1a5b5
     provider: xai
     tags:
-        - grok
-        - image-generation
         - text-to-image
         - image-editing
-        - xai
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/by79lwe1.png

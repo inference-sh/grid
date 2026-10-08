@@ -1,7 +1,9 @@
 namespace: tavily
 name: search-assistant
 description: Tavily-powered search assistant that browses the internet and returns comprehensive results. Searches the web using Tavily API with configurable depth, filters, and includes AI-generated answers, images, and detailed sources.
-metadata: {}
+metadata:
+    tags:
+        - web-search
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2e234epf.png

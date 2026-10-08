@@ -1,7 +1,9 @@
 namespace: infsh
 name: chroma-1-hd
 description: Creates high-definition images from text descriptions, primarily designed as a robust base for developers to customize and build upon.
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4i6ui4da.png

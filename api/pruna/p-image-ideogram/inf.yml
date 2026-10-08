@@ -3,6 +3,8 @@ name: p-image-ideogram
 description: High-quality text-to-image generation with strong typography and prompt understanding, built with Ideogram
 metadata:
     checksum: 07f5edce40e366d7e7405034bb3ab27087504ac58ca69b99fd24a7ea064dc450
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/ct5qxlik.png

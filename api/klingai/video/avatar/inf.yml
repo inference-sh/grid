@@ -5,10 +5,7 @@ metadata:
     checksum: cffc04053528570b28401c209d48ba9acb3afc658cd44f3b8794523f71974a06
     provider: klingai
     tags:
-        - kling
-        - avatar
-        - digital-human
-        - talking-head
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/p386e3i4.png

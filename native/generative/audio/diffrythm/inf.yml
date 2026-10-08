@@ -3,6 +3,8 @@ name: diffrythm
 description: Generates complete songs quickly and simply using advanced latent diffusion technology.
 metadata:
     checksum: 8015eb31529c060b56892de15ac8a4cbb37e6bb333c059b5c67e33388cb6dda7
+    tags:
+        - music-generation
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/19hhyi00.png

@@ -5,11 +5,7 @@ metadata:
     checksum: fb7cd3f58a54bcbd20b860fe3786e32f71b71c7a5f561d909b2569ee32d8c015
     provider: heygen
     tags:
-        - avatar
-        - avatar-creation
-        - digital-twin
-        - photo-avatar
-        - heygen
+        - talking-avatar
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/vfza6kvr.png

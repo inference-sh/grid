@@ -1,7 +1,10 @@
 namespace: infsh
 name: fast-whisper-large-v3
 description: Quickly converts audio files into written text or translates them to a different language.
-metadata: {}
+metadata:
+    tags:
+        - speech-to-text
+        - open-weights
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/cn0y8qx4.png

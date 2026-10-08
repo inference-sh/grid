@@ -5,6 +5,10 @@ metadata:
     capabilities:
         - reasoning
         - image
+    tags:
+        - vision
+        - reasoning
+        - open-weights
 category: chat
 functions:
     - name: run

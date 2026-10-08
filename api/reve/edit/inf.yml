@@ -3,6 +3,8 @@ name: edit
 description: Reve Edit — Edit images with natural language instructions. Top 3 on LMArena leaderboard.
 metadata:
     checksum: 8efe48f6e92e96f128c6ac60cddaf9c29ae7df51c801112de1dbade9992201e6
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/adkponu7.png

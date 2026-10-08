@@ -3,6 +3,8 @@ name: cogview4-6b
 description: Generates high-quality images from text, capable of producing detailed visuals up to 2048x2048 resolution.
 metadata:
     checksum: 4fc9edfbd69c9bd1465ed1eede6449b831a66e6e504d3a1028bcf41dc003abe2
+    tags:
+        - text-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/f98dip17.png

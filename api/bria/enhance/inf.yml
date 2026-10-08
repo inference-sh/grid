@@ -3,6 +3,8 @@ name: enhance
 description: Enhance image quality with up to 2x resolution increase and added detail
 metadata:
     checksum: 7345cf0bb30911b47336fcf99adf119c9956aa4ea63e382648723a2b72767d42
+    tags:
+        - image-upscaling
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/4gve8n4n.png

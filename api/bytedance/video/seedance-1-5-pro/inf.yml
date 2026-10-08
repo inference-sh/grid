@@ -5,12 +5,8 @@ metadata:
     checksum: 9e2377bf02a310ad0dd54a1f3e8196681e4775387d74fa7bc0ea82adff942882
     provider: bytedance
     tags:
-        - seedance
-        - video-generation
         - text-to-video
         - image-to-video
-        - bytedance
-        - byteplus
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/s66h3cz7.png

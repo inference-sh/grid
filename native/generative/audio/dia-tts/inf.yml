@@ -1,7 +1,10 @@
 namespace: infsh
 name: dia-tts
 description: Dia TTS - Generate realistic dialogue with emotion control, natural nonverbals, and voice cloning
-metadata: {}
+metadata:
+    tags:
+        - text-to-speech
+        - voice-cloning
 category: audio
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/g5bzc26a.png

@@ -5,11 +5,8 @@ metadata:
     checksum: b2b61ed2c450ca1a5c003e5ac4a93a09e5b658722fce15b3f4c9b15091134afe
     provider: pixverse
     tags:
-        - pixverse
-        - video-generation
         - text-to-video
         - image-to-video
-        - c1
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2eu4i9uz.png

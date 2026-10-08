@@ -8,10 +8,7 @@ metadata:
         - file
     provider: openai
     tags:
-        - openai
-        - gpt-6
-        - astra
-        - llm
+        - vision
         - reasoning
 category: chat
 functions:

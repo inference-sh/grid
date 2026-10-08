@@ -4,11 +4,8 @@ description: Generate AI avatar videos from a face image and driving audio using
 metadata:
     provider: kling
     tags:
-        - kling
-        - ai-avatar
-        - avatar
         - lip-sync
-        - video
+        - talking-avatar
 category: video
 images:
     card: ""

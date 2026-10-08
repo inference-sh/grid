@@ -7,11 +7,8 @@ metadata:
         - reasoning
     provider: melious
     tags:
-        - melious
-        - deepseek
-        - deepseek-v4-pro-0813
-        - llm
         - reasoning
+        - coding
 category: chat
 functions:
     - name: run

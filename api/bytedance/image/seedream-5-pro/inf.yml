@@ -5,14 +5,9 @@ metadata:
     checksum: 98ad22b45845247c3f9f3211c8176dd7f284d57c972c3b741e473a831e262d1e
     provider: bytedance
     tags:
-        - seedream
-        - image-generation
         - text-to-image
         - image-to-image
         - image-editing
-        - bytedance
-        - byteplus
-        - 2k
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/aew2x2j3.png

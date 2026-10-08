@@ -3,6 +3,8 @@ name: restore
 description: Restore old or degraded images to improved quality
 metadata:
     checksum: 41889a6d91df6c653e407e8cd1032c8b119c12047551a0223bb01ca58abb2f68
+    tags:
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/5xis8niq.png

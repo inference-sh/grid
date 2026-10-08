@@ -4,8 +4,6 @@ description: Generate videos from reference images using Kling O3 model. Support
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-o3
         - reference-to-video
 category: video
 images:

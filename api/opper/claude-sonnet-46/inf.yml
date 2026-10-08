@@ -6,6 +6,9 @@ metadata:
         - reasoning
         - image
         - file
+    tags:
+        - reasoning
+        - coding
 category: chat
 functions:
     - name: run

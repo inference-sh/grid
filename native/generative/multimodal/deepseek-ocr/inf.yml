@@ -3,6 +3,8 @@ name: deepseek-ocr
 description: Extracts and converts text from documents, especially good at reading images, photos, handwriting, charts, and graphs.
 metadata:
     checksum: 5c9b678b8bcc472640db98051b61c5c9d1e887c7a4ac109b8e2a5b9e9a9e26a2
+    tags:
+        - ocr
 category: text
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/3bltyh1c.png

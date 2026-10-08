@@ -1,7 +1,10 @@
 namespace: falai
 name: flux-2-dev-turbo
 description: "Text-to-image and image-to-image generation with FLUX.2 [dev] Turbo. Enhanced realism, crisper text generation, and native editing capabilities—all at turbo speed."
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - image-to-image
 category: image
 images:
     card: ""

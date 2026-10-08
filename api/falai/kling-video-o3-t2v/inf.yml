@@ -4,8 +4,6 @@ description: Generate videos from text prompts using Kling O3 Pro model.
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-o3
         - text-to-video
 category: video
 images:

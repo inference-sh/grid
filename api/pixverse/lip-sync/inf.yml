@@ -5,10 +5,7 @@ metadata:
     checksum: 0d08f4cea19d8c7dfbf57f27b69aaf7f3c590555f192fa450b42add9ff6f2f11
     provider: pixverse
     tags:
-        - pixverse
         - lip-sync
-        - speech
-        - tts
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/tfubt8fx.png

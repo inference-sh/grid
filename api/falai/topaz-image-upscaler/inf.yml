@@ -1,7 +1,9 @@
 namespace: falai
 name: topaz-image-upscaler
 description: Enhance and increase the size of images without losing quality, making your photos look sharper and more detailed.
-metadata: {}
+metadata:
+    tags:
+        - image-upscaling
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/d8kz4o9x.png

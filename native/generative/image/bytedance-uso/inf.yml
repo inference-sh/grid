@@ -3,6 +3,10 @@ name: bytedance-uso
 description: A unified image editor that allows users to generate images by combining any subject with any style efficiently, preserving identity and consistency.
 metadata:
     checksum: 424f8d61e7d0c4aef70c14702f5b6a835b57fc2d5c445a3c038a72e5acdd8d80
+    tags:
+        - text-to-image
+        - image-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/229s8obd.png

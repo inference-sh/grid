@@ -4,12 +4,8 @@ description: GPT Image 2.5 Flare — OpenAI's fast, high-quality everyday image 
 metadata:
     provider: openai
     tags:
-        - openai
-        - image-generation
         - text-to-image
         - image-editing
-        - gpt-image-2-5
-        - transparent-background
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/fc7rbs0z.png

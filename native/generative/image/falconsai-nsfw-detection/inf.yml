@@ -3,6 +3,8 @@ name: falconsai-nsfw-detection
 description: Detects NSFW content in images and videos using Falconsai/nsfw_image_detection model. For videos, samples frames at configurable intervals.
 metadata:
     checksum: e76545f6f5eb063d49fa9c708fef1941ca1ae5c7616ba6b15e93033580047a5f
+    tags:
+        - moderation
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/uy5zxqvw.png

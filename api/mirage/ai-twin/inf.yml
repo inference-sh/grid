@@ -5,12 +5,7 @@ metadata:
     checksum: e8025a019f81c6f22c46f421d2931a9f16c0d911b1588dd960109827671a7487
     provider: mirage
     tags:
-        - avatar-creation
-        - ai-twin
-        - training
-        - likeness
-        - voice-clone
-        - captions
+        - talking-avatar
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/nleifbza.png

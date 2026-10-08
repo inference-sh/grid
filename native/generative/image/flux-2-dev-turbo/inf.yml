@@ -1,7 +1,10 @@
 namespace: infsh
 name: flux-2-dev-turbo
 description: FLUX.2 Dev Turbo is an open-weight, guidance and step distilled text-to-image model developed by Black Forest Labs for non-commercial applications
-metadata: {}
+metadata:
+    tags:
+        - text-to-image
+        - open-weights
 category: other
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/6g68j98i.png

@@ -3,6 +3,9 @@ name: remix
 description: Reve Remix — Create images from text and 1-6 reference images combined.
 metadata:
     checksum: c14b4efdc691cd9bdba1105f494f7fb309972f575186cc84666ed5699ca8596b
+    tags:
+        - text-to-image
+        - image-to-image
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/2nvgdd9f.png

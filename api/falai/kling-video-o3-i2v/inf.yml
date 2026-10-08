@@ -4,8 +4,6 @@ description: Generate videos from a starting image using Kling O3 model. Support
 metadata:
     provider: kling
     tags:
-        - kling
-        - kling-o3
         - image-to-video
 category: video
 images:

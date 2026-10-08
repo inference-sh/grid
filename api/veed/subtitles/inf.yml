@@ -5,11 +5,7 @@ metadata:
     checksum: 708901203057443743fb313d87d20b3aa42914771e5382345418fa7f9f99763a
     provider: veed
     tags:
-        - veed
-        - subtitles
-        - captions
-        - video
-        - transcription
+        - video-captions
 category: video
 images:
     card: https://cloud.inference.sh/app/files/t/71ckmsn3/rjmqj04k.png

@@ -3,6 +3,9 @@ name: gemini-3-pro-image
 description: Gemini 3 Pro Image (NanoBanana Pro) via Vertex AI - Advanced image generation model powered by Google Cloud
 metadata:
     checksum: 9a00fac169cdf5114328aefb660e6e71081eff02907cdab37a22f94e2b6390e5
+    tags:
+        - text-to-image
+        - image-editing
 category: image
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/46o8lylt.png
