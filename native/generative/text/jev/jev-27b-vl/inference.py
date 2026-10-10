@@ -18,6 +18,13 @@ and applies the decision head's bias and temperature. setup() starts it as a chi
 process on localhost; run() sends one /v1/decide call per question, concurrently. The
 server answers one question per call; the state is shared through vLLM's prefix cache.
 
+Weights come from inference-sh/JEV-27B-VL-merged: the model with its decision LoRA
+(`adapter_vllm`, rank 32 on every language-model linear and lm_head) folded into the base
+weights. Served as a LoRA, vLLM's LoRA kernels added about 40% to a short decision. That repo
+also carries the decision head, the calibration and serve_decide.py, patched to take the head
+from JEV_DECIDE_ADAPTER_DIR and to send System 1 to the served model (JEV_DECIDE_LORA). Only
+System 1 is used (thinking is off), so the unmerged base model is never needed.
+
 How the typed questions map to /v1/decide:
 
   choice  kind=choice; each option is one line, `name` or `name: description`
@@ -36,6 +43,7 @@ import json
 import logging
 import math
 import mimetypes
+import os
 import socket
 import sys
 import time
@@ -48,14 +56,17 @@ from inferencesh.models.decision import DecisionOutput, DecisionVisionInput, Str
 from pydantic import Field
 
 MODEL_ID = "autotrust/JEV-27B-VL"
-# setup() executes the repository's serve_decide.py. Review the diff before moving this.
-REVISION = "f34b598d4ef4bcefd337bee8d8e7ddd3b7733ccc"
+# autotrust/JEV-27B-VL f34b598d with the decision LoRA merged. setup() executes the repository's
+# serve_decide.py. Review the diff before moving this.
+WEIGHTS_ID = "inference-sh/JEV-27B-VL-merged"
+WEIGHTS_REVISION = "0b8292a7eefb323b13e32a6fdecd70d9f8b39884"
 # Prompt tokens per question: state, images, question and options. The backbone takes up
 # to 262,144, at about 65 KB of KV cache per token on top of 52 GB of weights.
 MAX_MODEL_LEN = 32768
 MAX_IMAGES = 8
-# Required by the model card: above 8 sequences in a batch, vLLM's LoRA path for this
-# multimodal model class returns wrong probabilities. Further requests queue.
+# The model card requires 8: above 8 sequences in a batch, vLLM's LoRA path for this
+# multimodal model class returns wrong probabilities. The merged weights skip that path;
+# kept at 8 until larger batches are checked against it. Further requests queue.
 MAX_NUM_SEQS = 8
 NATIVE_SCORE_LEVELS = 6
 SERVER_LOG_TAIL = 40
@@ -174,8 +185,9 @@ class App(BaseApp):
         from huggingface_hub import snapshot_download
 
         started = time.monotonic()
-        self.logger.info(f"downloading {MODEL_ID}@{REVISION[:8]}")
-        model_dir = await asyncio.to_thread(snapshot_download, MODEL_ID, revision=REVISION)
+        self.logger.info(f"downloading {WEIGHTS_ID}@{WEIGHTS_REVISION[:8]}")
+        # HF_TOKEN reads the repository while it is private.
+        model_dir = await asyncio.to_thread(snapshot_download, WEIGHTS_ID, revision=WEIGHTS_REVISION, token=os.environ.get("HF_TOKEN"))
         self.logger.info(f"downloaded in {time.monotonic() - started:.1f}s")
 
         with socket.socket() as s:
@@ -187,8 +199,6 @@ class App(BaseApp):
             sys.executable, f"{model_dir}/serve_decide.py",
             "--model", model_dir,
             "--served-model-name", MODEL_ID,
-            "--enable-lora", "--max-lora-rank", "32",
-            "--lora-modules", f"jev-decision={model_dir}/adapter_vllm",
             "--logprobs-mode", "processed_logprobs",
             "--max-model-len", str(MAX_MODEL_LEN),
             "--enable-prefix-caching", "--mamba-cache-mode", "align",
@@ -198,6 +208,7 @@ class App(BaseApp):
             "--host", "127.0.0.1", "--port", str(port),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
+            env={**os.environ, "JEV_DECIDE_LORA": MODEL_ID, "JEV_DECIDE_ADAPTER_DIR": f"{model_dir}/adapter_vllm"},
         )
         self.server_log_task = asyncio.create_task(self._forward_server_log())
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=None)
