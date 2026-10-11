@@ -712,7 +712,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.drive"
+        "key": "google.drive.readonly"
       }
     ],
     "annotations": {
@@ -1054,7 +1054,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.drive"
+        "key": "google.drive.readonly"
       }
     ],
     "annotations": {
@@ -1462,7 +1462,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.drive"
+        "key": "google.drive.readonly"
       }
     ],
     "annotations": {
@@ -1895,7 +1895,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.drive"
+        "key": "google.drive.readonly"
       }
     ],
     "annotations": {
