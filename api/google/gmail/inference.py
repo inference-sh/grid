@@ -169,7 +169,7 @@ class App(BaseApp):
         self.logger.info("Gmail service initialized")
 
     @function(
-        credentials=[{"key": "google.gmail.modify"}],
+        credentials=[{"key": "google.gmail.readonly"}],
         annotations={"title": "List messages", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_messages(self, input_data: ListMessagesInput) -> ListMessagesOutput:
@@ -207,7 +207,7 @@ class App(BaseApp):
         return ListMessagesOutput(messages=summaries)
 
     @function(
-        credentials=[{"key": "google.gmail.modify"}],
+        credentials=[{"key": "google.gmail.readonly"}],
         annotations={"title": "Get message", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_message(self, input_data: GetMessageInput) -> GetMessageOutput:
@@ -315,7 +315,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.gmail.modify"}],
+        credentials=[{"key": "google.gmail.readonly"}],
         annotations={"title": "List labels", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_labels(self, input_data: ListLabelsInput) -> ListLabelsOutput:

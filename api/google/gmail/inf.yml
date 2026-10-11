@@ -14,6 +14,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.gmail.readonly
+      description: Read your emails and labels
     - key: google.gmail.send
       description: Send emails on your behalf
     - key: google.gmail.modify

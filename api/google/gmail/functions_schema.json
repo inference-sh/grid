@@ -376,7 +376,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.gmail.modify"
+        "key": "google.gmail.readonly"
       }
     ],
     "annotations": {
@@ -761,7 +761,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.gmail.modify"
+        "key": "google.gmail.readonly"
       }
     ],
     "annotations": {
@@ -1131,7 +1131,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.gmail.modify"
+        "key": "google.gmail.readonly"
       }
     ],
     "annotations": {
