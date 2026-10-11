@@ -1,0 +1,659 @@
+{
+  "run": {
+    "description": "",
+    "kind": "run",
+    "capabilities": [],
+    "input_schema": {
+      "$defs": {
+        "UploadPart": {
+          "properties": {
+            "field": {
+              "default": "file",
+              "description": "Multipart form field name for this file.",
+              "title": "Field",
+              "type": "string"
+            },
+            "file": {
+              "description": "The file to upload (a platform file or an http(s) URL).",
+              "format": "file",
+              "title": "File",
+              "type": "string"
+            },
+            "filename": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Filename sent in the part. Defaults to the file's own name.",
+              "title": "Filename"
+            },
+            "content_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Content-Type of the part. Defaults to the file's detected type.",
+              "title": "Content Type"
+            }
+          },
+          "required": [
+            "file"
+          ],
+          "title": "UploadPart",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "method": {
+          "default": "GET",
+          "description": "HTTP method.",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "HEAD",
+            "OPTIONS"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "url": {
+          "description": "Request URL. http or https only; must resolve to a public internet address.",
+          "title": "Url",
+          "type": "string"
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Request headers. Connection-level headers (Host, Content-Length, Connection, Transfer-Encoding, ...) are dropped.",
+          "title": "Headers"
+        },
+        "query": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "type": "array"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Query parameters, added to any already in the URL. A list repeats the key.",
+          "title": "Query"
+        },
+        "body_json": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "JSON request body (any JSON value). Sets Content-Type: application/json.",
+          "title": "Body Json"
+        },
+        "body_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Raw text request body. Set Content-Type in headers (default text/plain; charset=utf-8).",
+          "title": "Body Text"
+        },
+        "form": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Form fields. Sent application/x-www-form-urlencoded, or as multipart fields when files are given.",
+          "title": "Form"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/UploadPart"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Files to upload as multipart/form-data, optionally with form fields.",
+          "title": "Files"
+        },
+        "timeout_seconds": {
+          "default": 30,
+          "description": "Deadline for the whole request: connect, redirects and reading the body.",
+          "exclusiveMinimum": 0,
+          "maximum": 120,
+          "title": "Timeout Seconds",
+          "type": "number"
+        },
+        "follow_redirects": {
+          "default": true,
+          "description": "Follow 3xx redirects. Each hop is checked like the first.",
+          "title": "Follow Redirects",
+          "type": "boolean"
+        },
+        "max_redirects": {
+          "default": 10,
+          "description": "Most redirects to follow.",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Max Redirects",
+          "type": "integer"
+        },
+        "max_response_bytes": {
+          "default": 10485760,
+          "description": "Largest response body to read (decoded bytes).",
+          "maximum": 104857600,
+          "minimum": 1,
+          "title": "Max Response Bytes",
+          "type": "integer"
+        },
+        "truncate": {
+          "default": false,
+          "description": "When the body exceeds max_response_bytes: true returns the first max_response_bytes with truncated=true, false fails the task.",
+          "title": "Truncate",
+          "type": "boolean"
+        },
+        "response_as": {
+          "default": "auto",
+          "description": "auto: JSON to body_json, small text to body_text, anything else to body_file. json/text/file force one.",
+          "enum": [
+            "auto",
+            "json",
+            "text",
+            "file"
+          ],
+          "title": "Response As",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "AppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "status": {
+          "description": "HTTP status code of the final response.",
+          "title": "Status",
+          "type": "integer"
+        },
+        "ok": {
+          "description": "True when status is 2xx.",
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Response headers, lower-case names; repeated headers joined with ', '.",
+          "title": "Headers",
+          "type": "object"
+        },
+        "final_url": {
+          "description": "URL of the final response, after redirects.",
+          "title": "Final Url",
+          "type": "string"
+        },
+        "redirects": {
+          "default": 0,
+          "description": "Redirects followed.",
+          "title": "Redirects",
+          "type": "integer"
+        },
+        "elapsed_ms": {
+          "description": "Time inside the app from sending the request to the end of the body.",
+          "title": "Elapsed Ms",
+          "type": "integer"
+        },
+        "size_bytes": {
+          "default": 0,
+          "description": "Body bytes read (after content decoding).",
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "truncated": {
+          "default": false,
+          "description": "True when the body was cut at max_response_bytes.",
+          "title": "Truncated",
+          "type": "boolean"
+        },
+        "body_json": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Parsed body, when it is JSON.",
+          "title": "Body Json"
+        },
+        "body_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body as text, when it is text.",
+          "title": "Body Text"
+        },
+        "body_file": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body as a file, when binary, large, or response_as=file.",
+          "title": "Body File"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "status",
+        "ok",
+        "headers",
+        "final_url",
+        "elapsed_ms"
+      ],
+      "title": "AppOutput",
+      "type": "object"
+    }
+  }
+}

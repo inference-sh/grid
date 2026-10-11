@@ -1,0 +1,20 @@
+namespace: infsh
+name: http
+title: HTTP Request
+description: Make an HTTP request to a public URL and get the status, headers and body back. JSON, form, text and multipart file uploads; internal addresses are refused.
+metadata:
+    tags:
+        - workflow-utilities
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
