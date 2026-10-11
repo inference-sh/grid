@@ -1,0 +1,30 @@
+namespace: vllm-sr
+name: d3-edge
+title: Decision 3.0 d3-edge 0.6B
+description: "The smallest and fastest Decision 3.0 model from vLLM Semantic Router. Send text, images and videos with typed questions (choice, score, yes/no); get a probability for every answer."
+metadata:
+    tags:
+        - classification
+        - routing
+        - moderation
+        - vision
+        - video
+        - open-weights
+category: decision
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+credentials:
+    - provider: huggingface
+      secrets: [HF_TOKEN]
+      description: Faster, rate-limit-free weight downloads. The weights are public.
+      optional: true
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 12
+        type: any
+    ram: 16
