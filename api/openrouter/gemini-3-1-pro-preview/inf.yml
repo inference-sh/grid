@@ -1,0 +1,31 @@
+namespace: openrouter
+name: gemini-3-1-pro-preview
+title: Gemini 3.1 Pro Preview
+description: Google's frontier reasoning model, with stronger coding and agentic reliability. 1M context; text, image, file, audio and video input.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    tags:
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ln5l2ihc.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/4dobvutd.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/hxrum2iu.png
+env: {}
+kernel: ""
+secrets:
+    - key: OPENROUTER_API_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

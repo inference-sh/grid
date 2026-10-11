@@ -112,7 +112,8 @@ if "image" in input_modalities:
 if "file" in input_modalities:
     capabilities.append("file")
 
-short_desc = description.split(".")[0].strip() + "." if "." in description else description[:200]
+# split on a sentence end, so a version number ("Gemini 3.1") is not cut
+short_desc = description.split(". ")[0].strip().rstrip(".") + "." if ". " in description else description[:200]
 
 # --- Overlay files onto belt-initialized app ---
 
