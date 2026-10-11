@@ -3,6 +3,18 @@
     "description": "Create a new secondary calendar owned by the user.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "Create calendar",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "summary": {
@@ -354,6 +366,18 @@
     "description": "Create a new calendar event.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar.events"
+      }
+    ],
+    "annotations": {
+      "title": "Create event",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "summary": {
@@ -738,6 +762,18 @@
     "description": "Permanently delete a secondary calendar and all of its events.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "Delete calendar",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "calendar_id": {
@@ -1065,6 +1101,18 @@
     "description": "Delete a calendar event.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar.events"
+      }
+    ],
+    "annotations": {
+      "title": "Delete event",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "event_id": {
@@ -1398,6 +1446,18 @@
     "description": "Get full details of a single event.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar.events"
+      }
+    ],
+    "annotations": {
+      "title": "Get event",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "event_id": {
@@ -1836,6 +1896,18 @@
     "description": "List who a calendar is shared with and at what access level.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "List calendar shares",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "calendar_id": {
@@ -2206,6 +2278,18 @@
     "description": "List all calendars accessible to the user.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "List calendars",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {},
       "title": "ListCalendarsInput",
@@ -2569,6 +2653,18 @@
     "description": "List events from a Google Calendar.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar.events"
+      }
+    ],
+    "annotations": {
+      "title": "List events",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "calendar_id": {
@@ -3020,6 +3116,18 @@
     "description": "Share a calendar with a person by email, granting the given access level.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "Share calendar",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "calendar_id": {
@@ -3377,6 +3485,18 @@
     "description": "Remove a person's access to a calendar.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar"
+      }
+    ],
+    "annotations": {
+      "title": "Unshare calendar",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "calendar_id": {
@@ -3716,6 +3836,18 @@
     "description": "Update an existing calendar event.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.calendar.events"
+      }
+    ],
+    "annotations": {
+      "title": "Update event",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "event_id": {

@@ -1,6 +1,6 @@
 import os
 import logging
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
 from pydantic import Field, field_validator
 from typing import List, Literal, Optional
 from google.oauth2.credentials import Credentials
@@ -257,6 +257,10 @@ class App(BaseApp):
     async def setup(self):
         self.logger = logging.getLogger(__name__)
 
+    @function(
+        credentials=[{"key": "google.calendar.events"}],
+        annotations={"title": "List events", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_events(self, input_data: ListEventsInput) -> ListEventsOutput:
         """List events from a Google Calendar."""
         self.logger.info(f"Listing events from calendar={input_data.calendar_id}, max_results={input_data.max_results}")
@@ -295,6 +299,10 @@ class App(BaseApp):
         self.logger.info(f"Found {len(events)} events")
         return ListEventsOutput(events=events)
 
+    @function(
+        credentials=[{"key": "google.calendar.events"}],
+        annotations={"title": "Get event", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_event(self, input_data: GetEventInput) -> GetEventOutput:
         """Get full details of a single event."""
         self.logger.info(f"Getting event={input_data.event_id} from calendar={input_data.calendar_id}")
@@ -321,6 +329,10 @@ class App(BaseApp):
             updated=event.get("updated", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.calendar.events"}],
+        annotations={"title": "Create event", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_event(self, input_data: CreateEventInput) -> CreateEventOutput:
         """Create a new calendar event."""
         self.logger.info(f"Creating event '{input_data.summary}' in calendar={input_data.calendar_id}")
@@ -350,6 +362,10 @@ class App(BaseApp):
             html_link=created.get("htmlLink", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.calendar.events"}],
+        annotations={"title": "Update event", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def update_event(self, input_data: UpdateEventInput) -> UpdateEventOutput:
         """Update an existing calendar event."""
         self.logger.info(f"Updating event={input_data.event_id} in calendar={input_data.calendar_id}")
@@ -386,6 +402,10 @@ class App(BaseApp):
             html_link=updated.get("htmlLink", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.calendar.events"}],
+        annotations={"title": "Delete event", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def delete_event(self, input_data: DeleteEventInput) -> DeleteEventOutput:
         """Delete a calendar event."""
         self.logger.info(f"Deleting event={input_data.event_id} from calendar={input_data.calendar_id}")
@@ -399,6 +419,10 @@ class App(BaseApp):
         self.logger.info(f"Deleted event={input_data.event_id}")
         return DeleteEventOutput(success=True)
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "List calendars", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_calendars(self, input_data: ListCalendarsInput) -> ListCalendarsOutput:
         """List all calendars accessible to the user."""
         self.logger.info("Listing calendars")
@@ -420,6 +444,10 @@ class App(BaseApp):
         self.logger.info(f"Found {len(calendars)} calendars")
         return ListCalendarsOutput(calendars=calendars)
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "Create calendar", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_calendar(self, input_data: CreateCalendarInput) -> CreateCalendarOutput:
         """Create a new secondary calendar owned by the user."""
         self.logger.info(f"Creating calendar '{input_data.summary}'")
@@ -440,6 +468,10 @@ class App(BaseApp):
             timezone=created.get("timeZone", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "Share calendar", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def share_calendar(self, input_data: ShareCalendarInput) -> ShareCalendarOutput:
         """Share a calendar with a person by email, granting the given access level."""
         self.logger.info(f"Sharing calendar={input_data.calendar_id} with {input_data.email} as {input_data.role}")
@@ -460,6 +492,10 @@ class App(BaseApp):
             role=rule.get("role", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "Unshare calendar", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": True},
+    )
     async def unshare_calendar(self, input_data: UnshareCalendarInput) -> UnshareCalendarOutput:
         """Remove a person's access to a calendar."""
         self.logger.info(f"Removing {input_data.email} from calendar={input_data.calendar_id}")
@@ -485,6 +521,10 @@ class App(BaseApp):
         self.logger.info(f"Deleted ACL rule id={match['id']}")
         return UnshareCalendarOutput(success=True, rule_id=match["id"])
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "List calendar shares", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_calendar_shares(self, input_data: ListCalendarSharesInput) -> ListCalendarSharesOutput:
         """List who a calendar is shared with and at what access level."""
         self.logger.info(f"Listing ACL rules for calendar={input_data.calendar_id}")
@@ -503,6 +543,10 @@ class App(BaseApp):
         self.logger.info(f"Found {len(shares)} ACL rules")
         return ListCalendarSharesOutput(shares=shares)
 
+    @function(
+        credentials=[{"key": "google.calendar"}],
+        annotations={"title": "Delete calendar", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def delete_calendar(self, input_data: DeleteCalendarInput) -> DeleteCalendarOutput:
         """Permanently delete a secondary calendar and all of its events."""
         if input_data.calendar_id.strip().lower() == "primary":
