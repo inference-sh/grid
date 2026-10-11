@@ -16,7 +16,16 @@ Serving follows the model card: the repository's `serve_decide.py` is the vLLM O
 server plus `POST /v1/decide`, which builds the decision prompt, reads the option tokens
 and applies the decision head's bias and temperature. setup() starts it as a child
 process on localhost; run() sends one /v1/decide call per question, concurrently. The
-server answers one question per call; the state is shared through vLLM's prefix cache.
+server answers one question per call.
+
+Sharing the state between questions: the model is a hybrid (attention + mamba layers), so vLLM
+raises its cache block to 784 tokens and in `align` mode only resumes a cached prompt where a mamba
+state was saved. A 448 px image and a question are ~165 tokens, so questions never shared
+anything. With --prefix-match-unit 16, vLLM also saves the state at each prompt's tail (rounded
+down to 16 tokens). When a request's questions share enough prefix (decide_warmups), run() first
+sends a warm-up: serve_decide's prompt up to where the question starts. Every question then
+resumes from that state. The questions' inputs are unchanged; answers move within ~0.01 of an
+uncached run, because the cached and recomputed mamba states round differently in bf16.
 
 Weights come from inference-sh/JEV-27B-VL-merged: the model with its decision LoRA
 (`adapter_vllm`, rank 32 on every language-model linear and lm_head) folded into the base
@@ -47,8 +56,9 @@ import os
 import socket
 import sys
 import time
-from collections import deque
-from typing import Any, Dict, List, Tuple
+from collections import Counter, deque
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
 from inferencesh import BaseApp, File
@@ -65,10 +75,21 @@ WEIGHTS_REVISION = "0b8292a7eefb323b13e32a6fdecd70d9f8b39884"
 MAX_MODEL_LEN = 32768
 MAX_IMAGES = 8
 # The model card requires 8: above 8 sequences in a batch, vLLM's LoRA path for this
-# multimodal model class returns wrong probabilities. The merged weights skip that path;
-# kept at 8 until larger batches are checked against it. Further requests queue.
-MAX_NUM_SEQS = 8
+# multimodal model class returns wrong probabilities. The merged weights skip that path. Checked
+# on 13 request shapes (bench app, cache reset per call): batch 16 answers match batch 8 within
+# 0.0021, inside the 0.0033 two identical runs already differ by, and 16 questions on one image
+# run in one batch instead of two (~20% faster). Further requests queue.
+MAX_NUM_SEQS = 16
 NATIVE_SCORE_LEVELS = 6
+# Prefix-cache hits can land every 16 tokens inside a 784-token hybrid block, and align mode
+# checkpoints the mamba state at each prompt's tail (rounded down to 16). A prompt that is only the
+# shared image prefix therefore leaves a state every question on that image can resume from.
+PREFIX_MATCH_UNIT = 16
+WARM_READ = {"max_tokens": 1, "temperature": 0, "add_special_tokens": False}
+# serve_decide.py's raw template for the qwen profile: content parts rendered with no chat wrapper.
+RAW_TEMPLATE = ("{%- for m in messages -%}{%- if m['content'] is string -%}{{ m['content'] }}{%- else -%}"
+                "{%- for c in m['content'] -%}{%- if c['type'] == 'text' -%}{{ c['text'] }}{%- else -%}"
+                "<|vision_start|><|image_pad|><|vision_end|>{%- endif -%}{%- endfor -%}{%- endif -%}{%- endfor -%}")
 SERVER_LOG_TAIL = 40
 
 
@@ -109,16 +130,30 @@ def image_part(image: File) -> Dict[str, str]:
         return {"image": f"data:{content_type};base64,{base64.b64encode(f.read()).decode()}"}
 
 
-def encode_state(input_data: AppInput) -> bytes:
+def encode_state(image_urls: List[str], text: str) -> bytes:
     """The /v1/decide `state` as JSON: the text, or the images then the text. Every question's
     request carries it, so it is encoded once here; with images it is megabytes of base64."""
-    text = as_text(input_data.state)
-    if not input_data.images:
+    if not image_urls:
         return json.dumps(text).encode()
-    parts: List[Any] = [image_part(image) for image in input_data.images]
+    parts: List[Any] = [{"image": url} for url in image_urls]
     if text:
         parts.append("\n" + text)
     return json.dumps(parts).encode()
+
+
+def warm_request(kind: str, image_urls: List[str], text: str) -> Tuple[str, Dict[str, Any]]:
+    """The request that prefills only what every `kind` question on this state shares: serve_decide's
+    prompt up to where the question starts. Mirrors s1_pass: chat parts with the raw template when
+    there are images, a plain completion over the joined text otherwise."""
+    head = f"[kind] {kind}\n[state] "
+    if not image_urls:
+        return "/v1/completions", {"model": MODEL_ID, "prompt": head + text, **WARM_READ}
+    content: List[Dict[str, Any]] = [{"type": "text", "text": head}]
+    content += [{"type": "image_url", "image_url": {"url": url}} for url in image_urls]
+    if text:
+        content.append({"type": "text", "text": "\n" + text})
+    return "/v1/chat/completions", {"model": MODEL_ID, "messages": [{"role": "user", "content": content}],
+                                    "chat_template": RAW_TEMPLATE, "add_generation_prompt": False, **WARM_READ}
 
 
 def build_requests(input_data: AppInput) -> List[Tuple[str, Dict[str, Any], int]]:
@@ -142,6 +177,102 @@ def build_requests(input_data: AppInput) -> List[Tuple[str, Dict[str, Any], int]
             question += " (" + "; ".join(f"{key}: {as_line(criteria[key])}" for key in ("true", "false") if key in criteria) + ")"
         requests.append((q.id, {"kind": "noul", "question": question}, 2))
     return requests
+
+
+# ── Warm-up gate ─────────────────────────────────────────────────────────────
+#
+# A warm-up is one extra request that runs before the questions; it saves every other question of
+# that kind the prefill of the shared prefix. Questions resume from the warm-up's state at its last
+# PREFIX_MATCH_UNIT boundary, so each saves floor16(prefix) tokens. Measured on A100 (bench app,
+# 13 request shapes, cache reset per call): warm-ups lost at <= 384 saved tokens and with 2
+# questions, and won from 640 (1.12x, an image with 6 questions) to 3.4x (16 questions on ~1,300
+# tokens of text).
+WARM_MIN_QUESTIONS = 3
+WARM_MIN_SAVED_TOKENS = 600
+# English measured at ~4.6 characters per token. Scripts with fewer characters per token are
+# underestimated, which only means fewer warm-ups.
+CHARS_PER_TOKEN = 4.5
+# "[kind] noul\n[state] " plus the vision start/end markers around each image.
+TEMPLATE_TOKENS = 8
+VISION_MARKER_TOKENS = 2
+
+
+@dataclass(frozen=True)
+class ImageGrid:
+    """How the processor turns pixels into tokens: images are resized to a multiple of `factor`
+    (patch size x merge size) within [min_pixels, max_pixels], one token per factor x factor."""
+    factor: int = 32
+    min_pixels: int = 65536
+    max_pixels: int = 16777216
+
+    @classmethod
+    def from_preprocessor_config(cls, path: str) -> "ImageGrid":
+        try:
+            with open(path) as f:
+                config = json.load(f)
+        except (OSError, ValueError):
+            return cls()
+        size = config.get("size") or {}
+        return cls(
+            factor=int(config.get("patch_size", 16)) * int(config.get("merge_size", 2)),
+            min_pixels=int(size.get("shortest_edge", config.get("min_pixels", cls.min_pixels))),
+            max_pixels=int(size.get("longest_edge", config.get("max_pixels", cls.max_pixels))),
+        )
+
+    def tokens(self, width: int, height: int) -> int:
+        """Qwen's smart_resize, then one token per grid cell."""
+        f = self.factor
+        h = max(f, round(height / f) * f)
+        w = max(f, round(width / f) * f)
+        if h * w > self.max_pixels:
+            beta = math.sqrt(height * width / self.max_pixels)
+            h = max(f, math.floor(height / beta / f) * f)
+            w = max(f, math.floor(width / beta / f) * f)
+        elif h * w < self.min_pixels:
+            beta = math.sqrt(self.min_pixels / (height * width))
+            h = math.ceil(height * beta / f) * f
+            w = math.ceil(width * beta / f) * f
+        return (h // f) * (w // f)
+
+
+@dataclass(frozen=True)
+class WarmupDecision:
+    kind: str
+    questions: int
+    prefix_tokens: int
+    saved_tokens: int
+    warm: bool
+
+
+def estimate_prefix_tokens(image_sizes: List[Tuple[int, int]], text: str, grid: ImageGrid) -> int:
+    """Tokens every question of one kind shares: the template head, the images and the state text."""
+    images = sum(grid.tokens(w, h) + VISION_MARKER_TOKENS for w, h in image_sizes)
+    return TEMPLATE_TOKENS + images + math.ceil(len(text) / CHARS_PER_TOKEN)
+
+
+def saved_tokens(questions: int, prefix_tokens: int) -> int:
+    """Prefill a warm-up saves: each question after the first resumes at the last match boundary."""
+    return max(0, questions - 1) * (prefix_tokens // PREFIX_MATCH_UNIT * PREFIX_MATCH_UNIT)
+
+
+def decide_warmups(image_sizes: List[Tuple[int, int]], text: str, kinds: List[str], grid: ImageGrid,
+                   min_questions: int = WARM_MIN_QUESTIONS, min_saved_tokens: int = WARM_MIN_SAVED_TOKENS) -> List[WarmupDecision]:
+    """Per question kind: warm up when the prefill it saves the other questions outweighs the extra
+    request that runs first. Reads only shapes: image sizes, text length and question counts."""
+    prefix = estimate_prefix_tokens(image_sizes, text, grid)
+    decisions = []
+    for kind, n in Counter(kinds).items():
+        saved = saved_tokens(n, prefix)
+        decisions.append(WarmupDecision(kind=kind, questions=n, prefix_tokens=prefix, saved_tokens=saved,
+                                        warm=n >= min_questions and saved >= min_saved_tokens))
+    return decisions
+
+
+def image_size(path: str) -> Tuple[int, int]:
+    """Width and height from the file header; the pixels are not decoded."""
+    from PIL import Image
+    with Image.open(path) as image:
+        return image.size
 
 
 def confidence(probabilities: List[float]) -> float:
@@ -190,6 +321,8 @@ class App(BaseApp):
         model_dir = await asyncio.to_thread(snapshot_download, WEIGHTS_ID, revision=WEIGHTS_REVISION, token=os.environ.get("HF_TOKEN"))
         self.logger.info(f"downloaded in {time.monotonic() - started:.1f}s")
 
+        self.image_grid = ImageGrid.from_preprocessor_config(os.path.join(model_dir, "preprocessor_config.json"))
+
         with socket.socket() as s:
             s.bind(("127.0.0.1", 0))
             port = s.getsockname()[1]
@@ -201,7 +334,7 @@ class App(BaseApp):
             "--served-model-name", MODEL_ID,
             "--logprobs-mode", "processed_logprobs",
             "--max-model-len", str(MAX_MODEL_LEN),
-            "--enable-prefix-caching", "--mamba-cache-mode", "align",
+            "--enable-prefix-caching", "--mamba-cache-mode", "align", "--prefix-match-unit", str(PREFIX_MATCH_UNIT),
             "--limit-mm-per-prompt", json.dumps({"image": MAX_IMAGES}),
             "--max-num-seqs", str(MAX_NUM_SEQS),
             "--trust-request-chat-template",
@@ -249,6 +382,31 @@ class App(BaseApp):
             raise RuntimeError(f"question '{qid}' could not be answered ({response.status_code}): {message[:600]}")
         return response.json()
 
+    async def _warm(self, kind: str, image_urls: List[str], text: str) -> int:
+        """Prefill the shared prefix of `kind` questions. Returns its prompt tokens, 0 on failure."""
+        path, body = warm_request(kind, image_urls, text)
+        try:
+            response = await self.client.post(path, json=body)
+            if response.status_code == 200:
+                return int((response.json().get("usage") or {}).get("prompt_tokens") or 0)
+            self.logger.warning(f"warm-up for {kind} questions failed ({response.status_code}): {response.text[:300]}")
+        except httpx.HTTPError as e:
+            self.logger.warning(f"warm-up for {kind} questions failed: {e}")
+        return 0
+
+    async def _answer(self, image_urls: List[str], image_sizes: List[Tuple[int, int]], text: str,
+                      requests: List[Tuple[str, Dict[str, Any], int]], warm: Optional[bool] = None) -> List[Dict[str, Any]]:
+        """Every question against the state. A kind whose questions share enough prefix first gets a
+        warm-up request (see decide_warmups), so vLLM checkpoints the shared prefix and each question
+        prefills only its own tokens. The questions' inputs are unchanged; a failed warm-up only costs
+        the speedup. `warm` None decides per kind; True or False forces it for every kind."""
+        state = await asyncio.to_thread(encode_state, image_urls, text)
+        decisions = decide_warmups(image_sizes, text, [body["kind"] for _, body, _ in requests], self.image_grid)
+        kinds = [d.kind for d in decisions if (d.warm if warm is None else warm)]
+        if kinds:
+            await asyncio.gather(*(self._warm(k, image_urls, text) for k in kinds))
+        return await asyncio.gather(*(self._decide(qid, state, body) for qid, body, _ in requests))
+
     async def run(self, input_data: AppInput) -> AppOutput:
         """Evaluate the state and images against every question."""
         if self.server.returncode is not None:
@@ -257,10 +415,11 @@ class App(BaseApp):
             if not image.exists():
                 raise RuntimeError(f"image does not exist at path: {image.path}")
 
-        state = await asyncio.to_thread(encode_state, input_data)
+        image_urls = await asyncio.to_thread(lambda: [image_part(image)["image"] for image in input_data.images])
+        image_sizes = await asyncio.to_thread(lambda: [image_size(image.path) for image in input_data.images])
         requests = build_requests(input_data)
         started = time.monotonic()
-        results = await asyncio.gather(*(self._decide(qid, state, body) for qid, body, _ in requests))
+        results = await self._answer(image_urls, image_sizes, as_text(input_data.state), requests)
         elapsed_ms = (time.monotonic() - started) * 1000
 
         probabilities: Dict[str, List[float]] = {}
