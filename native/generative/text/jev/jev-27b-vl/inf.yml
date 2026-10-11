@@ -15,6 +15,11 @@ images:
     thumbnail: ""
     banner: ""
 env: {}
+credentials:
+    - provider: huggingface
+      secrets: [HF_TOKEN]
+      description: Faster, rate-limit-free weight downloads. The weights are public.
+      optional: true
 kernel: python-3.11
 resources:
     gpu:
