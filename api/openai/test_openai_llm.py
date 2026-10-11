@@ -55,3 +55,33 @@ class TestDeltaExtraction:
         frag = openai_llm._handle_event({"type": "response.function_call_arguments.delta", "item_id": "it1", "delta": '{"a":1}'}, state)
         assert frag == {"tool_calls": [{"index": 0, "function": {"arguments": '{"a":1}'}}]}
         assert state["tool_calls"][0]["function"]["arguments"] == '{"a":1}'
+
+
+class TestToolResultImages:
+    def test_tool_images_ride_in_function_call_output(self, tmp_path):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        png = tmp_path / "shot.png"
+        png.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        inp = LLMInput(
+            context=[ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="t0", text="captured",
+                                    images=[File(path=str(png))])],
+            text="done",
+            role=ContextMessageRole.TOOL,
+            tool_call_id="t1",
+            images=[File(path=str(png))],
+        )
+        _, items = openai_llm.build_input(inp)
+        assert [i["type"] for i in items] == ["function_call_output", "function_call_output"]
+        out = items[0]["output"]
+        assert out[0] == {"type": "input_text", "text": "captured"}
+        assert out[1]["type"] == "input_image" and out[1]["image_url"].startswith("data:image/png;base64,")
+        assert items[1]["call_id"] == "t1"
+        assert items[1]["output"][1]["image_url"].startswith("data:image/png;base64,")
+
+    def test_text_only_tool_result_unchanged(self):
+        from inferencesh.models.llm import ContextMessageRole
+
+        _, items = openai_llm.build_input(LLMInput(text="42", role=ContextMessageRole.TOOL, tool_call_id="t1"))
+        assert items == [{"type": "function_call_output", "call_id": "t1", "output": "42"}]

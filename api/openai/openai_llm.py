@@ -100,6 +100,18 @@ def _user_content(text: Optional[str], images, files) -> Any:
     return parts
 
 
+def _function_call_output(call_id: str, text: Optional[str], images, files) -> Dict[str, Any]:
+    """A tool's result. One that returned images or files carries them as an
+    output list (input_text, input_image, input_file), which the Responses
+    API accepts on function_call_output; a text result stays a string."""
+    output: Any = text or ""
+    if images or files:
+        parts = _user_content(text, images, files)
+        if isinstance(parts, list):
+            output = parts
+    return {"type": "function_call_output", "call_id": call_id, "output": output}
+
+
 def _function_call_items(tool_calls: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Assistant tool calls -> function_call items.
 
@@ -131,11 +143,8 @@ def build_input(input_data) -> Tuple[Optional[str], List[Dict[str, Any]]]:
         role = msg.role
 
         if role == ContextMessageRole.TOOL and msg.tool_call_id:
-            items.append({
-                "type": "function_call_output",
-                "call_id": msg.tool_call_id,
-                "output": msg.text or "",
-            })
+            items.append(_function_call_output(
+                msg.tool_call_id, msg.text, getattr(msg, "images", None), getattr(msg, "files", None)))
             continue
 
         if role == ContextMessageRole.ASSISTANT:
@@ -160,11 +169,8 @@ def build_input(input_data) -> Tuple[Optional[str], List[Dict[str, Any]]]:
 
     # Current turn
     if input_data.role == ContextMessageRole.TOOL and input_data.tool_call_id:
-        items.append({
-            "type": "function_call_output",
-            "call_id": input_data.tool_call_id,
-            "output": input_data.text or "",
-        })
+        items.append(_function_call_output(
+            input_data.tool_call_id, input_data.text, input_data.images, input_data.files))
     else:
         files = list(input_data.files or []) + list(getattr(input_data, "attachments", None) or [])
         content = _user_content(input_data.text, input_data.images, files)
