@@ -1066,7 +1066,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.sheets"
+        "key": "google.sheets.readonly"
       }
     ],
     "annotations": {
@@ -1472,7 +1472,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.sheets"
+        "key": "google.sheets.readonly"
       }
     ],
     "annotations": {

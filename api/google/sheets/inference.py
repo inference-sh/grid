@@ -102,7 +102,7 @@ class App(BaseApp):
         self.service = build("sheets", "v4", credentials=creds)
 
     @function(
-        credentials=[{"key": "google.sheets"}],
+        credentials=[{"key": "google.sheets.readonly"}],
         annotations={"title": "Read range", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def read_sheet(self, input_data: ReadSheetInput) -> ReadSheetOutput:
@@ -172,7 +172,7 @@ class App(BaseApp):
         return CreateSpreadsheetOutput(id=spreadsheet_id, url=url)
 
     @function(
-        credentials=[{"key": "google.sheets"}],
+        credentials=[{"key": "google.sheets.readonly"}],
         annotations={"title": "Get spreadsheet", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_spreadsheet(self, input_data: GetSpreadsheetInput) -> GetSpreadsheetOutput:

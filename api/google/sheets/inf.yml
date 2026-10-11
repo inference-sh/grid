@@ -13,6 +13,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.sheets.readonly
+      description: View your Google Sheets
     - key: google.sheets
       description: Full Google Sheets access
 resources:
