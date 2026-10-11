@@ -2,7 +2,7 @@ import os
 import uuid
 import logging
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
 from pydantic import Field
 from typing import List, Optional, Any
 
@@ -130,6 +130,10 @@ class App(BaseApp):
         self.service = build("slides", "v1", credentials=creds)
         self.logger.info("Google Slides service initialized")
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Get presentation", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_presentation(self, input_data: GetPresentationInput) -> GetPresentationOutput:
         """Get a presentation with slide content."""
         self.logger.info(f"Getting presentation id={input_data.presentation_id}")
@@ -153,6 +157,10 @@ class App(BaseApp):
             num_slides=len(slides),
         )
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Create presentation", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_presentation(self, input_data: CreatePresentationInput) -> CreatePresentationOutput:
         """Create a new Google Slides presentation."""
         self.logger.info(f"Creating presentation title='{input_data.title}'")
@@ -171,6 +179,10 @@ class App(BaseApp):
             url=url,
         )
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Add slide", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def add_slide(self, input_data: AddSlideInput) -> AddSlideOutput:
         """Add a new slide to a presentation."""
         self.logger.info(f"Adding slide to presentation={input_data.presentation_id} layout={input_data.layout}")
@@ -197,6 +209,10 @@ class App(BaseApp):
             slide_id=slide_id,
         )
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Add text box", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def add_text(self, input_data: AddTextInput) -> AddTextOutput:
         """Add a text box to a slide in a presentation."""
         self.logger.info(
@@ -259,6 +275,10 @@ class App(BaseApp):
             presentation_id=input_data.presentation_id,
         )
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Delete slide", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def delete_slide(self, input_data: DeleteSlideInput) -> DeleteSlideOutput:
         """Delete a slide from a presentation."""
         self.logger.info(
@@ -288,6 +308,10 @@ class App(BaseApp):
                 success=False,
             )
 
+    @function(
+        credentials=[{"key": "google.slides"}],
+        annotations={"title": "Batch update presentation", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": True},
+    )
     async def batch_update(self, input_data: BatchUpdateInput) -> BatchUpdateOutput:
         """Execute a raw batch update on a presentation for advanced use."""
         self.logger.info(
