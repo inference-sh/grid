@@ -15,6 +15,7 @@ import logging
 import mimetypes
 import os
 import re
+import sys
 import tempfile
 import time
 import urllib.parse
@@ -47,6 +48,16 @@ REDIRECT_STATUSES = (301, 302, 303, 307, 308)
 HEADER_NAME_RE = re.compile(r"^[!#$%&'*+.^_`|~0-9A-Za-z-]+$")
 
 Scalar = Union[str, int, float, bool]
+
+
+# Task logs are the process's stdout; a logger with no handler logs nothing.
+_logger = logging.getLogger("infsh.http")
+if not _logger.handlers:
+    _h = logging.StreamHandler(sys.stdout)
+    _h.setFormatter(logging.Formatter("%(message)s"))
+    _logger.addHandler(_h)
+    _logger.setLevel(logging.INFO)
+    _logger.propagate = False
 
 
 class RequestError(Exception):
@@ -295,7 +306,7 @@ class App(BaseApp):
         )
 
     def _log(self):
-        return getattr(self, "logger", None) or logging.getLogger("infsh.http")
+        return getattr(self, "logger", None) or _logger
 
     def _request_factory(self, inp: AppInput, base_headers: dict):
         """Builds a fresh request per hop, so a 307/308 can re-send the body."""
