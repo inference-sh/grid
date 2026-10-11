@@ -1794,7 +1794,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.slides"
+        "key": "google.slides.readonly"
       }
     ],
     "annotations": {

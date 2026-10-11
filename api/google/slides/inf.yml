@@ -13,6 +13,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.slides.readonly
+      description: View your Google Slides presentations
     - key: google.slides
       description: Full Google Slides access
 resources:

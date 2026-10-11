@@ -131,7 +131,7 @@ class App(BaseApp):
         self.logger.info("Google Slides service initialized")
 
     @function(
-        credentials=[{"key": "google.slides"}],
+        credentials=[{"key": "google.slides.readonly"}],
         annotations={"title": "Get presentation", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_presentation(self, input_data: GetPresentationInput) -> GetPresentationOutput:
