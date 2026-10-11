@@ -1,6 +1,6 @@
 import os
 import logging
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
 from pydantic import Field
 from typing import List, Optional
 from google.oauth2.credentials import Credentials
@@ -101,6 +101,10 @@ class App(BaseApp):
         creds = Credentials(token=token)
         self.service = build("sheets", "v4", credentials=creds)
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Read range", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def read_sheet(self, input_data: ReadSheetInput) -> ReadSheetOutput:
         self.logger.info(f"Reading spreadsheet {input_data.spreadsheet_id} range={input_data.range}")
         result = self.service.spreadsheets().values().get(
@@ -113,6 +117,10 @@ class App(BaseApp):
         self.logger.info(f"Read {rows} rows, {cols} cols")
         return ReadSheetOutput(values=values, rows=rows, cols=cols)
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Write range", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def write_sheet(self, input_data: WriteSheetInput) -> WriteSheetOutput:
         self.logger.info(f"Writing to spreadsheet {input_data.spreadsheet_id} range={input_data.range}")
         body = {"values": input_data.values}
@@ -129,6 +137,10 @@ class App(BaseApp):
             updated_cols=result.get("updatedColumns", 0),
         )
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Append rows", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def append_rows(self, input_data: AppendRowsInput) -> AppendRowsOutput:
         self.logger.info(f"Appending to spreadsheet {input_data.spreadsheet_id} range={input_data.range}")
         body = {"values": input_data.values}
@@ -146,6 +158,10 @@ class App(BaseApp):
             updated_rows=updates.get("updatedRows", 0),
         )
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Create spreadsheet", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_spreadsheet(self, input_data: CreateSpreadsheetInput) -> CreateSpreadsheetOutput:
         self.logger.info(f"Creating spreadsheet: {input_data.title}")
         body = {"properties": {"title": input_data.title}}
@@ -155,6 +171,10 @@ class App(BaseApp):
         self.logger.info(f"Created spreadsheet {spreadsheet_id}")
         return CreateSpreadsheetOutput(id=spreadsheet_id, url=url)
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Get spreadsheet", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_spreadsheet(self, input_data: GetSpreadsheetInput) -> GetSpreadsheetOutput:
         self.logger.info(f"Getting spreadsheet metadata: {input_data.spreadsheet_id}")
         result = self.service.spreadsheets().get(
@@ -179,6 +199,10 @@ class App(BaseApp):
             sheets=sheets,
         )
 
+    @function(
+        credentials=[{"key": "google.sheets"}],
+        annotations={"title": "Clear range", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def clear_range(self, input_data: ClearRangeInput) -> ClearRangeOutput:
         self.logger.info(f"Clearing range {input_data.range} in {input_data.spreadsheet_id}")
         result = self.service.spreadsheets().values().clear(
