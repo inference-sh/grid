@@ -3,6 +3,18 @@
     "description": "Append text to the end of a Google Doc.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Append text",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "document_id": {
@@ -338,6 +350,18 @@
     "description": "Execute a raw batchUpdate for advanced use cases.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Batch update document",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "document_id": {
@@ -684,6 +708,18 @@
     "description": "Create a new Google Doc, optionally inserting body text.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Create document",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "title": {
@@ -1031,6 +1067,18 @@
     "description": "Retrieve a Google Doc and return its ID, title, and plain text body.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Get document",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "document_id": {
@@ -1372,6 +1420,18 @@
     "description": "Insert text at a given index in a Google Doc.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Insert text",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "document_id": {
@@ -1713,6 +1773,18 @@
     "description": "Find and replace text in a Google Doc.",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.docs"
+      }
+    ],
+    "annotations": {
+      "title": "Replace text",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "document_id": {

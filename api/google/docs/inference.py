@@ -1,6 +1,6 @@
 import os
 import logging
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
 from pydantic import Field
 from typing import List, Optional, Any
 from google.oauth2.credentials import Credentials
@@ -122,6 +122,10 @@ class App(BaseApp):
     async def setup(self):
         self.logger = logging.getLogger(__name__)
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Get document", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_document(self, input_data: GetDocumentInput) -> GetDocumentOutput:
         """Retrieve a Google Doc and return its ID, title, and plain text body."""
         self.logger.info(f"Getting document: {input_data.document_id}")
@@ -135,6 +139,10 @@ class App(BaseApp):
             body_text=body_text,
         )
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Create document", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_document(self, input_data: CreateDocumentInput) -> CreateDocumentOutput:
         """Create a new Google Doc, optionally inserting body text."""
         self.logger.info(f"Creating document: {input_data.title}")
@@ -166,6 +174,10 @@ class App(BaseApp):
             url=url,
         )
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Insert text", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def insert_text(self, input_data: InsertTextInput) -> InsertTextOutput:
         """Insert text at a given index in a Google Doc."""
         self.logger.info(f"Inserting text into {input_data.document_id} at index {input_data.index}")
@@ -186,6 +198,10 @@ class App(BaseApp):
         self.logger.info("Text inserted successfully")
         return InsertTextOutput(document_id=input_data.document_id)
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Replace text", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": True},
+    )
     async def replace_text(self, input_data: ReplaceTextInput) -> ReplaceTextOutput:
         """Find and replace text in a Google Doc."""
         self.logger.info(
@@ -221,6 +237,10 @@ class App(BaseApp):
             occurrences_changed=occurrences,
         )
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Append text", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def append_text(self, input_data: AppendTextInput) -> AppendTextOutput:
         """Append text to the end of a Google Doc."""
         self.logger.info(f"Appending text to {input_data.document_id}")
@@ -246,6 +266,10 @@ class App(BaseApp):
         self.logger.info("Text appended successfully")
         return AppendTextOutput(document_id=input_data.document_id)
 
+    @function(
+        credentials=[{"key": "google.docs"}],
+        annotations={"title": "Batch update document", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": True},
+    )
     async def batch_update(self, input_data: BatchUpdateInput) -> BatchUpdateOutput:
         """Execute a raw batchUpdate for advanced use cases."""
         self.logger.info(
