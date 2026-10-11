@@ -1,6 +1,6 @@
 namespace: google
 name: calendar
-description: Create, read, update, and delete Google Calendar events
+description: Manage Google Calendar events and calendars. Create, update, and delete events, create and delete calendars, and share calendars with other people
 metadata:
     checksum: c02f9fbf0d13161c5225d7ee76142ab02b3d2d99acf7a07027d98d33a7628d31
     tags:
