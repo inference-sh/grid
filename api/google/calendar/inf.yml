@@ -13,8 +13,10 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.calendar.events
+      description: Create, edit, and delete events on your calendars
     - key: google.calendar
-      description: Full Google Calendar access
+      description: Create, share, and delete calendars
 resources:
     gpu:
         count: 0
