@@ -1069,7 +1069,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.docs"
+        "key": "google.docs.readonly"
       }
     ],
     "annotations": {

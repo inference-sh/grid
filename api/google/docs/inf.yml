@@ -13,6 +13,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.docs.readonly
+      description: View your Google Docs
     - key: google.docs
       description: Full Google Docs access
 resources:

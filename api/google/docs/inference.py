@@ -123,7 +123,7 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
 
     @function(
-        credentials=[{"key": "google.docs"}],
+        credentials=[{"key": "google.docs.readonly"}],
         annotations={"title": "Get document", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_document(self, input_data: GetDocumentInput) -> GetDocumentOutput:
