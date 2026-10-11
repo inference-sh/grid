@@ -4,7 +4,7 @@ import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
 from pydantic import Field
 from typing import List, Optional
 
@@ -168,6 +168,10 @@ class App(BaseApp):
         self.service = build("gmail", "v1", credentials=creds)
         self.logger.info("Gmail service initialized")
 
+    @function(
+        credentials=[{"key": "google.gmail.modify"}],
+        annotations={"title": "List messages", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_messages(self, input_data: ListMessagesInput) -> ListMessagesOutput:
         """List Gmail messages matching a query."""
         self.logger.info(f"Listing messages with query='{input_data.query}' max_results={input_data.max_results}")
@@ -202,6 +206,10 @@ class App(BaseApp):
         self.logger.info(f"Found {len(summaries)} messages")
         return ListMessagesOutput(messages=summaries)
 
+    @function(
+        credentials=[{"key": "google.gmail.modify"}],
+        annotations={"title": "Get message", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_message(self, input_data: GetMessageInput) -> GetMessageOutput:
         """Get a single Gmail message with full body."""
         self.logger.info(f"Getting message id={input_data.message_id}")
@@ -226,6 +234,10 @@ class App(BaseApp):
             labels=msg.get("labelIds", []),
         )
 
+    @function(
+        credentials=[{"key": "google.gmail.send"}],
+        annotations={"title": "Send email", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def send_message(self, input_data: SendMessageInput) -> SendMessageOutput:
         """Send an email via Gmail."""
         self.logger.info(f"Sending message to={input_data.to} subject='{input_data.subject}'")
@@ -249,6 +261,10 @@ class App(BaseApp):
             thread_id=result.get("threadId", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.gmail.compose"}],
+        annotations={"title": "Create draft", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_draft(self, input_data: CreateDraftInput) -> CreateDraftOutput:
         """Create a draft email in Gmail."""
         self.logger.info(f"Creating draft to={input_data.to} subject='{input_data.subject}'")
@@ -272,6 +288,10 @@ class App(BaseApp):
             message_id=result.get("message", {}).get("id", ""),
         )
 
+    @function(
+        credentials=[{"key": "google.gmail.modify"}],
+        annotations={"title": "Modify message labels", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def modify_message(self, input_data: ModifyMessageInput) -> ModifyMessageOutput:
         """Add or remove labels on a Gmail message."""
         self.logger.info(
@@ -294,6 +314,10 @@ class App(BaseApp):
             labels=result.get("labelIds", []),
         )
 
+    @function(
+        credentials=[{"key": "google.gmail.modify"}],
+        annotations={"title": "List labels", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_labels(self, input_data: ListLabelsInput) -> ListLabelsOutput:
         """List all Gmail labels."""
         self.logger.info("Listing labels")
