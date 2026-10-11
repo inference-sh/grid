@@ -3,6 +3,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Create folder",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "name": {
@@ -357,6 +369,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Delete file",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "file_id": {
@@ -686,6 +710,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Download file",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "file_id": {
@@ -1016,6 +1052,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Get file metadata",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "file_id": {
@@ -1412,6 +1460,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "List files",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "query": {
@@ -1833,6 +1893,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Search files",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "query": {
@@ -2250,6 +2322,18 @@
     "description": "",
     "kind": "run",
     "capabilities": [],
+    "credentials": [
+      {
+        "key": "google.drive"
+      }
+    ],
+    "annotations": {
+      "title": "Upload file",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
     "input_schema": {
       "properties": {
         "file": {

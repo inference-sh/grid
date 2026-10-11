@@ -2,7 +2,7 @@ import os
 import io
 import logging
 from typing import List, Optional
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, function
 from pydantic import Field
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -133,6 +133,10 @@ class App(BaseApp):
         )
 
     # --- list_files ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "List files", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def list_files(self, input_data: ListFilesInput) -> ListFilesOutput:
         self.logger.info(f"Listing files: query={input_data.query!r}, folder_id={input_data.folder_id!r}, max={input_data.max_results}")
 
@@ -158,6 +162,10 @@ class App(BaseApp):
         return ListFilesOutput(files=files)
 
     # --- get_file ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Get file metadata", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def get_file(self, input_data: GetFileInput) -> GetFileOutput:
         self.logger.info(f"Getting file metadata: {input_data.file_id}")
 
@@ -178,6 +186,10 @@ class App(BaseApp):
         )
 
     # --- download_file ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Download file", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def download_file(self, input_data: DownloadFileInput) -> DownloadFileOutput:
         self.logger.info(f"Downloading file: {input_data.file_id}")
 
@@ -223,6 +235,10 @@ class App(BaseApp):
         return DownloadFileOutput(file=File(path=output_path))
 
     # --- upload_file ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Upload file", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def upload_file(self, input_data: UploadFileInput) -> UploadFileOutput:
         file_name = input_data.name or os.path.basename(input_data.file.path)
         self.logger.info(f"Uploading file: {file_name}")
@@ -248,6 +264,10 @@ class App(BaseApp):
         )
 
     # --- create_folder ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Create folder", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
+    )
     async def create_folder(self, input_data: CreateFolderInput) -> CreateFolderOutput:
         self.logger.info(f"Creating folder: {input_data.name}")
 
@@ -272,6 +292,10 @@ class App(BaseApp):
         )
 
     # --- delete_file ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Delete file", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
+    )
     async def delete_file(self, input_data: DeleteFileInput) -> DeleteFileOutput:
         self.logger.info(f"Deleting file: {input_data.file_id}")
 
@@ -281,6 +305,10 @@ class App(BaseApp):
         return DeleteFileOutput(success=True)
 
     # --- search_files ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Search files", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
     async def search_files(self, input_data: SearchFilesInput) -> SearchFilesOutput:
         self.logger.info(f"Searching files: query={input_data.query!r}, max={input_data.max_results}")
 
