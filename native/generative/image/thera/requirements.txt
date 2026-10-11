@@ -33,3 +33,4 @@ transformers>=4.53.0
 tokenizers==0.20.3
 Pillow==10.4.0
 wandb
+huggingface-hub==0.36.2 # imported directly; the engine base no longer provides it

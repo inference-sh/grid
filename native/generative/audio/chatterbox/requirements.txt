@@ -5,3 +5,4 @@ accelerate
 huggingface-hub
 hf-transfer
 git+https://github.com/inference-sh/chatterbox.git
+torch==2.7.0 # imported directly; was only transitive via accelerate

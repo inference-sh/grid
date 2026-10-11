@@ -34,3 +34,4 @@ timm
 scipy
 ffmpeg-python
 av
+huggingface-hub==0.36.0 # imported directly; the engine base no longer provides it
