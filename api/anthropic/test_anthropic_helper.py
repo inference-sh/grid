@@ -221,3 +221,65 @@ class TestNormalizeInputSchema:
             {"type": "function", "function": {"name": "g"}},
         ])
         assert all(t["input_schema"]["type"] == "object" for t in tools)
+
+
+# ── tool results with images ──────────────────────────────────────────
+
+class TestToolResultImages:
+    @pytest.fixture
+    def png(self, tmp_path):
+        p = tmp_path / "shot.png"
+        p.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        return str(p)
+
+    def _input(self, png, **kw):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        ctx = [
+            ContextMessage(role=ContextMessageRole.USER, text="look at the page"),
+            ContextMessage(
+                role=ContextMessageRole.ASSISTANT,
+                text="",
+                tool_calls=[{"id": "t0", "type": "function", "function": {"name": "screenshot", "arguments": "{}"}}],
+            ),
+            ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="t0", text="captured", images=[File(path=png)]),
+        ]
+        return LLMInput(context=ctx, **kw)
+
+    def test_context_tool_message_carries_image_blocks(self, png):
+        _, msgs = h.convert_messages_to_anthropic(self._input(png, text="what do you see?"))
+        block = msgs[2]["content"][0]
+        assert block["type"] == "tool_result" and block["tool_use_id"] == "t0"
+        assert block["content"][0] == {"type": "text", "text": "captured"}
+        img = block["content"][1]
+        assert img["type"] == "image" and img["source"]["type"] == "base64"
+        assert img["source"]["media_type"] == "image/png"
+
+    def test_current_tool_input_carries_image_blocks(self, png):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessageRole
+
+        inp = self._input(png, text="", role=ContextMessageRole.TOOL, tool_call_id="t1", images=[File(path=png)])
+        _, msgs = h.convert_messages_to_anthropic(inp)
+        # The context tool_result and the current one merge into one user turn.
+        blocks = msgs[-1]["content"]
+        current = [b for b in blocks if b.get("tool_use_id") == "t1"][0]
+        assert [c["type"] for c in current["content"]] == ["image"]
+
+    def test_text_only_tool_result_keeps_string_content(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        inp = LLMInput(
+            context=[ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="t0", text="42")],
+            text="",
+            role=ContextMessageRole.TOOL,
+            tool_call_id="t1",
+        )
+        _, msgs = h.convert_messages_to_anthropic(inp)
+        assert msgs[0]["content"][0] == {"type": "tool_result", "tool_use_id": "t0", "content": "42"}
+        assert msgs[0]["content"][1] == {"type": "tool_result", "tool_use_id": "t1", "content": ""}
+
+    def test_url_image_uses_url_source(self):
+        block = h._build_tool_result_block("t", "ok", [NS(path=None, uri="https://example.com/a.png")])
+        assert block["content"][1] == {"type": "image", "source": {"type": "url", "url": "https://example.com/a.png"}}

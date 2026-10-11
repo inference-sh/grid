@@ -142,3 +142,31 @@ class TestUsageViolation:
                 {"type": "response.output_text.delta", "delta": "partial"},
                 {"type": "response.failed", "response": {"error": {"message": "blocked by moderation"}}},
             ])
+
+
+class TestToolResultImages:
+    def test_tool_images_become_follow_up_user_message(self, tmp_path):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        png = tmp_path / "shot.png"
+        png.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        inp = LLMInput(
+            context=[ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="t0", text="captured", images=[File(path=str(png))])],
+            text="done",
+            role=ContextMessageRole.TOOL,
+            tool_call_id="t1",
+            images=[File(path=str(png))],
+        )
+        _, items = xai_llm.build_input(inp)
+        assert [i.get("type") or i.get("role") for i in items] == ["function_call_output", "user", "function_call_output", "user"]
+        assert items[0]["output"] == "captured"
+        content = items[1]["content"]
+        assert content[0]["type"] == "input_text"
+        assert content[1]["type"] == "input_image" and content[1]["image_url"].startswith("data:image/png;base64,")
+
+    def test_text_only_tool_result_unchanged(self):
+        from inferencesh.models.llm import ContextMessageRole
+
+        _, items = xai_llm.build_input(LLMInput(text="42", role=ContextMessageRole.TOOL, tool_call_id="t1"))
+        assert items == [{"type": "function_call_output", "call_id": "t1", "output": "42"}]

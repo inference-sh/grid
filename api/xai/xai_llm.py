@@ -111,6 +111,18 @@ def _user_content(text: Optional[str], images, files) -> Any:
     return parts
 
 
+def _tool_image_items(images) -> List[Dict[str, Any]]:
+    """Images a tool returned, as a user message right after its
+    function_call_output (whose output is text), labeled as the tool's output."""
+    parts = [p for p in (_image_part(image) for image in images or []) if p]
+    if not parts:
+        return []
+    return [{
+        "role": "user",
+        "content": [{"type": "input_text", "text": "Images returned by the tool call above:"}] + parts,
+    }]
+
+
 def _function_call_items(tool_calls: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Assistant tool calls -> function_call items.
 
@@ -147,6 +159,7 @@ def build_input(input_data) -> Tuple[Optional[str], List[Dict[str, Any]]]:
                 "call_id": msg.tool_call_id,
                 "output": msg.text or "",
             })
+            items.extend(_tool_image_items(getattr(msg, "images", None)))
             continue
 
         if role == ContextMessageRole.ASSISTANT:
@@ -178,6 +191,7 @@ def build_input(input_data) -> Tuple[Optional[str], List[Dict[str, Any]]]:
             "call_id": input_data.tool_call_id,
             "output": input_data.text or "",
         })
+        items.extend(_tool_image_items(getattr(input_data, "images", None)))
     else:
         files = list(input_data.files or []) + list(getattr(input_data, "attachments", None) or [])
         content = _user_content(input_data.text, input_data.images, files)

@@ -88,6 +88,20 @@ def _collect_images(images) -> List[Dict[str, Any]]:
     return blocks
 
 
+def _build_tool_result_block(tool_use_id: str, text: Optional[str], images) -> Dict[str, Any]:
+    """Build a tool_result block. A result with images carries a content list
+    (text block, then image blocks) so the model sees the images; a text-only
+    result keeps the plain string content."""
+    image_blocks = _collect_images(images)
+    if not image_blocks:
+        return {"type": "tool_result", "tool_use_id": tool_use_id, "content": text or ""}
+    content: List[Dict[str, Any]] = []
+    if text:
+        content.append({"type": "text", "text": text})
+    content.extend(image_blocks)
+    return {"type": "tool_result", "tool_use_id": tool_use_id, "content": content}
+
+
 def convert_messages_to_anthropic(
     input_data: LLMInput,
 ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
@@ -106,13 +120,7 @@ def convert_messages_to_anthropic(
             messages.append(
                 {
                     "role": "user",
-                    "content": [
-                        {
-                            "type": "tool_result",
-                            "tool_use_id": msg.tool_call_id,
-                            "content": msg.text or "",
-                        }
-                    ],
+                    "content": [_build_tool_result_block(msg.tool_call_id, msg.text, getattr(msg, "images", None))],
                 }
             )
             continue
@@ -158,11 +166,9 @@ def convert_messages_to_anthropic(
                 {
                     "role": "user",
                     "content": [
-                        {
-                            "type": "tool_result",
-                            "tool_use_id": input_data.tool_call_id,
-                            "content": input_data.text or "",
-                        }
+                        _build_tool_result_block(
+                            input_data.tool_call_id, input_data.text, getattr(input_data, "images", None)
+                        )
                     ],
                 }
             )

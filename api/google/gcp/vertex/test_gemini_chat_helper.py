@@ -105,3 +105,33 @@ class TestThinkingConfig:
         i = LLMInput(text="x", reasoning_effort=ReasoningEffortEnum.NONE)
         assert h.build_thinking_config(i).thinking_budget == 0
         assert h.build_thinking_config(i, can_disable_thinking=False) is None
+
+
+class TestToolResultImages:
+    def test_tool_images_follow_function_response(self, tmp_path):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        png = tmp_path / "shot.png"
+        png.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        inp = LLMInput(
+            context=[ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="t0", text="captured", images=[File(path=str(png))])],
+            text='{"ok": true}',
+            role=ContextMessageRole.TOOL,
+            tool_call_id="t1",
+            images=[File(path=str(png))],
+        )
+        _, contents = h.convert_messages_to_gemini(inp)
+        for c in contents:
+            assert c.role == "user"
+            assert c.parts[0].function_response is not None
+            assert "tool" in c.parts[1].text
+            assert c.parts[2].inline_data.mime_type == "image/png"
+
+    def test_text_only_tool_result_unchanged(self):
+        from inferencesh.models.llm import ContextMessageRole
+
+        _, contents = h.convert_messages_to_gemini(
+            LLMInput(text='{"v": 42}', role=ContextMessageRole.TOOL, tool_call_id="t1")
+        )
+        assert len(contents) == 1 and len(contents[0].parts) == 1

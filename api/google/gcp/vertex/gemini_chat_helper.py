@@ -105,6 +105,16 @@ def _collect_image_parts(images) -> List[types.Part]:
     return parts
 
 
+def _tool_image_parts(tool_name: str, images) -> List[types.Part]:
+    """Images a tool returned, as parts that follow its function_response in the
+    same user turn (a FunctionResponse carries JSON only), labeled as the tool's
+    output so the model does not read them as user input."""
+    image_parts = _collect_image_parts(images)
+    if not image_parts:
+        return []
+    return [types.Part.from_text(text=f"Images returned by the {tool_name} tool:")] + image_parts
+
+
 def convert_messages_to_gemini(
     input_data: LLMInput,
 ) -> Tuple[Optional[str], List[types.Content]]:
@@ -130,6 +140,7 @@ def convert_messages_to_gemini(
                 name=tool_name,
                 response=response_data,
             )))
+            parts.extend(_tool_image_parts(tool_name, getattr(msg, "images", None)))
             contents.append(types.Content(role="user", parts=parts))
             continue
 
@@ -173,6 +184,7 @@ def convert_messages_to_gemini(
                 name=tool_name,
                 response=response_data,
             ))]
+            tool_parts.extend(_tool_image_parts(tool_name, getattr(input_data, "images", None)))
             contents.append(types.Content(role="user", parts=tool_parts))
         elif user_parts:
             contents.append(types.Content(role="user", parts=user_parts))
