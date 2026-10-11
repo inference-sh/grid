@@ -258,7 +258,7 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
 
     @function(
-        credentials=[{"key": "google.calendar.events"}],
+        credentials=[{"key": "google.calendar.readonly"}],
         annotations={"title": "List events", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_events(self, input_data: ListEventsInput) -> ListEventsOutput:
@@ -300,7 +300,7 @@ class App(BaseApp):
         return ListEventsOutput(events=events)
 
     @function(
-        credentials=[{"key": "google.calendar.events"}],
+        credentials=[{"key": "google.calendar.readonly"}],
         annotations={"title": "Get event", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_event(self, input_data: GetEventInput) -> GetEventOutput:
@@ -420,7 +420,7 @@ class App(BaseApp):
         return DeleteEventOutput(success=True)
 
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.readonly"}],
         annotations={"title": "List calendars", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_calendars(self, input_data: ListCalendarsInput) -> ListCalendarsOutput:
@@ -521,6 +521,9 @@ class App(BaseApp):
         self.logger.info(f"Deleted ACL rule id={match['id']}")
         return UnshareCalendarOutput(success=True, rule_id=match["id"])
 
+    # Stays on google.calendar: Google's acl.list accepts the calendar,
+    # calendar.acls or calendar.acls.readonly scopes, not calendar.readonly,
+    # and no read-only ACL capability is registered. Deploy warns about it.
     @function(
         credentials=[{"key": "google.calendar"}],
         annotations={"title": "List calendar shares", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},

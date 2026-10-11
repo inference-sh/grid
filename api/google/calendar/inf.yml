@@ -13,6 +13,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.calendar.readonly
+      description: View your calendars and events
     - key: google.calendar.events
       description: Create, edit, and delete events on your calendars
     - key: google.calendar
