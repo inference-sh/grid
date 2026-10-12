@@ -12,6 +12,7 @@ import logging
 from typing import AsyncGenerator, List, Optional, Dict, Any, Tuple
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.images import ImageLimits, fit_image
 from inferencesh.llm_types_gen import (
     ResponseFormat,
     ResponseFormatType,
@@ -57,42 +58,63 @@ def _build_image_block(uri: str) -> Dict[str, Any]:
     return {"type": "image", "source": {"type": "url", "url": uri}}
 
 
-def _build_image_block_from_path(path: str) -> Dict[str, Any]:
-    """Build an Anthropic image content block from a file path."""
-    with open(path, "rb") as f:
-        image_data = base64.b64encode(f.read()).decode("utf-8")
-    ext = path.lower().rsplit(".", 1)[-1]
-    media_type = {
-        "png": "image/png",
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "gif": "image/gif",
-        "webp": "image/webp",
-    }.get(ext, "image/png")
+# Claude's vision limits (platform.claude.com/docs/en/build-with-claude/vision).
+# A larger image is downscaled by the API anyway, so it is fitted here first:
+# the request carries no bytes the model never sees. Claude 4.7 and later read
+# up to a 2576px long edge and 4784 visual tokens (28x28px patches), earlier
+# models 1568px and 1568 tokens. Each image is at most 10MB base64 (7.5MB of
+# bytes), and a request with more than 20 images takes none past 2000px.
+_HIGH_RES_MODELS = ("claude-opus-4-7", "claude-opus-4-8", "claude-opus-5", "claude-sonnet-5", "claude-fable-5", "claude-mythos-5")
+_MAX_IMAGE_BYTES = 7_500_000
+_MANY_IMAGES = 20
+_MANY_IMAGES_LONG_EDGE = 2000
+
+
+def image_limits(model: str, image_count: int) -> ImageLimits:
+    """What one image in a request to model may be."""
+    if model.startswith(_HIGH_RES_MODELS):
+        long_edge, pixels = 2576, 4784 * 28 * 28
+    else:
+        long_edge, pixels = 1568, 1568 * 28 * 28
+    if image_count > _MANY_IMAGES:
+        long_edge = min(long_edge, _MANY_IMAGES_LONG_EDGE)
+    return ImageLimits(max_long_edge=long_edge, max_pixels=pixels, max_bytes=_MAX_IMAGE_BYTES)
+
+
+def _count_images(input_data) -> int:
+    count = len(getattr(input_data, "images", None) or [])
+    for msg in input_data.context or []:
+        count += len(getattr(msg, "images", None) or [])
+    return count
+
+
+def _build_image_block_from_path(path: str, limits: Optional[ImageLimits] = None) -> Dict[str, Any]:
+    """Build an Anthropic image content block from a file path, fitted to limits."""
+    data, media_type = fit_image(path, limits or ImageLimits())
     return {
         "type": "image",
-        "source": {"type": "base64", "media_type": media_type, "data": image_data},
+        "source": {"type": "base64", "media_type": media_type, "data": base64.b64encode(data).decode("utf-8")},
     }
 
 
-def _collect_images(images) -> List[Dict[str, Any]]:
+def _collect_images(images, limits: Optional[ImageLimits] = None) -> List[Dict[str, Any]]:
     """Convert a list of image objects to Anthropic content blocks."""
     blocks = []
     if not images:
         return blocks
     for image in images:
         if image.path:
-            blocks.append(_build_image_block_from_path(image.path))
+            blocks.append(_build_image_block_from_path(image.path, limits))
         elif image.uri:
             blocks.append(_build_image_block(image.uri))
     return blocks
 
 
-def _build_tool_result_block(tool_use_id: str, text: Optional[str], images) -> Dict[str, Any]:
+def _build_tool_result_block(tool_use_id: str, text: Optional[str], images, limits: Optional[ImageLimits] = None) -> Dict[str, Any]:
     """Build a tool_result block. A result with images carries a content list
     (text block, then image blocks) so the model sees the images; a text-only
     result keeps the plain string content."""
-    image_blocks = _collect_images(images)
+    image_blocks = _collect_images(images, limits)
     if not image_blocks:
         return {"type": "tool_result", "tool_use_id": tool_use_id, "content": text or ""}
     content: List[Dict[str, Any]] = []
@@ -104,11 +126,13 @@ def _build_tool_result_block(tool_use_id: str, text: Optional[str], images) -> D
 
 def convert_messages_to_anthropic(
     input_data: LLMInput,
+    model: str = "",
 ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
-    """Convert LLMInput to Anthropic message format.
+    """Convert LLMInput to Anthropic message format, images fitted to model.
 
     Returns (system_prompt, messages) tuple.
     """
+    limits = image_limits(model, _count_images(input_data))
     system_prompt = input_data.system_prompt if input_data.system_prompt else None
     messages: List[Dict[str, Any]] = []
 
@@ -120,7 +144,7 @@ def convert_messages_to_anthropic(
             messages.append(
                 {
                     "role": "user",
-                    "content": [_build_tool_result_block(msg.tool_call_id, msg.text, getattr(msg, "images", None))],
+                    "content": [_build_tool_result_block(msg.tool_call_id, msg.text, getattr(msg, "images", None), limits)],
                 }
             )
             continue
@@ -130,7 +154,7 @@ def convert_messages_to_anthropic(
         if msg.text:
             content.append({"type": "text", "text": msg.text})
 
-        content.extend(_collect_images(getattr(msg, "images", None)))
+        content.extend(_collect_images(getattr(msg, "images", None), limits))
 
         # Assistant tool_use blocks
         if msg.role == ContextMessageRole.ASSISTANT and msg.tool_calls:
@@ -157,7 +181,7 @@ def convert_messages_to_anthropic(
     user_content: List[Dict[str, Any]] = []
     if hasattr(input_data, "text") and input_data.text:
         user_content.append({"type": "text", "text": input_data.text})
-    user_content.extend(_collect_images(getattr(input_data, "images", None)))
+    user_content.extend(_collect_images(getattr(input_data, "images", None), limits))
 
     # Tool result input
     if hasattr(input_data, "role") and input_data.role == ContextMessageRole.TOOL:
@@ -167,7 +191,7 @@ def convert_messages_to_anthropic(
                     "role": "user",
                     "content": [
                         _build_tool_result_block(
-                            input_data.tool_call_id, input_data.text, getattr(input_data, "images", None)
+                            input_data.tool_call_id, input_data.text, getattr(input_data, "images", None), limits
                         )
                     ],
                 }
@@ -433,7 +457,7 @@ def build_params(
     max_tokens: int = 64000,
 ) -> Dict[str, Any]:
     """Build common request parameters for Anthropic API."""
-    system_prompt, messages = convert_messages_to_anthropic(input_data)
+    system_prompt, messages = convert_messages_to_anthropic(input_data, model)
     tools = convert_tools_to_anthropic(input_data.tools) if input_data.tools else None
     tool_choice = anthropic_tool_choice(input_data.tool_choice)
     output_format = anthropic_output_format(input_data.response_format)

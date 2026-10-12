@@ -169,3 +169,15 @@ class TestToolResultImages:
 
         _, items = xai_llm.build_input(LLMInput(text="42", role=ContextMessageRole.TOOL, tool_call_id="t1"))
         assert items == [{"type": "function_call_output", "call_id": "t1", "output": "42"}]
+
+
+class TestImageFitting:
+    def test_webp_is_sent_as_png(self, tmp_path):
+        from PIL import Image
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessageRole
+
+        webp = tmp_path / "shot.webp"
+        Image.new("RGB", (64, 64), (0, 160, 0)).save(webp, format="WEBP")
+        _, items = xai_llm.build_input(LLMInput(text="captured", role=ContextMessageRole.TOOL, tool_call_id="t1", images=[File(path=str(webp))]))
+        assert items[0]["output"][1]["image_url"].startswith("data:image/png;base64,")

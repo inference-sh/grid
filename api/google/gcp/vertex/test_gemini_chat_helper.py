@@ -108,7 +108,7 @@ class TestThinkingConfig:
 
 
 class TestToolResultImages:
-    def test_tool_images_follow_function_response(self, tmp_path):
+    def test_tool_images_ride_in_function_response_parts(self, tmp_path):
         from inferencesh import File
         from inferencesh.models.llm import ContextMessage, ContextMessageRole
 
@@ -123,10 +123,10 @@ class TestToolResultImages:
         )
         _, contents = h.convert_messages_to_gemini(inp)
         for c in contents:
-            assert c.role == "user"
-            assert c.parts[0].function_response is not None
-            assert "tool" in c.parts[1].text
-            assert c.parts[2].inline_data.mime_type == "image/png"
+            assert c.role == "user" and len(c.parts) == 1
+            fr = c.parts[0].function_response
+            assert fr is not None and len(fr.parts) == 1
+            assert fr.parts[0].inline_data.mime_type == "image/png"
 
     def test_text_only_tool_result_unchanged(self):
         from inferencesh.models.llm import ContextMessageRole
@@ -135,3 +135,18 @@ class TestToolResultImages:
             LLMInput(text='{"v": 42}', role=ContextMessageRole.TOOL, tool_call_id="t1")
         )
         assert len(contents) == 1 and len(contents[0].parts) == 1
+        assert contents[0].parts[0].function_response.parts is None
+
+    def test_large_tool_image_is_downsized(self, tmp_path):
+        import io
+        from PIL import Image
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessageRole
+
+        png = tmp_path / "big.png"
+        Image.new("RGB", (6000, 3000), (0, 160, 0)).save(png, format="PNG")
+        _, contents = h.convert_messages_to_gemini(
+            LLMInput(text="captured", role=ContextMessageRole.TOOL, tool_call_id="t1", images=[File(path=str(png))])
+        )
+        blob = contents[0].parts[0].function_response.parts[0].inline_data
+        assert Image.open(io.BytesIO(blob.data)).size == (3072, 1536)

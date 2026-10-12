@@ -14,6 +14,7 @@ usage details (cached tokens, reasoning tokens) that arrive on the final
 place and avoids SDK version churn.
 """
 
+import base64
 import asyncio
 import json
 import time
@@ -22,6 +23,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 
 import httpx
 
+from inferencesh.images import ImageLimits, fit_image
 from inferencesh import OutputMeta, TextMeta
 from inferencesh.llm_types_gen import ResponseFormat, ResponseFormatType, ToolChoice, ToolChoiceMode
 from inferencesh.models.llm import (
@@ -54,13 +56,22 @@ def _is_http_url(s: Optional[str]) -> bool:
     return bool(s) and (s.startswith("http://") or s.startswith("https://"))
 
 
+# OpenAI reads an image up to a 6000px long edge at detail "original", the
+# default on gpt-5.5 and later, and scales a larger one down
+# (developers.openai.com/docs/guides/images-vision). A local image is fitted
+# first so the request carries no bytes the model never sees; a URL OpenAI
+# fetches and scales itself.
+IMAGE_LIMITS = ImageLimits(max_long_edge=6000)
+
+
 def _image_part(image) -> Optional[Dict[str, Any]]:
     if image is None:
         return None
     if _is_http_url(image.uri):
         url = image.uri
     elif image.path:
-        url = image_to_base64_data_uri(image.path)
+        data, mime = fit_image(image.path, IMAGE_LIMITS)
+        url = f"data:{mime};base64,{base64.b64encode(data).decode()}"
     elif image.uri:
         url = image.uri
     else:

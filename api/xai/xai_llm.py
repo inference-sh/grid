@@ -20,6 +20,7 @@ format with these differences, all handled here:
   attachment into a paid document search.
 """
 
+import base64
 import asyncio
 import json
 import os
@@ -29,6 +30,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 
 import httpx
 
+from inferencesh.images import ImageLimits, fit_image
 from inferencesh import OutputMeta, TextMeta
 from inferencesh.llm_types_gen import ResponseFormat, ResponseFormatType, ToolChoice, ToolChoiceMode
 from inferencesh.models.llm import (
@@ -77,13 +79,28 @@ def _is_http_url(s: Optional[str]) -> bool:
     return bool(s) and (s.startswith("http://") or s.startswith("https://"))
 
 
+# xAI takes JPEG and PNG up to 20MiB per image
+# (docs.x.ai/developers/model-capabilities/images/understanding). Another
+# format is converted from the local copy, and a URL is passed on only when it
+# names a JPEG or PNG.
+IMAGE_LIMITS = ImageLimits(max_bytes=20 * 1024 * 1024, mime_types=("image/png", "image/jpeg"))
+
+
+def _xai_takes_url(image) -> bool:
+    content_type = (getattr(image, "content_type", None) or "").lower()
+    if content_type:
+        return content_type in IMAGE_LIMITS.mime_types
+    return image.uri.lower().split("?", 1)[0].endswith((".png", ".jpg", ".jpeg"))
+
+
 def _image_part(image) -> Optional[Dict[str, Any]]:
     if image is None:
         return None
-    if _is_http_url(image.uri):
+    if _is_http_url(image.uri) and (_xai_takes_url(image) or not image.path):
         url = image.uri
     elif image.path:
-        url = image_to_base64_data_uri(image.path)
+        data, mime = fit_image(image.path, IMAGE_LIMITS)
+        url = f"data:{mime};base64,{base64.b64encode(data).decode()}"
     elif image.uri:
         url = image.uri
     else:

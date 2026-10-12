@@ -19,6 +19,7 @@ from google.genai.types import HttpOptions
 from google.oauth2.credentials import Credentials
 
 from inferencesh import OutputMeta, TextMeta
+from inferencesh.images import ImageLimits, fit_image
 from inferencesh.llm_types_gen import (
     ResponseFormat,
     ResponseFormatType,
@@ -79,18 +80,16 @@ def _build_image_part_from_uri(uri: str) -> types.Part:
     return types.Part.from_uri(file_uri=uri, mime_type="image/png")
 
 
+# Gemini scales an image past a 3072px side down, and an inline image is at
+# most 7MB (firebase.google.com/docs/ai-logic/input-file-requirements). A
+# local image is fitted first so the request carries no bytes the model never
+# sees.
+IMAGE_LIMITS = ImageLimits(max_long_edge=3072, max_bytes=7 * 1024 * 1024)
+
+
 def _build_image_part_from_path(path: str) -> types.Part:
-    with open(path, "rb") as f:
-        image_data = f.read()
-    ext = path.lower().rsplit(".", 1)[-1]
-    mime_type = {
-        "png": "image/png",
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "gif": "image/gif",
-        "webp": "image/webp",
-    }.get(ext, "image/png")
-    return types.Part.from_bytes(data=image_data, mime_type=mime_type)
+    data, mime_type = fit_image(path, IMAGE_LIMITS)
+    return types.Part.from_bytes(data=data, mime_type=mime_type)
 
 
 def _collect_image_parts(images) -> List[types.Part]:
@@ -105,14 +104,24 @@ def _collect_image_parts(images) -> List[types.Part]:
     return parts
 
 
-def _tool_image_parts(tool_name: str, images) -> List[types.Part]:
-    """Images a tool returned, as parts that follow its function_response in the
-    same user turn (a FunctionResponse carries JSON only), labeled as the tool's
-    output so the model does not read them as user input."""
-    image_parts = _collect_image_parts(images)
-    if not image_parts:
-        return []
-    return [types.Part.from_text(text=f"Images returned by the {tool_name} tool:")] + image_parts
+def _function_response_parts(images) -> Optional[List[types.FunctionResponsePart]]:
+    """Images a tool returned, as parts of its FunctionResponse (Gemini 3
+    multimodal function responses), where the model reads them as the tool's
+    output. Sent without a $ref to them in response: the API refuses that."""
+    parts = []
+    for image in images or []:
+        if image.path:
+            data, mime_type = fit_image(image.path, IMAGE_LIMITS)
+            parts.append(types.FunctionResponsePart.from_bytes(data=data, mime_type=mime_type))
+        elif image.uri and image.uri.startswith("data:"):
+            match = re.match(r"data:([^;]+);base64,(.+)", image.uri)
+            if match:
+                parts.append(types.FunctionResponsePart.from_bytes(
+                    data=base64.b64decode(match.group(2)), mime_type=match.group(1)))
+        elif image.uri:
+            parts.append(types.FunctionResponsePart(file_data=types.FunctionResponseFileData(
+                file_uri=image.uri, mime_type=getattr(image, "content_type", None) or "image/png")))
+    return parts or None
 
 
 def convert_messages_to_gemini(
@@ -139,8 +148,8 @@ def convert_messages_to_gemini(
             parts.append(types.Part(function_response=types.FunctionResponse(
                 name=tool_name,
                 response=response_data,
+                parts=_function_response_parts(getattr(msg, "images", None)),
             )))
-            parts.extend(_tool_image_parts(tool_name, getattr(msg, "images", None)))
             contents.append(types.Content(role="user", parts=parts))
             continue
 
@@ -183,8 +192,8 @@ def convert_messages_to_gemini(
             tool_parts = [types.Part(function_response=types.FunctionResponse(
                 name=tool_name,
                 response=response_data,
+                parts=_function_response_parts(getattr(input_data, "images", None)),
             ))]
-            tool_parts.extend(_tool_image_parts(tool_name, getattr(input_data, "images", None)))
             contents.append(types.Content(role="user", parts=tool_parts))
         elif user_parts:
             contents.append(types.Content(role="user", parts=user_parts))

@@ -4,6 +4,7 @@ Run with the sdk-py venv:
   cd grid/api/anthropic && /home/ok/inference/sdk-py/.venv/bin/python -m pytest test_anthropic_helper.py -q
 """
 
+import base64
 import sys
 from pathlib import Path
 from types import SimpleNamespace as NS
@@ -283,3 +284,52 @@ class TestToolResultImages:
     def test_url_image_uses_url_source(self):
         block = h._build_tool_result_block("t", "ok", [NS(path=None, uri="https://example.com/a.png")])
         assert block["content"][1] == {"type": "image", "source": {"type": "url", "url": "https://example.com/a.png"}}
+
+
+# ── images fitted to the model ────────────────────────────────────────
+
+class TestImageFitting:
+    def _shot(self, tmp_path, size, name="big.png"):
+        from PIL import Image
+
+        p = tmp_path / name
+        Image.new("RGB", size, (0, 160, 0)).save(p, format="PNG")
+        return str(p)
+
+    def _size(self, block):
+        import io
+        from PIL import Image
+
+        return Image.open(io.BytesIO(base64.b64decode(block["source"]["data"]))).size
+
+    def _tool_image(self, msgs):
+        return msgs[-1]["content"][0]["content"][1]
+
+    def _input(self, path, n=1):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        ctx = [ContextMessage(role=ContextMessageRole.USER, text="look", images=[File(path=path)] * (n - 1))] if n > 1 else []
+        ctx.append(ContextMessage(
+            role=ContextMessageRole.ASSISTANT, text="",
+            tool_calls=[{"id": "t0", "type": "function", "function": {"name": "screenshot", "arguments": "{}"}}],
+        ))
+        return LLMInput(context=ctx, text="captured", role=ContextMessageRole.TOOL, tool_call_id="t0", images=[File(path=path)])
+
+    def test_high_res_model_takes_2576_long_edge(self, tmp_path):
+        _, msgs = h.convert_messages_to_anthropic(self._input(self._shot(tmp_path, (3840, 2160))), "claude-opus-5")
+        assert self._size(self._tool_image(msgs)) == (2576, 1449)
+
+    def test_earlier_model_takes_1568_and_its_token_budget(self, tmp_path):
+        _, msgs = h.convert_messages_to_anthropic(self._input(self._shot(tmp_path, (3840, 2160))), "claude-sonnet-4-5-20250929")
+        w, h_ = self._size(self._tool_image(msgs))
+        assert max(w, h_) <= 1568 and w * h_ <= 1568 * 28 * 28
+
+    def test_many_images_cap_the_long_edge_at_2000(self, tmp_path):
+        _, msgs = h.convert_messages_to_anthropic(self._input(self._shot(tmp_path, (3840, 2160)), n=21), "claude-opus-5")
+        assert max(self._size(self._tool_image(msgs))) <= 2000
+
+    def test_small_image_is_sent_as_is(self, tmp_path):
+        path = self._shot(tmp_path, (800, 600), "small.png")
+        _, msgs = h.convert_messages_to_anthropic(self._input(path), "claude-opus-5")
+        assert base64.b64decode(self._tool_image(msgs)["source"]["data"]) == open(path, "rb").read()
