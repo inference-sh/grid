@@ -57,3 +57,26 @@ class TestDeltaExtraction:
         state = opper.create_initial_state()
         fr, d = opper.process_chunk(NS(choices=[], usage=NS(prompt_tokens=3, completion_tokens=1), error=None), state)
         assert (fr, d) == (None, None) and state["input_tokens"] == 3
+
+
+class TestReasoningState:
+    def test_streamed_details_land_in_reasoning_state(self):
+        state = opper.create_initial_state()
+        for d in ({"type": "reasoning.text", "text": "a", "index": 0}, {"type": "reasoning.text", "signature": "s", "index": 0}):
+            delta = NS(content=None, reasoning=None, reasoning_details=[d], tool_calls=None)
+            opper.process_chunk(NS(choices=[NS(delta=delta, finish_reason=None)], usage=None, error=None), state)
+        out = opper.build_output(state)
+        assert out["reasoning_state"] == {"opper": [{"type": "reasoning.text", "text": "a", "signature": "s", "index": 0}]}
+        assert "reasoning_details" not in out
+
+    def test_own_entry_replayed_foreign_left_out(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+        mine = [{"type": "reasoning.text", "text": "a", "signature": "s", "index": 0}]
+        call = {"id": "c1", "type": "function", "function": {"name": "f", "arguments": "{}"}}
+        p = opper._build_params(LLMInput(role=ContextMessageRole.TOOL, tool_call_id="c1", text="{}", context=[
+            ContextMessage(role=ContextMessageRole.USER, text="hi"),
+            ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=[call],
+                           reasoning_state={"opper": mine, "anthropic": [{"type": "thinking"}]}),
+        ]), "anthropic/claude-sonnet-4-6", stream=True)
+        assistant = next(m for m in p["messages"] if m["role"] == "assistant")
+        assert assistant["reasoning_details"] == mine
