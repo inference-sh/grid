@@ -172,11 +172,34 @@ class TestGemini25AndSignatures:
             images=[File(path=str(png))],
         )
 
-    def test_gemini_2_5_gets_images_after_the_function_response(self, tmp_path):
+    def test_gemini_2_5_gets_images_in_a_user_turn_after_the_function_response(self, tmp_path):
         _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-2.5-flash")
-        parts = contents[-1].parts
-        assert parts[0].function_response.parts is None
-        assert parts[2].inline_data.mime_type == "image/png"
+        fr_turn, image_turn = contents[-2], contents[-1]
+        assert len(fr_turn.parts) == 1 and fr_turn.parts[0].function_response.parts is None
+        assert image_turn.role == "user"
+        assert "screenshot" in image_turn.parts[0].text
+        assert image_turn.parts[1].inline_data.mime_type == "image/png"
+
+    def test_gemini_2_5_parallel_results_stay_together_before_images(self, tmp_path):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        png = tmp_path / "shot.png"
+        png.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        calls = [{"id": f"c{i}", "type": "function", "function": {"name": "screenshot", "arguments": "{}"}} for i in (1, 2)]
+        inp = LLMInput(
+            context=[
+                ContextMessage(role=ContextMessageRole.USER, text="look"),
+                ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=calls),
+                ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="c1", text="one", images=[File(path=str(png))]),
+                ContextMessage(role=ContextMessageRole.TOOL, tool_call_id="c2", text="two", images=[File(path=str(png))]),
+            ],
+            text="what now?",
+        )
+        _, contents = h.convert_messages_to_gemini(inp, "gemini-2.5-pro")
+        kinds = ["fr" if c.parts[0].function_response else ("img" if any(p.inline_data for p in c.parts) else "text") for c in contents]
+        assert kinds == ["text", "text", "fr", "fr", "img", "text"]
+        assert sum(1 for p in contents[4].parts if p.inline_data) == 2
 
     def test_gemini_3_first_function_call_carries_the_skip_signature(self, tmp_path):
         _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-3.8-flash")
@@ -187,3 +210,15 @@ class TestGemini25AndSignatures:
     def test_gemini_2_5_sends_no_signature(self, tmp_path):
         _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-2.5-pro")
         assert all(p.thought_signature is None for p in contents[1].parts)
+
+
+def test_function_response_is_named_after_its_call():
+    from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+    inp = LLMInput(
+        context=[ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=[
+            {"id": "c1", "type": "function", "function": {"name": "read_page", "arguments": "{}"}}])],
+        text="page text", role=ContextMessageRole.TOOL, tool_call_id="c1",
+    )
+    _, contents = h.convert_messages_to_gemini(inp, "gemini-3.8-flash")
+    assert contents[-1].parts[0].function_response.name == "read_page"

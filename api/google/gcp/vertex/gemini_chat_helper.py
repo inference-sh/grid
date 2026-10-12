@@ -138,20 +138,23 @@ def _is_gemini_3_or_later(model: str) -> bool:
     return bool(match) and int(match.group(1)) >= 3
 
 
-def _tool_result_parts(name: str, response: Dict[str, Any], images, native_images: bool) -> List[types.Part]:
-    """A tool result: a function_response part carrying the tool's images
-    (Gemini 3 multimodal function responses), or on earlier models, which
-    refuse or ignore FunctionResponse.parts, followed by them as inline parts
-    in the same turn."""
+def _tool_result_parts(name: str, response: Dict[str, Any], images, native_images: bool) -> Tuple[List[types.Part], List[types.Part]]:
+    """A tool result as (function_response parts, image parts for a user turn
+    after the tool results).
+
+    Gemini 3 takes the tool's images in the FunctionResponse (multimodal
+    function responses). Gemini 2.5 refuses FunctionResponse.parts or ignores
+    it, and reads images placed beside a function_response only sometimes; a
+    probe on Vertex (2.5 flash, flash-lite and pro, the call replayed as we
+    send it) read them every time from a user turn of their own after the
+    function responses."""
     if native_images:
         return [types.Part(function_response=types.FunctionResponse(
-            name=name, response=response, parts=_function_response_parts(images)))]
-    parts = [types.Part(function_response=types.FunctionResponse(name=name, response=response))]
+            name=name, response=response, parts=_function_response_parts(images)))], []
     image_parts = _collect_image_parts(images)
     if image_parts:
-        parts.append(types.Part.from_text(text=f"Images returned by the {name} tool:"))
-        parts.extend(image_parts)
-    return parts
+        image_parts = [types.Part.from_text(text=f"Images returned by the {name} tool:")] + image_parts
+    return [types.Part(function_response=types.FunctionResponse(name=name, response=response))], image_parts
 
 
 def convert_messages_to_gemini(
@@ -167,6 +170,21 @@ def convert_messages_to_gemini(
     system_prompt = input_data.system_prompt if input_data.system_prompt else None
     contents: List[types.Content] = []
     gemini_3 = _is_gemini_3_or_later(model)
+    # Tool images for the user turn after a run of tool results, so every
+    # function response still directly follows the call it answers.
+    pending_images: List[types.Part] = []
+    # A function response names the function it answers; a tool message
+    # carries only the call id, so the name comes from the call.
+    call_names: Dict[str, str] = {}
+    for m in input_data.context:
+        for tc in (m.tool_calls or []) if m.role == ContextMessageRole.ASSISTANT else []:
+            if tc.get("id"):
+                call_names[tc["id"]] = tc.get("function", {}).get("name", "")
+
+    def flush_images() -> None:
+        if pending_images:
+            contents.append(types.Content(role="user", parts=list(pending_images)))
+            pending_images.clear()
 
     for msg in input_data.context:
         parts: List[types.Part] = []
@@ -176,10 +194,13 @@ def convert_messages_to_gemini(
                 response_data = json.loads(msg.text) if msg.text else {}
             except json.JSONDecodeError:
                 response_data = {"result": msg.text or ""}
-            tool_name = getattr(msg, "tool_name", None) or msg.tool_call_id
-            parts.extend(_tool_result_parts(tool_name, response_data, getattr(msg, "images", None), gemini_3))
-            contents.append(types.Content(role="user", parts=parts))
+            tool_name = getattr(msg, "tool_name", None) or call_names.get(msg.tool_call_id) or msg.tool_call_id
+            fr_parts, image_parts = _tool_result_parts(tool_name, response_data, getattr(msg, "images", None), gemini_3)
+            contents.append(types.Content(role="user", parts=fr_parts))
+            pending_images.extend(image_parts)
             continue
+
+        flush_images()
 
         role = "user" if msg.role == ContextMessageRole.USER else "model"
 
@@ -218,13 +239,18 @@ def convert_messages_to_gemini(
                 response_data = json.loads(input_data.text) if input_data.text else {}
             except json.JSONDecodeError:
                 response_data = {"result": input_data.text or ""}
-            tool_name = getattr(input_data, "tool_name", None) or input_data.tool_call_id
-            tool_parts = _tool_result_parts(tool_name, response_data, getattr(input_data, "images", None), gemini_3)
-            contents.append(types.Content(role="user", parts=tool_parts))
+            tool_name = getattr(input_data, "tool_name", None) or call_names.get(input_data.tool_call_id) or input_data.tool_call_id
+            fr_parts, image_parts = _tool_result_parts(tool_name, response_data, getattr(input_data, "images", None), gemini_3)
+            contents.append(types.Content(role="user", parts=fr_parts))
+            pending_images.extend(image_parts)
+            flush_images()
         elif user_parts:
+            flush_images()
             contents.append(types.Content(role="user", parts=user_parts))
     elif user_parts:
+        flush_images()
         contents.append(types.Content(role="user", parts=user_parts))
+    flush_images()
 
     return system_prompt, contents
 
