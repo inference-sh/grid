@@ -212,6 +212,77 @@ class TestGemini25AndSignatures:
         assert all(p.thought_signature is None for p in contents[1].parts)
 
 
+class TestReasoningState:
+    """The model's thought signatures go out on the output's reasoning_state
+    and come back on the parts they were returned on."""
+
+    MODEL = "gemini-3.8-flash"
+
+    def _signed(self, part, signature):
+        part.thought_signature = signature
+        return part
+
+    def test_signatures_are_captured_per_call_and_for_text(self):
+        state = h.create_initial_state()
+        h.apply_parts([self._signed(call("get_weather", {"city": "Paris"}), b"sig-call"), call("other", {})], state)
+        h.apply_parts([text("done"), self._signed(text(""), b"sig-text")], state)
+        out = h.build_output(state, self.MODEL)
+        assert out["reasoning_state"] == {"gemini": {
+            "model": self.MODEL,
+            "function_calls": {"call_get_weather_0": "c2lnLWNhbGw="},
+            "text": "c2lnLXRleHQ=",
+        }}
+
+    def test_no_signature_no_state(self):
+        state = h.create_initial_state()
+        h.apply_parts([text("hi")], state)
+        assert "reasoning_state" not in h.build_output(state, self.MODEL)
+
+    def _replay_input(self, reasoning_state):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        calls = [{"id": f"c{i}", "type": "function", "function": {"name": "f", "arguments": "{}"}} for i in (1, 2)]
+        return LLMInput(
+            context=[
+                ContextMessage(role=ContextMessageRole.USER, text="go"),
+                ContextMessage(role=ContextMessageRole.ASSISTANT, text="calling", tool_calls=calls,
+                               reasoning_state=reasoning_state),
+            ],
+            text="{}", role=ContextMessageRole.TOOL, tool_call_id="c1",
+        )
+
+    def _signatures(self, contents):
+        return [p.thought_signature for p in contents[1].parts]
+
+    def test_own_signatures_are_replayed_on_their_parts(self):
+        state = {"gemini": {"model": self.MODEL, "function_calls": {"c1": "c2lnLWNhbGw="}, "text": "c2lnLXRleHQ="}}
+        _, contents = h.convert_messages_to_gemini(self._replay_input(state), self.MODEL)
+        assert self._signatures(contents) == [b"sig-text", b"sig-call", None]
+
+    def test_unsigned_first_call_falls_back_to_the_skip_signature(self):
+        for state in (None, {"gemini": {"model": "gemini-3.7-flash", "function_calls": {"c1": "c2lnLWNhbGw="}}}):
+            _, contents = h.convert_messages_to_gemini(self._replay_input(state), self.MODEL)
+            assert self._signatures(contents) == [None, h.SKIP_THOUGHT_SIGNATURE, None], state
+
+    def test_other_apps_entries_are_ignored(self):
+        state = {"anthropic": [{"type": "thinking", "signature": "x"}], "openai": {"items": []}}
+        _, contents = h.convert_messages_to_gemini(self._replay_input(state), self.MODEL)
+        assert self._signatures(contents) == [None, h.SKIP_THOUGHT_SIGNATURE, None]
+
+    def test_round_trip_through_the_sdk_types(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole, LLMOutput
+
+        state = h.create_initial_state()
+        h.apply_parts([self._signed(call("f", {}), b"\x00\xffraw")], state)
+        out = LLMOutput(**{k: v for k, v in h.build_output(state, self.MODEL).items() if k != "output_meta"})
+        msg = ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=out.tool_calls,
+                             reasoning_state=out.reasoning_state)
+        inp = LLMInput(context=[ContextMessage(role=ContextMessageRole.USER, text="go"), msg],
+                       text="{}", role=ContextMessageRole.TOOL, tool_call_id="call_f_0")
+        _, contents = h.convert_messages_to_gemini(inp, self.MODEL)
+        assert [p.thought_signature for p in contents[1].parts if p.function_call] == [b"\x00\xffraw"]
+
+
 def test_function_response_is_named_after_its_call():
     from inferencesh.models.llm import ContextMessage, ContextMessageRole
 

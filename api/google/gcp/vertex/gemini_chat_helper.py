@@ -126,11 +126,33 @@ def _function_response_parts(images) -> Optional[List[types.FunctionResponsePart
 
 # The thought signature Vertex documents for a function call whose signature
 # is unavailable (docs.cloud.google.com/vertex-ai/generative-ai/docs/thought-signatures):
-# Gemini 3 refuses a current-turn function call without one (400). Our tool
-# calls do not carry the model's own signature back yet, so every replayed
-# function call gets this; the SDK sends bytes base64url-encoded, so it is
-# decoded here to reach the API as the literal.
+# Gemini 3 refuses a current-turn function call without one (400). The
+# model's own signature is replayed from the message's reasoning state; this
+# stands in only where there is none (a message from before the state was
+# kept, or from another model). The SDK sends bytes base64url-encoded, so it
+# is decoded here to reach the API as the literal.
 SKIP_THOUGHT_SIGNATURE = base64.urlsafe_b64decode("skip_thought_signature_validator")
+
+# The key this helper's entry has in an output's reasoning_state. The entry:
+# {"model": <model>, "function_calls": {<tool call id>: <signature>},
+#  "text": <signature>}, each signature base64 of the bytes Gemini returned.
+# Other apps' entries in the same state are never read.
+REASONING_STATE_KEY = "gemini"
+
+
+def _own_signatures(msg, model: str) -> Dict[str, Any]:
+    """The signatures this model returned with an assistant message, or {}.
+
+    A signature belongs to the model that made it: one from another Gemini
+    model is not replayed."""
+    entry = (getattr(msg, "reasoning_state", None) or {}).get(REASONING_STATE_KEY)
+    if not isinstance(entry, dict) or entry.get("model") != model:
+        return {}
+    return entry
+
+
+def _signature_bytes(value: Optional[str]) -> Optional[bytes]:
+    return base64.b64decode(value) if value else None
 
 
 def _is_gemini_3_or_later(model: str) -> bool:
@@ -204,12 +226,15 @@ def convert_messages_to_gemini(
 
         role = "user" if msg.role == ContextMessageRole.USER else "model"
 
+        own = _own_signatures(msg, model) if msg.role == ContextMessageRole.ASSISTANT else {}
+
         if msg.text:
-            parts.append(types.Part.from_text(text=msg.text))
+            parts.append(types.Part(text=msg.text, thought_signature=_signature_bytes(own.get("text"))))
 
         parts.extend(_collect_image_parts(getattr(msg, "images", None)))
 
         if msg.role == ContextMessageRole.ASSISTANT and msg.tool_calls:
+            call_signatures = own.get("function_calls") or {}
             for i, tc in enumerate(msg.tool_calls):
                 func = tc.get("function", {})
                 args_str = func.get("arguments", "{}")
@@ -217,8 +242,11 @@ def convert_messages_to_gemini(
                     args = json.loads(args_str) if isinstance(args_str, str) else args_str
                 except json.JSONDecodeError:
                     args = {}
-                # Only the first function call of a step carries a signature.
-                signature = SKIP_THOUGHT_SIGNATURE if gemini_3 and i == 0 else None
+                # The model signs the first function call of a step; Gemini 3
+                # refuses that call unsigned.
+                signature = _signature_bytes(call_signatures.get(tc.get("id")))
+                if signature is None and gemini_3 and i == 0:
+                    signature = SKIP_THOUGHT_SIGNATURE
                 parts.append(types.Part(function_call=types.FunctionCall(
                     name=func.get("name", ""),
                     args=args,
@@ -354,6 +382,10 @@ def create_initial_state() -> Dict[str, Any]:
         "input_tokens": 0,
         "output_tokens": 0,
         "thinking_tokens": 0,
+        # Thought signatures as returned: tool call id -> signature, and the
+        # one on a part that is not a function call.
+        "call_signatures": {},
+        "text_signature": None,
     }
 
 
@@ -365,6 +397,9 @@ def apply_parts(parts, state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     delta: Dict[str, Any] = {}
     for part in (parts or []):
+        signature = getattr(part, "thought_signature", None)
+        if signature and not getattr(part, "function_call", None):
+            state["text_signature"] = base64.b64encode(signature).decode()
         if getattr(part, "thought", False) and part.text:
             state["thinking"] += part.text
             delta["reasoning"] = delta.get("reasoning", "") + part.text
@@ -384,16 +419,25 @@ def apply_parts(parts, state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                 },
             }
             state["tool_calls"].append(tool_call)
+            if signature:
+                state["call_signatures"][tool_call["id"]] = base64.b64encode(signature).decode()
             delta.setdefault("tool_calls", []).append({"index": index, **tool_call})
     return delta or None
 
 
-def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
+def build_output(state: Dict[str, Any], model: str) -> Dict[str, Any]:
     out: Dict[str, Any] = {"response": state["response"]}
     if state["thinking"]:
         out["reasoning"] = state["thinking"]
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
+    if state["call_signatures"] or state["text_signature"]:
+        entry: Dict[str, Any] = {"model": model}
+        if state["call_signatures"]:
+            entry["function_calls"] = dict(state["call_signatures"])
+        if state["text_signature"]:
+            entry["text"] = state["text_signature"]
+        out["reasoning_state"] = {REASONING_STATE_KEY: entry}
 
     inputs = []
     outputs = []
@@ -484,7 +528,8 @@ async def stream_completion(
             parts = getattr(candidate.content, "parts", None) if candidate.content else None
 
             delta = apply_parts(parts, state)
-            yield (build_output(state), delta) if with_deltas else build_output(state)
+            output = build_output(state, model)
+            yield (output, delta) if with_deltas else output
 
     except Exception as e:
         error_str = str(e)
