@@ -52,6 +52,22 @@ _summary_supported = True
 # Input conversion — LLMInput -> Responses API `input` items
 # ---------------------------------------------------------------------------
 
+# The key this helper's entry has in an output's reasoning_state, the opaque
+# state the platform stores with the assistant message and sends back on every
+# later turn. The entry is {"items": [reasoning output items]}: OpenAI's
+# reasoning, encrypted (we run with store: false, so nothing is kept server
+# side). Only OpenAI can decrypt it, so another helper's entry is never read.
+REASONING_STATE_KEY = "openai"
+
+
+def _reasoning_items(msg) -> List[Dict[str, Any]]:
+    """The reasoning items this helper stored on an assistant message."""
+    entry = (getattr(msg, "reasoning_state", None) or {}).get(REASONING_STATE_KEY)
+    if not isinstance(entry, dict):
+        return []
+    return [item for item in entry.get("items") or [] if isinstance(item, dict) and item.get("type") == "reasoning"]
+
+
 def _is_http_url(s: Optional[str]) -> bool:
     return bool(s) and (s.startswith("http://") or s.startswith("https://"))
 
@@ -127,8 +143,9 @@ def _function_call_items(tool_calls: List[Dict[str, Any]]) -> List[Dict[str, Any
     """Assistant tool calls -> function_call items.
 
     The item `id` (fc_...) is intentionally omitted: with it present the API
-    demands the matching reasoning item, which we do not persist across turns.
-    `call_id` is all that is needed to pair with a function_call_output.
+    demands the matching reasoning item, which a turn written by another app
+    (or before reasoning state was kept) does not have. `call_id` is all that
+    is needed to pair with a function_call_output.
     """
     items = []
     for tc in tool_calls:
@@ -159,6 +176,9 @@ def build_input(input_data) -> Tuple[Optional[str], List[Dict[str, Any]]]:
             continue
 
         if role == ContextMessageRole.ASSISTANT:
+            # The turn's reasoning goes back before what it produced, as the
+            # model emitted it.
+            items.extend(_reasoning_items(msg))
             if msg.text:
                 items.append({
                     "role": "assistant",
@@ -298,6 +318,10 @@ def build_request_body(
     reasoning = build_reasoning(input_data, supports_none_reasoning, with_summary)
     if reasoning:
         body["reasoning"] = reasoning
+    if (reasoning or {}).get("effort") != "none":
+        # With store: false the reasoning is kept only if it comes back
+        # encrypted, for reasoning_state to carry to the next turn.
+        body["include"] = ["reasoning.encrypted_content"]
 
     return body
 
@@ -338,6 +362,7 @@ def _create_initial_state() -> Dict[str, Any]:
         "tool_calls": [],
         "_item_index": {},        # response item id -> index in tool_calls
         "_summary_parts": 0,
+        "reasoning_items": [],    # reasoning output items, in order, for reasoning_state
         "input_tokens": 0,
         "output_tokens": 0,
         "cached_tokens": 0,
@@ -428,6 +453,9 @@ def _handle_event(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[
 
     if etype == "response.output_item.done":
         item = data.get("item") or {}
+        if item.get("type") == "reasoning":
+            state["reasoning_items"].append(_replayable_reasoning_item(item))
+            return None
         if item.get("type") == "function_call" and item.get("id") in state["_item_index"]:
             idx = state["_item_index"][item["id"]]
             if item.get("arguments"):
@@ -482,6 +510,12 @@ def _stop_reason(state: Dict[str, Any]) -> str:
     return "stop" if state.get("status") else ""
 
 
+def _replayable_reasoning_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """A reasoning output item as the next request takes it back: everything
+    but `status`, which is output-only."""
+    return {k: v for k, v in item.items() if k != "status"}
+
+
 def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
     out: Dict[str, Any] = {"response": state["response"]}
     if state["reasoning"]:
@@ -491,6 +525,9 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
 
     if not final:
         return out
+
+    if state["reasoning_items"]:
+        out["reasoning_state"] = {REASONING_STATE_KEY: {"items": state["reasoning_items"]}}
 
     elapsed = max(time.monotonic() - state["started_at"], 1e-6)
     ttft = (state["first_token_at"] - state["started_at"]) if state["first_token_at"] else 0.0
