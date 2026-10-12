@@ -469,7 +469,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.acls"}],
         annotations={"title": "Share calendar", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def share_calendar(self, input_data: ShareCalendarInput) -> ShareCalendarOutput:
@@ -493,7 +493,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.acls"}],
         annotations={"title": "Unshare calendar", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": True},
     )
     async def unshare_calendar(self, input_data: UnshareCalendarInput) -> UnshareCalendarOutput:
@@ -521,11 +521,10 @@ class App(BaseApp):
         self.logger.info(f"Deleted ACL rule id={match['id']}")
         return UnshareCalendarOutput(success=True, rule_id=match["id"])
 
-    # Stays on google.calendar: Google's acl.list accepts the calendar,
-    # calendar.acls or calendar.acls.readonly scopes, not calendar.readonly,
-    # and no read-only ACL capability is registered. Deploy warns about it.
+    # Google's acl.list takes calendar.acls.readonly; calendar.readonly does
+    # not cover sharing.
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.acls.readonly"}],
         annotations={"title": "List calendar shares", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_calendar_shares(self, input_data: ListCalendarSharesInput) -> ListCalendarSharesOutput:
