@@ -1898,7 +1898,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar"
+        "key": "google.calendar.acls.readonly"
       }
     ],
     "annotations": {
@@ -3118,7 +3118,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar"
+        "key": "google.calendar.acls"
       }
     ],
     "annotations": {
@@ -3487,7 +3487,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar"
+        "key": "google.calendar.acls"
       }
     ],
     "annotations": {
