@@ -121,7 +121,7 @@ class TestToolResultImages:
             tool_call_id="t1",
             images=[File(path=str(png))],
         )
-        _, contents = h.convert_messages_to_gemini(inp)
+        _, contents = h.convert_messages_to_gemini(inp, "gemini-3.8-flash")
         for c in contents:
             assert c.role == "user" and len(c.parts) == 1
             fr = c.parts[0].function_response
@@ -146,7 +146,44 @@ class TestToolResultImages:
         png = tmp_path / "big.png"
         Image.new("RGB", (6000, 3000), (0, 160, 0)).save(png, format="PNG")
         _, contents = h.convert_messages_to_gemini(
-            LLMInput(text="captured", role=ContextMessageRole.TOOL, tool_call_id="t1", images=[File(path=str(png))])
+            LLMInput(text="captured", role=ContextMessageRole.TOOL, tool_call_id="t1", images=[File(path=str(png))]),
+            "gemini-3.8-flash",
         )
         blob = contents[0].parts[0].function_response.parts[0].inline_data
         assert Image.open(io.BytesIO(blob.data)).size == (3072, 1536)
+
+
+class TestGemini25AndSignatures:
+    def _tool_input(self, tmp_path):
+        from inferencesh import File
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        png = tmp_path / "shot.png"
+        png.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+        calls = [{"id": f"c{i}", "type": "function", "function": {"name": "screenshot", "arguments": "{}"}} for i in (1, 2)]
+        return LLMInput(
+            context=[
+                ContextMessage(role=ContextMessageRole.USER, text="look"),
+                ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=calls),
+            ],
+            text="captured",
+            role=ContextMessageRole.TOOL,
+            tool_call_id="c1",
+            images=[File(path=str(png))],
+        )
+
+    def test_gemini_2_5_gets_images_after_the_function_response(self, tmp_path):
+        _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-2.5-flash")
+        parts = contents[-1].parts
+        assert parts[0].function_response.parts is None
+        assert parts[2].inline_data.mime_type == "image/png"
+
+    def test_gemini_3_first_function_call_carries_the_skip_signature(self, tmp_path):
+        _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-3.8-flash")
+        calls = [p for p in contents[1].parts if p.function_call]
+        dumped = [p.model_dump(mode="json", exclude_none=True).get("thought_signature") for p in calls]
+        assert dumped == ["skip_thought_signature_validator", None]
+
+    def test_gemini_2_5_sends_no_signature(self, tmp_path):
+        _, contents = h.convert_messages_to_gemini(self._tool_input(tmp_path), "gemini-2.5-pro")
+        assert all(p.thought_signature is None for p in contents[1].parts)

@@ -124,10 +124,41 @@ def _function_response_parts(images) -> Optional[List[types.FunctionResponsePart
     return parts or None
 
 
+# The thought signature Vertex documents for a function call whose signature
+# is unavailable (docs.cloud.google.com/vertex-ai/generative-ai/docs/thought-signatures):
+# Gemini 3 refuses a current-turn function call without one (400). Our tool
+# calls do not carry the model's own signature back yet, so every replayed
+# function call gets this; the SDK sends bytes base64url-encoded, so it is
+# decoded here to reach the API as the literal.
+SKIP_THOUGHT_SIGNATURE = base64.urlsafe_b64decode("skip_thought_signature_validator")
+
+
+def _is_gemini_3_or_later(model: str) -> bool:
+    match = re.match(r"gemini-(\d+)", model or "")
+    return bool(match) and int(match.group(1)) >= 3
+
+
+def _tool_result_parts(name: str, response: Dict[str, Any], images, native_images: bool) -> List[types.Part]:
+    """A tool result: a function_response part carrying the tool's images
+    (Gemini 3 multimodal function responses), or on earlier models, which
+    refuse or ignore FunctionResponse.parts, followed by them as inline parts
+    in the same turn."""
+    if native_images:
+        return [types.Part(function_response=types.FunctionResponse(
+            name=name, response=response, parts=_function_response_parts(images)))]
+    parts = [types.Part(function_response=types.FunctionResponse(name=name, response=response))]
+    image_parts = _collect_image_parts(images)
+    if image_parts:
+        parts.append(types.Part.from_text(text=f"Images returned by the {name} tool:"))
+        parts.extend(image_parts)
+    return parts
+
+
 def convert_messages_to_gemini(
     input_data: LLMInput,
+    model: str = "",
 ) -> Tuple[Optional[str], List[types.Content]]:
-    """Convert LLMInput to Gemini contents format.
+    """Convert LLMInput to Gemini contents format for model.
 
     Returns (system_instruction, contents) tuple.
     Gemini uses role="user" and role="model" (not "assistant").
@@ -135,6 +166,7 @@ def convert_messages_to_gemini(
     """
     system_prompt = input_data.system_prompt if input_data.system_prompt else None
     contents: List[types.Content] = []
+    gemini_3 = _is_gemini_3_or_later(model)
 
     for msg in input_data.context:
         parts: List[types.Part] = []
@@ -145,11 +177,7 @@ def convert_messages_to_gemini(
             except json.JSONDecodeError:
                 response_data = {"result": msg.text or ""}
             tool_name = getattr(msg, "tool_name", None) or msg.tool_call_id
-            parts.append(types.Part(function_response=types.FunctionResponse(
-                name=tool_name,
-                response=response_data,
-                parts=_function_response_parts(getattr(msg, "images", None)),
-            )))
+            parts.extend(_tool_result_parts(tool_name, response_data, getattr(msg, "images", None), gemini_3))
             contents.append(types.Content(role="user", parts=parts))
             continue
 
@@ -161,17 +189,19 @@ def convert_messages_to_gemini(
         parts.extend(_collect_image_parts(getattr(msg, "images", None)))
 
         if msg.role == ContextMessageRole.ASSISTANT and msg.tool_calls:
-            for tc in msg.tool_calls:
+            for i, tc in enumerate(msg.tool_calls):
                 func = tc.get("function", {})
                 args_str = func.get("arguments", "{}")
                 try:
                     args = json.loads(args_str) if isinstance(args_str, str) else args_str
                 except json.JSONDecodeError:
                     args = {}
+                # Only the first function call of a step carries a signature.
+                signature = SKIP_THOUGHT_SIGNATURE if gemini_3 and i == 0 else None
                 parts.append(types.Part(function_call=types.FunctionCall(
                     name=func.get("name", ""),
                     args=args,
-                )))
+                ), thought_signature=signature))
 
         if parts:
             contents.append(types.Content(role=role, parts=parts))
@@ -189,11 +219,7 @@ def convert_messages_to_gemini(
             except json.JSONDecodeError:
                 response_data = {"result": input_data.text or ""}
             tool_name = getattr(input_data, "tool_name", None) or input_data.tool_call_id
-            tool_parts = [types.Part(function_response=types.FunctionResponse(
-                name=tool_name,
-                response=response_data,
-                parts=_function_response_parts(getattr(input_data, "images", None)),
-            ))]
+            tool_parts = _tool_result_parts(tool_name, response_data, getattr(input_data, "images", None), gemini_3)
             contents.append(types.Content(role="user", parts=tool_parts))
         elif user_parts:
             contents.append(types.Content(role="user", parts=user_parts))
@@ -365,7 +391,7 @@ async def stream_completion(
     with_deltas=True: yields (output_dict, delta_dict | None) tuples; the
     delta has LLMDelta-shaped keys (response, reasoning, tool_calls).
     """
-    system_prompt, contents = convert_messages_to_gemini(input_data)
+    system_prompt, contents = convert_messages_to_gemini(input_data, model)
     tools = convert_tools_to_gemini(input_data.tools) if input_data.tools else None
 
     config_kwargs: Dict[str, Any] = {
