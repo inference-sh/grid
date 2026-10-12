@@ -345,3 +345,114 @@ class TestImageFitting:
         path = self._shot(tmp_path, (800, 600), "small.png")
         _, msgs = h.convert_messages_to_anthropic(self._input(path), "claude-opus-5")
         assert base64.b64decode(self._tool_image(msgs)["source"]["data"]) == open(path, "rb").read()
+
+
+# ── reasoning_state: thinking blocks carried to the next request ──────
+
+def ev_think_start(thinking="", signature=""):
+    return NS(type="content_block_start", content_block=NS(type="thinking", thinking=thinking, signature=signature))
+
+
+def ev_redacted(data):
+    return NS(type="content_block_start", content_block=NS(type="redacted_thinking", data=data))
+
+
+def ev_signature(sig):
+    return NS(type="content_block_delta", delta=NS(type="signature_delta", signature=sig))
+
+
+THINKING = {"type": "thinking", "thinking": "plan it", "signature": "sig-AB"}
+REDACTED = {"type": "redacted_thinking", "data": "opaque=="}
+TOOL_CALL = {"id": "toolu_1", "type": "function", "function": {"name": "get_weather", "arguments": '{"city": "Paris"}'}}
+
+
+class TestReasoningStateCapture:
+    def test_stream_keeps_every_block_whole_and_in_order(self):
+        state, deltas = fold([
+            ev_think_start(), ev_think("plan "), ev_think("it"), ev_signature("sig-"), ev_signature("AB"), ev_block_stop(),
+            ev_redacted("opaque=="), ev_block_stop(),
+            ev_tool_start("toolu_1", "get_weather"), ev_tool_json('{"city": "Paris"}'), ev_block_stop(),
+        ])
+        out = h.build_output(state)
+        assert out["reasoning_state"] == {"anthropic": {"blocks": [THINKING, REDACTED]}}
+        assert out["reasoning"] == "plan it"
+        assert deltas[3] is None, "a signature is not reasoning the user reads"
+
+    def test_no_thinking_no_state(self):
+        state, _ = fold([ev_text("hi")])
+        assert "reasoning_state" not in h.build_output(state)
+
+    @pytest.mark.asyncio
+    async def test_non_streaming_response(self):
+        response = NS(usage=None, content=[
+            NS(type="thinking", thinking="plan it", signature="sig-AB"),
+            NS(type="redacted_thinking", data="opaque=="),
+            NS(type="tool_use", id="toolu_1", name="get_weather", input={"city": "Paris"}),
+        ])
+
+        class Messages:
+            async def create(self, **_):
+                return response
+
+        client = NS(with_options=lambda **_: NS(messages=Messages()))
+        out = await h.complete(client, LLMInput(text="hi"), "claude-sonnet-5")
+        assert out["reasoning_state"] == {"anthropic": {"blocks": [THINKING, REDACTED]}}
+
+
+def assistant_turn(state, text=" "):
+    return LLMInput(text="18C", role="tool", tool_call_id="toolu_1", context=[
+        {"role": "user", "text": "weather in Paris?"},
+        {"role": "assistant", "text": text, "tool_calls": [TOOL_CALL], "reasoning_state": state},
+    ])
+
+
+class TestReasoningStateReplay:
+    def test_blocks_go_first_exactly_as_returned(self):
+        state = {"anthropic": {"blocks": [THINKING, REDACTED]}, "gemini": {"signatures": ["x"]}}
+        _, messages = h.convert_messages_to_anthropic(assistant_turn(state, text="Checking."))
+        assert messages[1]["content"] == [
+            THINKING, REDACTED,
+            {"type": "text", "text": "Checking."},
+            {"type": "tool_use", "id": "toolu_1", "name": "get_weather", "input": {"city": "Paris"}},
+        ]
+
+    def test_platform_placeholder_text_is_not_added_beside_the_blocks(self):
+        _, messages = h.convert_messages_to_anthropic(assistant_turn({"anthropic": {"blocks": [THINKING]}}))
+        assert [b["type"] for b in messages[1]["content"]] == ["thinking", "tool_use"]
+
+    def test_other_apps_entries_are_never_sent(self):
+        for state in ({"gemini": {"signatures": ["x"]}, "openai": {"items": []}}, None):
+            _, messages = h.convert_messages_to_anthropic(assistant_turn(state))
+            assert [b["type"] for b in messages[1]["content"]] == ["text", "tool_use"], "unchanged from before"
+
+    def test_only_the_running_tool_loop_is_replayed(self):
+        old = {"anthropic": {"blocks": [dict(THINKING, signature="old")]}}
+        new = {"anthropic": {"blocks": [THINKING]}}
+        context = [
+            {"role": "user", "text": "weather in Paris?"},
+            {"role": "assistant", "text": " ", "tool_calls": [dict(TOOL_CALL, id="toolu_0")], "reasoning_state": old},
+            {"role": "tool", "tool_call_id": "toolu_0", "text": "18C"},
+            {"role": "assistant", "text": "18C.", "reasoning_state": old},
+            {"role": "user", "text": "and Oslo?"},
+            {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": new},
+        ]
+        _, messages = h.convert_messages_to_anthropic(
+            LLMInput(text="9C", role="tool", tool_call_id="toolu_1", context=context))
+        thinking = [b for m in messages if m["role"] == "assistant" for b in m["content"] if b["type"] == "thinking"]
+        assert thinking == [THINKING], "earlier turns go without their blocks"
+        assert messages[-2]["content"][0] == THINKING
+
+        _, messages = h.convert_messages_to_anthropic(LLMInput(text="thanks", context=context))
+        assert not [b for m in messages for b in (m["content"] if isinstance(m["content"], list) else [])
+                    if b["type"] == "thinking"], "a new user turn ends the loop"
+
+    def test_merged_assistant_messages_keep_only_the_leading_blocks(self):
+        first = {"anthropic": {"blocks": [THINKING]}}
+        second = {"anthropic": {"blocks": [dict(THINKING, signature="second"), REDACTED]}}
+        _, messages = h.convert_messages_to_anthropic(LLMInput(text="18C", role="tool", tool_call_id="toolu_1", context=[
+            {"role": "user", "text": "weather in Paris?"},
+            {"role": "assistant", "text": "Let me check.", "reasoning_state": first},
+            {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": second},
+        ]))
+        assert [b["type"] for b in messages[1]["content"]] == ["thinking", "text", "tool_use"]
+        assert messages[1]["content"][0] == THINKING
