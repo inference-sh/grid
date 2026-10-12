@@ -1603,6 +1603,19 @@
               "default": null,
               "title": "Reasoning"
             },
+            "reasoning_state": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reasoning State"
+            },
             "images": {
               "anyOf": [
                 {
@@ -2641,6 +2654,19 @@
           ],
           "default": null,
           "title": "Reasoning"
+        },
+        "reasoning_state": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reasoning State"
         },
         "tool_calls": {
           "anyOf": [
