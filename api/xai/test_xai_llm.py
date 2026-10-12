@@ -145,7 +145,7 @@ class TestUsageViolation:
 
 
 class TestToolResultImages:
-    def test_tool_images_become_follow_up_user_message(self, tmp_path):
+    def test_tool_images_ride_in_function_call_output(self, tmp_path):
         from inferencesh import File
         from inferencesh.models.llm import ContextMessage, ContextMessageRole
 
@@ -159,11 +159,10 @@ class TestToolResultImages:
             images=[File(path=str(png))],
         )
         _, items = xai_llm.build_input(inp)
-        assert [i.get("type") or i.get("role") for i in items] == ["function_call_output", "user", "function_call_output", "user"]
-        assert items[0]["output"] == "captured"
-        content = items[1]["content"]
-        assert content[0]["type"] == "input_text"
-        assert content[1]["type"] == "input_image" and content[1]["image_url"].startswith("data:image/png;base64,")
+        assert [i["type"] for i in items] == ["function_call_output", "function_call_output"]
+        output = items[0]["output"]
+        assert output[0] == {"type": "input_text", "text": "captured"}
+        assert output[1]["type"] == "input_image" and output[1]["image_url"].startswith("data:image/png;base64,")
 
     def test_text_only_tool_result_unchanged(self):
         from inferencesh.models.llm import ContextMessageRole
