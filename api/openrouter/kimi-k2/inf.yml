@@ -1,6 +1,6 @@
 namespace: openrouter
 name: kimi-k2
-description: Kimi K2 is the latest, most capable version of open-source model from Moonshot AI. Built as a thinking agent, scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls.
+description: Kimi K2 Instruct (0905) — Moonshot AI's 1T-parameter MoE (32B active) without thinking. 262K context, strong tool use and coding. For step-by-step reasoning use Kimi K2 Thinking.
 metadata:
     capabilities:
         - reasoning

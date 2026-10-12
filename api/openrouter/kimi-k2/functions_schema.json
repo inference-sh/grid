@@ -2010,7 +2010,7 @@
           "type": "boolean"
         },
         "context_size": {
-          "default": 200000,
+          "default": 262144,
           "description": "The context size for the model.",
           "title": "Context Size",
           "type": "integer"

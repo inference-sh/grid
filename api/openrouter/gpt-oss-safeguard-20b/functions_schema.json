@@ -1685,16 +1685,6 @@
           "title": "ContextMessage",
           "type": "object"
         },
-        "ReasoningEffortEnum": {
-          "enum": [
-            "low",
-            "medium",
-            "high",
-            "none"
-          ],
-          "title": "ReasoningEffortEnum",
-          "type": "string"
-        },
         "ResponseFormat": {
           "properties": {
             "type": {
@@ -2003,6 +1993,17 @@
       },
       "description": "OpenRouter input model with reasoning and tools support.",
       "properties": {
+        "reasoning_effort": {
+          "default": "low",
+          "description": "Reasoning effort. This model always reasons; it cannot be turned off.",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Reasoning Effort",
+          "type": "string"
+        },
         "reasoning_exclude": {
           "default": false,
           "description": "Exclude reasoning tokens from response",
@@ -2120,10 +2121,6 @@
           "default": 64000,
           "title": "Max Tokens",
           "type": "integer"
-        },
-        "reasoning_effort": {
-          "$ref": "#/$defs/ReasoningEffortEnum",
-          "default": "none"
         },
         "reasoning_max_tokens": {
           "anyOf": [
