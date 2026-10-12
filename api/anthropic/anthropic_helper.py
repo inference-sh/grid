@@ -125,6 +125,24 @@ def _build_tool_result_block(tool_use_id: str, text: Optional[str], images, limi
     return {"type": "tool_result", "tool_use_id": tool_use_id, "content": content}
 
 
+# The key this helper's entry has in a message's reasoning_state (INF-1066).
+# Other apps' entries are carried by the platform and never read here.
+REASONING_STATE_KEY = "anthropic"
+
+
+def _replayed_thinking_blocks(msg) -> List[Dict[str, Any]]:
+    """The thinking and redacted_thinking blocks an assistant message's
+    response carried, from its reasoning_state entry; [] when it has none."""
+    entry = (getattr(msg, "reasoning_state", None) or {}).get(REASONING_STATE_KEY)
+    if not isinstance(entry, dict):
+        return []
+    return [dict(b) for b in entry.get("blocks") or [] if isinstance(b, dict)]
+
+
+def _reasoning_state(blocks: List[Dict[str, Any]]) -> Dict[str, Any]:
+    return {REASONING_STATE_KEY: {"blocks": blocks}}
+
+
 def convert_messages_to_anthropic(
     input_data: LLMInput,
     model: str = "",
@@ -152,7 +170,16 @@ def convert_messages_to_anthropic(
 
         content: List[Dict[str, Any]] = []
 
-        if msg.text:
+        # The model's thinking blocks come back first and exactly as it wrote
+        # them: the signature covers them, and an edited or reordered block is
+        # refused.
+        if msg.role == ContextMessageRole.ASSISTANT:
+            content.extend(_replayed_thinking_blocks(msg))
+
+        # A whitespace-only text is the platform's stand-in for a turn with no
+        # text (it keeps other providers from refusing an empty message); next
+        # to the model's own blocks it is an edit of what the model wrote.
+        if msg.text and not (content and not msg.text.strip()):
             content.append({"type": "text", "text": msg.text})
 
         content.extend(_collect_images(getattr(msg, "images", None), limits))
@@ -390,6 +417,10 @@ def create_initial_state() -> Dict[str, Any]:
     return {
         "response": "",
         "thinking": "",
+        # thinking / redacted_thinking blocks as the API returned them, in
+        # order, signatures included: sent back with the next request.
+        "thinking_blocks": [],
+        "current_thinking": None,
         "tool_calls": [],
         "current_tool": None,
         "input_tokens": 0,
@@ -404,6 +435,8 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
         out["reasoning"] = state["thinking"]
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
+    if state["thinking_blocks"]:
+        out["reasoning_state"] = _reasoning_state(state["thinking_blocks"])
 
     # Anthropic's input_tokens excludes cache reads and writes; the usage
     # counts every input token, cached ones included (the OpenAI convention).
@@ -506,7 +539,16 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
 
     if event.type == "content_block_start":
         block = event.content_block
-        if block.type == "tool_use":
+        if block.type == "thinking":
+            state["current_thinking"] = {
+                "type": "thinking",
+                "thinking": getattr(block, "thinking", "") or "",
+                "signature": getattr(block, "signature", "") or "",
+            }
+            state["thinking_blocks"].append(state["current_thinking"])
+        elif block.type == "redacted_thinking":
+            state["thinking_blocks"].append({"type": "redacted_thinking", "data": block.data})
+        elif block.type == "tool_use":
             state["current_tool"] = {
                 "id": block.id,
                 "type": "function",
@@ -528,6 +570,10 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
         elif d.type == "thinking_delta" and d.thinking:
             state["thinking"] += d.thinking
             delta["reasoning"] = d.thinking
+            if state["current_thinking"] is not None:
+                state["current_thinking"]["thinking"] += d.thinking
+        elif d.type == "signature_delta" and state["current_thinking"] is not None:
+            state["current_thinking"]["signature"] += d.signature
         elif d.type == "input_json_delta" and state["current_tool"] and d.partial_json:
             state["current_tool"]["function"]["arguments"] += d.partial_json
             delta["tool_calls"] = [{
@@ -537,6 +583,7 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
 
     elif event.type == "content_block_stop":
         state["current_tool"] = None
+        state["current_thinking"] = None
 
     elif event.type == "message_delta":
         usage = getattr(event, "usage", None)
@@ -644,6 +691,11 @@ async def complete(
             state["response"] += block.text
         elif block.type == "thinking":
             state["thinking"] += block.thinking
+            state["thinking_blocks"].append(
+                {"type": "thinking", "thinking": block.thinking, "signature": block.signature}
+            )
+        elif block.type == "redacted_thinking":
+            state["thinking_blocks"].append({"type": "redacted_thinking", "data": block.data})
         elif block.type == "tool_use":
             state["tool_calls"].append(
                 {
