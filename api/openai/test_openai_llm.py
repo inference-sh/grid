@@ -100,3 +100,62 @@ class TestToolResultImages:
 
         _, items = openai_llm.build_input(LLMInput(text="42", role=ContextMessageRole.TOOL, tool_call_id="t1"))
         assert items == [{"type": "function_call_output", "call_id": "t1", "output": "42"}]
+
+
+class TestReasoningState:
+    """The encrypted reasoning items a response returns ride on the output's
+    reasoning_state under this helper's key, and go back before the turn they
+    produced."""
+
+    ITEM = {"type": "reasoning", "id": "rs_1", "summary": [{"type": "summary_text", "text": "think"}],
+            "encrypted_content": "gAAA-enc"}
+
+    def _req(self, **kw):
+        return openai_llm.build_request_body(LLMInput(text="hi", **kw), "m", max_output_tokens=100, supports_none_reasoning=True, with_summary=False)
+
+    def test_requests_encrypted_reasoning_unless_reasoning_is_off(self):
+        assert self._req(reasoning_effort="high")["include"] == ["reasoning.encrypted_content"]
+        assert "include" not in self._req(reasoning_effort="none")  # the LLMInput default
+
+    def test_reasoning_items_are_captured_in_order_without_status(self):
+        state = openai_llm._create_initial_state()
+        second = dict(self.ITEM, id="rs_2")
+        for item in (dict(self.ITEM, status="completed"), second):
+            assert openai_llm._handle_event({"type": "response.output_item.done", "item": item}, state) is None
+        out = openai_llm._build_output(state, final=True)
+        assert out["reasoning_state"] == {openai_llm.REASONING_STATE_KEY: {"items": [self.ITEM, second]}}
+        assert "reasoning_state" not in openai_llm._build_output(state)  # whole only on the final output
+
+    def test_no_reasoning_no_state(self):
+        state = openai_llm._create_initial_state()
+        assert "reasoning_state" not in openai_llm._build_output(state, final=True)
+
+    def test_replayed_before_the_turns_text_and_calls(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        call = {"id": "c1", "type": "function", "function": {"name": "f", "arguments": "{}"}}
+        inp = LLMInput(
+            context=[
+                ContextMessage(role=ContextMessageRole.USER, text="go"),
+                ContextMessage(role=ContextMessageRole.ASSISTANT, text="calling", tool_calls=[call],
+                               reasoning_state={openai_llm.REASONING_STATE_KEY: {"items": [self.ITEM]}}),
+            ],
+            text="42", role=ContextMessageRole.TOOL, tool_call_id="c1",
+        )
+        _, items = openai_llm.build_input(inp)
+        assert [i.get("type") or i.get("role") for i in items] == [
+            "user", "reasoning", "assistant", "function_call", "function_call_output"]
+        assert items[1] == self.ITEM
+
+    def test_another_providers_entry_is_not_sent(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+
+        inp = LLMInput(
+            context=[ContextMessage(role=ContextMessageRole.ASSISTANT, text="hi", reasoning_state={
+                "xai": {"items": [self.ITEM]},
+                "anthropic": [{"type": "thinking", "thinking": "t", "signature": "s"}],
+            })],
+            text="next",
+        )
+        _, items = openai_llm.build_input(inp)
+        assert all(i.get("type") != "reasoning" for i in items)
