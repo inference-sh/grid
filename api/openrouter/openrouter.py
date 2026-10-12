@@ -14,13 +14,16 @@ from typing import List, Optional, Dict, Any, AsyncGenerator, Type, Union
 import httpx
 
 from inferencesh import BaseApp, File, OutputMeta
-from inferencesh.models.llm import LLMDelta, LLMOutput, LLMUsage, build_openai_messages, build_tools, openai_response_format, openai_tool_choice
+from inferencesh.models.llm import LLMDelta, LLMOutput, LLMUsage, build_openai_messages, build_tools, merge_reasoning_details, openai_response_format, openai_tool_choice
 from inferencesh.openai import OpenAIChatMixin
 from inferencesh.models.output_meta import RawMeta
 
 logger = logging.getLogger(__name__)
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+# This app's entry in an output's reasoning_state: OpenRouter's
+# reasoning_details, merged into whole blocks, sent back as they came.
+REASONING_STATE_KEY = "openrouter"
 
 # Seconds of silence (no chunks AND no keep-alive) before we give up.
 # OpenRouter sends `: OPENROUTER PROCESSING` keep-alives, so true silence
@@ -333,7 +336,7 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> tuple[Optio
 
     reasoning_details = delta.get("reasoning_details")
     if reasoning_details:
-        state["reasoning_details"].extend(reasoning_details)
+        state["reasoning_details"] = merge_reasoning_details(state["reasoning_details"] + reasoning_details)
 
     tool_calls = delta.get("tool_calls")
     if tool_calls:
@@ -398,7 +401,9 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["reasoning"]:
         out["reasoning"] = state["reasoning"]
     if state["reasoning_details"]:
-        out["reasoning_details"] = state["reasoning_details"]
+        # Sent back on the next turn as the assistant message's
+        # reasoning_details (signatures, encrypted reasoning).
+        out["reasoning_state"] = {REASONING_STATE_KEY: state["reasoning_details"]}
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
     if state["image_urls"]:
@@ -449,7 +454,7 @@ def _build_request_body(
     provider_routing: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Build the JSON body for an OpenRouter chat completion request."""
-    messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
+    messages = build_openai_messages(input_data, file_mode="url", image_mode="url", reasoning_state_key=REASONING_STATE_KEY)
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     body: Dict[str, Any] = {

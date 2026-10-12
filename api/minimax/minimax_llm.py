@@ -11,9 +11,13 @@ import httpx
 
 from inferencesh import OutputMeta, TextMeta
 from inferencesh.llm_types_gen import ResponseFormatType, ToolChoiceMode
-from inferencesh.models.llm import build_openai_messages, build_tools
+from inferencesh.models.llm import build_openai_messages, build_tools, merge_reasoning_details
 
 MINIMAX_BASE_URL = "https://api.minimax.io/v1"
+# This app's entry in an output's reasoning_state: the reasoning_details
+# MiniMax returns with reasoning_split, sent back as they came so an
+# interleaved-thinking model keeps its chain across tool calls.
+REASONING_STATE_KEY = "minimax"
 STREAM_SILENCE_TIMEOUT = 60
 
 
@@ -83,7 +87,7 @@ async def stream_completion(
 
 
 def _build_request_body(input_data, model: str) -> Dict[str, Any]:
-    messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
+    messages = build_openai_messages(input_data, file_mode="url", image_mode="url", reasoning_state_key=REASONING_STATE_KEY)
     tools = build_tools(input_data.tools) if input_data.tools else None
 
     body: Dict[str, Any] = {
@@ -92,6 +96,9 @@ def _build_request_body(input_data, model: str) -> Dict[str, Any]:
         "stream": True,
         "stream_options": {"include_usage": True},
         "max_tokens": getattr(input_data, "max_tokens", 32768),
+        # Thinking as reasoning_details instead of <think> inside content:
+        # what the next turn sends back (MiniMax interleaved thinking).
+        "reasoning_split": True,
     }
 
     if input_data.temperature is not None:
@@ -245,7 +252,7 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Tuple[Optio
 
     reasoning_details = delta.get("reasoning_details")
     if reasoning_details:
-        state["reasoning_details"].extend(reasoning_details)
+        state["reasoning_details"] = merge_reasoning_details(state["reasoning_details"] + reasoning_details)
 
     tool_calls = delta.get("tool_calls")
     if tool_calls:
@@ -279,7 +286,7 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["reasoning"]:
         out["reasoning"] = state["reasoning"]
     if state["reasoning_details"]:
-        out["reasoning_details"] = state["reasoning_details"]
+        out["reasoning_state"] = {REASONING_STATE_KEY: state["reasoning_details"]}
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
 

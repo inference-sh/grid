@@ -110,3 +110,32 @@ class TestThinkDeltas:
         assert st["response"] == "ok"
         assert d1 == {"reasoning": "real"}
         assert d2 == {"response": "ok"}
+
+
+class TestReasoningState:
+    CALL = {"id": "call_1", "type": "function", "function": {"name": "f", "arguments": "{}"}}
+
+    def test_reasoning_split_requested(self):
+        assert body()["reasoning_split"] is True
+
+    def test_streamed_details_land_in_reasoning_state(self):
+        state = minimax_llm._create_initial_state()
+        for text in ("The user wants", " the weather."):
+            minimax_llm._parse_sse_chunk({"choices": [{"delta": {"reasoning_content": text, "reasoning_details": [
+                {"type": "reasoning.text", "id": "reasoning-text-1", "format": "MiniMax-response-v1", "index": 0, "text": text}]}}]}, state)
+        out = minimax_llm._build_output(state)
+        assert out["reasoning"] == "The user wants the weather."
+        assert out["reasoning_state"] == {"minimax": [{"type": "reasoning.text", "id": "reasoning-text-1",
+                                                       "format": "MiniMax-response-v1", "index": 0, "text": "The user wants the weather."}]}
+        assert "reasoning_details" not in out
+
+    def test_own_entry_replayed_foreign_left_out(self):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+        mine = [{"type": "reasoning.text", "id": "reasoning-text-1", "format": "MiniMax-response-v1", "index": 0, "text": "t"}]
+        b = minimax_llm._build_request_body(LLMInput(role=ContextMessageRole.TOOL, tool_call_id="call_1", text="{}", context=[
+            ContextMessage(role=ContextMessageRole.USER, text="hi"),
+            ContextMessage(role=ContextMessageRole.ASSISTANT, text="", tool_calls=[self.CALL],
+                           reasoning_state={"minimax": mine, "openrouter": [{"type": "reasoning.text", "text": "x"}]}),
+        ]), "MiniMax-M3")
+        assistant = next(m for m in b["messages"] if m["role"] == "assistant")
+        assert assistant["reasoning_details"] == mine

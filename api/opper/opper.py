@@ -3,8 +3,18 @@
 import asyncio
 from typing import List, Optional, Dict, Any, AsyncGenerator, Tuple
 from inferencesh import File
-from inferencesh.models.llm import build_openai_messages, build_tools, openai_response_format, openai_tool_choice
+from inferencesh.models.llm import build_openai_messages, build_tools, merge_reasoning_details, openai_response_format, openai_tool_choice
 from inferencesh import OutputMeta, TextMeta
+
+# This app's entry in an output's reasoning_state: the reasoning_details Opper
+# returns (OpenRouter's shape), sent back as they came.
+REASONING_STATE_KEY = "opper"
+
+
+def _plain_details(details) -> List[Dict[str, Any]]:
+    """reasoning_details as the OpenAI SDK hands them (an extra field: dicts,
+    or models where it parsed them) as plain dicts."""
+    return [d.model_dump(exclude_none=True) if hasattr(d, "model_dump") else d for d in details or []]
 
 
 def get_reasoning_config(input_data) -> Optional[Dict[str, Any]]:
@@ -119,8 +129,8 @@ def process_chunk(chunk, state: Dict[str, Any]) -> Tuple[Optional[str], Optional
         state["reasoning"] += delta.reasoning
         llm_delta["reasoning"] = delta.reasoning
 
-    if hasattr(delta, "reasoning_details") and delta.reasoning_details:
-        state["reasoning_details"].extend(delta.reasoning_details)
+    if getattr(delta, "reasoning_details", None):
+        state["reasoning_details"] = merge_reasoning_details(state["reasoning_details"] + _plain_details(delta.reasoning_details))
 
     if delta.tool_calls:
         for tc in delta.tool_calls:
@@ -138,7 +148,7 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["reasoning"]:
         out["reasoning"] = state["reasoning"]
     if state["reasoning_details"]:
-        out["reasoning_details"] = state["reasoning_details"]
+        out["reasoning_state"] = {REASONING_STATE_KEY: state["reasoning_details"]}
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
 
@@ -194,7 +204,7 @@ def _convert_files_to_documents(messages: List[Dict[str, Any]]) -> List[Dict[str
 
 def _build_params(input_data, model: str, stream: bool) -> Dict[str, Any]:
     """Build common request parameters."""
-    messages = build_openai_messages(input_data, file_mode="url", image_mode="url")
+    messages = build_openai_messages(input_data, file_mode="url", image_mode="url", reasoning_state_key=REASONING_STATE_KEY)
     messages = _convert_files_to_documents(messages)
     tools = build_tools(input_data.tools) if input_data.tools else None
 
@@ -250,8 +260,8 @@ async def complete(client, input_data, model: str) -> Dict[str, Any]:
     if hasattr(message, "reasoning") and message.reasoning:
         state["reasoning"] = message.reasoning
 
-    if hasattr(message, "reasoning_details") and message.reasoning_details:
-        state["reasoning_details"] = message.reasoning_details
+    if getattr(message, "reasoning_details", None):
+        state["reasoning_details"] = merge_reasoning_details(_plain_details(message.reasoning_details))
 
     if message.tool_calls:
         for tc in message.tool_calls:
