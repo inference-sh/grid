@@ -424,3 +424,35 @@ class TestReasoningStateReplay:
         for state in ({"gemini": {"signatures": ["x"]}, "openai": {"items": []}}, None):
             _, messages = h.convert_messages_to_anthropic(assistant_turn(state))
             assert [b["type"] for b in messages[1]["content"]] == ["text", "tool_use"], "unchanged from before"
+
+    def test_only_the_running_tool_loop_is_replayed(self):
+        old = {"anthropic": {"blocks": [dict(THINKING, signature="old")]}}
+        new = {"anthropic": {"blocks": [THINKING]}}
+        context = [
+            {"role": "user", "text": "weather in Paris?"},
+            {"role": "assistant", "text": " ", "tool_calls": [dict(TOOL_CALL, id="toolu_0")], "reasoning_state": old},
+            {"role": "tool", "tool_call_id": "toolu_0", "text": "18C"},
+            {"role": "assistant", "text": "18C.", "reasoning_state": old},
+            {"role": "user", "text": "and Oslo?"},
+            {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": new},
+        ]
+        _, messages = h.convert_messages_to_anthropic(
+            LLMInput(text="9C", role="tool", tool_call_id="toolu_1", context=context))
+        thinking = [b for m in messages if m["role"] == "assistant" for b in m["content"] if b["type"] == "thinking"]
+        assert thinking == [THINKING], "earlier turns go without their blocks"
+        assert messages[-2]["content"][0] == THINKING
+
+        _, messages = h.convert_messages_to_anthropic(LLMInput(text="thanks", context=context))
+        assert not [b for m in messages for b in (m["content"] if isinstance(m["content"], list) else [])
+                    if b["type"] == "thinking"], "a new user turn ends the loop"
+
+    def test_merged_assistant_messages_keep_only_the_leading_blocks(self):
+        first = {"anthropic": {"blocks": [THINKING]}}
+        second = {"anthropic": {"blocks": [dict(THINKING, signature="second"), REDACTED]}}
+        _, messages = h.convert_messages_to_anthropic(LLMInput(text="18C", role="tool", tool_call_id="toolu_1", context=[
+            {"role": "user", "text": "weather in Paris?"},
+            {"role": "assistant", "text": "Let me check.", "reasoning_state": first},
+            {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": second},
+        ]))
+        assert [b["type"] for b in messages[1]["content"]] == ["thinking", "text", "tool_use"]
+        assert messages[1]["content"][0] == THINKING
