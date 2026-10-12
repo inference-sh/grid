@@ -545,19 +545,6 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
         return out
 
     output_tokens = billable_output_tokens(state)
-    inputs = []
-    if state["input_tokens"]:
-        inputs.append(TextMeta(tokens=state["input_tokens"], extra={
-            "cache_read_tokens": state["cached_tokens"],
-        }))
-    # Always one output item: it carries the violation flag and xAI's cost even
-    # when no tokens were produced. Pricing reads outputs[0].
-    outputs = [TextMeta(tokens=output_tokens, extra={
-        "reasoning_tokens": state["reasoning_tokens"],
-        "usage_violation": 1 if state["usage_violation"] else 0,
-        "upstream_cost_usd": state["cost_ticks"] * USD_PER_TICK if state["cost_ticks"] is not None else None,
-    })]
-    out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
     if state["usage_violation"]:
         out["notice"] = VIOLATION_NOTICE
 
@@ -569,10 +556,20 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
         time_to_first_token=round(ttft, 3),
         tokens_per_second=round(output_tokens / gen_time, 2) if output_tokens else 0.0,
         prompt_tokens=state["input_tokens"],
+        cached_tokens=state["cached_tokens"],
         completion_tokens=output_tokens,
         total_tokens=state["input_tokens"] + output_tokens,
         reasoning_tokens=state["reasoning_tokens"],
     )
+    # The input comes from the usage. The output is always one item, even with
+    # no tokens: it carries the violation flag and xAI's cost, and pricing
+    # reads outputs[0].
+    meta = OutputMeta.from_llm_usage(out["usage"])
+    meta.outputs = [TextMeta(tokens=output_tokens, extra={
+        "usage_violation": 1 if state["usage_violation"] else 0,
+        "upstream_cost_usd": state["cost_ticks"] * USD_PER_TICK if state["cost_ticks"] is not None else None,
+    })]
+    out["output_meta"] = meta
     return out
 
 

@@ -11,7 +11,8 @@ import re
 import logging
 from typing import AsyncGenerator, List, Optional, Dict, Any, Tuple
 
-from inferencesh import OutputMeta, TextMeta
+from inferencesh import OutputMeta
+from inferencesh.models.llm import LLMUsage
 from inferencesh.images import ImageLimits, fit_image
 from inferencesh.llm_types_gen import (
     ResponseFormat,
@@ -404,21 +405,22 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
 
-    inputs = []
-    outputs = []
-    cache_read = state.get("cache_read_input_tokens", 0)
-    cache_write = state.get("cache_creation_input_tokens", 0)
-    uncached = state.get("input_tokens", 0)
-    total_input = uncached + cache_read + cache_write
-    if total_input:
-        inputs.append(TextMeta(tokens=total_input, extra={
-            "cache_read_tokens": cache_read,
-            "cache_write_tokens": cache_write,
-        }))
-    if state.get("output_tokens"):
-        outputs.append(TextMeta(tokens=state["output_tokens"]))
-    if inputs or outputs:
-        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+    # Anthropic's input_tokens excludes cache reads and writes; the usage
+    # counts every input token, cached ones included (the OpenAI convention).
+    cache_read = state.get("cache_read_input_tokens", 0) or 0
+    cache_write = state.get("cache_creation_input_tokens", 0) or 0
+    prompt_tokens = (state.get("input_tokens", 0) or 0) + cache_read + cache_write
+    output_tokens = state.get("output_tokens", 0) or 0
+    if prompt_tokens or output_tokens:
+        usage = LLMUsage(
+            prompt_tokens=prompt_tokens,
+            cached_tokens=cache_read,
+            cache_write_tokens=cache_write,
+            completion_tokens=output_tokens,
+            total_tokens=prompt_tokens + output_tokens,
+        )
+        out["usage"] = usage
+        out["output_meta"] = OutputMeta.from_llm_usage(usage)
 
     return out
 

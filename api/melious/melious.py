@@ -31,7 +31,7 @@ from typing import Any, AsyncGenerator, Dict, Optional
 
 import httpx
 
-from inferencesh import OutputMeta, TextMeta
+from inferencesh import OutputMeta
 from inferencesh.models.llm import (
     LLMUsage,
     build_openai_messages,
@@ -166,6 +166,7 @@ def _create_initial_state() -> Dict[str, Any]:
         "input_tokens": 0,
         "output_tokens": 0,
         "cached_tokens": 0,
+        "cache_write_tokens": 0,
         "reasoning_tokens": 0,
         "finish_reason": None,
         "completion_id": None,
@@ -222,7 +223,9 @@ def _handle_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[
     if usage:
         state["input_tokens"] = usage.get("prompt_tokens") or 0
         state["output_tokens"] = usage.get("completion_tokens") or 0
-        state["cached_tokens"] = (usage.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
+        prompt_details = usage.get("prompt_tokens_details") or {}
+        state["cached_tokens"] = prompt_details.get("cached_tokens") or 0
+        state["cache_write_tokens"] = prompt_details.get("cache_write_tokens") or 0
         state["reasoning_tokens"] = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens") or 0
 
     choices = data.get("choices") or []
@@ -269,17 +272,6 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
     if not final:
         return out
 
-    # completion_tokens already includes reasoning tokens (OpenAI convention).
-    inputs = []
-    if state["input_tokens"]:
-        inputs.append(TextMeta(tokens=state["input_tokens"], extra={
-            "cache_read_tokens": state["cached_tokens"],
-        }))
-    outputs = [TextMeta(tokens=state["output_tokens"], extra={
-        "reasoning_tokens": state["reasoning_tokens"],
-    })]
-    out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
-
     elapsed = max(time.monotonic() - state["started_at"], 1e-6)
     ttft = (state["first_token_at"] - state["started_at"]) if state["first_token_at"] else 0.0
     gen_time = max(elapsed - ttft, 1e-6)
@@ -288,10 +280,14 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
         time_to_first_token=round(ttft, 3),
         tokens_per_second=round(state["output_tokens"] / gen_time, 2) if state["output_tokens"] else 0.0,
         prompt_tokens=state["input_tokens"],
+        cached_tokens=state["cached_tokens"],
+        cache_write_tokens=state["cache_write_tokens"],
+        # completion_tokens already includes reasoning tokens (OpenAI convention).
         completion_tokens=state["output_tokens"],
         total_tokens=state["input_tokens"] + state["output_tokens"],
         reasoning_tokens=state["reasoning_tokens"],
     )
+    out["output_meta"] = OutputMeta.from_llm_usage(out["usage"])
     return out
 
 

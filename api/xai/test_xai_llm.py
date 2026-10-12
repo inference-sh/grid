@@ -105,7 +105,8 @@ class TestMetering:
                                    input_tokens_details={"cached_tokens": 40}, cost_in_usd_ticks=37756000)])
         out = xai_llm._build_output(state, final=True)
         meta = out["output_meta"]
-        assert meta.inputs[0].tokens == 100 and meta.inputs[0].extra["cache_read_tokens"] == 40
+        assert meta.inputs[0].tokens == 100 and meta.inputs[0].cached_tokens == 40
+        assert out["usage"].prompt_tokens == 100 and out["usage"].cached_tokens == 40
         assert meta.outputs[0].extra["upstream_cost_usd"] == pytest.approx(0.0037756)
         assert meta.outputs[0].extra["usage_violation"] == 0
 

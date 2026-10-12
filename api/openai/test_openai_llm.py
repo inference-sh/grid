@@ -57,6 +57,21 @@ class TestDeltaExtraction:
         assert state["tool_calls"][0]["function"]["arguments"] == '{"a":1}'
 
 
+class TestUsage:
+    def test_cache_reads_and_writes_reach_usage_and_token_report(self):
+        state = openai_llm._create_initial_state()
+        openai_llm._handle_event({"type": "response.completed", "response": {"id": "r1", "status": "completed", "usage": {
+            "input_tokens": 1000, "output_tokens": 20,
+            "input_tokens_details": {"cached_tokens": 600, "cache_write_tokens": 300},
+            "output_tokens_details": {"reasoning_tokens": 5}}}}, state)
+        out = openai_llm._build_output(state, final=True)
+        u = out["usage"]
+        assert (u.prompt_tokens, u.cached_tokens, u.cache_write_tokens, u.completion_tokens) == (1000, 600, 300, 20)
+        item = out["output_meta"].inputs[0]
+        assert (item.tokens, item.cached_tokens, item.cache_write_tokens) == (1000, 600, 300)
+        assert out["output_meta"].outputs[0].tokens == 20
+
+
 class TestToolResultImages:
     def test_tool_images_ride_in_function_call_output(self, tmp_path):
         from inferencesh import File

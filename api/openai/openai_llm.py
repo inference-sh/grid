@@ -24,7 +24,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 import httpx
 
 from inferencesh.images import ImageLimits, fit_image
-from inferencesh import OutputMeta, TextMeta
+from inferencesh import OutputMeta
 from inferencesh.llm_types_gen import ResponseFormat, ResponseFormatType, ToolChoice, ToolChoiceMode
 from inferencesh.models.llm import (
     ContextMessageRole,
@@ -341,6 +341,7 @@ def _create_initial_state() -> Dict[str, Any]:
         "input_tokens": 0,
         "output_tokens": 0,
         "cached_tokens": 0,
+        "cache_write_tokens": 0,
         "reasoning_tokens": 0,
         "response_id": None,
         "status": None,
@@ -445,7 +446,9 @@ def _handle_event(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[
         if usage:
             state["input_tokens"] = usage.get("input_tokens", 0) or 0
             state["output_tokens"] = usage.get("output_tokens", 0) or 0
-            state["cached_tokens"] = (usage.get("input_tokens_details") or {}).get("cached_tokens", 0) or 0
+            input_details = usage.get("input_tokens_details") or {}
+            state["cached_tokens"] = input_details.get("cached_tokens", 0) or 0
+            state["cache_write_tokens"] = input_details.get("cache_write_tokens", 0) or 0
             state["reasoning_tokens"] = (usage.get("output_tokens_details") or {}).get("reasoning_tokens", 0) or 0
         return None
 
@@ -489,18 +492,6 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
     if not final:
         return out
 
-    inputs, outputs = [], []
-    if state["input_tokens"]:
-        inputs.append(TextMeta(tokens=state["input_tokens"], extra={
-            "cache_read_tokens": state["cached_tokens"],
-        }))
-    if state["output_tokens"]:
-        outputs.append(TextMeta(tokens=state["output_tokens"], extra={
-            "reasoning_tokens": state["reasoning_tokens"],
-        }))
-    if inputs or outputs:
-        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
-
     elapsed = max(time.monotonic() - state["started_at"], 1e-6)
     ttft = (state["first_token_at"] - state["started_at"]) if state["first_token_at"] else 0.0
     gen_time = max(elapsed - ttft, 1e-6)
@@ -509,10 +500,15 @@ def _build_output(state: Dict[str, Any], final: bool = False) -> Dict[str, Any]:
         time_to_first_token=round(ttft, 3),
         tokens_per_second=round(state["output_tokens"] / gen_time, 2) if state["output_tokens"] else 0.0,
         prompt_tokens=state["input_tokens"],
+        cached_tokens=state["cached_tokens"],
+        cache_write_tokens=state["cache_write_tokens"],
         completion_tokens=state["output_tokens"],
         total_tokens=state["input_tokens"] + state["output_tokens"],
         reasoning_tokens=state["reasoning_tokens"],
     )
+    meta = OutputMeta.from_llm_usage(out["usage"])
+    if meta.inputs or meta.outputs:
+        out["output_meta"] = meta
     return out
 
 

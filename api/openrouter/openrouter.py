@@ -13,8 +13,8 @@ from typing import List, Optional, Dict, Any, AsyncGenerator, Type, Union
 
 import httpx
 
-from inferencesh import BaseApp, File, OutputMeta, TextMeta
-from inferencesh.models.llm import LLMDelta, LLMOutput, build_openai_messages, build_tools, openai_response_format, openai_tool_choice
+from inferencesh import BaseApp, File, OutputMeta
+from inferencesh.models.llm import LLMDelta, LLMOutput, LLMUsage, build_openai_messages, build_tools, openai_response_format, openai_tool_choice
 from inferencesh.openai import OpenAIChatMixin
 from inferencesh.models.output_meta import RawMeta
 
@@ -298,9 +298,8 @@ def _parse_sse_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> tuple[Optio
             state["cost_details"] = cost_details
         prompt_details = usage.get("prompt_tokens_details")
         if prompt_details:
-            cached = prompt_details.get("cached_tokens")
-            if cached:
-                state["cached_tokens"] = cached
+            state["cached_tokens"] = prompt_details.get("cached_tokens") or 0
+            state["cache_write_tokens"] = prompt_details.get("cache_write_tokens") or 0
         completion_details = usage.get("completion_tokens_details")
         if completion_details:
             reasoning_tokens = completion_details.get("reasoning_tokens")
@@ -387,6 +386,9 @@ def _create_initial_state() -> Dict[str, Any]:
         "image_urls": [],
         "input_tokens": 0,
         "output_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
     }
 
 
@@ -402,12 +404,19 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["image_urls"]:
         out["images"] = [File(uri=url) for url in state["image_urls"]]
 
-    # output_meta: token usage + upstream cost from stream
-    inputs, outputs = [], []
-    if state.get("input_tokens"):
-        inputs.append(TextMeta(tokens=state["input_tokens"]))
-    if state.get("output_tokens"):
-        outputs.append(TextMeta(tokens=state["output_tokens"]))
+    # Token usage, cache reads and writes included; the token report is built
+    # from it. The upstream cost and generation details follow as a raw input.
+    meta = OutputMeta()
+    if state["input_tokens"] or state["output_tokens"]:
+        out["usage"] = LLMUsage(
+            prompt_tokens=state["input_tokens"],
+            cached_tokens=state["cached_tokens"],
+            cache_write_tokens=state["cache_write_tokens"],
+            completion_tokens=state["output_tokens"],
+            total_tokens=state["input_tokens"] + state["output_tokens"],
+            reasoning_tokens=state["reasoning_tokens"],
+        )
+        meta = OutputMeta.from_llm_usage(out["usage"])
 
     gen_extra = {}
     if state.get("generation_id"):
@@ -418,18 +427,14 @@ def _build_output(state: Dict[str, Any]) -> Dict[str, Any]:
         gen_extra["actual_model"] = state["actual_model"]
     if state.get("cost_details"):
         gen_extra["cost_details"] = state["cost_details"]
-    if state.get("reasoning_tokens"):
-        gen_extra["reasoning_tokens"] = state["reasoning_tokens"]
-    if state.get("cached_tokens"):
-        gen_extra["cached_tokens"] = state["cached_tokens"]
 
     cost_usd = state.get("cost_usd")
     if gen_extra or cost_usd is not None:
         cost_cents = (cost_usd * 100) if cost_usd is not None else 0
-        inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
+        meta.inputs.append(RawMeta(cost=cost_cents, extra=gen_extra or None))
 
-    if inputs or outputs:
-        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+    if meta.inputs or meta.outputs:
+        out["output_meta"] = meta
 
     return out
 

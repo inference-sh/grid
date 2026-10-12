@@ -74,6 +74,18 @@ class TestApplyStreamEvent:
         out = h.build_output(state)
         assert out["output_meta"].inputs[0].tokens == 7 and out["output_meta"].outputs[0].tokens == 3
 
+    def test_cache_reads_and_writes_count_in_the_input(self):
+        # Anthropic's input_tokens excludes the cache; the usage and the token
+        # report count every input token, with the cache as parts of it.
+        start = NS(type="message_start", message=NS(usage=NS(input_tokens=100, cache_read_input_tokens=6000, cache_creation_input_tokens=900)))
+        end = NS(type="message_delta", usage=NS(output_tokens=50))
+        state, _ = fold([start, end])
+        out = h.build_output(state)
+        assert (out["usage"].prompt_tokens, out["usage"].cached_tokens, out["usage"].cache_write_tokens) == (7000, 6000, 900)
+        item = out["output_meta"].inputs[0]
+        assert (item.tokens, item.cached_tokens, item.cache_write_tokens) == (7000, 6000, 900)
+        assert out["output_meta"].outputs[0].tokens == 50
+
 
 # ── tool_choice / response_format mapping ─────────────────────────────
 
