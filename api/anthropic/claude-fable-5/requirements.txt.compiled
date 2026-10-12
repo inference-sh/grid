@@ -30,10 +30,12 @@ idna==3.18
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.14.1
+inferencesh==0.26.0
     # via -r requirements.txt
 jiter==0.15.0
     # via anthropic
+pillow==12.3.0
+    # via inferencesh
 pydantic==2.14.0a1
     # via
     #   -r requirements.txt
