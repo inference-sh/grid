@@ -7,7 +7,7 @@ from .openrouter import OpenRouterChatApp, OpenRouterOutput
 
 class AppInput(LLMInput):
     """OpenRouter input model with reasoning and tools support."""
-    model: str = Field(default="gpt-4o-mini", description="The model to use for the inference.")
+    model: str = Field(default="openai/gpt-6-luna", description="The OpenRouter model id to use for the inference, e.g. openai/gpt-6-luna or anthropic/claude-sonnet-5.5.")
 
 
 class AppOutput(OpenRouterOutput):

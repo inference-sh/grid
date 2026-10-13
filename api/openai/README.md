@@ -22,9 +22,15 @@ App names use dashes only (`gpt-5-6-sol`, not `gpt-5.6-sol`). Directory name, `n
 | App | Model ID | Context | Max Output | Reasoning effort | Pricing (in / cached / out per MTok) |
 |-----|----------|---------|------------|------------------|--------------------------------------|
 | `openai/gpt-6-astra` | `gpt-6-astra` | 1.05M | 128k | low, medium, high, xhigh, max — **no `none`** | $10 / $1 / $50 |
+| `openai/gpt-6-1-sol` | `gpt-6.1-sol` | 1.05M | 128k | low, medium, high, xhigh, max — **no `none` or `minimal`** | $2 / $0.10 / $10 |
+| `openai/gpt-6-luna` | `gpt-6-luna` | 1.05M | 128k | none, low, medium, high, xhigh, max | $0.10 / $0.01 / $0.50 |
 | `openai/gpt-5-6-sol` | `gpt-5.6-sol` | 1.05M | 128k | none, low, medium, high, xhigh, max | $4 / $0.40 / $20 |
 | `openai/gpt-5-6-terra` | `gpt-5.6-terra` | 1.05M | 128k | none, low, medium, high, xhigh, max | $2 / $0.20 / $12 |
 | `openai/gpt-5-6-luna` | `gpt-5.6-luna` | 1.05M | 128k | none, low, medium, high, xhigh, max | $0.20 / $0.02 / $1.20 |
+
+`gpt-6-sol` ($2 / $0.20 / $10) exists but is superseded by `gpt-6.1-sol` and is not wrapped.
+OpenAI retires GPT-4o, GPT-4o mini, GPT-4.1 and GPT-4.1 mini on 2027-01-14 (partner notice,
+2026-10-13); no direct app wraps them, `openrouter/open-router` defaulted to `gpt-4o-mini`.
 
 Source: https://developers.openai.com/api/docs/pricing and the per-model pages under
 https://developers.openai.com/api/docs/models/. Fast mode is 2x these rates and is not
@@ -76,6 +82,16 @@ All four are third-party LLM wrappers billed on tokens. Price variables are in
 partner_input_per_million:       1000000000
 partner_cache_read_per_million:   100000000
 partner_output_per_million:      5000000000
+
+# gpt-6-1-sol: $2 in, $0.10 cached, $10 out
+partner_input_per_million:        200000000
+partner_cache_read_per_million:    10000000
+partner_output_per_million:      1000000000
+
+# gpt-6-luna: $0.10 in, $0.01 cached, $0.50 out
+partner_input_per_million:         10000000
+partner_cache_read_per_million:     1000000
+partner_output_per_million:        50000000
 
 # gpt-5-6-sol: $4 in, $0.40 cached, $20 out
 partner_input_per_million:        400000000
