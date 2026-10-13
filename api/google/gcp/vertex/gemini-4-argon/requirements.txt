@@ -1,0 +1,4 @@
+pydantic >= 2.0.0
+inferencesh[images] >= 0.28.0
+google-genai >= 1.0.0
+google-auth >= 2.0.0

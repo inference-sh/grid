@@ -106,6 +106,20 @@ class TestThinkingConfig:
         assert h.build_thinking_config(i).thinking_budget == 0
         assert h.build_thinking_config(i, can_disable_thinking=False) is None
 
+    def test_levels_map_effort_to_thinking_level(self):
+        for effort, level in (
+            (ReasoningEffortEnum.LOW, types.ThinkingLevel.LOW),
+            (ReasoningEffortEnum.MEDIUM, types.ThinkingLevel.MEDIUM),
+            (ReasoningEffortEnum.HIGH, types.ThinkingLevel.HIGH),
+        ):
+            cfg = h.build_thinking_config(LLMInput(text="x", reasoning_effort=effort), thinking_levels=True)
+            assert cfg.thinking_level == level and cfg.thinking_budget is None
+
+    def test_levels_none_and_budget_leave_model_default(self):
+        i = LLMInput(text="x", reasoning_effort=ReasoningEffortEnum.NONE, reasoning_max_tokens=4096)
+        assert h.build_thinking_config(i, thinking_levels=True) is None
+        assert h.build_thinking_config(LLMInput(text="x"), thinking_levels=True) is None
+
 
 class TestToolResultImages:
     def test_tool_images_ride_in_function_response_parts(self, tmp_path):

@@ -307,14 +307,32 @@ def convert_tools_to_gemini(
     return [types.Tool(function_declarations=declarations)]
 
 
-def build_thinking_config(input_data, can_disable_thinking: bool = True) -> Optional[types.ThinkingConfig]:
+EFFORT_TO_LEVEL = {
+    ReasoningEffortEnum.LOW: types.ThinkingLevel.LOW,
+    ReasoningEffortEnum.MEDIUM: types.ThinkingLevel.MEDIUM,
+    ReasoningEffortEnum.HIGH: types.ThinkingLevel.HIGH,
+}
+
+
+def build_thinking_config(
+    input_data, can_disable_thinking: bool = True, *, thinking_levels: bool = False,
+) -> Optional[types.ThinkingConfig]:
     """Map reasoning_effort / reasoning_max_tokens to a ThinkingConfig.
 
     can_disable_thinking=False for models that reject thinking_budget=0
     (Gemini 2.5 Pro): reasoning_effort=none then leaves the model default.
+
+    thinking_levels=True for models that take thinking_level instead of a
+    token budget (Gemini 4). Thinking cannot be turned off there, so
+    reasoning_effort=none is the model default and reasoning_max_tokens is
+    ignored; low/medium/high map to the level of the same name.
     """
     reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
+
+    if thinking_levels:
+        level = EFFORT_TO_LEVEL.get(reasoning_effort)
+        return types.ThinkingConfig(thinking_level=level) if level else None
 
     if reasoning_effort == ReasoningEffortEnum.NONE or reasoning_effort == "none":
         return types.ThinkingConfig(thinking_budget=0) if can_disable_thinking else None
@@ -453,7 +471,8 @@ def build_output(state: Dict[str, Any], model: str) -> Dict[str, Any]:
 
 async def stream_completion(
     client, input_data, model: str, max_tokens: int = 65536,
-    *, can_disable_thinking: bool = True, with_deltas: bool = False,
+    *, can_disable_thinking: bool = True, thinking_levels: bool = False,
+    with_deltas: bool = False,
 ) -> AsyncGenerator[Any, None]:
     """Stream a chat completion from Vertex AI Gemini API.
 
@@ -488,7 +507,9 @@ async def stream_completion(
         config_kwargs["tool_config"] = tool_config
     config_kwargs.update(build_response_format_config(input_data.response_format, has_tools=bool(tools)))
 
-    thinking_config = build_thinking_config(input_data, can_disable_thinking=can_disable_thinking)
+    thinking_config = build_thinking_config(
+        input_data, can_disable_thinking=can_disable_thinking, thinking_levels=thinking_levels,
+    )
     if thinking_config:
         config_kwargs["thinking_config"] = thinking_config
 
