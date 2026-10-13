@@ -129,7 +129,7 @@ class AppInput(BaseAppInput):
     url: str = Field(description="Request URL. http or https only; must resolve to a public internet address.")
     headers: Optional[Dict[str, str]] = Field(
         default=None,
-        description="Request headers. Connection-level headers (Host, Content-Length, Connection, Transfer-Encoding, ...) are dropped.",
+        description="Request headers. Connection-level headers (Host, Content-Length, Connection, Transfer-Encoding, ...) are dropped. A value may hold {{secret.HTTP_SECRET_NAME}}, filled from a secret given to the task.",
     )
     query: Optional[Dict[str, Union[Scalar, List[Scalar]]]] = Field(
         default=None, description="Query parameters, added to any already in the URL. A list repeats the key."
@@ -216,6 +216,29 @@ def _scalar(v: Any) -> str:
     if isinstance(v, bool):
         return "true" if v else "false"
     return str(v)
+
+
+# {{secret.NAME}} in a header value is filled from the task's environment:
+# the platform hands an agent's HTTP tool its auth this way (a task secret,
+# never in the input). Only HTTP_SECRET_* names are read, so a caller cannot
+# send anything else the process environment holds.
+SECRET_REF_RE = re.compile(r"\{\{secret\.([A-Za-z0-9_]+)\}\}")
+SECRET_PREFIX = "HTTP_SECRET_"
+
+
+def _fill_secrets(headers: dict) -> dict:
+    def value_of(m: "re.Match") -> str:
+        name = m.group(1)
+        if not name.startswith(SECRET_PREFIX):
+            raise RequestError(f"{{{{secret.{name}}}}}: only {SECRET_PREFIX}* secrets can be sent")
+        v = os.environ.get(name)
+        if v is None:
+            raise RequestError(f"{{{{secret.{name}}}}}: no such secret was given to this task")
+        if any(c in v for c in "\r\n\0"):
+            raise RequestError(f"secret {name} contains a line break or NUL")
+        return v
+
+    return {k: SECRET_REF_RE.sub(value_of, v) for k, v in headers.items()}
 
 
 def _validate_headers(headers: Optional[dict]) -> dict:
@@ -348,7 +371,7 @@ class App(BaseApp):
             await self.setup()
         inp = input_data
         url = _build_url(inp.url, inp.query)
-        headers = _validate_headers(inp.headers)
+        headers = _fill_secrets(_validate_headers(inp.headers))
         has_body = inp.body_json is not None or inp.body_text is not None or inp.form is not None or bool(inp.files)
         # Header names only: values (Authorization, cookies, keys) and bodies are never logged.
         log.info(

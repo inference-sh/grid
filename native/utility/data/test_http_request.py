@@ -245,6 +245,35 @@ def test_query_merge_and_headers(server):
     assert e["headers"]["user-agent"].startswith("inference.sh-http")
 
 
+def test_secret_header_is_filled_from_the_task_environment(server, monkeypatch):
+    monkeypatch.setenv("HTTP_SECRET_AUTH_0", "Bearer sk-live-123")
+    out = run({
+        "url": url(server, "/echo"),
+        "headers": {"Authorization": "{{secret.HTTP_SECRET_AUTH_0}}", "X-Mixed": "k={{secret.HTTP_SECRET_AUTH_0}};v=1"},
+    })
+    h = out.body_json["headers"]
+    assert h["authorization"] == "Bearer sk-live-123"
+    assert h["x-mixed"] == "k=Bearer sk-live-123;v=1"
+
+
+def test_secret_header_reads_only_http_secret_names(server, monkeypatch):
+    monkeypatch.setenv("INFERENCE_API_KEY", "platform-token")
+    with pytest.raises(RequestError, match="only HTTP_SECRET_"):
+        run({"url": url(server, "/echo"), "headers": {"X-Leak": "{{secret.INFERENCE_API_KEY}}"}})
+
+
+def test_secret_header_that_was_not_given_is_refused(server, monkeypatch):
+    monkeypatch.delenv("HTTP_SECRET_MISSING", raising=False)
+    with pytest.raises(RequestError, match="no such secret"):
+        run({"url": url(server, "/echo"), "headers": {"Authorization": "{{secret.HTTP_SECRET_MISSING}}"}})
+
+
+def test_secret_with_a_line_break_is_refused(server, monkeypatch):
+    monkeypatch.setenv("HTTP_SECRET_BAD", "a\r\nX-Injected: 1")
+    with pytest.raises(RequestError, match="line break"):
+        run({"url": url(server, "/echo"), "headers": {"Authorization": "{{secret.HTTP_SECRET_BAD}}"}})
+
+
 def test_post_json(server):
     out = run({"method": "POST", "url": url(server, "/echo"), "body_json": {"k": [1, "two"]}})
     e = out.body_json
