@@ -23,12 +23,13 @@ App names use dashes only (`gpt-5-6-sol`, not `gpt-5.6-sol`). Directory name, `n
 |-----|----------|---------|------------|------------------|--------------------------------------|
 | `openai/gpt-6-astra` | `gpt-6-astra` | 1.05M | 128k | low, medium, high, xhigh, max — **no `none`** | $10 / $1 / $50 |
 | `openai/gpt-6-1-sol` | `gpt-6.1-sol` | 1.05M | 128k | low, medium, high, xhigh, max — **no `none` or `minimal`** | $2 / $0.10 / $10 |
+| `openai/gpt-6-sol` | `gpt-6-sol` | 1.05M | 128k | none, low, medium, high, xhigh, max | $2 / $0.20 / $10 |
 | `openai/gpt-6-luna` | `gpt-6-luna` | 1.05M | 128k | none, low, medium, high, xhigh, max | $0.10 / $0.01 / $0.50 |
 | `openai/gpt-5-6-sol` | `gpt-5.6-sol` | 1.05M | 128k | none, low, medium, high, xhigh, max | $4 / $0.40 / $20 |
 | `openai/gpt-5-6-terra` | `gpt-5.6-terra` | 1.05M | 128k | none, low, medium, high, xhigh, max | $2 / $0.20 / $12 |
 | `openai/gpt-5-6-luna` | `gpt-5.6-luna` | 1.05M | 128k | none, low, medium, high, xhigh, max | $0.20 / $0.02 / $1.20 |
 
-`gpt-6-sol` ($2 / $0.20 / $10) exists but is superseded by `gpt-6.1-sol` and is not wrapped.
+`gpt-6-sol` is superseded by `gpt-6.1-sol` (cheaper cache reads) but still served; wrapped for callers pinned to it.
 OpenAI retires GPT-4o, GPT-4o mini, GPT-4.1 and GPT-4.1 mini on 2027-01-14 (partner notice,
 2026-10-13); no direct app wraps them, `openrouter/open-router` defaulted to `gpt-4o-mini`.
 
@@ -86,6 +87,11 @@ partner_output_per_million:      5000000000
 # gpt-6-1-sol: $2 in, $0.10 cached, $10 out
 partner_input_per_million:        200000000
 partner_cache_read_per_million:    10000000
+partner_output_per_million:      1000000000
+
+# gpt-6-sol: $2 in, $0.20 cached, $10 out
+partner_input_per_million:        200000000
+partner_cache_read_per_million:    20000000
 partner_output_per_million:      1000000000
 
 # gpt-6-luna: $0.10 in, $0.01 cached, $0.50 out

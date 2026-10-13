@@ -1,0 +1,34 @@
+namespace: openai
+name: gpt-6-sol
+title: GPT-6 Sol
+description: GPT-6 Sol — OpenAI's GPT-6 mid-tier model, superseded by GPT-6.1 Sol. 1M context, 128k output, reasoning effort none to max, vision, file input and tool use via the Responses API. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    provider: openai
+    tags:
+        - vision
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: OPENAI_KEY
+      description: OpenAI API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
