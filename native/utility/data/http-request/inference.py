@@ -234,8 +234,6 @@ def _fill_secrets(headers: dict) -> dict:
         v = os.environ.get(name)
         if v is None:
             raise RequestError(f"{{{{secret.{name}}}}}: no such secret was given to this task")
-        if any(c in v for c in "\r\n\0"):
-            raise RequestError(f"secret {name} contains a line break or NUL")
         return v
 
     return {k: SECRET_REF_RE.sub(value_of, v) for k, v in headers.items()}
@@ -371,7 +369,9 @@ class App(BaseApp):
             await self.setup()
         inp = input_data
         url = _build_url(inp.url, inp.query)
-        headers = _fill_secrets(_validate_headers(inp.headers))
+        # Filled first, so the header rules (_validate_headers) also hold for
+        # the secrets' values.
+        headers = _validate_headers(_fill_secrets(inp.headers or {}))
         has_body = inp.body_json is not None or inp.body_text is not None or inp.form is not None or bool(inp.files)
         # Header names only: values (Authorization, cookies, keys) and bodies are never logged.
         log.info(

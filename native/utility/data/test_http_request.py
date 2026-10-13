@@ -270,7 +270,7 @@ def test_secret_header_that_was_not_given_is_refused(server, monkeypatch):
 
 def test_secret_with_a_line_break_is_refused(server, monkeypatch):
     monkeypatch.setenv("HTTP_SECRET_BAD", "a\r\nX-Injected: 1")
-    with pytest.raises(RequestError, match="line break"):
+    with pytest.raises(RequestError, match="line break or NUL"):
         run({"url": url(server, "/echo"), "headers": {"Authorization": "{{secret.HTTP_SECRET_BAD}}"}})
 
 
