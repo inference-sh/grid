@@ -1,0 +1,25 @@
+namespace: infsh
+name: flux-2-dev
+description: FLUX.2 Dev is an open-weight, guidance-distilled text-to-image model developed by Black Forest Labs for non-commercial applications
+metadata:
+    tags:
+        - text-to-image
+        - open-weights
+category: image
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/asxpbvje.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/isqthdb4.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/43bc5g94.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: HF_TOKEN
+resources:
+    gpu:
+        count: 1
+        vram: 80000000000
+        type: any
+    ram: 16000000000
+
+# Reference only, not deployed. Self-hosted diffusers FLUX.2 dev; the live
+# falai/flux-2-dev app that carried this code without a GPU was deleted on 2026-10-13.
