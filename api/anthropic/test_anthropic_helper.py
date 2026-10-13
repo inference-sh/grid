@@ -149,6 +149,50 @@ class TestBuildParams:
         assert "tool_choice" not in p and "output_config" not in p
 
 
+class TestThinkingShapeByModel:
+    """The thinking request shape per model generation; a wrong shape is a 400."""
+
+    def _p(self, model, **kw):
+        return h.build_params(LLMInput(text="hi", **kw), model)
+
+    @pytest.mark.parametrize("model", ["claude-fable-5-1", "claude-mythos-5-1", "claude-opus-5-5"])
+    def test_always_on_models_omit_thinking_and_run_low_effort_by_default(self, model):
+        p = self._p(model)
+        assert "thinking" not in p and p["output_config"] == {"effort": "low"}
+        p = self._p(model, reasoning_effort="high", reasoning_max_tokens=4096)
+        assert "thinking" not in p and p["output_config"] == {"effort": "high"}
+
+    def test_sonnet_5_5_off_is_between_tools(self):
+        p = self._p("claude-sonnet-5-5")
+        assert p["thinking"] == {"type": "between_tools"} and "output_config" not in p
+        p = self._p("claude-sonnet-5-5", reasoning_effort="medium", reasoning_max_tokens=4096)
+        assert p["thinking"] == {"type": "adaptive"} and p["output_config"] == {"effort": "medium"}
+
+    def test_haiku_5_5_is_adaptive_with_effort_and_disabled_when_off(self):
+        p = self._p("claude-haiku-5-5")
+        assert p["thinking"] == {"type": "disabled"} and "output_config" not in p
+        p = self._p("claude-haiku-5-5", reasoning_effort="high", reasoning_max_tokens=4096)
+        assert p["thinking"] == {"type": "adaptive"} and p["output_config"] == {"effort": "high"}
+
+    def test_no_budget_tokens_on_any_new_model(self):
+        for model in ("claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"):
+            p = self._p(model, reasoning_effort="high", reasoning_max_tokens=9000)
+            assert "budget_tokens" not in (p.get("thinking") or {})
+
+    @pytest.mark.parametrize("model", ["claude-fable-5-1", "claude-mythos-5-1", "claude-opus-5-5", "claude-sonnet-5-5"])
+    def test_forced_tool_choice_refused_before_the_request(self, model):
+        for choice in (ToolChoice(mode=ToolChoiceMode.REQUIRED), ToolChoice(mode=ToolChoiceMode.FUNCTION, name="f")):
+            with pytest.raises(ValueError, match="forced tool use"):
+                h.build_params(LLMInput(text="hi", tools=TOOLS, tool_choice=choice), model)
+        p = h.build_params(LLMInput(text="hi", tools=TOOLS, tool_choice=ToolChoice(mode=ToolChoiceMode.NONE)), model)
+        assert p["tool_choice"] == {"type": "none"}
+
+    def test_haiku_5_5_and_older_models_keep_forced_tool_choice(self):
+        for model in ("claude-haiku-5-5", "claude-opus-5", "claude-sonnet-5"):
+            p = h.build_params(LLMInput(text="hi", tools=TOOLS, tool_choice=ToolChoice(mode=ToolChoiceMode.REQUIRED)), model)
+            assert p["tool_choice"] == {"type": "any"}
+
+
 # ── with_deltas streaming through a fake client ───────────────────────
 
 class FakeStream:

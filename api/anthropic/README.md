@@ -9,16 +9,20 @@ directory name, the `name:` field in `inf.yml`, and the app in the DB must all m
 
 | App | Model ID | Context | Max Output | Pricing (in/out per MTok) |
 |-----|----------|---------|------------|---------------------------|
+| `anthropic/claude-fable-5-1` | `claude-fable-5-1` | 1M | 128k | $10 / $50 (cache read $0.25) |
 | `anthropic/claude-fable-5` | `claude-fable-5` | 1M | 128k | $10 / $50 |
 | `anthropic/claude-mythos-5` | `claude-mythos-5` | 1M | 128k | $10 / $50 |
+| `anthropic/claude-opus-5-5` | `claude-opus-5-5` | 1M | 128k | $4 / $20 (cache read $0.20) |
 | `anthropic/claude-opus-5` | `claude-opus-5` | 1M | 128k | $5 / $25 |
 | `anthropic/claude-opus-4-8` | `claude-opus-4-8` | 1M | 128k | $5 / $25 |
 | `anthropic/claude-opus-4-7` | `claude-opus-4-7` | 1M | 128k | $5 / $25 |
 | `anthropic/claude-opus-4-6` | `claude-opus-4-6` | 1M | 128k | $5 / $25 |
 | `anthropic/claude-opus-4-5` | `claude-opus-4-5-20251101` | 200k | 64k | $5 / $25 |
+| `anthropic/claude-sonnet-5-5` | `claude-sonnet-5-5` | 1M | 128k | $2 / $10 (cache read $0.20) |
 | `anthropic/claude-sonnet-5` | `claude-sonnet-5` | 1M | 64k | $2 / $10 until 2026-08-31, then $3 / $15 |
 | `anthropic/claude-sonnet-4-6` | `claude-sonnet-4-6` | 1M | 64k | $3 / $15 |
 | `anthropic/claude-sonnet-4-5` | `claude-sonnet-4-5-20250929` | 200k | 64k | $3 / $15 |
+| `anthropic/claude-haiku-5-5` | `claude-haiku-5-5` | 1M | 128k | $0.10 / $0.50 up to 100k input tokens, $0.50 / $2.50 above |
 | `anthropic/claude-haiku-4-5` | `claude-haiku-4-5-20251001` | 200k | 64k | $1 / $5 |
 
 "Max Output" is the streaming ceiling. **Non-streaming (`stream: false`) is capped at
@@ -44,6 +48,9 @@ wrong one is a hard 400, not a degradation:
 | Models | Shape |
 |--------|-------|
 | `claude-fable-5`, `claude-mythos-5` | Parameter **omitted** — thinking is always on; an explicit `{"type": "disabled"}` returns 400 |
+| `claude-fable-5-1`, `claude-mythos-5-1`, `claude-opus-5-5` | Parameter **omitted** + `output_config.effort` (`low` when no reasoning is asked for; Opus 5.5's own default is `medium`). `disabled` and `budget_tokens` are 400 at every effort. Forced `tool_choice` (`required` / a named function) is a 400 and is refused before the request. |
+| `claude-sonnet-5-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "between_tools"}` when no reasoning is asked for (`disabled` is a 400; `between_tools` takes no other field). Forced `tool_choice` refused before the request. |
+| `claude-haiku-5-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "disabled"}` (allowed at effort `high` or below, which every platform level is). `budget_tokens` returns 400. Forced `tool_choice` still accepted. |
 | `claude-opus-5` | Always `{"type": "adaptive"}` + `output_config.effort`. Never disabled: with thinking off, the model can emit a tool call as plain response text (the call silently never runs) and can leak `<thinking>` tags. Cost is controlled with a lower effort instead. |
 | `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "disabled"}`. **`budget_tokens` returns 400.** |
 | `claude-opus-4-6` and earlier, all Sonnet 4.x, Haiku 4.5 | `{"type": "enabled", "budget_tokens": N}` or `{"type": "disabled"}` |
@@ -64,10 +71,17 @@ variables are denominated in **microcents**, where $1 = 100,000,000. So $5/MTok 
 than once — always check `belt app pricing <ns/app>` against a sibling app before
 approving a publish.
 
+## Lifecycle
+
+- `claude-sonnet-4-5-20250929` is deprecated (2026-09-30), retires 2026-11-30, replacement `claude-sonnet-5-5`.
+- `claude-haiku-4-5-20251001` retires not sooner than 2026-10-15, `claude-opus-4-5-20251101` not sooner than 2026-11-24.
+- `claude-mythos-5-1` exists (same price as Fable 5.1, Project Glasswing only); the workspace key is not entitled to the Mythos line, so there is no app.
+- The 5.1 / 5.5 models can return `stop_reason: "refusal"` (safety classifiers); the helper passes it through as the stop reason with an empty response.
+
 ## Not yet available (models don't exist)
 
 - `claude-sonnet-4-7` — no Sonnet 4.7 release (the line went 4.6 → 5)
-- `claude-haiku-4-6`, `claude-haiku-4-7`, `claude-haiku-5` — no Haiku release past 4.5
+- `claude-haiku-4-6`, `claude-haiku-4-7`, `claude-haiku-5` — the Haiku line went 4.5 → 5.5
 
 ## Bedrock / Vertex / AWS (planned)
 

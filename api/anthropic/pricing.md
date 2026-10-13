@@ -6,32 +6,47 @@ All prices per million tokens (MTok). Source: https://platform.claude.com/docs/e
 
 | Model | Input | Output |
 |-------|-------|--------|
+| Claude Fable 5.1 | $10.00 | $50.00 |
+| Claude Mythos 5.1 | $10.00 | $50.00 |
 | Claude Fable 5 | $10.00 | $50.00 |
 | Claude Mythos 5 | $10.00 | $50.00 |
+| Claude Opus 5.5 | $4.00 | $20.00 |
 | Claude Opus 5 | $5.00 | $25.00 |
 | Claude Opus 4.8 | $5.00 | $25.00 |
 | Claude Opus 4.7 | $5.00 | $25.00 |
 | Claude Opus 4.6 | $5.00 | $25.00 |
 | Claude Opus 4.5 | $5.00 | $25.00 |
+| Claude Sonnet 5.5 | $2.00 | $10.00 |
 | Claude Sonnet 5 (through 2026-08-31) | $2.00 | $10.00 |
 | Claude Sonnet 5 (from 2026-09-01) | $3.00 | $15.00 |
 | Claude Sonnet 4.6 | $3.00 | $15.00 |
 | Claude Sonnet 4.5 | $3.00 | $15.00 |
+| Claude Haiku 5.5 (prompt up to 100,000 input tokens) | $0.10 | $0.50 |
+| Claude Haiku 5.5 (prompt over 100,000 input tokens) | $0.50 | $2.50 |
 | Claude Haiku 4.5 | $1.00 | $5.00 |
+
+Haiku 5.5's tier is chosen by the prompt length of the request (input tokens including cache
+reads and writes): at or under 100,000 the low card applies to every token of the request,
+above it the high card does.
 
 ## Prompt Caching Pricing
 
 | Model | 5m Cache Write (1.25x) | 1h Cache Write (2x) | Cache Hit (0.1x) |
 |-------|----------------------|---------------------|-------------------|
+| Fable 5.1 / Mythos 5.1 (cache hit is 0.025x) | $12.50 | $20.00 | $0.25 |
 | Fable 5 / Mythos 5 | $12.50 | $20.00 | $1.00 |
+| Opus 5.5 (cache hit is 0.05x) | $5.00 | $8.00 | $0.20 |
 | Opus 5 | $6.25 | $10.00 | $0.50 |
 | Opus 4.8 | $6.25 | $10.00 | $0.50 |
 | Opus 4.7 | $6.25 | $10.00 | $0.50 |
 | Opus 4.6 | $6.25 | $10.00 | $0.50 |
 | Opus 4.5 | $6.25 | $10.00 | $0.50 |
+| Sonnet 5.5 | $2.50 | $4.00 | $0.20 |
 | Sonnet 5 (through 2026-08-31) | $2.50 | $4.00 | $0.20 |
 | Sonnet 4.6 | $3.75 | $6.00 | $0.30 |
 | Sonnet 4.5 | $3.75 | $6.00 | $0.30 |
+| Haiku 5.5 up to 100k | $0.125 | $0.20 | $0.01 |
+| Haiku 5.5 over 100k | $0.625 | $1.00 | $0.05 |
 | Haiku 4.5 | $1.25 | $2.00 | $0.10 |
 
 ## Batch API Pricing (50% discount)
@@ -81,6 +96,39 @@ partner_output_per_million: 1500000000  # $15.00 in microcents
 # Haiku 4.5: $1/MTok in, $5/MTok out
 partner_input_per_million:  100000000   # $1.00 in microcents
 partner_output_per_million: 500000000   # $5.00 in microcents
+
+# Fable 5.1 / Mythos 5.1: $10/MTok in, $50/MTok out, cache read $0.25, cache write $12.50
+partner_input_per_million:        1000000000
+partner_output_per_million:       5000000000
+partner_cache_read_per_million:     25000000
+partner_cache_write_per_million:  1250000000
+
+# Opus 5.5: $4/MTok in, $20/MTok out, cache read $0.20, cache write $5
+partner_input_per_million:         400000000
+partner_output_per_million:       2000000000
+partner_cache_read_per_million:     20000000
+partner_cache_write_per_million:   500000000
+
+# Sonnet 5.5: $2/MTok in, $10/MTok out, cache read $0.20, cache write $2.50
+partner_input_per_million:         200000000
+partner_output_per_million:       1000000000
+partner_cache_read_per_million:     20000000
+partner_cache_write_per_million:   250000000
+
+# Haiku 5.5, two rate cards picked by the request's prompt length (text_tokens(inputs),
+# cache reads and writes included); the whole request is billed on one card.
+#   up to 100,000:  $0.10 in, $0.50 out, cache read $0.01, cache write $0.125
+#   over 100,000:   $0.50 in, $2.50 out, cache read $0.05, cache write $0.625
+partner_input_per_million:          10000000
+partner_output_per_million:         50000000
+partner_cache_read_per_million:      1000000
+partner_cache_write_per_million:    12500000
+partner_input_per_million_long:     50000000
+partner_output_per_million_long:   250000000
+partner_cache_read_per_million_long:  5000000
+partner_cache_write_per_million_long: 62500000
+# partner_expression: text_tokens(inputs) > 100000 ? <cache-aware expression with the _long
+# variables> : <cache-aware expression with the base variables>
 ```
 
 ### Example CEL expressions

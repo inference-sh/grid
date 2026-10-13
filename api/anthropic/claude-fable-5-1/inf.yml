@@ -1,0 +1,32 @@
+namespace: anthropic
+name: claude-fable-5-1
+title: Claude Fable 5.1
+description: Claude Fable 5.1 — Anthropic's most capable model for demanding reasoning and long-horizon agents. 1M context, 128k output, always-on thinking with effort, vision, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    tags:
+        - vision
+        - reasoning
+        - coding
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

@@ -1,0 +1,32 @@
+namespace: anthropic
+name: claude-opus-5-5
+title: Claude Opus 5.5
+description: Claude Opus 5.5 — Anthropic's default Opus for long-running agentic coding and knowledge work. 1M context, 128k output, adaptive thinking with effort, vision, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    tags:
+        - vision
+        - reasoning
+        - coding
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

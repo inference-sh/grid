@@ -1,0 +1,31 @@
+namespace: anthropic
+name: claude-haiku-5-5
+description: Claude Haiku 5.5 — Anthropic's fastest, lowest-cost Claude for high-volume and latency-sensitive work. 1M context, 128k output, adaptive thinking, vision, tool use. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    tags:
+        - vision
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: ANTHROPIC_KEY
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
+title: Claude Haiku 5.5

@@ -337,8 +337,13 @@ def convert_tools_to_anthropic(
 
 
 # Models with always-on thinking: the thinking parameter must be omitted entirely
-# (an explicit {"type": "disabled"} returns 400).
-ALWAYS_ON_THINKING_MODELS = {"claude-fable-5", "claude-mythos-5"}
+# (an explicit {"type": "disabled"} returns 400, and on the 5.1 / 5.5 models so
+# does {"type": "enabled", "budget_tokens": N}).
+ALWAYS_ON_THINKING_MODELS = {
+    "claude-fable-5", "claude-mythos-5",
+    "claude-fable-5-1", "claude-mythos-5-1",
+    "claude-opus-5-5",
+}
 
 # Models that removed thinking.budget_tokens (400 if sent). Thinking depth is
 # controlled with adaptive thinking + output_config.effort instead.
@@ -347,13 +352,42 @@ EFFORT_MODELS = {
     "claude-opus-4-8",
     "claude-opus-4-7",
     "claude-sonnet-5",
+    # 5.1 / 5.5 generation: effort is the only thinking control.
+    "claude-fable-5-1",
+    "claude-mythos-5-1",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+    "claude-haiku-5-5",
 }
 
-# Models where disabling thinking is a documented footgun: the model can emit a
-# tool call as plain response text (the call silently never runs) and can leak
-# <thinking> tags into the output. Thinking stays on; cost is controlled with a
-# lower output_config.effort instead.
-NEVER_DISABLE_THINKING_MODELS = {"claude-opus-5"}
+# Models where thinking is never turned off. On claude-opus-5 disabling it is
+# a documented footgun: the model can emit a tool call as plain response text
+# (the call silently never runs) and can leak <thinking> tags into the output.
+# On the always-on models there is nothing to turn off. Either way a request
+# with no reasoning asked for runs at the cheapest depth, output_config.effort
+# "low", instead of {"type": "disabled"}.
+NEVER_DISABLE_THINKING_MODELS = {
+    "claude-opus-5",
+    "claude-fable-5-1", "claude-mythos-5-1",
+    "claude-opus-5-5",
+}
+
+# claude-sonnet-5-5 rejects {"type": "disabled"}; its lowest setting is
+# {"type": "between_tools"} (no other field inside thinking, effort "high" or
+# below, which every platform effort level is). The progress notes it writes
+# between tool calls come back as thinking blocks.
+BETWEEN_TOOLS_MODELS = {"claude-sonnet-5-5"}
+
+# Models that return 400 on tool_choice "any" and "tool" (forced tool use),
+# on count_tokens and Batches too. "auto" and "none" are unchanged. Refused
+# here before the request: the platform has no prompt-side steering to offer
+# in its place, and the schema-valid-arguments guarantee comes from the tool
+# definition, not from forcing.
+NO_FORCED_TOOL_CHOICE_MODELS = {
+    "claude-fable-5-1", "claude-mythos-5-1",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+}
 
 # Reasoning effort -> output_config.effort level
 EFFORT_TO_LEVEL = {
@@ -386,6 +420,8 @@ def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]
         return {"type": "adaptive"}
 
     if not _reasoning_requested(input_data):
+        if model in BETWEEN_TOOLS_MODELS:
+            return {"type": "between_tools"}
         return {"type": "disabled"}
 
     if model in EFFORT_MODELS:
@@ -483,12 +519,17 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
-def anthropic_tool_choice(choice: Optional[ToolChoice]) -> Optional[Dict[str, Any]]:
+def anthropic_tool_choice(choice: Optional[ToolChoice], model: str = "") -> Optional[Dict[str, Any]]:
     """LLMInput.tool_choice -> Anthropic tool_choice. None when the API default (auto) applies."""
     if choice is None or choice.mode == ToolChoiceMode.AUTO:
         return None
     if choice.mode == ToolChoiceMode.NONE:
         return {"type": "none"}
+    if model in NO_FORCED_TOOL_CHOICE_MODELS:
+        raise ValueError(
+            f"{model} does not support tool_choice mode '{choice.mode.value}' (forced tool use); "
+            "only 'auto' and 'none' are accepted. Ask for the tool in the prompt instead."
+        )
     if choice.mode == ToolChoiceMode.REQUIRED:
         return {"type": "any"}
     if not choice.name:
@@ -519,7 +560,7 @@ def build_params(
     """Build common request parameters for Anthropic API."""
     system_prompt, messages = convert_messages_to_anthropic(input_data, model)
     tools = convert_tools_to_anthropic(input_data.tools) if input_data.tools else None
-    tool_choice = anthropic_tool_choice(input_data.tool_choice)
+    tool_choice = anthropic_tool_choice(input_data.tool_choice, model=model)
     output_format = anthropic_output_format(input_data.response_format)
 
     params: Dict[str, Any] = {
