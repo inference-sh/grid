@@ -14,7 +14,7 @@ h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.18
-inferencesh==0.27.1
+inferencesh==0.28.0
 ninja==1.13.2
 numpy==2.4.6
 packaging==26.3

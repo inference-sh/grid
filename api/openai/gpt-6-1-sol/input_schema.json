@@ -455,6 +455,100 @@
   },
   "description": "gpt-6.1-sol via the OpenAI Responses API: text, image and file input, tools, reasoning.",
   "properties": {
+    "text": {
+      "default": "",
+      "title": "Text",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Images"
+    },
+    "files": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Files"
+    },
+    "attachments": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attachments"
+    },
+    "context": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ContextMessage"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "role": {
+      "$ref": "#/$defs/ChatMessageRole",
+      "default": "user"
+    },
+    "reasoning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reasoning"
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Call Id"
+    },
+    "system_prompt": {
+      "default": "you are a helpful assistant that can answer questions and help with tasks.",
+      "title": "System Prompt",
+      "type": "string"
+    },
     "context_size": {
       "default": 1050000,
       "description": "The context size for the model.",
@@ -583,11 +677,6 @@
       "default": null,
       "title": "Reasoning Max Tokens"
     },
-    "system_prompt": {
-      "default": "you are a helpful assistant that can answer questions and help with tasks.",
-      "title": "System Prompt",
-      "type": "string"
-    },
     "tools": {
       "anyOf": [
         {
@@ -625,95 +714,6 @@
         }
       ],
       "default": null
-    },
-    "context": {
-      "default": [],
-      "items": {
-        "$ref": "#/$defs/ContextMessage"
-      },
-      "title": "Context",
-      "type": "array"
-    },
-    "role": {
-      "$ref": "#/$defs/ChatMessageRole",
-      "default": "user"
-    },
-    "text": {
-      "default": "",
-      "title": "Text",
-      "type": "string"
-    },
-    "reasoning": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Reasoning"
-    },
-    "attachments": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Attachments"
-    },
-    "images": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Images"
-    },
-    "files": {
-      "anyOf": [
-        {
-          "items": {
-            "format": "file",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Files"
-    },
-    "tool_call_id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Tool Call Id"
     }
   },
   "title": "AppInput",

@@ -12,7 +12,7 @@ httpcore2==2.13.1
 httpx==0.28.1
 httpx2==2.13.1
 idna==3.11
-inferencesh==0.27.2
+inferencesh==0.28.0
 jiter==0.13.0
 ninja==1.13.2
 numpy==2.4.6
