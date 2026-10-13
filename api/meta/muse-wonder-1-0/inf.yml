@@ -1,0 +1,35 @@
+namespace: meta
+name: muse-wonder-1-0
+title: Muse Wonder 1.0
+description: Muse Wonder 1.0 — Meta's most capable model for coding and long-horizon agents. 1M context, reasoning minimal to max, image, video, audio and PDF input, tools. Direct API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+        - file
+    provider: meta
+    tags:
+        - vision
+        - reasoning
+        - coding
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: META_AI_KEY
+      description: Meta Model API key (dev.meta.ai)
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
