@@ -4,7 +4,11 @@ Shared by the melious/* chat apps (symlinked into each app directory).
 Melious (https://api.melious.ai) serves open-weight models behind an
 OpenAI-compatible /v1/chat/completions. Differences from OpenAI handled here:
 
-- Reasoning text streams as `delta.reasoning_content`.
+- Reasoning text streams as `delta.reasoning_content`. With replays_reasoning,
+  each assistant message sends its own back in `reasoning_content`: DeepSeek
+  and Kimi ask for it after tool calls and drop their earlier reasoning
+  without it. Not for every model: glm-5.3 answers with one empty token when
+  it gets reasoning_content back.
 - `reasoning_effort` takes low / medium / high, the same set as LLMInput. The
   platform default "none" sends nothing, so the model runs at its own default.
 - Usage arrives on a final chunk with empty choices; cached and reasoning
@@ -87,13 +91,18 @@ def _effort(input_data) -> Optional[str]:
     return effort if effort and effort != "none" else None
 
 
-def build_request_body(input_data, model: str, *, vision: bool) -> Dict[str, Any]:
+def build_request_body(input_data, model: str, *, vision: bool, replays_reasoning: bool = False) -> Dict[str, Any]:
     if _has_files(input_data):
         raise ValueError("File input is not supported by the Melious apps. Paste the text into the message instead.")
     if _has_images(input_data) and not vision:
         raise ValueError(f"{model} does not accept image input.")
 
-    messages = build_openai_messages(input_data, file_mode="base64", image_mode="base64")
+    messages = build_openai_messages(
+        input_data,
+        file_mode="base64",
+        image_mode="base64",
+        reasoning_field="reasoning_content" if replays_reasoning else None,
+    )
     body: Dict[str, Any] = {
         "model": model,
         "messages": messages,
@@ -331,6 +340,7 @@ async def stream_completion(
     model: str,
     *,
     vision: bool = False,
+    replays_reasoning: bool = False,
     with_deltas: bool = False,
 ) -> AsyncGenerator[Any, None]:
     """Stream a Melious chat completion.
@@ -344,7 +354,7 @@ async def stream_completion(
     MAX_ATTEMPTS. Once output has been emitted a failure is raised: resending
     would duplicate what the caller already has.
     """
-    body = build_request_body(input_data, model, vision=vision)
+    body = build_request_body(input_data, model, vision=vision, replays_reasoning=replays_reasoning)
     headers = {
         "Authorization": f"Bearer {get_api_key()}",
         "Content-Type": "application/json",

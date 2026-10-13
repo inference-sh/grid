@@ -8,6 +8,7 @@ from .melious import stream_completion
 
 DEFAULT_MODEL = "minimax-m3"
 VISION = True
+REPLAYS_REASONING = False
 
 
 class AppInput(LLMInput):
@@ -28,7 +29,7 @@ class App(OpenAIChatMixin, BaseApp):
     async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         last_output = None
 
-        async for output, delta in stream_completion(input_data, DEFAULT_MODEL, vision=VISION, with_deltas=True):
+        async for output, delta in stream_completion(input_data, DEFAULT_MODEL, vision=VISION, replays_reasoning=REPLAYS_REASONING, with_deltas=True):
             if delta:
                 yield LLMDelta(**delta)
             last_output = output
