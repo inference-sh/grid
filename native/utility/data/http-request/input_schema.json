@@ -82,7 +82,7 @@
         }
       ],
       "default": null,
-      "description": "Request headers. Connection-level headers (Host, Content-Length, Connection, Transfer-Encoding, ...) are dropped.",
+      "description": "Request headers. Connection-level headers (Host, Content-Length, Connection, Transfer-Encoding, ...) are dropped. A value may hold {{secret.HTTP_SECRET_NAME}}, filled from a secret given to the task.",
       "title": "Headers"
     },
     "query": {
