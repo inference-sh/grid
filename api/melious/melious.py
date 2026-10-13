@@ -6,9 +6,9 @@ OpenAI-compatible /v1/chat/completions. Differences from OpenAI handled here:
 
 - Reasoning text streams as `delta.reasoning_content`. With replays_reasoning,
   each assistant message sends its own back in `reasoning_content`: DeepSeek
-  and Kimi ask for it after tool calls and drop their earlier reasoning
-  without it. Not for every model: glm-5.3 answers with one empty token when
-  it gets reasoning_content back.
+  asks for it after tool calls and drops its earlier reasoning without it.
+  Every model here takes it back except glm-5.3, which answers with one
+  empty token when it gets reasoning_content (4/4 runs; fine without).
 - `reasoning_effort` takes low / medium / high, the same set as LLMInput. The
   platform default "none" sends nothing, so the model runs at its own default.
 - Usage arrives on a final chunk with empty choices; cached and reasoning

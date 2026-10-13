@@ -8,7 +8,7 @@ from .melious import stream_completion
 
 DEFAULT_MODEL = "minimax-m3"
 VISION = True
-REPLAYS_REASONING = False
+REPLAYS_REASONING = True
 
 
 class AppInput(LLMInput):

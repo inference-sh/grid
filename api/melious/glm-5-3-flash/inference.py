@@ -8,7 +8,7 @@ from .melious import stream_completion
 
 DEFAULT_MODEL = "glm-5.3-flash"
 VISION = True
-REPLAYS_REASONING = False
+REPLAYS_REASONING = True
 
 
 class AppInput(LLMInput):
