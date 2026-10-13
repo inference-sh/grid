@@ -336,9 +336,9 @@ def convert_tools_to_anthropic(
     return result
 
 
-# Models with always-on thinking: the thinking parameter must be omitted entirely
-# (an explicit {"type": "disabled"} returns 400, and on the 5.1 / 5.5 models so
-# does {"type": "enabled", "budget_tokens": N}).
+# Models with always-on thinking: {"type": "disabled"} returns 400, and on the
+# 5.1 / 5.5 models so does {"type": "enabled", "budget_tokens": N}. They take
+# {"type": "adaptive"} (equivalent to omitting the parameter).
 ALWAYS_ON_THINKING_MODELS = {
     "claude-fable-5", "claude-mythos-5",
     "claude-fable-5-1", "claude-mythos-5-1",
@@ -408,16 +408,18 @@ def _reasoning_requested(input_data) -> bool:
     return bool(reasoning_effort) and reasoning_effort != ReasoningEffortEnum.NONE
 
 
+# Adaptive thinking with a readable summary. Opus 4.7 and later default to
+# display "omitted" (empty thinking text), so the summary is asked for
+# explicitly; thinking is billed the same either way. On the always-on models
+# {"type": "adaptive"} is equivalent to omitting the parameter and carries the
+# display setting; between_tools takes no other field.
+ADAPTIVE_THINKING = {"type": "adaptive", "display": "summarized"}
+
+
 def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]]:
-    """Build the thinking parameter for Anthropic API based on reasoning config.
-
-    Returns None when the parameter must be omitted (always-on thinking models).
-    """
-    if model in ALWAYS_ON_THINKING_MODELS:
-        return None
-
-    if model in NEVER_DISABLE_THINKING_MODELS:
-        return {"type": "adaptive"}
+    """Build the thinking parameter for Anthropic API based on reasoning config."""
+    if model in ALWAYS_ON_THINKING_MODELS or model in NEVER_DISABLE_THINKING_MODELS:
+        return ADAPTIVE_THINKING
 
     if not _reasoning_requested(input_data):
         if model in BETWEEN_TOOLS_MODELS:
@@ -425,7 +427,7 @@ def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]
         return {"type": "disabled"}
 
     if model in EFFORT_MODELS:
-        return {"type": "adaptive"}
+        return ADAPTIVE_THINKING
 
     reasoning_max = getattr(input_data, "reasoning_max_tokens", None)
     reasoning_effort = getattr(input_data, "reasoning_effort", None)
@@ -486,7 +488,25 @@ def create_initial_state() -> Dict[str, Any]:
         "current_tool": None,
         "input_tokens": 0,
         "output_tokens": 0,
+        "stop_reason": "",
     }
+
+
+# Anthropic stop_reason -> the platform's (OpenAI-style) stop reason.
+_STOP_REASONS = {
+    "end_turn": "stop",
+    "stop_sequence": "stop",
+    "tool_use": "tool_calls",
+    "max_tokens": "length",
+}
+
+
+def platform_stop_reason(stop_reason: Optional[str]) -> str:
+    """Anthropic's stop_reason as LLMUsage.stop_reason; refusal and pause_turn
+    pass through unchanged."""
+    if not stop_reason:
+        return ""
+    return _STOP_REASONS.get(stop_reason, stop_reason)
 
 
 def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -507,6 +527,7 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     output_tokens = state.get("output_tokens", 0) or 0
     if prompt_tokens or output_tokens:
         usage = LLMUsage(
+            stop_reason=platform_stop_reason(state.get("stop_reason")),
             prompt_tokens=prompt_tokens,
             cached_tokens=cache_read,
             cache_write_tokens=cache_write,
@@ -563,10 +584,13 @@ def build_params(
     tool_choice = anthropic_tool_choice(input_data.tool_choice, model=model)
     output_format = anthropic_output_format(input_data.response_format)
 
+    # The caller's max_tokens (LLMInput defaults it to 64000), capped at the
+    # model's limit; thinking shares the budget.
+    requested = getattr(input_data, "max_tokens", None) or max_tokens
     params: Dict[str, Any] = {
         "model": model,
         "messages": messages,
-        "max_tokens": max_tokens,
+        "max_tokens": max(1, min(int(requested), max_tokens)),
         "stream": True,
     }
 
@@ -655,6 +679,9 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
         usage = getattr(event, "usage", None)
         if usage:
             state["output_tokens"] = getattr(usage, "output_tokens", 0)
+        stop = getattr(getattr(event, "delta", None), "stop_reason", None)
+        if stop:
+            state["stop_reason"] = stop
 
     elif event.type == "message_start":
         msg = getattr(event, "message", None)
@@ -743,6 +770,8 @@ async def complete(
         raise handle_api_error(e)
 
     state = create_initial_state()
+
+    state["stop_reason"] = getattr(response, "stop_reason", None) or ""
 
     # Extract usage
     if hasattr(response, "usage") and response.usage:

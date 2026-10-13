@@ -155,24 +155,32 @@ class TestThinkingShapeByModel:
     def _p(self, model, **kw):
         return h.build_params(LLMInput(text="hi", **kw), model)
 
-    @pytest.mark.parametrize("model", ["claude-fable-5-1", "claude-mythos-5-1", "claude-opus-5-5"])
-    def test_always_on_models_omit_thinking_and_run_low_effort_by_default(self, model):
+    ADAPTIVE = {"type": "adaptive", "display": "summarized"}
+
+    @pytest.mark.parametrize("model", ["claude-fable-5-1", "claude-mythos-5-1", "claude-opus-5-5", "claude-fable-5", "claude-opus-5"])
+    def test_always_on_models_send_adaptive_and_run_low_effort_by_default(self, model):
         p = self._p(model)
-        assert "thinking" not in p and p["output_config"] == {"effort": "low"}
-        p = self._p(model, reasoning_effort="high", reasoning_max_tokens=4096)
-        assert "thinking" not in p and p["output_config"] == {"effort": "high"}
+        assert p["thinking"] == self.ADAPTIVE and "budget_tokens" not in p["thinking"]
+        if model in h.EFFORT_MODELS:
+            assert p["output_config"] == {"effort": "low"}
+            p = self._p(model, reasoning_effort="high", reasoning_max_tokens=4096)
+            assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "high"}
 
     def test_sonnet_5_5_off_is_between_tools(self):
         p = self._p("claude-sonnet-5-5")
         assert p["thinking"] == {"type": "between_tools"} and "output_config" not in p
         p = self._p("claude-sonnet-5-5", reasoning_effort="medium", reasoning_max_tokens=4096)
-        assert p["thinking"] == {"type": "adaptive"} and p["output_config"] == {"effort": "medium"}
+        assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "medium"}
 
     def test_haiku_5_5_is_adaptive_with_effort_and_disabled_when_off(self):
         p = self._p("claude-haiku-5-5")
         assert p["thinking"] == {"type": "disabled"} and "output_config" not in p
         p = self._p("claude-haiku-5-5", reasoning_effort="high", reasoning_max_tokens=4096)
-        assert p["thinking"] == {"type": "adaptive"} and p["output_config"] == {"effort": "high"}
+        assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "high"}
+
+    def test_budget_models_unchanged(self):
+        p = self._p("claude-haiku-4-5", reasoning_effort="medium", reasoning_max_tokens=4096)
+        assert p["thinking"] == {"type": "enabled", "budget_tokens": 4096}
 
     def test_no_budget_tokens_on_any_new_model(self):
         for model in ("claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"):
@@ -191,6 +199,29 @@ class TestThinkingShapeByModel:
         for model in ("claude-haiku-5-5", "claude-opus-5", "claude-sonnet-5"):
             p = h.build_params(LLMInput(text="hi", tools=TOOLS, tool_choice=ToolChoice(mode=ToolChoiceMode.REQUIRED)), model)
             assert p["tool_choice"] == {"type": "any"}
+
+
+class TestMaxTokens:
+    def test_callers_value_capped_at_the_model_limit(self):
+        assert h.build_params(LLMInput(text="hi"), "claude-opus-5-5", 128000)["max_tokens"] == 64000  # LLMInput default
+        assert h.build_params(LLMInput(text="hi", max_tokens=100000), "claude-opus-5-5", 128000)["max_tokens"] == 100000
+        assert h.build_params(LLMInput(text="hi", max_tokens=500000), "claude-opus-5-5", 128000)["max_tokens"] == 128000
+        assert h.build_params(LLMInput(text="hi", max_tokens=100000), "claude-haiku-4-5", 16000)["max_tokens"] == 16000
+
+
+class TestStopReason:
+    def test_stream_message_delta_sets_it(self):
+        state = h.create_initial_state()
+        for anthropic, platform in (("end_turn", "stop"), ("tool_use", "tool_calls"), ("max_tokens", "length"),
+                                    ("stop_sequence", "stop"), ("refusal", "refusal"), ("pause_turn", "pause_turn")):
+            h.apply_stream_event(NS(type="message_delta", delta=NS(stop_reason=anthropic), usage=NS(output_tokens=3)), state)
+            state["input_tokens"] = 1
+            assert h.build_output(state)["usage"].stop_reason == platform
+
+    def test_unknown_stays_empty(self):
+        state = h.create_initial_state(); state["input_tokens"] = 1
+        assert h.build_output(state)["usage"].stop_reason == ""
+
 
 
 # ── with_deltas streaming through a fake client ───────────────────────

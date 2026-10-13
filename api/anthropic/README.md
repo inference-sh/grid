@@ -25,7 +25,8 @@ directory name, the `name:` field in `inf.yml`, and the app in the DB must all m
 | `anthropic/claude-haiku-5-5` | `claude-haiku-5-5` | 1M | 128k | $0.10 / $0.50 up to 100k input tokens, $0.50 / $2.50 above |
 | `anthropic/claude-haiku-4-5` | `claude-haiku-4-5-20251001` | 200k | 64k | $1 / $5 |
 
-"Max Output" is the streaming ceiling. **Non-streaming (`stream: false`) is capped at
+"Max Output" is the streaming ceiling and the cap on the caller's `max_tokens` (LLMInput
+defaults it to 64000); thinking shares that budget. **Non-streaming (`stream: false`) is capped at
 16k output tokens** (`NON_STREAM_MAX_TOKENS` in `anthropic_helper.py`): the SDK refuses a
 non-streaming request whose estimated duration exceeds the client timeout, so a larger
 `max_tokens` fails outright with *"Streaming is required for operations that may take
@@ -47,11 +48,11 @@ wrong one is a hard 400, not a degradation:
 
 | Models | Shape |
 |--------|-------|
-| `claude-fable-5`, `claude-mythos-5` | Parameter **omitted** — thinking is always on; an explicit `{"type": "disabled"}` returns 400 |
-| `claude-fable-5-1`, `claude-mythos-5-1`, `claude-opus-5-5` | Parameter **omitted** + `output_config.effort` (`low` when no reasoning is asked for; Opus 5.5's own default is `medium`). `disabled` and `budget_tokens` are 400 at every effort. Forced `tool_choice` (`required` / a named function) is a 400 and is refused before the request. |
+| `claude-fable-5`, `claude-mythos-5` | `{"type": "adaptive", "display": "summarized"}` — thinking is always on; an explicit `{"type": "disabled"}` returns 400 |
+| `claude-fable-5-1`, `claude-mythos-5-1`, `claude-opus-5-5` | `{"type": "adaptive", "display": "summarized"}` + `output_config.effort` (`low` when no reasoning is asked for; Opus 5.5's own default is `medium`). `disabled` and `budget_tokens` are 400 at every effort. Forced `tool_choice` (`required` / a named function) is a 400 and is refused before the request. |
 | `claude-sonnet-5-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "between_tools"}` when no reasoning is asked for (`disabled` is a 400; `between_tools` takes no other field). Forced `tool_choice` refused before the request. |
 | `claude-haiku-5-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "disabled"}` (allowed at effort `high` or below, which every platform level is). `budget_tokens` returns 400. Forced `tool_choice` still accepted. |
-| `claude-opus-5` | Always `{"type": "adaptive"}` + `output_config.effort`. Never disabled: with thinking off, the model can emit a tool call as plain response text (the call silently never runs) and can leak `<thinking>` tags. Cost is controlled with a lower effort instead. |
+| `claude-opus-5` | Always `{"type": "adaptive", "display": "summarized"}` + `output_config.effort`. Never disabled: with thinking off, the model can emit a tool call as plain response text (the call silently never runs) and can leak `<thinking>` tags. Cost is controlled with a lower effort instead. |
 | `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5` | `{"type": "adaptive"}` + `output_config.effort`, or `{"type": "disabled"}`. **`budget_tokens` returns 400.** |
 | `claude-opus-4-6` and earlier, all Sonnet 4.x, Haiku 4.5 | `{"type": "enabled", "budget_tokens": N}` or `{"type": "disabled"}` |
 
@@ -76,7 +77,8 @@ approving a publish.
 - `claude-sonnet-4-5-20250929` is deprecated (2026-09-30), retires 2026-11-30, replacement `claude-sonnet-5-5`.
 - `claude-haiku-4-5-20251001` retires not sooner than 2026-10-15, `claude-opus-4-5-20251101` not sooner than 2026-11-24.
 - `claude-mythos-5-1` exists (same price as Fable 5.1, Project Glasswing only); the workspace key is not entitled to the Mythos line, so there is no app.
-- The 5.1 / 5.5 models can return `stop_reason: "refusal"` (safety classifiers); the helper passes it through as the stop reason with an empty response.
+- `usage.stop_reason` is Anthropic's stop reason in platform terms: `end_turn` / `stop_sequence` → `stop`, `tool_use` → `tool_calls`, `max_tokens` → `length`; `refusal` (safety classifiers on the 5.1 / 5.5 models) and `pause_turn` pass through.
+- Adaptive thinking is requested with `display: "summarized"`: Opus 4.7 and later default to omitted (empty thinking text), and the summary is what `reasoning` carries. Billing is the same either way; Anthropic reports no separate reasoning token count, so `reasoning_tokens` stays 0 and thinking is inside `completion_tokens`.
 
 ## Not yet available (models don't exist)
 
