@@ -3,8 +3,9 @@
 import asyncio
 from typing import List, Optional, Dict, Any, AsyncGenerator, Tuple
 from inferencesh import File
-from inferencesh.models.llm import build_openai_messages, build_tools, merge_reasoning_details, openai_response_format, openai_tool_choice
-from inferencesh import OutputMeta, TextMeta
+from inferencesh.models.llm import LLMUsage, build_openai_messages, build_tools, merge_reasoning_details, openai_response_format, openai_tool_choice
+from inferencesh import OutputMeta
+from inferencesh.models.output_meta import RawMeta
 
 # This app's entry in an output's reasoning_state: the reasoning_details Opper
 # returns (OpenRouter's shape), sent back as they came.
@@ -100,19 +101,48 @@ def process_tool_call_delta(delta, tool_calls: List[Dict[str, Any]]) -> None:
             current["function"]["arguments"] += delta.function.arguments
 
 
+def _plain(obj) -> Dict[str, Any]:
+    if obj is None:
+        return {}
+    if isinstance(obj, dict):
+        return obj
+    return obj.model_dump() if hasattr(obj, "model_dump") else dict(vars(obj))
+
+
+def read_usage(usage, state: Dict[str, Any]) -> None:
+    """Fold Opper's usage into state.
+
+    Opper reports cache use the way Anthropic does (probed 2026-10-13): with
+    cache_control, prompt_tokens counts only the uncached input, and
+    prompt_tokens_details carries cached_tokens (reads) and cache_write_tokens
+    (writes) beside it. LLMUsage.prompt_tokens is the whole input, so the
+    three are added. usage.cost is Opper's charge in dollars (tokens and any
+    tool fees such as web search)."""
+    u = _plain(usage)
+    if not u:
+        return
+    details = _plain(u.get("prompt_tokens_details"))
+    cached = details.get("cached_tokens") or 0
+    written = details.get("cache_write_tokens") or details.get("cache_creation_tokens") or 0
+    if u.get("prompt_tokens") is not None:
+        state["input_tokens"] = u["prompt_tokens"] + cached + written
+        state["cached_tokens"] = cached
+        state["cache_write_tokens"] = written
+    if u.get("completion_tokens") is not None:
+        state["output_tokens"] = u["completion_tokens"]
+    reasoning = _plain(u.get("completion_tokens_details")).get("reasoning_tokens")
+    if reasoning is not None:
+        state["reasoning_tokens"] = reasoning
+    if u.get("cost") is not None:
+        state["cost_usd"] = u["cost"]
+
+
 def process_chunk(chunk, state: Dict[str, Any]) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
     """Fold one chunk into state.
     Returns (finish_reason, delta_dict); delta_dict is LLMDelta-shaped or None."""
     check_chunk_error(chunk)
 
-    usage_attr = getattr(chunk, "usage", None)
-    if usage_attr:
-        prompt_tokens = getattr(usage_attr, "prompt_tokens", None)
-        completion_tokens = getattr(usage_attr, "completion_tokens", None)
-        if prompt_tokens is not None:
-            state["input_tokens"] = prompt_tokens
-        if completion_tokens is not None:
-            state["output_tokens"] = completion_tokens
+    read_usage(getattr(chunk, "usage", None), state)
 
     if not chunk.choices:
         return None, None
@@ -152,14 +182,23 @@ def build_output(state: Dict[str, Any]) -> Dict[str, Any]:
     if state["tool_calls"]:
         out["tool_calls"] = state["tool_calls"]
 
-    inputs = []
-    outputs = []
-    if state.get("input_tokens"):
-        inputs.append(TextMeta(tokens=state["input_tokens"]))
-    if state.get("output_tokens"):
-        outputs.append(TextMeta(tokens=state["output_tokens"]))
-    if inputs or outputs:
-        out["output_meta"] = OutputMeta(inputs=inputs, outputs=outputs)
+    # Token usage, cache reads and writes included; the token report is built
+    # from it. Opper's own charge follows as a raw input.
+    meta = OutputMeta()
+    if state["input_tokens"] or state["output_tokens"]:
+        out["usage"] = LLMUsage(
+            prompt_tokens=state["input_tokens"],
+            cached_tokens=state["cached_tokens"],
+            cache_write_tokens=state["cache_write_tokens"],
+            completion_tokens=state["output_tokens"],
+            total_tokens=state["input_tokens"] + state["output_tokens"],
+            reasoning_tokens=state["reasoning_tokens"],
+        )
+        meta = OutputMeta.from_llm_usage(out["usage"])
+    if state.get("cost_usd") is not None:
+        meta.inputs.append(RawMeta(cost=state["cost_usd"] * 100))
+    if meta.inputs or meta.outputs:
+        out["output_meta"] = meta
 
     return out
 
@@ -173,6 +212,10 @@ def create_initial_state() -> Dict[str, Any]:
         "tool_calls": [],
         "input_tokens": 0,
         "output_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "cost_usd": None,
     }
 
 
@@ -271,11 +314,7 @@ async def complete(client, input_data, model: str) -> Dict[str, Any]:
                 "function": {"name": tc.function.name, "arguments": tc.function.arguments}
             })
 
-    if hasattr(response, "usage") and response.usage:
-        if hasattr(response.usage, "prompt_tokens"):
-            state["input_tokens"] = response.usage.prompt_tokens
-        if hasattr(response.usage, "completion_tokens"):
-            state["output_tokens"] = response.usage.completion_tokens
+    read_usage(getattr(response, "usage", None), state)
 
     return build_output(state)
 
