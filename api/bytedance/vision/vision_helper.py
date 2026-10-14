@@ -28,8 +28,8 @@ def setup_vision_service(
     Configure BytePlus Vision Service with Access Key and Secret Key.
 
     Args:
-        access_key: Optional AK. If not provided, reads from BYTEPLUS_ACCESS_KEY env var.
-        secret_key: Optional SK. If not provided, reads from BYTEPLUS_SECRET_KEY env var.
+        access_key: Optional AK. If not provided, reads from BYTEPLUS_AK env var.
+        secret_key: Optional SK. If not provided, reads from BYTEPLUS_SK env var.
 
     Returns:
         Configured VisualService instance.
@@ -37,16 +37,16 @@ def setup_vision_service(
     Raises:
         RuntimeError: If credentials are not available.
     """
-    ak = access_key or os.environ.get("BYTEPLUS_ACCESS_KEY")
-    sk = secret_key or os.environ.get("BYTEPLUS_SECRET_KEY")
+    ak = access_key or os.environ.get("BYTEPLUS_AK")
+    sk = secret_key or os.environ.get("BYTEPLUS_SK")
 
     if not ak:
         raise RuntimeError(
-            "BYTEPLUS_ACCESS_KEY environment variable is required for Vision API access."
+            "BYTEPLUS_AK environment variable is required for Vision API access."
         )
     if not sk:
         raise RuntimeError(
-            "BYTEPLUS_SECRET_KEY environment variable is required for Vision API access."
+            "BYTEPLUS_SK environment variable is required for Vision API access."
         )
 
     visual_service = VisualService()

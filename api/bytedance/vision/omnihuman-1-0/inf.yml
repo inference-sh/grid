@@ -15,10 +15,10 @@ images:
 env: {}
 kernel: python-3.11
 secrets:
-    - key: BYTEPLUS_ACCESS_KEY
-      description: BytePlus Access Key (AK) for Vision API
-    - key: BYTEPLUS_SECRET_KEY
-      description: BytePlus Secret Key (SK) for Vision API
+    - key: BYTEPLUS_AK
+      description: BytePlus Access Key for Vision API
+    - key: BYTEPLUS_SK
+      description: BytePlus Secret Key for Vision API
 resources:
     gpu:
         count: 0
