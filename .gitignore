@@ -56,3 +56,6 @@ test
 _custom
 tmp
 native/generative/video/wan-2-2-s2v/diffusers/
+
+.pytest_cache
+.ruff_cache
