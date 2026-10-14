@@ -17,3 +17,4 @@ resources:
         vram: 0
         type: none
     ram: 1
+title: Voice Loop (Node)

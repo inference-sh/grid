@@ -19,3 +19,4 @@ resources:
         vram: 8
         type: any
     ram: 4
+title: Live Transcribe

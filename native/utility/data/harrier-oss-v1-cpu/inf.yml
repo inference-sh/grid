@@ -18,3 +18,4 @@ resources:
         vram: 0
         type: none
     ram: 8000000000
+title: Harrier OSS v1 (CPU)

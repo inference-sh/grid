@@ -21,3 +21,4 @@ resources:
         vram: 80000000000
         type: any
     ram: 32000000000
+title: LTX Video 2.0

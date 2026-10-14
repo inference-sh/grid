@@ -22,3 +22,4 @@ resources:
         vram: 48000000000
         type: any
     ram: 64000000000
+title: Ovi
