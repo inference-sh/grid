@@ -37,9 +37,8 @@ def setup_vision_service(
     Raises:
         RuntimeError: If credentials are not available.
     """
-    # Old names BYTEPLUS_ACCESS_KEY / BYTEPLUS_SECRET_KEY are accepted until the next deploy.
-    ak = access_key or os.environ.get("BYTEPLUS_AK") or os.environ.get("BYTEPLUS_ACCESS_KEY")
-    sk = secret_key or os.environ.get("BYTEPLUS_SK") or os.environ.get("BYTEPLUS_SECRET_KEY")
+    ak = access_key or os.environ.get("BYTEPLUS_AK")
+    sk = secret_key or os.environ.get("BYTEPLUS_SK")
 
     if not ak:
         raise RuntimeError(

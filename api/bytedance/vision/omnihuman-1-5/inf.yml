@@ -17,16 +17,8 @@ kernel: python-3.11
 secrets:
     - key: BYTEPLUS_AK
       description: BytePlus Access Key for Vision API
-      optional: true
     - key: BYTEPLUS_SK
       description: BytePlus Secret Key for Vision API
-      optional: true
-    - key: BYTEPLUS_ACCESS_KEY
-      description: Deprecated, use BYTEPLUS_AK. Accepted until the next deploy.
-      optional: true
-    - key: BYTEPLUS_SECRET_KEY
-      description: Deprecated, use BYTEPLUS_SK. Accepted until the next deploy.
-      optional: true
 resources:
     gpu:
         count: 0
