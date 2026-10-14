@@ -26,6 +26,37 @@
       ],
       "title": "Output Format",
       "type": "string"
+    },
+    "full_page": {
+      "default": true,
+      "description": "Capture the whole scrollable page; false captures only the width x height viewport",
+      "title": "Full Page",
+      "type": "boolean"
+    },
+    "quality": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "JPEG quality (1-100); ignored for png",
+      "title": "Quality"
+    },
+    "wait_until": {
+      "default": "load",
+      "description": "When to capture: after the load event and web fonts, or after the network has also been idle for 500 ms (for pages that fetch content after load)",
+      "enum": [
+        "load",
+        "networkidle"
+      ],
+      "title": "Wait Until",
+      "type": "string"
     }
   },
   "required": [
