@@ -24,8 +24,8 @@ Vision models use the **BytePlus Vision API** which is completely different from
 
 | Secret | Description |
 |--------|-------------|
-| `BYTEPLUS_AK` | BytePlus Access Key (AK) |
-| `BYTEPLUS_SK` | BytePlus Secret Key (SK) |
+| `BYTEPLUS_ACCESS_KEY` | BytePlus Access Key (AK) |
+| `BYTEPLUS_SECRET_KEY` | BytePlus Secret Key (SK) |
 
 These are obtained from the BytePlus Console under IAM or API Key management.
 
@@ -97,8 +97,8 @@ These are obtained from the BytePlus Console under IAM or API Key management.
 from byteplus_sdk.visual.VisualService import VisualService
 
 visual_service = VisualService()
-visual_service.set_ak(os.environ.get("BYTEPLUS_AK"))
-visual_service.set_sk(os.environ.get("BYTEPLUS_SK"))
+visual_service.set_ak(os.environ.get("BYTEPLUS_ACCESS_KEY"))
+visual_service.set_sk(os.environ.get("BYTEPLUS_SECRET_KEY"))
 ```
 
 ### Subject Detection (OmniHuman-1.5 only)
