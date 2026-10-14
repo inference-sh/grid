@@ -1,0 +1,65 @@
+# belt app init --openapi: how https://docs.tavily.com/documentation/api-reference/openapi.json becomes apps.
+#
+# Edit and rerun "belt app init --openapi <this file>": every app's
+# _generated.py and test_requests are rewritten from it; inference.py,
+# inf.yml and the rest are written once and then left to you.
+#   apps[].functions[]  move an entry between apps or rename it; "op" is the
+#                       spec's operationId (or "METHOD /path") and must stay.
+#   auth[].*_secret     the secret names the platform injects; match what
+#                       "belt credentials list" already holds for the vendor.
+#   credential.slug     the credential every app declares in inf.yml.
+spec: https://docs.tavily.com/documentation/api-reference/openapi.json
+vendor: tavily
+title: Tavily
+base_url: https://api.tavily.com
+credential:
+    slug: tavily
+    provider:
+        name: Tavily
+        website: tavily.com
+auth:
+    - scheme: bearerAuth
+      kind: http
+      default: true
+      http_scheme: bearer
+      secret: TVLY_API_KEY
+apps:
+    - name: api
+      title: Tavily
+      functions:
+        - name: crawl
+          op: crawl
+          method: POST
+          path: /crawl
+        - name: extract
+          op: extract
+          method: POST
+          path: /extract
+        - name: post_feedback
+          op: POST /feedback
+          method: POST
+          path: /feedback
+        - name: post_logs
+          op: POST /logs
+          method: POST
+          path: /logs
+        - name: map
+          op: map
+          method: POST
+          path: /map
+        - name: create_research
+          op: createResearch
+          method: POST
+          path: /research
+        - name: get_research
+          op: getResearch
+          method: GET
+          path: /research/{request_id}
+        - name: search
+          op: search
+          method: POST
+          path: /search
+        - name: get_usage
+          op: getUsage
+          method: GET
+          path: /usage

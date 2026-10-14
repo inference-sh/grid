@@ -1,0 +1,28 @@
+namespace: tavily
+name: api
+title: Tavily
+description: Our REST API provides seamless access to Tavily Search, a powerful search engine for LLM agents, and Tavily Extract, an advanced web scraping solution optimized for LLMs.
+metadata:
+    tags:
+        - web-search
+        - web-scraping
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: search
+credentials:
+    tavily:
+        secrets: [TVLY_API_KEY]
+        provider:
+            name: Tavily
+            website: tavily.com
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
