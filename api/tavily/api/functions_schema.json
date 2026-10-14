@@ -2447,7 +2447,6 @@
             "status": {
               "anyOf": [
                 {
-                  "const": "completed",
                   "type": "string"
                 },
                 {
@@ -2554,7 +2553,6 @@
             "status": {
               "anyOf": [
                 {
-                  "const": "failed",
                   "type": "string"
                 },
                 {
@@ -2628,8 +2626,6 @@
             "url": {
               "anyOf": [
                 {
-                  "format": "uri",
-                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -2646,8 +2642,6 @@
             "favicon": {
               "anyOf": [
                 {
-                  "format": "uri",
-                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -5176,7 +5170,6 @@
             "timestamp": {
               "anyOf": [
                 {
-                  "format": "date-time",
                   "type": "string"
                 },
                 {
@@ -5193,13 +5186,6 @@
             "endpoint": {
               "anyOf": [
                 {
-                  "enum": [
-                    "search",
-                    "extract",
-                    "map",
-                    "crawl",
-                    "research"
-                  ],
                   "type": "string"
                 },
                 {

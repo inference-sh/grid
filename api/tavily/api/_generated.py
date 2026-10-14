@@ -6,7 +6,7 @@ go in inference.py, which imports this module.
 
 from __future__ import annotations
 from typing import Annotated, Any, Literal
-from pydantic import AnyUrl, AwareDatetime, BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 from datetime import date
 
 
@@ -693,14 +693,14 @@ class Log(BaseModel):
         populate_by_name=True,
     )
     timestamp: Annotated[
-        AwareDatetime | None,
+        str | None,
         Field(
             description="When the request was made",
             examples=["2026-08-06T13:14:34.739037+00:00"],
         ),
     ] = None
     endpoint: Annotated[
-        Literal["search", "extract", "map", "crawl", "research"] | None,
+        str | None,
         Field(description="Which Tavily API was called", examples=["search"]),
     ] = None
     depth: Annotated[
@@ -1738,13 +1738,13 @@ class Source(BaseModel):
         ),
     ] = None
     url: Annotated[
-        AnyUrl | None,
+        str | None,
         Field(
             description="URL of the source.", examples=["https://example.com/ai-news"]
         ),
     ] = None
     favicon: Annotated[
-        AnyUrl | None,
+        str | None,
         Field(
             description="URL to the source's favicon.",
             examples=["https://example.com/favicon.ico"],
@@ -1771,8 +1771,7 @@ class ResearchTaskCompleted(BaseModel):
         ),
     ] = None
     status: Annotated[
-        Literal["completed"] | None,
-        Field(description="The current status of the research task."),
+        str | None, Field(description="The current status of the research task.")
     ] = None
     content: Annotated[
         str | dict[str, Any] | None,
@@ -1811,8 +1810,7 @@ class ResearchTaskFailed(BaseModel):
         ),
     ] = None
     status: Annotated[
-        Literal["failed"] | None,
-        Field(description="The current status of the research task."),
+        str | None, Field(description="The current status of the research task.")
     ] = None
     response_time: Annotated[
         int | float | None,
