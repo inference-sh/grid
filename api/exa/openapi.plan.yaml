@@ -1,0 +1,53 @@
+# belt app init --openapi: how https://api.exa.ai/openapi.json becomes apps.
+#
+# Edit and rerun "belt app init --openapi <this file>": every app's
+# _generated.py, test_requests and the credentials block of inf.yml are
+# rewritten from it; inference.py and the rest of inf.yml are written once
+# and then left to you. A function you drop here keeps its method in
+# inference.py and its row in pricing.md until you remove them (belt says
+# which).
+#   apps[].functions[]  move an entry between apps or rename it; "op" is the
+#                       spec's operationId (or "METHOD /path") and must stay.
+#   auth[].*_secret     the secret names the platform injects; match what
+#                       "belt credentials list" already holds for the vendor.
+#                       The vendor credential must hold every secret of every
+#                       scheme listed here, or the app stays "setup required":
+#                       drop a scheme nobody can provide, and the functions
+#                       that need it.
+#   credential.slug     the credential every app declares in inf.yml.
+spec: https://api.exa.ai/openapi.json
+vendor: exa
+title: Exa
+base_url: https://api.exa.ai
+credential:
+    slug: exa
+    provider:
+        name: Exa
+        website: exa.ai
+auth:
+-   scheme: apiKey
+    kind: api_key
+    default: true
+    location: header
+    name: x-api-key
+    secret: EXA_API_KEY
+apps:
+-   name: api
+    title: Exa
+    functions:
+    -   name: answer
+        op: answer
+        method: POST
+        path: /answer
+    -   name: get_contents
+        op: getContents
+        method: POST
+        path: /contents
+    -   name: find_similar
+        op: findSimilar
+        method: POST
+        path: /findSimilar
+    -   name: search
+        op: search
+        method: POST
+        path: /search

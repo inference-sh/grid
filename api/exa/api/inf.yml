@@ -1,0 +1,28 @@
+namespace: exa
+name: api
+title: Exa
+description: "Exa web search for AI: neural and keyword search, page contents, similar pages and cited answers."
+metadata:
+    tags:
+        - web-search
+        - web-scraping
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: search
+credentials:
+    exa:
+        secrets: [EXA_API_KEY]
+        provider:
+            name: Exa
+            website: exa.ai
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
