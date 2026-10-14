@@ -1468,6 +1468,9 @@
               "type": "integer"
             },
             {
+              "type": "number"
+            },
+            {
               "type": "null"
             }
           ],
@@ -2494,6 +2497,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2563,6 +2569,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -2856,6 +2865,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2870,6 +2882,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -2888,6 +2903,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2902,6 +2920,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -2920,6 +2941,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2934,6 +2958,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -2952,6 +2979,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2968,6 +2998,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -2982,6 +3015,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -3100,6 +3136,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -3114,6 +3153,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -3132,6 +3174,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -3146,6 +3191,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -3164,6 +3212,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -3180,6 +3231,9 @@
                   "type": "integer"
                 },
                 {
+                  "type": "number"
+                },
+                {
                   "type": "null"
                 }
               ],
@@ -3194,6 +3248,9 @@
               "anyOf": [
                 {
                   "type": "integer"
+                },
+                {
+                  "type": "number"
                 },
                 {
                   "type": "null"
@@ -5467,6 +5524,9 @@
           "anyOf": [
             {
               "type": "integer"
+            },
+            {
+              "type": "number"
             },
             {
               "type": "null"

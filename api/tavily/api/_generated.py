@@ -745,7 +745,8 @@ class PostLogsResponse(BaseModel):
         ),
     ] = None
     count: Annotated[
-        int | None, Field(description="Number of log entries returned", examples=[100])
+        int | float | None,
+        Field(description="Number of log entries returned", examples=[100]),
     ] = None
     response_time: Annotated[
         float | None,
@@ -1089,7 +1090,7 @@ class CreateResearchResponse(BaseModel):
         Field(description="The model used by the research agent.", examples=["mini"]),
     ] = None
     response_time: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Time in seconds it took to complete the request.",
             examples=[1.23],
@@ -1601,49 +1602,49 @@ class Key(BaseModel):
         populate_by_name=True,
     )
     usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Total credits used for this API key during the current billing cycle",
             examples=[150],
         ),
     ] = None
     limit: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Usage limit for the API key. Returns null if unlimited",
             examples=[1000],
         ),
     ] = None
     search_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Search endpoint credits used for this API key during the current billing cycle",
             examples=[100],
         ),
     ] = None
     extract_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Extract endpoint credits used for this API key during the current billing cycle",
             examples=[25],
         ),
     ] = None
     crawl_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Crawl endpoint credits used for this API key during the current billing cycle",
             examples=[15],
         ),
     ] = None
     map_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Map endpoint credits used for this API key during the current billing cycle",
             examples=[7],
         ),
     ] = None
     research_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Research endpoint credits used for this API key during the current billing cycle",
             examples=[3],
@@ -1660,53 +1661,54 @@ class Account(BaseModel):
         Field(description="The current subscription plan name", examples=["Bootstrap"]),
     ] = None
     plan_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Total credits used for this plan during the current billing cycle",
             examples=[500],
         ),
     ] = None
     plan_limit: Annotated[
-        int | None,
+        int | float | None,
         Field(description="Usage limit for the current plan", examples=[15000]),
     ] = None
     paygo_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(description="Current pay-as-you-go usage count", examples=[25]),
     ] = None
     paygo_limit: Annotated[
-        int | None, Field(description="Pay-as-you-go usage limit", examples=[100])
+        int | float | None,
+        Field(description="Pay-as-you-go usage limit", examples=[100]),
     ] = None
     search_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Search endpoint credits used for this plan during the current billing cycle",
             examples=[350],
         ),
     ] = None
     extract_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Extract endpoint credits used for this plan during the current billing cycle",
             examples=[75],
         ),
     ] = None
     crawl_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Crawl endpoint credits used for this plan during the current billing cycle",
             examples=[50],
         ),
     ] = None
     map_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Map endpoint credits used for this plan during the current billing cycle",
             examples=[15],
         ),
     ] = None
     research_usage: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Research endpoint credits used for this plan during the current billing cycle",
             examples=[10],
@@ -1782,7 +1784,7 @@ class ResearchTaskCompleted(BaseModel):
         list[Source] | None, Field(description="List of sources used in the research.")
     ] = None
     response_time: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Time in seconds it took to complete the request.",
             examples=[1.23],
@@ -1813,7 +1815,7 @@ class ResearchTaskFailed(BaseModel):
         Field(description="The current status of the research task."),
     ] = None
     response_time: Annotated[
-        int | None,
+        int | float | None,
         Field(
             description="Time in seconds it took to complete the request.",
             examples=[1.23],
