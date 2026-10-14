@@ -1,13 +1,9 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
-from typing import Literal
+from typing import Literal, Optional
 import tempfile
 from pathlib import Path
-import asyncio
 from playwright.async_api import async_playwright
-import os
-import sys
-from playwright._impl._driver import get_driver_env
 
 class AppInput(BaseAppInput):
     html_content: str = Field(description="The HTML string to render")
@@ -16,6 +12,20 @@ class AppInput(BaseAppInput):
     output_format: Literal["jpeg", "png"] = Field(
         default="png", 
         description="Output image format (jpeg or png)"
+    )
+    full_page: bool = Field(
+        default=True,
+        description="Capture the whole scrollable page; false captures only the width x height viewport"
+    )
+    quality: Optional[int] = Field(
+        default=None,
+        ge=1,
+        le=100,
+        description="JPEG quality (1-100); ignored for png"
+    )
+    wait_until: Literal["load", "networkidle"] = Field(
+        default="load",
+        description="When to capture: after the load event and web fonts, or after the network has also been idle for 500 ms (for pages that fetch content after load)"
     )
 
 class AppOutput(BaseAppOutput):
@@ -30,49 +40,44 @@ class App(BaseApp):
             args=['--no-sandbox'],
             executable_path='/usr/bin/chromium'
         )
-        self.context = await self.browser.new_context(viewport={'width': 1920, 'height': 1080})
-        
+
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Convert HTML to image using Playwright."""
-        if input_data.output_format not in ("jpeg", "png"):
-            raise ValueError("output_format must be either 'jpeg' or 'png'")
-
         with tempfile.NamedTemporaryFile(
             suffix=f'.{input_data.output_format}',
             delete=False
         ) as tmp:
             output_path = tmp.name
 
+        # Isolated context per run
+        context = await self.browser.new_context(viewport={
+            "width": input_data.width,
+            "height": input_data.height
+        })
         try:
-            # Create isolated context for this run
-            context = await self.browser.new_context(viewport={
-                "width": input_data.width,
-                "height": input_data.height
-            })
             page = await context.new_page()
 
+            await page.set_content(input_data.html_content, wait_until=input_data.wait_until)
+            await page.evaluate("document.fonts.ready.then(() => undefined)")
             # Ensure body fills viewport
-            await page.set_content(input_data.html_content, wait_until="networkidle")
             await page.add_style_tag(content="html,body{margin:0;padding:0;height:100%;min-height:100%;}")
 
-            # Capture full page to avoid background cutoff
-            await page.screenshot(
-                path=output_path,
-                type=input_data.output_format,
-                full_page=True,
-            )
+            shot = {"path": output_path, "type": input_data.output_format, "full_page": input_data.full_page}
+            if input_data.output_format == "jpeg" and input_data.quality is not None:
+                shot["quality"] = input_data.quality
+            await page.screenshot(**shot)
 
-            await context.close()
             return AppOutput(image=File(path=output_path))
 
         except Exception as e:
             Path(output_path).unlink(missing_ok=True)
             raise ValueError(f"Failed to convert HTML to image: {str(e)}")
-        async def unload(self):
-            """Clean up Playwright resources."""
-            if hasattr(self, 'context'):
-                await self.context.close()
-            if hasattr(self, 'browser'):
-                await self.browser.close()
-            if hasattr(self, 'playwright'):
-                await self.playwright.stop()
+        finally:
+            await context.close()
+
+    async def unload(self):
+        """Clean up Playwright resources."""
+        if hasattr(self, 'browser'):
+            await self.browser.close()
+        if hasattr(self, 'playwright'):
+            await self.playwright.stop()
