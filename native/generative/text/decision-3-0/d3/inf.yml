@@ -12,9 +12,9 @@ metadata:
         - open-weights
 category: decision
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/st6i55u7.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ev2j2asb.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/2zqdalcx.png
 env: {}
 credentials:
     - provider: huggingface

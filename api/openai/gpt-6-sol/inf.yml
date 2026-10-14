@@ -18,9 +18,9 @@ functions:
     - name: openai
       description: OpenAI Chat Completions compatible entry point
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/ofa39x2h.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/j0rayd6s.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/4lfty59r.png
 env: {}
 kernel: python-3.11
 secrets:

@@ -11,9 +11,9 @@ metadata:
         - vision
 category: decision
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/vdlzevzj.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/s5asz1qq.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/qh5vxoha.png
 env: {}
 kernel: python-3.11
 secrets:
