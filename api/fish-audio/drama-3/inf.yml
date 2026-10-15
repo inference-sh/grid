@@ -1,0 +1,25 @@
+namespace: fish-audio
+name: drama-3
+title: Fish Audio Drama 3
+description: Fish Audio Drama 3 text to speech. Direct the delivery in plain language, add laughs and sighs, clone a voice from a clip, or voice a dialogue. 80+ languages.
+metadata:
+    provider: fish-audio
+    tags:
+        - text-to-speech
+        - voice-cloning
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fish-audio:
+        secrets: [FISH_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

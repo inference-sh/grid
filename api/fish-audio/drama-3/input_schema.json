@@ -1,0 +1,144 @@
+{
+  "properties": {
+    "text": {
+      "description": "What to say, and how. Bracketed directions and sounds are performed, not read: [barely holding it together] I'm fine. [small laugh] Paired tags shape specific words: <whisper>, <emphasis>, <soft>, <fast>, <slow>, <stress>, <forceful>. For dialogue, mark turns with <|speaker:0|>, <|speaker:1|>, ... matching the order of voice_ids.",
+      "maxLength": 30000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "voice_ids": {
+      "description": "Fish Audio voice ids (from fish.audio). One id for a single voice; several for a dialogue, one per speaker tag in order. Empty: the model picks a voice.",
+      "examples": [
+        [
+          "bf322df2096a46f18c579d0baa36f41d"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Voice Ids",
+      "type": "array"
+    },
+    "reference_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "A clip of the voice to clone: 10 to 30 seconds of clear speech, WAV, MP3 or FLAC. Use it instead of voice_ids.",
+      "title": "Reference Audio"
+    },
+    "reference_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Exact transcript of reference_audio. Required with it.",
+      "title": "Reference Text"
+    },
+    "format": {
+      "default": "mp3",
+      "description": "Audio format. pcm is raw 16-bit mono.",
+      "enum": [
+        "mp3",
+        "wav",
+        "opus",
+        "pcm"
+      ],
+      "title": "Format",
+      "type": "string"
+    },
+    "sample_rate": {
+      "anyOf": [
+        {
+          "enum": [
+            8000,
+            16000,
+            24000,
+            32000,
+            44100,
+            48000
+          ],
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Sample rate in Hz. Empty: 44100, or 48000 for opus. mp3 takes 32000 or 44100; opus only 48000.",
+      "title": "Sample Rate"
+    },
+    "speed": {
+      "default": 1.0,
+      "description": "Speaking speed, 0.5 to 2.",
+      "maximum": 2.0,
+      "minimum": 0.5,
+      "title": "Speed",
+      "type": "number"
+    },
+    "temperature": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Sampling temperature, 0 to 1. Higher is more varied. Empty: Fish Audio's default.",
+      "title": "Temperature"
+    },
+    "top_p": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Nucleus sampling, 0 to 1. Empty: Fish Audio's default.",
+      "title": "Top P"
+    },
+    "normalize": {
+      "default": true,
+      "description": "Normalize numbers and symbols in English and Chinese text before speaking.",
+      "title": "Normalize",
+      "type": "boolean"
+    },
+    "latency": {
+      "default": "normal",
+      "description": "normal for best quality; balanced and low trade quality for a faster start.",
+      "enum": [
+        "normal",
+        "balanced",
+        "low"
+      ],
+      "title": "Latency",
+      "type": "string"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

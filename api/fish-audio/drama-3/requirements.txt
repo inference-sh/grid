@@ -1,0 +1,5 @@
+inferencesh>=0.22.0 # @function (per-function annotations and credentials)
+pydantic>=2.0.0
+httpx>=0.27.0,<1.0
+msgpack>=1.0
+mutagen>=1.47
