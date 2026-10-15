@@ -1,0 +1,24 @@
+namespace: google
+name: search-console
+title: Google Search Console
+description: Read Search Console performance, URL index status, and sitemaps for your verified sites
+metadata:
+    tags:
+        - seo
+        - productivity
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    - key: google.searchconsole.readonly
+      description: View Search Console data for your verified sites
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
