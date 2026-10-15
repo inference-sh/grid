@@ -1,12 +1,13 @@
 namespace: typesafe
 name: jev
 title: Jev
-description: TypeSafe's System One model. Send a state and typed questions (choice, score, noul); get calibrated, structured answers your code can act on directly.
+description: TypeSafe's System One model. Send text and images with typed questions (choice, score, noul); get calibrated, structured answers your code can act on directly.
 metadata:
     tags:
         - classification
         - routing
         - moderation
+        - vision
 category: decision
 images:
     card: https://cloud.inference.sh/app/files/t/65hmp52a/mnwjugy0.png

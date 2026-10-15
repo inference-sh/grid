@@ -131,7 +131,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -241,8 +241,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -588,6 +600,12 @@
         }
       },
       "properties": {
+        "model": {
+          "default": "jev-latest",
+          "description": "Model name or alias: `jev-latest`, `jev-preview`, or a pinned version such as `jev-1.13.0`. Pin a version if you tuned thresholds against it.",
+          "title": "Model",
+          "type": "string"
+        },
         "state": {
           "anyOf": [
             {
@@ -602,17 +620,12 @@
               "type": "array"
             }
           ],
-          "description": "The content to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Text only. Every question sees the same state. Send only what the questions need; unrelated detail costs accuracy.",
+          "default": "",
+          "description": "The content to evaluate: a string, or a JSON object / array of related context (messages, records, a policy). Every question sees the same state. May be empty when `images` carries the content. Send only what the questions need; unrelated detail costs accuracy.",
           "examples": [
             "Our API started returning 500 errors 20 minutes ago and we can't process any customer orders."
           ],
           "title": "State"
-        },
-        "model": {
-          "default": "jev-latest",
-          "description": "Model name or alias: `jev-latest`, `jev-preview`, or a pinned version such as `jev-1.13.0`. Pin a version if you tuned thresholds against it.",
-          "title": "Model",
-          "type": "string"
         },
         "choices": {
           "description": "Choice questions: pick one option from a set.",
@@ -637,11 +650,18 @@
           },
           "title": "Nouls",
           "type": "array"
+        },
+        "images": {
+          "description": "Up to 8 images (PNG or JPEG, or any format Pillow reads) the questions are about. Sent as `{\"images\": [...], \"text\": state}`, so questions can name `images[0]`. Downsized to 1568 px on the long side; one under 280 x 280 is padded. Preview feature upstream: formats and accuracy may change.",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Images",
+          "type": "array"
         }
       },
-      "required": [
-        "state"
-      ],
       "title": "AppInput",
       "type": "object"
     },
@@ -785,7 +805,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -937,8 +957,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1016,17 +1048,6 @@
         }
       },
       "properties": {
-        "model": {
-          "description": "The versioned model that answered, e.g. `jev-1.13.0`.",
-          "title": "Model",
-          "type": "string"
-        },
-        "input_tokens": {
-          "default": 0,
-          "description": "Input tokens (billed).",
-          "title": "Input Tokens",
-          "type": "integer"
-        },
         "output_tokens": {
           "default": 0,
           "description": "Output tokens (free upstream).",
@@ -1068,6 +1089,17 @@
           "description": "Noul answers by question id.",
           "title": "Nouls",
           "type": "object"
+        },
+        "model": {
+          "description": "The versioned model that answered, e.g. `jev-1.13.0`.",
+          "title": "Model",
+          "type": "string"
+        },
+        "input_tokens": {
+          "default": 0,
+          "description": "Input tokens (billed).",
+          "title": "Input Tokens",
+          "type": "integer"
         }
       },
       "required": [
