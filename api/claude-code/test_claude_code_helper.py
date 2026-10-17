@@ -1,8 +1,8 @@
-"""claude-code apps against testdata/fake-belt (a stand-in `belt llm serve`).
+"""claude-code apps against testdata/fake-belt (a stand-in `belt harness serve`).
 
   cd grid/api/claude-code && <venv with inferencesh, pytest>/bin/python -m pytest test_claude_code_helper.py -q
 
-REAL_BELT=<path to belt> runs the same app against a real `belt llm serve`
+REAL_BELT=<path to belt> runs the same app against a real `belt harness serve`
 (needs CLAUDE_BIN and whatever the serve command needs to reach a fake
 Anthropic); those tests are skipped otherwise.
 """
