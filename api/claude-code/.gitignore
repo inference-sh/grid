@@ -1,0 +1,4 @@
+# belt binaries built by build.sh: shipped in each app's deploy package
+# (bin -> ../bin), never committed. The packager reads only the app dir's own
+# .gitignore/.infshignore, so this file does not keep them out of the package.
+bin/
