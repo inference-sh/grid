@@ -25,11 +25,11 @@ class App(OpenAIChatMixin, BaseApp):
     async def setup(self):
         self.serve = Serve(find_belt(), ensure_claude())
         await self.serve.start()
-        print(f"belt llm serve ready for {DEFAULT_MODEL}")
+        print(f"belt harness serve ready for {DEFAULT_MODEL}")
 
     async def run(self, input_data: AppInput) -> AsyncGenerator[Union[LLMDelta, AppOutput], None]:
         if not self.serve:
-            raise RuntimeError("belt llm serve not started. Call setup() first.")
+            raise RuntimeError("belt harness serve not started. Call setup() first.")
         context = getattr(self, "context", None)
         metadata = getattr(context, "metadata", None)
         rid = getattr(metadata, "task_id", None) or "local"
