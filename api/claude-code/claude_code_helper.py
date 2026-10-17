@@ -1,6 +1,6 @@
 """Claude Code on the user's own Claude subscription, as an LLM app.
 
-The app runs one long-lived `belt llm serve` (shipped in the app dir as
+The app runs one long-lived `belt harness serve` (shipped in the app dir as
 bin/belt-linux-<arch>) and writes one JSON request per run on its stdin:
 
     {"id": <task id>, "harness": "claude", "model": <model id>,
@@ -173,7 +173,7 @@ def with_output_meta(output: Dict[str, Any]) -> Dict[str, Any]:
 
 
 class Serve:
-    """One `belt llm serve` process shared by every run of this app process."""
+    """One `belt harness serve` process shared by every run of this app process."""
 
     def __init__(self, belt: Path, claude_bin: str):
         self.belt = belt
@@ -194,14 +194,14 @@ class Serve:
             if self.proc and self.proc.returncode is None:
                 return
             self.proc = await asyncio.create_subprocess_exec(
-                str(self.belt), "llm", "serve",
+                str(self.belt), "harness", "serve",
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=self._env(),
                 limit=64 * 1024 * 1024,
             )
-            logger.info("belt llm serve started (pid %s)", self.proc.pid)
+            logger.info("belt harness serve started (pid %s)", self.proc.pid)
             self._readers = (
                 asyncio.create_task(self._read_stdout(self.proc)),
                 asyncio.create_task(self._read_stderr(self.proc)),
@@ -215,7 +215,7 @@ class Serve:
             try:
                 msg = json.loads(line)
             except json.JSONDecodeError:
-                logger.warning("belt llm serve: unreadable line (%d bytes)", len(line))
+                logger.warning("belt harness serve: unreadable line (%d bytes)", len(line))
                 continue
             q = self.queues.get(msg.get("id"))
             if q is not None:
@@ -223,7 +223,7 @@ class Serve:
         await proc.wait()
         # Fail every run still waiting on this process.
         for rid, q in list(self.queues.items()):
-            q.put_nowait({"id": rid, "error": f"belt llm serve exited ({proc.returncode})", "code": "failed"})
+            q.put_nowait({"id": rid, "error": f"belt harness serve exited ({proc.returncode})", "code": "failed"})
 
     async def _read_stderr(self, proc):
         # serve redacts token values from its diagnostics.
@@ -231,7 +231,7 @@ class Serve:
             line = await proc.stderr.readline()
             if not line:
                 break
-            print(f"[belt llm serve] {line.decode(errors='replace').rstrip()}", file=sys.stderr, flush=True)
+            print(f"[belt harness serve] {line.decode(errors='replace').rstrip()}", file=sys.stderr, flush=True)
 
     async def request(self, rid: str, model: str, token: str, input_json: Dict[str, Any]) -> AsyncGenerator[Dict[str, Any], None]:
         """Yields serve's lines for one request, ending with its output or error line."""
