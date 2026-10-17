@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Test stand-in for `belt llm serve` (the protocol in claude_code_helper).
+
+Per request: the token "bad" answers code "auth"; input text "TOOL" streams a
+tool call; anything else streams the text back in two deltas. Every line read
+is appended to $FAKE_BELT_LOG (token replaced) when set.
+"""
+import json, os, sys
+
+if sys.argv[1:3] != ["llm", "serve"]:
+    sys.exit(f"fake-belt: unsupported {sys.argv[1:]}")
+log = os.environ.get("FAKE_BELT_LOG")
+leaked = [k for k in ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL") if k in os.environ]
+print(f"fake serve up; claude={os.environ.get('CLAUDE_BIN')} leaked_env={leaked}", file=sys.stderr, flush=True)
+
+
+def out(o):
+    sys.stdout.write(json.dumps(o) + "\n")
+    sys.stdout.flush()
+
+
+for line in sys.stdin:
+    req = json.loads(line)
+    rid, tok, inp = req["id"], req["token"], req["input"]
+    if log:
+        with open(log, "a") as f:
+            f.write(json.dumps({**req, "token": "[redacted]", "leaked_env": leaked}) + "\n")
+    usage = {"stop_reason": "stop", "prompt_tokens": 12, "completion_tokens": 5, "total_tokens": 17}
+    if tok == "bad":
+        out({"id": rid, "error": "Claude rejected the credential; reconnect Claude Code (credentials → Claude Code)", "code": "auth"})
+    elif inp.get("text") == "TOOL":
+        args = '{"query": "weather in Paris"}'
+        out({"id": rid, "delta": {"tool_calls": [{"index": 0, "id": "toolu_1", "type": "function", "function": {"name": "search"}}]}})
+        out({"id": rid, "delta": {"tool_calls": [{"index": 0, "function": {"arguments": args}}]}})
+        out({"id": rid, "output": {"response": "", "tool_calls": [{"id": "toolu_1", "type": "function", "function": {"name": "search", "arguments": args}}], "usage": {**usage, "stop_reason": "tool_calls"}}})
+    else:
+        text = f"[{req['model']}] {inp.get('text', '')}"
+        half = len(text) // 2
+        out({"id": rid, "delta": {"response": text[:half]}})
+        out({"id": rid, "delta": {"response": text[half:]}})
+        out({"id": rid, "output": {"response": text, "usage": usage}})

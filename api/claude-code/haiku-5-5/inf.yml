@@ -1,0 +1,34 @@
+namespace: claude-code
+name: haiku-5-5
+title: Claude Haiku 5.5 (Claude Code)
+description: "Claude Haiku 5.5 through Claude Code on your own Claude subscription (Pro/Max): runs the claude CLI with your `claude setup-token` credential and bills your Claude plan, not inference.sh. Anthropic's fastest, lowest-cost Claude for high-volume work. Our system prompt and tools only; tool calls are returned, not executed."
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    tags:
+        - claude-code
+        - subscription
+        - reasoning
+        - coding
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    claude-code:
+        secrets: [CLAUDE_CODE_OAUTH_TOKEN]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
