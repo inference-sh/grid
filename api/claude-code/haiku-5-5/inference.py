@@ -39,6 +39,13 @@ class App(OpenAIChatMixin, BaseApp):
             else:
                 yield AppOutput(**data)
 
+    async def on_cancel(self):
+        # The kernel calls this on a cancel; the run then ends with the text
+        # streamed so far, and serve stops the claude call.
+        if self.serve:
+            self.serve.cancel_all()
+        return True
+
     async def unload(self):
         if self.serve:
             await self.serve.close()
