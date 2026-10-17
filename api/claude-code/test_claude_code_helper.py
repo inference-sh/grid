@@ -190,3 +190,61 @@ def test_real_serve(monkeypatch):
     assert call["function"]["name"] == "get_weather"
     assert json.loads(call["function"]["arguments"]) == {"city": "Paris"}
     assert to.usage.stop_reason == "stop" and ko.usage.stop_reason == "tool_calls"
+
+
+def test_cancel_sends_cancel_line_and_ends_with_partial(env):
+    async def go():
+        app = await started("opus-5-5")
+        try:
+            run = asyncio.create_task(drive(app, "task-slow", text="SLOW"))
+            await asyncio.sleep(0.3)
+            assert await app.on_cancel() is True
+            deltas, out = await asyncio.wait_for(run, 5)
+            # serve is still usable afterwards
+            _, after = await drive(app, "task-after", text="again")
+            return deltas, out, after
+        finally:
+            await app.unload()
+    deltas, out, after = asyncio.run(go())
+    assert deltas and out.response == "".join(d.response for d in deltas)
+    assert after.response.endswith("again")
+    lines = [json.loads(l) for l in env.read_text().splitlines()]
+    assert {"id": "task-slow", "cancel": True, "token": "[redacted]", "leaked_env": []} in lines
+
+
+def test_abandoned_run_is_cancelled_in_serve(env):
+    async def go():
+        app = await started("opus-5-5")
+        try:
+            mod = sys.modules[type(app).__module__]
+            app.context = type("C", (), {"metadata": type("M", (), {"task_id": "task-drop"})()})()
+            gen = app.run(mod.AppInput(text="SLOW"))
+            await gen.__anext__()
+            await gen.aclose()  # the consumer went away
+            await asyncio.sleep(0.2)
+        finally:
+            await app.unload()
+    asyncio.run(go())
+    lines = [json.loads(l) for l in env.read_text().splitlines()]
+    assert any(l.get("id") == "task-drop" and l.get("cancel") for l in lines)
+
+
+@pytest.mark.skipif(not os.environ.get("REAL_BELT"), reason="REAL_BELT not set")
+def test_real_serve_cancel(monkeypatch):
+    monkeypatch.setenv("BELT_BIN", os.environ["REAL_BELT"])
+    async def go():
+        app = await started("opus-5-5")
+        try:
+            run = asyncio.create_task(drive(app, "real-cancel", text="Answer slow please"))
+            await asyncio.sleep(3)
+            await app.on_cancel()
+            deltas, out = await asyncio.wait_for(run, 10)
+            after = await drive(app, "real-after", text="Say hi")
+            return deltas, out, after
+        finally:
+            await app.unload()
+    deltas, out, (_, after) = asyncio.run(go())
+    print("cancel deltas:", len(deltas), "partial output:", out.model_dump(exclude_none=True, mode="json"))
+    print("next run:", after.response)
+    assert deltas and out.response and "part39" not in out.response
+    assert after.response

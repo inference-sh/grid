@@ -5,11 +5,12 @@
 
 POST /v1/messages streams a tool_use of the first offered tool whose name
 whose name contains "weather" when the latest user turn is plain text and
-mentions "tool"; otherwise streams a short text reply. Any other path answers
+mentions "tool"; a turn mentioning "slow" streams 40 parts 250ms apart; otherwise streams a short text reply. Any other path answers
 {}. Requests are logged to stderr (path, model, tool names).
 """
 import json
 import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
@@ -85,8 +86,16 @@ class H(BaseHTTPRequestHandler):
             stop = "tool_use"
         else:
             sse(w, "content_block_start", {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}})
-            for part in ("Hi from ", "the fake ", "Anthropic."):
-                sse(w, "content_block_delta", {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": part}})
+            slow = "slow" in text.lower()
+            parts = [f"part{i} " for i in range(40)] if slow else ["Hi from ", "the fake ", "Anthropic."]
+            try:
+                for part in parts:
+                    sse(w, "content_block_delta", {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": part}})
+                    if slow:
+                        time.sleep(0.25)
+            except (BrokenPipeError, ConnectionResetError):
+                print("fake-anthropic: client went away mid-stream", file=sys.stderr, flush=True)
+                return
             stop = "end_turn"
         sse(w, "content_block_stop", {"type": "content_block_stop", "index": 0})
         sse(w, "message_delta", {"type": "message_delta", "delta": {"stop_reason": stop, "stop_sequence": None}, "usage": {"output_tokens": 7}})
