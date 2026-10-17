@@ -1,16 +1,21 @@
 """claude-code apps against testdata/fake-belt (a stand-in `belt harness serve`).
 
-  cd grid/api/claude-code && <venv with inferencesh, pytest>/bin/python -m pytest test_claude_code_helper.py -q
+Needs a Python venv with inferencesh and pytest (uv venv v && uv pip install --python v/bin/python inferencesh pytest):
 
-REAL_BELT=<path to belt> runs the same app against a real `belt harness serve`
-(needs CLAUDE_BIN and whatever the serve command needs to reach a fake
-Anthropic); those tests are skipped otherwise.
+  cd grid/api/claude-code && REAL_BELT=bin/belt-linux-amd64 CLAUDE_BIN=$(which claude) v/bin/python -m pytest test_claude_code_helper.py -q
+
+REAL_BELT (built by build.sh) adds the test_real_* runs: the real `belt harness
+serve` and the real claude (CLAUDE_BIN, else claude on PATH) against
+testdata/fake-anthropic.py, which the tests start on a free port, with a fake
+token and a throwaway HOME. They are skipped when REAL_BELT or claude is missing.
 """
 
 import asyncio
 import importlib
 import json
 import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -167,9 +172,35 @@ def test_find_belt_shipped(tmp_path, monkeypatch):
     assert h.find_belt(tmp_path) == b and os.access(b, os.X_OK)
 
 
-@pytest.mark.skipif(not os.environ.get("REAL_BELT"), reason="REAL_BELT not set")
-def test_real_serve(monkeypatch):
-    monkeypatch.setenv("BELT_BIN", os.environ["REAL_BELT"])
+@pytest.fixture(scope="module")
+def fake_anthropic():
+    proc = subprocess.Popen([sys.executable, str(HERE / "testdata" / "fake-anthropic.py"), "0"],
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    line = proc.stdout.readline().strip()
+    assert line.startswith("listening "), line
+    yield line.split(" ", 1)[1]
+    proc.kill()
+    proc.wait()
+
+
+@pytest.fixture
+def real(monkeypatch, tmp_path, fake_anthropic):
+    belt = os.environ.get("REAL_BELT")
+    if not belt:
+        pytest.skip("REAL_BELT not set")
+    claude = os.environ.get("CLAUDE_BIN") or shutil.which("claude")
+    if not claude:
+        pytest.skip("claude not found (CLAUDE_BIN or PATH)")
+    monkeypatch.setenv("BELT_BIN", os.path.abspath(belt))
+    monkeypatch.setenv("CLAUDE_BIN", claude)
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat01-fake-test-token")
+    monkeypatch.setenv("BELT_HARNESS_SERVE_TEST_BASE_URL", fake_anthropic)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL"):
+        monkeypatch.delenv(k, raising=False)
+
+
+def test_real_serve(real):
     async def go():
         app = await started("opus-5-5")
         try:
@@ -229,9 +260,7 @@ def test_abandoned_run_is_cancelled_in_serve(env):
     assert any(l.get("id") == "task-drop" and l.get("cancel") for l in lines)
 
 
-@pytest.mark.skipif(not os.environ.get("REAL_BELT"), reason="REAL_BELT not set")
-def test_real_serve_cancel(monkeypatch):
-    monkeypatch.setenv("BELT_BIN", os.environ["REAL_BELT"])
+def test_real_serve_cancel(real):
     async def go():
         app = await started("opus-5-5")
         try:
