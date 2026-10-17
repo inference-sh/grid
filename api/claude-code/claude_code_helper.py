@@ -56,6 +56,10 @@ _STRIPPED_ENV = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_UR
 APP_DIR = Path(os.path.abspath(__file__)).parent
 
 
+# Anthropic stop reasons as the platform's (anthropic_helper.platform_stop_reason).
+_STOP_REASONS = {"end_turn": "stop", "stop_sequence": "stop", "tool_use": "tool_calls", "max_tokens": "length"}
+
+
 class ClaudeCodeError(RuntimeError):
     def __init__(self, message: str, code: str = "failed"):
         super().__init__(message)
@@ -164,7 +168,14 @@ def with_output_meta(output: Dict[str, Any]) -> Dict[str, Any]:
     """serve's LLMOutput plus the output_meta the platform bills from, as
     anthropic_helper.build_output sets it."""
     out = {k: v for k, v in output.items() if v is not None}
+    # Tool arguments as the JSON string other chat apps return.
+    for call in out.get("tool_calls") or []:
+        fn = call.get("function") or {}
+        if not isinstance(fn.get("arguments", ""), str):
+            fn["arguments"] = json.dumps(fn["arguments"])
     usage = out.get("usage")
+    if isinstance(usage, dict) and usage.get("stop_reason") in _STOP_REASONS:
+        usage = {**usage, "stop_reason": _STOP_REASONS[usage["stop_reason"]]}
     if usage:
         u = LLMUsage(**usage) if isinstance(usage, dict) else usage
         out["usage"] = u

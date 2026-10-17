@@ -186,4 +186,7 @@ def test_real_serve(monkeypatch):
     print("tool deltas:", [d.model_dump(exclude_none=True) for d in kd])
     print("tool output:", ko.model_dump(exclude_none=True, mode="json"))
     assert to.response
-    assert ko.model_dump(mode="json")["tool_calls"][0]["function"]["name"] == "get_weather"
+    call = ko.model_dump(mode="json")["tool_calls"][0]
+    assert call["function"]["name"] == "get_weather"
+    assert json.loads(call["function"]["arguments"]) == {"city": "Paris"}
+    assert to.usage.stop_reason == "stop" and ko.usage.stop_reason == "tool_calls"
