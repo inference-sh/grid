@@ -56,10 +56,6 @@ _STRIPPED_ENV = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_UR
 APP_DIR = Path(os.path.abspath(__file__)).parent
 
 
-# Anthropic stop reasons as the platform's (anthropic_helper.platform_stop_reason).
-_STOP_REASONS = {"end_turn": "stop", "stop_sequence": "stop", "tool_use": "tool_calls", "max_tokens": "length"}
-
-
 class ClaudeCodeError(RuntimeError):
     def __init__(self, message: str, code: str = "failed"):
         super().__init__(message)
@@ -168,14 +164,7 @@ def with_output_meta(output: Dict[str, Any]) -> Dict[str, Any]:
     """serve's LLMOutput plus the output_meta the platform bills from, as
     anthropic_helper.build_output sets it."""
     out = {k: v for k, v in output.items() if v is not None}
-    # Tool arguments as the JSON string other chat apps return.
-    for call in out.get("tool_calls") or []:
-        fn = call.get("function") or {}
-        if not isinstance(fn.get("arguments", ""), str):
-            fn["arguments"] = json.dumps(fn["arguments"])
     usage = out.get("usage")
-    if isinstance(usage, dict) and usage.get("stop_reason") in _STOP_REASONS:
-        usage = {**usage, "stop_reason": _STOP_REASONS[usage["stop_reason"]]}
     if usage:
         u = LLMUsage(**usage) if isinstance(usage, dict) else usage
         out["usage"] = u
@@ -245,12 +234,15 @@ class Serve:
             print(f"[belt harness serve] {line.decode(errors='replace').rstrip()}", file=sys.stderr, flush=True)
 
     async def request(self, rid: str, model: str, token: str, input_json: Dict[str, Any]) -> AsyncGenerator[Dict[str, Any], None]:
-        """Yields serve's lines for one request, ending with its output or error line."""
+        """Yields serve's lines for one request, ending with its output or
+        error line, or {"cancelled": True} after cancel(rid). A request
+        abandoned before its end (the generator closed) is cancelled in serve."""
         await self.start()
         if rid in self.queues:
             rid = f"{rid}-{uuid.uuid4().hex[:8]}"
         q: asyncio.Queue = asyncio.Queue()
         self.queues[rid] = q
+        done = False
         try:
             line = json.dumps({"id": rid, "harness": "claude", "model": model, "token": token, "input": input_json})
             async with self._write_lock:
@@ -258,11 +250,32 @@ class Serve:
                 await self.proc.stdin.drain()
             while True:
                 msg = await q.get()
+                if "output" in msg or "error" in msg or msg.get("cancelled"):
+                    done = True
                 yield msg
-                if "output" in msg or "error" in msg:
+                if done:
                     return
         finally:
+            if self.queues.pop(rid, None) is not None and not done:
+                self._send_cancel(rid)
+
+    def _send_cancel(self, rid: str):
+        # A plain write: this also runs from a closing generator, where it
+        # cannot await. The line is small; the pipe takes it.
+        proc = self.proc
+        if proc and proc.returncode is None and not proc.stdin.is_closing():
+            try:
+                proc.stdin.write(json.dumps({"id": rid, "cancel": True}).encode() + b"\n")
+            except (BrokenPipeError, ConnectionResetError, RuntimeError):
+                pass
+
+    def cancel_all(self):
+        """Cancels every request in flight: serve stops it and sends nothing
+        more for it; its run ends with what it streamed so far."""
+        for rid, q in list(self.queues.items()):
             self.queues.pop(rid, None)
+            self._send_cancel(rid)
+            q.put_nowait({"id": rid, "cancelled": True})
 
     async def close(self):
         if self.proc and self.proc.returncode is None:
@@ -282,9 +295,17 @@ async def stream_run(serve: Serve, rid: str, model: str, input_data) -> AsyncGen
     token = (os.environ.get(TOKEN_ENV) or "").strip()
     if not token:
         raise ClaudeCodeError(MISSING_TOKEN, "auth")
+    partial: Dict[str, str] = {"response": "", "reasoning": ""}
     async for msg in serve.request(rid, model, token, wire_input(input_data)):
+        if msg.get("cancelled"):
+            # Cancelled: end with the text streamed so far.
+            yield "output", {k: v for k, v in partial.items() if v or k == "response"}
+            return
         if "delta" in msg:
-            yield "delta", msg["delta"]
+            d = msg["delta"] or {}
+            for k in partial:
+                partial[k] += d.get(k) or ""
+            yield "delta", d
         elif "output" in msg:
             yield "output", with_output_meta(msg["output"] or {})
         else:
