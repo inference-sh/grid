@@ -1,7 +1,7 @@
-namespace: claude-code
-name: haiku-5-5
+namespace: anthropic
+name: claude-code-haiku-5-5
 title: Claude Haiku 5.5 (Claude Code)
-description: "Claude Haiku 5.5 through Claude Code on your own Claude subscription (Pro/Max): runs the claude CLI with your `claude setup-token` credential and bills your Claude plan, not inference.sh. Anthropic's fastest, lowest-cost Claude for high-volume work. Our system prompt and tools only; tool calls are returned, not executed."
+description: "Claude Haiku 5.5 through Claude Code on your own Claude Pro/Max plan. Connect your `claude setup-token` token; usage counts against your Claude plan, not inference.sh."
 metadata:
     capabilities:
         - reasoning
@@ -26,6 +26,19 @@ kernel: python-3.11
 credentials:
     claude-code:
         secrets: [CLAUDE_CODE_OAUTH_TOKEN]
+        company: {slug: anthropic}
+        display_name: Claude Code
+        connection_scope: user
+        expires_after_days: 365
+        docs_url: https://inference.sh/docs/integrations/claude-code-subscription
+        instructions: |
+            Use your own Claude Pro or Max plan as a model.
+
+            1. Install Claude Code and log in with your Claude account.
+            2. Run `claude setup-token` and copy the token it prints. It starts with `sk-ant-oat01-` and lasts a year.
+            3. Paste it here.
+
+            The token is used only for your own runs, never shared with your workspace. [How it works](https://inference.sh/docs/integrations/claude-code-subscription)
 resources:
     gpu:
         count: 0
