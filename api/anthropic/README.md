@@ -37,6 +37,10 @@ longer than 10 minutes."* Use streaming for long outputs.
 All apps support:
 - **Streaming** — Native SSE streaming with token-by-token output
 - **Vision** — Image input via URL or base64 (png, jpg, gif, webp)
+- **Files** — `files` input (`file` capability): a PDF goes as a `document` block (base64 from the
+  downloaded file, or by URL; the API takes up to 32MB and 100 pages), a text file (md, csv, json,
+  source...) as a plain-text document. Any other type is named to the model in a text block, since
+  the API cannot read it; the model then knows a file was sent instead of denying it
 - **Reasoning** — See the thinking-parameter table below; the shape is model-dependent
 - **Tool use** — Function calling in Anthropic native format
 - **Token tracking** — Input/output token counts via `output_meta`

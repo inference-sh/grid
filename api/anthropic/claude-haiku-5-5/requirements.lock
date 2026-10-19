@@ -11,10 +11,11 @@ h11==0.16.0
 httpcore2==2.13.1
 httpx2==2.13.1
 idna==3.20
-inferencesh==0.28.0
+inferencesh==0.33.0
 jiter==0.17.0
 ninja==1.13.2
 numpy==2.4.6
+opentelemetry-api==1.45.1
 packaging==26.3
 pathspec==1.1.1
 pillow==12.3.0
