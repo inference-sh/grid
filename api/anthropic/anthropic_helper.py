@@ -7,6 +7,8 @@ streaming, tool use, and token usage tracking via the native Anthropic SDK.
 import asyncio
 import json
 import base64
+import mimetypes
+import os
 import re
 import logging
 from typing import AsyncGenerator, List, Optional, Dict, Any, Tuple
@@ -111,17 +113,111 @@ def _collect_images(images, limits: Optional[ImageLimits] = None) -> List[Dict[s
     return blocks
 
 
-def _build_tool_result_block(tool_use_id: str, text: Optional[str], images, limits: Optional[ImageLimits] = None) -> Dict[str, Any]:
-    """Build a tool_result block. A result with images carries a content list
-    (text block, then image blocks) so the model sees the images; a text-only
-    result keeps the plain string content."""
-    image_blocks = _collect_images(images, limits)
-    if not image_blocks:
+# Files (platform.claude.com/docs/en/build-with-claude/pdf-support). A PDF goes
+# as a document block: base64 from the downloaded file, or by URL when only
+# the URL is known. The API takes a PDF up to 32MB and 100 pages. A text file
+# (markdown, csv, json, source code...) goes as a plain-text document. Any
+# other type (docx, xlsx, zip...) the API cannot read, so the model is told
+# the file's name, type and URL rather than nothing: it can say so instead of
+# answering as if no file was sent.
+_PDF_TYPE = "application/pdf"
+_MAX_DOCUMENT_BYTES = 32_000_000
+_TEXT_TYPES = (
+    "application/json", "application/xml", "application/yaml", "application/x-yaml",
+    "application/toml", "application/javascript", "application/typescript",
+    "application/x-sh", "application/sql", "application/x-python", "application/x-httpd-php",
+)
+_TEXT_EXTS = (
+    ".txt", ".md", ".markdown", ".csv", ".tsv", ".json", ".jsonl", ".yaml", ".yml", ".xml",
+    ".toml", ".ini", ".cfg", ".log", ".html", ".htm", ".css", ".js", ".ts", ".tsx", ".jsx",
+    ".py", ".go", ".rs", ".java", ".kt", ".c", ".h", ".cpp", ".hpp", ".cs", ".rb", ".php",
+    ".sh", ".bash", ".sql", ".swift", ".tex", ".rst", ".env",
+)
+
+
+def _file_name(f) -> str:
+    """The file's name: its filename, else the last path segment of its path or URI."""
+    name = getattr(f, "filename", None)
+    if name:
+        return name
+    for attr in ("path", "uri"):
+        v = getattr(f, attr, None)
+        if v and not v.startswith("data:"):
+            return os.path.basename(v.split("?")[0].split("#")[0]) or "file"
+    return "file"
+
+
+def _file_media_type(f, name: str) -> str:
+    """The file's media type: the declared one, else guessed from the name."""
+    ct = (getattr(f, "content_type", None) or "").split(";")[0].strip().lower()
+    if not ct or ct == "application/octet-stream":
+        ct = (mimetypes.guess_type(name)[0] or "").lower()
+    return ct
+
+
+def _is_text_file(media_type: str, name: str) -> bool:
+    if media_type.startswith("text/") or media_type in _TEXT_TYPES:
+        return True
+    if media_type.endswith("+json") or media_type.endswith("+xml"):
+        return True
+    return os.path.splitext(name)[1].lower() in _TEXT_EXTS
+
+
+def _file_note(name: str, media_type: str, uri: Optional[str], reason: str) -> Dict[str, Any]:
+    """A text block standing in for a file the API cannot take."""
+    where = f" at {uri}" if uri and uri.startswith(("http://", "https://")) else ""
+    kind = f" ({media_type})" if media_type else ""
+    return {"type": "text", "text": f"[The user attached a file, {name}{kind}{where}, that could not be given to you: {reason}.]"}
+
+
+def _build_document_block(f) -> Dict[str, Any]:
+    """Build the content block for one attached file: a document block for a
+    PDF or a text file, else a text block naming the file."""
+    name = _file_name(f)
+    media_type = _file_media_type(f, name)
+    path = getattr(f, "path", None)
+    uri = getattr(f, "uri", None)
+    if media_type == _PDF_TYPE:
+        if path:
+            if os.path.getsize(path) > _MAX_DOCUMENT_BYTES:
+                return _file_note(name, media_type, uri, "the PDF is over the API's 32MB limit")
+            with open(path, "rb") as fh:
+                data = base64.b64encode(fh.read()).decode("utf-8")
+            return {"type": "document", "source": {"type": "base64", "media_type": _PDF_TYPE, "data": data}, "title": name}
+        if uri and uri.startswith(("http://", "https://")):
+            return {"type": "document", "source": {"type": "url", "url": uri}, "title": name}
+        return _file_note(name, media_type, uri, "it was not downloaded")
+    if _is_text_file(media_type, name):
+        if not path:
+            return _file_note(name, media_type, uri, "it was not downloaded")
+        if os.path.getsize(path) > _MAX_DOCUMENT_BYTES:
+            return _file_note(name, media_type, uri, "the file is over the API's 32MB limit")
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            text = fh.read()
+        if not text.strip():
+            return _file_note(name, media_type, uri, "the file is empty")
+        return {"type": "document", "source": {"type": "text", "media_type": "text/plain", "data": text}, "title": name}
+    return _file_note(name, media_type, uri, "the API reads only PDF and text files")
+
+
+def _collect_files(files) -> List[Dict[str, Any]]:
+    """Convert a list of file objects to Anthropic content blocks."""
+    if not files:
+        return []
+    return [_build_document_block(f) for f in files]
+
+
+def _build_tool_result_block(tool_use_id: str, text: Optional[str], images, limits: Optional[ImageLimits] = None, files=None) -> Dict[str, Any]:
+    """Build a tool_result block. A result with images or files carries a
+    content list (text block, then image and document blocks) so the model
+    sees them; a text-only result keeps the plain string content."""
+    media_blocks = _collect_images(images, limits) + _collect_files(files)
+    if not media_blocks:
         return {"type": "tool_result", "tool_use_id": tool_use_id, "content": text or ""}
     content: List[Dict[str, Any]] = []
     if text:
         content.append({"type": "text", "text": text})
-    content.extend(image_blocks)
+    content.extend(media_blocks)
     return {"type": "tool_result", "tool_use_id": tool_use_id, "content": content}
 
 
@@ -150,7 +246,8 @@ def convert_messages_to_anthropic(
     input_data: LLMInput,
     model: str = "",
 ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
-    """Convert LLMInput to Anthropic message format, images fitted to model.
+    """Convert LLMInput to Anthropic message format, images fitted to model,
+    files as document blocks.
 
     Returns (system_prompt, messages) tuple.
     """
@@ -182,7 +279,7 @@ def convert_messages_to_anthropic(
             messages.append(
                 {
                     "role": "user",
-                    "content": [_build_tool_result_block(msg.tool_call_id, msg.text, getattr(msg, "images", None), limits)],
+                    "content": [_build_tool_result_block(msg.tool_call_id, msg.text, getattr(msg, "images", None), limits, getattr(msg, "files", None))],
                 }
             )
             continue
@@ -202,6 +299,7 @@ def convert_messages_to_anthropic(
             content.append({"type": "text", "text": msg.text})
 
         content.extend(_collect_images(getattr(msg, "images", None), limits))
+        content.extend(_collect_files(getattr(msg, "files", None)))
 
         # Assistant tool_use blocks
         if msg.role == ContextMessageRole.ASSISTANT and msg.tool_calls:
@@ -229,6 +327,7 @@ def convert_messages_to_anthropic(
     if hasattr(input_data, "text") and input_data.text:
         user_content.append({"type": "text", "text": input_data.text})
     user_content.extend(_collect_images(getattr(input_data, "images", None), limits))
+    user_content.extend(_collect_files(getattr(input_data, "files", None)))
 
     # Tool result input
     if hasattr(input_data, "role") and input_data.role == ContextMessageRole.TOOL:
@@ -238,7 +337,8 @@ def convert_messages_to_anthropic(
                     "role": "user",
                     "content": [
                         _build_tool_result_block(
-                            input_data.tool_call_id, input_data.text, getattr(input_data, "images", None), limits
+                            input_data.tool_call_id, input_data.text, getattr(input_data, "images", None), limits,
+                            getattr(input_data, "files", None),
                         )
                     ],
                 }

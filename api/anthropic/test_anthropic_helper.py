@@ -373,6 +373,81 @@ class TestToolResultImages:
         assert block["content"][1] == {"type": "image", "source": {"type": "url", "url": "https://example.com/a.png"}}
 
 
+# ── files as document blocks ──────────────────────────────────────────
+
+class TestFiles:
+    @pytest.fixture
+    def pdf(self, tmp_path):
+        p = tmp_path / "form.pdf"
+        p.write_bytes(b"%PDF-1.4 fake")
+        return str(p)
+
+    def _ctx(self, text, **kw):
+        from inferencesh.models.llm import ContextMessage, ContextMessageRole
+        return ContextMessage(role=ContextMessageRole.USER, text=text, **kw)
+
+    def test_pdf_path_is_a_base64_document(self, pdf):
+        block = h._build_document_block(NS(path=pdf, uri="https://x/form.pdf", content_type="application/pdf", filename="form.pdf"))
+        assert block["type"] == "document" and block["title"] == "form.pdf"
+        assert block["source"]["type"] == "base64" and block["source"]["media_type"] == "application/pdf"
+        assert base64.b64decode(block["source"]["data"]) == b"%PDF-1.4 fake"
+
+    def test_pdf_url_only_is_a_url_document(self):
+        block = h._build_document_block(NS(path=None, uri="https://x/a.pdf", content_type=None, filename=None))
+        assert block == {"type": "document", "source": {"type": "url", "url": "https://x/a.pdf"}, "title": "a.pdf"}
+
+    def test_type_guessed_from_name_when_octet_stream(self, pdf):
+        block = h._build_document_block(NS(path=pdf, uri=None, content_type="application/octet-stream", filename="form.pdf"))
+        assert block["type"] == "document" and block["source"]["media_type"] == "application/pdf"
+
+    def test_text_file_is_a_text_document(self, tmp_path):
+        p = tmp_path / "notes.md"
+        p.write_text("# hello\n")
+        block = h._build_document_block(NS(path=str(p), uri=None, content_type="text/markdown", filename="notes.md"))
+        assert block == {"type": "document", "source": {"type": "text", "media_type": "text/plain", "data": "# hello\n"}, "title": "notes.md"}
+
+    def test_empty_text_file_is_a_note(self, tmp_path):
+        p = tmp_path / "empty.txt"
+        p.write_text("")
+        block = h._build_document_block(NS(path=str(p), uri=None, content_type="text/plain", filename="empty.txt"))
+        assert block["type"] == "text" and "empty" in block["text"]
+
+    def test_unreadable_type_names_the_file(self):
+        block = h._build_document_block(NS(path="/nope.docx", uri="https://x/cv.docx", content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document", filename="cv.docx"))
+        assert block["type"] == "text"
+        assert "cv.docx" in block["text"] and "https://x/cv.docx" in block["text"] and "PDF and text" in block["text"]
+
+    def test_oversized_pdf_is_a_note(self, pdf, monkeypatch):
+        monkeypatch.setattr(h, "_MAX_DOCUMENT_BYTES", 4)
+        block = h._build_document_block(NS(path=pdf, uri=None, content_type="application/pdf", filename="form.pdf"))
+        assert block["type"] == "text" and "32MB" in block["text"]
+
+    def test_current_input_file_follows_text(self, pdf):
+        from inferencesh import File
+        inp = LLMInput(context=[], text="do you see the contents", files=[File(path=pdf)])
+        _, msgs = h.convert_messages_to_anthropic(inp)
+        assert [b["type"] for b in msgs[-1]["content"]] == ["text", "document"]
+        assert msgs[-1]["content"][1]["title"] == "form.pdf"
+
+    def test_context_user_message_carries_file(self, pdf):
+        from inferencesh import File
+        inp = LLMInput(context=[self._ctx("here", files=[File(path=pdf)])], text="and?")
+        _, msgs = h.convert_messages_to_anthropic(inp)
+        # Two user turns in a row merge into one message, the document between them.
+        assert len(msgs) == 1
+        assert [b["type"] for b in msgs[0]["content"]] == ["text", "document", "text"]
+        assert msgs[0]["content"][2] == {"type": "text", "text": "and?"}
+
+    def test_tool_result_carries_document(self, pdf):
+        block = h._build_tool_result_block("t", "fetched", None, files=[NS(path=pdf, uri=None, content_type="application/pdf", filename="form.pdf")])
+        assert [c["type"] for c in block["content"]] == ["text", "document"]
+
+    def test_no_files_keeps_message_shape(self):
+        inp = LLMInput(context=[], text="hi")
+        _, msgs = h.convert_messages_to_anthropic(inp)
+        assert msgs == [{"role": "user", "content": [{"type": "text", "text": "hi"}]}]
+
+
 # ── images fitted to the model ────────────────────────────────────────
 
 class TestImageFitting:

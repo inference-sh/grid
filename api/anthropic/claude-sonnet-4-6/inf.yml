@@ -5,6 +5,7 @@ metadata:
     capabilities:
         - reasoning
         - image
+        - file
     checksum: dbcc0810ba66924116d6738a6964e827f400d887a5a49b2ad0f7f97b96ac72c1
     tags:
         - vision

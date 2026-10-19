@@ -5,6 +5,7 @@ metadata:
     capabilities:
         - reasoning
         - image
+        - file
     tags:
         - vision
         - reasoning
