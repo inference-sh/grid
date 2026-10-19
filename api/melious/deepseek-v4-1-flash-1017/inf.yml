@@ -1,0 +1,34 @@
+namespace: melious
+name: deepseek-v4-1-flash-1017
+title: DeepSeek V4.1 Flash 1017
+description: DeepSeek V4.1 Flash 1017 — the October 2026 refresh of the 552B multimodal MoE with 1M context, image input and controllable reasoning. Via the Melious API.
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: melious
+    tags:
+        - vision
+        - reasoning
+        - coding
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/2che0ruy.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/hz76bpv6.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/4cuw1v6c.png
+env: {}
+kernel: python-3.11
+secrets:
+    - key: MELIOUS_KEY
+      description: Melious API key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
