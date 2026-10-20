@@ -2,11 +2,12 @@
 MiniMax H3 Max via fal.ai
 
 fal's post-trained H3 — stronger prompt adherence, better aesthetics, ~3s for a 5s clip at 768P.
-Unified app: text-to-video, image-to-video (with optional end frame), and reference-based generation.
+Unified app: text-to-video, image-to-video (first and/or last frame), and reference-based generation.
+480P/768P native, 1080P latent refinement. Optional target audio pins the soundtrack (t2v and i2v).
 """
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, ImageMeta, AudioMeta
-from pydantic import Field
+from pydantic import Field, model_validator
 from typing import Optional, List
 from enum import Enum
 import logging
@@ -19,6 +20,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 class ResolutionEnum(str, Enum):
     r480p = "480P"
     r768p = "768P"
+    r1080p = "1080P"
 
 
 class AspectRatioEnum(str, Enum):
@@ -32,6 +34,7 @@ class AspectRatioEnum(str, Enum):
 
 
 class PromptExpansionEnum(str, Enum):
+    disabled = "disabled"
     balanced = "balanced"
     quality = "quality"
 
@@ -43,6 +46,9 @@ DIMENSION_MAP = {
     ("480P", "16:9"): (854, 480), ("480P", "9:16"): (480, 854),
     ("480P", "4:3"): (640, 480), ("480P", "3:4"): (480, 640),
     ("480P", "1:1"): (480, 480), ("480P", "21:9"): (1120, 480),
+    ("1080P", "16:9"): (1920, 1080), ("1080P", "9:16"): (1080, 1920),
+    ("1080P", "4:3"): (1440, 1080), ("1080P", "3:4"): (1080, 1440),
+    ("1080P", "1:1"): (1080, 1080), ("1080P", "21:9"): (2520, 1080),
 }
 
 ENDPOINTS = {
@@ -57,7 +63,7 @@ class AppInput(BaseAppInput):
 
     Modes determined by inputs:
     - Text-to-video: prompt only (aspect_ratio required, no adaptive)
-    - Image-to-video: prompt + image (optional end_image for first-last-frame)
+    - Image-to-video: prompt + image and/or end_image (first frame, last frame, or both)
     - Reference: prompt + reference images/videos/audio (aspect_ratio defaults to adaptive)
     """
 
@@ -71,7 +77,11 @@ class AppInput(BaseAppInput):
     )
     end_image: Optional[File] = Field(
         default=None,
-        description="Last frame image. Requires image to be set as first frame.",
+        description="Last frame image. Can be given alone for end-only generation; the canvas then follows this image.",
+    )
+    target_audio: Optional[File] = Field(
+        default=None,
+        description="Audio clip (2s or longer, max 15 MB) pinned as the soundtrack. Trimmed to the video length. Text-to-video and image-to-video only; use duration of at least 2s.",
     )
     reference_images: Optional[List[File]] = Field(
         default=None,
@@ -85,15 +95,15 @@ class AppInput(BaseAppInput):
         default=None,
         description="Reference audio clips (max 3). Requires reference image or video. 2-15s each.",
     )
-    duration: int = Field(
+    duration: float = Field(
         default=5,
-        ge=5,
+        ge=1,
         le=15,
-        description="Video duration in seconds (5-15).",
+        description="Video duration in seconds (1-15). Output can run up to ~0.7s longer than requested.",
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.r768p,
-        description="Output resolution. 768P for best quality, 480P for faster/cheaper.",
+        description="Output resolution. 480P fastest, 768P native quality, 1080P latent refinement from 768P (slowest, priciest).",
     )
     aspect_ratio: AspectRatioEnum = Field(
         default=AspectRatioEnum.r16_9,
@@ -101,12 +111,23 @@ class AppInput(BaseAppInput):
     )
     prompt_expansion_mode: PromptExpansionEnum = Field(
         default=PromptExpansionEnum.balanced,
-        description="balanced (~1s) or quality (~30s extra) for richer prompt rewriting.",
+        description="Prompt rewriting effort: disabled (none), balanced (~1s), or quality (~30s extra) for richer rewriting.",
     )
     seed: Optional[int] = Field(
         default=None,
         description="Random seed for reproducible generation.",
     )
+
+    @model_validator(mode="after")
+    def _check_mode(self):
+        reference = bool(self.reference_images or self.reference_videos)
+        if self.reference_audios and not reference:
+            raise ValueError("reference_audios requires reference_images or reference_videos")
+        if self.target_audio and reference:
+            raise ValueError("target_audio is not supported in reference mode; use reference_audios")
+        if self.target_audio and self.duration < 2:
+            raise ValueError("duration must be at least 2s when target_audio is set")
+        return self
 
 
 class AppOutput(BaseAppOutput):
@@ -126,7 +147,7 @@ class App(BaseApp):
     def _determine_mode(self, input_data: AppInput) -> str:
         if input_data.reference_images or input_data.reference_videos:
             return "reference-to-video"
-        if input_data.image:
+        if input_data.image or input_data.end_image:
             return "image-to-video"
         return "text-to-video"
 
@@ -148,9 +169,13 @@ class App(BaseApp):
             request["aspect_ratio"] = ratio
 
         elif mode == "image-to-video":
-            request["image_url"] = input_data.image.uri
+            if input_data.image:
+                request["image_url"] = input_data.image.uri
             if input_data.end_image:
                 request["end_image_url"] = input_data.end_image.uri
+
+        if mode in ("text-to-video", "image-to-video") and input_data.target_audio:
+            request["target_audio_url"] = input_data.target_audio.uri
 
         elif mode == "reference-to-video":
             request["aspect_ratio"] = input_data.aspect_ratio.value
@@ -170,10 +195,12 @@ class App(BaseApp):
         endpoint = ENDPOINTS[mode]
 
         self.logger.info(f"Mode: {mode}, resolution: {input_data.resolution.value}, "
-                         f"duration: {input_data.duration}s, endpoint: {endpoint}")
+                         f"duration: {input_data.duration}s, expansion: {input_data.prompt_expansion_mode.value}, "
+                         f"target_audio: {bool(input_data.target_audio)}, endpoint: {endpoint}")
 
         request_data = self._build_request(input_data, mode)
         result = run_fal_model(endpoint, request_data, self.logger)
+        self.logger.info(f"fal timings: {result.get('timings')}")
 
         video_url = result["video"]["url"]
         video_path = download_video(video_url, self.logger)
@@ -191,6 +218,8 @@ class App(BaseApp):
             input_metas.append(ImageMeta())
         if input_data.end_image:
             input_metas.append(ImageMeta())
+        if input_data.target_audio:
+            input_metas.append(AudioMeta())
         if input_data.reference_images:
             for _ in input_data.reference_images:
                 input_metas.append(ImageMeta())

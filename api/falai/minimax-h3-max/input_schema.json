@@ -15,6 +15,7 @@
     },
     "PromptExpansionEnum": {
       "enum": [
+        "disabled",
         "balanced",
         "quality"
       ],
@@ -24,13 +25,14 @@
     "ResolutionEnum": {
       "enum": [
         "480P",
-        "768P"
+        "768P",
+        "1080P"
       ],
       "title": "ResolutionEnum",
       "type": "string"
     }
   },
-  "description": "MiniMax H3 Max \u2014 fal's post-trained H3.\n\nModes determined by inputs:\n- Text-to-video: prompt only (aspect_ratio required, no adaptive)\n- Image-to-video: prompt + image (optional end_image for first-last-frame)\n- Reference: prompt + reference images/videos/audio (aspect_ratio defaults to adaptive)",
+  "description": "MiniMax H3 Max \u2014 fal's post-trained H3.\n\nModes determined by inputs:\n- Text-to-video: prompt only (aspect_ratio required, no adaptive)\n- Image-to-video: prompt + image and/or end_image (first frame, last frame, or both)\n- Reference: prompt + reference images/videos/audio (aspect_ratio defaults to adaptive)",
   "properties": {
     "prompt": {
       "description": "Video prompt. Max 50000 chars. Use timeline markers like [0s-3s] for scene pacing.",
@@ -65,8 +67,22 @@
         }
       ],
       "default": null,
-      "description": "Last frame image. Requires image to be set as first frame.",
+      "description": "Last frame image. Can be given alone for end-only generation; the canvas then follows this image.",
       "title": "End Image"
+    },
+    "target_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio clip (2s or longer, max 15 MB) pinned as the soundtrack. Trimmed to the video length. Text-to-video and image-to-video only; use duration of at least 2s.",
+      "title": "Target Audio"
     },
     "reference_images": {
       "anyOf": [
@@ -121,16 +137,16 @@
     },
     "duration": {
       "default": 5,
-      "description": "Video duration in seconds (5-15).",
+      "description": "Video duration in seconds (1-15). Output can run up to ~0.7s longer than requested.",
       "maximum": 15,
-      "minimum": 5,
+      "minimum": 1,
       "title": "Duration",
-      "type": "integer"
+      "type": "number"
     },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "768P",
-      "description": "Output resolution. 768P for best quality, 480P for faster/cheaper."
+      "description": "Output resolution. 480P fastest, 768P native quality, 1080P latent refinement from 768P (slowest, priciest)."
     },
     "aspect_ratio": {
       "$ref": "#/$defs/AspectRatioEnum",
@@ -140,7 +156,7 @@
     "prompt_expansion_mode": {
       "$ref": "#/$defs/PromptExpansionEnum",
       "default": "balanced",
-      "description": "balanced (~1s) or quality (~30s extra) for richer prompt rewriting."
+      "description": "Prompt rewriting effort: disabled (none), balanced (~1s), or quality (~30s extra) for richer rewriting."
     },
     "seed": {
       "anyOf": [

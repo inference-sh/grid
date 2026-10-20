@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "auto",
+        "21:9",
+        "2:1",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "Keyframe": {
+      "properties": {
+        "image": {
+          "description": "Keyframe image (PNG, JPEG, or WebP).",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "frame_index": {
+          "description": "Frame position in the 24 fps output. Unique per keyframe and at most duration * 24.",
+          "minimum": 0,
+          "title": "Frame Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "image",
+        "frame_index"
+      ],
+      "title": "Keyframe",
+      "type": "object"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "FLUX 3 Max video generation.\n\nMode is determined by the inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (optional end_image as the last frame)\n- Keyframes-to-video: prompt + keyframes (cannot combine with image/end_image)",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video. For image modes, describe how the video unfolds from the image(s).",
+      "examples": [
+        "A cinematic tracking shot through a misty forest at dawn, golden light filtering through ancient trees."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image for image-to-video (PNG, JPEG, or WebP).",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional last frame image (PNG, JPEG, or WebP). Requires image.",
+      "title": "End Image"
+    },
+    "keyframes": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Keyframe"
+          },
+          "maxItems": 10,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Keyframe images pinned to frame positions (max 10, unique frame_index values). Cannot combine with image or end_image.",
+      "title": "Keyframes"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (5-20).",
+      "maximum": 20,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Output resolution. 720p is cheaper and faster; 1080p for best quality."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "auto",
+      "description": "Aspect ratio. auto uses 16:9 for text-to-video and follows the first image otherwise."
+    },
+    "generate_audio": {
+      "default": true,
+      "description": "Generate a native soundtrack for the video.",
+      "title": "Generate Audio",
+      "type": "boolean"
+    },
+    "reasoning_level": {
+      "default": "high",
+      "description": "How much effort to spend reasoning about the prompt. high is slower but follows the prompt more closely.",
+      "enum": [
+        "low",
+        "high"
+      ],
+      "title": "Reasoning Level",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
