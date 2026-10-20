@@ -1,0 +1,26 @@
+namespace: falai
+name: flux-3-max
+title: FLUX 3 Max
+description: FLUX 3 Max, post-trained FLUX 3 Video by fal and Black Forest Labs. Text-to-video, image-to-video with end frame, keyframes-to-video. 720p or 1080p, 5-20s, native audio.
+metadata:
+    provider: black-forest-labs
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

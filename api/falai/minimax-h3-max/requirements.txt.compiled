@@ -30,7 +30,7 @@ idna==3.19
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.7.27
+inferencesh==0.33.0
     # via -r requirements.txt
 msgpack==1.2.2
     # via fal-client

@@ -152,6 +152,30 @@
     "direct": false
   },
   {
+    "endpoint_id": "blackforestlabs/flux-3-max/image-to-video",
+    "category": "image-to-video",
+    "display_name": "FLUX 3 Max Image to Video",
+    "status": "active",
+    "implemented": true,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3-max/keyframes-to-video",
+    "category": "image-to-video",
+    "display_name": "FLUX 3 Max Keyframes to Video",
+    "status": "active",
+    "implemented": true,
+    "direct": false
+  },
+  {
+    "endpoint_id": "blackforestlabs/flux-3-max/text-to-video",
+    "category": "text-to-video",
+    "display_name": "FLUX 3 Max Text to Video",
+    "status": "active",
+    "implemented": true,
+    "direct": false
+  },
+  {
     "endpoint_id": "blackforestlabs/flux-3/draft-enhance",
     "category": "video-to-video",
     "display_name": "Flux 3 Draft Enhance",
@@ -10844,7 +10868,7 @@
     "category": "image-to-video",
     "display_name": "H3 Max Image to Video",
     "status": "active",
-    "implemented": false,
+    "implemented": true,
     "direct": false
   },
   {
@@ -10852,7 +10876,7 @@
     "category": "image-to-video",
     "display_name": "H3 Max Reference to Video",
     "status": "active",
-    "implemented": false,
+    "implemented": true,
     "direct": false
   },
   {
@@ -10860,7 +10884,7 @@
     "category": "text-to-video",
     "display_name": "MiniMax H3 Max Text to Video",
     "status": "active",
-    "implemented": false,
+    "implemented": true,
     "direct": false
   },
   {

@@ -1,6 +1,6 @@
 namespace: falai
 name: minimax-h3-max
-description: MiniMax H3 Max — fal's post-trained H3 for stronger prompt adherence and aesthetics. Text-to-video, image-to-video with end frame, and reference-based generation. 480P/768P, 5-15s, ~3s per 5s clip.
+description: MiniMax H3 Max, fal's post-trained H3 for stronger prompt adherence and aesthetics. Text-to-video, image-to-video with end frame, reference-to-video. 480P/768P/1080P, 1-15s, audio pinning.
 metadata:
     provider: minimax
     tags:
