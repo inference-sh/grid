@@ -19,7 +19,7 @@ pydantic-core==2.50.1
 pyproject-hooks==1.3.3
 requests==2.34.2
 scikit-build-core==1.1.1
-setuptools==84.0.0
+setuptools==84.2.0
 setuptools-scm==10.3.4
 tqdm==4.70.1
 typing-extensions==4.16.0

@@ -24,6 +24,16 @@ OpenAI-compatible /v1/chat/completions. Differences from OpenAI handled here:
   connection and the request is sent again if nothing was emitted yet.
 - File input is not documented by the API, so it is rejected. Images are sent
   as data URIs to models that accept them and rejected by the others.
+- `response_format` json_schema is rejected by some models with 400
+  model_not_capable ("does not support JSON schema mode"): deepseek-v4.1-flash
+  (both dates), glm-5.3, glm-5.3-flash, kimi-k3 as of 2026-10-20;
+  deepseek-v4-flash-0731, minimax-m3 and qwen3.6-27b take it. The rejection
+  comes as an `error` chunk inside a 200 stream, not as an HTTP 400. For those
+  models the request goes out as json_object with the schema written into the
+  system prompt; a model not on the list that answers model_not_capable gets
+  the same downgrade and is asked again. The platform's belt:extract review and Structured queries send
+  json_schema with whatever model the chat runs on, so without this every
+  review on those models failed.
 """
 
 import asyncio
@@ -54,6 +64,12 @@ RETRYABLE_STATUS = {408, 409, 429, 500, 502, 503, 504}
 # without streaming (measured on qwen3.6-27b), so a minute with no bytes at all
 # means the connection is dead, not that the model is slow.
 STREAM_SILENCE_TIMEOUT = 60.0
+
+# Models that answer 400 model_not_capable to response_format json_schema.
+# Their requests are sent as json_object with the schema in the system prompt
+# (see _downgrade_json_schema); any other model that answers the same way is
+# downgraded on the fly.
+NO_JSON_SCHEMA_MODELS = {"deepseek-v4.1-flash", "deepseek-v4.1-flash-1017", "glm-5.3", "glm-5.3-flash", "kimi-k3"}
 
 
 def get_api_key() -> str:
@@ -136,6 +152,8 @@ def build_request_body(input_data, model: str, *, vision: bool, replays_reasonin
     response_format = openai_response_format(input_data.response_format)
     if response_format is not None:
         body["response_format"] = response_format
+        if model in NO_JSON_SCHEMA_MODELS:
+            _downgrade_json_schema(body)
 
     effort = _effort(input_data)
     if effort:
@@ -144,9 +162,50 @@ def build_request_body(input_data, model: str, *, vision: bool, replays_reasonin
     return body
 
 
+def _downgrade_json_schema(body: Dict[str, Any]) -> bool:
+    """Turn a json_schema response_format into json_object with the schema in the system prompt.
+
+    Returns False when the body has no json_schema format to downgrade. The
+    schema is appended to the first system message, or a system message is
+    added when there is none, so the model still sees the shape it must
+    answer in; only the provider-side enforcement is lost.
+    """
+    fmt = body.get("response_format")
+    if not fmt or fmt.get("type") != "json_schema":
+        return False
+    spec = fmt.get("json_schema") or {}
+    schema = spec.get("schema")
+    instruction = "Respond with a single JSON object and nothing else."
+    if schema is not None:
+        instruction += (
+            f" It must conform to this JSON schema" + (f" ({spec['name']})" if spec.get("name") else "") + ":\n"
+            + json.dumps(schema, separators=(",", ":"))
+        )
+    messages = body["messages"]
+    system = next((m for m in messages if m.get("role") == "system"), None)
+    if system is None:
+        messages.insert(0, {"role": "system", "content": instruction})
+    elif isinstance(system.get("content"), list):
+        system["content"].append({"type": "text", "text": instruction})
+    else:
+        system["content"] = f"{system.get('content') or ''}\n\n{instruction}".strip()
+    body["response_format"] = {"type": "json_object"}
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Errors
 # ---------------------------------------------------------------------------
+
+class _SchemaUnsupported(Exception):
+    """The model rejected response_format json_schema; the request can go again as json_object."""
+
+
+def _is_schema_unsupported(err: Any) -> bool:
+    """Whether an error object (HTTP body's or stream chunk's `error`) is the json_schema rejection."""
+    if not isinstance(err, dict):
+        return False
+    return err.get("code") == "model_not_capable" and "json schema" in str(err.get("message", "")).lower()
 
 def _format_error(status: int, body: Any, headers: Dict[str, str]) -> str:
     request_id = headers.get("x-request-id", "")
@@ -223,7 +282,10 @@ def _handle_chunk(data: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[
     if error:
         err = error if isinstance(error, dict) else {"message": str(error)}
         code = err.get("code") or err.get("type")
-        raise RuntimeError(f"Melious error{f' ({code})' if code else ''}: {err.get('message', 'unknown error')}")
+        message = f"Melious error{f' ({code})' if code else ''}: {err.get('message', 'unknown error')}"
+        if _is_schema_unsupported(err):
+            raise _SchemaUnsupported(message)
+        raise RuntimeError(message)
 
     if data.get("id") and not state["completion_id"]:
         state["completion_id"] = data["id"]
@@ -308,6 +370,8 @@ class _Retryable(Exception):
     """A failure before any output was emitted; the request can be sent again."""
 
 
+
+
 async def _open_stream(http: httpx.AsyncClient, body: Dict[str, Any], headers: Dict[str, str]) -> httpx.Response:
     """POST the request and return the open 200 stream.
 
@@ -330,6 +394,8 @@ async def _open_stream(http: httpx.AsyncClient, body: Dict[str, Any], headers: D
     except json.JSONDecodeError:
         err_body = raw.decode("utf-8", "replace")[:500]
     message = _format_error(resp.status_code, err_body, dict(resp.headers))
+    if isinstance(err_body, dict) and _is_schema_unsupported(err_body.get("error")):
+        raise _SchemaUnsupported(message)
     if resp.status_code in RETRYABLE_STATUS:
         raise _Retryable(message)
     raise RuntimeError(message)
@@ -415,6 +481,11 @@ async def stream_completion(
                     raise _Retryable(failure)
                 finally:
                     await resp.aclose()
+            except _SchemaUnsupported as e:
+                if emitted or not _downgrade_json_schema(body):
+                    raise RuntimeError(str(e))
+                print(f"  {model} rejects json_schema; sending again as json_object with the schema in the system prompt")
+                continue
             except _Retryable as e:
                 if attempt == MAX_ATTEMPTS:
                     raise RuntimeError(f"Melious request failed after {attempt} attempts: {e}")
