@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "adaptive",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P",
+        "1080P",
+        "2K"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Source video up to 15 seconds (mp4, mov, webm, m4v, gif). Trimmed to a 17n+5 frame count at 24 fps.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "reference_image": {
+      "description": "Lighting reference: a sphere render showing the target light positions, colors and intensity.",
+      "format": "file",
+      "title": "Reference Image",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "480P and 768P native; 1080P and 2K refined from 768P."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "adaptive",
+      "description": "Output aspect ratio. adaptive follows the source."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video",
+    "reference_image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

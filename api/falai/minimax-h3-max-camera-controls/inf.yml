@@ -1,0 +1,25 @@
+namespace: falai
+name: minimax-h3-max-camera-controls
+title: H3 Max Camera Controls
+description: Turn a single image into a video with keyframed camera orbit, elevation and distance using MiniMax H3 Max via fal. The scene stays frozen; only the camera moves.
+metadata:
+    provider: minimax
+    tags:
+        - image-to-video
+        - camera-control
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

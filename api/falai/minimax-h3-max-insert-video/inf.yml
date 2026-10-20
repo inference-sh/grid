@@ -1,0 +1,25 @@
+namespace: falai
+name: minimax-h3-max-insert-video
+title: H3 Max Insert Video
+description: Insert a newly generated scene into an existing video with MiniMax H3 Max via fal. Pick where the scene starts and where the original resumes; guide it with a prompt and references.
+metadata:
+    provider: minimax
+    tags:
+        - video-to-video
+        - video-editing
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

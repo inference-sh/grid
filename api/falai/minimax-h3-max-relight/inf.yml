@@ -1,0 +1,25 @@
+namespace: falai
+name: minimax-h3-max-relight
+title: H3 Max Relight
+description: Relight an existing video from a lighting sphere reference image with MiniMax H3 Max via fal. Keeps subjects, motion, camera and audio; output 480P to 2K.
+metadata:
+    provider: minimax
+    tags:
+        - video-to-video
+        - relighting
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

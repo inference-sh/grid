@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Blender or previs render, up to 15 seconds and 32 shots.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional clarification of what the proxies represent or how they move, e.g. 'The moving block is a running person.'",
+      "title": "Prompt"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional environment, subject, interior or detail references (max 8). Used directly, without generating new images.",
+      "title": "Reference Images"
+    },
+    "max_generated_reference_images": {
+      "default": 2,
+      "description": "Max new appearance references to generate when no reference images are given. Each is billed by fal.",
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Max Generated Reference Images",
+      "type": "integer"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "Output quality. Duration follows the input video."
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

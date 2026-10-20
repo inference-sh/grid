@@ -1,0 +1,26 @@
+namespace: falai
+name: minimax-h3-max-styles
+title: H3 Max Styles
+description: "Stylized 768P video with audio from a prompt or first-frame image using fal's MiniMax H3 Max style pipelines. VHS, hand-drawn, 16-bit pixel, retro 70s toon, low-poly."
+metadata:
+    provider: minimax
+    tags:
+        - text-to-video
+        - image-to-video
+        - stylized
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
