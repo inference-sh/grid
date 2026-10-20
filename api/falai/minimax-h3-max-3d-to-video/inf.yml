@@ -1,0 +1,25 @@
+namespace: falai
+name: minimax-h3-max-3d-to-video
+title: H3 Max 3D to Video
+description: Turn a Blender or 3D previs render into photorealistic video with MiniMax H3 Max via fal. Layout, camera and timing follow the input; optional reference images set the look.
+metadata:
+    provider: minimax
+    tags:
+        - video-to-video
+        - 3d-to-video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "PromptExpansionEnum": {
+      "enum": [
+        "disabled",
+        "balanced",
+        "quality"
+      ],
+      "title": "PromptExpansionEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "MiniMax H3 Max Turbo.\n\nMode is determined by the inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image and/or end_image",
+  "properties": {
+    "prompt": {
+      "description": "Video prompt. Use timeline markers like [0s-3s] for scene pacing.",
+      "examples": [
+        "A cinematic tracking shot through a misty forest at dawn, golden light filtering through ancient trees."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame image. The output canvas follows this image.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last frame image. Can be given alone for end-only generation; the canvas then follows this image.",
+      "title": "End Image"
+    },
+    "target_audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio clip (2s or longer, max 15 MB) pinned as the soundtrack. Trimmed to the video length. Use duration of at least 2s.",
+      "title": "Target Audio"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (1-15). Output can run up to ~0.7s longer.",
+      "maximum": 15,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "number"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "480P fastest, 768P native quality, 1080P latent refinement from 768P."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio for text-to-video. Ignored when an image is given (the canvas follows the image)."
+    },
+    "prompt_expansion_mode": {
+      "$ref": "#/$defs/PromptExpansionEnum",
+      "default": "balanced",
+      "description": "Prompt rewriting effort: disabled (none), balanced (~1s), or quality (~30s extra)."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

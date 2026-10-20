@@ -1,0 +1,114 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P",
+        "1080P",
+        "2K"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Video to extend. 1.625s to 60s, up to 50 MB, aspect ratio between 0.4 and 2.5.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "prompt": {
+      "description": "What happens next. Describe the continuation, not the source.",
+      "examples": [
+        "The camera keeps pushing forward as the fog lifts and a lighthouse appears on the cliff."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Seconds of new footage to add (1-15).",
+      "maximum": 15,
+      "minimum": 1,
+      "title": "Duration",
+      "type": "number"
+    },
+    "output": {
+      "default": "extended",
+      "description": "extended: source plus new footage as one video. continuation: only the new clip, with a 1.625s repeat of the source ending.",
+      "enum": [
+        "extended",
+        "continuation"
+      ],
+      "title": "Output",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "Output resolution."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "auto",
+      "description": "auto follows the source; other values crop to fit."
+    },
+    "reference_audios": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 3,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio references guiding the new audio (2-15s each, 15s combined). The source soundtrack is kept.",
+      "title": "Reference Audios"
+    },
+    "enable_prompt_expansion": {
+      "default": true,
+      "description": "Enhance the prompt using the source video for a consistent continuation.",
+      "title": "Enable Prompt Expansion",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video",
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

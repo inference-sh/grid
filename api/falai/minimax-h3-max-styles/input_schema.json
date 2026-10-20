@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "21:9",
+        "16:9",
+        "4:3",
+        "1:1",
+        "3:4",
+        "9:16"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "StyleEnum": {
+      "enum": [
+        "vhs",
+        "hand-drawn",
+        "16bit-pixel",
+        "retro-toon-70s",
+        "low-poly"
+      ],
+      "title": "StyleEnum",
+      "type": "string"
+    }
+  },
+  "description": "Mode is determined by the inputs: prompt only is text-to-video, prompt + image is image-to-video.",
+  "properties": {
+    "prompt": {
+      "description": "Describe the scene, action, camera and sound. The chosen style is applied automatically.",
+      "examples": [
+        "A skateboarder cruises down a palm-lined boulevard at sunset, upbeat synth music."
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "style": {
+      "$ref": "#/$defs/StyleEnum",
+      "default": "vhs",
+      "description": "Visual style pipeline."
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional first-frame image. Artwork in the chosen style gives the most consistent look; its aspect ratio sets the canvas.",
+      "title": "Image"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (5-15).",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio for text-to-video. Ignored when an image is given."
+    },
+    "damage_level": {
+      "default": "medium",
+      "description": "VHS style only: tape wear from subtle analog noise (light) to strong tracking errors (heavy).",
+      "enum": [
+        "light",
+        "medium",
+        "heavy"
+      ],
+      "title": "Damage Level",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

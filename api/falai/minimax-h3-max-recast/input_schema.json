@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "768P",
+        "1080P"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Source video, 5 to 30 seconds, with no single shot longer than 15 seconds.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "reference_images": {
+      "description": "One photo per new person (max 4). By default they replace the main people from left to right, in every shot they appear in.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional: who becomes whom, or what else to keep or change.",
+      "title": "Prompt"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080P",
+      "description": "Output resolution."
+    },
+    "enhance_realism": {
+      "default": false,
+      "description": "More natural skin textures and better blending of the new people into the scene.",
+      "title": "Enhance Realism",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video",
+    "reference_images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

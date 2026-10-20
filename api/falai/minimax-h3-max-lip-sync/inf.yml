@@ -1,0 +1,26 @@
+namespace: falai
+name: minimax-h3-max-lip-sync
+title: H3 Max Lip Sync
+description: Animate a portrait image to speak an audio track with MiniMax H3 Max via fal. Output matches the audio length (5s to 15 min), 480P to 2K, optional transcription guidance.
+metadata:
+    provider: minimax
+    tags:
+        - image-to-video
+        - lip-sync
+        - talking-head
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

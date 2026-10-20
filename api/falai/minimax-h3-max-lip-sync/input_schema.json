@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "480P",
+        "768P",
+        "1080P",
+        "2K"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "image": {
+      "description": "Image to animate. Aspect ratio between 0.4 and 2.5.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "audio": {
+      "description": "Speech audio to sync to, at least 5 seconds and up to 15 minutes. The output matches its length.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768P",
+      "description": "Output resolution, at the supported aspect ratio nearest the image."
+    },
+    "enable_transcription": {
+      "default": false,
+      "description": "Transcribe the audio to guide lip synchronization.",
+      "title": "Enable Transcription",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "image",
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

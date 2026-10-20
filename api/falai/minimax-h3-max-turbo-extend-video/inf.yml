@@ -1,0 +1,25 @@
+namespace: falai
+name: minimax-h3-max-turbo-extend-video
+title: H3 Max Turbo Extend Video
+description: Extend an existing video with new prompt-guided footage using MiniMax H3 Max Turbo via fal. 1-15s of continuation, 480P to 2K, optional audio references.
+metadata:
+    provider: minimax
+    tags:
+        - video-to-video
+        - video-extension
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000

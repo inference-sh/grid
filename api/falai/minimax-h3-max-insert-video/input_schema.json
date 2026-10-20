@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "768p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Source video to insert a scene into.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "start_time": {
+      "description": "Seconds into the source where the generated scene begins.",
+      "maximum": 60,
+      "minimum": 1.625,
+      "title": "Start Time",
+      "type": "number"
+    },
+    "resume_time": {
+      "description": "Seconds into the source where the original footage resumes. Must be after start_time, with footage remaining after it.",
+      "maximum": 60,
+      "minimum": 1.625,
+      "title": "Resume Time",
+      "type": "number"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Length of the generated scene in seconds (5-13).",
+      "maximum": 13,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "number"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What happens in the inserted scene.",
+      "examples": [
+        "A red fox darts across the path and vanishes into the bushes."
+      ],
+      "title": "Prompt"
+    },
+    "reference_images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 9,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference images guiding the inserted scene (max 9).",
+      "title": "Reference Images"
+    },
+    "reference_videos": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 3,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference videos guiding the inserted scene (max 3).",
+      "title": "Reference Videos"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768p",
+      "description": "Output resolution."
+    },
+    "enable_prompt_expansion": {
+      "default": true,
+      "description": "Enhance the prompt using the source video.",
+      "title": "Enable Prompt Expansion",
+      "type": "boolean"
+    },
+    "color_match": {
+      "default": true,
+      "description": "Match the inserted scene's color to the source footage.",
+      "title": "Color Match",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "video",
+    "start_time",
+    "resume_time"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

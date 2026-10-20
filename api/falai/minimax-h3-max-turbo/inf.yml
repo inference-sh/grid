@@ -1,0 +1,26 @@
+namespace: falai
+name: minimax-h3-max-turbo
+title: H3 Max Turbo
+description: MiniMax H3 Max Turbo via fal, the faster, cheaper H3 Max variant. Text-to-video and image-to-video with first/last frame, 480P/768P/1080P, 1-15s, prompt expansion, audio pinning.
+metadata:
+    provider: minimax
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    fal:
+        secrets: [FAL_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
