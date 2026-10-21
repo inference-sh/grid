@@ -286,6 +286,36 @@ async def poll_video_task(
         attempt += 1
 
 
+def cancel_video_task(
+    visual_service: VisualService,
+    req_key: str,
+    task_id: str,
+    logger: Optional[logging.Logger] = None,
+) -> bool:
+    """
+    Ask BytePlus to cancel a submitted video generation task.
+
+    A job we stop polling keeps running at BytePlus and holds one of the
+    account's concurrency slots, so every later submit fails with
+    "API Concurrency Limit" until it finishes. Best effort: never raises.
+
+    Returns:
+        True if BytePlus accepted the cancel.
+    """
+    try:
+        resp = visual_service.cv_cancel_task({"req_key": req_key, "task_id": task_id})
+    except Exception as e:
+        if logger:
+            logger.warning(f"BytePlus cancel failed for task {task_id}: {e}")
+        return False
+
+    ok = resp.get("code") == 10000
+    if logger:
+        log = logger.info if ok else logger.warning
+        log(f"BytePlus cancel for task {task_id}: code={resp.get('code')} message={resp.get('message')}")
+    return ok
+
+
 def download_video(url: str, logger: Optional[logging.Logger] = None) -> str:
     """Download a video file. Delegates to shared byteplus_helper.download_file."""
     return _download_file(url, suffix=".mp4", logger=logger)

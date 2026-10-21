@@ -14,7 +14,7 @@ google==3.0.0
     # via byteplus-sdk
 idna==3.11
     # via requests
-inferencesh==0.29.1
+inferencesh==0.33.0
     # via -r requirements.txt
 protobuf==7.34.1
     # via byteplus-sdk

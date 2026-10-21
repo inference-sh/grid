@@ -18,6 +18,7 @@ from .vision_helper import (
     setup_vision_service,
     submit_video_task,
     poll_video_task,
+    cancel_video_task,
     download_video,
     get_video_duration,
 )
@@ -61,7 +62,16 @@ class App(BaseApp):
         """Handle cancellation request."""
         self.logger.info("Cancellation requested")
         self.cancel_flag = True
+        # Cancel at BytePlus right away: the kernel restarts a few seconds
+        # after a cancel, and a job left running there holds a concurrency slot.
+        self._cancel_byteplus_job()
         return True
+
+    def _cancel_byteplus_job(self):
+        """Cancel the job submitted to BytePlus, if one is still running."""
+        task_id, self.current_task_id = self.current_task_id, None
+        if task_id:
+            cancel_video_task(self.visual_service, self.REQ_KEY_VIDEO, task_id, logger=self.logger)
 
     async def run(self, input_data: AppInput) -> AppOutput:
         """Generate avatar video using OmniHuman 1.0 ."""
@@ -109,6 +119,7 @@ class App(BaseApp):
                 cancel_flag_getter=lambda: self.cancel_flag,
             )
 
+            self.current_task_id = None
             video_url = result["video_url"]
 
             # Download video
@@ -143,6 +154,7 @@ class App(BaseApp):
             )
 
         except Exception as e:
+            self._cancel_byteplus_job()
             self.logger.error(f"Error during avatar video generation: {e}")
             raise RuntimeError(f"Avatar video generation failed: {str(e)}")
         finally:
