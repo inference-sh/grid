@@ -1,0 +1,14 @@
+pydantic>=2.0.0
+inferencesh>=0.27.4
+httpx>=0.27.0,<1.0
+huggingface_hub
+# The Flint kit is validated on SGLang 0.5.16 (torch 2.11.0+cu130, transformers 5.12.1, the
+# lmsysorg/sglang:v0.5.16-cu130 image). PyPI's torch 2.11.0 is the CUDA 13 build. setup() runs the
+# kit's install.sh, which force-reinstalls FlashInfer 0.6.16.post1 and CUTLASS DSL 4.6.2 over
+# SGLang's pins with --no-deps and installs flint_sglang; it calls `pip`, so pip is in the venv.
+sglang==0.5.16
+# sglang 0.5.16 needs flash-attn-4>=4.0.0b18, which exists only as a pre-release; pinned so the
+# install resolves without --prerelease allow.
+flash-attn-4==4.0.0b19
+sglang-router==0.3.2
+pip
