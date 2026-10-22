@@ -1,0 +1,36 @@
+namespace: recursivesi
+name: flint
+title: Recursive Flint
+description: Recursive's open 40B-A2.5B MoE model for coding agents. Reasoning and tool calls, 262K context. Runs on our own H200 / B300 GPUs.
+metadata:
+    capabilities:
+        - reasoning
+    tags:
+        - reasoning
+        - coding
+        - open-weights
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+credentials:
+    - provider: huggingface
+      secrets: [HF_TOKEN]
+      description: Faster, rate-limit-free weight downloads. The weights are public.
+      optional: true
+kernel: python-3.12
+resources:
+    gpu:
+        count: 1
+        # One H200 (141 GB) or B300. Placeholder until a stress run is measured; the serve
+        # scripts claim 80-90% of the card for weights plus KV cache regardless.
+        vram: 140
+        type: nvidia
+    ram: 128
