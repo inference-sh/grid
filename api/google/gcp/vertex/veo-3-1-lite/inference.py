@@ -4,11 +4,16 @@ from typing import Optional, List
 
 from enum import Enum
 
-from .gemini_helper import (
-    create_gemini_client,
+from .vertex_helper import (
+    get_vertex_credentials,
     get_image_dimensions,
     detect_video_aspect_ratio,
-    generate_video_with_polling,
+    build_veo_payload,
+    start_long_running_operation,
+    poll_long_running_operation,
+    download_video_from_gcs,
+    decode_base64_to_bytes,
+    save_video_to_temp,
     setup_logger,
     VideoAspectRatioEnum,
 )
@@ -67,76 +72,115 @@ class App(BaseApp):
     async def setup(self, config: AppSetup):
         """Initialize model configuration."""
         self.logger = setup_logger(__name__)
-        self.model_id = "veo-3.1-lite-generate-preview"
-        self.client = create_gemini_client()
-        self.logger.info("Veo 3.1 Lite (Gemini API) initialized successfully")
+        self.model_id = "veo-3.1-lite-generate-001"
+        self.location = "us-central1"
+        self.access_token, self.project = get_vertex_credentials()
+        self.logger.info("Veo 3.1 Lite (Vertex AI) initialized successfully")
 
     async def run(self, input_data: RunInput) -> RunOutput:
-        """Generate video with audio using Veo 3.1 Lite model via Gemini API."""
+        """Generate video with audio using Veo 3.1 Lite model via Vertex AI."""
         try:
             self.logger.info(f"Starting video generation with prompt: {input_data.prompt[:100]}...")
 
-            # Validate 1080p requires duration=8
             if input_data.resolution.value == "1080p" and input_data.duration != 8:
                 raise RuntimeError("1080p resolution requires duration=8 seconds.")
 
             aspect_ratio = input_data.aspect_ratio.value
 
-            # Auto-detect aspect ratio from first frame image
-            image_path = None
+            first_frame_path = None
             if input_data.image is not None:
                 if not input_data.image.exists():
                     raise RuntimeError(f"First frame image does not exist: {input_data.image.path}")
-                image_path = input_data.image.path
-                img_width, img_height = get_image_dimensions(image_path)
+                first_frame_path = input_data.image.path
+                img_width, img_height = get_image_dimensions(first_frame_path)
                 aspect_ratio = detect_video_aspect_ratio(img_width, img_height)
                 self.logger.info(f"Detected aspect ratio from image: {img_width}x{img_height} -> {aspect_ratio}")
 
-            # Validate last frame
             last_frame_path = None
             if input_data.last_frame is not None:
-                if image_path is None:
+                if first_frame_path is None:
                     raise RuntimeError("Last frame requires first frame image to be provided.")
                 if not input_data.last_frame.exists():
                     raise RuntimeError(f"Last frame image does not exist: {input_data.last_frame.path}")
                 last_frame_path = input_data.last_frame.path
                 self.logger.info("Using last frame for frame interpolation")
 
-            # Determine person_generation based on input mode
-            # Text-to-video: allow_all only
-            # Image-to-video / interpolation: allow_adult only
-            if image_path:
-                person_generation = "allow_adult"
-            else:
-                person_generation = "allow_all"
+            self.logger.info(f"Aspect ratio: {aspect_ratio}, Duration: {input_data.duration}s, Resolution: {input_data.resolution.value}")
 
-            self.logger.info(f"Aspect ratio: {aspect_ratio}, Duration: {input_data.duration}s, Resolution: {input_data.resolution.value}, Person generation: {person_generation}")
-
-            video_paths = await generate_video_with_polling(
-                client=self.client,
-                model_id=self.model_id,
+            payload = build_veo_payload(
                 prompt=input_data.prompt,
-                image_path=image_path,
-                last_frame_path=last_frame_path,
                 aspect_ratio=aspect_ratio,
                 duration_seconds=input_data.duration,
                 resolution=input_data.resolution.value,
-                person_generation=person_generation,
-                negative_prompt=input_data.negative_prompt,
-                logger=self.logger,
+                generate_audio=True,
+                sample_count=1,
+                first_frame_path=first_frame_path,
+                last_frame_path=last_frame_path,
+                person_generation="allow_adult",
             )
+            if input_data.negative_prompt:
+                payload["parameters"]["negativePrompt"] = input_data.negative_prompt
+
+            operation_response = await start_long_running_operation(
+                access_token=self.access_token,
+                project=self.project,
+                location=self.location,
+                model_id=self.model_id,
+                payload=payload,
+                logger=self.logger
+            )
+
+            operation_name = operation_response.get("name")
+            if not operation_name:
+                raise RuntimeError("No operation name returned from API")
+
+            self.logger.info(f"Polling operation: {operation_name}")
+            result = await poll_long_running_operation(
+                access_token=self.access_token,
+                project=self.project,
+                location=self.location,
+                model_id=self.model_id,
+                operation_name=operation_name,
+                poll_interval=5.0,
+                logger=self.logger
+            )
+
+            response_data = result.get("response", {})
+            videos = response_data.get("videos", [])
+
+            if not videos:
+                error = result.get("error")
+                if error:
+                    raise RuntimeError(f"Video generation failed: {error}")
+                rai_reasons = response_data.get("raiMediaFilteredReasons", [])
+                rai_count = response_data.get("raiMediaFilteredCount", 0)
+                if rai_reasons:
+                    raise RuntimeError(f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}")
+                raise RuntimeError("No videos in response")
+
+            if aspect_ratio == "16:9":
+                width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
+            else:
+                width, height = (1080, 1920) if input_data.resolution.value == "1080p" else (720, 1280)
 
             output_videos = []
             output_meta_videos = []
 
-            for video_path in video_paths:
-                output_videos.append(File(path=video_path))
-
-                if aspect_ratio == "16:9":
-                    width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
+            for i, video_info in enumerate(videos):
+                if "gcsUri" in video_info:
+                    video_bytes = await download_video_from_gcs(
+                        gcs_uri=video_info["gcsUri"],
+                        access_token=self.access_token,
+                        logger=self.logger
+                    )
+                elif "bytesBase64Encoded" in video_info:
+                    video_bytes = decode_base64_to_bytes(video_info["bytesBase64Encoded"])
                 else:
-                    width, height = (1080, 1920) if input_data.resolution.value == "1080p" else (720, 1280)
+                    self.logger.warning(f"Unknown video format in response: {video_info.keys()}")
+                    continue
 
+                video_path = save_video_to_temp(video_bytes, "mp4")
+                output_videos.append(File(path=video_path))
                 output_meta_videos.append(VideoMeta(
                     width=width,
                     height=height,
