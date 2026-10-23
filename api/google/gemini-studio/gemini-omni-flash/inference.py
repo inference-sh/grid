@@ -57,7 +57,7 @@ class App(BaseApp):
     async def setup(self):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        self.model_id = "gemini-omni-flash-preview"
+        self.model_id = "gemini-omni-1.1-flash"
 
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:

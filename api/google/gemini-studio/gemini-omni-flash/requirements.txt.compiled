@@ -34,7 +34,7 @@ idna==3.18
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.7.9
+inferencesh==0.34.0
     # via -r requirements.txt
 pyasn1==0.6.3
     # via pyasn1-modules
