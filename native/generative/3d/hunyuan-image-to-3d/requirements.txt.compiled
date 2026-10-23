@@ -35,7 +35,6 @@ filelock==3.32.0
     #   huggingface-hub
     #   torch
     #   transformers
-    #   triton
 flatbuffers==25.12.19
     # via onnxruntime-gpu
 fsspec==2026.7.0
@@ -54,6 +53,7 @@ httpx==0.28.1
     # via diffusers
 huggingface-hub==0.36.2
     # via
+    #   -r requirements.txt
     #   accelerate
     #   diffusers
     #   tokenizers
@@ -99,7 +99,7 @@ numba==0.67.0rc1
     # via
     #   -r requirements.txt
     #   pymatting
-numpy==1.26.4
+numpy==2.4.6
     # via
     #   -r requirements.txt
     #   accelerate
@@ -143,6 +143,8 @@ nvidia-cusparse-cu12==12.3.1.170
     # via
     #   nvidia-cusolver-cu12
     #   torch
+nvidia-cusparselt-cu12==0.6.2
+    # via torch
 nvidia-nccl-cu12==2.21.5
     # via torch
 nvidia-nvjitlink-cu12==12.4.127
@@ -157,9 +159,7 @@ omegaconf==2.3.0
 onnxruntime-gpu==1.20.2
     # via -r requirements.txt
 opencv-python-headless==4.11.0.86
-    # via
-    #   -r requirements.txt
-    #   rembg
+    # via -r requirements.txt
 packaging==26.2
     # via
     #   accelerate
@@ -216,7 +216,7 @@ regex==2026.7.19
     # via
     #   diffusers
     #   transformers
-rembg==2.0.61
+rembg==2.0.86
     # via -r requirements.txt
 requests==2.34.2
     # via
@@ -267,12 +267,12 @@ tokenizers==0.21.4
     # via
     #   -r requirements.txt
     #   transformers
-torch==2.5.1
+torch==2.6.0
     # via
     #   -r requirements.txt
     #   accelerate
     #   torchvision
-torchvision==0.20.1
+torchvision==0.21.0
     # via -r requirements.txt
 tqdm==4.67.1
     # via
@@ -281,11 +281,11 @@ tqdm==4.67.1
     #   inferencesh
     #   rembg
     #   transformers
-transformers==4.48.1
+transformers==4.55.4
     # via -r requirements.txt
 trimesh==4.6.0
     # via -r requirements.txt
-triton==3.1.0
+triton==3.2.0
     # via torch
 typing-extensions==4.16.0
     # via
