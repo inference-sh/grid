@@ -1745,7 +1745,7 @@ class ScrapeSharedParams(BaseModel):
     ] = None
     headers: Annotated[
         dict[
-            constr(pattern=r"^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$"), HeadersAdditionalProperty
+            constr(pattern=r"^[!#$%&'*+.^_`|~0-9A-Za-z-]+$"), HeadersAdditionalProperty
         ]
         | None,
         Field(
