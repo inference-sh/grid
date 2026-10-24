@@ -1,0 +1,4 @@
+{
+  "domain": "stripe.com",
+  "urlRegex": "^https?://[^/]+/blog/"
+}

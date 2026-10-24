@@ -1,0 +1,28 @@
+namespace: context-dev
+name: api
+title: Context.dev
+description: "Context.dev web data: scrape, crawl and search the web, cited answers, brand and styleguide lookups, and people, company and news search."
+metadata:
+    tags:
+        - web-scraping
+        - web-search
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: scrape
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
