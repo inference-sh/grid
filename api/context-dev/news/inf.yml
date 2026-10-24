@@ -1,0 +1,28 @@
+namespace: context-dev
+name: news
+title: Context.dev News
+description: "Context.dev news search: recent news about a company, domain or topic."
+metadata:
+    tags:
+        - news
+        - search
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: news_search
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

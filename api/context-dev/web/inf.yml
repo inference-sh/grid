@@ -1,0 +1,28 @@
+namespace: context-dev
+name: web
+title: Context.dev Web
+description: "Context.dev web data: scrape pages to markdown, HTML or screenshots, crawl sites, map URLs, search the web, extract structured fields and get cited answers."
+metadata:
+    tags:
+        - web-scraping
+        - web-search
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: scrape
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

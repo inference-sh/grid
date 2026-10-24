@@ -31,8 +31,8 @@ auth:
       http_scheme: bearer
       secret: CONTEXT_DEV_API_KEY
 apps:
-    - name: api
-      title: Context.dev
+    - name: web
+      title: Context.dev Web
       functions:
         - name: scrape
           op: scrapeWeb
@@ -58,6 +58,17 @@ apps:
           op: POST /web/answers
           method: POST
           path: /web/answers
+    - name: brand
+      title: Context.dev Brand
+      functions:
+        - name: brand
+          op: POST /brand/retrieve
+          method: POST
+          path: /brand/retrieve
+        - name: brand_search
+          op: GET /brand/search
+          method: GET
+          path: /brand/search
         - name: styleguide
           op: GET /web/styleguide
           method: GET
@@ -74,18 +85,9 @@ apps:
           op: GET /web/sic
           method: GET
           path: /web/sic
-        - name: brand
-          op: POST /brand/retrieve
-          method: POST
-          path: /brand/retrieve
-        - name: brand_search
-          op: GET /brand/search
-          method: GET
-          path: /brand/search
-        - name: company_search
-          op: POST /company/search
-          method: POST
-          path: /company/search
+    - name: people
+      title: Context.dev People
+      functions:
         - name: people_search
           op: POST /people/search
           method: POST
@@ -94,6 +96,16 @@ apps:
           op: POST /people/enrich
           method: POST
           path: /people/enrich
+    - name: company
+      title: Context.dev Company
+      functions:
+        - name: company_search
+          op: POST /company/search
+          method: POST
+          path: /company/search
+    - name: news
+      title: Context.dev News
+      functions:
         - name: news_search
           op: POST /news/search
           method: POST

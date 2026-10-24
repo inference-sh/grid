@@ -1,0 +1,28 @@
+namespace: context-dev
+name: company
+title: Context.dev Company
+description: "Context.dev company search: find companies in natural language by industry, location, funding and more."
+metadata:
+    tags:
+        - company-data
+        - search
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: company_search
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

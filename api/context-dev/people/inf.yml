@@ -1,0 +1,28 @@
+namespace: context-dev
+name: people
+title: Context.dev People
+description: "Context.dev people data: search people in natural language and enrich a person from their name, company or social profiles."
+metadata:
+    tags:
+        - people-search
+        - enrichment
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: people_search
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

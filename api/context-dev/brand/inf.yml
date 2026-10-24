@@ -1,0 +1,28 @@
+namespace: context-dev
+name: brand
+title: Context.dev Brand
+description: "Context.dev brand intelligence: logos, colors, styleguides and fonts for any domain, brand search, and NAICS and SIC industry codes."
+metadata:
+    tags:
+        - brand
+        - company-data
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: brand
+credentials:
+    context-dev:
+        secrets: [CONTEXT_DEV_API_KEY]
+        provider:
+            name: Context.dev
+            website: context.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
