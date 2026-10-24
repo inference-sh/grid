@@ -1,0 +1,13 @@
+{
+  "company": {
+    "domain": "analyticalengines.example",
+    "name": "Analytical Engines"
+  },
+  "name": {
+    "first": "Ada",
+    "last": "Lovelace"
+  },
+  "social_urls": [
+    "https://www.linkedin.com/in/ada-lovelace/"
+  ]
+}

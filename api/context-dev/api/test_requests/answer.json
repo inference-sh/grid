@@ -1,0 +1,12 @@
+{
+  "json_format": {
+    "plans": [
+      {
+        "name": ""
+      }
+    ],
+    "pricing_page_url": ""
+  },
+  "mode": "fast",
+  "task": "Find the pricing page URL and plan names for context.dev."
+}

@@ -1,0 +1,9 @@
+{
+  "searchBy": {
+    "entity": {
+      "domain": "stripe.com",
+      "type": "domain"
+    },
+    "type": "entity"
+  }
+}

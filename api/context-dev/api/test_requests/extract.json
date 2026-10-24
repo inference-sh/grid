@@ -1,0 +1,36 @@
+{
+  "schema": {
+    "additionalProperties": false,
+    "properties": {
+      "case_studies": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "url"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "mission_statement": {
+        "description": "The company's stated mission.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "mission_statement",
+      "case_studies"
+    ],
+    "type": "object"
+  },
+  "url": "https://example.com"
+}

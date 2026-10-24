@@ -1,0 +1,100 @@
+# belt app init --openapi: how https://docs.context.dev/openapi.json becomes apps.
+#
+# Edit and rerun "belt app init --openapi <this file>": every app's
+# _generated.py, test_requests and the credentials block of inf.yml are
+# rewritten from it; inference.py and the rest of inf.yml are written once
+# and then left to you. A function you drop here keeps its method in
+# inference.py and its row in pricing.md until you remove them (belt says
+# which).
+#   apps[].functions[]  move an entry between apps or rename it; "op" is the
+#                       spec's operationId (or "METHOD /path") and must stay.
+#   auth[].*_secret     the secret names the platform injects; match what
+#                       "belt credentials list" already holds for the vendor.
+#                       The vendor credential must hold every secret of every
+#                       scheme listed here, or the app stays "setup required":
+#                       drop a scheme nobody can provide, and the functions
+#                       that need it.
+#   credential.slug     the credential every app declares in inf.yml.
+spec: https://docs.context.dev/openapi.json
+vendor: context-dev
+title: Context.dev
+base_url: https://api.context.dev/v1
+credential:
+    slug: context-dev
+    provider:
+        name: Context.dev
+        website: context.dev
+auth:
+    - scheme: bearerAuth
+      kind: http
+      default: true
+      http_scheme: bearer
+      secret: CONTEXT_DEV_API_KEY
+apps:
+    - name: api
+      title: Context.dev
+      functions:
+        - name: scrape
+          op: scrapeWeb
+          method: POST
+          path: /web/scrape
+        - name: crawl
+          op: POST /web/crawl
+          method: POST
+          path: /web/crawl
+        - name: search
+          op: POST /web/search
+          method: POST
+          path: /web/search
+        - name: map_urls
+          op: GET /web/urls
+          method: GET
+          path: /web/urls
+        - name: extract
+          op: POST /web/extract
+          method: POST
+          path: /web/extract
+        - name: answer
+          op: POST /web/answers
+          method: POST
+          path: /web/answers
+        - name: styleguide
+          op: GET /web/styleguide
+          method: GET
+          path: /web/styleguide
+        - name: fonts
+          op: GET /web/fonts
+          method: GET
+          path: /web/fonts
+        - name: naics
+          op: GET /web/naics
+          method: GET
+          path: /web/naics
+        - name: sic
+          op: GET /web/sic
+          method: GET
+          path: /web/sic
+        - name: brand
+          op: POST /brand/retrieve
+          method: POST
+          path: /brand/retrieve
+        - name: brand_search
+          op: GET /brand/search
+          method: GET
+          path: /brand/search
+        - name: company_search
+          op: POST /company/search
+          method: POST
+          path: /company/search
+        - name: people_search
+          op: POST /people/search
+          method: POST
+          path: /people/search
+        - name: people_enrich
+          op: POST /people/enrich
+          method: POST
+          path: /people/enrich
+        - name: news_search
+          op: POST /news/search
+          method: POST
+          path: /news/search
