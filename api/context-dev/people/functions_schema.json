@@ -1,0 +1,2838 @@
+{
+  "people_enrich": {
+    "description": "Enrich a person",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Enrich a person",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "$defs": {
+        "Company1": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Name of a company associated with the person.",
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "maxLength": 253,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Website domain of a company associated with the person.",
+              "title": "Domain"
+            }
+          },
+          "title": "Company1",
+          "type": "object"
+        },
+        "EducationItem1": {
+          "additionalProperties": false,
+          "properties": {
+            "institution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Institution1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "School or university, identified by name or domain."
+            },
+            "degree": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Degree or qualification earned.",
+              "title": "Degree"
+            },
+            "field_of_study": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Subject or major studied.",
+              "title": "Field Of Study"
+            },
+            "graduation_year": {
+              "anyOf": [
+                {
+                  "maximum": 2200,
+                  "minimum": 1900,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Four-digit graduation year.",
+              "title": "Graduation Year"
+            }
+          },
+          "title": "EducationItem1",
+          "type": "object"
+        },
+        "Institution1": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Name of the school or university.",
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "maxLength": 253,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Website domain of the school or university.",
+              "title": "Domain"
+            }
+          },
+          "title": "Institution1",
+          "type": "object"
+        },
+        "Location2": {
+          "additionalProperties": false,
+          "properties": {
+            "city": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "City associated with the person.",
+              "title": "City"
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "State, province, or region associated with the person.",
+              "title": "Region"
+            },
+            "country": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Country associated with the person.",
+              "title": "Country"
+            }
+          },
+          "title": "Location2",
+          "type": "object"
+        },
+        "Name1": {
+          "additionalProperties": false,
+          "properties": {
+            "first": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "First or given name.",
+              "title": "First"
+            },
+            "last": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Last or family name.",
+              "title": "Last"
+            }
+          },
+          "title": "Name1",
+          "type": "object"
+        },
+        "PartialTimeout": {
+          "additionalProperties": false,
+          "properties": {
+            "milliseconds": {
+              "description": "Deadline in milliseconds.",
+              "maximum": 300000,
+              "minimum": 1000,
+              "title": "Milliseconds",
+              "type": "integer"
+            },
+            "behavior": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "fail",
+                    "return-partial"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "fail",
+              "description": "\"fail\" returns 408 at the deadline. \"return-partial\" returns available results; inspect the response\u2019s partial flag.",
+              "title": "Behavior"
+            }
+          },
+          "required": [
+            "milliseconds"
+          ],
+          "title": "PartialTimeout",
+          "type": "object"
+        },
+        "RequestTag": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "RequestTag",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "social_urls": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 20,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Public profile URLs for the person. A person-profile URL can identify the person without a name.",
+          "title": "Social Urls"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Name1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Person name. Without an email or person-profile URL, provide both first and last name plus company, education, or location."
+        },
+        "email": {
+          "anyOf": [
+            {
+              "format": "email",
+              "maxLength": 320,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Email address of the person to find.",
+          "title": "Email"
+        },
+        "company": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Company1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company context to help identify the person. Provide a name or domain."
+        },
+        "education": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/EducationItem1"
+              },
+              "maxItems": 10,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Education history to help distinguish people with similar names.",
+          "title": "Education"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Location2"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Location context to help identify the person. Provide a city, region, or country."
+        },
+        "zdr": {
+          "anyOf": [
+            {
+              "enum": [
+                "enabled",
+                "disabled"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "`enabled` turns on zero data retention. Returns 403 `ZDR_NOT_ENABLED` unless your organization has ZDR.",
+          "title": "Zdr"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/RequestTag"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Labels for filtering usage in the dashboard.",
+          "examples": [
+            [
+              "production",
+              "team-alpha"
+            ]
+          ],
+          "title": "Tags"
+        },
+        "timeoutOpts": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PartialTimeout"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "PeopleEnrichInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "CurrentRole": {
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Title"
+            },
+            "organization": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Organization"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Location"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Description"
+            },
+            "start_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/StartDate"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "end_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/EndDate"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "is_current": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Is Current"
+            }
+          },
+          "title": "CurrentRole",
+          "type": "object"
+        },
+        "Day": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day",
+          "type": "integer"
+        },
+        "Day1": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day1",
+          "type": "number"
+        },
+        "Day10": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day10",
+          "type": "integer"
+        },
+        "Day11": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day11",
+          "type": "number"
+        },
+        "Day2": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day2",
+          "type": "integer"
+        },
+        "Day3": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day3",
+          "type": "number"
+        },
+        "Day4": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day4",
+          "type": "integer"
+        },
+        "Day5": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day5",
+          "type": "number"
+        },
+        "Day6": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day6",
+          "type": "integer"
+        },
+        "Day7": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day7",
+          "type": "number"
+        },
+        "Day8": {
+          "maximum": 31,
+          "minimum": 1,
+          "title": "Day8",
+          "type": "integer"
+        },
+        "Day9": {
+          "maximum": 31.0,
+          "minimum": 1.0,
+          "title": "Day9",
+          "type": "number"
+        },
+        "EducationItem": {
+          "additionalProperties": false,
+          "properties": {
+            "institution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Institution"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "degree": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Degree"
+            },
+            "field_of_study": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Field Of Study"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Description"
+            },
+            "start_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/StartDate2"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "end_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/EndDate2"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "title": "EducationItem",
+          "type": "object"
+        },
+        "EndDate": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month2"
+                },
+                {
+                  "$ref": "#/$defs/Month3"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day2"
+                },
+                {
+                  "$ref": "#/$defs/Day3"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "EndDate",
+          "type": "object"
+        },
+        "EndDate1": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month6"
+                },
+                {
+                  "$ref": "#/$defs/Month7"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day6"
+                },
+                {
+                  "$ref": "#/$defs/Day7"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "EndDate1",
+          "type": "object"
+        },
+        "EndDate2": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month10"
+                },
+                {
+                  "$ref": "#/$defs/Month11"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day10"
+                },
+                {
+                  "$ref": "#/$defs/Day11"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "EndDate2",
+          "type": "object"
+        },
+        "ExperienceItem": {
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Title"
+            },
+            "organization": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Organization"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Location"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Description"
+            },
+            "start_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/StartDate1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "end_date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/EndDate1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "is_current": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Is Current"
+            }
+          },
+          "title": "ExperienceItem",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "Institution": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Domain"
+            }
+          },
+          "title": "Institution",
+          "type": "object"
+        },
+        "KeyMetadata": {
+          "properties": {
+            "credits_consumed": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits charged for this request.",
+              "title": "Credits Consumed"
+            },
+            "credits_remaining": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits remaining for your organization.",
+              "title": "Credits Remaining"
+            }
+          },
+          "title": "KeyMetadata",
+          "type": "object"
+        },
+        "Location1": {
+          "additionalProperties": false,
+          "properties": {
+            "display": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Display"
+            },
+            "city": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "City"
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Region"
+            },
+            "country": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Country"
+            },
+            "country_code": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Country Code"
+            }
+          },
+          "title": "Location1",
+          "type": "object"
+        },
+        "Month": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month",
+          "type": "integer"
+        },
+        "Month1": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month1",
+          "type": "number"
+        },
+        "Month10": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month10",
+          "type": "integer"
+        },
+        "Month11": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month11",
+          "type": "number"
+        },
+        "Month2": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month2",
+          "type": "integer"
+        },
+        "Month3": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month3",
+          "type": "number"
+        },
+        "Month4": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month4",
+          "type": "integer"
+        },
+        "Month5": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month5",
+          "type": "number"
+        },
+        "Month6": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month6",
+          "type": "integer"
+        },
+        "Month7": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month7",
+          "type": "number"
+        },
+        "Month8": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month8",
+          "type": "integer"
+        },
+        "Month9": {
+          "maximum": 12.0,
+          "minimum": 1.0,
+          "title": "Month9",
+          "type": "number"
+        },
+        "Name": {
+          "additionalProperties": false,
+          "properties": {
+            "full": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Full"
+            },
+            "first": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "First"
+            },
+            "last": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Last"
+            }
+          },
+          "title": "Name",
+          "type": "object"
+        },
+        "Organization": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Domain"
+            }
+          },
+          "title": "Organization",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "Person": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Name"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "email": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Email"
+            },
+            "avatar_url": {
+              "anyOf": [
+                {
+                  "pattern": "^https:\\/\\/media\\.brand\\.dev\\/pfp\\/[0-9a-f-]{36}(?:\\.png)?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Avatar Url"
+            },
+            "bio": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Bio"
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Location1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "social_urls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Social Urls"
+            },
+            "website_urls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Website Urls"
+            },
+            "current_role": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CurrentRole"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "current_role_status": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether the person's current role is known. `present` \u2014 current_role is populated. `none` \u2014 the work history explicitly shows every role has ended. `unknown` \u2014 our data sources could not confirm either way; treat a missing current_role as unverified rather than vacant.",
+              "title": "Current Role Status"
+            },
+            "experience": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/ExperienceItem"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Experience"
+            },
+            "education": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/EducationItem"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Education"
+            },
+            "skills": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Skills"
+            },
+            "last_updated": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "When the underlying profile data last changed in our data sources (ISO 8601). Omitted when unknown.",
+              "title": "Last Updated"
+            },
+            "checked_at": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "When we last refreshed this profile from our data sources (ISO 8601).",
+              "title": "Checked At"
+            }
+          },
+          "title": "Person",
+          "type": "object"
+        },
+        "PersonEnrichmentCandidateMatch": {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Status"
+            },
+            "score": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Score"
+                },
+                {
+                  "$ref": "#/$defs/Score1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Score"
+            },
+            "person": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Person"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "title": "PersonEnrichmentCandidateMatch",
+          "type": "object"
+        },
+        "PersonEnrichmentNotFoundMatch": {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Status"
+            },
+            "score": {
+              "default": null,
+              "title": "Score",
+              "type": "null"
+            },
+            "person": {
+              "default": null,
+              "title": "Person",
+              "type": "null"
+            }
+          },
+          "title": "PersonEnrichmentNotFoundMatch",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "Score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "integer"
+        },
+        "Score1": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Score1",
+          "type": "number"
+        },
+        "StartDate": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month"
+                },
+                {
+                  "$ref": "#/$defs/Month1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day"
+                },
+                {
+                  "$ref": "#/$defs/Day1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "StartDate",
+          "type": "object"
+        },
+        "StartDate1": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month4"
+                },
+                {
+                  "$ref": "#/$defs/Month5"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day4"
+                },
+                {
+                  "$ref": "#/$defs/Day5"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "StartDate1",
+          "type": "object"
+        },
+        "StartDate2": {
+          "additionalProperties": false,
+          "properties": {
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Year"
+            },
+            "month": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Month8"
+                },
+                {
+                  "$ref": "#/$defs/Month9"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Month"
+            },
+            "day": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Day8"
+                },
+                {
+                  "$ref": "#/$defs/Day9"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Day"
+            }
+          },
+          "title": "StartDate2",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "raw": {
+          "default": null,
+          "description": "The vendor's response, unchanged.",
+          "title": "Raw"
+        },
+        "partial": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True when the timeout ended processing and this response contains the usable data completed so far. Unfinished fields are omitted.",
+          "title": "Partial"
+        },
+        "match": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PersonEnrichmentCandidateMatch"
+            },
+            {
+              "$ref": "#/$defs/PersonEnrichmentNotFoundMatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Match"
+        },
+        "key_metadata": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KeyMetadata"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unique ID of this request, also in `X-Request-Id`. Include it when contacting support.",
+          "examples": [
+            "3f1c2a6e-8b4d-4c1e-9f0a-2d7b5e6c8a91"
+          ],
+          "title": "Request Id"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "PeopleEnrichOutput",
+      "type": "object"
+    }
+  },
+  "people_search": {
+    "description": "Search people",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Search people",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "$defs": {
+        "Country": {
+          "pattern": "^[A-Z]{2}$",
+          "title": "Country",
+          "type": "string"
+        },
+        "PeopleSearchFilters": {
+          "additionalProperties": false,
+          "properties": {
+            "countries": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/Country"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Countries people live in as two-letter codes, such as US or GB.",
+              "title": "Countries"
+            },
+            "years_of_experience_min": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Minimum years of professional experience.",
+              "title": "Years Of Experience Min"
+            },
+            "years_of_experience_max": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Maximum years of professional experience.",
+              "title": "Years Of Experience Max"
+            }
+          },
+          "title": "PeopleSearchFilters",
+          "type": "object"
+        },
+        "RequestTag": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "RequestTag",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "query": {
+          "description": "Describe the people to find.",
+          "examples": [
+            "VPs of sales at solar companies in California"
+          ],
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PeopleSearchFilters"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 65536,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Use next_cursor with the same query and filters to fetch the next page.",
+          "title": "Cursor"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/RequestTag"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Labels for filtering usage in the dashboard.",
+          "examples": [
+            [
+              "production",
+              "team-alpha"
+            ]
+          ],
+          "title": "Tags"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "PeopleSearchInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "Company": {
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Company name.",
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The company\u2019s website domain.",
+              "title": "Domain"
+            }
+          },
+          "title": "Company",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "KeyMetadata": {
+          "properties": {
+            "credits_consumed": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits charged for this request.",
+              "title": "Credits Consumed"
+            },
+            "credits_remaining": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits remaining for your organization.",
+              "title": "Credits Remaining"
+            }
+          },
+          "title": "KeyMetadata",
+          "type": "object"
+        },
+        "Location": {
+          "properties": {
+            "country_code": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Country as a two-letter code, such as US or GB.",
+              "title": "Country Code"
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "State or region.",
+              "title": "Region"
+            },
+            "city": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "City.",
+              "title": "City"
+            }
+          },
+          "title": "Location",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "Result": {
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Full name.",
+              "title": "Name"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "What the person does.",
+              "title": "Description"
+            },
+            "profiles": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Public professional profile URLs.",
+              "title": "Profiles"
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Location"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Where the person lives."
+            },
+            "role": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Role"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The person\u2019s current role."
+            },
+            "years_of_experience": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Years of professional experience.",
+              "title": "Years Of Experience"
+            },
+            "is_founder": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether the person is currently a founder or co-founder.",
+              "title": "Is Founder"
+            },
+            "skills": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Professional skills.",
+              "title": "Skills"
+            },
+            "schools": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Schools attended.",
+              "title": "Schools"
+            }
+          },
+          "title": "Result",
+          "type": "object"
+        },
+        "Role": {
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Job title.",
+              "title": "Title"
+            },
+            "seniority": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Seniority level.",
+              "title": "Seniority"
+            },
+            "functions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Areas of responsibility.",
+              "title": "Functions"
+            },
+            "started_on": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Role start date (YYYY-MM-DD).",
+              "title": "Started On"
+            },
+            "company": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Company"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Current employer, when known."
+            }
+          },
+          "title": "Role",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "raw": {
+          "default": null,
+          "description": "The vendor's response, unchanged.",
+          "title": "Raw"
+        },
+        "results": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Result"
+              },
+              "maxItems": 10,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Up to 10 matching people, most relevant first.",
+          "title": "Results"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pass as cursor to fetch the next page; null when there are no more results.",
+          "title": "Next Cursor"
+        },
+        "key_metadata": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KeyMetadata"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unique ID of this request, also in `X-Request-Id`. Include it when contacting support.",
+          "examples": [
+            "3f1c2a6e-8b4d-4c1e-9f0a-2d7b5e6c8a91"
+          ],
+          "title": "Request Id"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "PeopleSearchOutput",
+      "type": "object"
+    }
+  }
+}

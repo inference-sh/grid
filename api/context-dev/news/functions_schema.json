@@ -1,0 +1,1352 @@
+{
+  "news_search": {
+    "description": "Search news",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Search news",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "$defs": {
+        "Date": {
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Inclusive start of the published-at window, in epoch milliseconds.",
+              "title": "From"
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Inclusive end of the published-at window, in epoch milliseconds.",
+              "title": "To"
+            }
+          },
+          "title": "Date",
+          "type": "object"
+        },
+        "FilterBy": {
+          "additionalProperties": false,
+          "properties": {
+            "sourceDomain": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/SourceDomainItem"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Publisher domains to include. Up to 3.",
+              "title": "Sourcedomain"
+            },
+            "sourceCountry": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "ae",
+                      "ar",
+                      "au",
+                      "ca",
+                      "cg",
+                      "ch",
+                      "cl",
+                      "cz",
+                      "de",
+                      "fi",
+                      "fr",
+                      "gb",
+                      "hk",
+                      "il",
+                      "in",
+                      "jp",
+                      "kr",
+                      "mx",
+                      "ng",
+                      "nl",
+                      "pk",
+                      "qa",
+                      "sa",
+                      "se",
+                      "sg",
+                      "us",
+                      "za"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Publisher countries to include, as lowercase ISO 3166-1 alpha-2 codes. Up to 3.",
+              "title": "Sourcecountry"
+            },
+            "articleLanguage": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "am",
+                      "ar",
+                      "az",
+                      "be",
+                      "bg",
+                      "bn",
+                      "ca",
+                      "ceb",
+                      "cs",
+                      "cy",
+                      "da",
+                      "de",
+                      "el",
+                      "en",
+                      "es",
+                      "et",
+                      "eu",
+                      "fa",
+                      "fi",
+                      "fr",
+                      "gu",
+                      "ha",
+                      "haw",
+                      "he",
+                      "hi",
+                      "hr",
+                      "hu",
+                      "hy",
+                      "id",
+                      "is",
+                      "it",
+                      "ja",
+                      "ka",
+                      "kk",
+                      "kn",
+                      "ko",
+                      "ku",
+                      "ky",
+                      "lo",
+                      "lt",
+                      "lv",
+                      "mk",
+                      "ml",
+                      "mn",
+                      "mr",
+                      "ms",
+                      "ne",
+                      "nl",
+                      "no",
+                      "or",
+                      "pa",
+                      "pl",
+                      "ps",
+                      "pt",
+                      "ro",
+                      "ru",
+                      "sk",
+                      "sl",
+                      "so",
+                      "sq",
+                      "sr",
+                      "sv",
+                      "sw",
+                      "ta",
+                      "te",
+                      "th",
+                      "tl",
+                      "tr",
+                      "uk",
+                      "ur",
+                      "uz",
+                      "vi",
+                      "yo",
+                      "zh"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Article languages to include. Up to 3.",
+              "title": "Articlelanguage"
+            },
+            "articleType": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "editorial",
+                      "press_release",
+                      "regulatory_filing",
+                      "advisory"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Article types to include. Up to 3.",
+              "title": "Articletype"
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Published-at window in epoch milliseconds. from must be before or equal to to."
+            }
+          },
+          "title": "FilterBy",
+          "type": "object"
+        },
+        "NewsSearchByEntity": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "entity",
+              "description": "Use `entity` to find news about a specific company.",
+              "title": "Type",
+              "type": "string"
+            },
+            "entity": {
+              "description": "The company to search news for, identified by name, domain, ticker, or ISIN.",
+              "discriminator": {
+                "mapping": {
+                  "domain": "#/$defs/NewsSearchEntityByDomain",
+                  "isin": "#/$defs/NewsSearchEntityByIsin",
+                  "name": "#/$defs/NewsSearchEntityByName",
+                  "ticker": "#/$defs/NewsSearchEntityByTicker"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/NewsSearchEntityByName"
+                },
+                {
+                  "$ref": "#/$defs/NewsSearchEntityByDomain"
+                },
+                {
+                  "$ref": "#/$defs/NewsSearchEntityByTicker"
+                },
+                {
+                  "$ref": "#/$defs/NewsSearchEntityByIsin"
+                }
+              ],
+              "title": "Entity"
+            }
+          },
+          "required": [
+            "type",
+            "entity"
+          ],
+          "title": "NewsSearchByEntity",
+          "type": "object"
+        },
+        "NewsSearchByNaturalLanguage": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "natural_language",
+              "description": "Use `natural_language` to search all news with a plain-language query.",
+              "title": "Type",
+              "type": "string"
+            },
+            "query": {
+              "description": "What to search for, in plain language, such as \"chip export restrictions to China\".",
+              "maxLength": 1000,
+              "minLength": 2,
+              "title": "Query",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "query"
+          ],
+          "title": "NewsSearchByNaturalLanguage",
+          "type": "object"
+        },
+        "NewsSearchEntityByDomain": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "domain",
+              "description": "Use `domain` to identify the company by website domain.",
+              "title": "Type",
+              "type": "string"
+            },
+            "domain": {
+              "description": "Company website domain, such as apple.com.",
+              "maxLength": 253,
+              "minLength": 1,
+              "title": "Domain",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "domain"
+          ],
+          "title": "NewsSearchEntityByDomain",
+          "type": "object"
+        },
+        "NewsSearchEntityByIsin": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "isin",
+              "description": "Use `isin` to identify the company by its securities identifier.",
+              "title": "Type",
+              "type": "string"
+            },
+            "isin": {
+              "description": "International Securities Identification Number.",
+              "pattern": "^[A-Za-z]{2}[A-Za-z0-9]{9}[0-9]$",
+              "title": "Isin",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "isin"
+          ],
+          "title": "NewsSearchEntityByIsin",
+          "type": "object"
+        },
+        "NewsSearchEntityByName": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "name",
+              "description": "Use `name` to identify the company by name.",
+              "title": "Type",
+              "type": "string"
+            },
+            "name": {
+              "description": "Company name.",
+              "maxLength": 200,
+              "minLength": 2,
+              "title": "Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "name"
+          ],
+          "title": "NewsSearchEntityByName",
+          "type": "object"
+        },
+        "NewsSearchEntityByTicker": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "ticker",
+              "description": "Use `ticker` to identify a publicly traded company.",
+              "title": "Type",
+              "type": "string"
+            },
+            "ticker": {
+              "description": "Public-company ticker.",
+              "maxLength": 20,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9.-]+$",
+              "title": "Ticker",
+              "type": "string"
+            },
+            "exchange": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "AMEX",
+                    "AMS",
+                    "AQS",
+                    "ASX",
+                    "ATH",
+                    "BER",
+                    "BME",
+                    "BRU",
+                    "BSE",
+                    "BUD",
+                    "BUE",
+                    "BVC",
+                    "CBOE",
+                    "CNQ",
+                    "CPH",
+                    "DFM",
+                    "DOH",
+                    "DUB",
+                    "DUS",
+                    "DXE",
+                    "EGX",
+                    "FSX",
+                    "HAM",
+                    "HEL",
+                    "HKSE",
+                    "HOSE",
+                    "ICE",
+                    "IOB",
+                    "IST",
+                    "JKT",
+                    "JNB",
+                    "JPX",
+                    "KLS",
+                    "KOE",
+                    "KSC",
+                    "KUW",
+                    "LIS",
+                    "LSE",
+                    "MCX",
+                    "MEX",
+                    "MIL",
+                    "MUN",
+                    "NASDAQ",
+                    "NEO",
+                    "NSE",
+                    "NYSE",
+                    "NZE",
+                    "OSL",
+                    "OTC",
+                    "PAR",
+                    "PNK",
+                    "PRA",
+                    "RIS",
+                    "SAO",
+                    "SAU",
+                    "SES",
+                    "SET",
+                    "SGO",
+                    "SHH",
+                    "SHZ",
+                    "SIX",
+                    "STO",
+                    "STU",
+                    "TAI",
+                    "TAL",
+                    "TLV",
+                    "TSX",
+                    "TSXV",
+                    "TWO",
+                    "VIE",
+                    "WSE",
+                    "XETRA"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Stock exchange the ticker trades on, used to disambiguate tickers listed on multiple exchanges.",
+              "title": "Exchange"
+            }
+          },
+          "required": [
+            "type",
+            "ticker"
+          ],
+          "title": "NewsSearchEntityByTicker",
+          "type": "object"
+        },
+        "RequestTag": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "RequestTag",
+          "type": "string"
+        },
+        "SortBy": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "description": "Result ordering.",
+              "enum": [
+                "relevance",
+                "newest"
+              ],
+              "title": "Type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "SortBy",
+          "type": "object"
+        },
+        "SourceDomainItem": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "SourceDomainItem",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "limit": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 10,
+          "description": "Maximum results to return. Defaults to 10.",
+          "title": "Limit"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Opaque next_cursor from the previous response, or null for the first page.",
+          "title": "Cursor"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/RequestTag"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Labels for filtering usage in the dashboard.",
+          "examples": [
+            [
+              "production",
+              "team-alpha"
+            ]
+          ],
+          "title": "Tags"
+        },
+        "searchBy": {
+          "description": "What to search for: a specific company, or a natural-language query across all news.",
+          "discriminator": {
+            "mapping": {
+              "entity": "#/$defs/NewsSearchByEntity",
+              "natural_language": "#/$defs/NewsSearchByNaturalLanguage"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NewsSearchByNaturalLanguage"
+            },
+            {
+              "$ref": "#/$defs/NewsSearchByEntity"
+            }
+          ],
+          "title": "Searchby"
+        },
+        "filterBy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FilterBy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional result filters. Use at most one of sourceDomain, sourceCountry, articleLanguage, or articleType. A date range may accompany that category; date.from must not exceed date.to."
+        },
+        "sortBy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SortBy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Result ordering. Defaults to newest for entity searches. Natural-language searches are always ordered by relevance."
+        }
+      },
+      "required": [
+        "searchBy"
+      ],
+      "title": "NewsSearchInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "Count": {
+          "description": "Number of articles in this page.",
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "Count1": {
+          "description": "Number of articles in this page.",
+          "minimum": 0.0,
+          "title": "Count1",
+          "type": "number"
+        },
+        "Datum": {
+          "properties": {
+            "id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Stable unique identifier for this article. Use it to deduplicate or reference an article across requests.",
+              "title": "Id"
+            },
+            "story_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Shared by articles covering the same story on the same day. Use it to group or collapse syndicated copies of one announcement across outlets.",
+              "title": "Story Id"
+            },
+            "url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Link to the article on the publisher site.",
+              "title": "Url"
+            },
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Article headline.",
+              "title": "Title"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Article summary or excerpt. Natural-language search descriptions include matching passages and are capped at 2,000 characters.",
+              "title": "Description"
+            },
+            "language": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Language the article is written in, as a lowercase ISO 639-1 code such as en. Null when unknown.",
+              "title": "Language"
+            },
+            "authors": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Bylined authors. Empty when no byline is available.",
+              "title": "Authors"
+            },
+            "image_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Lead image for the article, when one is available.",
+              "title": "Image Url"
+            },
+            "published_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "When the article was published, as an ISO 8601 timestamp. Null when the publisher does not state a reliable date.",
+              "title": "Published At"
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Kind of coverage. Use it to separate independent reporting (editorial) from company-issued content (press_release, regulatory_filing, advisory).",
+              "title": "Type"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Source"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The publication that published the article."
+            },
+            "match": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Match"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "How the article relates to the company you searched for. Null for natural-language searches."
+            }
+          },
+          "title": "Datum",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "KeyMetadata": {
+          "properties": {
+            "credits_consumed": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits charged for this request.",
+              "title": "Credits Consumed"
+            },
+            "credits_remaining": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Credits remaining for your organization.",
+              "title": "Credits Remaining"
+            }
+          },
+          "title": "KeyMetadata",
+          "type": "object"
+        },
+        "Match": {
+          "properties": {
+            "level": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "primary when the article is mainly about the company, secondary when the company is mentioned but is not the main subject.",
+              "title": "Level"
+            },
+            "confidence": {
+              "anyOf": [
+                {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "How confident the match is, from 0 to 1. Null when a score is unavailable.",
+              "title": "Confidence"
+            }
+          },
+          "title": "Match",
+          "type": "object"
+        },
+        "Meta": {
+          "properties": {
+            "count": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Count"
+                },
+                {
+                  "$ref": "#/$defs/Count1"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Number of articles in this page.",
+              "title": "Count"
+            }
+          },
+          "title": "Meta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "Source": {
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Name of the publication, such as Reuters.",
+              "title": "Name"
+            },
+            "domain": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Website domain of the publication.",
+              "title": "Domain"
+            },
+            "direct": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "True when Context observed this article in the publisher-owned feed.",
+              "title": "Direct"
+            }
+          },
+          "title": "Source",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "raw": {
+          "default": null,
+          "description": "The vendor's response, unchanged.",
+          "title": "Raw"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Datum"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Articles matching the search, in the requested order.",
+          "title": "Data"
+        },
+        "has_more": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True when more results are available beyond this page.",
+          "title": "Has More"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pass as cursor in the next request to fetch the following page. Null when there are no more results.",
+          "title": "Next Cursor"
+        },
+        "meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Meta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Summary information about this response."
+        },
+        "key_metadata": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KeyMetadata"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unique ID of this request, also in `X-Request-Id`. Include it when contacting support.",
+          "examples": [
+            "3f1c2a6e-8b4d-4c1e-9f0a-2d7b5e6c8a91"
+          ],
+          "title": "Request Id"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "NewsSearchOutput",
+      "type": "object"
+    }
+  }
+}
