@@ -236,7 +236,7 @@ class App(BaseApp):
 
     # --- upload_file ---
     @function(
-        credentials=[{"key": "google.drive"}],
+        credentials=[{"key": "google.drive.file"}],
         annotations={"title": "Upload file", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def upload_file(self, input_data: UploadFileInput) -> UploadFileOutput:
@@ -265,7 +265,7 @@ class App(BaseApp):
 
     # --- create_folder ---
     @function(
-        credentials=[{"key": "google.drive"}],
+        credentials=[{"key": "google.drive.file"}],
         annotations={"title": "Create folder", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def create_folder(self, input_data: CreateFolderInput) -> CreateFolderOutput:
