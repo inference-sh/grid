@@ -13,6 +13,8 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
+    - key: google.drive.metadata.readonly
+      description: See names and details of files in your Google Drive
     - key: google.drive.readonly
       description: View and download files in your Google Drive
     - key: google.drive.file

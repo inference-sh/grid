@@ -158,7 +158,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.slides"}],
+        credentials=[{"key": "google.drive.file"}],
         annotations={"title": "Create presentation", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def create_presentation(self, input_data: CreatePresentationInput) -> CreatePresentationOutput:

@@ -5,7 +5,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar"
+        "key": "google.calendar.app.created"
       }
     ],
     "annotations": {
@@ -764,7 +764,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar"
+        "key": "google.calendar.calendars"
       }
     ],
     "annotations": {
@@ -1448,7 +1448,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.readonly"
+        "key": "google.calendar.events.readonly"
       }
     ],
     "annotations": {
@@ -2280,7 +2280,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.readonly"
+        "key": "google.calendar.calendarlist.readonly"
       }
     ],
     "annotations": {
@@ -2655,7 +2655,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.readonly"
+        "key": "google.calendar.events.readonly"
       }
     ],
     "annotations": {

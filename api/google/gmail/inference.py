@@ -315,7 +315,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.gmail.readonly"}],
+        credentials=[{"key": "google.gmail.labels"}],
         annotations={"title": "List labels", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_labels(self, input_data: ListLabelsInput) -> ListLabelsOutput:

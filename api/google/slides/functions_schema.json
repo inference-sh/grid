@@ -1088,7 +1088,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.slides"
+        "key": "google.drive.file"
       }
     ],
     "annotations": {

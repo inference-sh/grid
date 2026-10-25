@@ -159,7 +159,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.sheets"}],
+        credentials=[{"key": "google.drive.file"}],
         annotations={"title": "Create spreadsheet", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def create_spreadsheet(self, input_data: CreateSpreadsheetInput) -> CreateSpreadsheetOutput:

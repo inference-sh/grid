@@ -710,7 +710,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.docs"
+        "key": "google.drive.file"
       }
     ],
     "annotations": {
