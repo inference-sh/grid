@@ -9,14 +9,21 @@ in output_meta here (see pricing.md).
 
 import logging
 
-from inferencesh import BaseApp, OutputMeta, function
+from inferencesh import BaseApp, OutputMeta, RawMeta, function
 from inferencesh.upstream import UpstreamClient
 
 from . import _generated as g
 
-# Free to run as written: every function reports an empty OutputMeta. Metered
-# functions report what they consumed instead (see pricing.md).
-FREE = OutputMeta(inputs=[], outputs=[])
+
+# Every response reports the credits the call used in key_metadata; billing
+# prices on them (see pricing.md).
+def credits_used(data) -> OutputMeta:
+    metadata = data.get("key_metadata") if isinstance(data, dict) else None
+    credits = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
+    if not isinstance(credits, (int, float)):
+        logging.getLogger(__name__).warning("context.dev response has no key_metadata.credits_consumed")
+        return OutputMeta(inputs=[], outputs=[])
+    return OutputMeta(inputs=[], outputs=[RawMeta(extra={"credits": credits})])
 
 
 class App(BaseApp):
@@ -28,7 +35,7 @@ class App(BaseApp):
     async def news_search(self, input_data: g.NewsSearchInput) -> g.NewsSearchOutput:
         """Search news"""
         data = await self.client.call(g.news_search, input_data)
-        return g.NewsSearchOutput.from_response(data, output_meta=FREE)
+        return g.NewsSearchOutput.from_response(data, output_meta=credits_used(data))
 
     async def unload(self):
         await self.client.aclose()
