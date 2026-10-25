@@ -258,7 +258,7 @@ class App(BaseApp):
         self.logger = logging.getLogger(__name__)
 
     @function(
-        credentials=[{"key": "google.calendar.readonly"}],
+        credentials=[{"key": "google.calendar.events.readonly"}],
         annotations={"title": "List events", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_events(self, input_data: ListEventsInput) -> ListEventsOutput:
@@ -300,7 +300,7 @@ class App(BaseApp):
         return ListEventsOutput(events=events)
 
     @function(
-        credentials=[{"key": "google.calendar.readonly"}],
+        credentials=[{"key": "google.calendar.events.readonly"}],
         annotations={"title": "Get event", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_event(self, input_data: GetEventInput) -> GetEventOutput:
@@ -420,7 +420,7 @@ class App(BaseApp):
         return DeleteEventOutput(success=True)
 
     @function(
-        credentials=[{"key": "google.calendar.readonly"}],
+        credentials=[{"key": "google.calendar.calendarlist.readonly"}],
         annotations={"title": "List calendars", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_calendars(self, input_data: ListCalendarsInput) -> ListCalendarsOutput:
@@ -445,7 +445,7 @@ class App(BaseApp):
         return ListCalendarsOutput(calendars=calendars)
 
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.app.created"}],
         annotations={"title": "Create calendar", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def create_calendar(self, input_data: CreateCalendarInput) -> CreateCalendarOutput:
@@ -546,7 +546,7 @@ class App(BaseApp):
         return ListCalendarSharesOutput(shares=shares)
 
     @function(
-        credentials=[{"key": "google.calendar"}],
+        credentials=[{"key": "google.calendar.calendars"}],
         annotations={"title": "Delete calendar", "readOnlyHint": False, "destructiveHint": True, "idempotentHint": True, "openWorldHint": True},
     )
     async def delete_calendar(self, input_data: DeleteCalendarInput) -> DeleteCalendarOutput:

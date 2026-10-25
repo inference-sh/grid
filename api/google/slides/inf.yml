@@ -17,6 +17,8 @@ credentials:
       description: View your Google Slides presentations
     - key: google.slides
       description: Full Google Slides access
+    - key: google.drive.file
+      description: Create files in your Google Drive and open the ones you use with this app
 resources:
     gpu:
         count: 0

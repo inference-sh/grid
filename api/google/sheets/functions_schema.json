@@ -719,7 +719,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.sheets"
+        "key": "google.drive.file"
       }
     ],
     "annotations": {

@@ -761,7 +761,7 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.gmail.readonly"
+        "key": "google.gmail.labels"
       }
     ],
     "annotations": {

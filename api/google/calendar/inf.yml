@@ -13,16 +13,20 @@ images:
 env: {}
 kernel: python-3.11
 credentials:
-    - key: google.calendar.readonly
-      description: View your calendars and events
+    - key: google.calendar.calendarlist.readonly
+      description: See the list of calendars you are subscribed to
+    - key: google.calendar.events.readonly
+      description: View events on your calendars
     - key: google.calendar.events
       description: Create, edit, and delete events on your calendars
     - key: google.calendar.acls.readonly
       description: See who your calendars are shared with
     - key: google.calendar.acls
       description: Share your calendars and change who can see them
-    - key: google.calendar
-      description: Create and delete calendars
+    - key: google.calendar.app.created
+      description: Make secondary calendars and manage their events
+    - key: google.calendar.calendars
+      description: Change and delete calendars you have access to
 resources:
     gpu:
         count: 0

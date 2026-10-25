@@ -17,6 +17,8 @@ credentials:
       description: View your Google Sheets
     - key: google.sheets
       description: Full Google Sheets access
+    - key: google.drive.file
+      description: Create files in your Google Drive and open the ones you use with this app
 resources:
     gpu:
         count: 0

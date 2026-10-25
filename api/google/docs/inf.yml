@@ -17,6 +17,8 @@ credentials:
       description: View your Google Docs
     - key: google.docs
       description: Full Google Docs access
+    - key: google.drive.file
+      description: Create files in your Google Drive and open the ones you use with this app
 resources:
     gpu:
         count: 0

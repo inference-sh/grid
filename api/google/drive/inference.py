@@ -134,7 +134,7 @@ class App(BaseApp):
 
     # --- list_files ---
     @function(
-        credentials=[{"key": "google.drive.readonly"}],
+        credentials=[{"key": "google.drive.metadata.readonly"}],
         annotations={"title": "List files", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def list_files(self, input_data: ListFilesInput) -> ListFilesOutput:
@@ -163,7 +163,7 @@ class App(BaseApp):
 
     # --- get_file ---
     @function(
-        credentials=[{"key": "google.drive.readonly"}],
+        credentials=[{"key": "google.drive.metadata.readonly"}],
         annotations={"title": "Get file metadata", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def get_file(self, input_data: GetFileInput) -> GetFileOutput:
@@ -306,7 +306,7 @@ class App(BaseApp):
 
     # --- search_files ---
     @function(
-        credentials=[{"key": "google.drive.readonly"}],
+        credentials=[{"key": "google.drive.metadata.readonly"}],
         annotations={"title": "Search files", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
     )
     async def search_files(self, input_data: SearchFilesInput) -> SearchFilesOutput:

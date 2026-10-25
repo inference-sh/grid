@@ -140,7 +140,7 @@ class App(BaseApp):
         )
 
     @function(
-        credentials=[{"key": "google.docs"}],
+        credentials=[{"key": "google.drive.file"}],
         annotations={"title": "Create document", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
     )
     async def create_document(self, input_data: CreateDocumentInput) -> CreateDocumentOutput:
