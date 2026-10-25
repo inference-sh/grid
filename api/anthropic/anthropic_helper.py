@@ -33,6 +33,9 @@ logger = logging.getLogger(__name__)
 # Non-streaming request limits. Streaming has no such cap.
 NON_STREAM_TIMEOUT = 120.0
 NON_STREAM_MAX_TOKENS = 16000
+# Time until the stream opens. It covers prefill, which on an uncached
+# context near 1M tokens takes well over a minute.
+STREAM_START_TIMEOUT = 300.0
 
 # Budget tokens mapping for reasoning effort levels
 EFFORT_TO_BUDGET = {
@@ -810,10 +813,10 @@ async def stream_completion(
 
     try:
         stream = await asyncio.wait_for(
-            client.messages.create(**params), timeout=30.0
+            client.messages.create(**params), timeout=STREAM_START_TIMEOUT
         )
     except asyncio.TimeoutError:
-        raise RuntimeError("Anthropic API call timed out after 30 seconds")
+        raise RuntimeError(f"Anthropic API call timed out after {STREAM_START_TIMEOUT:.0f} seconds")
     except Exception as e:
         raise handle_api_error(e)
 
