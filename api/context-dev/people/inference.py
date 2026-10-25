@@ -15,15 +15,20 @@ from inferencesh.upstream import UpstreamClient
 from . import _generated as g
 
 
-# Every response reports the credits the call used in key_metadata; billing
-# prices on them (see pricing.md).
-def credits_used(data) -> OutputMeta:
+# Pricing reads what a call produced, never the vendor's own charge: inputs
+# are priced as sent, and a function whose cost depends on its result reports
+# the count here (see pricing.md). The credits context.dev says it charged are
+# only logged, to check the price against.
+def usage(data, **produced: int) -> OutputMeta:
     metadata = data.get("key_metadata") if isinstance(data, dict) else None
-    credits = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
-    if not isinstance(credits, (int, float)):
-        logging.getLogger(__name__).warning("context.dev response has no key_metadata.credits_consumed")
-        return OutputMeta(inputs=[], outputs=[])
-    return OutputMeta(inputs=[], outputs=[RawMeta(extra={"credits": credits})])
+    reported = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
+    logging.getLogger(__name__).info("context.dev credits_consumed=%s produced=%s", reported, produced)
+    return OutputMeta(inputs=[], outputs=[RawMeta(extra=produced)] if produced else [])
+
+
+def count(data, key: str) -> int:
+    items = data.get(key) if isinstance(data, dict) else None
+    return len(items) if isinstance(items, list) else 0
 
 
 class App(BaseApp):
@@ -35,13 +40,15 @@ class App(BaseApp):
     async def people_search(self, input_data: g.PeopleSearchInput) -> g.PeopleSearchOutput:
         """Search people"""
         data = await self.client.call(g.people_search, input_data)
-        return g.PeopleSearchOutput.from_response(data, output_meta=credits_used(data))
+        return g.PeopleSearchOutput.from_response(data, output_meta=usage(data))
 
     @function(annotations=g.people_enrich.annotations, credentials=g.people_enrich.credentials)
     async def people_enrich(self, input_data: g.PeopleEnrichInput) -> g.PeopleEnrichOutput:
         """Enrich a person"""
         data = await self.client.call(g.people_enrich, input_data)
-        return g.PeopleEnrichOutput.from_response(data, output_meta=credits_used(data))
+        match = data.get("match") if isinstance(data, dict) else None
+        matched = isinstance(match, dict) and match.get("status") == "candidate"
+        return g.PeopleEnrichOutput.from_response(data, output_meta=usage(data, matches=int(matched)))
 
     async def unload(self):
         await self.client.aclose()
