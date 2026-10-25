@@ -17,13 +17,14 @@ from . import _generated as g
 
 # Pricing reads what a call produced, never the vendor's own charge: inputs
 # are priced as sent, and a function whose cost depends on its result reports
-# the count here (see pricing.md). The credits context.dev says it charged are
-# only logged, to check the price against.
+# the count here (see pricing.md). upstream_credits is what context.dev says it
+# charged: informational, to check the price against, never priced on.
 def usage(data, **produced: int) -> OutputMeta:
     metadata = data.get("key_metadata") if isinstance(data, dict) else None
     reported = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
-    logging.getLogger(__name__).info("context.dev credits_consumed=%s produced=%s", reported, produced)
-    return OutputMeta(inputs=[], outputs=[RawMeta(extra=produced)] if produced else [])
+    extra = {**produced, "upstream_credits": reported} if reported is not None else produced
+    logging.getLogger(__name__).info("context.dev usage %s", extra)
+    return OutputMeta(inputs=[], outputs=[RawMeta(extra=extra)] if extra else [])
 
 
 def count(data, key: str) -> int:
