@@ -385,6 +385,381 @@
       "type": "object"
     }
   },
+  "get_attachment": {
+    "description": "Download a file attached to a Gmail message.",
+    "kind": "run",
+    "capabilities": [],
+    "credentials": [
+      {
+        "slug": "google",
+        "capabilities": [
+          "google.gmail.readonly"
+        ]
+      }
+    ],
+    "annotations": {
+      "title": "Download attachment",
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "properties": {
+        "message_id": {
+          "description": "The ID of the message the attachment is on",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "attachment_id": {
+          "description": "The attachment ID, from get_message's attachments",
+          "title": "Attachment Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_id",
+        "attachment_id"
+      ],
+      "title": "GetAttachmentInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "file": {
+          "description": "The attachment's content",
+          "format": "file",
+          "title": "File",
+          "type": "string"
+        },
+        "filename": {
+          "default": "",
+          "description": "File name",
+          "title": "Filename",
+          "type": "string"
+        },
+        "mime_type": {
+          "default": "",
+          "description": "MIME type",
+          "title": "Mime Type",
+          "type": "string"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "title": "GetAttachmentOutput",
+      "type": "object"
+    }
+  },
   "get_message": {
     "description": "Get a single Gmail message with full body.",
     "kind": "run",
@@ -420,6 +795,50 @@
     },
     "output_schema": {
       "$defs": {
+        "AttachmentInfo": {
+          "properties": {
+            "output_meta": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/OutputMeta"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Structured metadata about inputs/outputs for pricing calculation"
+            },
+            "attachment_id": {
+              "description": "Attachment ID, for get_attachment",
+              "title": "Attachment Id",
+              "type": "string"
+            },
+            "filename": {
+              "default": "",
+              "description": "File name",
+              "title": "Filename",
+              "type": "string"
+            },
+            "mime_type": {
+              "default": "",
+              "description": "MIME type",
+              "title": "Mime Type",
+              "type": "string"
+            },
+            "size": {
+              "default": 0,
+              "description": "Size in bytes",
+              "title": "Size",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "attachment_id"
+          ],
+          "title": "AttachmentInfo",
+          "type": "object"
+        },
         "AudioMeta": {
           "description": "Metadata for audio inputs/outputs.",
           "properties": {
@@ -762,6 +1181,14 @@
             "type": "string"
           },
           "title": "Labels",
+          "type": "array"
+        },
+        "attachments": {
+          "description": "Files attached to the message; download one with get_attachment",
+          "items": {
+            "$ref": "#/$defs/AttachmentInfo"
+          },
+          "title": "Attachments",
           "type": "array"
         },
         "output_meta": {

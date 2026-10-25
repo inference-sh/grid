@@ -1,10 +1,11 @@
 import os
+import tempfile
 import base64
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, function
+from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, function
 from pydantic import Field
 from typing import List, Optional
 
@@ -38,6 +39,13 @@ class GetMessageInput(BaseAppInput):
     message_id: str = Field(description="The ID of the message to retrieve")
 
 
+class AttachmentInfo(BaseAppOutput):
+    attachment_id: str = Field(description="Attachment ID, for get_attachment")
+    filename: str = Field(default="", description="File name")
+    mime_type: str = Field(default="", description="MIME type")
+    size: int = Field(default=0, description="Size in bytes")
+
+
 class GetMessageOutput(BaseAppOutput):
     id: str = Field(description="Message ID")
     thread_id: str = Field(description="Thread ID")
@@ -47,6 +55,20 @@ class GetMessageOutput(BaseAppOutput):
     date: str = Field(default="", description="Date header")
     body: str = Field(default="", description="Message body text")
     labels: List[str] = Field(default_factory=list, description="Label IDs on this message")
+    attachments: List[AttachmentInfo] = Field(default_factory=list, description="Files attached to the message; download one with get_attachment")
+
+
+# --- get_attachment ---
+
+class GetAttachmentInput(BaseAppInput):
+    message_id: str = Field(description="The ID of the message the attachment is on")
+    attachment_id: str = Field(description="The attachment ID, from get_message's attachments")
+
+
+class GetAttachmentOutput(BaseAppOutput):
+    file: File = Field(description="The attachment's content")
+    filename: str = Field(default="", description="File name")
+    mime_type: str = Field(default="", description="MIME type")
 
 
 # --- send_message ---
@@ -135,6 +157,24 @@ def _decode_body(payload: dict) -> str:
                     return base64.urlsafe_b64decode(sub["body"]["data"]).decode("utf-8", errors="replace")
 
     return ""
+
+
+def _attachments(payload: dict) -> List[AttachmentInfo]:
+    """Every part with a file name and an attachment ID, at any depth."""
+    out: List[AttachmentInfo] = []
+    stack = [payload]
+    while stack:
+        part = stack.pop(0)
+        body = part.get("body", {})
+        if part.get("filename") and body.get("attachmentId"):
+            out.append(AttachmentInfo(
+                attachment_id=body["attachmentId"],
+                filename=part["filename"],
+                mime_type=part.get("mimeType", ""),
+                size=body.get("size", 0),
+            ))
+        stack.extend(part.get("parts", []))
+    return out
 
 
 def _build_mime_message(to: str, subject: str, body: str, cc: str = "", bcc: str = "") -> str:
@@ -232,6 +272,46 @@ class App(BaseApp):
             date=_get_header(headers, "Date"),
             body=_decode_body(payload),
             labels=msg.get("labelIds", []),
+            attachments=_attachments(payload),
+        )
+
+    @function(
+        credentials=[{"key": "google.gmail.readonly"}],
+        annotations={"title": "Download attachment", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
+    async def get_attachment(self, input_data: GetAttachmentInput) -> GetAttachmentOutput:
+        """Download a file attached to a Gmail message."""
+        self.logger.info(f"Getting attachment from message id={input_data.message_id}")
+
+        msg = self.service.users().messages().get(
+            userId="me",
+            id=input_data.message_id,
+            format="full",
+        ).execute()
+        # Gmail gives an attachment a new ID on every read, so match it by
+        # ID first and fall back to the only attachment when there is one.
+        found = _attachments(msg.get("payload", {}))
+        info = next((a for a in found if a.attachment_id == input_data.attachment_id), None)
+        if info is None and len(found) == 1:
+            info = found[0]
+        attachment_id = info.attachment_id if info else input_data.attachment_id
+
+        data = self.service.users().messages().attachments().get(
+            userId="me",
+            messageId=input_data.message_id,
+            id=attachment_id,
+        ).execute().get("data", "")
+
+        filename = os.path.basename((info.filename if info else "") or "attachment")
+        path = os.path.join(tempfile.mkdtemp(), filename)
+        with open(path, "wb") as fh:
+            fh.write(base64.urlsafe_b64decode(data))
+
+        self.logger.info(f"Attachment saved to {path}")
+        return GetAttachmentOutput(
+            file=File(path=path),
+            filename=filename,
+            mime_type=info.mime_type if info else "",
         )
 
     @function(
