@@ -4,12 +4,12 @@ What the vendor charges for each function this app exposes, so the app's price c
 
 - source_url: https://www.context.dev/pricing and https://docs.context.dev/account/credits
 - checked: 2026-10-25
-- confidence: high: every response reports the exact credits charged in key_metadata.credits_consumed, and the app passes it through
+- confidence: high: the credit table is published per operation; each call logs the credits context.dev reports (key_metadata.credits_consumed) so the price can be checked against it
 
-Credit price by plan: Developer $20/month for 10,000 credits ($0.002 each, overage $3.00 per 1,000); Pro $90/month for 100,000 ($0.0009 each, overage $2.00 per 1,000). Failed validation, auth, 408, 429 and server errors are not charged.
+Credit price by plan: Developer $20/month for 10,000 credits ($0.002 each, overage $3.00 per 1,000); Pro $90/month for 100,000 ($0.0009 each, overage $2.00 per 1,000). Validation, auth, 408, 429 and server errors are not charged.
 
-The app reports `output_meta.outputs[0]` as a raw item with `extra.credits` = credits the call used, so a price is credits times a per-credit rate.
+Price from the input and from what the call returned, never from the vendor's reported charge. A function whose cost depends on its result reports the count as a raw output item, `output_meta.outputs[0].extra`.
 
-| function | upstream rate | unit | notes |
-|----------|---------------|------|-------|
-| news_search | 1 credit per 10 results; an unknown company 404 costs 1 | credit | |
+| function | upstream rate | priced from | notes |
+|----------|---------------|-------------|-------|
+| news_search | 1 credit per 10 results returned, rounded up; at least 1 | outputs[0].extra.results | |

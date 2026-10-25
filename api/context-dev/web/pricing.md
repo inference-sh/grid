@@ -4,17 +4,17 @@ What the vendor charges for each function this app exposes, so the app's price c
 
 - source_url: https://www.context.dev/pricing and https://docs.context.dev/account/credits
 - checked: 2026-10-25
-- confidence: high: every response reports the exact credits charged in key_metadata.credits_consumed, and the app passes it through
+- confidence: high: the credit table is published per operation; each call logs the credits context.dev reports (key_metadata.credits_consumed) so the price can be checked against it
 
-Credit price by plan: Developer $20/month for 10,000 credits ($0.002 each, overage $3.00 per 1,000); Pro $90/month for 100,000 ($0.0009 each, overage $2.00 per 1,000). Failed validation, auth, 408, 429 and server errors are not charged.
+Credit price by plan: Developer $20/month for 10,000 credits ($0.002 each, overage $3.00 per 1,000); Pro $90/month for 100,000 ($0.0009 each, overage $2.00 per 1,000). Validation, auth, 408, 429 and server errors are not charged.
 
-The app reports `output_meta.outputs[0]` as a raw item with `extra.credits` = credits the call used, so a price is credits times a per-credit rate.
+Price from the input and from what the call returned, never from the vendor's reported charge. A function whose cost depends on its result reports the count as a raw output item, `output_meta.outputs[0].extra`.
 
-| function | upstream rate | unit | notes |
-|----------|---------------|------|-------|
-| scrape | 1 credit; 2 with browser actions; JSON extraction +4, highlights +1, product +1, PDF OCR +1 per page | credit | |
-| crawl | 1 credit per successful page | credit | |
-| search | 1 credit per 10 results; markdown and highlights each +1 per 10 | credit | |
-| map_urls | 1 credit; 2 with search | credit | |
-| extract | JSON extraction on a scrape: 5 credits per page | credit | |
-| answer | 10 credits fast; 100 ultra (default) | credit | |
+| function | upstream rate | priced from | notes |
+|----------|---------------|-------------|-------|
+| scrape | 1 credit; 2 with sharedParams.actions; +4 with formats.json, +1 formats.highlights, +1 formats.product (PDF OCR +1 per page is not priced) | input | |
+| crawl | 1 credit per page returned | outputs[0].extra.pages | |
+| search | 1 credit per 10 results returned, rounded up; +1 per 10 each with markdownOptions or highlightsOptions | outputs[0].extra.results, input | |
+| map_urls | 1 credit; 2 with search | input | |
+| extract | 10 credits | flat | |
+| answer | 10 credits with mode fast; 100 otherwise (ultra is the default) | input | |
