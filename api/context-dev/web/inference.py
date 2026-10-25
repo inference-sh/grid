@@ -9,14 +9,21 @@ in output_meta here (see pricing.md).
 
 import logging
 
-from inferencesh import BaseApp, OutputMeta, function
+from inferencesh import BaseApp, OutputMeta, RawMeta, function
 from inferencesh.upstream import UpstreamClient
 
 from . import _generated as g
 
-# Free to run as written: every function reports an empty OutputMeta. Metered
-# functions report what they consumed instead (see pricing.md).
-FREE = OutputMeta(inputs=[], outputs=[])
+
+# Every response reports the credits the call used in key_metadata; billing
+# prices on them (see pricing.md).
+def credits_used(data) -> OutputMeta:
+    metadata = data.get("key_metadata") if isinstance(data, dict) else None
+    credits = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
+    if not isinstance(credits, (int, float)):
+        logging.getLogger(__name__).warning("context.dev response has no key_metadata.credits_consumed")
+        return OutputMeta(inputs=[], outputs=[])
+    return OutputMeta(inputs=[], outputs=[RawMeta(extra={"credits": credits})])
 
 
 class App(BaseApp):
@@ -28,37 +35,37 @@ class App(BaseApp):
     async def scrape(self, input_data: g.ScrapeInput) -> g.ScrapeOutput:
         """Scrape Anything"""
         data = await self.client.call(g.scrape, input_data)
-        return g.ScrapeOutput.from_response(data, output_meta=FREE)
+        return g.ScrapeOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.crawl.annotations, credentials=g.crawl.credentials)
     async def crawl(self, input_data: g.CrawlInput) -> g.CrawlOutput:
         """Crawl a website"""
         data = await self.client.call(g.crawl, input_data)
-        return g.CrawlOutput.from_response(data, output_meta=FREE)
+        return g.CrawlOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.search.annotations, credentials=g.search.credentials)
     async def search(self, input_data: g.SearchInput) -> g.SearchOutput:
         """Search the web"""
         data = await self.client.call(g.search, input_data)
-        return g.SearchOutput.from_response(data, output_meta=FREE)
+        return g.SearchOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.map_urls.annotations, credentials=g.map_urls.credentials)
     async def map_urls(self, input_data: g.MapUrlsInput) -> g.MapUrlsOutput:
         """Map URLs"""
         data = await self.client.call(g.map_urls, input_data)
-        return g.MapUrlsOutput.from_response(data, output_meta=FREE)
+        return g.MapUrlsOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.extract.annotations, credentials=g.extract.credentials)
     async def extract(self, input_data: g.ExtractInput) -> g.ExtractOutput:
         """Extract structured data"""
         data = await self.client.call(g.extract, input_data)
-        return g.ExtractOutput.from_response(data, output_meta=FREE)
+        return g.ExtractOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.answer.annotations, credentials=g.answer.credentials)
     async def answer(self, input_data: g.AnswerInput) -> g.AnswerOutput:
         """Answer a research task"""
         data = await self.client.call(g.answer, input_data)
-        return g.AnswerOutput.from_response(data, output_meta=FREE)
+        return g.AnswerOutput.from_response(data, output_meta=credits_used(data))
 
     async def unload(self):
         await self.client.aclose()

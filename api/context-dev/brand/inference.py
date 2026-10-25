@@ -9,14 +9,21 @@ in output_meta here (see pricing.md).
 
 import logging
 
-from inferencesh import BaseApp, OutputMeta, function
+from inferencesh import BaseApp, OutputMeta, RawMeta, function
 from inferencesh.upstream import UpstreamClient
 
 from . import _generated as g
 
-# Free to run as written: every function reports an empty OutputMeta. Metered
-# functions report what they consumed instead (see pricing.md).
-FREE = OutputMeta(inputs=[], outputs=[])
+
+# Every response reports the credits the call used in key_metadata; billing
+# prices on them (see pricing.md).
+def credits_used(data) -> OutputMeta:
+    metadata = data.get("key_metadata") if isinstance(data, dict) else None
+    credits = metadata.get("credits_consumed") if isinstance(metadata, dict) else None
+    if not isinstance(credits, (int, float)):
+        logging.getLogger(__name__).warning("context.dev response has no key_metadata.credits_consumed")
+        return OutputMeta(inputs=[], outputs=[])
+    return OutputMeta(inputs=[], outputs=[RawMeta(extra={"credits": credits})])
 
 
 class App(BaseApp):
@@ -28,37 +35,37 @@ class App(BaseApp):
     async def brand(self, input_data: g.BrandInput) -> g.BrandOutput:
         """Retrieve a brand"""
         data = await self.client.call(g.brand, input_data)
-        return g.BrandOutput.from_response(data, output_meta=FREE)
+        return g.BrandOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.brand_search.annotations, credentials=g.brand_search.credentials)
     async def brand_search(self, input_data: g.BrandSearchInput) -> g.BrandSearchOutput:
         """Auto-complete Brand"""
         data = await self.client.call(g.brand_search, input_data)
-        return g.BrandSearchOutput.from_response(data, output_meta=FREE)
+        return g.BrandSearchOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.styleguide.annotations, credentials=g.styleguide.credentials)
     async def styleguide(self, input_data: g.StyleguideInput) -> g.StyleguideOutput:
         """Extract a styleguide"""
         data = await self.client.call(g.styleguide, input_data)
-        return g.StyleguideOutput.from_response(data, output_meta=FREE)
+        return g.StyleguideOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.fonts.annotations, credentials=g.fonts.credentials)
     async def fonts(self, input_data: g.FontsInput) -> g.FontsOutput:
         """Extract fonts"""
         data = await self.client.call(g.fonts, input_data)
-        return g.FontsOutput.from_response(data, output_meta=FREE)
+        return g.FontsOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.naics.annotations, credentials=g.naics.credentials)
     async def naics(self, input_data: g.NaicsInput) -> g.NaicsOutput:
         """Classify NAICS codes"""
         data = await self.client.call(g.naics, input_data)
-        return g.NaicsOutput.from_response(data, output_meta=FREE)
+        return g.NaicsOutput.from_response(data, output_meta=credits_used(data))
 
     @function(annotations=g.sic.annotations, credentials=g.sic.credentials)
     async def sic(self, input_data: g.SicInput) -> g.SicOutput:
         """Classify SIC codes"""
         data = await self.client.call(g.sic, input_data)
-        return g.SicOutput.from_response(data, output_meta=FREE)
+        return g.SicOutput.from_response(data, output_meta=credits_used(data))
 
     async def unload(self):
         await self.client.aclose()
