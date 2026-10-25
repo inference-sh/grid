@@ -2706,5 +2706,496 @@
       "title": "AppOutput",
       "type": "object"
     }
+  },
+  "usage": {
+    "description": "How much of your Claude plan is used: the 5-hour and weekly windows\n(and any weekly limit scoped to a model), each with when it resets,\nas Claude Code's /usage shows them. Free: it reads your plan and runs\nno model.",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Claude plan usage",
+      "readOnlyHint": true,
+      "idempotentHint": true
+    },
+    "input_schema": {
+      "properties": {},
+      "title": "UsageInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "UsageAccount": {
+          "properties": {
+            "plan": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Claude plan id, such as max or pro.",
+              "title": "Plan"
+            },
+            "plan_label": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The plan's display name, such as Max 20x.",
+              "title": "Plan Label"
+            },
+            "email": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Claude account's email.",
+              "title": "Email"
+            },
+            "workspace": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The organization the account belongs to.",
+              "title": "Workspace"
+            }
+          },
+          "title": "UsageAccount",
+          "type": "object"
+        },
+        "UsageWindow": {
+          "properties": {
+            "id": {
+              "description": "Stable window id: five_hour, seven_day, or seven_day_<models> for a weekly limit scoped to models.",
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "description": "session (the 5-hour window) or weekly.",
+              "title": "Kind",
+              "type": "string"
+            },
+            "label": {
+              "description": "Display name, such as 5-hour, Weekly or Weekly \u00b7 Opus.",
+              "title": "Label",
+              "type": "string"
+            },
+            "used_percent": {
+              "description": "How much of the window is used, 0 to 100.",
+              "title": "Used Percent",
+              "type": "number"
+            },
+            "resets_at": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "When the window resets (RFC 3339), when Claude says.",
+              "title": "Resets At"
+            },
+            "duration_minutes": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The window's length in minutes.",
+              "title": "Duration Minutes"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "label",
+            "used_percent"
+          ],
+          "title": "UsageWindow",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "windows": {
+          "description": "The plan's rate-limit windows and how much of each is used.",
+          "items": {
+            "$ref": "#/$defs/UsageWindow"
+          },
+          "title": "Windows",
+          "type": "array"
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the windows were read (RFC 3339).",
+          "title": "Checked At"
+        },
+        "account": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UsageAccount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The account, when the credential can read it. A `claude setup-token` token cannot, so this is usually empty."
+        },
+        "unavailable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why the windows could not be read, when they could not.",
+          "title": "Unavailable"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "title": "UsageOutput",
+      "type": "object"
+    }
   }
 }
