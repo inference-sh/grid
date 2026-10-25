@@ -5,8 +5,9 @@
 
 POST /v1/messages streams a tool_use of the first offered tool whose name
 whose name contains "weather" when the latest user turn is plain text and
-mentions "tool"; a turn mentioning "slow" streams 40 parts 250ms apart; otherwise streams a short text reply. Any other path answers
-{}. Requests are logged to stderr (path, model, tool names).
+mentions "tool"; a turn mentioning "slow" streams 40 parts 250ms apart; otherwise streams a short text reply. GET
+/api/oauth/usage answers a plan at 12.5% of its 5-hour window and 30% of its
+week. Any other path answers {}. Requests are logged to stderr (path, model, tool names).
 """
 import json
 import sys
@@ -47,6 +48,9 @@ class H(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
     def do_GET(self):
+        if self.path.split("?")[0] == "/api/oauth/usage":
+            return self._json({"five_hour": {"utilization": 12.5, "resets_at": "2026-10-25T15:00:00Z"},
+                               "limits": [{"kind": "weekly_all", "percent": 30, "resets_at": "2026-10-27T00:00:00Z"}]})
         self._json({})
 
     def do_HEAD(self):
