@@ -7,7 +7,9 @@ bin/belt-linux-<arch>) and writes one JSON request per run on its stdin:
      "token": <CLAUDE_CODE_OAUTH_TOKEN>, "input": <LLMInput>}
 
 serve answers on stdout with zero or more {"id", "delta"} lines, then exactly
-one {"id", "output"} or {"id", "error", "code"} line. Requests may overlap;
+one {"id", "output"} or {"id", "error", "code"} line. A request with
+"usage": true instead of "input" is answered with one {"id", "usage"} line:
+the token's plan windows, what Claude Code's /usage shows. Requests may overlap;
 lines are routed to their run by id. serve finds the `claude` binary through
 CLAUDE_BIN, which setup points at a pinned @anthropic-ai/claude-code installed
 with the worker image's npm.
@@ -29,9 +31,11 @@ import subprocess
 import sys
 import uuid
 from pathlib import Path
-from typing import Any, AsyncGenerator, Dict, Optional, Tuple
+from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 
-from inferencesh import OutputMeta
+from pydantic import BaseModel, Field
+
+from inferencesh import BaseAppInput, BaseAppOutput, OutputMeta, function
 from inferencesh.models.llm import LLMUsage
 
 logger = logging.getLogger(__name__)
@@ -233,10 +237,11 @@ class Serve:
                 break
             print(f"[belt harness serve] {line.decode(errors='replace').rstrip()}", file=sys.stderr, flush=True)
 
-    async def request(self, rid: str, model: str, token: str, input_json: Dict[str, Any]) -> AsyncGenerator[Dict[str, Any], None]:
-        """Yields serve's lines for one request, ending with its output or
-        error line, or {"cancelled": True} after cancel(rid). A request
-        abandoned before its end (the generator closed) is cancelled in serve."""
+    async def request(self, rid: str, model: str, token: str, input_json: Optional[Dict[str, Any]], usage: bool = False) -> AsyncGenerator[Dict[str, Any], None]:
+        """Yields serve's lines for one request, ending with its output, usage
+        or error line, or {"cancelled": True} after cancel(rid). A request
+        abandoned before its end (the generator closed) is cancelled in serve.
+        usage asks for the token's plan usage instead of a model call."""
         await self.start()
         if rid in self.queues:
             rid = f"{rid}-{uuid.uuid4().hex[:8]}"
@@ -244,13 +249,18 @@ class Serve:
         self.queues[rid] = q
         done = False
         try:
-            line = json.dumps({"id": rid, "harness": "claude", "model": model, "token": token, "input": input_json})
+            req: Dict[str, Any] = {"id": rid, "harness": "claude", "model": model, "token": token}
+            if usage:
+                req["usage"] = True
+            else:
+                req["input"] = input_json
+            line = json.dumps(req)
             async with self._write_lock:
                 self.proc.stdin.write(line.encode() + b"\n")
                 await self.proc.stdin.drain()
             while True:
                 msg = await q.get()
-                if "output" in msg or "error" in msg or msg.get("cancelled"):
+                if "output" in msg or "usage" in msg or "error" in msg or msg.get("cancelled"):
                     done = True
                 yield msg
                 if done:
@@ -312,3 +322,96 @@ async def stream_run(serve: Serve, rid: str, model: str, input_data) -> AsyncGen
             code = msg.get("code") or "failed"
             text = msg.get("error") or (AUTH_FALLBACK if code == "auth" else "Claude Code failed")
             raise ClaudeCodeError(text.replace(token, "[redacted]"), code)
+
+
+class UsageInput(BaseAppInput):
+    pass
+
+
+class UsageWindow(BaseModel):
+    id: str = Field(description="Stable window id: five_hour, seven_day, or seven_day_<models> for a weekly limit scoped to models.")
+    kind: str = Field(description="session (the 5-hour window) or weekly.")
+    label: str = Field(description="Display name, such as 5-hour, Weekly or Weekly · Opus.")
+    used_percent: float = Field(description="How much of the window is used, 0 to 100.")
+    resets_at: Optional[str] = Field(default=None, description="When the window resets (RFC 3339), when Claude says.")
+    duration_minutes: Optional[int] = Field(default=None, description="The window's length in minutes.")
+
+
+class UsageAccount(BaseModel):
+    plan: Optional[str] = Field(default=None, description="The Claude plan id, such as max or pro.")
+    plan_label: Optional[str] = Field(default=None, description="The plan's display name, such as Max 20x.")
+    email: Optional[str] = Field(default=None, description="The Claude account's email.")
+    workspace: Optional[str] = Field(default=None, description="The organization the account belongs to.")
+
+
+class UsageOutput(BaseAppOutput):
+    windows: List[UsageWindow] = Field(default_factory=list, description="The plan's rate-limit windows and how much of each is used.")
+    checked_at: Optional[str] = Field(default=None, description="When the windows were read (RFC 3339).")
+    account: Optional[UsageAccount] = Field(default=None, description="The account, when the credential can read it. A `claude setup-token` token cannot, so this is usually empty.")
+    unavailable: Optional[str] = Field(default=None, description="Why the windows could not be read, when they could not.")
+
+
+def usage_output(snapshot: Dict[str, Any]) -> UsageOutput:
+    """UsageOutput from serve's usage snapshot (agentprotocol UsageSnapshot)."""
+    limits = snapshot.get("limits") or {}
+    acct = snapshot.get("account") or {}
+    account = None
+    if any(acct.get(k) for k in ("plan", "plan_label", "email", "workspace")):
+        account = UsageAccount(**{k: acct.get(k) or None for k in ("plan", "plan_label", "email", "workspace")})
+    unavailable = None
+    if limits.get("unavailable"):
+        u = limits["unavailable"]
+        unavailable = u.get("message") or u.get("reason") or "unavailable"
+    return UsageOutput(
+        windows=[
+            UsageWindow(
+                id=w.get("id", ""),
+                kind=w.get("kind", ""),
+                label=w.get("label", ""),
+                used_percent=float(w.get("used_percent") or 0),
+                resets_at=w.get("resets_at") or None,
+                duration_minutes=w.get("duration_minutes") or None,
+            )
+            for w in limits.get("windows") or []
+        ],
+        checked_at=limits.get("checked_at") or None,
+        account=account,
+        unavailable=unavailable,
+    )
+
+
+async def read_usage(serve: Serve, rid: str) -> UsageOutput:
+    """The connected token's plan usage. Raises ClaudeCodeError on a missing
+    token or serve's error line."""
+    token = (os.environ.get(TOKEN_ENV) or "").strip()
+    if not token:
+        raise ClaudeCodeError(MISSING_TOKEN, "auth")
+    async for msg in serve.request(rid, "", token, None, usage=True):
+        if "usage" in msg:
+            out = usage_output(msg["usage"] or {})
+            if out.unavailable:
+                out.unavailable = out.unavailable.replace(token, "[redacted]")
+            return out
+        if "error" in msg:
+            code = msg.get("code") or "failed"
+            text = msg.get("error") or (AUTH_FALLBACK if code == "auth" else "Claude Code failed")
+            raise ClaudeCodeError(text.replace(token, "[redacted]"), code)
+    raise ClaudeCodeError("belt harness serve ended the usage request without an answer")
+
+
+class UsageMixin:
+    """The app's usage function: the connected Claude plan's rate-limit
+    windows. Needs self.serve, a started Serve."""
+
+    @function(annotations={"title": "Claude plan usage", "readOnlyHint": True, "idempotentHint": True})
+    async def usage(self, input_data: UsageInput) -> UsageOutput:
+        """How much of your Claude plan is used: the 5-hour and weekly windows
+        (and any weekly limit scoped to a model), each with when it resets,
+        as Claude Code's /usage shows them. Free: it reads your plan and runs
+        no model."""
+        if not getattr(self, "serve", None):
+            raise RuntimeError("belt harness serve not started. Call setup() first.")
+        context = getattr(self, "context", None)
+        metadata = getattr(context, "metadata", None)
+        rid = getattr(metadata, "task_id", None) or "local"
+        return await read_usage(self.serve, f"{rid}-usage")

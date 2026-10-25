@@ -155,6 +155,51 @@ def test_openai_function(env):
     print("openai last:", chunks[-1].model_dump(exclude_none=True) if hasattr(chunks[-1], "model_dump") else chunks[-1])
 
 
+@pytest.mark.parametrize("app_dir", list(APPS))
+def test_usage_function(env, app_dir):
+    async def go():
+        app = await started(app_dir)
+        app.context = type("C", (), {"metadata": type("M", (), {"task_id": "u1"})()})()
+        try:
+            return await app.usage(h.UsageInput())
+        finally:
+            await app.unload()
+    out = asyncio.run(go())
+    assert [(w.id, w.used_percent, w.label) for w in out.windows] == [("five_hour", 12.5, "5-hour")]
+    assert out.windows[0].resets_at == "2026-10-25T15:00:00Z" and out.windows[0].duration_minutes == 300
+    assert out.account is None and out.unavailable is None
+    reqs = [json.loads(l) for l in env.read_text().splitlines()]
+    assert reqs[-1]["usage"] is True and "input" not in reqs[-1] and reqs[-1]["leaked_env"] == []
+
+
+def test_usage_unreadable(env, monkeypatch):
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "bad")
+    async def go():
+        app = await started("opus-5-5")
+        app.context = None
+        try:
+            return await app.usage(h.UsageInput())
+        finally:
+            await app.unload()
+    out = asyncio.run(go())
+    assert out.windows == [] and "401" in out.unavailable
+
+
+def test_usage_missing_token(env, monkeypatch):
+    monkeypatch.delenv("CLAUDE_CODE_OAUTH_TOKEN")
+    async def go():
+        app = await started("opus-5-5")
+        app.context = None
+        try:
+            await app.usage(h.UsageInput())
+        finally:
+            await app.unload()
+    # The app's helper is its own module (opus-5-5.claude_code_helper).
+    with pytest.raises(RuntimeError) as e:
+        asyncio.run(go())
+    assert type(e.value).__name__ == "ClaudeCodeError" and e.value.code == "auth"
+
+
 def test_wire_input_files_as_strings(tmp_path):
     from inferencesh.models.llm import LLMInput
     img = tmp_path / "a.png"
@@ -258,6 +303,21 @@ def test_abandoned_run_is_cancelled_in_serve(env):
     asyncio.run(go())
     lines = [json.loads(l) for l in env.read_text().splitlines()]
     assert any(l.get("id") == "task-drop" and l.get("cancel") for l in lines)
+
+
+def test_real_serve_usage(real):
+    async def go():
+        app = await started("opus-5-5")
+        app.context = None
+        try:
+            return await app.usage(h.UsageInput())
+        finally:
+            await app.unload()
+    out = asyncio.run(go())
+    print("usage:", out.model_dump(exclude_none=True))
+    got = {w.id: w.used_percent for w in out.windows}
+    assert got == {"five_hour": 12.5, "seven_day": 30}, got
+    assert out.unavailable is None
 
 
 def test_real_serve_cancel(real):

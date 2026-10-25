@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Test stand-in for `belt harness serve` (the protocol in claude_code_helper).
 
-Per request: the token "bad" answers code "auth"; input text "TOOL" streams a
+Per request: a "usage" request answers a plan at 12.5% of its 5-hour window,
+or, for the token "bad", windows that could not be read; the token "bad"
+answers code "auth"; input text "TOOL" streams a
 tool call; "SLOW" streams a delta every 50ms until a {"id", "cancel": true}
 line (then nothing more); anything else streams the text back in two deltas. Every line read
 is appended to $FAKE_BELT_LOG (token replaced) when set.
@@ -42,7 +44,19 @@ for line in sys.stdin:
     if req.get("cancel"):
         cancelled.add(req["id"])
         continue
-    rid, tok, inp = req["id"], req["token"], req["input"]
+    rid, tok = req["id"], req["token"]
+    if req.get("usage"):
+        if tok == "bad":
+            out({"id": rid, "usage": {"account": {"status": "authenticated", "type": "subscription"},
+                                      "limits": {"checked_at": "2026-10-25T10:00:00Z", "windows": [],
+                                                 "unavailable": {"reason": "probe_failed", "message": "claude: oauth usage: 401 Unauthorized"}}}})
+        else:
+            out({"id": rid, "usage": {"account": {"status": "authenticated", "type": "subscription"},
+                                      "limits": {"checked_at": "2026-10-25T10:00:00Z", "windows": [
+                                          {"id": "five_hour", "kind": "session", "label": "5-hour", "used_percent": 12.5,
+                                           "resets_at": "2026-10-25T15:00:00Z", "duration_minutes": 300}]}}})
+        continue
+    inp = req["input"]
     usage = {"stop_reason": "stop", "prompt_tokens": 12, "completion_tokens": 5, "total_tokens": 17}
     if tok == "bad":
         out({"id": rid, "error": "Claude rejected the credential; reconnect Claude Code (credentials → Claude Code)", "code": "auth"})

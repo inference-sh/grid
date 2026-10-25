@@ -4,7 +4,7 @@ from pydantic import Field
 from inferencesh import BaseApp, BaseAppOutput
 from inferencesh.models.llm import LLMInput, LLMOutput, LLMDelta
 from inferencesh.openai import OpenAIChatMixin
-from .claude_code_helper import Serve, ensure_claude, find_belt, stream_run
+from .claude_code_helper import Serve, UsageMixin, ensure_claude, find_belt, stream_run
 
 DEFAULT_MODEL = "claude-haiku-5-5"
 
@@ -17,7 +17,7 @@ class AppOutput(LLMOutput, BaseAppOutput):
     pass
 
 
-class App(OpenAIChatMixin, BaseApp):
+class App(UsageMixin, OpenAIChatMixin, BaseApp):
     def __init__(self):
         super().__init__()
         self.serve = None

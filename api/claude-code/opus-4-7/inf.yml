@@ -17,6 +17,8 @@ functions:
       description: Chat completion (inference.sh LLMInput/LLMOutput)
     - name: openai
       description: OpenAI Chat Completions compatible entry point
+    - name: usage
+      description: Your Claude plan's usage windows, what Claude Code's /usage shows
 images:
     card: ""
     thumbnail: ""
