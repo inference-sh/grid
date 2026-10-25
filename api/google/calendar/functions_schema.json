@@ -5,7 +5,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.app.created"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.app.created"
+        ]
       }
     ],
     "annotations": {
@@ -138,7 +141,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -248,8 +251,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -368,7 +383,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.events"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.events"
+        ]
       }
     ],
     "annotations": {
@@ -534,7 +552,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -644,8 +662,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -764,7 +794,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.calendars"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.calendars"
+        ]
       }
     ],
     "annotations": {
@@ -885,7 +918,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -995,8 +1028,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1103,7 +1148,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.events"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.events"
+        ]
       }
     ],
     "annotations": {
@@ -1230,7 +1278,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -1340,8 +1388,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1448,7 +1508,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.events.readonly"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.events.readonly"
+        ]
       }
     ],
     "annotations": {
@@ -1605,7 +1668,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -1715,8 +1778,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1898,7 +1973,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.acls.readonly"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.acls.readonly"
+        ]
       }
     ],
     "annotations": {
@@ -2059,7 +2137,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -2169,8 +2247,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -2280,7 +2370,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.calendarlist.readonly"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.calendarlist.readonly"
+        ]
       }
     ],
     "annotations": {
@@ -2434,7 +2527,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -2544,8 +2637,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -2655,7 +2760,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.events.readonly"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.events.readonly"
+        ]
       }
     ],
     "annotations": {
@@ -2897,7 +3005,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -3007,8 +3115,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -3118,7 +3238,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.acls"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.acls"
+        ]
       }
     ],
     "annotations": {
@@ -3263,7 +3386,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -3373,8 +3496,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -3487,7 +3622,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.acls"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.acls"
+        ]
       }
     ],
     "annotations": {
@@ -3614,7 +3752,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -3724,8 +3862,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -3838,7 +3988,10 @@
     "capabilities": [],
     "credentials": [
       {
-        "key": "google.calendar.events"
+        "slug": "google",
+        "capabilities": [
+          "google.calendar.events"
+        ]
       }
     ],
     "annotations": {
@@ -3995,7 +4148,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -4105,8 +4258,20 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
               "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
