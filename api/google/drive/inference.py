@@ -101,6 +101,19 @@ class DeleteFileOutput(BaseAppOutput):
     success: bool = Field(description="Whether the deletion succeeded")
 
 
+class UpdateFileInput(BaseAppInput):
+    file_id: str = Field(description="The ID of the file or folder to rename or move")
+    name: str = Field(default="", description="New name (empty keeps the current name)")
+    folder_id: str = Field(default="", description="Move into this folder ID (empty keeps the current folder)")
+
+
+class UpdateFileOutput(BaseAppOutput):
+    id: str = Field(description="File ID")
+    name: str = Field(description="File name after the update")
+    parents: Optional[List[str]] = Field(None, description="Parent folder IDs after the update")
+    web_view_link: Optional[str] = Field(None, description="Link to view the file in Drive")
+
+
 class SearchFilesInput(BaseAppInput):
     query: str = Field(description="Full-text search query")
     max_results: int = Field(default=100, ge=1, le=1000, description="Maximum number of results per page")
@@ -317,6 +330,34 @@ class App(BaseApp):
 
         self.logger.info(f"Deleted file: {input_data.file_id}")
         return DeleteFileOutput(success=True)
+
+    # --- update_file ---
+    @function(
+        credentials=[{"key": "google.drive"}],
+        annotations={"title": "Rename or move file", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
+    )
+    async def update_file(self, input_data: UpdateFileInput) -> UpdateFileOutput:
+        """Rename a file or folder, move it to another folder, or both."""
+        self.logger.info(f"Updating file: {input_data.file_id}, name={input_data.name!r}, folder_id={input_data.folder_id!r}")
+        if not input_data.name and not input_data.folder_id:
+            raise ValueError("give a new name, a folder_id to move into, or both")
+
+        params = dict(fileId=input_data.file_id, fields=self._file_fields("parents"))
+        if input_data.name:
+            params["body"] = {"name": input_data.name}
+        if input_data.folder_id:
+            current = self.service.files().get(fileId=input_data.file_id, fields="parents").execute()
+            params["addParents"] = input_data.folder_id
+            params["removeParents"] = ",".join(p for p in current.get("parents", []) if p != input_data.folder_id)
+        f = self.service.files().update(**params).execute()
+
+        self.logger.info(f"Updated file: {f['id']} -> {f['name']}")
+        return UpdateFileOutput(
+            id=f["id"],
+            name=f["name"],
+            parents=f.get("parents"),
+            web_view_link=f.get("webViewLink"),
+        )
 
     # --- search_files ---
     @function(
