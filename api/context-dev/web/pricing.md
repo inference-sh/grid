@@ -12,7 +12,7 @@ Price from the input and from what the call returned, never from the vendor's re
 
 | function | upstream rate | priced from | notes |
 |----------|---------------|-------------|-------|
-| scrape | 1 credit; 2 with sharedParams.actions; +4 with formats.json, +1 formats.highlights, +1 formats.product (PDF OCR +1 per page is not priced) | input | |
+| scrape | 1 credit; 2 with sharedParams.actions; +4 with formats.json, +1 formats.highlights, +1 formats.product +1 per PDF page OCR recovers (sharedParams.parsers.pdf.ocr=auto): from `ocr_pages` when the response carries it, else every page in startPage..endPage, else unpriced | input, output | |
 | crawl | 1 credit per page returned | outputs[0].extra.pages | |
 | search | 1 credit per 10 results returned, rounded up; +1 per 10 each with markdownOptions or highlightsOptions | outputs[0].extra.results, input | |
 | map_urls | 1 credit; 2 with search | input | |

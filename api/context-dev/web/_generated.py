@@ -304,7 +304,6 @@ class HighlightsOptions(BaseModel):
 
 class Markdown(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     final_dom_state: Annotated[
@@ -330,7 +329,6 @@ class Markdown(BaseModel):
 
 class Highlights(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     highlights: Annotated[
@@ -484,7 +482,6 @@ class AgeMs1(RootModel[float]):
 
 class CacheMetadata(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     status: Annotated[
@@ -532,7 +529,6 @@ class LenientPartialTimeout(BaseModel):
 
 class PageMetadataAlternate(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     href: Annotated[str | None, Field(description="Resolved alternate URL.")] = None
@@ -562,7 +558,6 @@ class Level1(RootModel[float]):
 
 class PageMetadataHeading(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     level: Annotated[
@@ -811,7 +806,6 @@ class Height1(RootModel[float]):
 
 class ScrapeImage(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     url: Annotated[
@@ -930,7 +924,6 @@ class ScrapeMarkdownParams(BaseModel):
 
 class ScrapeMetadata(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     title: Annotated[
@@ -1123,7 +1116,6 @@ class ScrapePdfOptions(BaseModel):
 
 class ScrapeProduct(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     name: Annotated[str | None, Field(description="Product name.")] = None
@@ -1184,7 +1176,6 @@ class ScrapeProductParams(BaseModel):
 
 class ScrapeProductResult(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     is_product_page: Annotated[
@@ -1256,7 +1247,6 @@ class ScrapeProfile2(BaseModel):
 
 class Html(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1281,7 +1271,6 @@ class Html(BaseModel):
 
 class Markdown1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1306,7 +1295,6 @@ class Markdown1(BaseModel):
 
 class Screenshot(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1331,7 +1319,6 @@ class Screenshot(BaseModel):
 
 class Images(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1356,7 +1343,6 @@ class Images(BaseModel):
 
 class Data(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     content_type: Annotated[
@@ -1374,7 +1360,6 @@ class Data(BaseModel):
 
 class Bytes(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1399,7 +1384,6 @@ class Bytes(BaseModel):
 
 class Parsed(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1430,7 +1414,6 @@ class Parsed(BaseModel):
 
 class Highlights1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1455,7 +1438,6 @@ class Highlights1(BaseModel):
 
 class Json(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1487,7 +1469,6 @@ class Json(BaseModel):
 
 class Product(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     error_code: Annotated[
@@ -1512,7 +1493,6 @@ class Product(BaseModel):
 
 class Profile(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     id: Annotated[
@@ -1526,7 +1506,6 @@ class Profile(BaseModel):
 
 class ScrapeResponse(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     url: Annotated[
