@@ -18,12 +18,19 @@ EXPORT_MIME_TYPES = {
 }
 
 
+def _escape(value: str) -> str:
+    """Escape a value for a single-quoted Drive query string."""
+    return value.replace("\\", "\\\\").replace("'", "\\'")
+
+
 # --- Input / Output models ---
 
 class ListFilesInput(BaseAppInput):
     query: str = Field(default="", description="Drive search query (uses Drive query syntax)")
-    max_results: int = Field(default=10, ge=1, le=1000, description="Maximum number of files to return")
+    max_results: int = Field(default=100, ge=1, le=1000, description="Maximum number of files to return per page")
     folder_id: str = Field(default="", description="Restrict listing to this folder ID")
+    page_token: str = Field(default="", description="next_page_token from a previous call, to get the next page")
+    include_trashed: bool = Field(default=False, description="Include files in the trash")
 
 
 class FileInfo(BaseAppOutput):
@@ -36,7 +43,8 @@ class FileInfo(BaseAppOutput):
 
 
 class ListFilesOutput(BaseAppOutput):
-    files: List[FileInfo] = Field(description="List of matching files")
+    files: List[FileInfo] = Field(description="List of matching files, newest modified first")
+    next_page_token: Optional[str] = Field(None, description="Set when more files exist; pass it as page_token to get them")
 
 
 class GetFileInput(BaseAppInput):
@@ -95,11 +103,13 @@ class DeleteFileOutput(BaseAppOutput):
 
 class SearchFilesInput(BaseAppInput):
     query: str = Field(description="Full-text search query")
-    max_results: int = Field(default=10, ge=1, le=1000, description="Maximum number of results")
+    max_results: int = Field(default=100, ge=1, le=1000, description="Maximum number of results per page")
+    page_token: str = Field(default="", description="next_page_token from a previous call, to get the next page")
 
 
 class SearchFilesOutput(BaseAppOutput):
-    files: List[FileInfo] = Field(description="List of matching files")
+    files: List[FileInfo] = Field(description="List of matching files, most relevant first")
+    next_page_token: Optional[str] = Field(None, description="Set when more results exist; pass it as page_token to get them")
 
 
 # --- App ---
@@ -142,24 +152,28 @@ class App(BaseApp):
 
         q_parts = []
         if input_data.folder_id:
-            q_parts.append(f"'{input_data.folder_id}' in parents")
+            q_parts.append(f"'{_escape(input_data.folder_id)}' in parents")
         if input_data.query:
-            q_parts.append(input_data.query)
-        q = " and ".join(q_parts) if q_parts else None
+            q_parts.append(f"({input_data.query})")
+        if not input_data.include_trashed:
+            q_parts.append("trashed = false")
+        q = " and ".join(q_parts)
 
-        results = (
-            self.service.files()
-            .list(
-                q=q,
-                pageSize=input_data.max_results,
-                fields=f"files({self._file_fields()})",
-            )
-            .execute()
+        params = dict(
+            q=q,
+            pageSize=input_data.max_results,
+            fields=f"nextPageToken, files({self._file_fields()})",
         )
+        # Drive refuses orderBy on fullText queries; those come back by relevance.
+        if "fullText" not in input_data.query:
+            params["orderBy"] = "modifiedTime desc"
+        if input_data.page_token:
+            params["pageToken"] = input_data.page_token
+        results = self.service.files().list(**params).execute()
 
         files = [self._to_file_info(f) for f in results.get("files", [])]
-        self.logger.info(f"Found {len(files)} files")
-        return ListFilesOutput(files=files)
+        self.logger.info(f"Found {len(files)} files, more={bool(results.get('nextPageToken'))}")
+        return ListFilesOutput(files=files, next_page_token=results.get("nextPageToken"))
 
     # --- get_file ---
     @function(
@@ -312,17 +326,15 @@ class App(BaseApp):
     async def search_files(self, input_data: SearchFilesInput) -> SearchFilesOutput:
         self.logger.info(f"Searching files: query={input_data.query!r}, max={input_data.max_results}")
 
-        q = f"fullText contains '{input_data.query}'"
-        results = (
-            self.service.files()
-            .list(
-                q=q,
-                pageSize=input_data.max_results,
-                fields=f"files({self._file_fields()})",
-            )
-            .execute()
+        params = dict(
+            q=f"fullText contains '{_escape(input_data.query)}' and trashed = false",
+            pageSize=input_data.max_results,
+            fields=f"nextPageToken, files({self._file_fields()})",
         )
+        if input_data.page_token:
+            params["pageToken"] = input_data.page_token
+        results = self.service.files().list(**params).execute()
 
         files = [self._to_file_info(f) for f in results.get("files", [])]
-        self.logger.info(f"Search returned {len(files)} files")
-        return SearchFilesOutput(files=files)
+        self.logger.info(f"Search returned {len(files)} files, more={bool(results.get('nextPageToken'))}")
+        return SearchFilesOutput(files=files, next_page_token=results.get("nextPageToken"))

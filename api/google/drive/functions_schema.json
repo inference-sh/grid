@@ -1544,8 +1544,8 @@
           "type": "string"
         },
         "max_results": {
-          "default": 10,
-          "description": "Maximum number of files to return",
+          "default": 100,
+          "description": "Maximum number of files to return per page",
           "maximum": 1000,
           "minimum": 1,
           "title": "Max Results",
@@ -1556,6 +1556,18 @@
           "description": "Restrict listing to this folder ID",
           "title": "Folder Id",
           "type": "string"
+        },
+        "page_token": {
+          "default": "",
+          "description": "next_page_token from a previous call, to get the next page",
+          "title": "Page Token",
+          "type": "string"
+        },
+        "include_trashed": {
+          "default": false,
+          "description": "Include files in the trash",
+          "title": "Include Trashed",
+          "type": "boolean"
         }
       },
       "title": "ListFilesInput",
@@ -1937,12 +1949,25 @@
       },
       "properties": {
         "files": {
-          "description": "List of matching files",
+          "description": "List of matching files, newest modified first",
           "items": {
             "$ref": "#/$defs/FileInfo"
           },
           "title": "Files",
           "type": "array"
+        },
+        "next_page_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set when more files exist; pass it as page_token to get them",
+          "title": "Next Page Token"
         },
         "output_meta": {
           "anyOf": [
@@ -1991,12 +2016,18 @@
           "type": "string"
         },
         "max_results": {
-          "default": 10,
-          "description": "Maximum number of results",
+          "default": 100,
+          "description": "Maximum number of results per page",
           "maximum": 1000,
           "minimum": 1,
           "title": "Max Results",
           "type": "integer"
+        },
+        "page_token": {
+          "default": "",
+          "description": "next_page_token from a previous call, to get the next page",
+          "title": "Page Token",
+          "type": "string"
         }
       },
       "required": [
@@ -2381,12 +2412,25 @@
       },
       "properties": {
         "files": {
-          "description": "List of matching files",
+          "description": "List of matching files, most relevant first",
           "items": {
             "$ref": "#/$defs/FileInfo"
           },
           "title": "Files",
           "type": "array"
+        },
+        "next_page_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set when more results exist; pass it as page_token to get them",
+          "title": "Next Page Token"
         },
         "output_meta": {
           "anyOf": [
