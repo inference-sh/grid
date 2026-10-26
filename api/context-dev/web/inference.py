@@ -41,7 +41,11 @@ class App(BaseApp):
     async def scrape(self, input_data: g.ScrapeInput) -> g.ScrapeOutput:
         """Scrape Anything"""
         data = await self.client.call(g.scrape, input_data)
-        return g.ScrapeOutput.from_response(data, output_meta=usage(data))
+        # context.dev reports ocr_pages on batch results only; read it here too
+        # so a scrape is priced from it once they add it (pricing.md, scrape).
+        ocr = data.get("ocr_pages") if isinstance(data, dict) else None
+        meta = usage(data, ocr_pages=ocr) if isinstance(ocr, int) else usage(data)
+        return g.ScrapeOutput.from_response(data, output_meta=meta)
 
     @function(annotations=g.crawl.annotations, credentials=g.crawl.credentials)
     async def crawl(self, input_data: g.CrawlInput) -> g.CrawlOutput:

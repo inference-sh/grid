@@ -757,7 +757,6 @@ class AgeMs1(RootModel[float]):
 
 class CacheMetadata(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     status: Annotated[

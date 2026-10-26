@@ -137,7 +137,6 @@ class Score1(RootModel[float]):
 
 class Name(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     full: str | None = None
@@ -147,7 +146,6 @@ class Name(BaseModel):
 
 class Location1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     display: str | None = None
@@ -159,7 +157,6 @@ class Location1(BaseModel):
 
 class Organization(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     name: str | None = None
@@ -184,7 +181,6 @@ class Day1(RootModel[float]):
 
 class StartDate(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -210,7 +206,6 @@ class Day3(RootModel[float]):
 
 class EndDate(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -220,7 +215,6 @@ class EndDate(BaseModel):
 
 class CurrentRole(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     title: str | None = None
@@ -250,7 +244,6 @@ class Day5(RootModel[float]):
 
 class StartDate1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -276,7 +269,6 @@ class Day7(RootModel[float]):
 
 class EndDate1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -286,7 +278,6 @@ class EndDate1(BaseModel):
 
 class ExperienceItem(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     title: str | None = None
@@ -300,7 +291,6 @@ class ExperienceItem(BaseModel):
 
 class Institution(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     name: str | None = None
@@ -325,7 +315,6 @@ class Day9(RootModel[float]):
 
 class StartDate2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -351,7 +340,6 @@ class Day11(RootModel[float]):
 
 class EndDate2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     year: int | float | None = None
@@ -361,7 +349,6 @@ class EndDate2(BaseModel):
 
 class EducationItem(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     institution: Institution | None = None
@@ -374,7 +361,6 @@ class EducationItem(BaseModel):
 
 class Person(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     name: Name | None = None
@@ -415,7 +401,6 @@ class Person(BaseModel):
 
 class PersonEnrichmentCandidateMatch(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     status: str | None = None
@@ -425,7 +410,6 @@ class PersonEnrichmentCandidateMatch(BaseModel):
 
 class PersonEnrichmentNotFoundMatch(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     status: str | None = None
@@ -670,7 +654,6 @@ class PersonEnrichmentRequest(BaseModel):
 
 class PersonEnrichmentResponse(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         populate_by_name=True,
     )
     partial: Annotated[
