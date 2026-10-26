@@ -13,7 +13,7 @@ google-auth-httplib2==0.3.0
 googleapis-common-protos==1.73.1
 httplib2==0.31.2
 idna==3.11
-inferencesh==0.35.0
+inferencesh==0.36.0
 ninja==1.13.2
 numpy==2.4.6
 opentelemetry-api==1.45.1
