@@ -8,7 +8,7 @@ charset-normalizer==3.4.7
     # via requests
 idna==3.13
     # via requests
-inferencesh==0.6.32
+inferencesh==0.36.0
     # via -r requirements.txt
 mutagen==1.47.0
     # via -r requirements.txt
@@ -31,5 +31,5 @@ typing-inspection==0.4.2
     # via pydantic
 urllib3==2.6.3
     # via requests
-yt-dlp==2026.4.30.234007.dev0
+yt-dlp==2026.10.23.233055.dev0
     # via -r requirements.txt
