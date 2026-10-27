@@ -407,8 +407,9 @@ class UsageMixin:
     async def usage(self, input_data: UsageInput) -> UsageOutput:
         """How much of your Claude plan is used: the 5-hour and weekly windows
         (and any weekly limit scoped to a model), each with when it resets,
-        as Claude Code's /usage shows them. Free: it reads your plan and runs
-        no model."""
+        as Claude Code's /usage shows them. No inference.sh charge; with a
+        setup-token it sends Claude Code's own one-token quota check, which
+        counts that token against your plan."""
         if not getattr(self, "serve", None):
             raise RuntimeError("belt harness serve not started. Call setup() first.")
         context = getattr(self, "context", None)
