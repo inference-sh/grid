@@ -12,4 +12,4 @@ Price from the input and from what the call returned, never from the vendor's re
 
 | function | upstream rate | priced from | notes |
 |----------|---------------|-------------|-------|
-| company_search | 2 credits | flat | |
+| company_search | 2 credits; a request with no matches is free | outputs[0].extra.results | |

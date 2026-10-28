@@ -41,7 +41,7 @@ class App(BaseApp):
     async def company_search(self, input_data: g.CompanySearchInput) -> g.CompanySearchOutput:
         """Search companies"""
         data = await self.client.call(g.company_search, input_data)
-        return g.CompanySearchOutput.from_response(data, output_meta=usage(data))
+        return g.CompanySearchOutput.from_response(data, output_meta=usage(data, results=count(data, "results")))
 
     async def unload(self):
         await self.client.aclose()

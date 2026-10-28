@@ -77,14 +77,6 @@ apps:
           op: GET /web/fonts
           method: GET
           path: /web/fonts
-        - name: naics
-          op: GET /web/naics
-          method: GET
-          path: /web/naics
-        - name: sic
-          op: GET /web/sic
-          method: GET
-          path: /web/sic
     - name: people
       title: Context.dev People
       functions:

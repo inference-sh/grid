@@ -61,17 +61,5 @@ class App(BaseApp):
         data = await self.client.call(g.fonts, input_data)
         return g.FontsOutput.from_response(data, output_meta=usage(data))
 
-    @function(annotations=g.naics.annotations, credentials=g.naics.credentials)
-    async def naics(self, input_data: g.NaicsInput) -> g.NaicsOutput:
-        """Classify NAICS codes"""
-        data = await self.client.call(g.naics, input_data)
-        return g.NaicsOutput.from_response(data, output_meta=usage(data))
-
-    @function(annotations=g.sic.annotations, credentials=g.sic.credentials)
-    async def sic(self, input_data: g.SicInput) -> g.SicOutput:
-        """Classify SIC codes"""
-        data = await self.client.call(g.sic, input_data)
-        return g.SicOutput.from_response(data, output_meta=usage(data))
-
     async def unload(self):
         await self.client.aclose()

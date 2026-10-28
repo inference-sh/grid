@@ -57,7 +57,12 @@ class App(BaseApp):
     async def search(self, input_data: g.SearchInput) -> g.SearchOutput:
         """Search the web"""
         data = await self.client.call(g.search, input_data)
-        return g.SearchOutput.from_response(data, output_meta=usage(data, results=count(data, "results")))
+        results = data.get("results") if isinstance(data, dict) else None
+        results = [r for r in results if isinstance(r, dict)] if isinstance(results, list) else []
+        markdown = sum(1 for r in results if (r.get("markdown") or {}).get("markdown"))
+        highlights = sum(1 for r in results if (r.get("highlights") or {}).get("highlights"))
+        return g.SearchOutput.from_response(data, output_meta=usage(
+            data, results=len(results), markdown_results=markdown, highlight_results=highlights))
 
     @function(annotations=g.map_urls.annotations, credentials=g.map_urls.credentials)
     async def map_urls(self, input_data: g.MapUrlsInput) -> g.MapUrlsOutput:

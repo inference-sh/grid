@@ -16,5 +16,3 @@ Price from the input and from what the call returned, never from the vendor's re
 | brand_search | 1 credit (free on Pro and up) | flat | |
 | styleguide | 10 credits | flat | |
 | fonts | 5 credits | flat | |
-| naics | 10 credits | flat | |
-| sic | 10 credits | flat | |
