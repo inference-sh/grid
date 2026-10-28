@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "ViewImage": {
+      "properties": {
+        "view": {
+          "description": "Which side of the object the image shows.",
+          "enum": [
+            "left",
+            "right",
+            "back",
+            "top",
+            "bottom",
+            "left_front",
+            "right_front"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "image": {
+          "description": "The view. JPG or PNG.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view",
+        "image"
+      ],
+      "title": "ViewImage",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "maxLength": 1024,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to make, for text to 3D. Used when no image is given.",
+      "examples": [
+        "a low wooden stool with three legs"
+      ],
+      "title": "Prompt"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The object, or its front view when views are given. jpg, png or webp.",
+      "title": "Image"
+    },
+    "views": {
+      "description": "Other views of the object, one per side: left, right, back, top, bottom, left_front, right_front. Needs image; costs 10 credits more.",
+      "items": {
+        "$ref": "#/$defs/ViewImage"
+      },
+      "maxItems": 7,
+      "title": "Views",
+      "type": "array"
+    },
+    "generate_type": {
+      "default": "Normal",
+      "description": "Normal is a textured model; Geometry an untextured GLB and costs less.",
+      "enum": [
+        "Normal",
+        "Geometry"
+      ],
+      "title": "Generate Type",
+      "type": "string"
+    },
+    "enable_pbr": {
+      "default": false,
+      "description": "PBR materials. Costs 10 credits more; not with Geometry.",
+      "title": "Enable Pbr",
+      "type": "boolean"
+    },
+    "face_count": {
+      "anyOf": [
+        {
+          "maximum": 1500000,
+          "minimum": 3000,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Face count, 3000 to 1500000. Empty: 500000. Setting it costs 10 credits more.",
+      "title": "Face Count"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

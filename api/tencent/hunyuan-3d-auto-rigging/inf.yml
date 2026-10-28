@@ -1,0 +1,33 @@
+namespace: tencent
+name: hunyuan-3d-auto-rigging
+title: Hunyuan 3D Auto Rigging
+description: Tencent Hunyuan 3D Auto Rigging. Rigs and skins a T-posed character from an FBX or OBJ model, with an optional preset animation from 48 moves.
+metadata:
+    provider: tencent
+    tags:
+        - 3d-rigging
+category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    TENCENTCLOUD_REGION: ap-singapore
+kernel: python-3.11
+credentials:
+    tencent-cloud:
+        secrets: [TENCENTCLOUD_SECRET_ID, TENCENTCLOUD_SECRET_KEY]
+        provider: {name: Tencent Cloud, website: tencentcloud.com, docs_uri: https://www.tencentcloud.com/document/product/1284}
+        display_name: Tencent Cloud API key
+        docs_url: https://www.tencentcloud.com/document/product/1284/75287
+        instructions: |
+            1. Sign up at [tencentcloud.com](https://www.tencentcloud.com/) and complete identity verification.
+            2. Activate Hunyuan at [console.tencentcloud.com/hunyuan](https://console.tencentcloud.com/hunyuan). Turn on postpaid billing there (Settings, Postpaid Settings) or buy a credit pack, or jobs fail once the 200 free credits run out.
+            3. Create a key pair at [console.tencentcloud.com/cam/capi](https://console.tencentcloud.com/cam/capi). A sub-account needs the `QcloudAI3DFullAccess` policy.
+            4. Paste the **SecretId** (starts with `IKID` or `AKID`) into `TENCENTCLOUD_SECRET_ID` and the **SecretKey** into `TENCENTCLOUD_SECRET_KEY`. The SecretKey is shown only once.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

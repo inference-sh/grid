@@ -1,0 +1,32 @@
+namespace: hyper3d
+name: rodin-gen-2-5
+title: Rodin Gen-2.5
+description: Hyper3D Rodin Gen-2.5 by Deemos. 3D models from a text prompt or up to five images, five quality tiers, raw or quad meshes, PBR textures up to 8K, GLB, USDZ, FBX, OBJ or STL.
+metadata:
+    provider: hyper3d
+    tags:
+        - text-to-3d
+        - image-to-3d
+category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    hyper3d:
+        secrets: [HYPER3D_API_KEY]
+        provider: {name: Hyper3D, website: hyper3d.ai, docs_uri: https://docs.hyper3d.ai/en}
+        display_name: Hyper3D Rodin API key
+        docs_url: https://docs.hyper3d.ai/en
+        instructions: |
+            1. Sign in at [hyper3d.ai](https://hyper3d.ai/). The API needs the Business plan or Enterprise.
+            2. Create a key at [hyper3d.ai/workspace/api-dashboard](https://hyper3d.ai/workspace/api-dashboard).
+            3. Paste it into `HYPER3D_API_KEY`.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

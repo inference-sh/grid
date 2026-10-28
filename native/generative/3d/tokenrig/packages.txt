@@ -1,0 +1,10 @@
+libsm6
+libxrender1
+libxi6
+libxxf86vm1
+libxfixes3
+libxkbcommon0
+libgl1
+libegl1
+libglib2.0-0
+libgomp1

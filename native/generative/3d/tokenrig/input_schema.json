@@ -1,0 +1,91 @@
+{
+  "properties": {
+    "model": {
+      "description": "The 3D model to rig: GLB, glTF, FBX, OBJ, DAE or .blend.",
+      "format": "file",
+      "title": "Model",
+      "type": "string"
+    },
+    "output_format": {
+      "default": "glb",
+      "description": "File format of the rigged model.",
+      "enum": [
+        "glb",
+        "fbx"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "keep_original": {
+      "default": true,
+      "description": "Put the rig onto the original model, keeping its textures and materials. Off exports the mesh the model rigged.",
+      "title": "Keep Original",
+      "type": "boolean"
+    },
+    "smooth_skin": {
+      "default": false,
+      "description": "Clean up the skin weights with a voxel pass.",
+      "title": "Smooth Skin",
+      "type": "boolean"
+    },
+    "num_beams": {
+      "default": 10,
+      "description": "Beam search width. Higher is slower and often better.",
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Num Beams",
+      "type": "integer"
+    },
+    "top_k": {
+      "default": 5,
+      "description": "Sampling top-k.",
+      "maximum": 200,
+      "minimum": 1,
+      "title": "Top K",
+      "type": "integer"
+    },
+    "top_p": {
+      "default": 0.95,
+      "description": "Sampling top-p.",
+      "maximum": 1.0,
+      "minimum": 0.1,
+      "title": "Top P",
+      "type": "number"
+    },
+    "temperature": {
+      "default": 1.0,
+      "description": "Sampling temperature.",
+      "maximum": 2.0,
+      "minimum": 0.1,
+      "title": "Temperature",
+      "type": "number"
+    },
+    "repetition_penalty": {
+      "default": 2.0,
+      "description": "Repetition penalty.",
+      "maximum": 3.0,
+      "minimum": 0.5,
+      "title": "Repetition Penalty",
+      "type": "number"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed. Empty: random.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "model"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

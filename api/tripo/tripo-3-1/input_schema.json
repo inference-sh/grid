@@ -1,0 +1,234 @@
+{
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "maxLength": 1024,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to make, for text to 3D. Used when no image is given.",
+      "examples": [
+        "a stylized ceramic teapot shaped like a snail"
+      ],
+      "title": "Prompt"
+    },
+    "negative_prompt": {
+      "anyOf": [
+        {
+          "maxLength": 255,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to keep out, for text to 3D.",
+      "title": "Negative Prompt"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The object, or its front view when side views are given. JPEG or PNG.",
+      "title": "Image"
+    },
+    "left_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Left view of the object, for multiview. Needs image.",
+      "title": "Left Image"
+    },
+    "back_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Back view of the object, for multiview. Needs image.",
+      "title": "Back Image"
+    },
+    "right_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Right view of the object, for multiview. Needs image.",
+      "title": "Right Image"
+    },
+    "texture": {
+      "default": true,
+      "description": "Texture the model. Off returns the bare mesh and costs less.",
+      "title": "Texture",
+      "type": "boolean"
+    },
+    "pbr": {
+      "default": true,
+      "description": "Add PBR material maps. Turns texture on.",
+      "title": "Pbr",
+      "type": "boolean"
+    },
+    "texture_quality": {
+      "default": "standard",
+      "description": "fast and standard cost the same; detailed (HD) and extreme (8K) cost more.",
+      "enum": [
+        "fast",
+        "standard",
+        "detailed",
+        "extreme"
+      ],
+      "title": "Texture Quality",
+      "type": "string"
+    },
+    "geometry_quality": {
+      "default": "standard",
+      "description": "detailed is Ultra geometry and costs 20 credits more.",
+      "enum": [
+        "standard",
+        "detailed"
+      ],
+      "title": "Geometry Quality",
+      "type": "string"
+    },
+    "face_limit": {
+      "anyOf": [
+        {
+          "maximum": 2000000,
+          "minimum": 500,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Maximum face count. Empty: chosen by Tripo. Up to 1.5M, 2M with detailed geometry, 150K with quad, 20K with smart_low_poly.",
+      "title": "Face Limit"
+    },
+    "quad": {
+      "default": false,
+      "description": "Quad mesh, delivered as FBX. Costs 5 credits more.",
+      "title": "Quad",
+      "type": "boolean"
+    },
+    "smart_low_poly": {
+      "default": false,
+      "description": "Hand-crafted style low-poly topology. Costs 10 credits more.",
+      "title": "Smart Low Poly",
+      "type": "boolean"
+    },
+    "generate_parts": {
+      "default": false,
+      "description": "Split the model into editable parts. Needs texture and pbr off; costs 20 credits more.",
+      "title": "Generate Parts",
+      "type": "boolean"
+    },
+    "auto_size": {
+      "default": false,
+      "description": "Scale the model to real-world size in meters.",
+      "title": "Auto Size",
+      "type": "boolean"
+    },
+    "enable_image_autofix": {
+      "default": false,
+      "description": "Let Tripo clean up a single input image first.",
+      "title": "Enable Image Autofix",
+      "type": "boolean"
+    },
+    "texture_alignment": {
+      "default": "original_image",
+      "description": "Align the texture to the input image, or to the geometry.",
+      "enum": [
+        "original_image",
+        "geometry"
+      ],
+      "title": "Texture Alignment",
+      "type": "string"
+    },
+    "orientation": {
+      "default": "default",
+      "description": "align_image turns the model to match the image.",
+      "enum": [
+        "default",
+        "align_image"
+      ],
+      "title": "Orientation",
+      "type": "string"
+    },
+    "model_seed": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for the geometry.",
+      "title": "Model Seed"
+    },
+    "texture_seed": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for the texture.",
+      "title": "Texture Seed"
+    },
+    "image_seed": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed for the image Tripo draws from the prompt, for text to 3D.",
+      "title": "Image Seed"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}
