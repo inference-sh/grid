@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling V4.0 video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. Max 3072 chars (recommended \u22642500).",
+      "examples": [
+        "A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 50MB, min 300px.",
+      "title": "Image"
+    },
+    "end_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End frame image. Requires image to be set as start frame.",
+      "title": "End Image"
+    },
+    "sound": {
+      "default": true,
+      "description": "Generate synchronized native audio with the video.",
+      "title": "Sound",
+      "type": "boolean"
+    },
+    "multi_shot": {
+      "default": true,
+      "description": "Enable multi-shot video generation via prompt format.",
+      "title": "Multi Shot",
+      "type": "boolean"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "1080p",
+      "description": "Video resolution."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-30). Billed per second.",
+      "maximum": 30,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
