@@ -12,5 +12,5 @@ Price from the input and from what the call returned, never from the vendor's re
 
 | function | upstream rate | priced from | notes |
 |----------|---------------|-------------|-------|
-| people_search | 10 credits | flat | |
+| people_search | 10 credits per page in `fast` mode (default), 50 in `ultra`; a page with no matches is free | input mode, outputs[0].extra.results | |
 | people_enrich | 20 credits per match; nothing when not found | outputs[0].extra.matches | |

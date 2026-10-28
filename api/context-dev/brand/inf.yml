@@ -1,7 +1,7 @@
 namespace: context-dev
 name: brand
 title: Context.dev Brand
-description: "Context.dev brand intelligence: logos, colors, styleguides and fonts for any domain, brand search, and NAICS and SIC industry codes."
+description: "Context.dev brand intelligence: logos, colors, styleguides and fonts for any domain, and brand search. Industry labels (EIC) come in the brand profile."
 metadata:
     tags:
         - brand

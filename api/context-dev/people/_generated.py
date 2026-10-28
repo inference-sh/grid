@@ -47,34 +47,6 @@ class Role(BaseModel):
     ] = None
 
 
-class Result(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    name: Annotated[str | None, Field(description="Full name.")] = None
-    description: Annotated[str | None, Field(description="What the person does.")] = (
-        None
-    )
-    profiles: Annotated[
-        list[str] | None, Field(description="Public professional profile URLs.")
-    ] = None
-    location: Annotated[
-        Location | None, Field(description="Where the person lives.")
-    ] = None
-    role: Annotated[Role | None, Field(description="The person’s current role.")] = None
-    years_of_experience: Annotated[
-        int | None, Field(description="Years of professional experience.", ge=0)
-    ] = None
-    is_founder: Annotated[
-        bool | None,
-        Field(description="Whether the person is currently a founder or co-founder."),
-    ] = None
-    skills: Annotated[list[str] | None, Field(description="Professional skills.")] = (
-        None
-    )
-    schools: Annotated[list[str] | None, Field(description="Schools attended.")] = None
-
-
 class KeyMetadata(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -124,6 +96,20 @@ class PeopleSearchFilters(BaseModel):
     ] = None
     years_of_experience_max: Annotated[
         int | None, Field(description="Maximum years of professional experience.", ge=0)
+    ] = None
+
+
+class PeopleSearchMatch(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    confidence: Annotated[
+        float | None,
+        Field(
+            description="How well the person matches the query, from 0 to 1.",
+            ge=0.0,
+            le=1.0,
+        ),
     ] = None
 
 
@@ -542,17 +528,23 @@ class PeopleSearchRequest(BaseModel):
     query: Annotated[
         str,
         Field(
-            description="Describe the people to find.",
+            description="Describe the people to find. Up to 500 characters in `fast` mode and 5000 in `ultra` mode.",
             examples=["VPs of sales at solar companies in California"],
-            max_length=500,
+            max_length=5000,
             min_length=1,
         ),
     ]
+    mode: Annotated[
+        Literal["fast", "ultra"] | None,
+        Field(
+            description="`fast` matches people on basic criteria (e.g. their role, location or background); `ultra` plans a deeper search, judges each candidate against every criterion in the query. Complex `ultra` searches can take up to 30 seconds to complete, so allow for that in your client timeout."
+        ),
+    ] = "fast"
     filters: PeopleSearchFilters | None = None
     cursor: Annotated[
         str | None,
         Field(
-            description="Use next_cursor with the same query and filters to fetch the next page.",
+            description="Use next_cursor with the same query, mode and filters to fetch the next page.",
             max_length=65536,
         ),
     ] = None
@@ -564,6 +556,35 @@ class PeopleSearchRequest(BaseModel):
             max_length=20,
         ),
     ] = None
+
+
+class Result(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    name: Annotated[str | None, Field(description="Full name.")] = None
+    description: Annotated[str | None, Field(description="What the person does.")] = (
+        None
+    )
+    profiles: Annotated[
+        list[str] | None, Field(description="Public professional profile URLs.")
+    ] = None
+    location: Annotated[
+        Location | None, Field(description="Where the person lives.")
+    ] = None
+    role: Annotated[Role | None, Field(description="The person’s current role.")] = None
+    years_of_experience: Annotated[
+        int | None, Field(description="Years of professional experience.", ge=0)
+    ] = None
+    is_founder: Annotated[
+        bool | None,
+        Field(description="Whether the person is currently a founder or co-founder."),
+    ] = None
+    skills: Annotated[list[str] | None, Field(description="Professional skills.")] = (
+        None
+    )
+    schools: Annotated[list[str] | None, Field(description="Schools attended.")] = None
+    match: PeopleSearchMatch | None = None
 
 
 class PeopleSearchResponse(BaseModel):

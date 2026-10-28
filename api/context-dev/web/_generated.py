@@ -1112,6 +1112,13 @@ class ScrapePdfOptions(BaseModel):
         Literal["off", "auto"] | None,
         Field(description="Set `auto` to read scanned pages with OCR."),
     ] = "off"
+    include_numbered_pages: Annotated[
+        bool | None,
+        Field(
+            alias="includeNumberedPages",
+            description="Start each page in the Markdown with a `<!-- page N -->` line using its original 1-based page number; these responses are never served from cache.",
+        ),
+    ] = False
 
 
 class ScrapeProduct(BaseModel):

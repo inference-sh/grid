@@ -41,7 +41,7 @@ class App(BaseApp):
     async def people_search(self, input_data: g.PeopleSearchInput) -> g.PeopleSearchOutput:
         """Search people"""
         data = await self.client.call(g.people_search, input_data)
-        return g.PeopleSearchOutput.from_response(data, output_meta=usage(data))
+        return g.PeopleSearchOutput.from_response(data, output_meta=usage(data, results=count(data, "results")))
 
     @function(annotations=g.people_enrich.annotations, credentials=g.people_enrich.credentials)
     async def people_enrich(self, input_data: g.PeopleEnrichInput) -> g.PeopleEnrichOutput:
