@@ -1,0 +1,78 @@
+{
+  "properties": {
+    "model": {
+      "description": "The character to rig, standing in a T-pose with its arms out. FBX or OBJ, up to 60 MB.",
+      "format": "file",
+      "title": "Model",
+      "type": "string"
+    },
+    "animation": {
+      "anyOf": [
+        {
+          "enum": [
+            "roundhouse-kick",
+            "left-hook",
+            "charged-attack",
+            "charged-punch",
+            "two-hit-combo",
+            "two-hit-combo-2",
+            "backstep",
+            "hit-reaction-1",
+            "hit-reaction-2",
+            "hit-reaction-3",
+            "knockdown-1",
+            "knockdown-2",
+            "landing",
+            "dejection",
+            "throat-slash",
+            "jab",
+            "continuous-strikes",
+            "kick",
+            "side-kick",
+            "tai-chi",
+            "backflip",
+            "crouching-turn",
+            "walk-1",
+            "walk-2",
+            "walk-3",
+            "idle-1",
+            "idle-2",
+            "street-dance",
+            "the-twist",
+            "turn-left",
+            "turn-right",
+            "jog",
+            "jog-2",
+            "run",
+            "sprint-1",
+            "sprint-2",
+            "sprint-3",
+            "jump-in-place-1",
+            "sliding-tackle",
+            "long-jump-forward",
+            "long-jump-forward-2",
+            "vault",
+            "intimidation",
+            "fall-forward",
+            "turn-right-2",
+            "jump-in-place-2",
+            "turn-around",
+            "send-shockwave"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "A preset animation to apply to the rigged character.",
+      "title": "Animation"
+    }
+  },
+  "required": [
+    "model"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

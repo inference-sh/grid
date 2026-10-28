@@ -1,0 +1,568 @@
+{
+  "run": {
+    "description": "Make a 3D model from a text prompt, or from one to five images of an object.",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Generate 3D model",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "properties": {
+        "prompt": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What to make, for text to 3D. With images, leave it empty unless the images need explaining.",
+          "examples": [
+            "a carved wooden owl perched on a branch"
+          ],
+          "title": "Prompt"
+        },
+        "images": {
+          "description": "One to five images of one object. The first image sets the materials.",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Images",
+          "type": "array"
+        },
+        "tier": {
+          "default": "Gen-2.5-Medium",
+          "description": "Quality tier. Extreme-High costs 0.5 credits more and adds a mesh of up to 10M faces.",
+          "enum": [
+            "Gen-2.5-Extreme-Low",
+            "Gen-2.5-Low",
+            "Gen-2.5-Medium",
+            "Gen-2.5-High",
+            "Gen-2.5-Extreme-High"
+          ],
+          "title": "Tier",
+          "type": "string"
+        },
+        "mesh_mode": {
+          "default": "Raw",
+          "description": "Raw triangles, or a quad mesh.",
+          "enum": [
+            "Raw",
+            "Quad"
+          ],
+          "title": "Mesh Mode",
+          "type": "string"
+        },
+        "quality": {
+          "default": "medium",
+          "description": "Face count. Raw: 1M, 500K, 60K, 20K. Quad: 50K, 18K, 8K, 4K.",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "extra-low"
+          ],
+          "title": "Quality",
+          "type": "string"
+        },
+        "quality_override": {
+          "anyOf": [
+            {
+              "maximum": 2000000,
+              "minimum": 500,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exact face count, instead of quality. Above 1M needs the High or Extreme-High tier; Quad takes at most 200K.",
+          "title": "Quality Override"
+        },
+        "geometry_file_format": {
+          "default": "glb",
+          "description": "File format of the model.",
+          "enum": [
+            "glb",
+            "usdz",
+            "fbx",
+            "obj",
+            "stl"
+          ],
+          "title": "Geometry File Format",
+          "type": "string"
+        },
+        "material": {
+          "default": "PBR",
+          "description": "PBR maps, baked shading, both, hybrid, or no material.",
+          "enum": [
+            "PBR",
+            "Shaded",
+            "All",
+            "Hybrid",
+            "None"
+          ],
+          "title": "Material",
+          "type": "string"
+        },
+        "texture_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "legacy",
+                "extreme-low",
+                "low",
+                "medium",
+                "high",
+                "extreme-high"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Texture quality. Empty: follows the tier. extreme-high gives 6K textures and costs 2 credits more.",
+          "title": "Texture Mode"
+        },
+        "hd_texture": {
+          "default": false,
+          "description": "Higher quality texture.",
+          "title": "Hd Texture",
+          "type": "boolean"
+        },
+        "uhd_texture": {
+          "default": false,
+          "description": "4K textures, 8K with high_pack.",
+          "title": "Uhd Texture",
+          "type": "boolean"
+        },
+        "high_pack": {
+          "default": false,
+          "description": "The HighPack add-on: 4K textures, 8K with uhd_texture.",
+          "title": "High Pack",
+          "type": "boolean"
+        },
+        "texture_delight": {
+          "default": false,
+          "description": "Remove lighting baked into the images from the texture.",
+          "title": "Texture Delight",
+          "type": "boolean"
+        },
+        "geometry_instruct_mode": {
+          "default": "creative",
+          "description": "faithful follows the images more literally (experimental).",
+          "enum": [
+            "creative",
+            "faithful"
+          ],
+          "title": "Geometry Instruct Mode",
+          "type": "string"
+        },
+        "is_symmetric": {
+          "default": "unknown",
+          "description": "Symmetry of the object, if known.",
+          "enum": [
+            "unknown",
+            "symmetric",
+            "balanced",
+            "asymmetric"
+          ],
+          "title": "Is Symmetric",
+          "type": "string"
+        },
+        "is_micro": {
+          "default": false,
+          "description": "Micro detail. Extreme-High tier only.",
+          "title": "Is Micro",
+          "type": "boolean"
+        },
+        "t_a_pose": {
+          "default": false,
+          "description": "Put a human-like subject in a T or A pose.",
+          "title": "T A Pose",
+          "type": "boolean"
+        },
+        "use_original_alpha": {
+          "default": false,
+          "description": "Use the images' own transparency as the mask.",
+          "title": "Use Original Alpha",
+          "type": "boolean"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seed, 0 to 65535.",
+          "title": "Seed"
+        }
+      },
+      "title": "AppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model": {
+          "description": "The 3D model.",
+          "format": "file",
+          "title": "Model",
+          "type": "string"
+        },
+        "preview": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A preview render of the model.",
+          "title": "Preview"
+        },
+        "files": {
+          "description": "Every other file Hyper3D returned: textures, and the high-poly mesh of Extreme-High.",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Files",
+          "type": "array"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "AppOutput",
+      "type": "object"
+    }
+  }
+}

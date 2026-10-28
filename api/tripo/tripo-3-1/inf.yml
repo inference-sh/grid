@@ -1,0 +1,32 @@
+namespace: tripo
+name: tripo-3-1
+title: Tripo 3.1
+description: Tripo 3.1 3D model generation from a text prompt, an image, or up to four views. PBR textures up to 8K, Ultra geometry, quad and smart low-poly topology, part segmentation.
+metadata:
+    provider: tripo
+    tags:
+        - text-to-3d
+        - image-to-3d
+category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    tripo:
+        secrets: [TRIPO_API_KEY]
+        provider: {name: Tripo, website: tripo3d.ai, docs_uri: https://developers.tripo3d.ai/en/docs/introduction}
+        display_name: Tripo API key
+        docs_url: https://developers.tripo3d.ai/en/docs/authentication
+        instructions: |
+            1. Sign up at [developers.tripo3d.ai](https://developers.tripo3d.ai/en/auth/register) and buy API credits. They are separate from a Tripo Studio plan.
+            2. Create a key at [developers.tripo3d.ai/en/keys](https://developers.tripo3d.ai/en/keys). It is shown once.
+            3. Paste it into `TRIPO_API_KEY`. International keys only; keys from developers.tripo3d.com (mainland China) don't work here.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

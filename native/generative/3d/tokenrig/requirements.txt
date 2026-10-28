@@ -1,0 +1,22 @@
+pydantic >= 2.0.0 # required for inference.sh
+inferencesh
+torch==2.9.1 # the prebuilt flash-attn wheel below is built for torch 2.9; 2.10 fails with an undefined c10_cuda_check symbol
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
+transformers==4.57.1
+diffusers>=0.35.0
+lightning
+python-box
+einops
+omegaconf
+addict
+fast-simplification
+bpy==4.2.0 # Blender 4.2's Python module; needs Python 3.11 and numpy 1.x
+numpy>=1.26,<2.0
+scipy
+trimesh
+open3d
+huggingface_hub
+hf_transfer
+requests
+bottle
+tornado

@@ -1,0 +1,32 @@
+namespace: meshy
+name: meshy-7-1
+title: Meshy 7.1
+description: Meshy 7.1 3D model generation from a text prompt, one image, or up to four views. Textured or bare mesh, PBR maps, quad or triangle topology, GLB, FBX, OBJ, STL, USDZ or 3MF.
+metadata:
+    provider: meshy
+    tags:
+        - text-to-3d
+        - image-to-3d
+category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    meshy:
+        secrets: [MESHY_API_KEY]
+        provider: {name: Meshy, website: meshy.ai, docs_uri: https://docs.meshy.ai}
+        display_name: Meshy API key
+        docs_url: https://docs.meshy.ai/api/quick-start
+        instructions: |
+            1. Sign in at [meshy.ai](https://www.meshy.ai/). The API needs a Pro plan or higher.
+            2. Create a key at [meshy.ai/developers/keys](https://www.meshy.ai/developers/keys).
+            3. Paste it into `MESHY_API_KEY`. It starts with `msy_`.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000

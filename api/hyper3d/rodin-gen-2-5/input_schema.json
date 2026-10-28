@@ -1,0 +1,209 @@
+{
+  "properties": {
+    "prompt": {
+      "anyOf": [
+        {
+          "maxLength": 1024,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What to make, for text to 3D. With images, leave it empty unless the images need explaining.",
+      "examples": [
+        "a carved wooden owl perched on a branch"
+      ],
+      "title": "Prompt"
+    },
+    "images": {
+      "description": "One to five images of one object. The first image sets the materials.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Images",
+      "type": "array"
+    },
+    "tier": {
+      "default": "Gen-2.5-Medium",
+      "description": "Quality tier. Extreme-High costs 0.5 credits more and adds a mesh of up to 10M faces.",
+      "enum": [
+        "Gen-2.5-Extreme-Low",
+        "Gen-2.5-Low",
+        "Gen-2.5-Medium",
+        "Gen-2.5-High",
+        "Gen-2.5-Extreme-High"
+      ],
+      "title": "Tier",
+      "type": "string"
+    },
+    "mesh_mode": {
+      "default": "Raw",
+      "description": "Raw triangles, or a quad mesh.",
+      "enum": [
+        "Raw",
+        "Quad"
+      ],
+      "title": "Mesh Mode",
+      "type": "string"
+    },
+    "quality": {
+      "default": "medium",
+      "description": "Face count. Raw: 1M, 500K, 60K, 20K. Quad: 50K, 18K, 8K, 4K.",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "extra-low"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "quality_override": {
+      "anyOf": [
+        {
+          "maximum": 2000000,
+          "minimum": 500,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Exact face count, instead of quality. Above 1M needs the High or Extreme-High tier; Quad takes at most 200K.",
+      "title": "Quality Override"
+    },
+    "geometry_file_format": {
+      "default": "glb",
+      "description": "File format of the model.",
+      "enum": [
+        "glb",
+        "usdz",
+        "fbx",
+        "obj",
+        "stl"
+      ],
+      "title": "Geometry File Format",
+      "type": "string"
+    },
+    "material": {
+      "default": "PBR",
+      "description": "PBR maps, baked shading, both, hybrid, or no material.",
+      "enum": [
+        "PBR",
+        "Shaded",
+        "All",
+        "Hybrid",
+        "None"
+      ],
+      "title": "Material",
+      "type": "string"
+    },
+    "texture_mode": {
+      "anyOf": [
+        {
+          "enum": [
+            "legacy",
+            "extreme-low",
+            "low",
+            "medium",
+            "high",
+            "extreme-high"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Texture quality. Empty: follows the tier. extreme-high gives 6K textures and costs 2 credits more.",
+      "title": "Texture Mode"
+    },
+    "hd_texture": {
+      "default": false,
+      "description": "Higher quality texture.",
+      "title": "Hd Texture",
+      "type": "boolean"
+    },
+    "uhd_texture": {
+      "default": false,
+      "description": "4K textures, 8K with high_pack.",
+      "title": "Uhd Texture",
+      "type": "boolean"
+    },
+    "high_pack": {
+      "default": false,
+      "description": "The HighPack add-on: 4K textures, 8K with uhd_texture.",
+      "title": "High Pack",
+      "type": "boolean"
+    },
+    "texture_delight": {
+      "default": false,
+      "description": "Remove lighting baked into the images from the texture.",
+      "title": "Texture Delight",
+      "type": "boolean"
+    },
+    "geometry_instruct_mode": {
+      "default": "creative",
+      "description": "faithful follows the images more literally (experimental).",
+      "enum": [
+        "creative",
+        "faithful"
+      ],
+      "title": "Geometry Instruct Mode",
+      "type": "string"
+    },
+    "is_symmetric": {
+      "default": "unknown",
+      "description": "Symmetry of the object, if known.",
+      "enum": [
+        "unknown",
+        "symmetric",
+        "balanced",
+        "asymmetric"
+      ],
+      "title": "Is Symmetric",
+      "type": "string"
+    },
+    "is_micro": {
+      "default": false,
+      "description": "Micro detail. Extreme-High tier only.",
+      "title": "Is Micro",
+      "type": "boolean"
+    },
+    "t_a_pose": {
+      "default": false,
+      "description": "Put a human-like subject in a T or A pose.",
+      "title": "T A Pose",
+      "type": "boolean"
+    },
+    "use_original_alpha": {
+      "default": false,
+      "description": "Use the images' own transparency as the mask.",
+      "title": "Use Original Alpha",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "maximum": 65535,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Seed, 0 to 65535.",
+      "title": "Seed"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

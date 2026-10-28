@@ -1,0 +1,21 @@
+namespace: infsh
+name: tokenrig
+title: TokenRig
+description: Automatic rigging for 3D models with TokenRig (SkinTokens). Predicts a skeleton and skin weights in one pass and keeps the original textures. GLB, glTF, FBX, OBJ in; GLB or FBX out.
+metadata:
+    tags:
+        - 3d-rigging
+category: 3d
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 16000000000
+        type: nvidia
+    ram: 32000000000

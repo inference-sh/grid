@@ -1,0 +1,95 @@
+{
+  "properties": {
+    "model": {
+      "description": "The 3D model to rig: GLB, FBX, OBJ or STL, up to 150 MB.",
+      "format": "file",
+      "title": "Model",
+      "type": "string"
+    },
+    "rig_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "biped",
+            "quadruped",
+            "hexapod",
+            "octopod",
+            "avian",
+            "serpentine",
+            "aquatic",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The kind of body. Empty: Tripo's rig check decides, and refuses a model it cannot rig.",
+      "title": "Rig Type"
+    },
+    "spec": {
+      "default": "tripo",
+      "description": "Bone naming for a biped: Tripo's own, or that of Mixamo, ActorCore, Unity, Unreal or VRM.",
+      "enum": [
+        "tripo",
+        "mixamo",
+        "actorcore",
+        "unity",
+        "unreal",
+        "vrm"
+      ],
+      "title": "Spec",
+      "type": "string"
+    },
+    "out_format": {
+      "default": "glb",
+      "description": "File format of the rigged model.",
+      "enum": [
+        "glb",
+        "fbx"
+      ],
+      "title": "Out Format",
+      "type": "string"
+    },
+    "animations": {
+      "description": "Preset animations to put on the rig, up to five (10 credits each). Plain presets are for bipeds; the others name their rig type.",
+      "items": {
+        "enum": [
+          "preset:idle",
+          "preset:walk",
+          "preset:run",
+          "preset:dive",
+          "preset:climb",
+          "preset:jump",
+          "preset:slash",
+          "preset:shoot",
+          "preset:hurt",
+          "preset:fall",
+          "preset:turn",
+          "preset:quadruped:walk",
+          "preset:hexapod:walk",
+          "preset:octopod:walk",
+          "preset:serpentine:march",
+          "preset:aquatic:march"
+        ],
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Animations",
+      "type": "array"
+    },
+    "animate_in_place": {
+      "default": false,
+      "description": "Keep animations in place instead of moving through the scene.",
+      "title": "Animate In Place",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "model"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,538 @@
+{
+  "run": {
+    "description": "Make a 3D model from a text prompt, one image, or up to four views of an object.",
+    "kind": "run",
+    "capabilities": [],
+    "annotations": {
+      "title": "Generate 3D model",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": true
+    },
+    "input_schema": {
+      "properties": {
+        "prompt": {
+          "anyOf": [
+            {
+              "maxLength": 800,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What to make, for Text to 3D. Used when no images are given.",
+          "examples": [
+            "a weathered bronze statue of a fox sitting upright"
+          ],
+          "title": "Prompt"
+        },
+        "images": {
+          "description": "One image of the object, or two to four views of it with the front view first. jpg, png or webp.",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Images",
+          "type": "array"
+        },
+        "should_texture": {
+          "default": true,
+          "description": "Texture the mesh. Off returns the bare mesh and costs less.",
+          "title": "Should Texture",
+          "type": "boolean"
+        },
+        "enable_pbr": {
+          "default": false,
+          "description": "Add metallic, roughness and normal maps. Needs should_texture.",
+          "title": "Enable Pbr",
+          "type": "boolean"
+        },
+        "texture_resolution": {
+          "default": "2k",
+          "description": "Texture size. 8k costs more.",
+          "enum": [
+            "2k",
+            "4k",
+            "8k"
+          ],
+          "title": "Texture Resolution",
+          "type": "string"
+        },
+        "texture_prompt": {
+          "anyOf": [
+            {
+              "maxLength": 800,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Text that guides the texture. Takes precedence over texture_image.",
+          "title": "Texture Prompt"
+        },
+        "texture_image": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An image whose look the texture should follow.",
+          "title": "Texture Image"
+        },
+        "geometry_resolution": {
+          "default": "standard",
+          "description": "Mesh detail. 2k and 4k cost 5 credits more; 4k is not available with several images.",
+          "enum": [
+            "standard",
+            "2k",
+            "4k"
+          ],
+          "title": "Geometry Resolution",
+          "type": "string"
+        },
+        "topology": {
+          "default": "triangle",
+          "description": "Polygon type of the mesh.",
+          "enum": [
+            "triangle",
+            "quad"
+          ],
+          "title": "Topology",
+          "type": "string"
+        },
+        "should_remesh": {
+          "default": false,
+          "description": "Remesh to target_polycount and topology.",
+          "title": "Should Remesh",
+          "type": "boolean"
+        },
+        "target_polycount": {
+          "anyOf": [
+            {
+              "maximum": 300000,
+              "minimum": 100,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Polygon count when remeshing, 100 to 300000. Empty: 30000.",
+          "title": "Target Polycount"
+        },
+        "pose_mode": {
+          "default": "",
+          "description": "Put a character in an A or T pose. Empty: as given.",
+          "enum": [
+            "",
+            "a-pose",
+            "t-pose"
+          ],
+          "title": "Pose Mode",
+          "type": "string"
+        },
+        "image_enhancement": {
+          "default": true,
+          "description": "Let Meshy clean up the input images first.",
+          "title": "Image Enhancement",
+          "type": "boolean"
+        },
+        "auto_size": {
+          "default": false,
+          "description": "Scale the model to a real-world size.",
+          "title": "Auto Size",
+          "type": "boolean"
+        },
+        "origin_at": {
+          "default": "bottom",
+          "description": "Where the origin sits with auto_size.",
+          "enum": [
+            "bottom",
+            "center"
+          ],
+          "title": "Origin At",
+          "type": "string"
+        },
+        "format": {
+          "default": "glb",
+          "description": "File format of the model.",
+          "enum": [
+            "glb",
+            "fbx",
+            "obj",
+            "stl",
+            "usdz",
+            "3mf"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "moderation": {
+          "default": false,
+          "description": "Have Meshy refuse harmful prompts and images.",
+          "title": "Moderation",
+          "type": "boolean"
+        }
+      },
+      "title": "AppInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model": {
+          "description": "The 3D model.",
+          "format": "file",
+          "title": "Model",
+          "type": "string"
+        },
+        "thumbnail": {
+          "anyOf": [
+            {
+              "format": "file",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A preview render of the model.",
+          "title": "Thumbnail"
+        },
+        "textures": {
+          "description": "Texture maps: base color, and metallic, roughness and normal with PBR.",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Textures",
+          "type": "array"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "AppOutput",
+      "type": "object"
+    }
+  }
+}
