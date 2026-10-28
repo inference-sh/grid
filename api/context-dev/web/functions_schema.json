@@ -1319,7 +1319,6 @@
           "type": "object"
         },
         "CacheMetadata": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -1980,7 +1979,6 @@
           "type": "object"
         },
         "PageMetadataAlternate": {
-          "additionalProperties": false,
           "properties": {
             "href": {
               "anyOf": [
@@ -2039,7 +2037,6 @@
           "type": "object"
         },
         "PageMetadataHeading": {
-          "additionalProperties": false,
           "properties": {
             "level": {
               "anyOf": [
@@ -3034,7 +3031,6 @@
           "type": "object"
         },
         "CacheMetadata": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -5199,6 +5195,19 @@
               "default": "off",
               "description": "Set `auto` to read scanned pages with OCR.",
               "title": "Ocr"
+            },
+            "includeNumberedPages": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": false,
+              "description": "Start each page in the Markdown with a `<!-- page N -->` line using its original 1-based page number; these responses are never served from cache.",
+              "title": "Includenumberedpages"
             }
           },
           "title": "ScrapePdfOptions",
@@ -5956,7 +5965,6 @@
           "type": "object"
         },
         "Bytes": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6025,7 +6033,6 @@
           "type": "object"
         },
         "CacheMetadata": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -6061,7 +6068,6 @@
           "type": "object"
         },
         "Data": {
-          "additionalProperties": false,
           "properties": {
             "contentType": {
               "anyOf": [
@@ -6108,7 +6114,6 @@
           "type": "number"
         },
         "Highlights1": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6181,7 +6186,6 @@
           "type": "object"
         },
         "Html": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6307,7 +6311,6 @@
           "type": "object"
         },
         "Images": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6380,7 +6383,6 @@
           "type": "object"
         },
         "Json": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6516,7 +6518,6 @@
           "type": "number"
         },
         "Markdown1": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6641,7 +6642,6 @@
           "type": "object"
         },
         "PageMetadataAlternate": {
-          "additionalProperties": false,
           "properties": {
             "href": {
               "anyOf": [
@@ -6700,7 +6700,6 @@
           "type": "object"
         },
         "PageMetadataHeading": {
-          "additionalProperties": false,
           "properties": {
             "level": {
               "anyOf": [
@@ -6736,7 +6735,6 @@
           "type": "object"
         },
         "Parsed": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6820,7 +6818,6 @@
           "type": "object"
         },
         "Product": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -6952,7 +6949,6 @@
           "type": "object"
         },
         "Profile": {
-          "additionalProperties": false,
           "properties": {
             "id": {
               "anyOf": [
@@ -7005,7 +7001,6 @@
           "type": "object"
         },
         "ScrapeImage": {
-          "additionalProperties": false,
           "properties": {
             "url": {
               "anyOf": [
@@ -7095,7 +7090,6 @@
           "type": "object"
         },
         "ScrapeMetadata": {
-          "additionalProperties": false,
           "properties": {
             "title": {
               "anyOf": [
@@ -7388,7 +7382,6 @@
           "type": "object"
         },
         "ScrapeProduct": {
-          "additionalProperties": false,
           "properties": {
             "name": {
               "anyOf": [
@@ -7623,7 +7616,6 @@
           "type": "object"
         },
         "ScrapeProductResult": {
-          "additionalProperties": false,
           "properties": {
             "isProductPage": {
               "anyOf": [
@@ -7655,7 +7647,6 @@
           "type": "object"
         },
         "Screenshot": {
-          "additionalProperties": false,
           "properties": {
             "error_code": {
               "anyOf": [
@@ -7850,7 +7841,6 @@
           "type": "number"
         }
       },
-      "additionalProperties": false,
       "properties": {
         "raw": {
           "default": null,
@@ -8987,7 +8977,6 @@
           "type": "object"
         },
         "CacheMetadata": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -9023,7 +9012,6 @@
           "type": "object"
         },
         "Highlights": {
-          "additionalProperties": false,
           "properties": {
             "highlights": {
               "anyOf": [
@@ -9153,7 +9141,6 @@
           "type": "object"
         },
         "Markdown": {
-          "additionalProperties": false,
           "properties": {
             "finalDOMState": {
               "anyOf": [

@@ -467,7 +467,6 @@
           "type": "object"
         },
         "CurrentRole": {
-          "additionalProperties": false,
           "properties": {
             "title": {
               "anyOf": [
@@ -627,7 +626,6 @@
           "type": "number"
         },
         "EducationItem": {
-          "additionalProperties": false,
           "properties": {
             "institution": {
               "anyOf": [
@@ -703,7 +701,6 @@
           "type": "object"
         },
         "EndDate": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -755,7 +752,6 @@
           "type": "object"
         },
         "EndDate1": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -807,7 +803,6 @@
           "type": "object"
         },
         "EndDate2": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -859,7 +854,6 @@
           "type": "object"
         },
         "ExperienceItem": {
-          "additionalProperties": false,
           "properties": {
             "title": {
               "anyOf": [
@@ -1003,7 +997,6 @@
           "type": "object"
         },
         "Institution": {
-          "additionalProperties": false,
           "properties": {
             "name": {
               "anyOf": [
@@ -1072,7 +1065,6 @@
           "type": "object"
         },
         "Location1": {
-          "additionalProperties": false,
           "properties": {
             "display": {
               "anyOf": [
@@ -1211,7 +1203,6 @@
           "type": "number"
         },
         "Name": {
-          "additionalProperties": false,
           "properties": {
             "full": {
               "anyOf": [
@@ -1254,7 +1245,6 @@
           "type": "object"
         },
         "Organization": {
-          "additionalProperties": false,
           "properties": {
             "name": {
               "anyOf": [
@@ -1340,7 +1330,6 @@
           "type": "object"
         },
         "Person": {
-          "additionalProperties": false,
           "properties": {
             "name": {
               "anyOf": [
@@ -1531,7 +1520,6 @@
           "type": "object"
         },
         "PersonEnrichmentCandidateMatch": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -1576,7 +1564,6 @@
           "type": "object"
         },
         "PersonEnrichmentNotFoundMatch": {
-          "additionalProperties": false,
           "properties": {
             "status": {
               "anyOf": [
@@ -1649,7 +1636,6 @@
           "type": "number"
         },
         "StartDate": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -1701,7 +1687,6 @@
           "type": "object"
         },
         "StartDate1": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -1753,7 +1738,6 @@
           "type": "object"
         },
         "StartDate2": {
-          "additionalProperties": false,
           "properties": {
             "year": {
               "anyOf": [
@@ -1918,7 +1902,6 @@
           "type": "object"
         }
       },
-      "additionalProperties": false,
       "properties": {
         "raw": {
           "default": null,
@@ -2075,14 +2058,31 @@
       },
       "properties": {
         "query": {
-          "description": "Describe the people to find.",
+          "description": "Describe the people to find. Up to 500 characters in `fast` mode and 5000 in `ultra` mode.",
           "examples": [
             "VPs of sales at solar companies in California"
           ],
-          "maxLength": 500,
+          "maxLength": 5000,
           "minLength": 1,
           "title": "Query",
           "type": "string"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "fast",
+                "ultra"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "fast",
+          "description": "`fast` matches people on basic criteria (e.g. their role, location or background); `ultra` plans a deeper search, judges each candidate against every criterion in the query. Complex `ultra` searches can take up to 30 seconds to complete, so allow for that in your client timeout.",
+          "title": "Mode"
         },
         "filters": {
           "anyOf": [
@@ -2106,7 +2106,7 @@
             }
           ],
           "default": null,
-          "description": "Use next_cursor with the same query and filters to fetch the next page.",
+          "description": "Use next_cursor with the same query, mode and filters to fetch the next page.",
           "title": "Cursor"
         },
         "tags": {
@@ -2405,6 +2405,27 @@
           "title": "OutputMeta",
           "type": "object"
         },
+        "PeopleSearchMatch": {
+          "properties": {
+            "confidence": {
+              "anyOf": [
+                {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "How well the person matches the query, from 0 to 1.",
+              "title": "Confidence"
+            }
+          },
+          "title": "PeopleSearchMatch",
+          "type": "object"
+        },
         "RawMeta": {
           "description": "Metadata for raw inputs/outputs used for custom pricing.",
           "properties": {
@@ -2563,6 +2584,17 @@
               "default": null,
               "description": "Schools attended.",
               "title": "Schools"
+            },
+            "match": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PeopleSearchMatch"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             }
           },
           "title": "Result",
