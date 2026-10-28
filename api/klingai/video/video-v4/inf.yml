@@ -1,0 +1,30 @@
+namespace: klingai
+name: video-v4
+description: Kling V4.0 video generation. Text-to-video and image-to-video with start/end frames, 3-30s duration billed per second, up to 4K, multi-shot and synchronized native audio.
+metadata:
+    provider: klingai
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_KEY
+      description: Kling AI API key (V2)
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+title: Kling Video V4
