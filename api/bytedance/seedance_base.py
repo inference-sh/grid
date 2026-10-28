@@ -326,10 +326,11 @@ class SeedanceApp(BaseApp):
             }
             if input_data.safety_identifier:
                 api_params["safety_identifier"] = input_data.safety_identifier
+            extra_body = {}
             task_type = getattr(input_data, "task_type", None)
             if task_type and hasattr(task_type, "value") and task_type.value != "auto":
-                api_params["omni_reference_task_type"] = task_type.value
-            extra_body = {}
+                # Not a Tasks.create() kwarg in the pinned SDK.
+                extra_body["omni_reference_task_type"] = task_type.value
             output_format = getattr(input_data, "output_format", None)
             if output_format:
                 extra_body["output_format"] = output_format
