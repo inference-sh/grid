@@ -155,7 +155,7 @@ class TestThinkingShapeByModel:
     def _p(self, model, **kw):
         return h.build_params(LLMInput(text="hi", **kw), model)
 
-    ADAPTIVE = {"type": "adaptive", "display": "summarized"}
+    ADAPTIVE = {"type": "adaptive", "display": "summarized", "block_binding": {"prefix_mismatch_behavior": "drop_block"}}
 
     @pytest.mark.parametrize("model", ["claude-fable-5-1", "claude-mythos-5-1", "claude-opus-5-5", "claude-fable-5", "claude-opus-5"])
     def test_always_on_models_send_adaptive_and_run_low_effort_by_default(self, model):
@@ -575,7 +575,9 @@ class TestReasoningStateReplay:
             _, messages = h.convert_messages_to_anthropic(assistant_turn(state))
             assert [b["type"] for b in messages[1]["content"]] == ["text", "tool_use"], "unchanged from before"
 
-    def test_only_the_running_tool_loop_is_replayed(self):
+    def test_every_turn_is_replayed(self):
+        """A new user turn keeps the earlier turns' blocks: dropping them is a
+        history edit that misses the prompt cache from that turn on."""
         old = {"anthropic": {"blocks": [dict(THINKING, signature="old")]}}
         new = {"anthropic": {"blocks": [THINKING]}}
         context = [
@@ -586,17 +588,23 @@ class TestReasoningStateReplay:
             {"role": "user", "text": "and Oslo?"},
             {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": new},
         ]
-        _, messages = h.convert_messages_to_anthropic(
+
+        def thinking(messages):
+            return [b["signature"] for m in messages if m["role"] == "assistant"
+                    for b in m["content"] if b["type"] == "thinking"]
+
+        _, in_loop = h.convert_messages_to_anthropic(
             LLMInput(text="9C", role="tool", tool_call_id="toolu_1", context=context))
-        thinking = [b for m in messages if m["role"] == "assistant" for b in m["content"] if b["type"] == "thinking"]
-        assert thinking == [THINKING], "earlier turns go without their blocks"
-        assert messages[-2]["content"][0] == THINKING
+        _, next_turn = h.convert_messages_to_anthropic(LLMInput(text="thanks", context=context))
+        assert thinking(in_loop) == thinking(next_turn) == ["old", "old", "sig-AB"]
+        assert in_loop[:-1] == next_turn[:-1], "the history is the same bytes on the next turn"
 
-        _, messages = h.convert_messages_to_anthropic(LLMInput(text="thanks", context=context))
-        assert not [b for m in messages for b in (m["content"] if isinstance(m["content"], list) else [])
-                    if b["type"] == "thinking"], "a new user turn ends the loop"
+    def test_without_replay_no_blocks_are_sent(self):
+        _, messages = h.convert_messages_to_anthropic(
+            assistant_turn({"anthropic": {"blocks": [THINKING]}}), replay_thinking=False)
+        assert [b["type"] for b in messages[1]["content"]] == ["text", "tool_use"], "as with no state"
 
-    def test_merged_assistant_messages_keep_only_the_leading_blocks(self):
+    def test_consecutive_assistant_messages_stay_apart_with_their_blocks(self):
         first = {"anthropic": {"blocks": [THINKING]}}
         second = {"anthropic": {"blocks": [dict(THINKING, signature="second"), REDACTED]}}
         _, messages = h.convert_messages_to_anthropic(LLMInput(text="18C", role="tool", tool_call_id="toolu_1", context=[
@@ -604,5 +612,68 @@ class TestReasoningStateReplay:
             {"role": "assistant", "text": "Let me check.", "reasoning_state": first},
             {"role": "assistant", "text": " ", "tool_calls": [TOOL_CALL], "reasoning_state": second},
         ]))
-        assert [b["type"] for b in messages[1]["content"]] == ["thinking", "text", "tool_use"]
-        assert messages[1]["content"][0] == THINKING
+        assert [m["role"] for m in messages] == ["user", "assistant", "assistant", "user"]
+        assert [b["type"] for b in messages[1]["content"]] == ["thinking", "text"]
+        assert [b["type"] for b in messages[2]["content"]] == ["thinking", "redacted_thinking", "tool_use"]
+
+    def test_consecutive_user_messages_still_merge(self):
+        _, messages = h.convert_messages_to_anthropic(LLMInput(text="b", context=[{"role": "user", "text": "a"}]))
+        assert messages == [{"role": "user", "content": [{"type": "text", "text": "a"}, {"type": "text", "text": "b"}]}]
+
+
+class TestBlockBinding:
+    def test_adaptive_thinking_drops_stale_blocks_under_the_beta(self):
+        p = h.build_params(LLMInput(text="hi"), "claude-opus-5-5")
+        assert p["thinking"]["block_binding"] == {"prefix_mismatch_behavior": "drop_block"}
+        assert p["extra_headers"] == {"anthropic-beta": "thinking-binding-controls-2026-08-01"}
+        assert "block_binding" not in h.ADAPTIVE_THINKING, "the shared default is not mutated"
+
+    @pytest.mark.parametrize("model,kw", [
+        ("claude-sonnet-5-5", {}),  # between_tools takes no other field
+        ("claude-sonnet-4-6", {}),  # disabled
+        ("claude-haiku-4-5", {"reasoning_effort": "medium", "reasoning_max_tokens": 4096}),  # budget_tokens
+    ])
+    def test_other_thinking_shapes_go_without(self, model, kw):
+        p = h.build_params(LLMInput(text="hi", **kw), model)
+        assert "block_binding" not in p["thinking"] and "extra_headers" not in p
+
+
+class TestRefusedReplayRetry:
+    class Refused(Exception):
+        status_code = 400
+
+    def _client(self, fail_first):
+        calls = []
+        refused = self.Refused("messages.1.content.0: Invalid `signature` in `thinking` block. The block is bound to a different conversation.")
+
+        class Messages:
+            async def create(self, **params):
+                calls.append(params)
+                if fail_first and len(calls) == 1:
+                    raise refused
+                return NS(usage=None, stop_reason="end_turn", content=[NS(type="text", text="ok")])
+
+        return NS(with_options=lambda **_: NS(messages=Messages())), calls
+
+    @pytest.mark.asyncio
+    async def test_a_refused_block_is_retried_once_without_replay(self):
+        client, calls = self._client(fail_first=True)
+        out = await h.complete(client, assistant_turn({"anthropic": {"blocks": [THINKING]}}), "claude-opus-5-5")
+        assert out["response"] == "ok" and len(calls) == 2
+        assert calls[0]["messages"][1]["content"][0] == THINKING
+        assert [b["type"] for b in calls[1]["messages"][1]["content"]] == ["text", "tool_use"]
+        assert calls[1]["stream"] is False
+
+    @pytest.mark.asyncio
+    async def test_other_errors_are_not_retried(self):
+        class Messages:
+            calls = 0
+
+            async def create(self, **_):
+                Messages.calls += 1
+                raise TestRefusedReplayRetry.Refused("max_tokens: too large")
+
+        client = NS(with_options=lambda **_: NS(messages=Messages()))
+        with pytest.raises(RuntimeError):
+            await h.complete(client, LLMInput(text="hi"), "claude-opus-5-5")
+        assert Messages.calls == 1
