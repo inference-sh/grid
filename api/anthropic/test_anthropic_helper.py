@@ -166,9 +166,9 @@ class TestThinkingShapeByModel:
             p = self._p(model, reasoning_effort="high", reasoning_max_tokens=4096)
             assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "high"}
 
-    def test_sonnet_5_5_off_is_between_tools(self):
+    def test_sonnet_5_5_off_is_adaptive_at_low_effort(self):
         p = self._p("claude-sonnet-5-5")
-        assert p["thinking"] == {"type": "between_tools"} and "output_config" not in p
+        assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "low"}
         p = self._p("claude-sonnet-5-5", reasoning_effort="medium", reasoning_max_tokens=4096)
         assert p["thinking"] == self.ADAPTIVE and p["output_config"] == {"effort": "medium"}
 
@@ -629,7 +629,6 @@ class TestBlockBinding:
         assert "block_binding" not in h.ADAPTIVE_THINKING, "the shared default is not mutated"
 
     @pytest.mark.parametrize("model,kw", [
-        ("claude-sonnet-5-5", {}),  # between_tools takes no other field
         ("claude-sonnet-4-6", {}),  # disabled
         ("claude-haiku-4-5", {"reasoning_effort": "medium", "reasoning_max_tokens": 4096}),  # budget_tokens
     ])

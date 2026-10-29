@@ -455,20 +455,18 @@ EFFORT_MODELS = {
 # Models where thinking is never turned off. On claude-opus-5 disabling it is
 # a documented footgun: the model can emit a tool call as plain response text
 # (the call silently never runs) and can leak <thinking> tags into the output.
-# On the always-on models there is nothing to turn off. Either way a request
-# with no reasoning asked for runs at the cheapest depth, output_config.effort
-# "low", instead of {"type": "disabled"}.
+# On the always-on models there is nothing to turn off. claude-sonnet-5-5
+# rejects {"type": "disabled"}; its {"type": "between_tools"} would switch the
+# thinking config whenever a chat toggles reasoning, which rewrites the whole
+# messages cache, and takes no block_binding. Either way a request with no
+# reasoning asked for runs at the cheapest depth, output_config.effort "low",
+# instead of {"type": "disabled"}.
 NEVER_DISABLE_THINKING_MODELS = {
     "claude-opus-5",
     "claude-fable-5-1", "claude-mythos-5-1",
     "claude-opus-5-5",
+    "claude-sonnet-5-5",
 }
-
-# claude-sonnet-5-5 rejects {"type": "disabled"}; its lowest setting is
-# {"type": "between_tools"} (no other field inside thinking, effort "high" or
-# below, which every platform effort level is). The progress notes it writes
-# between tool calls come back as thinking blocks.
-BETWEEN_TOOLS_MODELS = {"claude-sonnet-5-5"}
 
 # Models that return 400 on tool_choice "any" and "tool" (forced tool use),
 # on count_tokens and Batches too. "auto" and "none" are unchanged. Refused
@@ -504,14 +502,13 @@ def _reasoning_requested(input_data) -> bool:
 # display "omitted" (empty thinking text), so the summary is asked for
 # explicitly; thinking is billed the same either way. On the always-on models
 # {"type": "adaptive"} is equivalent to omitting the parameter and carries the
-# display setting; between_tools takes no other field.
+# display setting.
 ADAPTIVE_THINKING = {"type": "adaptive", "display": "summarized"}
 
 # A replayed thinking block whose conversation prefix changed (a tools or
 # system prompt edit since it was written) is dropped by the API instead of
 # refusing the request. The setting needs the beta header and rides only on
-# adaptive thinking: between_tools takes no other field, and the models on
-# budget_tokens thinking run no prefix check.
+# adaptive thinking: the models on budget_tokens thinking run no prefix check.
 THINKING_BINDING_BETA = "thinking-binding-controls-2026-08-01"
 BLOCK_BINDING = {"prefix_mismatch_behavior": "drop_block"}
 
@@ -522,8 +519,6 @@ def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]
         return ADAPTIVE_THINKING
 
     if not _reasoning_requested(input_data):
-        if model in BETWEEN_TOOLS_MODELS:
-            return {"type": "between_tools"}
         return {"type": "disabled"}
 
     if model in EFFORT_MODELS:
