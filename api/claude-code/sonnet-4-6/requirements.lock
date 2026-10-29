@@ -3,9 +3,9 @@ build==1.6.1
 certifi==2026.7.22
 charset-normalizer==3.5.2
 cython==3.3.0
-flit-core==4.1.0
+flit-core==4.2.0
 idna==3.20
-inferencesh==0.35.0
+inferencesh==0.37.3
 ninja==1.13.2
 numpy==2.4.6
 packaging==26.3

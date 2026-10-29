@@ -2708,7 +2708,7 @@
     }
   },
   "usage": {
-    "description": "How much of your Claude plan is used: the 5-hour and weekly windows\n(and any weekly limit scoped to a model), each with when it resets,\nas Claude Code's /usage shows them. Free: it reads your plan and runs\nno model.",
+    "description": "How much of your Claude plan is used: the 5-hour and weekly windows\n(and any weekly limit scoped to a model), each with when it resets,\nas Claude Code's /usage shows them. No inference.sh charge; with a\nsetup-token it sends Claude Code's own one-token quota check, which\ncounts that token against your plan.",
     "kind": "run",
     "capabilities": [],
     "annotations": {
