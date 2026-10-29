@@ -238,9 +238,6 @@ def _replayed_thinking_blocks(msg) -> List[Dict[str, Any]]:
     return [dict(b) for b in entry.get("blocks") or [] if isinstance(b, dict)]
 
 
-_THINKING_TYPES = ("thinking", "redacted_thinking")
-
-
 def _reasoning_state(blocks: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {REASONING_STATE_KEY: {"blocks": blocks}}
 
@@ -248,6 +245,7 @@ def _reasoning_state(blocks: List[Dict[str, Any]]) -> Dict[str, Any]:
 def convert_messages_to_anthropic(
     input_data: LLMInput,
     model: str = "",
+    replay_thinking: bool = True,
 ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
     """Convert LLMInput to Anthropic message format, images fitted to model,
     files as document blocks.
@@ -258,23 +256,17 @@ def convert_messages_to_anthropic(
     system_prompt = input_data.system_prompt if input_data.system_prompt else None
     messages: List[Dict[str, Any]] = []
 
-    # Thinking blocks are replayed only for the assistant messages after the
-    # last user turn: the tool loop still running. Anthropic strips an earlier
-    # turn's thinking from the prompt anyway, so replaying it adds nothing,
-    # and it is the only part of the history the prefix check can refuse: a
-    # signature covers everything sent before its block, so compaction or a
-    # changed tool list or system prompt before an old block is a 400 where
-    # the check is enforced. Only a tool result continues the loop; any other
-    # input is a new turn, and nothing is replayed.
-    replay_from = len(input_data.context)
-    if getattr(input_data, "role", None) == ContextMessageRole.TOOL:
-        replay_from = next(
-            (i + 1 for i in range(len(input_data.context) - 1, -1, -1)
-             if input_data.context[i].role == ContextMessageRole.USER),
-            0,
-        )
+    # Every assistant message's thinking blocks go back unchanged, earlier
+    # turns' too. Opus 4.5+, Sonnet 4.6+ and Haiku 5.5 keep earlier-turn
+    # thinking in the prompt, so leaving a turn's blocks out on the next user
+    # message is a history edit: the prompt cache misses from that turn on
+    # and the whole turn is written again. Compaction replays no assistant
+    # message from before its summary, so it leaves no stale block. A block
+    # whose prefix did change (a tools or system prompt edit) is dropped by
+    # the API under BLOCK_BINDING, or the request is retried without
+    # thinking (replay_thinking=False) where the check refuses it.
 
-    for i, msg in enumerate(input_data.context):
+    for msg in input_data.context:
         role = "user" if msg.role == ContextMessageRole.USER else "assistant"
 
         # Tool result messages
@@ -292,7 +284,7 @@ def convert_messages_to_anthropic(
         # The model's thinking blocks come back first and exactly as it wrote
         # them: the signature covers them, and an edited or reordered block is
         # refused.
-        if msg.role == ContextMessageRole.ASSISTANT and i >= replay_from:
+        if msg.role == ContextMessageRole.ASSISTANT and replay_thinking:
             content.extend(_replayed_thinking_blocks(msg))
 
         # A whitespace-only text is the platform's stand-in for a turn with no
@@ -351,18 +343,15 @@ def convert_messages_to_anthropic(
     elif user_content:
         messages.append({"role": "user", "content": user_content})
 
-    # Merge consecutive same-role messages (Anthropic requirement)
+    # Merge consecutive user messages. Consecutive assistant messages stay
+    # apart: the API joins them into one turn itself, and each keeps its own
+    # thinking blocks. Dropping a later message's blocks would remove blocks
+    # from the middle of the history, which invalidates every block after.
     merged: List[Dict[str, Any]] = []
     for msg in messages:
-        if merged and merged[-1]["role"] == msg["role"]:
+        if merged and merged[-1]["role"] == msg["role"] and msg["role"] != "assistant":
             prev = merged[-1]["content"]
             curr = msg["content"]
-            if msg["role"] == "assistant" and isinstance(curr, list):
-                # A message's thinking blocks lead its content, and merged
-                # into the one before they would sit mid-message, where no
-                # response put them. They are dropped; the first message's
-                # stay where they were.
-                curr = [b for b in curr if b.get("type") not in _THINKING_TYPES]
             if isinstance(prev, list) and isinstance(curr, list):
                 prev.extend(curr)
             elif isinstance(prev, str) and isinstance(curr, str):
@@ -517,6 +506,14 @@ def _reasoning_requested(input_data) -> bool:
 # {"type": "adaptive"} is equivalent to omitting the parameter and carries the
 # display setting; between_tools takes no other field.
 ADAPTIVE_THINKING = {"type": "adaptive", "display": "summarized"}
+
+# A replayed thinking block whose conversation prefix changed (a tools or
+# system prompt edit since it was written) is dropped by the API instead of
+# refusing the request. The setting needs the beta header and rides only on
+# adaptive thinking: between_tools takes no other field, and the models on
+# budget_tokens thinking run no prefix check.
+THINKING_BINDING_BETA = "thinking-binding-controls-2026-08-01"
+BLOCK_BINDING = {"prefix_mismatch_behavior": "drop_block"}
 
 
 def build_thinking_param(input_data, model: str = "") -> Optional[Dict[str, Any]]:
@@ -680,9 +677,10 @@ def build_params(
     input_data,
     model: str,
     max_tokens: int = 64000,
+    replay_thinking: bool = True,
 ) -> Dict[str, Any]:
     """Build common request parameters for Anthropic API."""
-    system_prompt, messages = convert_messages_to_anthropic(input_data, model)
+    system_prompt, messages = convert_messages_to_anthropic(input_data, model, replay_thinking)
     tools = convert_tools_to_anthropic(input_data.tools) if input_data.tools else None
     tool_choice = anthropic_tool_choice(input_data.tool_choice, model=model)
     output_format = anthropic_output_format(input_data.response_format)
@@ -709,6 +707,9 @@ def build_params(
 
     thinking = build_thinking_param(input_data, model=model)
     if thinking is not None:
+        if thinking["type"] == "adaptive":
+            thinking = {**thinking, "block_binding": BLOCK_BINDING}
+            params["extra_headers"] = {"anthropic-beta": THINKING_BINDING_BETA}
         params["thinking"] = thinking
 
     output_config = build_output_config(input_data, model=model) or {}
@@ -789,6 +790,7 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
     elif event.type == "message_start":
         msg = getattr(event, "message", None)
         if msg:
+            _log_input_transformations(msg)
             usage = getattr(msg, "usage", None)
             if usage:
                 state["input_tokens"] = getattr(usage, "input_tokens", 0)
@@ -796,6 +798,36 @@ def apply_stream_event(event, state: Dict[str, Any]) -> Optional[Dict[str, Any]]
                 state["cache_creation_input_tokens"] = getattr(usage, "cache_creation_input_tokens", 0)
 
     return delta or None
+
+
+def _thinking_signature_refused(e: Exception) -> bool:
+    """A 400 on a replayed thinking block: its signature is invalid or bound to
+    a different conversation, where no block_binding setting could drop it."""
+    return getattr(e, "status_code", None) == 400 and "signature" in str(e) and "thinking" in str(e)
+
+
+async def _create(call, input_data, model: str, max_tokens: int, **overrides):
+    """call(params) with every thinking block replayed; once more without any
+    when the API refuses a replayed block. The model then answers that turn
+    without the reasoning those blocks carried."""
+    params = {**build_params(input_data, model, max_tokens), **overrides}
+    logger.info(f"Calling Anthropic API: model={model}, messages={len(params['messages'])}, stream={params['stream']}")
+    try:
+        return await call(params)
+    except Exception as e:
+        if not _thinking_signature_refused(e):
+            raise
+        logger.warning(f"Anthropic refused a replayed thinking block, retrying without thinking replay: {e}")
+    return await call({**build_params(input_data, model, max_tokens, replay_thinking=False), **overrides})
+
+
+def _log_input_transformations(message) -> None:
+    """Thinking blocks the API dropped or let through on a prefix or model
+    mismatch (input_transformations, under THINKING_BINDING_BETA). A drop on
+    every turn means something edits the history."""
+    transforms = getattr(message, "input_transformations", None)
+    if transforms:
+        logger.warning(f"Anthropic input_transformations: {transforms}")
 
 
 async def stream_completion(
@@ -807,14 +839,11 @@ async def stream_completion(
     with_deltas=True: yields (output_dict, delta_dict | None) tuples; delta_dict
     has LLMDelta-shaped keys.
     """
-    params = build_params(input_data, model, max_tokens)
-
-    logger.info(f"Calling Anthropic API: model={model}, messages={len(params['messages'])}")
+    async def call(params):
+        return await asyncio.wait_for(client.messages.create(**params), timeout=STREAM_START_TIMEOUT)
 
     try:
-        stream = await asyncio.wait_for(
-            client.messages.create(**params), timeout=STREAM_START_TIMEOUT
-        )
+        stream = await _create(call, input_data, model, max_tokens)
     except asyncio.TimeoutError:
         raise RuntimeError(f"Anthropic API call timed out after {STREAM_START_TIMEOUT:.0f} seconds")
     except Exception as e:
@@ -856,23 +885,22 @@ async def complete(
     would not finish inside NON_STREAM_TIMEOUT anyway. Use stream=True for long
     outputs.
     """
-    params = build_params(input_data, model, min(max_tokens, NON_STREAM_MAX_TOKENS))
-    params["stream"] = False
-
-    logger.info(f"Calling Anthropic API (non-stream): model={model}")
-
-    try:
+    async def call(params):
         # The explicit timeout also suppresses the SDK's long-request guard.
-        response = await asyncio.wait_for(
+        return await asyncio.wait_for(
             client.with_options(timeout=NON_STREAM_TIMEOUT).messages.create(**params),
             timeout=NON_STREAM_TIMEOUT,
         )
+
+    try:
+        response = await _create(call, input_data, model, min(max_tokens, NON_STREAM_MAX_TOKENS), stream=False)
     except asyncio.TimeoutError:
         raise RuntimeError("Anthropic API call timed out after 120 seconds")
     except Exception as e:
         raise handle_api_error(e)
 
     state = create_initial_state()
+    _log_input_transformations(response)
 
     state["stop_reason"] = getattr(response, "stop_reason", None) or ""
 
