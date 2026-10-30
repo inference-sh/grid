@@ -118,9 +118,9 @@ def _updated_belt(shipped: Path) -> Path:
         try:
             r = subprocess.run([str(dst), "update"], env=env, stdin=subprocess.DEVNULL, capture_output=True,
                                text=True, timeout=BELT_UPDATE_TIMEOUT)
-            logger.info("belt update: %s", (r.stdout + r.stderr).strip()[-300:])
+            print(f"belt update: {(r.stdout + r.stderr).strip()[-300:]}", flush=True)
         except (OSError, subprocess.SubprocessError) as e:
-            logger.warning("belt update failed, running the belt the cache has: %s", e)
+            print(f"belt update failed, running the belt the cache has: {e}", flush=True)
     return dst
 
 
