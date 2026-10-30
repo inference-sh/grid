@@ -1,4 +1,4 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
-dashscope >= 1.25.13, < 2 # 2.x is a rewrite on httpx; the lock is frozen on 1.25.13
+dashscope >= 1.25.13, < 1.26 # 1.26+ needs httpx and resolves the httpx 1.0 pre-release; 2.x is a rewrite on httpx (oncall 35332)
 requests
