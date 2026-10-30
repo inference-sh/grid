@@ -208,36 +208,84 @@ def test_wire_input_files_as_strings(tmp_path):
     assert d["images"] == [str(img)] and d["context"][0]["images"] == [str(img)]
 
 
-def _shipped_belt(app_dir, script):
-    (app_dir / "bin").mkdir()
-    b = app_dir / "bin" / f"belt-linux-{h._arch()}"
-    b.write_text(script)
-    return b
+def _fake_belt(path, version, update="", tag=None, calls=None):
+    """A belt that says `version` and runs `update` (sh) on `belt update`;
+    every call is appended to `calls` (the test root's, by default) with the
+    env the belt must not see."""
+    path.write_text(
+        "#!/bin/sh\n"
+        f'echo "{tag or version} $@ key=$ANTHROPIC_API_KEY token=$CLAUDE_CODE_OAUTH_TOKEN" >> {calls or path.parents[2] / "calls"}\n'
+        f'[ "$1" = version ] && {{ echo "belt {version}" >&2; exit 0; }}\n'
+        f'[ "$1" = update ] && {{ {update or ":"}; }}\n'
+        "exit 0\n")
+    return path
 
 
-def test_find_belt_updates_a_cached_copy(tmp_path, monkeypatch):
+@pytest.fixture
+def belt_env(tmp_path, monkeypatch):
     monkeypatch.delenv("BELT_BIN", raising=False)
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-not-for-belt")
-    log = tmp_path / "calls"
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "oat-not-for-belt")
+    (tmp_path / "app" / "bin").mkdir(parents=True)
+    return tmp_path
+
+
+def _calls(root, arg):
+    return [l for l in (root / "calls").read_text().splitlines() if f" {arg} " in l]
+
+
+def _cached(root):
+    return root / "cache" / "inferencesh" / "claude-code" / "bin" / f"belt-linux-{h._arch()}"
+
+
+def test_find_belt_updates_a_cached_copy(belt_env):
+    shipped = belt_env / "app" / "bin" / f"belt-linux-{h._arch()}"
     # Updating replaces the binary in place, as autoupdate does.
-    _shipped_belt(tmp_path, f'#!/bin/sh\necho "$@ key=$ANTHROPIC_API_KEY" >> {log}\n'
-                            f'printf \'#!/bin/sh\\necho updated\\n\' > "$0"\n')
-    b = h.find_belt(tmp_path)
-    assert b.parent == tmp_path / "cache" / "inferencesh" / "claude-code" / "bin" and os.access(b, os.X_OK)
-    assert log.read_text() == "update key=\n", "updated without the user's Anthropic env"
-    assert subprocess.run([str(b)], capture_output=True, text=True).stdout == "updated\n"
-    # The next setup updates the copy it has, not a fresh one.
-    assert h.find_belt(tmp_path) == b and log.read_text() == "update key=\n"
+    _fake_belt(shipped, "v1.0.0", update=f'cp {belt_env}/updated "$0"')
+    _fake_belt(belt_env / "updated", "v2.0.0", calls=belt_env / "calls")
+    b = h.find_belt(belt_env / "app")
+    assert b == _cached(belt_env) and os.access(b, os.X_OK) and h._belt_version(b) == (2, 0, 0)
+    assert _calls(belt_env, "update") == ["v1.0.0 update key= token="], "updated without the user's credentials"
+    # A later setup keeps the newer copy rather than the shipped belt.
+    assert h.find_belt(belt_env / "app") == b and h._belt_version(b) == (2, 0, 0)
 
 
-def test_find_belt_runs_the_copy_when_update_fails(tmp_path, monkeypatch):
-    monkeypatch.delenv("BELT_BIN", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+def test_find_belt_takes_a_newer_shipped_belt(belt_env):
+    _fake_belt(belt_env / "app" / "bin" / f"belt-linux-{h._arch()}", "v1.0.0", update="exit 1")
+    h.find_belt(belt_env / "app")
+    # A redeploy ships a newer belt while the update cannot be had.
+    _fake_belt(belt_env / "app" / "bin" / f"belt-linux-{h._arch()}", "v3.0.0", update="exit 1")
+    assert h._belt_version(h.find_belt(belt_env / "app")) == (3, 0, 0)
+
+
+def test_find_belt_runs_the_copy_when_update_fails(belt_env):
+    _fake_belt(belt_env / "app" / "bin" / f"belt-linux-{h._arch()}", "v1.0.0", update="echo nope >&2; exit 1")
+    b = h.find_belt(belt_env / "app")
+    assert _calls(belt_env, "update") and h._belt_version(b) == (1, 0, 0)
+
+
+def test_find_belt_backs_off_after_a_timeout(belt_env, monkeypatch, capsys):
     monkeypatch.setattr(h, "BELT_UPDATE_TIMEOUT", 1)
-    _shipped_belt(tmp_path, '#!/bin/sh\n[ "$1" = update ] && exec sleep 5\necho shipped\n')
-    b = h.find_belt(tmp_path)
-    assert subprocess.run([str(b)], capture_output=True, text=True).stdout == "shipped\n"
+    _fake_belt(belt_env / "app" / "bin" / f"belt-linux-{h._arch()}", "v1.0.0", update="echo downloading; exec sleep 5")
+    b = h.find_belt(belt_env / "app")
+    assert h._belt_version(b) == (1, 0, 0)
+    out = capsys.readouterr().out
+    assert "timed out after 1s (downloading); running belt v1.0.0" in out
+    # The next setup within the backoff doesn't try again.
+    h.find_belt(belt_env / "app")
+    assert len(_calls(belt_env, "update")) == 1 and "belt update skipped" in capsys.readouterr().out
+    assert not list(b.parent.glob("belt-update-*")), "the update's TMPDIR is removed"
+
+
+def test_find_belt_removes_stale_staging(belt_env):
+    _fake_belt(belt_env / "app" / "bin" / f"belt-linux-{h._arch()}", "v1.0.0")
+    b = h.find_belt(belt_env / "app")
+    old, new = b.parent / f".{b.name}.new-123", b.parent / f".{b.name}.new-456"
+    old.write_text("x"), new.write_text("x")
+    os.utime(old, (0, 0))
+    h.find_belt(belt_env / "app")
+    assert not old.exists() and new.exists(), "only staging an hour old goes; a running update's stays"
 
 
 @pytest.fixture(scope="module")
