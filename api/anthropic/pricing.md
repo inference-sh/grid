@@ -192,5 +192,5 @@ partner_cache_write_per_million:  125000000   # $1.25
 ## Deprecation Notes
 
 - Claude Opus 4.5 (`claude-opus-4-5-20251101`) — legacy, may be deprecated
-- Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`) — legacy, may be deprecated
+- Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`) — app retired 2026-10-30, use `anthropic/claude-sonnet-5-5`
 - Claude Sonnet 4 and Opus 4 — deprecated, retiring June 15, 2026
