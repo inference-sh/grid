@@ -30,9 +30,12 @@ import json
 import logging
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
+import tempfile
+import time
 import uuid
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
@@ -84,8 +87,11 @@ def _cache_root() -> Path:
     return Path(base) / "inferencesh" / "claude-code"
 
 
-# How long setup waits for `belt update` before it runs the copy it has.
+# How long setup waits for `belt update` before it runs the copy it has, and
+# how long after a timeout it leaves the update alone: a killed update records
+# no backoff of its own.
 BELT_UPDATE_TIMEOUT = 120
+BELT_UPDATE_BACKOFF = 3600
 
 
 def find_belt(app_dir: Path = APP_DIR) -> Path:
@@ -102,26 +108,71 @@ def find_belt(app_dir: Path = APP_DIR) -> Path:
 
 
 def _updated_belt(shipped: Path) -> Path:
-    """The cache's belt, updated to the latest release. The cache starts from
-    the shipped belt (the app dir may be read-only, and the package may not
-    keep the mode bit); an update that fails leaves the copy as it was."""
+    """The cache's belt, updated to the latest release. The cache holds the
+    newer of the shipped belt and the copy it has (the app dir may be
+    read-only, and the package may not keep the mode bit); an update that
+    fails leaves the copy as it was."""
     dst = _cache_root() / "bin" / shipped.name
     dst.parent.mkdir(parents=True, exist_ok=True)
+    timed_out = dst.parent / f".{shipped.name}.update-timeout"
     with open(dst.parent / f".{shipped.name}.lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        if not dst.exists():
-            tmp = dst.with_suffix(f".{uuid.uuid4().hex}")
-            shutil.copyfile(shipped, tmp)
-            tmp.chmod(0o755)
+        _remove_stale_staging(dst)
+        tmp = dst.with_suffix(f".{uuid.uuid4().hex}")
+        shutil.copyfile(shipped, tmp)
+        tmp.chmod(0o755)
+        if not dst.exists() or _belt_version(tmp) > _belt_version(dst):
             os.replace(tmp, dst)
-        env = {k: v for k, v in os.environ.items() if k not in _STRIPPED_ENV}
-        try:
-            r = subprocess.run([str(dst), "update"], env=env, stdin=subprocess.DEVNULL, capture_output=True,
-                               text=True, timeout=BELT_UPDATE_TIMEOUT)
-            print(f"belt update: {(r.stdout + r.stderr).strip()[-300:]}", flush=True)
-        except (OSError, subprocess.SubprocessError) as e:
-            print(f"belt update failed, running the belt the cache has: {e}", flush=True)
+        else:
+            tmp.unlink()
+    # Outside the lock: an update stages the download under a name of its own
+    # and renames it over dst, so setups need not wait on each other's.
+    if timed_out.exists() and time.time() - timed_out.stat().st_mtime < BELT_UPDATE_BACKOFF:
+        print(f"belt update skipped: it timed out within {BELT_UPDATE_BACKOFF}s; running {_belt_name(dst)}", flush=True)
+        return dst
+    env = {k: v for k, v in os.environ.items() if k not in _STRIPPED_ENV}
+    work = Path(tempfile.mkdtemp(prefix="belt-update-", dir=dst.parent))
+    env["TMPDIR"] = str(work)
+    try:
+        r = subprocess.run([str(dst), "update"], env=env, stdin=subprocess.DEVNULL, capture_output=True,
+                           text=True, timeout=BELT_UPDATE_TIMEOUT)
+        print(f"belt update: {(r.stdout + r.stderr).strip()[-300:]}", flush=True)
+    except subprocess.TimeoutExpired as e:
+        timed_out.touch()
+        out = "".join(x.decode(errors="replace") if isinstance(x, bytes) else x for x in (e.stdout or "", e.stderr or ""))
+        print(f"belt update timed out after {BELT_UPDATE_TIMEOUT}s ({out.strip()[-200:]}); running {_belt_name(dst)}", flush=True)
+    except (OSError, subprocess.SubprocessError) as e:
+        print(f"belt update failed ({e}); running {_belt_name(dst)}", flush=True)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
     return dst
+
+
+def _belt_version(path: Path) -> Tuple[int, ...]:
+    """The belt's release version, () when it does not run or say one."""
+    m = re.search(r"belt v(\d+)\.(\d+)\.(\d+)", _belt_name(path))
+    return tuple(int(x) for x in m.groups()) if m else ()
+
+
+def _belt_name(path: Path) -> str:
+    """The first line of `belt version` (it prints on stderr)."""
+    try:
+        r = subprocess.run([str(path), "version"], stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return "an unrunnable belt"
+    return ((r.stdout + r.stderr).strip().splitlines() or ["belt (no version)"])[0]
+
+
+def _remove_stale_staging(dst: Path):
+    """Drop what killed updates and copies leave next to dst: an update's
+    staging file and this helper's own copies, once an hour old."""
+    cutoff = time.time() - BELT_UPDATE_BACKOFF
+    for p in [*dst.parent.glob(f".{dst.name}.new-*"), *dst.parent.glob(".autoupdate-probe-*"), *dst.parent.glob(f"{dst.name}.*"), *dst.parent.glob("belt-update-*")]:
+        try:
+            if p.stat().st_mtime < cutoff:
+                shutil.rmtree(p) if p.is_dir() else p.unlink()
+        except OSError:
+            pass
 
 
 def ensure_claude() -> str:
