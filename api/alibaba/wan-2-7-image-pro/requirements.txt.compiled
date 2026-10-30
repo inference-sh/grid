@@ -30,7 +30,7 @@ idna==3.11
     # via
     #   requests
     #   yarl
-inferencesh==0.6.27
+inferencesh==0.37.4
     # via -r requirements.txt
 multidict==6.7.1
     # via
