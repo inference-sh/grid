@@ -1,0 +1,24 @@
+namespace: pruna
+name: p-image-try-on
+title: P-Image-Try-On
+description: "Virtual try-on that dresses a person photo in up to 11 garment images, with optional reposing from a reference pose."
+metadata:
+    tags:
+        - virtual-try-on
+        - image-editing
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

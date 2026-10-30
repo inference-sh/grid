@@ -3,7 +3,7 @@
 API base: `https://api.pruna.ai/v1`
 Docs: `https://docs.api.pruna.ai/guides/models`
 
-## Implemented Models (18)
+## Implemented Models (27)
 
 ### Image Generation
 
@@ -27,6 +27,7 @@ Docs: `https://docs.api.pruna.ai/guides/models`
 |---|---|---|---|
 | p-image-edit | [docs](https://docs.api.pruna.ai/guides/models/p-image-edit) | $0.01/img | 500/min |
 | p-image-edit-lora | [docs](https://docs.api.pruna.ai/guides/models/p-image-edit-lora) | - | 250/min |
+| p-image-try-on | [docs](https://docs.api.pruna.ai/guides/models/p-image-try-on) | 15 units + 8/extra image (unit unconfirmed) | 500/min |
 | qwen-image-edit-plus | [docs](https://docs.api.pruna.ai/guides/models/qwen-image-edit-plus) | $0.03/img | 150/min |
 
 ### Video Generation
@@ -34,6 +35,13 @@ Docs: `https://docs.api.pruna.ai/guides/models`
 | Model | Docs | Price | Rate Limit |
 |---|---|---|---|
 | p-video | [docs](https://docs.api.pruna.ai/guides/models/p-video) | $0.005-0.04/sec | 250/min |
+| p-video-2 | [docs](https://docs.api.pruna.ai/guides/models/p-video-2) | $0.015-0.05/sec | 250/min |
+| p-video-2-pro | [docs](https://docs.api.pruna.ai/guides/models/p-video-2-pro) | $0.01-0.155/sec | 250/min |
+| p-video-2-pro-reference | [docs](https://docs.api.pruna.ai/guides/models/p-video-2-pro-reference) | $0.015-0.115/sec + references | 250/min |
+| p-video-2-pro-avatar | [docs](https://docs.api.pruna.ai/guides/models/p-video-2-pro-avatar) | $0.02-0.12/sec | 50/min |
+| p-video-animate | [docs](https://docs.api.pruna.ai/guides/models/p-video-animate) | $0.03-0.06/sec | 50/min |
+| p-video-upscale | [docs](https://docs.api.pruna.ai/guides/models/p-video-upscale-a77443f46abf) (unlisted) | $0.01-0.16/sec | 50/min |
+| vace | [docs](https://docs.api.pruna.ai/guides/models/vace) | $0.40/video | 30/min |
 | wan-t2v | [docs](https://docs.api.pruna.ai/guides/models/wan-t2v) | $0.05/video (480p) | 30/min |
 | wan-i2v | [docs](https://docs.api.pruna.ai/guides/models/wan-i2v) | $0.05/video (480p) | 30/min |
 
@@ -42,13 +50,13 @@ Docs: `https://docs.api.pruna.ai/guides/models`
 | Model | Docs | Price | Rate Limit |
 |---|---|---|---|
 | p-image-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-trainer) | $1.80/1000 steps | 5/min |
+| p-image-edit-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-edit-trainer) | $4.00/1000 steps | 5/min |
 
 ## Not Yet Implemented
 
 | Model | Docs | Category |
 |---|---|---|
-| vace | [docs](https://docs.api.pruna.ai/guides/models/vace) | Video (character consistency) |
-| p-image-edit-trainer | [docs](https://docs.api.pruna.ai/guides/models/p-image-edit-trainer) | LoRA training (editing) |
+| p-judger | - (OpenAPI only) | Evaluation |
 
 ## Enum Parameters Reference
 
@@ -99,7 +107,7 @@ Most models support a subset of these:
 |---|---|
 | flux-dev | `"Lightly Juiced (more consistent)"`, `"Juiced (default)"`, `"Extra Juiced (more speed)"`, `"Blink of an eye"` |
 | flux-dev-lora | `"Base Model (compiled)"`, `"Lightly Juiced"`, `"Juiced"`, `"Extra Juiced"` |
-| vace (not impl) | `"Lightly Juiced (more consistent)"`, `"Juiced (more speed)"`, `"Extra Juiced (even more speed)"` |
+| vace | `"Lightly Juiced (more consistent)"`, `"Juiced (more speed)"`, `"Extra Juiced (even more speed)"` |
 
 ### image_size
 
@@ -117,11 +125,11 @@ price against quality. Drives per-image pricing together with `image_size`.
 
 `24`, `48`
 
-### size (vace only, not implemented)
+### size (vace only)
 
 `"720*1280"`, `"1280*720"`, `"480*832"`, `"832*480"`
 
-### sample_solver (vace only, not implemented)
+### sample_solver (vace only)
 
 `"unipc"`, `"dpm++"`
 

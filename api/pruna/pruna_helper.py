@@ -139,9 +139,12 @@ def create_prediction(
 async def poll_prediction_status(
     prediction_id: str,
     logger: Optional[logging.Logger] = None,
+    max_wait: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Poll a prediction until completion with adaptive intervals.
+
+    max_wait: seconds before giving up (None waits until the prediction ends).
 
     Polling schedule: 1s for first 10s, 2s for next 10s, 5s for next 30s, then 10s.
 
@@ -190,6 +193,9 @@ async def poll_prediction_status(
             if logger:
                 logger.error(f"Prediction failed: {error_msg}")
             raise RuntimeError(f"Prediction failed: {error_msg}")
+
+        if max_wait is not None and elapsed >= max_wait:
+            raise RuntimeError(f"Prediction {prediction_id} did not finish within {int(max_wait)}s (last status: {status})")
 
         # Adaptive polling interval
         if elapsed < 10:
@@ -368,7 +374,7 @@ async def run_prediction(
     if not prediction_id:
         # Upstream returned no prediction ID and no URL — API contract broken
         status = result.get("status")
-        if status == "succeeded" and isinstance(gen_url, dict):
+        if status == "succeeded" and isinstance(result.get("generation_url"), dict):
             raise RuntimeError(f"Upstream model returned status metadata instead of generation URL — the model may be temporarily unavailable")
 
         raise RuntimeError("No prediction ID in response")
@@ -377,3 +383,55 @@ async def run_prediction(
         prediction_id=prediction_id,
         logger=logger,
     )
+
+
+def file_url(file, logger: Optional[logging.Logger] = None) -> str:
+    """
+    Return a URL Pruna can fetch for an inference.sh File.
+
+    Public http(s) URIs are passed through; local files are uploaded to Pruna.
+    """
+    if file.uri and file.uri.startswith("http"):
+        return file.uri
+    if not file.exists():
+        raise RuntimeError(f"Input file does not exist: {file.path}")
+    upload_result = upload_file(file.path, logger=logger)
+    url = upload_result.get("urls", {}).get("get")
+    if not url:
+        raise RuntimeError(f"No URL in upload response: {upload_result}")
+    return url
+
+
+def probe_video(path: str, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+    """
+    Probe a local video with ffprobe: width, height, fps, seconds.
+
+    Requires `ffmpeg` in the app's packages.txt. Missing values are 0.
+    """
+    import subprocess
+    import json as _json
+
+    info = {"width": 0, "height": 0, "fps": 0.0, "seconds": 0.0}
+    try:
+        probe = subprocess.run(
+            ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", path],
+            capture_output=True, text=True, timeout=30,
+        )
+        if probe.returncode != 0:
+            return info
+        data = _json.loads(probe.stdout)
+        info["seconds"] = float(data.get("format", {}).get("duration", 0) or 0)
+        for st in data.get("streams", []):
+            if st.get("codec_type") != "video":
+                continue
+            info["width"] = int(st.get("width") or 0)
+            info["height"] = int(st.get("height") or 0)
+            rate = st.get("avg_frame_rate") or st.get("r_frame_rate") or "0/1"
+            num, _, den = rate.partition("/")
+            if float(den or 1):
+                info["fps"] = float(num) / float(den or 1)
+            break
+    except Exception as e:
+        if logger:
+            logger.warning(f"Could not probe video: {e}")
+    return info

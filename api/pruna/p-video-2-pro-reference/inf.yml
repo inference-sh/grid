@@ -1,0 +1,24 @@
+namespace: pruna
+name: p-video-2-pro-reference
+title: P-Video-2-Pro-Reference
+description: "Video from a prompt plus up to 9 image, 3 video and 3 audio references on MiniMax H3. Consistent characters, motion transfer, 5-15s, 480p to 4k."
+metadata:
+    tags:
+        - reference-to-video
+        - image-to-video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

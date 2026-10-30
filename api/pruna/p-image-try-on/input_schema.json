@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "OutputFormatEnum": {
+      "enum": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "person_image": {
+      "description": "Photo of the person to dress.",
+      "format": "file",
+      "title": "Person Image",
+      "type": "string"
+    },
+    "garment_images": {
+      "description": "Garment reference images (up to 6 recommended, 11 supported).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 11,
+      "minItems": 1,
+      "title": "Garment Images",
+      "type": "array"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Experimental. For non-flatlay garment photos, which garment to take from which image, e.g. 'the green t-shirt from image 1'.",
+      "title": "Prompt"
+    },
+    "reference_pose": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional pose image. The person is reposed to match it before the try-on.",
+      "title": "Reference Pose"
+    },
+    "turbo": {
+      "default": false,
+      "description": "Run faster. Not recommended for more than 4 garments.",
+      "title": "Turbo",
+      "type": "boolean"
+    },
+    "preserve_input_size": {
+      "default": true,
+      "description": "Return the output at the person image's resolution.",
+      "title": "Preserve Input Size",
+      "type": "boolean"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "jpg",
+      "description": "Output image format."
+    },
+    "output_quality": {
+      "default": 95,
+      "description": "Quality for jpg/webp outputs (0-100).",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Output Quality",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "person_image",
+    "garment_images"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

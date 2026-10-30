@@ -83,6 +83,23 @@ async def call_endpoint(client: httpx.AsyncClient, endpoint: str, payload: dict,
             )
 
 
+def get_result_url(data: dict) -> str:
+    """Extract the result URL from a v1 (product) or v2 response."""
+    if "result_url" in data:
+        val = data["result_url"]
+        url = val[0] if isinstance(val, list) else val
+    elif isinstance(data.get("result"), dict):
+        url = data["result"].get("image_url") or data["result"].get("video_url")
+    elif isinstance(data.get("result"), list) and data["result"]:
+        first = data["result"][0]
+        url = first[0] if isinstance(first, list) else first
+    else:
+        url = data.get("image_url") or data.get("video_url")
+    if not url:
+        raise RuntimeError(f"No result URL in Bria response: {list(data.keys())}")
+    return url
+
+
 async def download_image(client: httpx.AsyncClient, image_url: str, suffix: str = ".png") -> str:
     """Download result image to a temp file, return the path."""
     resp = await client.get(image_url)

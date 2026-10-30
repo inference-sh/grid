@@ -1,0 +1,24 @@
+namespace: pruna
+name: p-video-2-pro-avatar
+title: P-Video-2-Pro-Avatar
+description: "Talking video from one portrait and uploaded audio or a script on MiniMax H3. Lip sync, 30 voices in 10 languages, 1s to 3 min, 480p to 4k."
+metadata:
+    tags:
+        - talking-avatar
+        - lip-sync
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

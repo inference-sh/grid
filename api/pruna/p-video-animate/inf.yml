@@ -1,0 +1,24 @@
+namespace: pruna
+name: p-video-animate
+title: P-Video-Animate
+description: "Animate the subject of a reference image with the motion and audio of a source video, at 720p or 1080p."
+metadata:
+    tags:
+        - video-to-video
+        - video-editing
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

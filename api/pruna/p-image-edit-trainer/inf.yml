@@ -1,0 +1,24 @@
+namespace: pruna
+name: p-image-edit-trainer
+title: P-Image-Edit-LoRA Trainer
+description: "Train custom LoRA weights for p-image-edit-lora from before/after image pairs."
+metadata:
+    tags:
+        - training
+        - lora
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
