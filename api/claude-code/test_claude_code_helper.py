@@ -208,13 +208,36 @@ def test_wire_input_files_as_strings(tmp_path):
     assert d["images"] == [str(img)] and d["context"][0]["images"] == [str(img)]
 
 
-def test_find_belt_shipped(tmp_path, monkeypatch):
+def _shipped_belt(app_dir, script):
+    (app_dir / "bin").mkdir()
+    b = app_dir / "bin" / f"belt-linux-{h._arch()}"
+    b.write_text(script)
+    return b
+
+
+def test_find_belt_updates_a_cached_copy(tmp_path, monkeypatch):
     monkeypatch.delenv("BELT_BIN", raising=False)
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
-    (tmp_path / "bin").mkdir()
-    b = tmp_path / "bin" / f"belt-linux-{h._arch()}"
-    b.write_text("#!/bin/sh\n")
-    assert h.find_belt(tmp_path) == b and os.access(b, os.X_OK)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-not-for-belt")
+    log = tmp_path / "calls"
+    # Updating replaces the binary in place, as autoupdate does.
+    _shipped_belt(tmp_path, f'#!/bin/sh\necho "$@ key=$ANTHROPIC_API_KEY" >> {log}\n'
+                            f'printf \'#!/bin/sh\\necho updated\\n\' > "$0"\n')
+    b = h.find_belt(tmp_path)
+    assert b.parent == tmp_path / "cache" / "inferencesh" / "claude-code" / "bin" and os.access(b, os.X_OK)
+    assert log.read_text() == "update key=\n", "updated without the user's Anthropic env"
+    assert subprocess.run([str(b)], capture_output=True, text=True).stdout == "updated\n"
+    # The next setup updates the copy it has, not a fresh one.
+    assert h.find_belt(tmp_path) == b and log.read_text() == "update key=\n"
+
+
+def test_find_belt_runs_the_copy_when_update_fails(tmp_path, monkeypatch):
+    monkeypatch.delenv("BELT_BIN", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    monkeypatch.setattr(h, "BELT_UPDATE_TIMEOUT", 1)
+    _shipped_belt(tmp_path, '#!/bin/sh\n[ "$1" = update ] && exec sleep 5\necho shipped\n')
+    b = h.find_belt(tmp_path)
+    assert subprocess.run([str(b)], capture_output=True, text=True).stdout == "shipped\n"
 
 
 @pytest.fixture(scope="module")
