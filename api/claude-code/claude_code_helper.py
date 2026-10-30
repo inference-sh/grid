@@ -1,7 +1,7 @@
 """Claude Code on the user's own Claude subscription, as an LLM app.
 
-The app runs one long-lived `belt harness serve` (shipped in the app dir as
-bin/belt-linux-<arch>) and writes one JSON request per run on its stdin:
+The app runs one long-lived `belt harness serve` and writes one JSON request
+per run on its stdin:
 
     {"id": <task id>, "harness": "claude", "model": <model id>,
      "token": <CLAUDE_CODE_OAUTH_TOKEN>, "input": <LLMInput>}
@@ -13,6 +13,11 @@ the token's plan windows, what Claude Code's /usage shows. Requests may overlap;
 lines are routed to their run by id. serve finds the `claude` binary through
 CLAUDE_BIN, which setup points at a pinned @anthropic-ai/claude-code installed
 with the worker image's npm.
+
+serve is the latest belt release: setup copies the belt shipped in the app
+dir (bin/belt-linux-<arch>) to the worker's cache and runs `belt update` on
+the copy, since `harness` commands never update themselves. When the update
+can't be had, the copy runs as it is.
 
 The token is read from the environment at every run and only ever written to
 serve's stdin: it is never put in serve's environment, logged, or echoed in an
@@ -26,7 +31,6 @@ import logging
 import os
 import platform
 import shutil
-import stat
 import subprocess
 import sys
 import uuid
@@ -80,36 +84,44 @@ def _cache_root() -> Path:
     return Path(base) / "inferencesh" / "claude-code"
 
 
-def _ensure_executable(path: Path) -> Path:
-    """The binary as an executable file: the package may not keep the mode
-    bit, and the app dir may be read-only, so a copy goes to the cache."""
-    if os.access(path, os.X_OK):
-        return path
-    try:
-        path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-        return path
-    except OSError:
-        pass
-    dst = _cache_root() / "bin" / path.name
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    if not dst.exists() or dst.stat().st_size != path.stat().st_size:
-        tmp = dst.with_suffix(f".{uuid.uuid4().hex}")
-        shutil.copyfile(path, tmp)
-        tmp.chmod(0o755)
-        os.replace(tmp, dst)
-    return dst
+# How long setup waits for `belt update` before it runs the copy it has.
+BELT_UPDATE_TIMEOUT = 120
 
 
 def find_belt(app_dir: Path = APP_DIR) -> Path:
-    """BELT_BIN, else the binary shipped with the app for this platform."""
+    """BELT_BIN, else the latest belt: the one shipped with the app for this
+    platform, copied to the cache and updated there."""
     explicit = os.environ.get("BELT_BIN")
     if explicit:
         return Path(explicit)
     system = platform.system().lower()
     shipped = app_dir / "bin" / f"belt-{system}-{_arch()}"
-    if shipped.exists():
-        return _ensure_executable(shipped)
-    raise ClaudeCodeError(f"belt binary for {system}/{_arch()} not found at {shipped}; run build.sh before deploying")
+    if not shipped.exists():
+        raise ClaudeCodeError(f"belt binary for {system}/{_arch()} not found at {shipped}; run build.sh before deploying")
+    return _updated_belt(shipped)
+
+
+def _updated_belt(shipped: Path) -> Path:
+    """The cache's belt, updated to the latest release. The cache starts from
+    the shipped belt (the app dir may be read-only, and the package may not
+    keep the mode bit); an update that fails leaves the copy as it was."""
+    dst = _cache_root() / "bin" / shipped.name
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    with open(dst.parent / f".{shipped.name}.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if not dst.exists():
+            tmp = dst.with_suffix(f".{uuid.uuid4().hex}")
+            shutil.copyfile(shipped, tmp)
+            tmp.chmod(0o755)
+            os.replace(tmp, dst)
+        env = {k: v for k, v in os.environ.items() if k not in _STRIPPED_ENV}
+        try:
+            r = subprocess.run([str(dst), "update"], env=env, stdin=subprocess.DEVNULL, capture_output=True,
+                               text=True, timeout=BELT_UPDATE_TIMEOUT)
+            logger.info("belt update: %s", (r.stdout + r.stderr).strip()[-300:])
+        except (OSError, subprocess.SubprocessError) as e:
+            logger.warning("belt update failed, running the belt the cache has: %s", e)
+    return dst
 
 
 def ensure_claude() -> str:
