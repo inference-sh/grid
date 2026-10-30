@@ -22,16 +22,12 @@ charset-normalizer==3.5.2
     # via requests
 cryptography==50.0.2
     # via dashscope
-dashscope==1.27.8
+dashscope==1.25.24
     # via -r requirements.txt
 frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-httpx==1.0.dev6
-    # via dashscope
-httpx-sse==0.4.3
-    # via dashscope
 idna==3.20
     # via
     #   requests
@@ -73,16 +69,12 @@ shellingham==1.5.4
     # via typer
 tqdm==4.70.1
     # via inferencesh
-truststore==0.10.5
-    # via httpx
 typer==0.27.3
     # via dashscope
 typing-extensions==4.16.0
     # via
     #   aiohttp
     #   aiosignal
-    #   dashscope
-    #   httpx
     #   pydantic
     #   pydantic-core
     #   typing-inspection
