@@ -1,0 +1,114 @@
+{
+  "$defs": {
+    "TrainingPair": {
+      "description": "A before/after image pair with an optional edit instruction.",
+      "properties": {
+        "start": {
+          "description": "Before image.",
+          "format": "file",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "description": "After image (the transformed result).",
+          "format": "file",
+          "title": "End",
+          "type": "string"
+        },
+        "extra_starts": {
+          "description": "Additional before references for this pair (saved as ROOT_start2, ROOT_start3, ...).",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Extra Starts",
+          "type": "array"
+        },
+        "caption": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Edit instruction for this pair. Falls back to default_caption.",
+          "title": "Caption"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TrainingPair",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "pairs": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/TrainingPair"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Before/after image pairs. The app builds the training ZIP.",
+      "title": "Pairs",
+      "x-promoted": true
+    },
+    "training_data": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Pre-made ZIP with ROOT_start.EXT / ROOT_end.EXT pairs and optional ROOT.txt captions.",
+      "title": "Training Data"
+    },
+    "steps": {
+      "default": 1000,
+      "description": "Training steps (100-5000, multiples of 100).",
+      "maximum": 5000,
+      "minimum": 100,
+      "multipleOf": 100,
+      "title": "Steps",
+      "type": "integer"
+    },
+    "learning_rate": {
+      "default": 0.0001,
+      "description": "Learning rate. Lower is slower and more stable.",
+      "maximum": 0.01,
+      "minimum": 1e-05,
+      "title": "Learning Rate",
+      "type": "number"
+    },
+    "default_caption": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Edit instruction for pairs without a caption. Training fails when captions are missing and this is empty.",
+      "title": "Default Caption"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

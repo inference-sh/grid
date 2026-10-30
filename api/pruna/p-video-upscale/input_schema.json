@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "TargetEnum": {
+      "enum": [
+        "720p",
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "TargetEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Video to upscale (up to 512 MiB).",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "target": {
+      "$ref": "#/$defs/TargetEnum",
+      "default": "1080p",
+      "description": "Output pixel-area target. Aspect ratio is kept; a larger source is not shrunk."
+    },
+    "fps": {
+      "anyOf": [
+        {
+          "maximum": 60,
+          "minimum": 16,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Output frame rate (16-60). Empty keeps the source rate. Higher rates are interpolated and bill at the above-30 fps rate.",
+      "title": "Fps"
+    },
+    "turbo": {
+      "default": false,
+      "description": "Faster generation with slightly lower quality. Same price.",
+      "title": "Turbo",
+      "type": "boolean"
+    },
+    "enable_safety_filter": {
+      "default": false,
+      "description": "Check the video against the content policy. Always-on categories are blocked either way.",
+      "title": "Enable Safety Filter",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

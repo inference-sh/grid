@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "FpsEnum": {
+      "enum": [
+        24,
+        48
+      ],
+      "title": "FpsEnum",
+      "type": "integer"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description for video generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input image for image-to-video (jpg, png, webp). When set, aspect_ratio is ignored.",
+      "title": "Image"
+    },
+    "last_frame_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference image for the last frame.",
+      "title": "Last Frame Image"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Audio to condition the video (flac, mp3, wav). The video takes the audio's length; duration is ignored.",
+      "title": "Audio"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "maximum": 20,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 5,
+      "description": "Video duration in seconds (1-20). Leave empty to let the model pick the length from the prompt.",
+      "title": "Duration"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "720p",
+      "description": "Video resolution: 720p or 1080p."
+    },
+    "fps": {
+      "$ref": "#/$defs/FpsEnum",
+      "default": 24,
+      "description": "Frames per second: 24 or 48."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Ignored when an input image is provided."
+    },
+    "draft": {
+      "default": false,
+      "description": "Faster, lower-quality preview at a lower price.",
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "save_audio": {
+      "default": true,
+      "description": "Include audio in the output video.",
+      "title": "Save Audio",
+      "type": "boolean"
+    },
+    "prompt_upsampling": {
+      "default": true,
+      "description": "Enhance the prompt before generation.",
+      "title": "Prompt Upsampling",
+      "type": "boolean"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "disable_safety_filter": {
+      "default": true,
+      "description": "Disable the safety filter for prompts and input images.",
+      "title": "Disable Safety Filter",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

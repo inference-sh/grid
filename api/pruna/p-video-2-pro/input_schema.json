@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "ModeEnum": {
+      "enum": [
+        "cost",
+        "speed",
+        "quality"
+      ],
+      "title": "ModeEnum",
+      "type": "string"
+    },
+    "PromptUpsamplerEnum": {
+      "enum": [
+        "off",
+        "turbo",
+        "max"
+      ],
+      "title": "PromptUpsamplerEnum",
+      "type": "string"
+    },
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "768p",
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Text description for video generation.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First-frame image for image-to-video.",
+      "title": "Image"
+    },
+    "last_frame_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last-frame image.",
+      "title": "Last Frame Image"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (5-15).",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768p",
+      "description": "480p or 768p native. 1080p, 2k and 4k generate at 768p and upscale."
+    },
+    "mode": {
+      "$ref": "#/$defs/ModeEnum",
+      "default": "speed",
+      "description": "Generation recipe. cost is cheapest and slowest, speed is the default, quality costs most."
+    },
+    "prompt_upsampler": {
+      "$ref": "#/$defs/PromptUpsamplerEnum",
+      "default": "turbo",
+      "description": "Expand the prompt before generation: off, turbo or max. Does not change the price."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Aspect ratio. Frame images set the canvas when provided."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "enable_safety_filter": {
+      "default": false,
+      "description": "Check inputs against the content policy. Always-on categories are blocked either way.",
+      "title": "Enable Safety Filter",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

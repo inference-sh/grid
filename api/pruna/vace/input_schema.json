@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "SizeEnum": {
+      "enum": [
+        "832*480",
+        "480*832",
+        "1280*720",
+        "720*1280"
+      ],
+      "title": "SizeEnum",
+      "type": "string"
+    },
+    "SolverEnum": {
+      "enum": [
+        "unipc",
+        "dpm++"
+      ],
+      "title": "SolverEnum",
+      "type": "string"
+    },
+    "SpeedModeEnum": {
+      "enum": [
+        "Lightly Juiced \ud83c\udf4a (more consistent)",
+        "Juiced \ud83d\udd25 (more speed)",
+        "Extra Juiced \ud83d\ude80 (even more speed)"
+      ],
+      "title": "SpeedModeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "prompt": {
+      "description": "Description of the video. Be specific about characters, action, setting and camera.",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "src_video": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source video to edit or transform.",
+      "title": "Src Video"
+    },
+    "src_mask": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mask video or image marking the area of the source to edit.",
+      "title": "Src Mask"
+    },
+    "src_ref_images": {
+      "description": "Reference images for consistent characters (1-3 work best).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Src Ref Images",
+      "type": "array"
+    },
+    "size": {
+      "$ref": "#/$defs/SizeEnum",
+      "default": "832*480",
+      "description": "Output resolution (width*height)."
+    },
+    "frame_num": {
+      "default": 81,
+      "description": "Number of frames to generate (up to 81).",
+      "maximum": 81,
+      "minimum": 1,
+      "title": "Frame Num",
+      "type": "integer"
+    },
+    "speed_mode": {
+      "$ref": "#/$defs/SpeedModeEnum",
+      "default": "Lightly Juiced \ud83c\udf4a (more consistent)",
+      "description": "Speed versus consistency."
+    },
+    "sample_steps": {
+      "default": 50,
+      "description": "Sampling steps. Higher is better and slower.",
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Sample Steps",
+      "type": "integer"
+    },
+    "sample_solver": {
+      "$ref": "#/$defs/SolverEnum",
+      "default": "unipc",
+      "description": "Sampling algorithm."
+    },
+    "sample_guide_scale": {
+      "default": 5.0,
+      "description": "How closely to follow the prompt.",
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Sample Guide Scale",
+      "type": "number"
+    },
+    "sample_shift": {
+      "default": 16,
+      "description": "Sample shift.",
+      "maximum": 50,
+      "minimum": 0,
+      "title": "Sample Shift",
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

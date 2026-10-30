@@ -1,0 +1,23 @@
+namespace: pruna
+name: p-video-upscale
+title: P-Video-Upscale
+description: "Upscale a video to 720p, 1080p, 2k or 4k, keeping its aspect ratio and audio, with optional frame interpolation up to 60 fps."
+metadata:
+    tags:
+        - video-upscaling
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

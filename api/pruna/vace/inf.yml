@@ -1,0 +1,24 @@
+namespace: pruna
+name: vace
+title: VACE
+description: "VACE-14B video generation and editing from a prompt, with optional source video, mask and up to 3 reference images for consistent characters."
+metadata:
+    tags:
+        - text-to-video
+        - video-to-video
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: PRUNA_KEY
+      description: Pruna API key for P-API access
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

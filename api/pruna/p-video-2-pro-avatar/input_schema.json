@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "ResolutionEnum": {
+      "enum": [
+        "480p",
+        "768p",
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "ResolutionEnum",
+      "type": "string"
+    },
+    "VoiceEnum": {
+      "enum": [
+        "Zephyr (Female)",
+        "Puck (Male)",
+        "Charon (Male)",
+        "Kore (Female)",
+        "Fenrir (Male)",
+        "Leda (Female)",
+        "Orus (Male)",
+        "Aoede (Female)",
+        "Callirrhoe (Female)",
+        "Autonoe (Female)",
+        "Enceladus (Male)",
+        "Iapetus (Male)",
+        "Umbriel (Male)",
+        "Algenib (Male)",
+        "Despina (Female)",
+        "Erinome (Female)",
+        "Laomedeia (Female)",
+        "Achernar (Female)",
+        "Algieba (Male)",
+        "Schedar (Male)",
+        "Gacrux (Female)",
+        "Pulcherrima (Female)",
+        "Achird (Male)",
+        "Zubenelgenubi (Male)",
+        "Vindemiatrix (Female)",
+        "Sadachbia (Male)",
+        "Sadaltager (Male)",
+        "Sulafat (Female)",
+        "Alnilam (Male)",
+        "Rasalgethi (Male)"
+      ],
+      "title": "VoiceEnum",
+      "type": "string"
+    },
+    "VoiceLanguageEnum": {
+      "enum": [
+        "English (US)",
+        "English (UK)",
+        "Spanish",
+        "French",
+        "German",
+        "Italian",
+        "Portuguese (Brazil)",
+        "Japanese",
+        "Korean",
+        "Hindi"
+      ],
+      "title": "VoiceLanguageEnum",
+      "type": "string"
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "voice_script": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "audio": {
+          "not": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "image": {
+      "description": "Portrait of the person who speaks (jpg, png, webp; up to 20 MiB). Sets the aspect ratio.",
+      "format": "file",
+      "title": "Image",
+      "type": "string"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Speech audio, 1s to 3 min (64 MiB). The video matches its length. Overrides voice_script.",
+      "title": "Audio",
+      "x-promoted": true
+    },
+    "voice_script": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Exact words to speak with text-to-speech when no audio is uploaded.",
+      "title": "Voice Script",
+      "x-promoted": true
+    },
+    "voice": {
+      "$ref": "#/$defs/VoiceEnum",
+      "default": "Zephyr (Female)",
+      "description": "TTS voice for voice_script."
+    },
+    "voice_language": {
+      "$ref": "#/$defs/VoiceLanguageEnum",
+      "default": "English (US)",
+      "description": "Language of voice_script."
+    },
+    "voice_prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Delivery instructions for the voice (tone, pacing, accent, emotion). Not spoken.",
+      "title": "Voice Prompt"
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What the video should show (default: 'The person is talking.').",
+      "title": "Prompt"
+    },
+    "prompt_upsampling": {
+      "default": true,
+      "description": "Append the scene's own motion from the portrait to the prompt. Your words stay first.",
+      "title": "Prompt Upsampling",
+      "type": "boolean"
+    },
+    "resolution": {
+      "$ref": "#/$defs/ResolutionEnum",
+      "default": "768p",
+      "description": "480p or 768p native. 1080p, 2k and 4k generate at 768p and upscale; 4k up to 125s."
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Random seed for reproducible generation.",
+      "title": "Seed"
+    },
+    "enable_safety_filter": {
+      "default": false,
+      "description": "Block content in the toggleable moderation categories. Always-on rules apply either way.",
+      "title": "Enable Safety Filter",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "image"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
