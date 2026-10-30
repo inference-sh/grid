@@ -21,7 +21,6 @@ directory name, the `name:` field in `inf.yml`, and the app in the DB must all m
 | `anthropic/claude-sonnet-5-5` | `claude-sonnet-5-5` | 1M | 128k | $2 / $10 (cache read $0.20) |
 | `anthropic/claude-sonnet-5` | `claude-sonnet-5` | 1M | 64k | $2 / $10 until 2026-08-31, then $3 / $15 |
 | `anthropic/claude-sonnet-4-6` | `claude-sonnet-4-6` | 1M | 64k | $3 / $15 |
-| `anthropic/claude-sonnet-4-5` | `claude-sonnet-4-5-20250929` | 200k | 64k | $3 / $15 |
 | `anthropic/claude-haiku-5-5` | `claude-haiku-5-5` | 1M | 128k | $0.10 / $0.50 up to 100k input tokens, $0.50 / $2.50 above |
 | `anthropic/claude-haiku-4-5` | `claude-haiku-4-5-20251001` | 200k | 64k | $1 / $5 |
 
@@ -78,7 +77,7 @@ approving a publish.
 
 ## Lifecycle
 
-- `claude-sonnet-4-5-20250929` is deprecated (2026-09-30), retires 2026-11-30, replacement `claude-sonnet-5-5`.
+- `anthropic/claude-sonnet-4-5` is retired on the platform (2026-10-30); its ref routes to `anthropic/claude-sonnet-5-5` and the source is in `archive/api/anthropic/claude-sonnet-4-5`. Anthropic retires `claude-sonnet-4-5-20250929` on 2026-11-30.
 - `claude-haiku-4-5-20251001` retires not sooner than 2026-10-15, `claude-opus-4-5-20251101` not sooner than 2026-11-24.
 - `claude-mythos-5-1` exists (same price as Fable 5.1, Project Glasswing only); the workspace key is not entitled to the Mythos line, so there is no app.
 - `usage.stop_reason` is Anthropic's stop reason in platform terms: `end_turn` / `stop_sequence` → `stop`, `tool_use` → `tool_calls`, `max_tokens` → `length`; `refusal` (safety classifiers on the 5.1 / 5.5 models) and `pause_turn` pass through.
