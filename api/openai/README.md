@@ -118,6 +118,37 @@ partner_output_per_million:       120000000
 Anything with two fewer zeros is the 100x unit error. Verify with
 `belt app pricing openai/<app>` against a sibling before approving a publish.
 
+## Daybreak apps (bring your own key)
+
+OpenAI's Trusted Access for Cyber program. Same `openai_llm.py` helper as the LLM apps; each app
+sends a fixed `access_programs.cyber` value with every Responses request.
+
+| App | Model ID | `access_programs.cyber` | Approval needed | File input |
+|-----|----------|-------------------------|-----------------|------------|
+| `openai/gpt-6-sol-daybreak` | `gpt-6-sol` | `daybreak_blue` | Blue or Red | yes |
+| `openai/gpt-6-luna-daybreak` | `gpt-6-luna` | `daybreak_blue` | Blue or Red | yes |
+| `openai/gpt-6-1-sol-daybreak` | `gpt-6.1-sol` | `daybreak_blue` | Red for reduced refusals | yes |
+| `openai/gpt-6-astra-daybreak` | `gpt-6-astra` | `daybreak_blue` | Red for reduced refusals | yes |
+| `openai/gpt-5-5-cyber` | `gpt-5.5-cyber` | `daybreak_red` | Red | no |
+| `openai/gpt-5-6-cyber` | `gpt-5.6-cyber` | `daybreak_red` | Red + model approval | no |
+
+- The value follows the model, not the org's approval level: `gpt-6-sol` with `daybreak_red`
+  returns `400 invalid_access_program`.
+- **Key:** the team-scoped `openai-daybreak` credential (`OPENAI_DAYBREAK_KEY`), a key from the
+  workspace's own Daybreak-enabled, non-default OpenAI project. No platform key is connected:
+  Daybreak is limited to the approved org's internal security work, so third-party traffic
+  must not run on ours. OpenAI bills the key's org directly.
+- Access refusals (`400 unsupported_access_program`, `403 access_program_not_enabled`, `404
+  model_not_found`) are prefixed with the app's `ACCESS_HINT`, what that model needs, and where the
+  tier is enabled; OpenAI's message and request id follow. A Blue-only key gets the 400 on
+  `gpt-6.1-sol` and `gpt-6-astra`, although the docs say Blue keeps standard safeguards there
+  (tested 2026-10-31), and the 404 on both cyber models.
+- The cyber models are not in the GPT-6 family: 400k context (272k input), 128k output, text and
+  image input. `gpt-5.5-cyber` has no public model page; its limits are assumed equal to 5.6.
+  Reasoning effort `none` is mapped to `low` on everything but Sol/Luna.
+- Sources: https://developers.openai.com/api/docs/guides/daybreak and OpenAI's Enterprise
+  Daybreak onboarding help article.
+
 ## Image apps
 
 | App | Model ID | Quality tiers | Extras |
@@ -139,7 +170,8 @@ because gpt-image-2 rejects `xhigh` / `max`.
 
 ## Auth
 
-All apps use the `OPENAI_KEY` secret (`belt secrets set OPENAI_KEY <key>`).
+All apps use the `OPENAI_KEY` secret (`belt secrets set OPENAI_KEY <key>`), except the Daybreak apps,
+which use the `openai-daybreak` credential (see above).
 
 ## Dev loop
 

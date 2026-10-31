@@ -288,6 +288,7 @@ def build_request_body(
     max_output_tokens: int,
     supports_none_reasoning: bool,
     with_summary: bool,
+    access_programs: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     instructions, items = build_input(input_data)
     tools = build_tools(input_data.tools) if input_data.tools else None
@@ -323,6 +324,10 @@ def build_request_body(
         # encrypted, for reasoning_state to carry to the next turn.
         body["include"] = ["reasoning.encrypted_content"]
 
+    # Daybreak: access_programs.cyber picks the program per model; omitted = OpenAI's default.
+    if access_programs:
+        body["access_programs"] = access_programs
+
     return body
 
 
@@ -341,6 +346,22 @@ def _format_error(status: int, body: Any, headers: Dict[str, str], prefix: str =
     if request_id:
         text += f" [req:{request_id}]"
     return text
+
+
+# Codes OpenAI returns when the key's project lacks the Daybreak access a request asks for.
+DAYBREAK_ACCESS_CODES = {"unsupported_access_program", "access_program_not_enabled", "model_not_found"}
+
+
+def _daybreak_error(status: int, body: Any, headers: Dict[str, str], access_hint: str) -> Optional[str]:
+    """Explain a Daybreak access refusal in terms of what the app's model needs; None for other errors."""
+    err = body.get("error", {}) if isinstance(body, dict) else {}
+    if not isinstance(err, dict) or err.get("code") not in DAYBREAK_ACCESS_CODES:
+        return None
+    return (
+        f"{access_hint} The connected OpenAI Daybreak key must come from the project where an API "
+        f"organization owner enabled that tier (Project settings > General > Daybreak model access). "
+        f"{_format_error(status, body, headers)}"
+    )
 
 
 def _is_summary_rejection(status: int, body: Any) -> bool:
@@ -561,6 +582,8 @@ async def stream_completion(
     max_output_tokens: int = 128000,
     supports_none_reasoning: bool = True,
     with_deltas: bool = False,
+    access_programs: Optional[Dict[str, str]] = None,
+    access_hint: Optional[str] = None,
 ) -> AsyncGenerator[Any, None]:
     """Stream a Responses API completion.
 
@@ -585,6 +608,7 @@ async def stream_completion(
                 max_output_tokens=max_output_tokens,
                 supports_none_reasoning=supports_none_reasoning,
                 with_summary=_summary_supported,
+                access_programs=access_programs,
             )
             print(
                 f"Calling OpenAI model={model} attempt={attempt} items={len(body['input'])}"
@@ -624,6 +648,10 @@ async def stream_completion(
                 await asyncio.sleep(min(backoff, 30.0))
                 continue
 
+            if access_hint:
+                daybreak = _daybreak_error(resp.status_code, err_body, resp_headers, access_hint)
+                if daybreak:
+                    raise RuntimeError(daybreak)
             raise RuntimeError(_format_error(resp.status_code, err_body, resp_headers))
 
         request_id = resp.headers.get("x-request-id", "")
