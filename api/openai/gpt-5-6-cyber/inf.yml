@@ -1,0 +1,46 @@
+namespace: openai
+name: gpt-5-6-cyber
+title: GPT-5.6 Cyber
+description: "GPT-5.6 Cyber, OpenAI's Daybreak Red model for authorized security work. Needs Daybreak Red plus model approval on your own OpenAI project key. 400k context, vision, tools."
+metadata:
+    capabilities:
+        - reasoning
+        - image
+    provider: openai
+    tags:
+        - security
+        - reasoning
+category: chat
+functions:
+    - name: run
+      description: Chat completion (inference.sh LLMInput/LLMOutput)
+    - name: openai
+      description: OpenAI Chat Completions compatible entry point
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    openai-daybreak:
+        secrets: [OPENAI_DAYBREAK_KEY]
+        company: {slug: openai}
+        display_name: OpenAI Daybreak API key
+        connection_scope: team
+        docs_url: https://developers.openai.com/api/docs/guides/daybreak
+        instructions: |
+            A key from your own OpenAI API project with Daybreak (Trusted Access for Cyber) enabled. OpenAI bills your organization directly.
+
+            1. Your organization must be approved for Daybreak Blue or Red. GPT-5.5 Cyber and GPT-5.6 Cyber need Red; GPT-5.6 Cyber also needs a separate model approval.
+            2. An API organization owner opens a non-default project, goes to Project settings → General → Daybreak model access, enables the approved tier and saves. Default projects can't enable Daybreak. Allow about 15 minutes.
+            3. Create an API key in that project at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). A key from any other project doesn't carry Daybreak access.
+            4. Paste it into `OPENAI_DAYBREAK_KEY`. It starts with `sk-proj-`.
+
+            OpenAI allows Daybreak only for your own team's internal, authorized security work. Don't use it for customer-facing or third-party traffic.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

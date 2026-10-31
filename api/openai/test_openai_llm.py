@@ -32,6 +32,19 @@ class TestParams:
         named = body(tools=TOOLS, tool_choice=ToolChoice(mode=ToolChoiceMode.FUNCTION, name="f"))["tool_choice"]
         assert named == {"type": "function", "name": "f"}  # Responses API: flat, not nested under "function"
 
+    def test_access_programs_only_when_given(self):
+        assert "access_programs" not in body()
+        b = openai_llm.build_request_body(LLMInput(text="hi"), "m", max_output_tokens=100, supports_none_reasoning=True,
+                                          with_summary=False, access_programs={"cyber": "daybreak_red"})
+        assert b["access_programs"] == {"cyber": "daybreak_red"}
+
+    def test_daybreak_access_errors_lead_with_the_hint(self):
+        refused = {"error": {"type": "invalid_request_error", "code": "unsupported_access_program", "message": "Reduced refusals aren't available"}}
+        msg = openai_llm._daybreak_error(400, refused, {"x-request-id": "req_1"}, "Needs Red.")
+        assert msg.startswith("Needs Red. ") and "unsupported_access_program" in msg and "[req:req_1]" in msg
+        other = {"error": {"type": "invalid_request_error", "code": "context_length_exceeded", "message": "too long"}}
+        assert openai_llm._daybreak_error(400, other, {}, "Needs Red.") is None
+
     def test_no_text_format_for_text(self):
         assert "text" not in body()
         assert "text" not in body(response_format=ResponseFormat(type=ResponseFormatType.TEXT))
