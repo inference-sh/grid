@@ -1,8 +1,10 @@
 pydantic>=2.0.0
 inferencesh
-torch>=2.3.0
-torchvision>=0.18.0
-torchaudio>=2.3.0
+# pinned to the deployed versions: an unpinned resolve pulls torch >= 2.11,
+# whose nvidia-nccl-cu13 fails to load on the CUDA 12 grid nodes
+torch==2.9.1
+torchvision==0.24.1
+torchaudio==2.9.1
 pillow>=12.3.0
 numpy>=1.23.5,<2
 flit-core
@@ -10,8 +12,9 @@ videoseal
 
 pandas
 opencv-python
-omegaconf
-einops
+# pinned to the deployed versions: --prerelease allow otherwise pulls dev/rc builds
+omegaconf==2.3.0
+einops==0.8.1
 lpips
 timm==0.9.16
 pre-commit
@@ -25,8 +28,11 @@ tqdm
 pytorch_msssim
 tensorboard
 calflops
-transformers>=4.53.0
-safetensors
+# pinned to the deployed versions: --prerelease allow otherwise pulls tokenizers 0.23 rc
+transformers==4.57.3
+tokenizers==0.22.1
+safetensors==0.7.0
+protobuf==6.33.2
 pycocotools
 opencv-python
 tqdm

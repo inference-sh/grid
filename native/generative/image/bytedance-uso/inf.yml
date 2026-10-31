@@ -14,7 +14,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/9p2sv7pd.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
-kernel: python-3.10
+kernel: python-3.11
 secrets:
     - key: HF_TOKEN
 resources:

@@ -12,7 +12,7 @@ images:
 env:
     MPLBACKEND: Agg
     PYTHONUNBUFFERED: "1"
-kernel: python-3.10
+kernel: python-3.11
 resources:
     gpu:
         count: 0

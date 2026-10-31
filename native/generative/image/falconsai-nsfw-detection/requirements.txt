@@ -8,3 +8,5 @@ pillow>=9.0.0
 opencv-python-headless>=4.8.0
 numpy>=1.23.0,<2
 huggingface-hub
+# required by HF_HUB_ENABLE_HF_TRANSFER=1 in inf.yml
+hf_transfer
