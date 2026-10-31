@@ -170,10 +170,8 @@ native/generative/video/humo/inference.py
 native/generative/video/hunyuanvideo-foley/inference.py
 native/generative/video/infinitetalk-i2v-causvid/inference.py
 native/generative/video/infinitetalk-i2v/inference.py
-native/generative/video/infinitetalk/inference.py
 native/generative/video/infinitetalk-v2v-causvid/inference.py
 native/generative/video/infinitetalk-v2v-causvid/infinitetalk-i2v/inference.py
-native/generative/video/infinitetalk-v2v/inference.py
 native/generative/video/kling-v1-t2v/inference.py
 native/generative/video/latentsync-1-5/inference.py
 native/generative/video/latentsync-1-6/inference.py
@@ -183,7 +181,6 @@ native/generative/video/lightning-wan-2-2-i2v-a14b-offload/inference.py
 native/generative/video/lightx2v-wan-2-2-i2v-a14b/inference.py
 native/generative/video/ltx-video/inference.py
 native/generative/video/magi-1/inference.py
-native/generative/video/ovi-ti2v/inference.py
 native/generative/video/rife-video-interpolation/inference.py
 native/generative/video/videoseal/inference.py
 native/generative/video/wan-2-2-a14b-vace-lightx2v/inference.py
