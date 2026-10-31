@@ -11,7 +11,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/pnh4mi5a.png
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
-kernel: python-3.10
+kernel: python-3.11
 resources:
     gpu:
         count: 1

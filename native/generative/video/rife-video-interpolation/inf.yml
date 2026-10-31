@@ -14,7 +14,7 @@ images:
 env:
     HF_HUB_ENABLE_HF_TRANSFER: "1"
     TRANSFORMERS_CACHE: /tmp/cache
-kernel: python-3.10
+kernel: python-3.11
 resources:
     gpu:
         count: 1

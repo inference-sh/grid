@@ -11,7 +11,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/labznvca.png
 env:
     PYTHONPATH: /app
-kernel: python-3.10
+kernel: python-3.11
 secrets:
     - key: TVLY_API_KEY
       description: Tavily API key for model access

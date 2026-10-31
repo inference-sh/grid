@@ -11,7 +11,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/yl61qnkg.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/z5e6b3fl.png
 env: {}
-kernel: "3.10"
+kernel: "3.11"
 secrets:
     - key: EXA_API_KEY
       description: Exa API key for model access
