@@ -97,7 +97,6 @@ api/xai/grok-imagine-image-2-0/inference.py
 api/xai/grok-imagine-video-1-5/inference.py
 api/xai/grok-voice/inference.py
 native/generative/3d/hunyuan-image-to-3d-2/inference.py
-native/generative/3d/hunyuan-image-to-3d/inference.py
 native/generative/3d/rotate-glb/inference.py
 native/generative/audio/audio-x/inference.py
 native/generative/audio/diffrythm/inference.py
@@ -120,7 +119,6 @@ native/generative/chat/phi-4-14b/inference.py
 native/generative/chat/phi-4/inference.py
 native/generative/chat/qwen3-30b-a3b/inference.py
 native/generative/chat/xlam-2-32b-fc-r-i1/inference.py
-native/generative/image/bagel/inference.py
 native/generative/image/birefnet/inference.py
 native/generative/image/bytedance-uso/inference.py
 native/generative/image/chroma-1-hd/inference.py
@@ -156,7 +154,6 @@ native/generative/image/sd-inpainting/inference.py
 native/generative/image/sdxl-controlnet/inference.py
 native/generative/image/sdxl/inference.py
 native/generative/image/sdxl-inpainting/inference.py
-native/generative/image/thera/inference.py
 native/generative/image/wan2-2-i2i-a14b/inference.py
 native/generative/image/wan2-2-t2i-a14b/inference.py
 native/generative/image/wan2-2-upscaler-a14b/inference.py
