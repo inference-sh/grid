@@ -103,7 +103,6 @@ native/generative/audio/audio-x/inference.py
 native/generative/audio/diffrythm/inference.py
 native/generative/audio/dramabox/inference.py
 native/generative/audio/fast-whisper-large-v3/inference.py
-native/generative/audio/higgs-audio/inference.py
 native/generative/audio/live-transcribe/inference.py
 native/generative/audio/mmaudio/inference.py
 native/generative/audio/tencent-song-generation/inference.py
