@@ -26,7 +26,7 @@ credentials:
     openai-daybreak:
         secrets: [OPENAI_DAYBREAK_KEY]
         company: {slug: openai}
-        display_name: OpenAI Daybreak API key
+        display_name: OpenAI Daybreak
         connection_scope: team
         docs_url: https://developers.openai.com/api/docs/guides/daybreak
         instructions: |
