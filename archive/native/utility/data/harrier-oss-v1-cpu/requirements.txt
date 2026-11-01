@@ -1,3 +1,0 @@
-sentence-transformers>=5.6.0
-torch>=2.0
-accelerate

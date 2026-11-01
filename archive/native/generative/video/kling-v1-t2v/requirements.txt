@@ -1,3 +1,0 @@
-inferencesh
-pydantic>=2.0.0
-git+https://github.com/okaris/kling.git@2373a09

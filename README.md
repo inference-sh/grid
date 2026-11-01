@@ -18,6 +18,8 @@ this repo is the source of truth for all open-source apps that run on the platfo
 
 no installs. just run.
 
+retired apps live in git history: `git log --diff-filter=D --name-only -- archive/`
+
 ## license notice
 
 this project is licensed under the **Business Source License 1.1**.

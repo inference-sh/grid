@@ -38,7 +38,7 @@ while IFS= read -r yml; do
             canonical[$fname]="$h"
         fi
     done
-done < <(find . -name 'inf.yml' -not -path './inf.yml' -not -path './archive/*')
+done < <(find . -name 'inf.yml' -not -path './inf.yml')
 
 # Also register all namespace-level helpers at every depth
 while IFS= read -r helper; do
@@ -50,7 +50,7 @@ while IFS= read -r helper; do
         key="$hdir/$fname"
         canonical[$key]="$helper"
     fi
-done < <(find . -name '*.py' ! -name 'inference.py' ! -name '__init__.py' -not -path '*/\.*' -not -path './archive/*')
+done < <(find . -name '*.py' ! -name 'inference.py' ! -name '__init__.py' -not -path '*/\.*')
 
 linked=0
 skipped=0
@@ -128,7 +128,7 @@ while IFS= read -r yml; do
         echo "LINK $target -> $rel"
         linked=$((linked + 1))
     done
-done < <(find . -name 'inf.yml' -not -path './inf.yml' -not -path './archive/*' | sort)
+done < <(find . -name 'inf.yml' -not -path './inf.yml' | sort)
 
 echo ""
 echo "Done: $linked linked, $forced forced, $skipped skipped"

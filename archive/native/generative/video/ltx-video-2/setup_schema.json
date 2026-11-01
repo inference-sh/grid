@@ -1,6 +1,0 @@
-{
-  "description": "Setup configuration for LTX-2 Video Generation.\n\nLTX 2.0 uses a lot of memory; CPU offloading is enabled by default.",
-  "properties": {},
-  "title": "AppSetup",
-  "type": "object"
-}
