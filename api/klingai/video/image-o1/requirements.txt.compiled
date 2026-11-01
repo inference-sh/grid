@@ -30,7 +30,7 @@ pydantic==2.13.4
     #   inferencesh
 pydantic-core==2.46.4
     # via pydantic
-pyjwt==2.12.1
+pyjwt==2.15.1
     # via -r requirements.txt
 requests==2.34.2
     # via
