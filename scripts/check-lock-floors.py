@@ -7,6 +7,11 @@ written for (e.g. inferencesh 0.7.31 under a >= 0.7.33 floor fails at import).
 
 Checks inferencesh by default; --all checks every package with a specifier.
 
+Also fails when any pinned file pins a package below SECURITY_FLOORS, whether
+or not requirements.txt names it (transitive pins like certifi included).
+Apps that cannot resolve a floor are listed in scripts/lock-floors-exceptions.txt
+as "<app dir> <package>  # blocking constraint".
+
 Usage: scripts/check-lock-floors.py [--all] [dir...]   (default dirs: api native)
 """
 import sys
@@ -17,6 +22,26 @@ from packaging.utils import canonicalize_name
 from packaging.version import InvalidVersion, Version
 
 PINNED = ("requirements.lock", "requirements.txt.compiled")
+
+# Lowest release with the fix for a critical advisory.
+SECURITY_FLOORS = {
+    "pillow": Version("13.0.0"),  # GHSA-v9pv-5gc8-w2m6, GHSA-5x8w-8jj5-q52h and the 13.0.0 advisories
+    "certifi": Version("2026.10.23"),  # GHSA-6q48-6c7w-9gw2 (emSign roots)
+    "pyjwt": Version("2.14.0"),  # GHSA-ffc3-869f-jxw9
+    "brotli": Version("1.2.1"),  # GHSA-9v8h-qqgm-4m35
+}
+EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
+
+
+def exceptions(root):
+    out = set()
+    path = root / EXCEPTIONS
+    if path.is_file():
+        for line in path.read_text().splitlines():
+            parts = line.split("#", 1)[0].split()
+            if len(parts) == 2:
+                out.add((parts[0].rstrip("/"), canonicalize_name(parts[1])))
+    return out
 
 
 def declared(path, only):
@@ -57,7 +82,17 @@ def main(argv):
     only = None if "--all" in argv else "inferencesh"
     dirs = [Path(a) for a in argv if a != "--all"] or [root / "api", root / "native"]
     bad = 0
+    allowed = exceptions(root)
     for d in dirs:
+        for fname in PINNED:
+            for pinned_file in sorted(d.rglob(fname)):
+                parent = pinned_file.parent.resolve()
+                app = parent.relative_to(root).as_posix() if parent.is_relative_to(root) else parent.as_posix()
+                for name, v in pins(pinned_file).items():
+                    floor = SECURITY_FLOORS.get(name)
+                    if floor is not None and v < floor and (app, name) not in allowed:
+                        print(f"{pinned_file}: {name}=={v} is below the security floor {floor}")
+                        bad += 1
         for req_txt in sorted(d.rglob("requirements.txt")):
             reqs = declared(req_txt, only)
             if not reqs:
@@ -73,7 +108,8 @@ def main(argv):
                         print(f"{pinned_file}: {name}=={v} violates '{req.specifier}' in requirements.txt")
                         bad += 1
     if bad:
-        print(f"{bad} pin(s) outside requirements.txt; redeploy those apps to regenerate their locks", file=sys.stderr)
+        print(f"{bad} pin(s) outside requirements.txt or below a security floor; "
+              f"raise them or list the app in {EXCEPTIONS}", file=sys.stderr)
         return 1
     return 0
 

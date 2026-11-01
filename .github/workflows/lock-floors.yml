@@ -7,6 +7,7 @@ on:
       - "**/requirements.lock"
       - "**/requirements.txt.compiled"
       - "scripts/check-lock-floors.py"
+      - "scripts/lock-floors-exceptions.txt"
   push:
     branches: [main]
 
