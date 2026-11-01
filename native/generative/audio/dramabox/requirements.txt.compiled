@@ -133,7 +133,7 @@ packaging==26.3
     #   transformers
 peft==0.20.0
     # via -r requirements.txt
-pillow==12.3.0
+pillow==13.0.0
     # via -r requirements.txt
 platformdirs==4.11.8
     # via pooch

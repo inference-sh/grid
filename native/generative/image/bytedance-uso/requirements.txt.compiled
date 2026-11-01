@@ -132,7 +132,7 @@ packaging==26.2
     #   huggingface-hub
     #   matplotlib
     #   transformers
-pillow==12.3.0
+pillow==13.0.0
     # via
     #   -r requirements.txt
     #   diffusers

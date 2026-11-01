@@ -53,7 +53,7 @@ multidict==6.9.1
     # via
     #   aiohttp
     #   yarl
-pillow==12.3.0
+pillow==13.0.0
     # via -r requirements.txt
 propcache==0.5.4
     # via

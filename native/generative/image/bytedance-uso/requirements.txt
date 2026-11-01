@@ -18,7 +18,7 @@ tokenizers==0.22.0
 
 # Utility libraries
 numpy>=1.23.5,<2
-pillow
+pillow>=13.0.0
 # pinned: deploy compiles with --prerelease allow, which otherwise pulls 0.9.0.dev0
 einops==0.8.1
 

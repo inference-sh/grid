@@ -8,7 +8,7 @@ transformers>=5.15,<5.19
 safetensors
 accelerate
 huggingface_hub
-pillow
+pillow>=13.0.0
 numpy
 scipy
 soundfile

@@ -21,7 +21,7 @@ resemble-perth==1.0.1
 
 # Transitive imports not declared upstream (ltx_core schedulers/media_io, resemble-perth)
 scipy
-pillow
+pillow>=13.0.0
 tqdm
 librosa
 # setuptools 81+ drops pkg_resources, which resemble-perth still imports

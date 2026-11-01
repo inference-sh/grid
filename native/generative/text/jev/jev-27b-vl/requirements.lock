@@ -147,7 +147,7 @@ outlines-core==0.2.14
 packaging==26.3
 partial-json-parser==0.2.1.1.post7
 pathspec==1.1.1
-pillow==12.3.0
+pillow==13.0.0
 prometheus-client==0.26.0
 prometheus-fastapi-instrumentator==8.1.0
 propcache==0.5.4

@@ -137,7 +137,7 @@ packaging==26.2
     #   transformers
 peft==0.19.1
     # via -r requirements.txt
-pillow==12.3.0
+pillow==13.0.0
     # via
     #   -r requirements.txt
     #   diffusers

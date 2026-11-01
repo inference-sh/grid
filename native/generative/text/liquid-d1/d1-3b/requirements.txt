@@ -8,4 +8,4 @@ transformers>=5.14,<5.19
 safetensors
 accelerate
 huggingface_hub
-pillow
+pillow>=13.0.0

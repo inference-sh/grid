@@ -10,7 +10,7 @@ huggingface_hub
 accelerate
 sentencepiece
 protobuf
-Pillow
+Pillow>=13.0.0
 einops
 accelerate
 python-dateutil

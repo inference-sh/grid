@@ -11,5 +11,5 @@ einops
 accelerate
 safetensors
 huggingface_hub
-pillow
+pillow>=13.0.0
 opencv-python-headless

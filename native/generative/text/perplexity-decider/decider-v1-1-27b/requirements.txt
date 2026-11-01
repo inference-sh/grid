@@ -7,7 +7,7 @@ torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp312-cp312-
 torchvision @ https://download.pytorch.org/whl/cu129/torchvision-0.28.0%2Bcu129-cp312-cp312-manylinux_2_28_x86_64.whl
 transformers==5.17.0
 accelerate
-pillow
+pillow>=13.0.0
 safetensors
 huggingface_hub
 kernels==0.16.1

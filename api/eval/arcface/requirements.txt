@@ -3,5 +3,5 @@ inferencesh # required for inference.sh
 insightface
 onnxruntime-gpu>=1.18
 numpy
-Pillow>=12.3.0
+Pillow>=13.0.0
 opencv-python-headless

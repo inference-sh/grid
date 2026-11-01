@@ -38,7 +38,7 @@ idna==3.20
     #   requests
 inferencesh==0.28.0
     # via -r requirements.txt
-pillow==12.3.0
+pillow==13.0.0
     # via inferencesh
 pyasn1==0.6.4
     # via pyasn1-modules

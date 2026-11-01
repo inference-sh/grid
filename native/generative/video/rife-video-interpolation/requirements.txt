@@ -20,5 +20,5 @@ opencv-python>=4.1.2
 moviepy>=1.0.3
 
 # Utility libraries
-pillow
+pillow>=13.0.0
 einops

@@ -48,7 +48,7 @@ numpy==2.4.6
     # via llama-cpp-python
 packaging==26.3
     # via huggingface-hub
-pillow==12.3.0
+pillow==13.0.0
     # via -r requirements.txt
 pydantic==2.14.0b1
     # via

@@ -1,5 +1,5 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 xai-sdk
-Pillow>=12.3.0
+Pillow>=13.0.0
 httpx >= 0.27.0, < 1.0

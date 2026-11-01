@@ -34,7 +34,7 @@ inferencesh==0.37.3
     # via -r requirements.txt
 jiter==0.15.0
     # via anthropic
-pillow==12.3.0
+pillow==13.0.0
     # via inferencesh
 pydantic==2.13.4
     # via

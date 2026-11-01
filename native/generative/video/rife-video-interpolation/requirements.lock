@@ -39,7 +39,7 @@ nvidia-nvtx-cu12==12.8.90
 opencv-python==4.11.0.86
 packaging==26.2
 pathspec==1.1.1
-pillow==12.3.0
+pillow==13.0.0
 proglog==0.1.12
 psutil==7.2.2
 pydantic==2.14.0a1
