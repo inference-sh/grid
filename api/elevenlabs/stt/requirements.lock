@@ -2,7 +2,7 @@ accelerate==1.15.0
 annotated-types==0.7.0
 anyio==4.14.2
 build==1.6.1
-certifi==2026.2.25
+certifi==2026.10.23
 charset-normalizer==3.4.6
 click==8.5.0
 cuda-bindings==13.4.3

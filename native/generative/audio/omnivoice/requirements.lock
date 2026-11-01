@@ -4,8 +4,8 @@ annotated-types==0.7.0
 anyio==4.14.2
 audioread==3.1.0
 braceexpand==0.1.7
-brotli==1.2.0
-certifi==2026.2.25
+brotli==1.2.1
+certifi==2026.10.23
 cffi==2.0.0
 charset-normalizer==3.4.7
 click==8.3.2

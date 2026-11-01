@@ -35,9 +35,9 @@ beartype==0.22.9
     # via x-clip
 bitsandbytes==0.50.0
     # via -r requirements.txt
-brotli==1.2.0
+brotli==1.2.1
     # via gradio
-certifi==2026.7.22
+certifi==2026.10.23
     # via
     #   httpcore
     #   httpx
@@ -443,6 +443,7 @@ tomlkit==0.14.0
     # via gradio
 torch==2.6.0
     # via
+    #   -r requirements.txt
     #   accelerate
     #   bitsandbytes
     #   ema-pytorch

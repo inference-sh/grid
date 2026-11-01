@@ -44,7 +44,7 @@ bokeh==3.10.0.dev5
     #   panel
 braceexpand==0.1.7
     # via webdataset
-certifi==2026.7.22
+certifi==2026.10.23
     # via
     #   requests
     #   sentry-sdk

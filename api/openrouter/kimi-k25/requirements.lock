@@ -1,7 +1,7 @@
 annotated-types==0.7.0
 anyio==4.14.2
 build==1.6.1
-certifi==2026.2.25
+certifi==2026.10.23
 charset-normalizer==3.4.6
 cython==3.3.0
 flit-core==4.1.0

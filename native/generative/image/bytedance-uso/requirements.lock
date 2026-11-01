@@ -2,7 +2,7 @@ accelerate==1.14.0
 annotated-types==0.8.0
 anyio==4.14.2
 build==1.6.1
-certifi==2026.7.22
+certifi==2026.10.23
 charset-normalizer==3.4.9
 clip @ git+https://github.com/openai/CLIP.git@d05afc436d78f1c48dc0dbf8e5980a9d471f35f6
 contourpy==1.3.2

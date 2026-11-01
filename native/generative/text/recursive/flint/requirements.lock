@@ -11,7 +11,7 @@ asttokens==3.0.2
 attrs==26.1.0
 blobfile==3.0.0
 build==1.6.1
-certifi==2026.10.19
+certifi==2026.10.23
 cffi==2.1.1
 charset-normalizer==3.5.2
 click==8.5.0

@@ -6,7 +6,7 @@ albumentations==1.4.0
     # via insightface
 annotated-types==0.8.0
     # via pydantic
-certifi==2026.7.22
+certifi==2026.10.23
     # via requests
 charset-normalizer==3.4.9
     # via requests

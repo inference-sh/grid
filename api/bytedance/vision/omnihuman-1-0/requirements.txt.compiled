@@ -6,7 +6,7 @@ beautifulsoup4==4.14.3
     # via google
 byteplus-sdk==1.0.53
     # via -r requirements.txt
-certifi==2026.2.25
+certifi==2026.10.23
     # via requests
 charset-normalizer==3.4.7
     # via requests

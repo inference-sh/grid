@@ -1,6 +1,6 @@
 accelerate==1.14.0
 annotated-types==0.8.0
-certifi==2026.7.22
+certifi==2026.10.23
 charset-normalizer==3.4.9
 diffusers @ git+https://github.com/huggingface/diffusers.git@ba0e732eb059b9eb3afe4b643be471d93154d1cc
 filelock==3.32.0

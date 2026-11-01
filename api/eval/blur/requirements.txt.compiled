@@ -2,7 +2,7 @@
 #    uv pip compile --python-version 3.11 --index-strategy unsafe-best-match --prerelease allow requirements.txt -o requirements.txt.compiled
 annotated-types==0.7.0
     # via pydantic
-certifi==2026.2.25
+certifi==2026.10.23
     # via requests
 charset-normalizer==3.4.6
     # via requests

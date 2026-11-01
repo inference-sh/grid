@@ -1,6 +1,6 @@
 accelerate==1.11.0
 annotated-types==0.7.0
-certifi==2025.10.5
+certifi==2026.10.23
 charset-normalizer==3.4.4
 diffusers==0.35.2
 einops==0.8.1

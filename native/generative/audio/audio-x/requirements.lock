@@ -14,7 +14,7 @@ audioread==3.1.0
 auraloss==0.4.0
 bokeh==3.9.2
 braceexpand==0.1.7
-certifi==2026.7.22
+certifi==2026.10.23
 cffi==2.1.0
 charset-normalizer==3.4.9
 clean-fid==0.1.35

@@ -1,5 +1,5 @@
 annotated-types==0.7.0
-certifi==2026.2.25
+certifi==2026.10.23
 charset-normalizer==3.4.6
 idna==3.11
 inferencesh @ git+https://github.com/inference-sh/sdk-python.git@15227deb408fd37d1efb9c0ef6a1e81a6a5ff9df

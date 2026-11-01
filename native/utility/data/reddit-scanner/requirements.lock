@@ -7,7 +7,7 @@ annotated-types==0.7.0
 asyncpraw==7.8.1
 asyncprawcore==2.4.0
 attrs==26.1.0
-certifi==2026.4.22
+certifi==2026.10.23
 charset-normalizer==3.4.7
 frozenlist==1.8.0
 idna==3.15
