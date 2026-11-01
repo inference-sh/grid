@@ -1,10 +1,13 @@
 import os
 import asyncio
+import json
 import logging
 import tempfile
 from typing import Optional
 
 import httpx
+
+logging.basicConfig(level=logging.INFO)
 
 BASE_URL = "https://api.krea.ai"
 JOB_POLL_INTERVAL = 3.0
@@ -53,7 +56,7 @@ class KreaClient:
         job_id = data.get("id") or data.get("job_id") or data.get("jobId")
         if not job_id:
             return data
-        self.logger.info(f"Training job created: {job_id}")
+        self.logger.info(f"Training job created: {job_id} response={json.dumps(data)[:1000]}")
         return await self._poll_job(job_id)
 
     async def _poll_job(self, job_id: str) -> dict:
@@ -68,8 +71,12 @@ class KreaClient:
                 self.logger.info(f"Job {job_id} completed")
                 return data
             if status in ("failed", "cancelled"):
-                error = (data.get("result") or {}).get("error", "Unknown error")
-                raise KreaAPIError(-1, f"Job {status}: {error}")
+                body = json.dumps(data)[:2000]
+                self.logger.error(f"Job {job_id} {status}: {body}")
+                error = (data.get("result") or {}).get("error") or data.get("error")
+                if error:
+                    raise KreaAPIError(-1, f"Job {job_id} {status}: {error}")
+                raise KreaAPIError(-1, f"Job {job_id} {status} with no error message from Krea. Job response: {body}")
             self.logger.info(f"Job {job_id}: {status}")
             await asyncio.sleep(JOB_POLL_INTERVAL)
             elapsed += JOB_POLL_INTERVAL
