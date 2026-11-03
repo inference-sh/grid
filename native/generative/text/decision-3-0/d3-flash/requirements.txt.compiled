@@ -27,7 +27,7 @@ einops==0.9.0.dev0
     # via
     #   -r requirements.txt
     #   fla-core
-filelock==4.1.0
+filelock==4.2.7
     # via
     #   huggingface-hub
     #   torch
@@ -154,7 +154,7 @@ safetensors==0.9.0rc1
     #   -r requirements.txt
     #   accelerate
     #   transformers
-setuptools==84.0.0
+setuptools==84.2.1
     # via torch
 shellingham==1.5.4
     # via typer
