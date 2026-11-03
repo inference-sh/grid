@@ -1,6 +1,7 @@
 {
   "run": {
     "description": "",
+    "kind": "run",
     "input_schema": {
       "type": "object",
       "properties": {
