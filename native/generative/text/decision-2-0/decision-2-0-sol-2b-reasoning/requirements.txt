@@ -1,7 +1,0 @@
-pydantic>=2.0.0
-inferencesh>=0.20.0
-torch>=2.6
-transformers>=5.17,<5.19
-safetensors
-accelerate
-huggingface_hub
