@@ -3,15 +3,12 @@ import shutil
 import tempfile
 import torch
 import logging
-
-# DeepSeek-OCR model code uses total_mem but PyTorch only exposes total_memory
-if not hasattr(torch._C._CudaDeviceProperties, 'total_mem'):
-    torch._C._CudaDeviceProperties.total_mem = property(lambda self: self.total_memory)
 import re
 from typing import Literal, List
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
-from transformers import AutoModel, AutoTokenizer, LogitsProcessor, LogitsProcessorList
+from PIL import Image
+from transformers import AutoModelForImageTextToText, AutoProcessor, LogitsProcessor, LogitsProcessorList
 from accelerate import Accelerator
 import fitz  # pymupdf for PDF-to-image conversion
 
@@ -102,55 +99,57 @@ def postprocess_ocr(text: str) -> str:
     return text.strip()
 
 
+# Image processing per mode. DeepSeek-OCR-2's encoder has query embeddings for
+# 768 px (144 tokens) and 1024 px (256 tokens) views only, so every mode maps to
+# one of those: gundam is the model's default (a 1024 global view plus 2-6
+# local 768 tiles), the others a single global view. Without crops the
+# processor sizes the global view by tile_size but counts its tokens by size,
+# so both are set.
+def _single_view(px):
+    return {"crop_to_patches": False, "size": {"height": px, "width": px}, "tile_size": px}
+
+MODE_IMAGE_KWARGS = {
+    "tiny": _single_view(768),
+    "small": _single_view(768),
+    "base": _single_view(1024),
+    "large": _single_view(1024),
+    "gundam": {"crop_to_patches": True, "size": {"height": 1024, "width": 1024}, "tile_size": 768},
+}
+
+MAX_NEW_TOKENS = 8192
+
+
 class App(BaseApp):
     def __init__(self):
         super().__init__()
         self.model = None
-        self.tokenizer = None
+        self.processor = None
         self.device = None
-        self.model_name = "deepseek-ai/DeepSeek-OCR-2"
+        self.model_name = "deepseek-community/DeepSeek-OCR-2"
 
     async def setup(self, metadata):
         """Initialize the OCR model and resources."""
-        logger.info("Initializing DeepSeek OCR-2 model...")
+        logger.info("Initializing DeepSeek OCR-2 model (native transformers)...")
 
         accelerator = Accelerator()
         self.device = accelerator.device
         logger.info(f"Using device: {self.device}")
 
         try:
-            self.tokenizer = AutoTokenizer.from_pretrained(
+            self.processor = AutoProcessor.from_pretrained(self.model_name)
+            self.model = AutoModelForImageTextToText.from_pretrained(
                 self.model_name,
-                trust_remote_code=True
-            )
+                dtype=torch.bfloat16,
+            ).eval().to(self.device)
 
-            self.model = AutoModel.from_pretrained(
-                self.model_name,
-                attn_implementation='eager',
-                trust_remote_code=True,
-                use_safetensors=True
-            )
-
-            self.model = self.model.eval().to(self.device).to(torch.bfloat16)
-
-            # Patch generate() to inject windowed n-gram processor
-            _original_generate = self.model.generate
+            tokenizer = self.processor.tokenizer
             td_ids = set()
             for tag in ["<td>", "</td>"]:
-                td_ids.update(self.tokenizer.encode(tag, add_special_tokens=False))
+                td_ids.update(tokenizer.encode(tag, add_special_tokens=False))
             logger.info(f"Whitelist token IDs for table tags: {td_ids}")
-            ngram_proc = WindowedNGramProcessor(ngram_size=30, window_size=90, whitelist_token_ids=td_ids)
-
-            def _patched_generate(*args, **kwargs):
-                existing = kwargs.get("logits_processor", LogitsProcessorList())
-                if not isinstance(existing, LogitsProcessorList):
-                    existing = LogitsProcessorList(existing)
-                existing.append(ngram_proc)
-                kwargs["logits_processor"] = existing
-                kwargs.pop("no_repeat_ngram_size", None)
-                return _original_generate(*args, **kwargs)
-
-            self.model.generate = _patched_generate
+            self.ngram_proc = WindowedNGramProcessor(ngram_size=30, window_size=90, whitelist_token_ids=td_ids)
+            # Decoded with special tokens kept (grounding tags); these are stripped after.
+            self.strip_tokens = [t for t in (tokenizer.eos_token, tokenizer.pad_token, tokenizer.bos_token) if t]
             logger.info("Model initialized with windowed n-gram processor")
 
         except Exception as e:
@@ -158,37 +157,32 @@ class App(BaseApp):
             logger.error(error_msg)
             raise RuntimeError(error_msg)
 
-    def _ocr_single_image(self, image_path: str, prompt: str, params: dict) -> str:
+    def _ocr_single_image(self, image_path: str, prompt: str, image_kwargs: dict) -> str:
         """Run OCR on a single image file."""
-        temp_dir = tempfile.mkdtemp()
-        try:
-            with torch.inference_mode():
-                return self.model.infer(
-                    self.tokenizer,
-                    prompt=prompt,
-                    image_file=image_path,
-                    output_path=temp_dir,
-                    base_size=params["base_size"],
-                    image_size=params["image_size"],
-                    crop_mode=params["crop_mode"],
-                    eval_mode=True,
-                )
-        finally:
-            shutil.rmtree(temp_dir, ignore_errors=True)
+        image = Image.open(image_path).convert("RGB")
+        inputs = self.processor(
+            images=image, text=prompt, return_tensors="pt", **image_kwargs
+        ).to(self.device, dtype=torch.bfloat16)
+        with torch.inference_mode():
+            output_ids = self.model.generate(
+                **inputs,
+                do_sample=False,
+                max_new_tokens=MAX_NEW_TOKENS,
+                logits_processor=LogitsProcessorList([self.ngram_proc]),
+            )
+        text = self.processor.decode(
+            output_ids[0, inputs["input_ids"].shape[1]:], skip_special_tokens=False
+        )
+        for tok in self.strip_tokens:
+            text = text.replace(tok, "")
+        return text.strip()
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run OCR inference on the input image or PDF."""
         prompt = TASK_PROMPTS[input_data.task]
         logger.info(f"Processing file with task={input_data.task}, mode={input_data.mode}")
         try:
-            mode_params = {
-                "tiny": {"base_size": 512, "image_size": 512, "crop_mode": False},
-                "small": {"base_size": 640, "image_size": 640, "crop_mode": False},
-                "base": {"base_size": 1024, "image_size": 1024, "crop_mode": False},
-                "large": {"base_size": 1280, "image_size": 1280, "crop_mode": False},
-                "gundam": {"base_size": 1024, "image_size": 640, "crop_mode": True}
-            }
-            params = mode_params[input_data.mode]
+            params = MODE_IMAGE_KWARGS[input_data.mode]
             file_path = input_data.image.path
 
             is_pdf = file_path.lower().endswith('.pdf')
