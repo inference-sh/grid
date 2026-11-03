@@ -236,7 +236,10 @@ class TokenRig(ModelSpec):
         )[0], device=device).unsqueeze(0)
         assert start_tokens.shape[0] == 1
         start_embed = self.transformer.get_input_embeddings()(start_tokens)
-        inputs_embeds = torch.cat([learned_mesh_cond, start_embed], dim=1)
+        # The mesh condition leaves autocast in fp32 (RMSNorm). transformers 5 then runs
+        # flash-attn with fp32 keys and bf16 queries ("query and key must have the same
+        # dtype"), so hand generate() bf16 embeddings like the bf16 LLM itself.
+        inputs_embeds = torch.cat([learned_mesh_cond, start_embed], dim=1).to(torch.bfloat16)
         
         results = self.transformer.generate(
             inputs_embeds=inputs_embeds,

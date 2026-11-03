@@ -8,10 +8,12 @@ aiohttp==3.14.5
     # via fsspec
 aiosignal==1.4.0
     # via aiohttp
+annotated-doc==0.0.5
+    # via typer
 annotated-types==0.8.0
     # via pydantic
 anyio==4.15.1
-    # via httpx
+    # via httpx2
 asttokens==3.0.2
     # via stack-data
 attrs==26.1.0
@@ -26,25 +28,30 @@ bottle==0.13.4
 bpy==4.2.0
     # via -r requirements.txt
 certifi==2026.10.23
-    # via
-    #   httpcore
-    #   httpx
-    #   requests
+    # via requests
 charset-normalizer==3.5.2
     # via requests
 click==8.5.0
-    # via flask
+    # via
+    #   flask
+    #   huggingface-hub
 comm==0.2.3
     # via
     #   dash
     #   ipywidgets
 configargparse==1.9.0
     # via open3d
+cuda-bindings==13.4.4
+    # via torch
+cuda-pathfinder==1.8.5
+    # via cuda-bindings
+cuda-toolkit==13.0.3.0
+    # via torch
 cython==3.3.0
     # via bpy
 dash==4.5.0rc2
     # via open3d
-diffusers==0.39.0
+diffusers==0.42.1
     # via -r requirements.txt
 einops==0.9.0.dev0
     # via
@@ -61,8 +68,7 @@ filelock==4.2.4
     #   diffusers
     #   huggingface-hub
     #   torch
-    #   transformers
-flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
+flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.0/flash_attn-2.8.3+cu130torch2.14-cp311-cp311-linux_x86_64.whl
     # via -r requirements.txt
 flask==3.1.3
     # via
@@ -79,16 +85,16 @@ fsspec==2026.9.0
     #   pytorch-lightning
     #   torch
 h11==0.16.0
-    # via httpcore
+    # via httpcore2
 hf-transfer==0.1.9
     # via -r requirements.txt
 hf-xet==1.8.0.dev0
     # via huggingface-hub
-httpcore==1.0.9
-    # via httpx
-httpx==0.28.1
-    # via diffusers
-huggingface-hub==0.36.2
+httpcore2==2.16.0
+    # via httpx2
+httpx2==2.16.0
+    # via huggingface-hub
+huggingface-hub==2.4.0
     # via
     #   -r requirements.txt
     #   diffusers
@@ -97,14 +103,14 @@ huggingface-hub==0.36.2
 idna==3.20
     # via
     #   anyio
-    #   httpx
+    #   httpx2
     #   requests
     #   yarl
 importlib-metadata==10.1.0
     # via
     #   dash
     #   diffusers
-inferencesh==0.37.1
+inferencesh==0.38.7
     # via -r requirements.txt
 ipython==9.17.1
     # via ipywidgets
@@ -137,6 +143,8 @@ lightning-utilities==0.15.3
     #   lightning
     #   pytorch-lightning
     #   torchmetrics
+markdown-it-py==4.2.0
+    # via rich
 markupsafe==3.0.4
     # via
     #   flask
@@ -144,6 +152,8 @@ markupsafe==3.0.4
     #   werkzeug
 matplotlib-inline==0.2.2
     # via ipython
+mdurl==0.1.2
+    # via markdown-it-py
 mpmath==1.3.0
     # via sympy
 msgspec==0.22.0
@@ -171,45 +181,47 @@ numpy==1.26.4
     #   torchmetrics
     #   transformers
     #   trimesh
-nvidia-cublas-cu12==12.8.4.1
+nvidia-cublas==13.1.1.3
     # via
-    #   nvidia-cudnn-cu12
-    #   nvidia-cusolver-cu12
-    #   torch
-nvidia-cuda-cupti-cu12==12.8.90
-    # via torch
-nvidia-cuda-nvrtc-cu12==12.8.93
-    # via torch
-nvidia-cuda-runtime-cu12==12.8.90
-    # via torch
-nvidia-cudnn-cu12==9.10.2.21
-    # via torch
-nvidia-cufft-cu12==11.3.3.83
-    # via torch
-nvidia-cufile-cu12==1.13.1.3
-    # via torch
-nvidia-curand-cu12==10.3.9.90
-    # via torch
-nvidia-cusolver-cu12==11.7.3.90
-    # via torch
-nvidia-cusparse-cu12==12.5.8.93
+    #   cuda-toolkit
+    #   nvidia-cudnn-cu13
+    #   nvidia-cusolver
+nvidia-cuda-cupti==13.0.85
+    # via cuda-toolkit
+nvidia-cuda-nvrtc==13.0.88
     # via
-    #   nvidia-cusolver-cu12
-    #   torch
-nvidia-cusparselt-cu12==0.7.1
+    #   cuda-toolkit
+    #   nvidia-cublas
+nvidia-cuda-runtime==13.0.96
+    # via cuda-toolkit
+nvidia-cudnn-cu13==9.24.0.43
     # via torch
-nvidia-nccl-cu12==2.27.5
-    # via torch
-nvidia-nvjitlink-cu12==12.8.93
+nvidia-cufft==12.0.0.61
+    # via cuda-toolkit
+nvidia-cufile==1.15.1.6
+    # via cuda-toolkit
+nvidia-curand==10.4.0.35
+    # via cuda-toolkit
+nvidia-cusolver==12.0.4.66
+    # via cuda-toolkit
+nvidia-cusparse==12.6.3.3
     # via
-    #   nvidia-cufft-cu12
-    #   nvidia-cusolver-cu12
-    #   nvidia-cusparse-cu12
-    #   torch
-nvidia-nvshmem-cu12==3.3.20
+    #   cuda-toolkit
+    #   nvidia-cusolver
+nvidia-cusparselt-cu13==0.8.1
     # via torch
-nvidia-nvtx-cu12==12.8.90
+nvidia-nccl-cu13==2.30.7
     # via torch
+nvidia-nvjitlink==13.4.92
+    # via
+    #   cuda-toolkit
+    #   nvidia-cufft
+    #   nvidia-cusolver
+    #   nvidia-cusparse
+nvidia-nvshmem-cu13==3.4.5
+    # via torch
+nvidia-nvtx==13.0.85
+    # via cuda-toolkit
 omegaconf==2.4.1rc1
     # via -r requirements.txt
 open3d==0.20.0
@@ -256,6 +268,7 @@ pygments==2.21.0
     # via
     #   ipython
     #   ipython-pygments-lexers
+    #   rich
 python-box==7.4.1
     # via -r requirements.txt
 pytorch-lightning==2.6.6
@@ -281,11 +294,11 @@ requests==2.34.2
     #   bpy
     #   dash
     #   diffusers
-    #   huggingface-hub
     #   inferencesh
-    #   transformers
 retrying==1.4.2
     # via dash
+rich==15.0.0
+    # via typer
 rpds-py==2026.9.1
     # via
     #   jsonschema
@@ -297,14 +310,18 @@ safetensors==0.9.0rc1
 scipy==1.17.1
     # via -r requirements.txt
 setuptools==84.2.1
-    # via dash
+    # via
+    #   dash
+    #   torch
+shellingham==1.5.4
+    # via typer
 stack-data==0.6.3
     # via ipython
 sympy==1.14.0
     # via torch
-tokenizers==0.23.0rc0
+tokenizers==0.23.3
     # via transformers
-torch==2.9.1
+torch==2.14.1
     # via
     #   -r requirements.txt
     #   flash-attn
@@ -331,18 +348,25 @@ traitlets==5.16.1
     #   jupyter-core
     #   matplotlib-inline
     #   nbformat
-transformers==4.57.1
+transformers==5.22.1
     # via -r requirements.txt
 trimesh==5.2.0
     # via -r requirements.txt
-triton==3.5.1
+triton==3.8.0
     # via torch
+truststore==0.10.5
+    # via
+    #   httpcore2
+    #   httpx2
+typer==0.27.3
+    # via transformers
 typing-extensions==4.16.0
     # via
     #   aiohttp
     #   aiosignal
     #   anyio
     #   dash
+    #   httpx2
     #   huggingface-hub
     #   ipython
     #   lightning

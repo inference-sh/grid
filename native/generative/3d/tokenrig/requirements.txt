@@ -1,8 +1,8 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh
-torch==2.9.1 # the prebuilt flash-attn wheel below is built for torch 2.9; 2.10 fails with an undefined c10_cuda_check symbol
-https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
-transformers==4.57.1
+torch==2.14.1 # must match the prebuilt flash-attn wheel below (built for torch 2.14 / CUDA 13.0); a mismatch fails with an undefined c10_cuda_check symbol
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.0/flash_attn-2.8.3+cu130torch2.14-cp311-cp311-linux_x86_64.whl
+transformers==5.22.1
 diffusers>=0.35.0
 lightning
 python-box
