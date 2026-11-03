@@ -10,7 +10,7 @@ greenlet==3.5.0
     # via playwright
 idna==3.15
     # via requests
-inferencesh==0.38.6
+inferencesh==0.6.1
     # via -r requirements.txt
 playwright==1.59.0
     # via -r requirements.txt

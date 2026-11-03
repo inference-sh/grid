@@ -1,8 +1,6 @@
 {
   "close": {
     "description": "Close browser session.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Close browser session.",
       "properties": {},
@@ -48,6 +46,81 @@
           },
           "title": "AudioMeta",
           "type": "object"
+        },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
         },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
@@ -106,7 +179,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -216,20 +289,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -279,15 +340,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -304,6 +364,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Close result.",
@@ -316,16 +388,14 @@
         "video": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Video recording if record_video was enabled",
-          "title": "Video"
+          "description": "Video recording if record_video was enabled"
         },
         "output_meta": {
           "anyOf": [
@@ -349,8 +419,6 @@
   },
   "execute": {
     "description": "Execute JavaScript on the page.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Execute JavaScript code.",
       "properties": {
@@ -406,6 +474,81 @@
           "title": "AudioMeta",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -463,7 +606,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -573,20 +716,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -636,15 +767,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -661,6 +791,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "JavaScript execution result.",
@@ -694,16 +836,14 @@
         "screenshot": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Page screenshot",
-          "title": "Screenshot"
+          "description": "Page screenshot"
         },
         "output_meta": {
           "anyOf": [
@@ -724,8 +864,6 @@
   },
   "interact": {
     "description": "Interact with page using @e refs.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Interact with page elements using @e refs.",
       "properties": {
@@ -861,25 +999,8 @@
             }
           ],
           "default": null,
-          "description": "File(s) for upload action: http(s) URLs or data URIs. Local paths are refused unless under the app's upload directory",
+          "description": "File path(s) for upload action",
           "title": "File Paths"
-        },
-        "files": {
-          "anyOf": [
-            {
-              "items": {
-                "format": "file",
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "File(s) for upload action, as task input files (URLs or data URIs)",
-          "title": "Files"
         }
       },
       "required": [
@@ -1025,6 +1146,81 @@
           "title": "ElementInfo",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -1082,7 +1278,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -1164,16 +1360,14 @@
             "screenshot": {
               "anyOf": [
                 {
-                  "format": "file",
-                  "type": "string"
+                  "$ref": "#/$defs/File"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Page screenshot for vision agents",
-              "title": "Screenshot"
+              "description": "Page screenshot for vision agents"
             },
             "elements": {
               "description": "Interactive elements with @e refs",
@@ -1254,20 +1448,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1317,15 +1499,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -1342,6 +1523,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Interaction result.",
@@ -1372,16 +1565,14 @@
         "screenshot": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Page screenshot after action",
-          "title": "Screenshot"
+          "description": "Page screenshot after action"
         },
         "snapshot": {
           "anyOf": [
@@ -1418,8 +1609,6 @@
   },
   "open": {
     "description": "Navigate to URL and configure browser.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Open URL and configure browser.",
       "properties": {
@@ -1648,6 +1837,81 @@
           "title": "ElementInfo",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -1705,7 +1969,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -1815,20 +2079,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -1878,15 +2130,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -1903,6 +2154,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Open result with initial snapshot.",
@@ -1932,16 +2195,14 @@
         "screenshot": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Page screenshot for vision agents",
-          "title": "Screenshot"
+          "description": "Page screenshot for vision agents"
         },
         "elements": {
           "description": "Interactive elements with @e refs",
@@ -1969,8 +2230,6 @@
   },
   "run": {
     "description": "Default function - same as open.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Open URL and configure browser.",
       "properties": {
@@ -2199,6 +2458,81 @@
           "title": "ElementInfo",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -2256,7 +2590,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -2366,20 +2700,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -2429,15 +2751,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -2454,6 +2775,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Open result with initial snapshot.",
@@ -2483,16 +2816,14 @@
         "screenshot": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Page screenshot for vision agents",
-          "title": "Screenshot"
+          "description": "Page screenshot for vision agents"
         },
         "elements": {
           "description": "Interactive elements with @e refs",
@@ -2520,8 +2851,6 @@
   },
   "screenshot": {
     "description": "Take a screenshot.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Take page screenshot.",
       "properties": {
@@ -2575,6 +2904,81 @@
           "title": "AudioMeta",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -2632,7 +3036,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -2742,20 +3146,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -2805,15 +3197,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -2830,15 +3221,25 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Screenshot result.",
       "properties": {
         "screenshot": {
-          "description": "Screenshot image file",
-          "format": "file",
-          "title": "Screenshot",
-          "type": "string"
+          "$ref": "#/$defs/File",
+          "description": "Screenshot image file"
         },
         "width": {
           "description": "Image width",
@@ -2874,8 +3275,6 @@
   },
   "snapshot": {
     "description": "Get current page snapshot with @e refs.",
-    "kind": "run",
-    "capabilities": [],
     "input_schema": {
       "description": "Get current page snapshot.",
       "properties": {},
@@ -3019,6 +3418,81 @@
           "title": "ElementInfo",
           "type": "object"
         },
+        "File": {
+          "$id": "/schemas/File",
+          "oneOf": [
+            {
+              "description": "A class representing a file in the inference.sh ecosystem.",
+              "properties": {
+                "uri": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Uri"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Path"
+                },
+                "content_type": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Content Type"
+                },
+                "size": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Size"
+                },
+                "filename": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Filename"
+                }
+              },
+              "title": "File",
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
         "ImageMeta": {
           "description": "Metadata for image inputs/outputs.",
           "properties": {
@@ -3076,7 +3550,7 @@
           "type": "object"
         },
         "OutputMeta": {
-          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app:\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=VideoResolution.RES_1080P,\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
           "properties": {
             "inputs": {
               "description": "Metadata about consumed inputs",
@@ -3186,20 +3660,8 @@
             },
             "tokens": {
               "default": 0,
-              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "description": "Token count - in inputs[] = input tokens, in outputs[] = output tokens",
               "title": "Tokens",
-              "type": "integer"
-            },
-            "cached_tokens": {
-              "default": 0,
-              "description": "Input tokens read from the provider's prompt cache, part of tokens",
-              "title": "Cached Tokens",
-              "type": "integer"
-            },
-            "cache_write_tokens": {
-              "default": 0,
-              "description": "Input tokens written to the provider's prompt cache, part of tokens",
-              "title": "Cache Write Tokens",
               "type": "integer"
             }
           },
@@ -3249,15 +3711,14 @@
             "resolution": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "$ref": "#/$defs/VideoResolution"
                 },
                 {
                   "type": "null"
                 }
               ],
               "default": null,
-              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
-              "title": "Resolution"
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)"
             },
             "seconds": {
               "default": 0,
@@ -3274,6 +3735,18 @@
           },
           "title": "VideoMeta",
           "type": "object"
+        },
+        "VideoResolution": {
+          "description": "Standard video resolution presets.",
+          "enum": [
+            "480p",
+            "720p",
+            "1080p",
+            "1440p",
+            "4k"
+          ],
+          "title": "VideoResolution",
+          "type": "string"
         }
       },
       "description": "Current page snapshot.",
@@ -3303,16 +3776,14 @@
         "screenshot": {
           "anyOf": [
             {
-              "format": "file",
-              "type": "string"
+              "$ref": "#/$defs/File"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Page screenshot for vision agents",
-          "title": "Screenshot"
+          "description": "Page screenshot for vision agents"
         },
         "elements": {
           "description": "Interactive elements with @e refs",
