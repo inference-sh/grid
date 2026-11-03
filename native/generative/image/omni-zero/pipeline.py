@@ -64,7 +64,7 @@ from diffusers.pipelines.stable_diffusion_xl.pipeline_output import StableDiffus
 if is_invisible_watermark_available():
     from diffusers.pipelines.stable_diffusion_xl.watermark import StableDiffusionXLWatermarker
 
-from diffusers.pipelines.controlnet.multicontrolnet import MultiControlNetModel
+from diffusers.models.controlnets.multicontrolnet import MultiControlNetModel
 
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
@@ -1132,23 +1132,10 @@ class OmniZeroPipeline(
 
     # Copied from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_upscale.StableDiffusionUpscalePipeline.upcast_vae
     def upcast_vae(self):
-        dtype = self.vae.dtype
+        # Whole VAE in float32, as upstream diffusers now does: the partial
+        # upcast (attention blocks kept in fp16) fails in decode on diffusers 0.42
+        # ("expected scalar type Half but found Float").
         self.vae.to(dtype=torch.float32)
-        use_torch_2_0_or_xformers = isinstance(
-            self.vae.decoder.mid_block.attentions[0].processor,
-            (
-                AttnProcessor2_0,
-                XFormersAttnProcessor,
-                LoRAXFormersAttnProcessor,
-                LoRAAttnProcessor2_0,
-            ),
-        )
-        # if xformers or torch_2_0 is used attention block does not need
-        # to be in float32 which can save lots of memory
-        if use_torch_2_0_or_xformers:
-            self.vae.post_quant_conv.to(dtype)
-            self.vae.decoder.conv_in.to(dtype)
-            self.vae.decoder.mid_block.to(dtype)
 
     @property
     def guidance_scale(self):

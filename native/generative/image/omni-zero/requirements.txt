@@ -1,11 +1,9 @@
 pydantic >= 2.0.0
 inferencesh
 accelerate
-# pinned to the deployed version: diffusers >=0.38 requires huggingface-hub >=0.34,
-# which this app's pinned hub version contradicts (resolution fails outright)
-diffusers==0.29.0
+diffusers==0.42.1
 controlnet_aux==0.0.8
-huggingface_hub==0.23.2
+huggingface_hub
 insightface==0.7.3
 numpy==1.26.2
 opencv_contrib_python==4.9.0.80
@@ -14,13 +12,12 @@ opencv_python_headless==4.9.0.80
 Pillow>=13.0.0
 # 2.7.0 lacks kernels for the newer GPUs now in the fleet
 # (`CUDA error: no kernel image is available for execution on the device`)
-torch==2.8.0
+torch==2.14.1
 torchsde==0.2.6
-transformers>=4.53.0
-tokenizers==0.15.2
+transformers==5.22.1
 # pinned to the deployed version: 1.27 fails to load its CUDA libs on the
 # GPU-less deploy host, and insightface imports onnxruntime at module scope
 onnxruntime-gpu==1.22.0
 onnx==1.19.0
 hf_transfer
-xformers
+xformers==0.0.35
