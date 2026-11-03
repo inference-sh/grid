@@ -147,9 +147,9 @@ description: Description of what the app does
 metadata: {}
 category: social
 images:
-    card: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60feh39gmsptqz5gh2vnbh.jpeg"
-    thumbnail: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fek57rq9c99mrrrs95t5.jpeg"
-    banner: "https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kg60fdwr4j81gkgas45fhd25.jpeg"
+    card: "https://cloud.inference.sh/app/public/examples/x/card.jpeg"
+    thumbnail: "https://cloud.inference.sh/app/public/examples/x/thumbnail.jpeg"
+    banner: "https://cloud.inference.sh/app/public/examples/x/banner.jpeg"
 env: {}
 kernel: python-3.11
 

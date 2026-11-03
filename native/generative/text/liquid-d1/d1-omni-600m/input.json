@@ -1,6 +1,6 @@
 {
   "state": "Listing title: Framed print, The Great Wave off Kanagawa, 40 x 30 cm",
-  "images": ["https://cloud.inference.sh/t/71ckmsn3/56yl4v8z.jpg"],
+  "images": ["https://cloud.inference.sh/app/public/examples/shared/great-wave.jpg"],
   "choices": [
     {
       "id": "category",
