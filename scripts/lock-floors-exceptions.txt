@@ -1,5 +1,4 @@
 # <app dir> <package>  # blocking constraint
 # Apps whose pins stay below a SECURITY_FLOORS entry in scripts/check-lock-floors.py.
 # Drop a line once the app resolves at the floor.
-native/generative/audio/omnivoice pillow  # gradio 6.x (latest 6.31.0): pillow<13
 native/utility/media/media-merger pillow  # moviepy 2.1.2: pillow<11 (latest moviepy 2.2.1: pillow<12)

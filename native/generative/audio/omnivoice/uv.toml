@@ -1,0 +1,5 @@
+# omnivoice requires gradio for its demo UI (omnivoice/cli/demo.py), which
+# the app never imports; gradio caps pillow below 13.
+override-dependencies = [
+    "gradio ; sys_platform == 'never'",
+]
