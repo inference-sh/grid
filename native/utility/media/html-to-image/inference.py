@@ -1,6 +1,7 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from typing import Literal, Optional
+import sys
 import tempfile
 from pathlib import Path
 from playwright.async_api import async_playwright
@@ -36,10 +37,25 @@ class App(BaseApp):
         """Initialize Playwright resources."""
 
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(
-            args=['--no-sandbox'],
-            executable_path='/usr/bin/chromium'
-        )
+        # With Chromium's sandbox: inf.yml declares sandbox.user_namespaces,
+        # which it needs in the container. An engine or host that does not
+        # allow user namespaces fails the launch; then run without it, loudly.
+        try:
+            self.browser = await self.playwright.chromium.launch(
+                executable_path='/usr/bin/chromium',
+                chromium_sandbox=True,
+            )
+        except Exception as e:
+            first = str(e).splitlines()[0] if str(e) else type(e).__name__
+            print(
+                f"[html-to-image] WARNING: Chromium could not start with its sandbox ({first}); "
+                "running it with --no-sandbox. The engine or host does not allow user namespaces.",
+                file=sys.stderr, flush=True,
+            )
+            self.browser = await self.playwright.chromium.launch(
+                args=['--no-sandbox'],
+                executable_path='/usr/bin/chromium'
+            )
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Convert HTML to image using Playwright."""

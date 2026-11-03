@@ -18,3 +18,6 @@ resources:
         type: any
     ram: 4000000000
 title: HTML to Image
+sandbox:
+    # Chromium runs with its sandbox, which needs unprivileged user namespaces.
+    user_namespaces: true

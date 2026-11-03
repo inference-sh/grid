@@ -194,19 +194,29 @@ const pauseAll = `() => {
 export class App {
   async setup() {
     console.log("Launching browser...");
-    this.browser = await puppeteer.launch({
-      executablePath: "/usr/bin/chromium",
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--hide-scrollbars",
-        "--no-first-run",
-        "--disable-extensions",
-      ],
-    });
+    // With Chromium's sandbox: inf.yml declares sandbox.user_namespaces,
+    // which it needs in the container. An engine or host that does not allow
+    // user namespaces fails the launch; then run without it, loudly.
+    const args = [
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--hide-scrollbars",
+      "--no-first-run",
+      "--disable-extensions",
+    ];
+    const launch = (extra) =>
+      puppeteer.launch({ executablePath: "/usr/bin/chromium", headless: true, args: [...extra, ...args] });
+    try {
+      this.browser = await launch([]);
+    } catch (e) {
+      const first = String((e && e.message) || e).split("\n")[0];
+      console.error(
+        `[hyperframes-render] WARNING: Chromium could not start with its sandbox (${first}); ` +
+          "running it with --no-sandbox. The engine or host does not allow user namespaces.",
+      );
+      this.browser = await launch(["--no-sandbox"]);
+    }
     console.log("Browser ready");
   }
 

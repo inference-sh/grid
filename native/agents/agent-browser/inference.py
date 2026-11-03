@@ -17,7 +17,9 @@ Refs are invalidated after navigation - always re-snapshot after clicks that nav
 """
 
 import asyncio
+import re
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -25,6 +27,71 @@ from typing import Optional, Literal
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from playwright.async_api import async_playwright, Page, Browser, BrowserContext
+
+
+# --- Browser launch ---
+
+CHROMIUM = '/usr/bin/chromium'
+CHROMIUM_ARGS = ['--disable-dev-shm-usage']
+
+
+async def launch_chromium(playwright, **opts) -> Browser:
+    """Launch Chromium with its sandbox.
+
+    The app declares sandbox.user_namespaces (inf.yml), which lets Chromium
+    build its namespace sandbox in the container. On an engine or host that
+    does not allow user namespaces the sandboxed launch fails; then it runs
+    with --no-sandbox, loudly, so the app keeps working.
+    """
+    try:
+        return await playwright.chromium.launch(
+            args=CHROMIUM_ARGS, headless=True, executable_path=CHROMIUM, chromium_sandbox=True, **opts
+        )
+    except Exception as e:
+        print(
+            "[agent-browser] WARNING: Chromium could not start with its sandbox "
+            f"({str(e).splitlines()[0] if str(e) else type(e).__name__}); "
+            "running it with --no-sandbox. The engine or host does not allow user namespaces.",
+            file=sys.stderr, flush=True,
+        )
+        return await playwright.chromium.launch(
+            args=CHROMIUM_ARGS + ['--no-sandbox'], headless=True, executable_path=CHROMIUM, **opts
+        )
+
+
+# --- URLs ---
+
+# Schemes the agent may open. file: is refused: it reads the container's own
+# files (the app's code, its environment, mounted caches). data: is allowed:
+# its content is the caller's own, it reads nothing local, and its page is an
+# opaque origin that Chromium does not let load file: either; the caller can
+# already run any script in a page (execute).
+ALLOWED_URL_SCHEMES = ('http', 'https', 'data')
+
+# A scheme: RFC 3986, then ':'. "example.com:8080" is a host and port, not a
+# scheme: a digit follows the colon.
+_SCHEME = re.compile(r'^([a-zA-Z][a-zA-Z0-9+.-]*):(?!\d)')
+
+
+def normalize_url(url: str) -> str:
+    """The URL to open: https:// prepended when it has no scheme. A scheme
+    other than http, https or data (file:, javascript:, chrome:,
+    view-source:, ...) is refused."""
+    url = (url or '').strip()
+    if not url:
+        raise ValueError("url is empty")
+    m = _SCHEME.match(url)
+    if m is None:
+        return f"https://{url}"
+    scheme = m.group(1).lower()
+    if scheme not in ALLOWED_URL_SCHEMES:
+        raise ValueError(f"{scheme}: URLs are not allowed; use http, https or data")
+    return url
+
+
+def is_local_page(url: str) -> bool:
+    """A page the browser should never show: a local file."""
+    return (url or '').strip().lower().startswith('file:')
 
 
 # --- Output Types ---
@@ -167,11 +234,7 @@ class App(BaseApp):
             print(f"[agent-browser] ffmpeg install warning: {result.stderr[:200]}")
 
         self.playwright = await async_playwright().start()
-        self.browser: Optional[Browser] = await self.playwright.chromium.launch(
-            args=['--no-sandbox', '--disable-dev-shm-usage'],
-            headless=True,
-            executable_path='/usr/bin/chromium'
-        )
+        self.browser: Optional[Browser] = await launch_chromium(self.playwright)
         self.context: Optional[BrowserContext] = None
         self.page: Optional[Page] = None
         self.elements: dict[str, dict] = {}  # Map @e refs to selectors
@@ -222,11 +285,7 @@ class App(BaseApp):
                 self.page = None
             await self.browser.close()
 
-            launch_opts = {
-                'args': ['--no-sandbox', '--disable-dev-shm-usage'],
-                'headless': True,
-                'executable_path': '/usr/bin/chromium'
-            }
+            launch_opts = {}
             if proxy_url:
                 proxy_opts = {'server': proxy_url}
                 if proxy_username:
@@ -235,7 +294,7 @@ class App(BaseApp):
                     proxy_opts['password'] = proxy_password
                 launch_opts['proxy'] = proxy_opts
 
-            self.browser = await self.playwright.chromium.launch(**launch_opts)
+            self.browser = await launch_chromium(self.playwright, **launch_opts)
             self._proxy_url = proxy_url
             self._proxy_username = proxy_username
             self._proxy_password = proxy_password
@@ -438,6 +497,7 @@ class App(BaseApp):
 
     async def _snapshot(self) -> PageSnapshot:
         """Get full page snapshot."""
+        await self._refuse_local_page()
         elements = await self._get_elements()
         screenshot = await self._screenshot()
 
@@ -453,17 +513,19 @@ class App(BaseApp):
         )
 
     def _normalize_url(self, url: str) -> str:
-        """Normalize URL by prepending https:// if no protocol specified."""
-        if not url:
-            return url
-        # Check if URL already has a protocol
-        if url.startswith(('http://', 'https://', 'file://', 'data:')):
-            return url
-        # Prepend https:// for URLs like "www.example.com" or "example.com"
-        return f"https://{url}"
+        """Normalize URL by prepending https:// if no protocol specified.
+        Refuses file: and every scheme but http, https and data."""
+        return normalize_url(url)
+
+    async def _refuse_local_page(self):
+        """Leave a page that shows a local file, however it got there."""
+        if self.page and is_local_page(self.page.url):
+            await self.page.goto('about:blank')
+            raise ValueError("file: URLs are not allowed")
 
     async def open(self, input_data: OpenInput) -> OpenOutput:
         """Navigate to URL and configure browser."""
+        url = self._normalize_url(input_data.url)
         await self._ensure_context(
             width=input_data.width,
             height=input_data.height,
@@ -475,7 +537,6 @@ class App(BaseApp):
             proxy_password=input_data.proxy_password
         )
 
-        url = self._normalize_url(input_data.url)
         try:
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(0.5)
@@ -654,6 +715,7 @@ class App(BaseApp):
         if not self.page:
             raise RuntimeError("Browser not started. Call 'open' first.")
 
+        await self._refuse_local_page()
         shot = await self._screenshot(full_page=input_data.full_page)
         if shot is None:
             raise RuntimeError("Failed to take screenshot")
@@ -665,6 +727,7 @@ class App(BaseApp):
         if not self.page:
             raise RuntimeError("Browser not started. Call 'open' first.")
 
+        await self._refuse_local_page()
         result, error = None, None
         try:
             raw = await self.page.evaluate(input_data.code)

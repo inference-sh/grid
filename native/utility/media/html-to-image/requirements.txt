@@ -3,4 +3,4 @@ pydantic>=2.0.0
 inferencesh
 
 # Playwright for modern web rendering
-playwright==1.41.0
+playwright==1.64.1
