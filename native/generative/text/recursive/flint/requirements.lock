@@ -138,7 +138,7 @@ psutil==7.2.2
 ptyprocess==0.7.0
 pure-eval==0.2.4
 py-spy==0.4.2
-pyarrow==26.0.0
+pyarrow==26.0.1
 pybase64==1.5.1
 pycountry==26.2.16
 pycparser==3.11

@@ -455,7 +455,7 @@ pure-eval==0.2.4
     # via stack-data
 py-spy==0.4.2
     # via sglang
-pyarrow==26.0.0
+pyarrow==26.0.1
     # via datasets
 pybase64==1.5.1
     # via sglang
