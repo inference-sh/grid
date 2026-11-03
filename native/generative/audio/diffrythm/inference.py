@@ -37,6 +37,7 @@ import torchaudio
 from einops import rearrange
 import json
 from huggingface_hub import hf_hub_download
+from . import muq_compat  # noqa: F401  # before muq: transformers 5 encoder output
 from muq import MuQMuLan
 
 from .infer_utils import (

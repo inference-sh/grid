@@ -208,7 +208,9 @@ class DiT(nn.Module):
         )
 
         for i, block in enumerate(self.transformer_blocks):
-            x, *_ = block(x, attention_mask=attention_mask, position_embeddings=rotary_embed)
+            x = block(x, attention_mask=attention_mask, position_embeddings=rotary_embed)
+            if isinstance(x, tuple):  # transformers < 4.54 returns (hidden_states, ...)
+                x = x[0]
             if i < self.depth // 2:
                 x = x + self.text_fusion_linears[i](text_embed)
 
