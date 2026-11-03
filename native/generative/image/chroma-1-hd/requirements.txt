@@ -1,19 +1,19 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh
-torch
+torch==2.14.1
 gguf>=0.13.0
 tqdm
 diffusers>=0.38.0
-transformers>=4.53.0
+transformers>=5.5.0
 huggingface_hub
 accelerate
 sentencepiece
 protobuf
-Pillow>=12.3.0
+Pillow>=13.0.0
 einops
 accelerate
 python-dateutil
 peft
 hf_transfer
 
-https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.0/flash_attn-2.8.3+cu130torch2.14-cp311-cp311-linux_x86_64.whl
