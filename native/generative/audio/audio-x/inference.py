@@ -6,6 +6,8 @@ from typing import List, Optional
 import torch
 import torchaudio
 from einops import rearrange
+import math
+import numpy as np
 import gc
 from .stable_audio_tools import get_pretrained_model
 from .stable_audio_tools.inference.generation import generate_diffusion_cond
@@ -25,7 +27,7 @@ class AppInput(BaseAppInput):
     video_file: Optional[File] = Field(None, description="Input video file for conditioning")
     audio_prompt_file: Optional[File] = Field(None, description="Input audio file for conditioning")
     seconds_start: int = Field(0, description="Start time in seconds")
-    seconds_total: int = Field(10, description="Total duration in seconds")
+    seconds_total: int = Field(10, ge=1, le=60, description="Total duration in seconds. AudioX generates 10-second windows; longer outputs join consecutive windows (aligned with the video, if given) with a short crossfade.")
     cfg_scale: float = Field(7.0, description="Classifier-free guidance scale")
     steps: int = Field(100, description="Number of diffusion steps")
     seed: int = Field(-1, description="Random seed (-1 for random)")
@@ -33,6 +35,10 @@ class AppInput(BaseAppInput):
     sigma_min: float = Field(0.03, description="Minimum sigma value")
     sigma_max: float = Field(500, description="Maximum sigma value")
     cfg_rescale: float = Field(0.0, description="CFG rescale amount")
+
+WINDOW_SECONDS = 10
+CROSSFADE_SECONDS = 0.1
+
 
 class AppOutput(BaseAppOutput):
     audio_output: File = Field(description="Generated audio file")
@@ -72,67 +78,68 @@ class App(BaseApp):
         
         self.model = self.model.to(device)
 
-        # Process video input if provided
         video_path = input_data.video_file.path if input_data.video_file is not None else None
-        target_fps = self.model_config.get("video_fps", 5)
-        video_tensors = read_video(video_path, seek_time=input_data.seconds_start, 
-                                 duration=input_data.seconds_total, target_fps=target_fps)
-
-        # Process audio prompt if provided
         audio_path = input_data.audio_prompt_file.path if input_data.audio_prompt_file is not None else None
-        audio_tensor = load_and_process_audio(audio_path, self.sample_rate, 
-                                            input_data.seconds_start, input_data.seconds_total)
-        audio_tensor = audio_tensor.to(device) if audio_tensor is not None else None
-
-        # Prepare conditioning
+        target_fps = self.model_config.get("video_fps", 5)
+        # The model is built for 10-second windows: the CLIP video conditioner
+        # takes exactly 10 s x video_fps frames and sample_size is ~11 s.
         seconds_input = self.sample_size / self.sample_rate
-        conditioning = [{
-            "video_prompt": [video_tensors.unsqueeze(0)] if video_tensors is not None else None,
-            "text_prompt": input_data.prompt,
-            "audio_prompt": audio_tensor.unsqueeze(0) if audio_tensor is not None else None,
-            "seconds_start": input_data.seconds_start,
-            "seconds_total": seconds_input
-        }]
+        crossfade = int(CROSSFADE_SECONDS * self.sample_rate)
+        total = int(input_data.seconds_total * self.sample_rate)
+        n_windows = math.ceil(input_data.seconds_total / WINDOW_SECONDS)
+        base_seed = input_data.seed if input_data.seed != -1 else int(np.random.randint(0, 2**31 - 1))
 
-        # Prepare negative conditioning if provided
-        if input_data.negative_prompt:
-            negative_conditioning = [{
-                "video_prompt": [video_tensors.unsqueeze(0)] if video_tensors is not None else None,
-                "text_prompt": input_data.negative_prompt,
+        def window_conditioning(text, start):
+            video_tensors = read_video(video_path, seek_time=start, duration=WINDOW_SECONDS, target_fps=target_fps)
+            audio_tensor = load_and_process_audio(audio_path, self.sample_rate, start, WINDOW_SECONDS)
+            audio_tensor = audio_tensor.to(device) if audio_tensor is not None else None
+            return [{
+                "video_prompt": [video_tensors.unsqueeze(0)],
+                "text_prompt": text,
                 "audio_prompt": audio_tensor.unsqueeze(0) if audio_tensor is not None else None,
-                "seconds_start": input_data.seconds_start,
-                "seconds_total": input_data.seconds_total
-            }] * 1
-        else:
-            negative_conditioning = None
+                "seconds_start": start,
+                "seconds_total": seconds_input,
+            }]
 
-        # Generate audio
-        audio = generate_diffusion_cond(
-            self.model,
-            conditioning=conditioning,
-            negative_conditioning=negative_conditioning,
-            steps=input_data.steps,
-            cfg_scale=input_data.cfg_scale,
-            batch_size=1,
-            sample_size=self.sample_size,
-            sample_rate=self.sample_rate,
-            seed=input_data.seed,
-            device=device,
-            sampler_type=input_data.sampler_type,
-            sigma_min=input_data.sigma_min,
-            sigma_max=input_data.sigma_max,
-            init_audio=None,
-            init_noise_level=0.1,
-            mask_args=None,
-            callback=None,
-            scale_phi=input_data.cfg_rescale
-        )
+        audio = None
+        for i in range(n_windows):
+            start = input_data.seconds_start + i * WINDOW_SECONDS
+            window = generate_diffusion_cond(
+                self.model,
+                conditioning=window_conditioning(input_data.prompt, start),
+                negative_conditioning=(
+                    window_conditioning(input_data.negative_prompt, start) if input_data.negative_prompt else None
+                ),
+                steps=input_data.steps,
+                cfg_scale=input_data.cfg_scale,
+                batch_size=1,
+                sample_size=self.sample_size,
+                sample_rate=self.sample_rate,
+                seed=base_seed + i,
+                device=device,
+                sampler_type=input_data.sampler_type,
+                sigma_min=input_data.sigma_min,
+                sigma_max=input_data.sigma_max,
+                init_audio=None,
+                init_noise_level=0.1,
+                mask_args=None,
+                callback=None,
+                scale_phi=input_data.cfg_rescale
+            )
+            window = rearrange(window, "b d n -> d (b n)").to(torch.float32)
+            # Keep 10 s plus the crossfade tail (the model generates ~11 s).
+            window = window[:, :WINDOW_SECONDS * self.sample_rate + crossfade]
+            if audio is None:
+                audio = window
+            else:
+                fade = torch.linspace(0, 1, crossfade, device=window.device)
+                head = audio[:, -crossfade:] * (1 - fade) + window[:, :crossfade] * fade
+                audio = torch.cat([audio[:, :-crossfade], head, window[:, crossfade:]], dim=1)
+            if audio.shape[1] >= total:
+                break
 
-        # Process generated audio
-        audio = rearrange(audio, "b d n -> d (b n)")
-        samples_10s = 10 * self.sample_rate
-        audio = audio[:, :samples_10s]
-        audio = audio.to(torch.float32).div(torch.max(torch.abs(audio))).clamp(-1, 1).mul(32767).to(torch.int16).cpu()
+        audio = audio[:, :total]
+        audio = audio.div(torch.max(torch.abs(audio))).clamp(-1, 1).mul(32767).to(torch.int16).cpu()
 
         # Save audio output
         output_audio_path = os.path.join(self.temp_dir, "output.wav")
@@ -151,7 +158,6 @@ class App(BaseApp):
             )
 
         # Cleanup
-        del video_tensors
         torch.cuda.empty_cache()
         gc.collect()
 

@@ -54,7 +54,9 @@
     },
     "seconds_total": {
       "default": 10,
-      "description": "Total duration in seconds",
+      "description": "Total duration in seconds. AudioX generates 10-second windows; longer outputs join consecutive windows (aligned with the video, if given) with a short crossfade.",
+      "maximum": 60,
+      "minimum": 1,
       "title": "Seconds Total",
       "type": "integer"
     },
