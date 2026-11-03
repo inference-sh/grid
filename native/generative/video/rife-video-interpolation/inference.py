@@ -42,6 +42,29 @@ class AppInput(BaseAppInput):
 class AppOutput(BaseAppOutput):
     video: File = Field(description="Output video with interpolated frames")
 
+# RIFE HDv3 weights (train_log/flownet.pkl). Upstream publishes them only as a Google Drive /
+# Baidu zip (ECCV2022-RIFE README); this Hugging Face mirror holds the byte-identical file,
+# pinned to a commit and checked against the SHA-256 of the file the app shipped with before.
+RIFE_WEIGHTS_REPO = "AlexWortega/RIFE"
+RIFE_WEIGHTS_REVISION = "440cdec905de98e1d7e81f65d2c88a08da7cb4e2"
+RIFE_WEIGHTS_SHA256 = "fe854fc8996547c953f732aaa3b78cae76cc0a12833ae856ea0749c4c570d7d8"
+
+
+def fetch_rife_weights() -> str:
+    """Download flownet.pkl (cached by huggingface_hub), verify it, return its directory."""
+    import hashlib
+    from huggingface_hub import hf_hub_download
+
+    path = hf_hub_download(RIFE_WEIGHTS_REPO, "flownet.pkl", revision=RIFE_WEIGHTS_REVISION)
+    digest = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            digest.update(chunk)
+    if digest.hexdigest() != RIFE_WEIGHTS_SHA256:
+        raise RuntimeError(f"flownet.pkl checksum mismatch: {digest.hexdigest()} != {RIFE_WEIGHTS_SHA256}")
+    return os.path.dirname(path)
+
+
 class App(BaseApp):
     async def setup(self, metadata):
         """Initialize RIFE model and resources."""
@@ -68,7 +91,8 @@ class App(BaseApp):
     
     def _load_rife_model(self):
         """Load RIFE model with fallback strategy similar to original inference_video.py"""
-        model_dir = "ECCV2022-RIFE/train_log"
+        # the model code is imported from ECCV2022-RIFE/train_log; the weights come from here
+        model_dir = fetch_rife_weights()
         
         try:
             try:

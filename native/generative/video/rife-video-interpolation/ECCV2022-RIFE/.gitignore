@@ -5,6 +5,9 @@
 *.pkl
 output/*
 train_log/*
+# the HDv3 model code ships with the app; flownet.pkl is downloaded at setup (inference.py)
+!train_log/RIFE_HDv3.py
+!train_log/IFNet_HDv3.py
 *.mp4
 
 test/
