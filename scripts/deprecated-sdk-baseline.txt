@@ -159,7 +159,6 @@ native/generative/image/wan2-2-t2i-a14b/inference.py
 native/generative/image/wan2-2-upscaler-a14b/inference.py
 native/generative/image/z-image-turbo/inference.py
 native/generative/multimodal/deepseek-ocr-2/inference.py
-native/generative/multimodal/deepseek-ocr/inference.py
 native/generative/multimodal/media-analyzer/inference.py
 native/generative/video/extract-last-frame/inference.py
 native/generative/video/humo/inference.py
