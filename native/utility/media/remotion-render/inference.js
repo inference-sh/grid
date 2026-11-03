@@ -24,7 +24,7 @@ export const RunInput = z.object({
     .default("Main")
     .describe("Composition ID to render"),
   props: z
-    .record(z.any())
+    .record(z.string(), z.any())
     .default({})
     .describe("Props passed to the component"),
   width: z.number().default(1920).describe("Video width in pixels"),
