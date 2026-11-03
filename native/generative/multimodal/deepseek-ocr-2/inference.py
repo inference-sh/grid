@@ -8,7 +8,14 @@ from typing import Literal, List
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from PIL import Image
-from transformers import AutoModelForImageTextToText, AutoProcessor, LogitsProcessor, LogitsProcessorList
+from transformers import (
+    AutoImageProcessor,
+    AutoModelForImageClassification,
+    AutoModelForImageTextToText,
+    AutoProcessor,
+    LogitsProcessor,
+    LogitsProcessorList,
+)
 from accelerate import Accelerator
 import fitz  # pymupdf for PDF-to-image conversion
 
@@ -60,6 +67,10 @@ class AppInput(BaseAppInput):
     mode: Literal["tiny", "small", "base", "large", "gundam"] = Field(
         default="gundam",
         description="Model mode affecting image processing parameters. Gundam is optimized for general use."
+    )
+    auto_rotate: bool = Field(
+        default=True,
+        description="Detect pages rotated by 90, 180 or 270 degrees and turn them upright before OCR.",
     )
 
 class AppOutput(BaseAppOutput):
@@ -118,6 +129,13 @@ MODE_IMAGE_KWARGS = {
 
 MAX_NEW_TOKENS = 8192
 
+# Page orientation classifier (PP-LCNet, 4 classes: 0/90/180/270, clockwise).
+# Pages are only turned when it is this sure; tiny crops such as a single
+# handwritten word score lower and stay as they are.
+ORIENTATION_MODEL = "PaddlePaddle/PP-LCNet_x1_0_doc_ori_safetensors"
+ORIENTATION_REVISION = "b2716954d2e321dd4436400b37584fab641027ab"
+ORIENTATION_MIN_CONFIDENCE = 0.85
+
 
 class App(BaseApp):
     def __init__(self):
@@ -142,6 +160,11 @@ class App(BaseApp):
                 dtype=torch.bfloat16,
             ).eval().to(self.device)
 
+            self.ori_processor = AutoImageProcessor.from_pretrained(ORIENTATION_MODEL, revision=ORIENTATION_REVISION)
+            self.ori_model = AutoModelForImageClassification.from_pretrained(
+                ORIENTATION_MODEL, revision=ORIENTATION_REVISION
+            ).eval().to(self.device)
+
             tokenizer = self.processor.tokenizer
             td_ids = set()
             for tag in ["<td>", "</td>"]:
@@ -157,9 +180,25 @@ class App(BaseApp):
             logger.error(error_msg)
             raise RuntimeError(error_msg)
 
-    def _ocr_single_image(self, image_path: str, prompt: str, image_kwargs: dict) -> str:
+    def _upright(self, image: Image.Image) -> Image.Image:
+        """Turn a page rotated by 90/180/270 degrees upright."""
+        inputs = self.ori_processor(images=image, return_tensors="pt").to(self.device)
+        with torch.inference_mode():
+            # PPLCNetForImageClassification returns its logits as last_hidden_state
+            probs = self.ori_model(**inputs).last_hidden_state.softmax(-1)[0]
+        idx = int(probs.argmax())
+        angle = int(self.ori_model.config.id2label[idx])
+        confidence = float(probs[idx])
+        if angle == 0 or confidence < ORIENTATION_MIN_CONFIDENCE:
+            return image
+        logger.info(f"Page rotated {angle} degrees clockwise (p={confidence:.2f}); turning it upright")
+        return image.rotate(angle, expand=True)
+
+    def _ocr_single_image(self, image_path: str, prompt: str, image_kwargs: dict, auto_rotate: bool = True) -> str:
         """Run OCR on a single image file."""
         image = Image.open(image_path).convert("RGB")
+        if auto_rotate:
+            image = self._upright(image)
         inputs = self.processor(
             images=image, text=prompt, return_tensors="pt", **image_kwargs
         ).to(self.device, dtype=torch.bfloat16)
@@ -202,14 +241,14 @@ class App(BaseApp):
                     page_results = []
                     for i, img_path in enumerate(page_images):
                         logger.info(f"Processing page {i + 1}/{len(page_images)}")
-                        text = self._ocr_single_image(img_path, prompt, params)
+                        text = self._ocr_single_image(img_path, prompt, params, input_data.auto_rotate)
                         page_results.append(postprocess_ocr(text))
                     result = "\n\n---\n\n".join(page_results)
                 finally:
                     shutil.rmtree(pdf_dir, ignore_errors=True)
             else:
                 result = postprocess_ocr(
-                    self._ocr_single_image(file_path, prompt, params)
+                    self._ocr_single_image(file_path, prompt, params, input_data.auto_rotate)
                 )
 
             logger.info(f"OCR complete, extracted {len(result)} chars")

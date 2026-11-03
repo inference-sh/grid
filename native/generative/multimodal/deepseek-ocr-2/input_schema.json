@@ -31,6 +31,12 @@
       ],
       "title": "Mode",
       "type": "string"
+    },
+    "auto_rotate": {
+      "default": true,
+      "description": "Detect pages rotated by 90, 180 or 270 degrees and turn them upright before OCR.",
+      "title": "Auto Rotate",
+      "type": "boolean"
     }
   },
   "required": [
