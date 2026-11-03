@@ -3,6 +3,6 @@
   "dependencies": {
     "@inferencesh/app": "^0.1.2",
     "zod": "^3.23.0",
-    "puppeteer-core": "^24.0.0"
+    "puppeteer-core": "24.43.1"
   }
 }

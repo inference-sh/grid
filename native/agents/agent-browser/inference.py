@@ -17,6 +17,8 @@ Refs are invalidated after navigation - always re-snapshot after clicks that nav
 """
 
 import asyncio
+import mimetypes
+import os
 import re
 import subprocess
 import sys
@@ -89,6 +91,71 @@ def normalize_url(url: str) -> str:
     return url
 
 
+# --- Uploads ---
+
+# The most an upload reads into memory, per file.
+MAX_UPLOAD_BYTES = 100 * 1024 * 1024
+
+
+def _is_remote(uri: str) -> bool:
+    scheme = (uri or '').split(':', 1)[0].lower().strip()
+    return ':' in (uri or '') and scheme in ('http', 'https', 'data')
+
+
+def local_upload_path(path: str, upload_dir: str) -> str:
+    """A local file the page may be given: a regular file whose real path
+    (symlinks resolved) is inside upload_dir. Anything else in the container
+    (its environment, the app's code, other callers' files) is refused."""
+    if not path or not upload_dir:
+        raise ValueError("upload: no such file")
+    root = os.path.realpath(upload_dir)
+    real = os.path.realpath(path)
+    if os.path.commonpath([root, real]) != root or real == root or not os.path.isfile(real):
+        raise ValueError(f"upload: {path} is not an uploadable file; pass the file as a URL or data URI")
+    return real
+
+
+def _payload(name: str, data: bytes) -> dict:
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise ValueError(f"upload: {name} is larger than {MAX_UPLOAD_BYTES} bytes")
+    mime = mimetypes.guess_type(name)[0] or 'application/octet-stream'
+    return {'name': name, 'mimeType': mime, 'buffer': data}
+
+
+def _fetch_uri(uri: str) -> str:
+    """Download a URL or data URI into a fresh local file (the SDK's own
+    download); never a path the caller named."""
+    return File(uri=uri).path
+
+
+def upload_payloads(file_paths, files, upload_dir: str, fetch=_fetch_uri) -> list[dict]:
+    """What an upload gives the page's file input, as in-memory payloads:
+    each URL or data URI downloaded afresh, and local paths only from
+    upload_dir. A task input File counts by its URI alone: its local path
+    may be one the caller named."""
+    uris, locals_ = [], []
+    for p in file_paths or []:
+        (uris if _is_remote(p) else locals_).append(p)
+    for f in files or []:
+        uri = getattr(f, 'uri', None) or ''
+        if not _is_remote(uri):
+            raise ValueError("upload: a file input must be a URL or data URI")
+        uris.append(uri)
+    out = []
+    for p in locals_:
+        real = local_upload_path(p, upload_dir)
+        with open(real, 'rb') as fh:
+            out.append(_payload(os.path.basename(real), fh.read(MAX_UPLOAD_BYTES + 1)))
+    for uri in uris:
+        local = fetch(uri)
+        name = os.path.basename(uri.split('?', 1)[0]) if not uri.lower().startswith('data:') else os.path.basename(local)
+        with open(local, 'rb') as fh:
+            out.append(_payload(name or 'upload', fh.read(MAX_UPLOAD_BYTES + 1)))
+    if not out:
+        raise ValueError("'file_paths' or 'files' required for upload action")
+    return out
+
+
 def is_local_page(url: str) -> bool:
     """A page the browser should never show: a local file."""
     return (url or '').strip().lower().startswith('file:')
@@ -153,7 +220,8 @@ class InteractInput(BaseAppInput):
     # Drag and drop
     target_ref: Optional[str] = Field(default=None, description="Target element ref for drag action")
     # File upload
-    file_paths: Optional[list[str]] = Field(default=None, description="File path(s) for upload action")
+    file_paths: Optional[list[str]] = Field(default=None, description="File(s) for upload action: http(s) URLs or data URIs. Local paths are refused unless under the app's upload directory")
+    files: Optional[list[File]] = Field(default=None, description="File(s) for upload action, as task input files (URLs or data URIs)")
 
 
 class ScreenshotInput(BaseAppInput):
@@ -233,6 +301,8 @@ class App(BaseApp):
         if result.returncode != 0:
             print(f"[agent-browser] ffmpeg install warning: {result.stderr[:200]}")
 
+        # The only local files an upload may hand a page (local_upload_path).
+        self.upload_dir = tempfile.mkdtemp(prefix='agent-browser-uploads-')
         self.playwright = await async_playwright().start()
         self.browser: Optional[Browser] = await launch_chromium(self.playwright)
         self.context: Optional[BrowserContext] = None
@@ -665,10 +735,8 @@ class App(BaseApp):
 
             elif action == "upload":
                 selector = self._parse_ref(input_data.ref)
-                if input_data.file_paths is None or len(input_data.file_paths) == 0:
-                    raise ValueError("'file_paths' required for upload action")
-                files = input_data.file_paths if len(input_data.file_paths) > 1 else input_data.file_paths[0]
-                await self.page.set_input_files(selector, files)
+                payloads = await asyncio.to_thread(upload_payloads, input_data.file_paths, input_data.files, self.upload_dir)
+                await self.page.set_input_files(selector, payloads if len(payloads) > 1 else payloads[0])
                 await asyncio.sleep(0.3)
 
             elif action == "check":
