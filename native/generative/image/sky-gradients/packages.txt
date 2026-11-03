@@ -1,0 +1,4 @@
+libegl1
+libegl-mesa0
+libgl1-mesa-dri
+ffmpeg

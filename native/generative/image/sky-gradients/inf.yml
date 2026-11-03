@@ -1,0 +1,23 @@
+namespace: infsh
+name: sky-gradients
+title: Sky Gradients
+description: Physically based sunset and twilight sky gradients with aurora, light leaks and film grain. PNG or seamless looping MP4 at any size, every setting exposed or randomized.
+metadata:
+    tags:
+        - gradients
+        - backgrounds
+        - rendering
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: render_image
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 8

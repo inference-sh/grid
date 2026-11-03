@@ -1,0 +1,5 @@
+pydantic >= 2.0.0
+inferencesh >= 0.22.0
+numpy >= 1.26
+moderngl >= 5.10
+pillow >= 10.0

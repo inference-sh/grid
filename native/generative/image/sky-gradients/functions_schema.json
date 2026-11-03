@@ -1,0 +1,1649 @@
+{
+  "render_image": {
+    "description": "Render a still sky gradient as a PNG at any size.",
+    "kind": "run",
+    "capabilities": [],
+    "input_schema": {
+      "properties": {
+        "width": {
+          "default": 1920,
+          "description": "Output width in pixels.",
+          "maximum": 16384,
+          "minimum": 1,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 1080,
+          "description": "Output height in pixels.",
+          "maximum": 16384,
+          "minimum": 1,
+          "title": "Height",
+          "type": "integer"
+        },
+        "randomize": {
+          "default": "new",
+          "description": "new: a fresh random sky. nearby: small changes around the given settings or recipe. off: exactly the given settings. When randomizing, settings left at their default are randomized and changed ones are kept.",
+          "enum": [
+            "new",
+            "nearby",
+            "off"
+          ],
+          "title": "Randomize",
+          "type": "string"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seed for randomize; the same seed and settings give the same sky.",
+          "title": "Random Seed"
+        },
+        "spice": {
+          "default": true,
+          "description": "When randomizing, sometimes add aurora and light leaks.",
+          "title": "Spice",
+          "type": "boolean"
+        },
+        "recipe": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Recipe JSON from the sky gradients page or a previous output. Fields you pass override it.",
+          "title": "Recipe"
+        },
+        "sun_elevation": {
+          "default": -2.2,
+          "description": "Sun elevation in degrees. Kept to the sunset window.",
+          "maximum": 0.5,
+          "minimum": -9.0,
+          "title": "Sun Elevation",
+          "type": "number"
+        },
+        "facing": {
+          "default": 0.0,
+          "description": "View direction in degrees from the sun: 0 faces the sun, 180 faces away.",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Facing",
+          "type": "number"
+        },
+        "framing": {
+          "default": "natural",
+          "description": "natural: round like a lens. stretch: free frame top and bottom.",
+          "enum": [
+            "natural",
+            "stretch"
+          ],
+          "title": "Framing",
+          "type": "string"
+        },
+        "view_width": {
+          "default": 60.0,
+          "description": "Horizontal view in degrees.",
+          "maximum": 360,
+          "minimum": 4,
+          "title": "View Width",
+          "type": "number"
+        },
+        "horizon_height": {
+          "default": 0.3,
+          "description": "Horizon height in the frame, natural framing.",
+          "maximum": 0.8,
+          "minimum": 0,
+          "title": "Horizon Height",
+          "type": "number"
+        },
+        "frame_top": {
+          "default": 50.0,
+          "description": "Top of frame in degrees, stretch framing.",
+          "maximum": 90,
+          "minimum": 2,
+          "title": "Frame Top",
+          "type": "number"
+        },
+        "frame_bottom": {
+          "default": -1.0,
+          "description": "Bottom of frame in degrees, stretch framing.",
+          "maximum": 10,
+          "minimum": -20,
+          "title": "Frame Bottom",
+          "type": "number"
+        },
+        "horizon_emphasis": {
+          "default": 1.8,
+          "description": "Gives the horizon band more room, stretch framing.",
+          "maximum": 4,
+          "minimum": 0.5,
+          "title": "Horizon Emphasis",
+          "type": "number"
+        },
+        "below_horizon": {
+          "default": "mirror",
+          "description": "none: horizon at the bottom edge. mirror: still water. extend: fade the horizon down. ink: night ink.",
+          "enum": [
+            "none",
+            "mirror",
+            "extend",
+            "ink"
+          ],
+          "title": "Below Horizon",
+          "type": "string"
+        },
+        "altitude_km": {
+          "default": 0.05,
+          "description": "Viewer height in km.",
+          "maximum": 15,
+          "minimum": 0,
+          "title": "Altitude Km",
+          "type": "number"
+        },
+        "haze": {
+          "default": 0.3,
+          "description": "Aerosol haze.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Haze",
+          "type": "number"
+        },
+        "haze_particle_size": {
+          "default": 0.8,
+          "description": "Haze phase asymmetry.",
+          "maximum": 0.95,
+          "minimum": 0.5,
+          "title": "Haze Particle Size",
+          "type": "number"
+        },
+        "air_density": {
+          "default": 1.0,
+          "description": "Rayleigh scattering multiplier.",
+          "maximum": 2.5,
+          "minimum": 0.3,
+          "title": "Air Density",
+          "type": "number"
+        },
+        "ozone": {
+          "default": 1.0,
+          "description": "Ozone multiplier.",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Ozone",
+          "type": "number"
+        },
+        "volcanic_aerosol": {
+          "default": 0.0,
+          "description": "Stratospheric aerosol, purple light.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Volcanic Aerosol",
+          "type": "number"
+        },
+        "wildfire_smoke": {
+          "default": 0.0,
+          "description": "Smoke.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Wildfire Smoke",
+          "type": "number"
+        },
+        "multiple_scattering": {
+          "default": 0.35,
+          "description": "Multiple scattering.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Multiple Scattering",
+          "type": "number"
+        },
+        "show_sun": {
+          "default": false,
+          "description": "Draw the sun disc.",
+          "title": "Show Sun",
+          "type": "boolean"
+        },
+        "sun_size": {
+          "default": 1.2,
+          "description": "Sun disc size multiplier.",
+          "maximum": 6,
+          "minimum": 0.3,
+          "title": "Sun Size",
+          "type": "number"
+        },
+        "sun_glow": {
+          "default": 0.6,
+          "description": "Sun glow.",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Sun Glow",
+          "type": "number"
+        },
+        "aurora": {
+          "default": 0.0,
+          "description": "Aurora strength; strongest with the sun well down.",
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Aurora",
+          "type": "number"
+        },
+        "aurora_height": {
+          "default": 6.0,
+          "description": "Aurora elevation in degrees.",
+          "maximum": 40,
+          "minimum": -6,
+          "title": "Aurora Height",
+          "type": "number"
+        },
+        "aurora_palette": {
+          "default": "sunset_blend",
+          "description": "Aurora colours.",
+          "enum": [
+            "sunset_blend",
+            "rose",
+            "peach",
+            "lavender",
+            "orchid",
+            "coral",
+            "plum",
+            "classic_green"
+          ],
+          "title": "Aurora Palette",
+          "type": "string"
+        },
+        "aurora_hue_shift": {
+          "default": 0.0,
+          "description": "Aurora hue shift in degrees.",
+          "maximum": 40,
+          "minimum": -40,
+          "title": "Aurora Hue Shift",
+          "type": "number"
+        },
+        "aurora_color_variation": {
+          "default": 0.7,
+          "description": "Aurora colour variation.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Aurora Color Variation",
+          "type": "number"
+        },
+        "aurora_upper_color": {
+          "default": 0.3,
+          "description": "Aurora upper colour.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Aurora Upper Color",
+          "type": "number"
+        },
+        "aurora_spikes": {
+          "default": 0.2,
+          "description": "Aurora ray spikes; 0 keeps soft curtains.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Aurora Spikes",
+          "type": "number"
+        },
+        "aurora_motion": {
+          "default": true,
+          "description": "Aurora moves in video.",
+          "title": "Aurora Motion",
+          "type": "boolean"
+        },
+        "light_leak": {
+          "default": 0.0,
+          "description": "Film light leak.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Light Leak",
+          "type": "number"
+        },
+        "leak_angle": {
+          "default": 200.0,
+          "description": "Leak direction in degrees.",
+          "maximum": 360,
+          "minimum": 0,
+          "title": "Leak Angle",
+          "type": "number"
+        },
+        "leak_motion": {
+          "default": true,
+          "description": "Leak moves in video.",
+          "title": "Leak Motion",
+          "type": "boolean"
+        },
+        "shape_seed": {
+          "default": 7,
+          "description": "Aurora, leak and grain shape seed.",
+          "maximum": 999,
+          "minimum": 0,
+          "title": "Shape Seed",
+          "type": "integer"
+        },
+        "time_offset": {
+          "default": 0,
+          "description": "Start time in seconds for aurora and leak shapes.",
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Time Offset",
+          "type": "number"
+        },
+        "auto_exposure": {
+          "default": true,
+          "description": "Auto exposure.",
+          "title": "Auto Exposure",
+          "type": "boolean"
+        },
+        "exposure_ev": {
+          "default": 0.0,
+          "description": "Exposure in EV.",
+          "maximum": 4,
+          "minimum": -4,
+          "title": "Exposure Ev",
+          "type": "number"
+        },
+        "contrast": {
+          "default": 1.02,
+          "description": "Contrast.",
+          "maximum": 1.6,
+          "minimum": 0.6,
+          "title": "Contrast",
+          "type": "number"
+        },
+        "saturation": {
+          "default": 1.06,
+          "description": "Saturation.",
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Saturation",
+          "type": "number"
+        },
+        "warmth": {
+          "default": 0.12,
+          "description": "Warmth.",
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Warmth",
+          "type": "number"
+        },
+        "lift": {
+          "default": 0.35,
+          "description": "Lift blacks to ink.",
+          "maximum": 1,
+          "minimum": 0.1,
+          "title": "Lift",
+          "type": "number"
+        },
+        "grain": {
+          "default": 0.0,
+          "description": "Film grain.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Grain",
+          "type": "number"
+        },
+        "grain_size": {
+          "default": 0.5,
+          "description": "Grain size.",
+          "maximum": 4,
+          "minimum": 0.5,
+          "title": "Grain Size",
+          "type": "number"
+        },
+        "vignette": {
+          "default": 0.0,
+          "description": "Vignette.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Vignette",
+          "type": "number"
+        }
+      },
+      "title": "ImageInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "image": {
+          "description": "PNG image.",
+          "format": "file",
+          "title": "Image",
+          "type": "string"
+        },
+        "css_gradient": {
+          "description": "CSS linear-gradient approximating the sky top to bottom.",
+          "title": "Css Gradient",
+          "type": "string"
+        },
+        "palette": {
+          "description": "Seven hex colours from top to bottom.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Palette",
+          "type": "array"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
+        "recipe": {
+          "additionalProperties": true,
+          "description": "Every setting used, in the sky gradients page's Recipe format. Pass it back as recipe to reproduce or vary this sky.",
+          "title": "Recipe",
+          "type": "object"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seed used when randomizing.",
+          "title": "Random Seed"
+        },
+        "description": {
+          "description": "Sky phase and view, e.g. 'civil twilight, facing the sun'.",
+          "title": "Description",
+          "type": "string"
+        },
+        "renderer": {
+          "default": "",
+          "description": "GL renderer that drew the frames.",
+          "title": "Renderer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "css_gradient",
+        "palette",
+        "recipe",
+        "description"
+      ],
+      "title": "ImageOutput",
+      "type": "object"
+    }
+  },
+  "render_video": {
+    "description": "Render an animated sky gradient as an MP4: the sun cycles or sweeps while aurora, leaks and grain move.",
+    "kind": "run",
+    "capabilities": [],
+    "input_schema": {
+      "properties": {
+        "duration": {
+          "default": 8,
+          "description": "Video length in seconds.",
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Duration",
+          "type": "number"
+        },
+        "fps": {
+          "default": 30,
+          "description": "Frames per second.",
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Fps",
+          "type": "integer"
+        },
+        "sun_motion": {
+          "default": "cycle",
+          "description": "cycle: sun eases down into twilight and back up, looping. sweep: sun moves once from sun_elevation to sun_end. still: sun fixed; only aurora, leak and grain move.",
+          "enum": [
+            "cycle",
+            "sweep",
+            "still"
+          ],
+          "title": "Sun Motion",
+          "type": "string"
+        },
+        "sun_cycles": {
+          "default": 1,
+          "description": "Full sun loops per video (cycle).",
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Sun Cycles",
+          "type": "integer"
+        },
+        "sun_end": {
+          "anyOf": [
+            {
+              "maximum": 0.5,
+              "minimum": -9.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Final sun elevation for sweep (default: the far end of the window).",
+          "title": "Sun End"
+        },
+        "seamless_loop": {
+          "default": true,
+          "description": "Fade the end of aurora and leak motion into the start so the video loops without a jump (cycle and still).",
+          "title": "Seamless Loop",
+          "type": "boolean"
+        },
+        "animate_grain": {
+          "default": false,
+          "description": "New grain every frame, like film. Noise does not compress: files get about 10x larger; raise crf to compensate.",
+          "title": "Animate Grain",
+          "type": "boolean"
+        },
+        "crf": {
+          "default": 18,
+          "description": "H.264 quality; lower is better and larger.",
+          "maximum": 40,
+          "minimum": 0,
+          "title": "Crf",
+          "type": "integer"
+        },
+        "width": {
+          "default": 1920,
+          "description": "Output width in pixels. Odd sizes are rounded up to even for H.264.",
+          "maximum": 8192,
+          "minimum": 2,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 1080,
+          "description": "Output height in pixels. Odd sizes are rounded up to even for H.264.",
+          "maximum": 8192,
+          "minimum": 2,
+          "title": "Height",
+          "type": "integer"
+        },
+        "randomize": {
+          "default": "new",
+          "description": "new: a fresh random sky. nearby: small changes around the given settings or recipe. off: exactly the given settings. When randomizing, settings left at their default are randomized and changed ones are kept.",
+          "enum": [
+            "new",
+            "nearby",
+            "off"
+          ],
+          "title": "Randomize",
+          "type": "string"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seed for randomize; the same seed and settings give the same sky.",
+          "title": "Random Seed"
+        },
+        "spice": {
+          "default": true,
+          "description": "When randomizing, sometimes add aurora and light leaks.",
+          "title": "Spice",
+          "type": "boolean"
+        },
+        "recipe": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Recipe JSON from the sky gradients page or a previous output. Fields you pass override it.",
+          "title": "Recipe"
+        },
+        "sun_elevation": {
+          "default": -2.2,
+          "description": "Sun elevation in degrees. Kept to the sunset window.",
+          "maximum": 0.5,
+          "minimum": -9.0,
+          "title": "Sun Elevation",
+          "type": "number"
+        },
+        "facing": {
+          "default": 0.0,
+          "description": "View direction in degrees from the sun: 0 faces the sun, 180 faces away.",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Facing",
+          "type": "number"
+        },
+        "framing": {
+          "default": "natural",
+          "description": "natural: round like a lens. stretch: free frame top and bottom.",
+          "enum": [
+            "natural",
+            "stretch"
+          ],
+          "title": "Framing",
+          "type": "string"
+        },
+        "view_width": {
+          "default": 60.0,
+          "description": "Horizontal view in degrees.",
+          "maximum": 360,
+          "minimum": 4,
+          "title": "View Width",
+          "type": "number"
+        },
+        "horizon_height": {
+          "default": 0.3,
+          "description": "Horizon height in the frame, natural framing.",
+          "maximum": 0.8,
+          "minimum": 0,
+          "title": "Horizon Height",
+          "type": "number"
+        },
+        "frame_top": {
+          "default": 50.0,
+          "description": "Top of frame in degrees, stretch framing.",
+          "maximum": 90,
+          "minimum": 2,
+          "title": "Frame Top",
+          "type": "number"
+        },
+        "frame_bottom": {
+          "default": -1.0,
+          "description": "Bottom of frame in degrees, stretch framing.",
+          "maximum": 10,
+          "minimum": -20,
+          "title": "Frame Bottom",
+          "type": "number"
+        },
+        "horizon_emphasis": {
+          "default": 1.8,
+          "description": "Gives the horizon band more room, stretch framing.",
+          "maximum": 4,
+          "minimum": 0.5,
+          "title": "Horizon Emphasis",
+          "type": "number"
+        },
+        "below_horizon": {
+          "default": "mirror",
+          "description": "none: horizon at the bottom edge. mirror: still water. extend: fade the horizon down. ink: night ink.",
+          "enum": [
+            "none",
+            "mirror",
+            "extend",
+            "ink"
+          ],
+          "title": "Below Horizon",
+          "type": "string"
+        },
+        "altitude_km": {
+          "default": 0.05,
+          "description": "Viewer height in km.",
+          "maximum": 15,
+          "minimum": 0,
+          "title": "Altitude Km",
+          "type": "number"
+        },
+        "haze": {
+          "default": 0.3,
+          "description": "Aerosol haze.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Haze",
+          "type": "number"
+        },
+        "haze_particle_size": {
+          "default": 0.8,
+          "description": "Haze phase asymmetry.",
+          "maximum": 0.95,
+          "minimum": 0.5,
+          "title": "Haze Particle Size",
+          "type": "number"
+        },
+        "air_density": {
+          "default": 1.0,
+          "description": "Rayleigh scattering multiplier.",
+          "maximum": 2.5,
+          "minimum": 0.3,
+          "title": "Air Density",
+          "type": "number"
+        },
+        "ozone": {
+          "default": 1.0,
+          "description": "Ozone multiplier.",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Ozone",
+          "type": "number"
+        },
+        "volcanic_aerosol": {
+          "default": 0.0,
+          "description": "Stratospheric aerosol, purple light.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Volcanic Aerosol",
+          "type": "number"
+        },
+        "wildfire_smoke": {
+          "default": 0.0,
+          "description": "Smoke.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Wildfire Smoke",
+          "type": "number"
+        },
+        "multiple_scattering": {
+          "default": 0.35,
+          "description": "Multiple scattering.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Multiple Scattering",
+          "type": "number"
+        },
+        "show_sun": {
+          "default": false,
+          "description": "Draw the sun disc.",
+          "title": "Show Sun",
+          "type": "boolean"
+        },
+        "sun_size": {
+          "default": 1.2,
+          "description": "Sun disc size multiplier.",
+          "maximum": 6,
+          "minimum": 0.3,
+          "title": "Sun Size",
+          "type": "number"
+        },
+        "sun_glow": {
+          "default": 0.6,
+          "description": "Sun glow.",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Sun Glow",
+          "type": "number"
+        },
+        "aurora": {
+          "default": 0.0,
+          "description": "Aurora strength; strongest with the sun well down.",
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Aurora",
+          "type": "number"
+        },
+        "aurora_height": {
+          "default": 6.0,
+          "description": "Aurora elevation in degrees.",
+          "maximum": 40,
+          "minimum": -6,
+          "title": "Aurora Height",
+          "type": "number"
+        },
+        "aurora_palette": {
+          "default": "sunset_blend",
+          "description": "Aurora colours.",
+          "enum": [
+            "sunset_blend",
+            "rose",
+            "peach",
+            "lavender",
+            "orchid",
+            "coral",
+            "plum",
+            "classic_green"
+          ],
+          "title": "Aurora Palette",
+          "type": "string"
+        },
+        "aurora_hue_shift": {
+          "default": 0.0,
+          "description": "Aurora hue shift in degrees.",
+          "maximum": 40,
+          "minimum": -40,
+          "title": "Aurora Hue Shift",
+          "type": "number"
+        },
+        "aurora_color_variation": {
+          "default": 0.7,
+          "description": "Aurora colour variation.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Aurora Color Variation",
+          "type": "number"
+        },
+        "aurora_upper_color": {
+          "default": 0.3,
+          "description": "Aurora upper colour.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Aurora Upper Color",
+          "type": "number"
+        },
+        "aurora_spikes": {
+          "default": 0.2,
+          "description": "Aurora ray spikes; 0 keeps soft curtains.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Aurora Spikes",
+          "type": "number"
+        },
+        "aurora_motion": {
+          "default": true,
+          "description": "Aurora moves in video.",
+          "title": "Aurora Motion",
+          "type": "boolean"
+        },
+        "light_leak": {
+          "default": 0.0,
+          "description": "Film light leak.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Light Leak",
+          "type": "number"
+        },
+        "leak_angle": {
+          "default": 200.0,
+          "description": "Leak direction in degrees.",
+          "maximum": 360,
+          "minimum": 0,
+          "title": "Leak Angle",
+          "type": "number"
+        },
+        "leak_motion": {
+          "default": true,
+          "description": "Leak moves in video.",
+          "title": "Leak Motion",
+          "type": "boolean"
+        },
+        "shape_seed": {
+          "default": 7,
+          "description": "Aurora, leak and grain shape seed.",
+          "maximum": 999,
+          "minimum": 0,
+          "title": "Shape Seed",
+          "type": "integer"
+        },
+        "time_offset": {
+          "default": 0,
+          "description": "Start time in seconds for aurora and leak shapes.",
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Time Offset",
+          "type": "number"
+        },
+        "auto_exposure": {
+          "default": true,
+          "description": "Auto exposure.",
+          "title": "Auto Exposure",
+          "type": "boolean"
+        },
+        "exposure_ev": {
+          "default": 0.0,
+          "description": "Exposure in EV.",
+          "maximum": 4,
+          "minimum": -4,
+          "title": "Exposure Ev",
+          "type": "number"
+        },
+        "contrast": {
+          "default": 1.02,
+          "description": "Contrast.",
+          "maximum": 1.6,
+          "minimum": 0.6,
+          "title": "Contrast",
+          "type": "number"
+        },
+        "saturation": {
+          "default": 1.06,
+          "description": "Saturation.",
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Saturation",
+          "type": "number"
+        },
+        "warmth": {
+          "default": 0.12,
+          "description": "Warmth.",
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Warmth",
+          "type": "number"
+        },
+        "lift": {
+          "default": 0.35,
+          "description": "Lift blacks to ink.",
+          "maximum": 1,
+          "minimum": 0.1,
+          "title": "Lift",
+          "type": "number"
+        },
+        "grain": {
+          "default": 0.0,
+          "description": "Film grain.",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Grain",
+          "type": "number"
+        },
+        "grain_size": {
+          "default": 0.5,
+          "description": "Grain size.",
+          "maximum": 4,
+          "minimum": 0.5,
+          "title": "Grain Size",
+          "type": "number"
+        },
+        "vignette": {
+          "default": 0.0,
+          "description": "Vignette.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Vignette",
+          "type": "number"
+        }
+      },
+      "title": "VideoInput",
+      "type": "object"
+    },
+    "output_schema": {
+      "$defs": {
+        "AudioMeta": {
+          "description": "Metadata for audio inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "audio",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 0,
+              "description": "Sample rate in Hz",
+              "title": "Sample Rate",
+              "type": "integer"
+            }
+          },
+          "title": "AudioMeta",
+          "type": "object"
+        },
+        "ImageMeta": {
+          "description": "Metadata for image inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "image",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Image width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Image height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels (width * height / 1_000_000)",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "steps": {
+              "default": 0,
+              "description": "Number of diffusion steps",
+              "title": "Steps",
+              "type": "integer"
+            },
+            "count": {
+              "default": 1,
+              "description": "Number of images",
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "ImageMeta",
+          "type": "object"
+        },
+        "OutputMeta": {
+          "description": "Structured metadata about task inputs and outputs for pricing calculation.\n\nApps include this in their output to report what was consumed (inputs)\nand what was produced (outputs). The backend uses this with CEL expressions\nto calculate app-level pricing.\n\nExample usage in an LLM app (or OutputMeta.from_llm_usage(usage)):\n    output_meta = OutputMeta(\n        inputs=[TextMeta(tokens=150, cached_tokens=100)],\n        outputs=[TextMeta(tokens=500)]\n    )\n\nExample usage in a video generation app:\n    output_meta = OutputMeta(\n        outputs=[VideoMeta(\n            resolution=\"1080p\",\n            resolution_mp=2.07,\n            seconds=10.5,\n            fps=30\n        )]\n    )",
+          "properties": {
+            "inputs": {
+              "description": "Metadata about consumed inputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Inputs",
+              "type": "array"
+            },
+            "outputs": {
+              "description": "Metadata about produced outputs",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TextMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/ImageMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/VideoMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/AudioMeta"
+                  },
+                  {
+                    "$ref": "#/$defs/RawMeta"
+                  }
+                ]
+              },
+              "title": "Outputs",
+              "type": "array"
+            }
+          },
+          "title": "OutputMeta",
+          "type": "object"
+        },
+        "RawMeta": {
+          "description": "Metadata for raw inputs/outputs used for custom pricing.",
+          "properties": {
+            "type": {
+              "default": "raw",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "cost": {
+              "default": 0,
+              "description": "Cost in dollar cents",
+              "title": "Cost",
+              "type": "number"
+            }
+          },
+          "title": "RawMeta",
+          "type": "object"
+        },
+        "TextMeta": {
+          "description": "Metadata for text inputs/outputs (e.g., LLM tokens).",
+          "properties": {
+            "type": {
+              "default": "text",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "tokens": {
+              "default": 0,
+              "description": "Token count - in inputs[] = input tokens (cached ones included), in outputs[] = output tokens",
+              "title": "Tokens",
+              "type": "integer"
+            },
+            "cached_tokens": {
+              "default": 0,
+              "description": "Input tokens read from the provider's prompt cache, part of tokens",
+              "title": "Cached Tokens",
+              "type": "integer"
+            },
+            "cache_write_tokens": {
+              "default": 0,
+              "description": "Input tokens written to the provider's prompt cache, part of tokens",
+              "title": "Cache Write Tokens",
+              "type": "integer"
+            }
+          },
+          "title": "TextMeta",
+          "type": "object"
+        },
+        "VideoMeta": {
+          "description": "Metadata for video inputs/outputs.",
+          "properties": {
+            "type": {
+              "default": "video",
+              "title": "Type",
+              "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "App-specific key-value pairs for custom pricing factors",
+              "title": "Extra"
+            },
+            "width": {
+              "default": 0,
+              "description": "Video width in pixels",
+              "title": "Width",
+              "type": "integer"
+            },
+            "height": {
+              "default": 0,
+              "description": "Video height in pixels",
+              "title": "Height",
+              "type": "integer"
+            },
+            "resolution_mp": {
+              "default": 0,
+              "description": "Resolution in megapixels per frame",
+              "title": "Resolution Mp",
+              "type": "number"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Standard resolution preset (480p, 720p, 1080p, 1440p, 4k)",
+              "title": "Resolution"
+            },
+            "seconds": {
+              "default": 0,
+              "description": "Duration in seconds",
+              "title": "Seconds",
+              "type": "number"
+            },
+            "fps": {
+              "default": 0,
+              "description": "Frames per second",
+              "title": "Fps",
+              "type": "integer"
+            }
+          },
+          "title": "VideoMeta",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "video": {
+          "description": "H.264 MP4 video.",
+          "format": "file",
+          "title": "Video",
+          "type": "string"
+        },
+        "width": {
+          "description": "Video width in pixels.",
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "description": "Video height in pixels.",
+          "title": "Height",
+          "type": "integer"
+        },
+        "frames": {
+          "description": "Number of frames.",
+          "title": "Frames",
+          "type": "integer"
+        },
+        "timings": {
+          "additionalProperties": true,
+          "description": "Seconds spent per stage.",
+          "title": "Timings",
+          "type": "object"
+        },
+        "output_meta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputMeta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured metadata about inputs/outputs for pricing calculation"
+        },
+        "recipe": {
+          "additionalProperties": true,
+          "description": "Every setting used, in the sky gradients page's Recipe format. Pass it back as recipe to reproduce or vary this sky.",
+          "title": "Recipe",
+          "type": "object"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seed used when randomizing.",
+          "title": "Random Seed"
+        },
+        "description": {
+          "description": "Sky phase and view, e.g. 'civil twilight, facing the sun'.",
+          "title": "Description",
+          "type": "string"
+        },
+        "renderer": {
+          "default": "",
+          "description": "GL renderer that drew the frames.",
+          "title": "Renderer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "video",
+        "width",
+        "height",
+        "frames",
+        "recipe",
+        "description"
+      ],
+      "title": "VideoOutput",
+      "type": "object"
+    }
+  }
+}
