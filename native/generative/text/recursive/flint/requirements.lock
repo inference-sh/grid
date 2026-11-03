@@ -42,7 +42,7 @@ flit-core==4.1.0
 frozenlist==1.8.0
 fsspec==2026.7.0
 gguf==0.19.0
-grpcio==1.85.0rc1
+grpcio==1.85.1
 grpcio-health-checking==1.82.0rc2
 grpcio-reflection==1.82.0rc2
 h11==0.16.0
