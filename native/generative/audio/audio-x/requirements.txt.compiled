@@ -17,8 +17,12 @@ aiosignal==1.4.0
     # via aiohttp
 alias-free-torch==0.0.6
     # via -r requirements.txt
+annotated-doc==0.0.5
+    # via typer
 annotated-types==0.8.0
     # via pydantic
+anyio==4.16.0
+    # via httpx2
 argbind==0.3.9
     # via
     #   descript-audio-codec
@@ -55,7 +59,9 @@ charset-normalizer==3.4.9
 clean-fid==0.1.35
     # via k-diffusion
 click==8.4.2
-    # via wandb
+    # via
+    #   huggingface-hub
+    #   wandb
 clip-anytorch==2.6.0
     # via k-diffusion
 colorcet==3.2.1
@@ -111,7 +117,6 @@ filelock==3.32.0
     # via
     #   huggingface-hub
     #   torch
-    #   transformers
 fire==0.7.1
     # via randomname
 flatten-dict==0.5.0
@@ -143,11 +148,17 @@ gitpython==3.1.62
     # via wandb
 grpcio==1.83.0
     # via tensorboard
-hf-xet==1.6.0.dev0
+h11==0.16.0
+    # via httpcore2
+hf-xet==1.8.0
     # via huggingface-hub
 holoviews==1.18.0a6
     # via aeiou
-huggingface-hub==0.36.2
+httpcore2==2.16.0
+    # via httpx2
+httpx2==2.16.0
+    # via huggingface-hub
+huggingface-hub==2.4.0
     # via
     #   -r requirements.txt
     #   accelerate
@@ -155,6 +166,8 @@ huggingface-hub==0.36.2
     #   transformers
 idna==3.18
     # via
+    #   anyio
+    #   httpx2
     #   requests
     #   yarl
 imageio==2.37.4
@@ -163,7 +176,7 @@ importlib-resources==5.12.0
     # via
     #   -r requirements.txt
     #   descript-audiotools
-inferencesh==0.7.12
+inferencesh==0.38.7
     # via -r requirements.txt
 ipython==9.15.0
     # via
@@ -492,15 +505,15 @@ regex==2026.7.19
 requests==2.34.2
     # via
     #   clean-fid
-    #   huggingface-hub
     #   inferencesh
     #   panel
     #   pooch
-    #   transformers
     #   v-diffusion-pytorch
     #   wandb
 rich==15.0.0
-    # via descript-audiotools
+    # via
+    #   descript-audiotools
+    #   typer
 rpds-py==2026.6.3
     # via
     #   jsonschema
@@ -545,6 +558,8 @@ setuptools==80.9.0
     #   panel
     #   tensorboard
     #   triton
+shellingham==1.5.4
+    # via typer
 six==1.17.0
     # via python-dateutil
 smmap==5.0.3
@@ -571,7 +586,7 @@ threadpoolctl==3.6.0
     # via scikit-learn
 tifffile==2026.3.3
     # via scikit-image
-tokenizers==0.21.4
+tokenizers==0.23.3
     # via
     #   -r requirements.txt
     #   transformers
@@ -652,15 +667,23 @@ traitlets==5.15.1
     #   matplotlib-inline
 trampoline==0.1.2
     # via torchsde
-transformers==4.55.4
+transformers==5.22.1
     # via -r requirements.txt
 triton==3.4.0
     # via torch
+truststore==0.10.5
+    # via
+    #   httpcore2
+    #   httpx2
+typer==0.27.3
+    # via transformers
 typing-extensions==4.16.0
     # via
     #   aiohttp
     #   aiosignal
+    #   anyio
     #   grpcio
+    #   httpx2
     #   huggingface-hub
     #   ipython
     #   librosa
