@@ -78,6 +78,19 @@
           "default": null,
           "description": "Extracted binary message bits if detected",
           "title": "Message Bits"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The text message embedded with the 'message' input, when one is recovered",
+          "title": "Message"
         }
       },
       "required": [

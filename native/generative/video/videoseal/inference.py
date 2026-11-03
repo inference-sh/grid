@@ -46,6 +46,7 @@ class DetectionResult(BaseAppOutput):
     detected: bool = Field(description="Whether a watermark was detected")
     confidence: float = Field(description="Detection confidence score (0-1)")
     message_bits: Optional[List[int]] = Field(None, description="Extracted binary message bits if detected")
+    message: Optional[str] = Field(None, description="The text message embedded with the 'message' input, when one is recovered")
 
 
 class AppInput(BaseAppInput):
@@ -65,7 +66,7 @@ class AppInput(BaseAppInput):
     )
     message: Optional[str] = Field(
         None,
-        description="Optional custom message to embed (will be converted to binary). If not provided, a random message is used."
+        description="Optional text message to embed (UTF-8, at most 31 bytes for the 256-bit models). Detect mode returns it in detection.message. If not provided, a random message is used."
     )
 
 
@@ -104,6 +105,9 @@ class App(BaseApp):
         
         logger.info(f"Loading model: {self.model_name} from {card_path}")
         self.model = videoseal.load(card_path)
+        # load() returns the model in training mode; BatchNorm/dropout there weaken the
+        # embedded signal so that ~20% of the message bits come back flipped.
+        self.model.eval()
         if self.device == "cuda":
             self.model = self.model.to(self.device)
         
@@ -127,11 +131,18 @@ class App(BaseApp):
 
     def _load_video(self, file_path: str) -> tuple:
         """Load a video file as a tensor. Returns (tensor, fps, audio, width, height, duration)."""
-        import torchvision.io
-        
-        # Read video
-        video, audio, info = torchvision.io.read_video(file_path, pts_unit='sec')
-        fps = info.get('video_fps', 30)
+        # PyAV directly: torchvision 0.29 removed torchvision.io.read_video/write_video.
+        import av
+        import numpy as np
+
+        with av.open(file_path) as container:
+            stream = container.streams.video[0]
+            fps = float(stream.average_rate) if stream.average_rate else 30.0
+            frames = [frame.to_ndarray(format="rgb24") for frame in container.decode(stream)]
+        if not frames:
+            raise ValueError("video has no decodable frames")
+        video = torch.from_numpy(np.stack(frames))  # [T, H, W, C] uint8
+        audio = None  # _save_video never wrote audio back
         
         # Get dimensions before permuting
         num_frames = video.shape[0]
@@ -160,32 +171,70 @@ class App(BaseApp):
 
     def _save_video(self, tensor: torch.Tensor, output_path: str, fps: float, audio=None):
         """Save a tensor as a video file."""
-        import torchvision.io
-        
+        import av
+        from fractions import Fraction
+
         # Convert to uint8 format [T, H, W, C]
         tensor = tensor.cpu()
         video = (tensor.clamp(0, 1) * 255).byte()
-        video = video.permute(0, 2, 3, 1)  # [T, C, H, W] -> [T, H, W, C]
-        
-        # Write video
-        torchvision.io.write_video(output_path, video, fps=fps)
+        video = video.permute(0, 2, 3, 1).numpy()  # [T, C, H, W] -> [T, H, W, C]
 
-    def _string_to_bits(self, message: str, num_bits: int) -> torch.Tensor:
-        """Convert a string message to binary tensor."""
-        # Convert string to bytes then to bits
-        message_bytes = message.encode('utf-8')
-        bits = []
-        for byte in message_bytes:
-            for i in range(8):
-                bits.append((byte >> (7 - i)) & 1)
-        
-        # Pad or truncate to num_bits
-        if len(bits) < num_bits:
-            bits.extend([0] * (num_bits - len(bits)))
-        else:
-            bits = bits[:num_bits]
-        
-        return torch.tensor(bits, dtype=torch.float32)
+        # libx264 / yuv420p as before; CRF 18 rather than the default 23 keeps more of the
+        # watermark through the encode (bit accuracy 0.977 -> 0.996 on a test clip)
+        with av.open(output_path, mode="w") as container:
+            stream = container.add_stream("libx264", rate=Fraction(fps).limit_denominator(1001), options={"crf": "18"})
+            stream.width = video.shape[2]
+            stream.height = video.shape[1]
+            stream.pix_fmt = "yuv420p"
+            for frame in video:
+                for packet in stream.encode(av.VideoFrame.from_ndarray(frame, format="rgb24")):
+                    container.mux(packet)
+            for packet in stream.encode():
+                container.mux(packet)
+
+    def _message_tensor(self, message: Optional[str]) -> Optional[torch.Tensor]:
+        """The message as a 1 x nbits tensor for model.embed, or None for a random one.
+
+        Layout: [length byte][UTF-8 bytes], repeated cyclically to fill all nbits, so
+        detect can vote across the copies and survive a few flipped bits.
+        """
+        if not message:
+            return None
+        num_bits = self.model.get_random_msg().shape[-1]
+        data = message.encode('utf-8')
+        max_bytes = min(255, num_bits // 8 - 1)
+        if len(data) > max_bytes:
+            raise ValueError(f"message is {len(data)} bytes; {self.model_name} holds at most {max_bytes}")
+        payload = bytes([len(data)]) + data
+        frame = [(byte >> (7 - i)) & 1 for byte in payload for i in range(8)]
+        bits = [frame[i % len(frame)] for i in range(num_bits)]
+        # binary messages index the embedding table, so they must be integers
+        return torch.tensor(bits, dtype=torch.long).unsqueeze(0).to(self.device)
+
+    @staticmethod
+    def _decode_message(soft_bits: List[float]) -> Optional[str]:
+        """Recover a message written by _message_tensor from per-bit logits (> 0 means 1).
+
+        Tries every payload length, sums the logits of each bit across its copies, and
+        keeps the length whose voted length byte matches and whose copies agree best.
+        Returns None when nothing decodes as a consistent UTF-8 message.
+        """
+        n = len(soft_bits)
+        best, best_score = None, 0.0
+        for length in range(1, min(256, n // 8)):
+            period = 8 * (length + 1)
+            voted = [1 if sum(soft_bits[j::period]) > 0 else 0 for j in range(period)]
+            payload = bytes(int("".join(map(str, voted[i:i + 8])), 2) for i in range(0, period, 8))
+            if payload[0] != length:
+                continue
+            agree = sum((soft_bits[i] > 0) == bool(voted[i % period]) for i in range(n)) / n
+            if agree > best_score:
+                try:
+                    best, best_score = payload[1:].decode('utf-8'), agree
+                except UnicodeDecodeError:
+                    continue
+        # bits that carry no such message agree with a voted frame far less often
+        return best if best_score >= 0.9 else None
 
     def _get_resolution_label(self, height: int) -> str:
         """Get resolution label from height."""
@@ -230,7 +279,7 @@ class App(BaseApp):
             
             # Embed watermark
             with torch.no_grad():
-                outputs = self.model.embed(video_tensor, is_video=True)
+                outputs = self.model.embed(video_tensor, msgs=self._message_tensor(input_data.message), is_video=True)
             
             watermarked = outputs["imgs_w"]
             
@@ -263,7 +312,7 @@ class App(BaseApp):
             
             # Embed watermark
             with torch.no_grad():
-                outputs = self.model.embed(img_tensor)
+                outputs = self.model.embed(img_tensor, msgs=self._message_tensor(input_data.message))
             
             watermarked = outputs["imgs_w"]
             
@@ -333,6 +382,7 @@ class App(BaseApp):
             # preds[:, 1:] are the message bit predictions
             bit_preds = preds[:, 1:] if preds.shape[1] > 1 else preds
             confidence = bit_preds.abs().mean().item()
+            soft_bits = bit_preds.mean(dim=tuple(d for d in range(bit_preds.dim()) if d != 1)).cpu().tolist()
             
             # Build output meta for video
             output_meta = OutputMeta(
@@ -368,6 +418,7 @@ class App(BaseApp):
                 bit_preds = preds[0, 1:]  # [nbits]
             
             message_bits = (bit_preds > 0).int().cpu().tolist()
+            soft_bits = bit_preds.cpu().tolist()
             
             # Confidence: average absolute magnitude of predictions
             confidence = bit_preds.abs().mean().item()
@@ -395,7 +446,8 @@ class App(BaseApp):
         detection_result = DetectionResult(
             detected=is_detected,
             confidence=confidence,
-            message_bits=message_bits
+            message_bits=message_bits,
+            message=self._decode_message(soft_bits),
         )
         
         return AppOutput(

@@ -38,7 +38,7 @@
         }
       ],
       "default": null,
-      "description": "Optional custom message to embed (will be converted to binary). If not provided, a random message is used.",
+      "description": "Optional text message to embed (UTF-8, at most 31 bytes for the 256-bit models). Detect mode returns it in detection.message. If not provided, a random message is used.",
       "title": "Message"
     }
   },
