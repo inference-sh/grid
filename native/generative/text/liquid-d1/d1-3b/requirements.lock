@@ -10,7 +10,7 @@ cuda-bindings==12.9.9
 cuda-pathfinder==1.8.3
 cuda-toolkit==12.9.1
 cython==3.3.0
-filelock==4.0.12
+filelock==4.2.7
 flit-core==4.1.0
 fsspec==2026.9.0
 h11==0.16.0
@@ -74,7 +74,7 @@ requests==2.34.2
 rich==15.0.0
 safetensors==0.9.0rc1
 scikit-build-core==1.1.1
-setuptools==84.0.0
+setuptools==84.2.1
 setuptools-scm==10.3.4
 shellingham==1.5.4
 sympy==1.14.0
