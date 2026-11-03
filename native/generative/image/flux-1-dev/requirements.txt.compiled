@@ -66,7 +66,7 @@ idna==3.18
     #   requests
 importlib-metadata==9.0.0
     # via diffusers
-inferencesh==0.2.7
+inferencesh==0.38.7
     # via -r requirements.txt
 jinja2==3.1.6
     # via torch
@@ -171,6 +171,7 @@ requests==2.34.2
     # via
     #   diffusers
     #   gguf
+    #   inferencesh
 rich==15.0.0
     # via typer
 safetensors==0.8.0
