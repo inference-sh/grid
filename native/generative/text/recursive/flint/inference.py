@@ -2,10 +2,14 @@
 Recursive Flint: a 40B-A2.5B mixture-of-experts coding-agent model, run on our own GPUs.
 
 Serving follows the model card. The repository's SGLang kit (sglang/) is the only supported
-runtime: SGLang 0.5.16 plus the `flint_sglang` model package, FlashInfer 0.6.16.post1, CUTLASS
-DSL 4.6.2 and, on Blackwell, a patch to SGLang's FA4 attention kernel. The author ships it as a
-Docker image; here requirements.txt installs SGLang 0.5.16 and its CUDA 13 stack from PyPI, and
-setup() runs the kit's own install.sh against this venv once per app version. install.sh
+runtime: SGLang plus the `flint_sglang` model package, FlashInfer 0.6.16.post1, CUTLASS DSL 4.6.2
+and, on Blackwell, a patch to SGLang's FA4 attention kernel. The author ships it as a Docker image
+on SGLang 0.5.16; here requirements.txt installs SGLang 0.5.20 (0.5.16's torch 2.11.0 is flagged)
+and its CUDA 13 stack from PyPI, and setup() runs flint_kit/install.sh against this venv once per
+app version. That is the kit's install.sh with only the FA4 kernel path and hashes moved to
+SGLang 0.5.20's layout; it reads the patch and the wheel from the downloaded kit. On Blackwell it
+runs flint_kit/serve_b300.sh, the kit's script with --disable-piecewise-cuda-graph (removed in
+0.5.20) spelled as the flag it aliased, --cuda-graph-backend-prefill disabled. It
 force-reinstalls the pinned FlashInfer / CUTLASS wheels with --no-deps, which a lock file cannot
 express, applies the FA4 patch and installs the wheel shipped in the repository.
 
@@ -68,7 +72,7 @@ MIN_VRAM_GB = 140
 # Driver 580 is the first with CUDA 13. Below it the kit needs forward-compatibility libraries.
 MIN_DRIVER_MAJOR = 580
 SERVER_LOG_TAIL = 60
-KIT_MARKER = "flint-kit-installed"
+KIT_MARKER = "flint-kit-installed-sglang0.5.20"
 
 # GPU name substring -> serve script in sglang/. Blackwell uses FA4 + trtllm MoE, Hopper FA3 + Triton.
 SERVE_SCRIPTS = [
@@ -327,7 +331,10 @@ def pick_serve_script(gpu: Dict[str, Any]) -> str:
     )
 
 
-FA4_KERNEL = os.path.join("jit_kernel", "flash_attn", "cute", "flash_fwd_sm100.py")
+# SGLang 0.5.20 layout (0.5.16 had it under jit_kernel/flash_attn/cute/).
+FA4_KERNEL = os.path.join("kernels", "ops", "attention", "flash_attn", "cute", "flash_fwd_sm100.py")
+KIT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "flint_kit")
+KIT_INSTALL = os.path.join(KIT_DIR, "install.sh")
 
 
 def unlink_patched_kernel() -> None:
@@ -345,6 +352,13 @@ def unlink_patched_kernel() -> None:
         tmp = path + ".copy"
         shutil.copyfile(target, tmp)
         os.replace(tmp, path)
+
+
+def serve_script_path(model_dir: str, script: str) -> str:
+    """flint_kit/ holds the serve scripts SGLang 0.5.20 forced a change in (serve_b300.sh); the rest
+    run from the downloaded kit as shipped."""
+    local = os.path.join(KIT_DIR, script)
+    return local if os.path.exists(local) else os.path.join(model_dir, "sglang", script)
 
 
 def driver_major(driver: str) -> int:
@@ -406,7 +420,8 @@ class App(OpenAIChatMixin, BaseApp):
         return env
 
     async def _install_kit(self, model_dir: str, env: Dict[str, str]) -> None:
-        """Run the kit's install.sh against this venv once per app version (the venv persists)."""
+        """Run the kit's install.sh (flint_kit/, adapted to SGLang 0.5.20) against this venv once per
+        app version (the venv persists). The patch and the flint_sglang wheel come from the kit."""
         marker = os.path.join(sys.prefix, f"{KIT_MARKER}-{REVISION[:12]}")
         if os.path.exists(marker):
             self.logger.info("Flint SGLang kit already installed")
@@ -416,9 +431,9 @@ class App(OpenAIChatMixin, BaseApp):
         kit_dir = os.path.join(model_dir, "sglang")
         unlink_patched_kernel()
         started = time.monotonic()
-        self.logger.info("installing the Flint SGLang kit (install.sh)")
+        self.logger.info("installing the Flint SGLang kit (flint_kit/install.sh)")
         proc = await asyncio.create_subprocess_exec(
-            "bash", os.path.join(kit_dir, "install.sh"), kit_dir,
+            "bash", KIT_INSTALL, kit_dir,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, env=env,
         )
         tail: deque = deque(maxlen=SERVER_LOG_TAIL)
@@ -442,7 +457,7 @@ class App(OpenAIChatMixin, BaseApp):
         self.server = await asyncio.create_subprocess_exec(
             # Arguments after the script are appended to launch_server; a repeated flag overrides.
             # --enable-cache-report fills usage.prompt_tokens_details.cached_tokens (otherwise always 0).
-            "bash", os.path.join(model_dir, "sglang", script), "--host", "127.0.0.1", "--enable-cache-report",
+            "bash", serve_script_path(model_dir, script), "--host", "127.0.0.1", "--enable-cache-report",
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, env=env,
         )
         self.server_log_task = asyncio.create_task(self._forward_server_log())

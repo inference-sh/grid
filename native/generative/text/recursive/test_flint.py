@@ -116,3 +116,20 @@ def test_gpu_checks():
     with pytest.raises(RuntimeError, match="80 GB"):
         flint.pick_serve_script({"name": "NVIDIA A100-SXM4-80GB", "memory_gb": 80})
     assert flint.driver_major("570.133.20") == 570 and flint.driver_major("580.126.20") >= flint.MIN_DRIVER_MAJOR
+
+
+def test_kit_files_follow_sglang_0_5_20(tmp_path):
+    # serve_b300.sh comes from flint_kit/ (adapted flag), serve_h200.sh from the downloaded kit.
+    assert flint.serve_script_path(str(tmp_path), "serve_b300.sh") == os.path.join(flint.KIT_DIR, "serve_b300.sh")
+    assert flint.serve_script_path(str(tmp_path), "serve_h200.sh") == os.path.join(str(tmp_path), "sglang", "serve_h200.sh")
+    b300 = open(os.path.join(flint.KIT_DIR, "serve_b300.sh")).read()
+    assert "--disable-piecewise-cuda-graph" not in b300.split("exec python3", 1)[1]
+    assert "--cuda-graph-backend-prefill disabled" in b300
+    install = open(flint.KIT_INSTALL).read()
+    assert flint.FA4_KERNEL.replace(os.sep, "/") in install
+
+
+def test_fa4_kernel_path_exists_in_installed_sglang():
+    sglang = pytest.importorskip("sglang")
+    path = os.path.join(os.path.dirname(sglang.__file__), flint.FA4_KERNEL)
+    assert os.path.exists(path), path
