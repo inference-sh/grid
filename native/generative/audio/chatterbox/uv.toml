@@ -1,0 +1,9 @@
+# chatterbox-tts pins exact versions that hold the app back; these replace them.
+# gradio is only chatterbox's demo UI (gradio caps pillow below 13).
+override-dependencies = [
+    "gradio ; sys_platform == 'never'",
+    "torch==2.7.0",
+    "torchaudio==2.7.0",
+    "transformers==5.22.1",
+    "safetensors==0.8.0",
+]

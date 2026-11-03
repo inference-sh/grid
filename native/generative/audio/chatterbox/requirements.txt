@@ -4,5 +4,8 @@ inferencesh # required for inference.sh
 accelerate
 huggingface-hub
 hf-transfer
-git+https://github.com/inference-sh/chatterbox.git
+chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git@59bc590b3cad826e5d5987745bf6844627a21ad5
 torch==2.7.0 # imported directly; was only transitive via accelerate
+torchaudio==2.7.0
+transformers==5.22.1
+pillow>=13.0.0
