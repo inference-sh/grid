@@ -45,3 +45,6 @@ Thumbs.db
 !requirements.txt
 !inf.yml
 !inference.py
+
+# downloaded at runtime by g2p/g2p/mandarin.py (77 MB ONNX); keep it out of git and the deploy package
+g2p/sources/g2p_chinese_model/

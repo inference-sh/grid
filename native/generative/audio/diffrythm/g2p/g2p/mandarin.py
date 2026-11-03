@@ -21,54 +21,32 @@ BLANK_LEVEL = 0
 
 # conv = G2PWConverter(style='pinyin', enable_non_tradional_chinese=True)
 resource_path = r"./g2p"
-poly_all_class_path = os.path.join(
-    resource_path, "sources", "g2p_chinese_model", "polychar.txt"
-)
-if not os.path.exists(poly_all_class_path):
-    print(
-        "Incorrect path for polyphonic character class dictionary: {}, please check...".format(
-            poly_all_class_path
-        )
-    )
-    exit()
-poly_dict = generate_poly_lexicon(poly_all_class_path)
-
-# Set up G2PW model parameters
+# Polyphone BERT (ONNX) and its dictionaries, mirrored from DiffRhythm's
+# g2p/sources/g2p_chinese_model; downloaded before anything reads them.
 g2pw_poly_model_path = os.path.join(resource_path, "sources", "g2p_chinese_model")
 snapshot_download(
     repo_id="inference-sh/diff-rythm-g2p-chinese-model",
+    revision="6e54d1b0d8596fd2a8d124081c6e57391c02bf84",
     local_dir=g2pw_poly_model_path,
-    local_dir_use_symlinks=False,
 )
-if not os.path.exists(g2pw_poly_model_path):
-    print(
-        "Incorrect path for g2pw polyphonic character model: {}, please check...".format(
-            g2pw_poly_model_path
-        )
+poly_all_class_path = os.path.join(g2pw_poly_model_path, "polychar.txt")
+if not os.path.exists(poly_all_class_path):
+    raise FileNotFoundError(
+        "Incorrect path for polyphonic character class dictionary: {}".format(poly_all_class_path)
     )
-    exit()
+poly_dict = generate_poly_lexicon(poly_all_class_path)
 
 json_file_path = os.path.join(
     resource_path, "sources", "g2p_chinese_model", "polydict.json"
 )
 if not os.path.exists(json_file_path):
-    print(
-        "Incorrect path for g2pw id to pinyin dictionary: {}, please check...".format(
-            json_file_path
-        )
-    )
-    exit()
+    raise FileNotFoundError("Incorrect path for g2pw id to pinyin dictionary: {}".format(json_file_path))
 
 jsonr_file_path = os.path.join(
     resource_path, "sources", "g2p_chinese_model", "polydict_r.json"
 )
 if not os.path.exists(jsonr_file_path):
-    print(
-        "Incorrect path for g2pw pinyin to id dictionary: {}, please check...".format(
-            jsonr_file_path
-        )
-    )
-    exit()
+    raise FileNotFoundError("Incorrect path for g2pw pinyin to id dictionary: {}".format(jsonr_file_path))
 
 g2pw_poly_predict = BertPolyPredict(
     g2pw_poly_model_path, jsonr_file_path, json_file_path
