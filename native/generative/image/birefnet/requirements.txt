@@ -1,8 +1,8 @@
 pydantic >= 2.0.0
 inferencesh
-transformers>=4.53.0
-torch>=2.7.0
-torchvision
+transformers==5.22.1
+torch==2.14.1
+torchvision==0.29.1
 numpy<2
 opencv-python
 timm
