@@ -9,21 +9,20 @@ annotated-doc==0.0.4
 annotated-types==0.7.0
     # via pydantic
 anyio==4.14.2
-    # via httpx
+    # via httpx2
 certifi==2026.10.23
-    # via
-    #   httpcore
-    #   httpx
-    #   requests
+    # via requests
 charset-normalizer==3.4.9
     # via requests
 click==8.4.2
     # via huggingface-hub
-cuda-bindings==12.9.4
+cuda-bindings==13.4.4
     # via torch
 cuda-pathfinder==1.5.6
     # via cuda-bindings
-diffusers==0.39.0
+cuda-toolkit==13.0.3.0
+    # via torch
+diffusers==0.42.1
     # via -r requirements.txt
 einops==0.9.0.dev0
     # via
@@ -34,7 +33,7 @@ filelock==3.29.7
     #   diffusers
     #   huggingface-hub
     #   torch
-flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
+flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.0/flash_attn-2.8.3+cu130torch2.14-cp311-cp311-linux_x86_64.whl
     # via -r requirements.txt
 fsspec==2026.6.0
     # via
@@ -43,18 +42,16 @@ fsspec==2026.6.0
 gguf==0.19.0
     # via -r requirements.txt
 h11==0.16.0
-    # via httpcore
+    # via httpcore2
 hf-transfer==0.1.9
     # via -r requirements.txt
-hf-xet==1.5.1
+hf-xet==1.8.0
     # via huggingface-hub
-httpcore==1.0.9
-    # via httpx
-httpx==0.28.1
-    # via
-    #   diffusers
-    #   huggingface-hub
-huggingface-hub==1.22.0
+httpcore2==2.16.0
+    # via httpx2
+httpx2==2.16.0
+    # via huggingface-hub
+huggingface-hub==2.4.0
     # via
     #   -r requirements.txt
     #   accelerate
@@ -65,7 +62,7 @@ huggingface-hub==1.22.0
 idna==3.18
     # via
     #   anyio
-    #   httpx
+    #   httpx2
     #   requests
 importlib-metadata==9.0.0
     # via diffusers
@@ -90,45 +87,47 @@ numpy==2.4.6
     #   gguf
     #   peft
     #   transformers
-nvidia-cublas-cu12==12.8.4.1
+nvidia-cublas==13.1.1.3
     # via
-    #   nvidia-cudnn-cu12
-    #   nvidia-cusolver-cu12
-    #   torch
-nvidia-cuda-cupti-cu12==12.8.90
-    # via torch
-nvidia-cuda-nvrtc-cu12==12.8.93
-    # via torch
-nvidia-cuda-runtime-cu12==12.8.90
-    # via torch
-nvidia-cudnn-cu12==9.10.2.21
-    # via torch
-nvidia-cufft-cu12==11.3.3.83
-    # via torch
-nvidia-cufile-cu12==1.13.1.3
-    # via torch
-nvidia-curand-cu12==10.3.9.90
-    # via torch
-nvidia-cusolver-cu12==11.7.3.90
-    # via torch
-nvidia-cusparse-cu12==12.5.8.93
+    #   cuda-toolkit
+    #   nvidia-cudnn-cu13
+    #   nvidia-cusolver
+nvidia-cuda-cupti==13.0.85
+    # via cuda-toolkit
+nvidia-cuda-nvrtc==13.0.88
     # via
-    #   nvidia-cusolver-cu12
-    #   torch
-nvidia-cusparselt-cu12==0.7.1
+    #   cuda-toolkit
+    #   nvidia-cublas
+nvidia-cuda-runtime==13.0.96
+    # via cuda-toolkit
+nvidia-cudnn-cu13==9.24.0.43
     # via torch
-nvidia-nccl-cu12==2.27.5
-    # via torch
-nvidia-nvjitlink-cu12==12.8.93
+nvidia-cufft==12.0.0.61
+    # via cuda-toolkit
+nvidia-cufile==1.15.1.6
+    # via cuda-toolkit
+nvidia-curand==10.4.0.35
+    # via cuda-toolkit
+nvidia-cusolver==12.0.4.66
+    # via cuda-toolkit
+nvidia-cusparse==12.6.3.3
     # via
-    #   nvidia-cufft-cu12
-    #   nvidia-cusolver-cu12
-    #   nvidia-cusparse-cu12
-    #   torch
-nvidia-nvshmem-cu12==3.4.5
+    #   cuda-toolkit
+    #   nvidia-cusolver
+nvidia-cusparselt-cu13==0.8.1
     # via torch
-nvidia-nvtx-cu12==12.8.90
+nvidia-nccl-cu13==2.30.7
     # via torch
+nvidia-nvjitlink==13.4.92
+    # via
+    #   cuda-toolkit
+    #   nvidia-cufft
+    #   nvidia-cusolver
+    #   nvidia-cusparse
+nvidia-nvshmem-cu13==3.4.5
+    # via torch
+nvidia-nvtx==13.0.85
+    # via cuda-toolkit
 packaging==26.2
     # via
     #   accelerate
@@ -182,17 +181,19 @@ safetensors==0.8.0
     #   transformers
 sentencepiece==0.2.1
     # via -r requirements.txt
+setuptools==84.2.1
+    # via torch
 shellingham==1.5.4
     # via typer
 six==1.17.0
     # via python-dateutil
 sympy==1.14.0
     # via torch
-tokenizers==0.22.2
+tokenizers==0.23.3
     # via
     #   -r requirements.txt
     #   transformers
-torch==2.10.0
+torch==2.14.1
     # via
     #   -r requirements.txt
     #   accelerate
@@ -206,17 +207,22 @@ tqdm==4.68.4
     #   inferencesh
     #   peft
     #   transformers
-transformers==5.5.4
+transformers==5.22.1
     # via
     #   -r requirements.txt
     #   peft
-triton==3.6.0
+triton==3.8.0
     # via torch
+truststore==0.10.5
+    # via
+    #   httpcore2
+    #   httpx2
 typer==0.26.8
     # via transformers
 typing-extensions==4.16.0
     # via
     #   anyio
+    #   httpx2
     #   huggingface-hub
     #   pydantic
     #   pydantic-core

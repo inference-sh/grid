@@ -1,11 +1,11 @@
 pydantic >= 2.0.0 # required for inference.sh
 inferencesh==0.2.7
-torch==2.10.0 # 2.12.x breaks against the prebuilt flash-attn cu128torch2.9 wheel (ncclCommResume)
+torch==2.14.1 # must match the prebuilt flash-attn wheel below (cu130torch2.14)
 gguf>=0.13.0
 tqdm
 diffusers>=0.38.0
-transformers==5.5.4
-tokenizers==0.22.2 # 0.23.1 dropped the cls kwarg on RobertaProcessing, breaking tokenizer setup
+transformers==5.22.1
+tokenizers==0.23.3 # transformers >= 5.22 passes RobertaProcessing args positionally (0.23 dropped the cls kwarg)
 huggingface_hub
 accelerate
 sentencepiece
@@ -17,4 +17,4 @@ python-dateutil
 peft
 hf_transfer
 
-https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.4.17/flash_attn-2.8.3+cu128torch2.9-cp311-cp311-linux_x86_64.whl
+https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.0/flash_attn-2.8.3+cu130torch2.14-cp311-cp311-linux_x86_64.whl
