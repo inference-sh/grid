@@ -2989,9 +2989,29 @@
           "type": "integer"
         },
         "truncated": {
-          "description": "True when limit was hit, so every count is a lower bound.",
+          "description": "True when limit was hit or partial is true, so every count is a lower bound.",
           "title": "Truncated",
           "type": "boolean"
+        },
+        "partial": {
+          "description": "True when reading stopped before limit because even a minimal page was over Grafana's 4 MiB limit: older lines in the window were not grouped.",
+          "title": "Partial",
+          "type": "boolean"
+        },
+        "pages": {
+          "description": "Requests made to Loki. A window is read in pages that each stay under Grafana's 4 MiB gRPC message limit, so a wide window or long lines take several.",
+          "title": "Pages",
+          "type": "integer"
+        },
+        "page_limit": {
+          "description": "Fewest lines a single request asked for: the effective page size.",
+          "title": "Page Limit",
+          "type": "integer"
+        },
+        "pages_shrunk": {
+          "description": "Requests Loki refused as larger than 4 MiB and that were asked again for fewer lines. Nonzero is not an error: those lines were read in smaller pages.",
+          "title": "Pages Shrunk",
+          "type": "integer"
         },
         "window_start": {
           "description": "Window start actually queried, RFC3339 UTC.",
@@ -3023,6 +3043,10 @@
         "total_groups",
         "groups_omitted",
         "truncated",
+        "partial",
+        "pages",
+        "page_limit",
+        "pages_shrunk",
         "window_start",
         "window_end"
       ],
@@ -4235,7 +4259,7 @@
         },
         "max_line_length": {
           "default": 2000,
-          "description": "Log lines longer than this are truncated, so one huge line cannot crowd out the rest of the result.",
+          "description": "Log lines longer than this are truncated, so one huge line cannot crowd out the rest of the result. Loki truncates them before answering, which keeps a wide window under Grafana's 4 MiB response limit.",
           "maximum": 20000,
           "minimum": 100,
           "title": "Max Line Length",
@@ -4648,9 +4672,29 @@
           "type": "string"
         },
         "lines_scanned": {
-          "description": "Lines Loki scanned. Zero with no results means the selector matched no stream; nonzero means it scanned data and nothing matched the filters.",
+          "description": "Lines Loki scanned, summed over pages. Zero with no results means the selector matched no stream; nonzero means it scanned data and nothing matched.",
           "title": "Lines Scanned",
           "type": "integer"
+        },
+        "pages": {
+          "description": "Requests made to Loki. A window is read in pages that each stay under Grafana's 4 MiB gRPC message limit, so a wide window or long lines take several.",
+          "title": "Pages",
+          "type": "integer"
+        },
+        "page_limit": {
+          "description": "Fewest lines a single request asked for: the effective page size.",
+          "title": "Page Limit",
+          "type": "integer"
+        },
+        "pages_shrunk": {
+          "description": "Requests Loki refused as larger than 4 MiB and that were asked again for fewer lines. Nonzero is not an error: those lines were read in smaller pages.",
+          "title": "Pages Shrunk",
+          "type": "integer"
+        },
+        "partial": {
+          "description": "True when reading stopped before limit because even a minimal page was over Grafana's 4 MiB limit: lines beyond the last one returned are missing.",
+          "title": "Partial",
+          "type": "boolean"
         },
         "output_meta": {
           "anyOf": [
@@ -4671,7 +4715,11 @@
         "streams",
         "window_start",
         "window_end",
-        "lines_scanned"
+        "lines_scanned",
+        "pages",
+        "page_limit",
+        "pages_shrunk",
+        "partial"
       ],
       "title": "QueryLogsOutput",
       "type": "object"
