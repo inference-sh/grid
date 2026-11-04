@@ -31,6 +31,7 @@ SECURITY_FLOORS = {
     "brotli": Version("1.2.1"),  # GHSA-9v8h-qqgm-4m35
     "aiohttp": Version("3.14.4"),  # GHSA-2g87-pp6c-29x5 and the other 3.14.4 advisories
     "huggingface-hub": Version("1.32.0"),  # AIKIDO-2026-285573 and the path/credential advisories fixed through 1.32.0
+    "anthropic": Version("1.10.0"),  # AIKIDO-2026-451947, -480854 (0.117.0), -859572 (1.10.0)
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 
