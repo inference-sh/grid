@@ -26,7 +26,7 @@ class SkyRenderer:
         self.sky_vao = self.ctx.vertex_array(self.sky_prog, [])
         self.amb_tex = self.ctx.texture((12, 1), 4, dtype="f4")
         self.amb_fbo = self.ctx.framebuffer(color_attachments=[self.amb_tex])
-        self.lut_tex, self.lut_key = None, None
+        self.lut_tex, self.lut = None, None
         self.grid_fbo = None
         self.tex = None
         self.yuv_prog = self.ctx.program(vertex_shader=VERT, fragment_shader=YUV_FRAG)
@@ -82,12 +82,12 @@ class SkyRenderer:
         Same maths as sky.compute_grid (float32 here)."""
         c = coeffs(S)
         lut = get_lut(c)
-        if self.lut_key is not id(lut):
+        if self.lut is not lut:
             if self.lut_tex is None:
                 self.lut_tex = self.ctx.texture((lut.shape[1], lut.shape[0]), 3, dtype="f4")
                 self.lut_tex.filter = (moderngl.NEAREST, moderngl.NEAREST)
             self.lut_tex.write(np.ascontiguousarray(lut, np.float32).tobytes())
-            self.lut_key = id(lut)
+            self.lut = lut  # the reference keeps an evicted array from sharing an id with a new one
         sd = dir_from(0.0, S["sunEl"])
         dip = dip_deg(S)
         p = self.sky_prog
