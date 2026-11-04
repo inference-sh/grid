@@ -29,7 +29,7 @@ httpcore==1.0.9
     # via httpx
 httpx==0.28.1
     # via huggingface-hub
-huggingface-hub==1.30.0
+huggingface-hub==1.33.0
     # via -r requirements.txt
 idna==3.19
     # via

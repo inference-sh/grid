@@ -2,3 +2,6 @@
 # Apps whose pins stay below a SECURITY_FLOORS entry in scripts/check-lock-floors.py.
 # Drop a line once the app resolves at the floor.
 native/generative/audio/audio-x aiohttp  # owned by another agent; not touched here
+native/generative/audio/fast-whisper-large-v3 huggingface-hub  # requirements.txt pins 0.25.0; no fix on 0.x, needs a 1.x move
+native/generative/video/rife-video-interpolation huggingface-hub  # locked 0.36.2; no fix on 0.x, needs a 1.x move
+native/generative/audio/dramabox huggingface-hub  # owned by another agent; not touched here

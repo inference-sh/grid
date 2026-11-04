@@ -30,6 +30,7 @@ SECURITY_FLOORS = {
     "pyjwt": Version("2.14.0"),  # GHSA-ffc3-869f-jxw9
     "brotli": Version("1.2.1"),  # GHSA-9v8h-qqgm-4m35
     "aiohttp": Version("3.14.4"),  # GHSA-2g87-pp6c-29x5 and the other 3.14.4 advisories
+    "huggingface-hub": Version("1.32.0"),  # AIKIDO-2026-285573 and the path/credential advisories fixed through 1.32.0
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 
