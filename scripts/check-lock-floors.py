@@ -33,6 +33,7 @@ SECURITY_FLOORS = {
     "huggingface-hub": Version("1.32.0"),  # AIKIDO-2026-285573 and the path/credential advisories fixed through 1.32.0
     "anthropic": Version("1.10.0"),  # AIKIDO-2026-451947, -480854 (0.117.0), -859572 (1.10.0)
     "matplotlib": Version("3.10.9"),  # AIKIDO-2026-10536 (eval in axes.prop_cycle)
+    "requests": Version("2.34.0"),  # AIKIDO-2026-106840, CVE-2026-25645
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

@@ -38,7 +38,7 @@ pyparsing==3.3.2
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via matplotlib
-requests==2.33.0
+requests==2.34.2
     # via inferencesh
 six==1.17.0
     # via python-dateutil

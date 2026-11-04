@@ -35,7 +35,7 @@ pydantic-core==2.46.3
     # via pydantic
 python-dateutil==2.9.0.post0
     # via byteplus-python-sdk-v2
-requests==2.34.0.dev1
+requests==2.34.2
     # via
     #   -r requirements.txt
     #   inferencesh

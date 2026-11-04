@@ -59,7 +59,7 @@ pydantic==2.13.0b2
     #   xai-sdk
 pydantic-core==2.42.0
     # via pydantic
-requests==2.33.0
+requests==2.34.2
     # via
     #   -r requirements.txt
     #   inferencesh

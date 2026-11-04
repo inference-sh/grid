@@ -74,7 +74,7 @@ pydantic==2.13.4
     #   xai-sdk
 pydantic-core==2.46.4
     # via pydantic
-requests==2.34.0.dev1
+requests==2.34.2
     # via
     #   inferencesh
     #   xai-sdk

@@ -49,7 +49,7 @@ pydantic==2.13.4
 pydantic-core==2.46.4
 pyproject-hooks==1.3.3
 pyyaml==6.0.3
-requests==2.34.0.dev1
+requests==2.34.2
 safetensors==0.9.0rc1
 scikit-build-core==1.0.3
 setuptools==84.0.0

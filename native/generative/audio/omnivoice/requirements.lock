@@ -61,7 +61,7 @@ pydub==0.25.1
 pygments==2.20.0
 pyyaml==6.0.3
 regex==2026.4.4
-requests==2.33.1
+requests==2.34.2
 rich==15.0.0
 safetensors==0.7.0
 scikit-learn==1.8.0

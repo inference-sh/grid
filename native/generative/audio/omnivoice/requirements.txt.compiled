@@ -175,7 +175,7 @@ pyyaml==6.0.3
     #   webdataset
 regex==2026.4.4
     # via transformers
-requests==2.33.1
+requests==2.34.2
     # via
     #   inferencesh
     #   pooch

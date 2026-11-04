@@ -16,7 +16,7 @@ pydantic==2.12.5
 pydantic-core==2.41.5
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
-requests==2.33.0
+requests==2.34.2
 setuptools==82.0.1
 setuptools-scm==10.0.5
 six==1.17.0

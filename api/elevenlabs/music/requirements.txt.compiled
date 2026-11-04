@@ -37,7 +37,7 @@ pydantic-core==2.42.0
     # via
     #   elevenlabs
     #   pydantic
-requests==2.32.5
+requests==2.34.2
     # via
     #   elevenlabs
     #   inferencesh

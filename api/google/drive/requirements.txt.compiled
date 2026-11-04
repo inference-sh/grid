@@ -51,7 +51,7 @@ pydantic-core==2.50.0
     # via pydantic
 pyparsing==3.3.2
     # via httplib2
-requests==2.33.0
+requests==2.34.2
     # via
     #   google-api-core
     #   inferencesh

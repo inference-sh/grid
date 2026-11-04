@@ -72,7 +72,7 @@ pydantic==2.13.0b3
     #   inferencesh
 pydantic-core==2.45.0
     # via pydantic
-requests==2.33.1
+requests==2.34.2
     # via
     #   google-auth
     #   google-genai

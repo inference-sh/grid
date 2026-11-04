@@ -30,7 +30,7 @@ pydantic==2.13.4
     #   inferencesh
 pydantic-core==2.46.4
     # via pydantic
-requests==2.34.0.dev1
+requests==2.34.2
     # via inferencesh
 tqdm==4.67.3
     # via inferencesh
