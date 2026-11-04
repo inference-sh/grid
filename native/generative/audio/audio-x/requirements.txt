@@ -23,9 +23,9 @@ pytorch_lightning==2.6.6
 PyWavelets==1.4.1
 safetensors
 sentencepiece>=0.2.0
-torch==2.8.0
-torchvision==0.23.0
-torchaudio==2.8.0
+torch==2.14.1
+torchvision==0.29.1
+torchaudio==2.11.1
 torchmetrics==1.5.2
 tqdm
 transformers==5.22.1
@@ -41,5 +41,5 @@ scipy>=1.10.1
 librosa>=0.10.0
 ffmpeg-python>=0.2.0
 ninja
-# pinned: setuptools 81+ drops pkg_resources, which a dependency still imports
-setuptools==80.9.0
+soundfile
+setuptools>=84.1.0

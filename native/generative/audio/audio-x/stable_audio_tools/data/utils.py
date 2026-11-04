@@ -1,6 +1,8 @@
 import math
 import random
 import torch
+import numpy as np
+import librosa
 
 from torch import nn
 from typing import Tuple
@@ -188,7 +190,9 @@ def merge_video_audio(video_path, audio_path, output_path, start_time, duration)
 def load_and_process_audio(audio_path, sample_rate, seconds_start, seconds_total):
     if audio_path is None:
         return torch.zeros((2, int(sample_rate * seconds_total)))
-    audio_tensor, sr = torchaudio.load(audio_path)
+    # torchaudio.load needs torchcodec from 2.9; librosa reads with soundfile, then audioread
+    audio, sr = librosa.load(audio_path, sr=None, mono=False)
+    audio_tensor = torch.from_numpy(np.atleast_2d(audio))
     start_index = int(sample_rate * seconds_start)
     target_length = int(sample_rate * seconds_total)
     end_index = start_index + target_length

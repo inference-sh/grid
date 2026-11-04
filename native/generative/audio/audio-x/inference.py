@@ -4,11 +4,16 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from typing import List, Optional
 import torch
-import torchaudio
 from einops import rearrange
 import math
 import numpy as np
 import gc
+import types
+import packaging.version
+import soundfile as sf
+# clip-anytorch 2.6.0 (via k-diffusion) does `from pkg_resources import packaging`;
+# pkg_resources left setuptools in 82.
+sys.modules.setdefault("pkg_resources", types.SimpleNamespace(packaging=packaging))
 from .stable_audio_tools import get_pretrained_model
 from .stable_audio_tools.inference.generation import generate_diffusion_cond
 from .stable_audio_tools.data.utils import read_video, merge_video_audio, load_and_process_audio
@@ -143,7 +148,7 @@ class App(BaseApp):
 
         # Save audio output
         output_audio_path = os.path.join(self.temp_dir, "output.wav")
-        torchaudio.save(output_audio_path, audio, self.sample_rate)
+        sf.write(output_audio_path, audio.numpy().T, self.sample_rate, subtype="PCM_16")
 
         # Process video output if video input was provided
         output_video_path = None
