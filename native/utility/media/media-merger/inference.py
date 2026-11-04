@@ -1,6 +1,6 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Literal, Optional
 import os
 import re
 import subprocess
@@ -54,10 +54,9 @@ class AppInput(BaseAppInput):
     media_files: List[Media] = Field(
         description="List of media files to merge with transitions",
     )
-    output_format: str = Field(
+    output_format: Literal["mp4", "mov", "avi"] = Field(
         default="mp4",
         description="Format of the output video file",
-        examples=["mp4", "avi", "mov", "webm"]
     )
     fps: Optional[int] = Field(
         default=30,
