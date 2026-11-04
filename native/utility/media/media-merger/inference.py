@@ -1,28 +1,26 @@
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import BaseModel, Field
-from typing import List, Optional, Literal
+from typing import List, Optional
 import os
+import re
+import subprocess
 import tempfile
-from moviepy.video.io.VideoFileClip import VideoFileClip
-from moviepy.video.VideoClip import ImageClip, ColorClip
-from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip, concatenate_videoclips
 
-# Import all available effects that we'll use
-from moviepy.video.fx.Resize import Resize
-from moviepy.video.fx.FadeIn import FadeIn
-from moviepy.video.fx.FadeOut import FadeOut
-from moviepy.video.fx.CrossFadeIn import CrossFadeIn
-from moviepy.video.fx.CrossFadeOut import CrossFadeOut
-from moviepy.video.fx.Rotate import Rotate
-from moviepy.video.fx.SlideIn import SlideIn
-from moviepy.video.fx.BlackAndWhite import BlackAndWhite
-from moviepy.video.fx.MirrorX import MirrorX
-from moviepy.video.fx.MirrorY import MirrorY
-from moviepy.video.fx.InvertColors import InvertColors
-from moviepy.video.fx.AccelDecel import AccelDecel
+import imageio_ffmpeg
 
-from enum import Enum
-import numpy as np
+FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+VIDEO_EXTS = ['.mp4', '.avi', '.mov', '.mkv', '.webm']
+IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
+DEFAULT_IMAGE_DURATION = 5.0
+# xfade names for the overlapping transitions. The cover* modes keep the
+# outgoing clip still while the incoming one slides over it.
+XFADE = {
+    "crossfade": "fade",
+    "slide_left": "coverleft",
+    "slide_right": "coverright",
+    "slide_up": "coverup",
+    "slide_down": "coverdown",
+}
 
 transition_types = [
     "no-transition",
@@ -71,203 +69,128 @@ class AppOutput(BaseAppOutput):
         description="The resulting merged video file with applied transitions"
     )
 
+def probe(path):
+    """Return (width, height, duration, has_audio) parsed from `ffmpeg -i`."""
+    info = subprocess.run(
+        [FFMPEG, "-hide_banner", "-i", path], capture_output=True, text=True
+    ).stderr
+    size = re.search(r"Stream #.*Video:.*?(\d{2,5})x(\d{2,5})", info)
+    if size is None:
+        raise ValueError(f"No video stream in {os.path.basename(path)}")
+    width, height = int(size[1]), int(size[2])
+    rotation = re.search(r"rotation of (-?\d+(?:\.\d+)?) degrees", info)
+    if rotation and round(float(rotation[1])) % 180 == 90:
+        width, height = height, width
+    duration = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", info)
+    seconds = None
+    if duration:
+        seconds = int(duration[1]) * 3600 + int(duration[2]) * 60 + float(duration[3])
+    return width, height, seconds, re.search(r"Stream #.*Audio:", info) is not None
+
+
 class App(BaseApp):
     async def setup(self, metadata):
         """Initialize your model and resources here."""
         # Create a temp directory for processing
         self.temp_dir = tempfile.mkdtemp()
-        
-    def apply_transition(self, clip1, clip2, transition_type, duration=1.0):
-        """Apply the specified transition between two clips."""
-        w, h = clip1.size  # Get dimensions from the first clip
-
-        if clip2 is None:
-            return clip1.with_effects([FadeOut(duration)])
-        
-        # No transition: simply place clips back-to-back
-        if transition_type == "no-transition":
-            composite = concatenate_videoclips([clip1, clip2])
-            if composite.size != (w, h):
-                composite = composite.with_effects([Resize(width=w, height=h)])
-            return composite
-        
-        # For transitions that need clips to overlap
-        if transition_type in [
-            "crossfade", 
-            "fade_to_black",
-        ]:
-            # Create the transitioned clips
-            if transition_type == "crossfade":
-                clip1_out = clip1.with_effects([CrossFadeOut(duration)])
-                clip2_in = clip2.with_effects([CrossFadeIn(duration)])
-                
-                # Position clip2 to start before clip1 ends to create overlap
-                clip2_start = clip1.duration - duration
-                
-                # Create the composite clip with the overlapping transition
-                composite = CompositeVideoClip([
-                    clip1_out,
-                    clip2_in.with_start(clip2_start)
-                ])
-
-            
-            elif transition_type == "fade_to_black":
-                clip1_out = clip1.with_effects([FadeOut(duration)])
-                clip2_in = clip2.with_effects([FadeIn(duration)])
-                
-                # Create the composite clip with the overlapping transition
-                composite = concatenate_videoclips([
-                    clip1_out,
-                    clip2_in
-                ])
-
-
-            
-            # Ensure the composite maintains the correct size
-            if composite.size != (w, h):
-                composite = composite.with_effects([Resize(width=w, height=h)])
-                
-            return composite
-        
-        # For slide transitions
-        elif transition_type in [
-            "slide_left",
-            "slide_right",
-            "slide_up",
-            "slide_down"
-        ]:
-            # Ensure clip2 has the same dimensions as clip1
-            if clip2.size != (w, h):
-                clip2 = clip2.with_effects([Resize(width=w, height=h)])
-                
-            # Determine slide direction
-            if transition_type == "slide_left":
-                side = 'right'
-            elif transition_type == "slide_right":
-                side = 'left'
-            elif transition_type == "slide_up":
-                side = 'bottom'
-            elif transition_type == "slide_down":
-                side = 'top'
-            
-            # Apply slide effect to the second clip
-            clip2_with_slide = clip2.with_effects([SlideIn(duration, side=side)])
-            
-            # Create and return a composite with the slide effect
-            clip2_start = clip1.duration - duration
-            composite = CompositeVideoClip([
-                clip1,
-                clip2_with_slide.with_start(clip2_start)
-            ])
-            
-            # Ensure the composite maintains the correct size
-            if composite.size != (w, h):
-                composite = composite.with_effects([Resize(width=w, height=h)])
-                
-            return composite
-        
-        # Default fallback - crossfade
-        composite = CompositeVideoClip([
-            clip1.with_effects([CrossFadeOut(duration)]),
-            clip2.with_effects([CrossFadeIn(duration)]).with_start(clip1.duration - duration)
-        ])
-        
-        # Ensure the composite maintains the correct size
-        if composite.size != (w, h):
-            composite = composite.with_effects([Resize(width=w, height=h)])
-            
-        return composite
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:
         """Run prediction on the input data."""
-        clips = []
-        base_width, base_height = None, None
-        
-        # Process each media file
+        if not input_data.media_files:
+            raise ValueError("media_files is empty")
+        fps = input_data.fps or 30
+        inputs, graph, durations, audio = [], [], [], []
+        width, height = None, None
+
         for i, media in enumerate(input_data.media_files):
             file_path = media.file.path
             file_ext = os.path.splitext(file_path)[1].lower()
-            
-            # Handle different file types
-            if file_ext in ['.mp4', '.avi', '.mov', '.mkv', '.webm']:
-                clip = VideoFileClip(file_path)
-                # Set duration if specified and not -1
-                if media.duration is not None and media.duration > 0:
-                    clip = clip.subclipped(0, media.duration)
-            elif file_ext in ['.jpg', '.jpeg', '.png', '.bmp', '.gif']:
-                # For images, create a clip with the specified duration (default 5 seconds if -1)
-                image_duration = 5.0 if media.duration is None or media.duration < 0 else media.duration
-                clip = ImageClip(file_path, duration=image_duration)
-            else:
+            is_image = file_ext in IMAGE_EXTS
+            if not is_image and file_ext not in VIDEO_EXTS:
                 raise ValueError(f"Unsupported file format: {file_ext}")
-            
-            # Store the first clip's dimensions to use for all clips
-            if i == 0:
-                base_width, base_height = clip.size
-            else:
-                # Resize all subsequent clips to match the first clip's dimensions
-                clip = clip.with_effects([Resize(width=base_width, height=base_height)])
-            
-            clips.append(clip)
-        
-        # Prepare final video with transitions
-        result_clip = None
-        
-        # Process clips incrementally, applying transitions one by one
-        for i in range(len(clips)):
-            current_clip = clips[i]
-            
-            if result_clip is None:
-                # First clip becomes our initial result
-                result_clip = current_clip
-            else:
-                # Apply transition between current result and next clip
-                transition_type = input_data.media_files[i-1].transition_type
-                transition_duration = input_data.media_files[i-1].transition_duration or 1.0
-                
-                # Calculate safe transition duration
-                transition_duration = min(
-                    transition_duration, 
-                    result_clip.duration/2, 
-                    current_clip.duration/2
-                )
-                
-                # Apply transition and update result
-                result_clip = self.apply_transition(
-                    result_clip, current_clip, transition_type, transition_duration
-                )
-                
-                # Ensure the composite clip maintains the base dimensions
-                if result_clip.size != (base_width, base_height):
-                    result_clip = result_clip.with_effects([Resize(width=base_width, height=base_height)])
-        
-        final_video = result_clip
 
-        # Save the output
+            clip_width, clip_height, duration, has_audio = probe(file_path)
+            if media.duration is not None and media.duration > 0:
+                duration = media.duration
+            elif is_image:
+                duration = DEFAULT_IMAGE_DURATION
+            if not duration:
+                raise ValueError(f"Could not read the duration of {os.path.basename(file_path)}")
+
+            # The first clip sets the output size; libx264 yuv420p needs even dimensions
+            if i == 0:
+                width, height = clip_width - clip_width % 2, clip_height - clip_height % 2
+
+            inputs += ["-i", file_path]
+            # Images hold their first frame, with any transparency over black
+            still = "trim=end_frame=1,format=rgba,premultiply=inplace=1," if is_image else ""
+            graph.append(
+                f"[{i}:v]{still}scale={width}:{height},setsar=1,format=yuv420p,"
+                f"tpad=stop_mode=clone:stop_duration={duration},trim=duration={duration},"
+                f"setpts=PTS-STARTPTS,fps={fps}[v{i}]"
+            )
+            if has_audio:
+                audio.append((i, duration))
+            durations.append(duration)
+
+        # Join the clips one by one. Each transition belongs to the clip before it.
+        video, total, starts = "v0", durations[0], [0.0]
+        for i in range(1, len(durations)):
+            previous = input_data.media_files[i - 1]
+            kind = previous.transition_type
+            overlap = min(previous.transition_duration or 1.0, total / 2, durations[i] / 2)
+            if kind == "no-transition":
+                graph.append(f"[{video}][v{i}]concat=n=2:v=1:a=0[m{i}]")
+                start = total
+            elif kind == "fade_to_black":
+                graph.append(f"[{video}]fade=t=out:st={total - overlap}:d={overlap}[o{i}]")
+                graph.append(f"[v{i}]fade=t=in:st=0:d={overlap}[i{i}]")
+                graph.append(f"[o{i}][i{i}]concat=n=2:v=1:a=0[m{i}]")
+                start = total
+            else:
+                start = total - overlap
+                graph.append(
+                    f"[{video}][v{i}]xfade=transition={XFADE.get(kind, 'fade')}:"
+                    f"duration={overlap}:offset={start}[m{i}]"
+                )
+            video, total = f"m{i}", start + durations[i]
+            starts.append(start)
+
+        # Audio plays from each clip's start; overlapping clips mix unattenuated
+        maps = ["-map", f"[{video}]"]
+        if audio:
+            for i, duration in audio:
+                graph.append(
+                    f"[{i}:a]atrim=duration={duration},asetpts=PTS-STARTPTS,"
+                    f"aresample=44100,aformat=channel_layouts=stereo,"
+                    f"adelay={round(starts[i] * 1000)}:all=1[a{i}]"
+                )
+            labels = "".join(f"[a{i}]" for i, _ in audio)
+            graph.append(f"{labels}amix=inputs={len(audio)}:normalize=0:dropout_transition=0[audio]")
+            maps += ["-map", "[audio]"]
+
         output_path = os.path.join(self.temp_dir, f"result.{input_data.output_format}")
-        final_video.write_videofile(
-            output_path,
-            codec="libx264",
-            audio_codec="aac", 
-            ffmpeg_params=[
+        result = subprocess.run(
+            [
+                FFMPEG, "-y", "-hide_banner", "-loglevel", "error",
+                *inputs,
+                "-filter_complex", ";".join(graph),
+                *maps,
+                "-c:v", "libx264",
+                "-c:a", "aac",
                 "-profile:v", "main",  # Critical for Safari
                 "-pix_fmt", "yuv420p",  # Critical for Safari
                 "-movflags", "+faststart",  # Helps with streaming
-                "-crf", "23"  # Reasonable quality
+                "-crf", "23",  # Reasonable quality
+                "-t", str(total),
+                output_path,
             ],
-            fps=input_data.fps or 30,
-            logger=None  # MoviePy 2.x changed logger behavior
+            capture_output=True,
+            text=True,
         )
-        
-        
-        # Close all clips to release resources
-        for clip in clips:
-            if hasattr(clip, 'close'):
-                clip.close()
-        
-        if hasattr(final_video, 'close'):
-            final_video.close()
-        
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg failed: {result.stderr.strip()[-2000:]}")
+
         return AppOutput(result=File(path=output_path))
 
     async def unload(self):
