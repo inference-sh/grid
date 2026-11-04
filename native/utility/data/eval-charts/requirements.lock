@@ -7,7 +7,7 @@ fonttools==4.62.1
 idna==3.11
 inferencesh==0.6.26
 kiwisolver==1.5.0
-matplotlib==3.10.8
+matplotlib==3.10.9
 ninja==1.13.0
 numpy==2.4.3
 packaging==26.0

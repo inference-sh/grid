@@ -18,7 +18,7 @@ inferencesh==0.6.26
     # via -r requirements.txt
 kiwisolver==1.5.0
     # via matplotlib
-matplotlib==3.10.8
+matplotlib==3.10.9
     # via -r requirements.txt
 numpy==2.4.3
     # via
