@@ -11,7 +11,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/6y6qycui.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/zqv455xw.png
 env: {}
-kernel: "3.11"
+kernel: python-3.11
 secrets:
     - key: CERAMIC_KEY
       description: Ceramic AI API key

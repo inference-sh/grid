@@ -10,7 +10,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/urhuo71e.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/e0smz7y5.png
 env: {}
-kernel: ""
+kernel: python-3.11
 secrets:
     - key: FAL_KEY
 resources:

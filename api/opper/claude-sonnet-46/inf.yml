@@ -20,7 +20,7 @@ images:
     thumbnail: ""
     banner: ""
 env: {}
-kernel: ""
+kernel: python-3.11
 secrets:
     - key: OPPER_KEY
 resources:

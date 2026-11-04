@@ -18,7 +18,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/gy7j8h3h.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/mvrzim8w.png
 env: {}
-kernel: ""
+kernel: python-3.11
 secrets:
     - key: OPENROUTER_API_KEY
 resources:
