@@ -257,3 +257,30 @@ def test_run_answers_when_the_warm_up_fails(tmp_path):
         make_input(state="", images=[image], choices=[], scores=[], nouls=nouls(8))))
     assert seen.count("/v1/decide") == 8
     assert len(out.nouls) == 8
+
+
+def test_warmup_option_counts_cover_every_sampler_kernel_key():
+    from inference import logprob_kernel_keys, warmup_option_counts
+    counts = warmup_option_counts(256)
+    covered = set().union(*(logprob_kernel_keys(n) for n in counts))
+    for n in range(2, 257):
+        assert logprob_kernel_keys(n) <= covered, n
+    # Top-logprob read-outs (all traffic so far: 2-7 options, 3-level scores, nouls): one per block and the /16 case.
+    assert [n for n in counts if n <= 20] == [2, 4, 8, 15, 16]
+    assert len(counts) < 25
+
+
+def test_logprob_kernel_keys_follow_vllm_read_out_widths():
+    from inference import logprob_kernel_keys
+    assert logprob_kernel_keys(5) == {("topk_log_softmax", 8, False)}
+    assert logprob_kernel_keys(15) == {("topk_log_softmax", 16, True)}
+    # Above 20 options serve_decide asks for logprob_token_ids in chunks of 128.
+    assert logprob_kernel_keys(130) == {("topk_log_softmax", 256, False), ("fill_logprob_token_ids", 128),
+                                        ("topk_log_softmax", 4, False), ("fill_logprob_token_ids", 2)}
+
+
+def test_vllm_cache_lives_next_to_the_app_caches():
+    from inference import vllm_cache_env
+    assert vllm_cache_env({"HF_HOME": "/inferencesh/cache/gpu/huggingface"}) == {"VLLM_CACHE_ROOT": "/inferencesh/cache/gpu/vllm"}
+    assert vllm_cache_env({"HF_HOME": "/x/huggingface", "VLLM_CACHE_ROOT": "/y"}) == {}
+    assert vllm_cache_env({}) == {}

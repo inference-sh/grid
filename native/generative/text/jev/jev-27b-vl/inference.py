@@ -41,6 +41,9 @@ How the typed questions map to /v1/decide:
   score   six levels use the model's native 0-5 score head, with the levels listed in the
           question; any other number of levels is read as a choice over the levels
 
+Setup ends by compiling the sampler's logprob kernels for every read-out width (see Kernel warm-up),
+and keeps vLLM's torch.compile cache in the app's persistent cache root (vllm_cache_env).
+
 Metering: inputs=[TextMeta(tokens=<prompt tokens, summed over questions>)], outputs=[TextMeta(tokens=0)].
 
 Model: https://huggingface.co/autotrust/JEV-27B-VL
@@ -91,6 +94,10 @@ RAW_TEMPLATE = ("{%- for m in messages -%}{%- if m['content'] is string -%}{{ m[
                 "{%- for c in m['content'] -%}{%- if c['type'] == 'text' -%}{{ c['text'] }}{%- else -%}"
                 "<|vision_start|><|image_pad|><|vision_end|>{%- endif -%}{%- endfor -%}{%- endif -%}{%- endfor -%}")
 SERVER_LOG_TAIL = 40
+# serve_decide reads up to this many options through top logprobs (vLLM's --max-logprobs default)
+# and asks for more through logprob_token_ids, in chunks of 128.
+VLLM_MAX_LOGPROBS = 20
+LOGPROB_TOKEN_ID_CHUNK = 128
 
 
 # ── Input and output ─────────────────────────────────────────────────────────
@@ -275,6 +282,56 @@ def image_size(path: str) -> Tuple[int, int]:
         return image.size
 
 
+# ── Kernel warm-up ───────────────────────────────────────────────────────────
+#
+# vLLM compiles its sampler's logprob kernels (v1/worker/gpu/sample/logprob.py, vLLM 0.32) on first use
+# of each shape, after its own warm-up has ended, so the first question with a new option count logged
+# "Triton kernel JIT compilation during inference: _topk_log_softmax_kernel". The kernels specialise on:
+#   _topk_log_softmax_kernel        TOPK_BLOCK_SIZE = next_pow2(1 + read-out width), and whether
+#                                   1 + width is divisible by 16 (Triton's integer specialisation)
+#   _fill_logprob_token_ids_kernel  PADDED_COLS = next_pow2(width), only with logprob_token_ids
+# The read-out width is the option count up to VLLM_MAX_LOGPROBS (allowed_token_ids plus top
+# logprobs), and above that each chunk of up to 128 logprob_token_ids. Nouls read 2 tokens and native
+# scores 6, the same kernels as choices over 2 and 6 options. setup() sends one choice per distinct
+# key, one at a time so each batch holds only that width.
+
+def _pow2(n: int) -> int:
+    return 1 << max(0, n - 1).bit_length()
+
+
+def logprob_kernel_keys(options: int, max_logprobs: int = VLLM_MAX_LOGPROBS, chunk: int = LOGPROB_TOKEN_ID_CHUNK) -> frozenset:
+    """The sampler kernel specialisations one question over `options` tokens compiles."""
+    widths = [options] if options <= max_logprobs else [min(chunk, options - i) for i in range(0, options, chunk)]
+    keys = set()
+    for width in widths:
+        keys.add(("topk_log_softmax", _pow2(1 + width), (1 + width) % 16 == 0))
+        if options > max_logprobs:
+            keys.add(("fill_logprob_token_ids", _pow2(width)))
+    return frozenset(keys)
+
+
+def warmup_option_counts(max_options: int, max_logprobs: int = VLLM_MAX_LOGPROBS, chunk: int = LOGPROB_TOKEN_ID_CHUNK) -> List[int]:
+    """The fewest option counts (2..max_options) whose questions compile every sampler kernel key."""
+    seen: set = set()
+    counts = []
+    for n in range(2, max_options + 1):
+        keys = logprob_kernel_keys(n, max_logprobs, chunk)
+        if not keys <= seen:
+            seen |= keys
+            counts.append(n)
+    return counts
+
+
+def vllm_cache_env(environ: Dict[str, str]) -> Dict[str, str]:
+    """vLLM keeps its torch.compile artifacts under VLLM_CACHE_ROOT, by default ~/.cache/vllm, which does not
+    outlive the worker, so every setup recompiled the backbone (~27 s). The engine gives each app a
+    persistent cache root (HF_HOME, TORCHINDUCTOR_CACHE_DIR and TRITON_CACHE_DIR live in it); keep vLLM's
+    cache there too. vLLM keys the cache by its version, the model and the compile config."""
+    if environ.get("VLLM_CACHE_ROOT") or not environ.get("HF_HOME"):
+        return {}
+    return {"VLLM_CACHE_ROOT": os.path.join(os.path.dirname(environ["HF_HOME"].rstrip("/")), "vllm")}
+
+
 def confidence(probabilities: List[float]) -> float:
     entropy = -sum(p * math.log(p) for p in probabilities if p > 0)
     return max(0.0, 1.0 - entropy / math.log(len(probabilities)))
@@ -341,7 +398,7 @@ class App(BaseApp):
             "--host", "127.0.0.1", "--port", str(port),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
-            env={**os.environ, "JEV_DECIDE_LORA": MODEL_ID, "JEV_DECIDE_ADAPTER_DIR": f"{model_dir}/adapter_vllm"},
+            env={**os.environ, "JEV_DECIDE_LORA": MODEL_ID, "JEV_DECIDE_ADAPTER_DIR": f"{model_dir}/adapter_vllm", **vllm_cache_env(os.environ)},
         )
         self.server_log_task = asyncio.create_task(self._forward_server_log())
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=None)
@@ -361,6 +418,21 @@ class App(BaseApp):
             f"vLLM server ready in {time.monotonic() - started:.1f}s; up to {info.get('max_options')} options, "
             f"{MAX_MODEL_LEN} prompt tokens, temperatures {info.get('temperatures')}"
         )
+        warm_started = time.monotonic()
+        counts = await self._warm_kernels(int(info.get("max_options") or 2))
+        self.logger.info(f"sampler kernels warmed in {time.monotonic() - warm_started:.1f}s over option counts {counts}; setup took {time.monotonic() - started:.1f}s")
+
+    async def _warm_kernels(self, max_options: int) -> List[int]:
+        """Compile every sampler kernel shape now instead of on a caller's first question of that shape
+        (see warmup_option_counts), plus the greedy read the prefix warm-up uses. One request at a time."""
+        state = json.dumps("Kernel warm-up.").encode()
+        counts = warmup_option_counts(max_options)
+        for n in counts:
+            body = {"kind": "choice", "question": "Which option?", "options": [f"option {i + 1}" for i in range(n)]}
+            await self._decide(f"warm-up {n}", state, body)
+        await self._decide("warm-up noul", state, {"kind": "noul", "question": "Is this a warm-up?"})
+        await self._warm("noul", [], "Kernel warm-up.")
+        return counts
 
     async def _forward_server_log(self):
         async for raw in self.server.stdout:
