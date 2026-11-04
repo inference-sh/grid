@@ -34,6 +34,8 @@ from .grafana_http import (
     to_nanos,
 )
 
+# Loki's max_entries_limit_per_query: the most lines one query_range returns.
+LOKI_MAX_ENTRIES = 5000
 ALERTMANAGER_PREFIX = "/api/alertmanager/grafana/api/v2"
 
 FREE = OutputMeta(inputs=[], outputs=[])
@@ -637,32 +639,53 @@ class App(BaseApp):
             f"limit={input_data.limit}"
         )
 
-        payload = await self.client.request(
-            "GET",
-            f"{prefix}/loki/api/v1/query_range",
-            params={
-                "query": input_data.query,
-                "start": to_nanos(start),
-                "end": to_nanos(end),
-                "limit": input_data.limit,
-                "direction": "backward",
-            },
-        )
-
+        # Loki answers at most LOKI_MAX_ENTRIES lines per query
+        # (max_entries_limit_per_query), so a larger limit is read in pages,
+        # newest first, each page ending just after the oldest line of the last.
         # The same event can arrive on more than one stream — a log shipper
         # watching two paths for one file, say. Counting both would double every
         # number in the digest, so identical (timestamp, line) pairs collapse.
+        # A page overlaps the last one at its boundary nanosecond; those repeats
+        # are skipped, not counted as duplicates.
         seen: set = set()
         entries: List[tuple] = []
         duplicates = 0
-        for stream in ((payload or {}).get("data") or {}).get("result") or []:
-            for item in stream.get("values") or []:
-                nanos, text = int(item[0]), item[1]
-                if (nanos, text) in seen:
-                    duplicates += 1
-                    continue
-                seen.add((nanos, text))
-                entries.append((nanos, text, stream.get("stream") or {}))
+        page_end = to_nanos(end)
+        remaining = input_data.limit
+        overlap = 0  # after the first page, one slot goes to the boundary line
+        while remaining > 0:
+            page_limit = min(LOKI_MAX_ENTRIES, remaining + overlap)
+            payload = await self.client.request(
+                "GET",
+                f"{prefix}/loki/api/v1/query_range",
+                params={
+                    "query": input_data.query,
+                    "start": to_nanos(start),
+                    "end": page_end,
+                    "limit": page_limit,
+                    "direction": "backward",
+                },
+            )
+            previous = set(seen)
+            returned, added, oldest = 0, 0, None
+            for stream in ((payload or {}).get("data") or {}).get("result") or []:
+                for item in stream.get("values") or []:
+                    returned += 1
+                    nanos, text = int(item[0]), item[1]
+                    oldest = nanos if oldest is None else min(oldest, nanos)
+                    if (nanos, text) in previous:
+                        continue
+                    if (nanos, text) in seen:
+                        duplicates += 1
+                        continue
+                    seen.add((nanos, text))
+                    entries.append((nanos, text, stream.get("stream") or {}))
+                    added += 1
+            remaining -= added
+            if returned < page_limit or added == 0 or oldest is None:
+                break
+            page_end = str(oldest + 1)
+            overlap = 1
         entries.sort(key=lambda item: item[0])
 
         groups: Dict[tuple, Dict[str, Any]] = {}
