@@ -60,7 +60,7 @@ def test_validation():
         make_input(choices=[], scores=[], nouls=[])
     with pytest.raises(ValueError, match="unique"):
         make_input(nouls=[{"id": "team", "instructions": "x?"}])
-    with pytest.raises(ValueError, match="`state`, `images`, or both"):
+    with pytest.raises(ValueError, match="nothing to evaluate"):
         make_input(state="")
 
 
