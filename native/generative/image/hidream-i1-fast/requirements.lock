@@ -12,7 +12,7 @@ cuda-toolkit==13.0.3.0
 cython==3.3.1
 diffusers @ git+https://github.com/huggingface/diffusers.git@35087a644038eb531f48581708d4763044cb4852
 einops==0.9.0.dev0
-filelock==4.0.10
+filelock==4.2.7
 flit-core==4.2.0
 fsspec==2026.9.0
 gguf==0.19.0

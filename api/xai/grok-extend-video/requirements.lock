@@ -13,7 +13,7 @@ cuda-bindings==13.4.3
 cuda-pathfinder==1.8.2
 cuda-toolkit==13.0.3.0
 cython==3.3.0
-filelock==4.0.1
+filelock==4.2.7
 flit-core==4.1.0
 frozenlist==1.8.0
 fsspec==2026.9.0

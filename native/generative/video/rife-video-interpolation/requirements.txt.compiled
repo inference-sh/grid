@@ -18,7 +18,7 @@ decorator==4.4.2
     # via moviepy
 einops==0.9.0.dev0
     # via -r requirements.txt
-filelock==3.32.0
+filelock==4.2.7
     # via
     #   huggingface-hub
     #   torch

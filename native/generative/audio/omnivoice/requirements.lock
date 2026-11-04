@@ -9,7 +9,7 @@ cffi==2.0.0
 charset-normalizer==3.4.7
 click==8.5.0
 decorator==5.2.1
-filelock==3.29.0
+filelock==4.2.7
 fsspec==2026.3.0
 h11==0.16.0
 hf-transfer==0.1.9
