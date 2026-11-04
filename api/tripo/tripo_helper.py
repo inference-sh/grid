@@ -15,6 +15,8 @@ from typing import Optional
 
 import httpx
 
+from .retry_after import retry_delay
+
 BASE_URL = "https://openapi.tripo3d.ai/v3"
 API_KEY_SECRET = "TRIPO_API_KEY"
 
@@ -60,7 +62,7 @@ class TripoClient:
         for attempt in range(MAX_RETRIES + 1):
             response = await self.http.request(method, path, **kwargs)
             if response.status_code in RETRY_STATUSES and attempt < MAX_RETRIES:
-                delay = float(response.headers.get("Retry-After", 2 ** (attempt + 1)))
+                delay = retry_delay(response.headers, 2 ** (attempt + 1))
                 logger.warning("%s %s: %d, retrying in %.0fs", method, path, response.status_code, delay)
                 await asyncio.sleep(delay)
                 continue
@@ -80,7 +82,7 @@ class TripoClient:
         for attempt in range(MAX_RETRIES + 1):
             response = await self.http.post(path, json=body)
             if response.status_code == 429 and attempt < MAX_RETRIES:
-                delay = float(response.headers.get("Retry-After", 10 * (attempt + 1)))
+                delay = retry_delay(response.headers, 10 * (attempt + 1))
                 logger.warning("create %s: 429 %s, retrying in %.0fs", path, response.text[:200], delay)
                 await asyncio.sleep(delay)
                 continue

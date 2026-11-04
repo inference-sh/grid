@@ -22,6 +22,8 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, 
 from inferencesh.images import ImageLimits, fit_image
 from pydantic import Field, model_validator
 
+from .retry_after import retry_delay
+
 BASE_URL = "https://api.meshy.ai/openapi"
 API_KEY_SECRET = "MESHY_API_KEY"
 AI_MODEL = "meshy-7.1"
@@ -122,7 +124,7 @@ class App(BaseApp):
         for attempt in range(MAX_RETRIES + 1):
             response = await self.client.request(method, path, **kwargs)
             if response.status_code in RETRY_STATUSES and retry and attempt < MAX_RETRIES:
-                delay = float(response.headers.get("Retry-After", 2 ** (attempt + 1)))
+                delay = retry_delay(response.headers, 2 ** (attempt + 1))
                 self.logger.warning("%s %s: %d, retrying in %.0fs", method, path, response.status_code, delay)
                 await asyncio.sleep(delay)
                 continue
@@ -135,7 +137,7 @@ class App(BaseApp):
         for attempt in range(MAX_RETRIES + 1):
             response = await self.client.post(path, json=body)
             if response.status_code == 429 and attempt < MAX_RETRIES:
-                delay = float(response.headers.get("Retry-After", 10 * (attempt + 1)))
+                delay = retry_delay(response.headers, 10 * (attempt + 1))
                 self.logger.warning("create %s: 429 %s, retrying in %.0fs", path, response.text[:200], delay)
                 await asyncio.sleep(delay)
                 continue

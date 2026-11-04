@@ -24,6 +24,8 @@ import msgpack
 from inferencesh import AudioMeta, BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, function
 from pydantic import Field, model_validator
 
+from .retry_after import retry_delay
+
 BASE_URL = "https://api.fish.audio"
 API_KEY_SECRET = "FISH_KEY"
 MODEL = "drama-3"
@@ -172,7 +174,7 @@ class App(BaseApp):
         for attempt in range(MAX_RETRIES + 1):
             async with self.client.stream("POST", "/v1/tts", content=payload) as response:
                 if response.status_code in RETRY_STATUSES and attempt < MAX_RETRIES:
-                    delay = float(response.headers.get("Retry-After", 2 ** (attempt + 1)))
+                    delay = retry_delay(response.headers, 2 ** (attempt + 1))
                     self.logger.warning("tts: %d, retrying in %.0fs", response.status_code, delay)
                     await asyncio.sleep(delay)
                     continue
