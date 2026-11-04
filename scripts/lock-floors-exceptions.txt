@@ -8,3 +8,15 @@ native/generative/audio/dramabox huggingface-hub  # owned by another agent; not 
 native/generative/audio/audio-x urllib3  # owned by another agent; not touched here
 native/generative/audio/diffrythm urllib3  # owned by another agent; not touched here
 native/generative/audio/dramabox urllib3  # owned by another agent; not touched here
+native/generative/audio/audio-x numpy  # owned by another agent; not touched here
+native/generative/audio/chatterbox numpy  # owned by another agent; not touched here
+native/generative/image/omni-zero numpy  # owned by another agent; not touched here
+native/generative/text/recursive/flint numpy  # owned by another agent; not touched here
+native/generative/3d/tokenrig numpy  # bpy 4.2.0 needs numpy 1.x; requirements.txt numpy<2
+native/generative/image/birefnet numpy  # requirements.txt numpy<2
+native/generative/image/bytedance-uso numpy  # requirements.txt numpy<2
+native/generative/image/falconsai-nsfw-detection numpy  # requirements.txt numpy<2
+native/generative/video/rife-video-interpolation numpy  # requirements.txt numpy<=1.23.5
+native/generative/video/videoseal numpy  # requirements.txt numpy<2
+native/generative/audio/fast-whisper-large-v3 numpy  # numba 0.61.0: numpy<2.2
+native/generative/text/jev/jev-27b-vl numpy  # mistral-common 1.12.0: numpy<2.4

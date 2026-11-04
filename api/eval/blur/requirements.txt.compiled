@@ -10,7 +10,7 @@ idna==3.11
     # via requests
 inferencesh==0.6.26
     # via -r requirements.txt
-numpy==2.4.3
+numpy==2.4.6
     # via
     #   -r requirements.txt
     #   opencv-python-headless

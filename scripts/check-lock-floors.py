@@ -35,6 +35,7 @@ SECURITY_FLOORS = {
     "matplotlib": Version("3.10.9"),  # AIKIDO-2026-10536 (eval in axes.prop_cycle)
     "requests": Version("2.34.0"),  # AIKIDO-2026-106840, CVE-2026-25645
     "urllib3": Version("2.8.0"),  # CVE-2026-44431 (2.7.0), CVE-2026-97687/97688/97689 (2.8.0)
+    "numpy": Version("2.4.5"),  # AIKIDO-2026-795744; the 2.5.3 fixes need Python 3.12
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

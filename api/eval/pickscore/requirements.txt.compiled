@@ -62,7 +62,7 @@ mpmath==1.3.0
     # via sympy
 networkx==3.6.1
     # via torch
-numpy==2.4.3
+numpy==2.4.6
     # via transformers
 nvidia-cublas==13.1.0.3
     # via

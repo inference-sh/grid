@@ -85,7 +85,7 @@ networkx==3.6.1
     # via torch
 numba==0.65.0
     # via librosa
-numpy==2.4.4
+numpy==2.4.6
     # via
     #   accelerate
     #   librosa

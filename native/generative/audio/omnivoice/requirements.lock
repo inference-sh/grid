@@ -32,7 +32,7 @@ msgpack==1.1.2
 networkx==3.6.1
 ninja==1.13.0
 numba==0.65.0
-numpy==2.4.4
+numpy==2.4.6
 nvidia-cublas-cu12==12.8.4.1
 nvidia-cuda-cupti-cu12==12.8.90
 nvidia-cuda-nvrtc-cu12==12.8.93
