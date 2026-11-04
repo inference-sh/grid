@@ -20,7 +20,10 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta
 from pydantic import BaseModel, Field, model_validator, field_validator
 
 from .grafana_http import (
+    DEFAULT_LINE_BYTES,
+    DIGEST_LINE_BYTES,
     GROUP_KEYS,
+    LINE_OVERHEAD_BYTES,
     SKIP_DISTINCT,
     GrafanaClient,
     from_nanos,
@@ -28,14 +31,14 @@ from .grafana_http import (
     normalize_line,
     parse_record,
     parse_rfc3339,
+    read_range,
     record_message,
     resolve_window,
     rfc3339,
     to_nanos,
+    truncate_in_loki,
 )
 
-# Loki's max_entries_limit_per_query: the most lines one query_range returns.
-LOKI_MAX_ENTRIES = 5000
 ALERTMANAGER_PREFIX = "/api/alertmanager/grafana/api/v2"
 
 FREE = OutputMeta(inputs=[], outputs=[])
@@ -259,6 +262,17 @@ QUERY_HELP = (
 )
 
 
+PAGES_HELP = (
+    "Requests made to Loki. A window is read in pages that each stay under "
+    "Grafana's 4 MiB gRPC message limit, so a wide window or long lines take several."
+)
+PAGE_LIMIT_HELP = "Fewest lines a single request asked for: the effective page size."
+PAGES_SHRUNK_HELP = (
+    "Requests Loki refused as larger than 4 MiB and that were asked again "
+    "for fewer lines. Nonzero is not an error: those lines were read in smaller pages."
+)
+
+
 class QueryLogsInput(WindowInput):
     query: str = Field(description=QUERY_HELP, examples=['{job=~".+"} |= "error"'])
     limit: int = Field(
@@ -274,7 +288,8 @@ class QueryLogsInput(WindowInput):
         ge=100,
         le=20000,
         description="Log lines longer than this are truncated, so one huge line cannot "
-        "crowd out the rest of the result.",
+        "crowd out the rest of the result. Loki truncates them before answering, which "
+        "keeps a wide window under Grafana's 4 MiB response limit.",
     )
 
 
@@ -292,8 +307,15 @@ class QueryLogsOutput(BaseAppOutput):
     window_start: str = Field(description="Window start actually queried, RFC3339 UTC.")
     window_end: str = Field(description="Window end actually queried, RFC3339 UTC.")
     lines_scanned: int = Field(
-        description="Lines Loki scanned. Zero with no results means the selector matched "
-        "no stream; nonzero means it scanned data and nothing matched the filters."
+        description="Lines Loki scanned, summed over pages. Zero with no results means the "
+        "selector matched no stream; nonzero means it scanned data and nothing matched."
+    )
+    pages: int = Field(description=PAGES_HELP)
+    page_limit: int = Field(description=PAGE_LIMIT_HELP)
+    pages_shrunk: int = Field(description=PAGES_SHRUNK_HELP)
+    partial: bool = Field(
+        description="True when reading stopped before limit because even a minimal page was "
+        "over Grafana's 4 MiB limit: lines beyond the last one returned are missing."
     )
 
 
@@ -367,8 +389,16 @@ class LogDigestOutput(BaseAppOutput):
         "the window before concluding anything about what is in the window."
     )
     truncated: bool = Field(
-        description="True when limit was hit, so every count is a lower bound."
+        description="True when limit was hit or partial is true, so every count is a "
+        "lower bound."
     )
+    partial: bool = Field(
+        description="True when reading stopped before limit because even a minimal page was "
+        "over Grafana's 4 MiB limit: older lines in the window were not grouped."
+    )
+    pages: int = Field(description=PAGES_HELP)
+    page_limit: int = Field(description=PAGE_LIMIT_HELP)
+    pages_shrunk: int = Field(description=PAGES_SHRUNK_HELP)
     window_start: str = Field(description="Window start actually queried, RFC3339 UTC.")
     window_end: str = Field(description="Window end actually queried, RFC3339 UTC.")
 
@@ -580,39 +610,52 @@ class App(BaseApp):
             f"limit={input_data.limit} direction={input_data.direction}"
         )
 
-        payload = await self.client.request(
-            "GET",
+        # Loki cuts long lines itself (line_format | trunc) so the answer's size is
+        # bounded by limit x max_line_length rather than by whatever was logged.
+        # One byte over the limit survives so a cut line can still be told apart.
+        keep = input_data.max_line_length + 1
+        query = truncate_in_loki(input_data.query, keep)
+        server_cut = query != input_data.query
+        bytes_per_line = keep + LINE_OVERHEAD_BYTES if server_cut else DEFAULT_LINE_BYTES
+
+        entries, stats = await read_range(
+            self.client,
             f"{prefix}/loki/api/v1/query_range",
-            params={
-                "query": input_data.query,
-                "start": to_nanos(start),
-                "end": to_nanos(end),
-                "limit": input_data.limit,
-                "direction": input_data.direction,
-            },
+            query,
+            start,
+            end,
+            input_data.limit,
+            direction=input_data.direction,
+            bytes_per_line=bytes_per_line,
         )
 
-        data = (payload or {}).get("data") or {}
-        streams = data.get("result") or []
+        cap = input_data.max_line_length
+        streams = set()
         lines: List[LogLine] = []
-        for stream in streams:
-            labels = stream.get("stream") or {}
-            for entry in stream.get("values") or []:
-                nanos, text = entry[0], entry[1]
-                lines.append(
-                    LogLine(
-                        timestamp=from_nanos(nanos),
-                        line=text[: input_data.max_line_length],
-                        truncated=len(text) > input_data.max_line_length,
-                        labels=labels,
-                    )
+        for nanos, text, labels in entries:
+            streams.add(tuple(sorted(labels.items())))
+            cut = len(text) > cap
+            if server_cut:
+                # Loki's trunc counts bytes, so a multibyte line may arrive cut
+                # with fewer than cap characters.
+                cut = cut or len(text.encode("utf-8", "replace")) > cap
+            lines.append(
+                LogLine(
+                    timestamp=from_nanos(nanos),
+                    line=text[:cap],
+                    truncated=cut,
+                    labels=labels,
                 )
+            )
 
         lines.sort(key=lambda item: item.timestamp, reverse=input_data.direction == "backward")
         lines = lines[: input_data.limit]
 
-        scanned = _lines_scanned(data)
-        self.logger.info(f"query_logs returned {len(lines)} lines, scanned {scanned}")
+        self.logger.info(
+            f"query_logs returned {len(lines)} lines in {stats.pages} pages "
+            f"(page_limit={stats.page_limit} shrunk={stats.shrunk} partial={stats.partial}), "
+            f"scanned {stats.lines_scanned}"
+        )
 
         return QueryLogsOutput(
             lines=lines,
@@ -620,7 +663,11 @@ class App(BaseApp):
             streams=len(streams),
             window_start=start.isoformat(),
             window_end=end.isoformat(),
-            lines_scanned=scanned,
+            lines_scanned=stats.lines_scanned,
+            pages=stats.pages,
+            page_limit=stats.page_limit,
+            pages_shrunk=stats.shrunk,
+            partial=stats.partial,
             output_meta=FREE,
         )
 
@@ -639,58 +686,41 @@ class App(BaseApp):
             f"limit={input_data.limit}"
         )
 
-        # Loki answers at most LOKI_MAX_ENTRIES lines per query
-        # (max_entries_limit_per_query), so a larger limit is read in pages,
-        # newest first, each page ending just after the oldest line of the last.
+        # read_range pages through the window newest first, within both Loki's
+        # line cap and Grafana's 4 MiB message cap. Loki cuts lines at
+        # DIGEST_LINE_BYTES first; parse_record salvages the fields of a cut
+        # JSON line, so pages hold hundreds of lines rather than dozens.
         # The same event can arrive on more than one stream — a log shipper
         # watching two paths for one file, say. Counting both would double every
         # number in the digest, so identical (timestamp, line) pairs collapse.
-        # A page overlaps the last one at its boundary nanosecond; those repeats
-        # are skipped, not counted as duplicates.
+        query = truncate_in_loki(input_data.query, DIGEST_LINE_BYTES + 1)
+        fetched, stats = await read_range(
+            self.client,
+            f"{prefix}/loki/api/v1/query_range",
+            query,
+            start,
+            end,
+            input_data.limit,
+            bytes_per_line=(
+                DIGEST_LINE_BYTES + 1 + LINE_OVERHEAD_BYTES
+                if query != input_data.query
+                else DEFAULT_LINE_BYTES
+            ),
+        )
         seen: set = set()
         entries: List[tuple] = []
         duplicates = 0
-        page_end = to_nanos(end)
-        remaining = input_data.limit
-        overlap = 0  # after the first page, one slot goes to the boundary line
-        while remaining > 0:
-            page_limit = min(LOKI_MAX_ENTRIES, remaining + overlap)
-            payload = await self.client.request(
-                "GET",
-                f"{prefix}/loki/api/v1/query_range",
-                params={
-                    "query": input_data.query,
-                    "start": to_nanos(start),
-                    "end": page_end,
-                    "limit": page_limit,
-                    "direction": "backward",
-                },
-            )
-            previous = set(seen)
-            returned, added, oldest = 0, 0, None
-            for stream in ((payload or {}).get("data") or {}).get("result") or []:
-                for item in stream.get("values") or []:
-                    returned += 1
-                    nanos, text = int(item[0]), item[1]
-                    oldest = nanos if oldest is None else min(oldest, nanos)
-                    if (nanos, text) in previous:
-                        continue
-                    if (nanos, text) in seen:
-                        duplicates += 1
-                        continue
-                    seen.add((nanos, text))
-                    entries.append((nanos, text, stream.get("stream") or {}))
-                    added += 1
-            remaining -= added
-            if returned < page_limit or added == 0 or oldest is None:
-                break
-            page_end = str(oldest + 1)
-            overlap = 1
+        for nanos, text, labels in fetched:
+            if (nanos, text) in seen:
+                duplicates += 1
+                continue
+            seen.add((nanos, text))
+            entries.append((nanos, text, labels))
         entries.sort(key=lambda item: item[0])
 
         groups: Dict[tuple, Dict[str, Any]] = {}
         for nanos, text, labels in entries:
-            record = parse_record(text)
+            record = parse_record(text, cut=len(text.encode("utf-8", "replace")) > DIGEST_LINE_BYTES)
             message = record_message(record) or text
             shared = {}
             for key in GROUP_KEYS:
@@ -731,7 +761,9 @@ class App(BaseApp):
         kept = ranked[: input_data.max_groups]
         self.logger.info(
             f"log_digest grouped {len(entries)} lines into {len(ranked)} groups, "
-            f"returning {len(kept)}, dropped {duplicates} duplicate lines"
+            f"returning {len(kept)}, dropped {duplicates} duplicate lines; "
+            f"{stats.pages} pages, page_limit={stats.page_limit}, shrunk={stats.shrunk}, "
+            f"partial={stats.partial}"
         )
 
         return LogDigestOutput(
@@ -757,7 +789,11 @@ class App(BaseApp):
             duplicate_lines=duplicates,
             total_groups=len(ranked),
             groups_omitted=max(0, len(ranked) - len(kept)),
-            truncated=len(entries) >= input_data.limit,
+            truncated=len(fetched) >= input_data.limit or stats.partial,
+            partial=stats.partial,
+            pages=stats.pages,
+            page_limit=stats.page_limit,
+            pages_shrunk=stats.shrunk,
             window_start=start.isoformat(),
             window_end=end.isoformat(),
             output_meta=FREE,
@@ -903,10 +939,3 @@ def _silence(item: Dict[str, Any]) -> Silence:
         created_by=str(item.get("createdBy") or ""),
     )
 
-
-def _lines_scanned(data: Dict[str, Any]) -> int:
-    summary = ((data.get("stats") or {}).get("summary")) or {}
-    try:
-        return int(summary.get("totalLinesProcessed") or 0)
-    except (TypeError, ValueError):
-        return 0
