@@ -34,5 +34,5 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.7.0
+urllib3==2.8.0
     # via requests

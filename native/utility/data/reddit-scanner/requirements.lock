@@ -25,6 +25,6 @@ tqdm==4.67.3
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 update-checker==0.18.0
-urllib3==2.7.0
+urllib3==2.8.0
 vcs-versioning==1.1.1
 yarl==1.25.1

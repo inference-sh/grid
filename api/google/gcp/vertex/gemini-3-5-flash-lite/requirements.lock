@@ -35,7 +35,7 @@ tenacity==9.1.4
 tqdm==4.69.0
 typing-extensions==4.16.0
 typing-inspection==0.4.2
-urllib3==2.7.0
+urllib3==2.8.0
 vcs-versioning==2.6.0
 websockets==16.1.1
 wheel==0.48.0

@@ -34,6 +34,7 @@ SECURITY_FLOORS = {
     "anthropic": Version("1.10.0"),  # AIKIDO-2026-451947, -480854 (0.117.0), -859572 (1.10.0)
     "matplotlib": Version("3.10.9"),  # AIKIDO-2026-10536 (eval in axes.prop_cycle)
     "requests": Version("2.34.0"),  # AIKIDO-2026-106840, CVE-2026-25645
+    "urllib3": Version("2.8.0"),  # CVE-2026-44431 (2.7.0), CVE-2026-97687/97688/97689 (2.8.0)
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

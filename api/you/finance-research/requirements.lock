@@ -13,5 +13,5 @@ setuptools-scm==10.2.0
 tqdm==4.68.3
 typing-extensions==4.15.0
 typing-inspection==0.4.2
-urllib3==2.7.0
+urllib3==2.8.0
 vcs-versioning==2.2.2

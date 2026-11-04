@@ -80,7 +80,7 @@ typing-extensions==4.15.0
     #   xai-sdk
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.6.3
+urllib3==2.8.0
     # via requests
 xai-sdk==1.19.0
     # via -r requirements.txt
