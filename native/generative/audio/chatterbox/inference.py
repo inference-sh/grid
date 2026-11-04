@@ -3,7 +3,13 @@ from pydantic import Field
 from enum import Enum
 from typing import Optional
 import torch
-import torchaudio as ta
+import soundfile as sf
+
+
+def save_wav(path, wav, sr):
+    """Same file torchaudio.save wrote: 16-bit PCM WAV. wav is (channels, samples)."""
+    sf.write(path, wav.detach().cpu().numpy().T, sr, subtype="PCM_16")
+
 
 # Patch perth watermarker if it fails to initialize (common GPU env issue)
 import perth
@@ -184,7 +190,7 @@ class App(BaseApp):
                 audio=input_data.source_audio.path,
                 target_voice_path=input_data.target_voice_style.path
             )
-            ta.save(output_path, wav, vc_model.sr)
+            save_wav(output_path, wav, vc_model.sr)
 
         elif input_data.model == Model.TURBO:
             if not input_data.voice_reference:
@@ -200,7 +206,7 @@ class App(BaseApp):
                 )
                 wavs.append(wav)
             wav = torch.cat(wavs, dim=1) if len(wavs) > 1 else wavs[0]
-            ta.save(output_path, wav, model.sr)
+            save_wav(output_path, wav, model.sr)
 
         elif input_data.model == Model.MULTILINGUAL:
             if input_data.language not in SUPPORTED_LANGUAGES:
@@ -221,7 +227,7 @@ class App(BaseApp):
                 wav = model.generate(chunk, **kwargs)
                 wavs.append(wav)
             wav = torch.cat(wavs, dim=1) if len(wavs) > 1 else wavs[0]
-            ta.save(output_path, wav, model.sr)
+            save_wav(output_path, wav, model.sr)
 
         else:  # Original model
             model = self._get_original_model()
@@ -238,6 +244,6 @@ class App(BaseApp):
                 wav = model.generate(chunk, **kwargs)
                 wavs.append(wav)
             wav = torch.cat(wavs, dim=1) if len(wavs) > 1 else wavs[0]
-            ta.save(output_path, wav, model.sr)
+            save_wav(output_path, wav, model.sr)
 
         return AppOutput(audio_output=File(path=output_path))

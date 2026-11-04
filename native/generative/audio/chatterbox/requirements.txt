@@ -5,7 +5,8 @@ accelerate
 huggingface-hub
 hf-transfer
 chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git@59bc590b3cad826e5d5987745bf6844627a21ad5
-torch==2.7.0 # imported directly; was only transitive via accelerate
-torchaudio==2.7.0
+torch==2.14.1 # imported directly; was only transitive via accelerate
+torchaudio==2.11.1 # last release; py3-none wheel requires torch>=2.11
+soundfile # torchaudio.save needs torchcodec from 2.9
 transformers==5.22.1
 pillow>=13.0.0
