@@ -87,7 +87,7 @@ importlib-metadata==10.1.0
     # via
     #   controlnet-aux
     #   diffusers
-inferencesh==0.38.7
+inferencesh==0.38.9
     # via -r requirements.txt
 insightface==0.7.3
     # via -r requirements.txt
@@ -184,7 +184,7 @@ nvidia-nvshmem-cu13==3.4.5
     # via torch
 nvidia-nvtx==13.0.85
     # via cuda-toolkit
-onnx==1.19.0
+onnx==1.23.2
     # via
     #   -r requirements.txt
     #   insightface

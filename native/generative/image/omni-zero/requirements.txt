@@ -18,6 +18,6 @@ transformers==5.22.1
 # pinned to the deployed version: 1.27 fails to load its CUDA libs on the
 # GPU-less deploy host, and insightface imports onnxruntime at module scope
 onnxruntime-gpu==1.22.0
-onnx==1.19.0
+onnx==1.23.2
 hf_transfer
 xformers==0.0.35
