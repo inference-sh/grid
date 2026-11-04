@@ -1,17 +1,17 @@
 # <app dir> <package>  # blocking constraint
 # Apps whose pins stay below a SECURITY_FLOORS entry in scripts/check-lock-floors.py.
 # Drop a line once the app resolves at the floor.
-native/generative/audio/audio-x aiohttp  # owned by another agent; not touched here
+native/generative/audio/audio-x aiohttp  # held at the pin the staged GPU build was tested with
 native/generative/audio/fast-whisper-large-v3 huggingface-hub  # requirements.txt pins 0.25.0; no fix on 0.x, needs a 1.x move
 native/generative/video/rife-video-interpolation huggingface-hub  # locked 0.36.2; no fix on 0.x, needs a 1.x move
-native/generative/audio/dramabox huggingface-hub  # owned by another agent; not touched here
-native/generative/audio/audio-x urllib3  # owned by another agent; not touched here
-native/generative/audio/diffrythm urllib3  # owned by another agent; not touched here
-native/generative/audio/dramabox urllib3  # owned by another agent; not touched here
-native/generative/audio/audio-x numpy  # owned by another agent; not touched here
-native/generative/audio/chatterbox numpy  # owned by another agent; not touched here
-native/generative/image/omni-zero numpy  # owned by another agent; not touched here
-native/generative/text/recursive/flint numpy  # owned by another agent; not touched here
+native/generative/audio/dramabox huggingface-hub  # held at the pin the staged GPU build was tested with
+native/generative/audio/audio-x urllib3  # held at the pin the staged GPU build was tested with
+native/generative/audio/diffrythm urllib3  # held at the pin the staged GPU build was tested with
+native/generative/audio/dramabox urllib3  # held at the pin the staged GPU build was tested with
+native/generative/audio/audio-x numpy  # held at the pin the staged GPU build was tested with
+native/generative/audio/chatterbox numpy  # held at the pin the staged GPU build was tested with
+native/generative/image/omni-zero numpy  # held at the pin the staged GPU build was tested with
+native/generative/text/recursive/flint numpy  # staged SGLang build under test; pins held until promoted
 native/generative/3d/tokenrig numpy  # bpy 4.2.0 needs numpy 1.x; requirements.txt numpy<2
 native/generative/image/birefnet numpy  # requirements.txt numpy<2
 native/generative/image/bytedance-uso numpy  # requirements.txt numpy<2
@@ -20,14 +20,11 @@ native/generative/video/rife-video-interpolation numpy  # requirements.txt numpy
 native/generative/video/videoseal numpy  # requirements.txt numpy<2
 native/generative/audio/fast-whisper-large-v3 numpy  # numba 0.61.0: numpy<2.2
 native/generative/text/jev/jev-27b-vl numpy  # mistral-common 1.12.0: numpy<2.4
-native/generative/audio/audio-x filelock  # owned by another agent; not touched here
-native/generative/audio/diffrythm filelock  # owned by another agent; not touched here
-native/generative/audio/dramabox filelock  # owned by another agent; not touched here
-native/generative/audio/audio-x setuptools  # owned by another agent; not touched here
-native/generative/audio/diffrythm setuptools  # owned by another agent; not touched here
-native/generative/audio/dramabox setuptools  # owned by another agent; not touched here
+native/generative/audio/audio-x filelock  # held at the pin the staged GPU build was tested with
+native/generative/audio/diffrythm filelock  # held at the pin the staged GPU build was tested with
+native/generative/audio/dramabox filelock  # held at the pin the staged GPU build was tested with
 api/eval/pickscore setuptools  # torch 2.11.0: setuptools<82
 native/generative/audio/omnivoice setuptools  # compiled pins 81.0.0; 82 removed pkg_resources, unverified
 api/falai/gemini-3-pro-image-preview websockets  # google-genai 1.56.0: websockets<15.1
-native/generative/audio/audio-x regex  # owned by another agent; not touched here
-native/generative/audio/diffrythm regex  # owned by another agent; not touched here
+native/generative/audio/audio-x regex  # held at the pin the staged GPU build was tested with
+native/generative/audio/diffrythm regex  # held at the pin the staged GPU build was tested with
