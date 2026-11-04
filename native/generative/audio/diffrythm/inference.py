@@ -33,7 +33,7 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
 from typing import List, Optional
 import torch
-import torchaudio
+import soundfile as sf
 from einops import rearrange
 import json
 from huggingface_hub import hf_hub_download
@@ -200,11 +200,9 @@ class App(BaseApp):
 
         # Save output
         output_path = "/tmp/generated_audio.wav"
-        torchaudio.save(
-            output_path,
-            generated_songs[0],  # Save first generated sample
-            sample_rate=self.sampling_rate
-        )
+        # torchaudio.save needs torchcodec from 2.9. generated_songs[0] is the first
+        # sample, (channels, samples) as int16.
+        sf.write(output_path, generated_songs[0].numpy().T, self.sampling_rate, subtype="PCM_16")
 
         return AppOutput(generated_audio=File(path=output_path))
 

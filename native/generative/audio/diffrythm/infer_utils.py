@@ -250,7 +250,9 @@ def get_reference_latent(device, max_frames, edit, pred_segments, ref_song, vae_
     downsample_rate = 2048
     io_channels = 2
     if edit:
-        input_audio, in_sr = torchaudio.load(ref_song)
+        # torchaudio.load needs torchcodec from 2.9
+        input_audio, in_sr = librosa.load(ref_song, sr=None, mono=False)
+        input_audio = torch.from_numpy(np.atleast_2d(input_audio))
         input_audio = prepare_audio(input_audio, in_sr=in_sr, target_sr=sampling_rate, target_length=None, target_channels=io_channels, device=device)
         input_audio = normalize_audio(input_audio, -6)
         
