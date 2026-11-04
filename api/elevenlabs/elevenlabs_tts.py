@@ -37,7 +37,7 @@ import httpx
 from inferencesh import AudioMeta, BaseAppInput, BaseAppOutput, File, Live, OutputMeta, PCM16, Socket, Stream
 from pydantic import BaseModel, Field
 
-from .elevenlabs_helper import get_audio_duration, get_voice_id, text_to_speech
+from .elevenlabs_helper import error_from_response, get_audio_duration, get_voice_id, text_to_speech
 
 DIALOGUE_URL = "wss://api.elevenlabs.io/v1/text-to-dialogue/stream-input"
 DIALOGUE_REST_URL = "https://api.elevenlabs.io/v1/text-to-dialogue"
@@ -227,7 +227,7 @@ async def converse(app: Any, model: str, max_chars: int, input_data: DialogueInp
             json=body,
         )
     if response.status_code != 200:
-        raise RuntimeError(f"ElevenLabs answered {response.status_code}: {response.text[:500]}")
+        raise error_from_response(response.status_code, response.text)
 
     suffix = ".pcm" if input_data.output_format.startswith("pcm_") else ".mp3"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as audio:

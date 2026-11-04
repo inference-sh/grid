@@ -215,7 +215,7 @@ def test_an_elevenlabs_refusal_fails_the_dialogue_with_what_it_said(monkeypatch)
     out, err, _ = dialogue("eleven-v4", monkeypatch, http=http, segments=LINES)
 
     assert out is None
-    assert isinstance(err, RuntimeError) and "422" in str(err) and "voice not found" in str(err)
+    assert isinstance(err, RuntimeError) and "voice not found" in str(err)
 
 
 # ------------------------------------------------------------ the live function

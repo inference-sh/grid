@@ -12,6 +12,8 @@ import os
 import logging
 import tempfile
 import asyncio
+import functools
+import inspect
 import subprocess
 import json
 from typing import Optional, Dict, Any, List
@@ -77,18 +79,91 @@ def save_audio_bytes(audio_bytes: bytes, suffix: str = ".mp3") -> str:
         return tmp.name
 
 
+class ElevenLabsError(RuntimeError):
+    """Base error for ElevenLabs API failures with a readable message."""
+
+    def __init__(self, message: str, *, status: Optional[str] = None, request_id: Optional[str] = None):
+        super().__init__(message)
+        self.status = status
+        self.request_id = request_id
+
+
+class ContentModerationError(ElevenLabsError):
+    """Raised when ElevenLabs refuses a prompt or voice on safety or Terms of Service grounds."""
+
+
+# The refusals seen in production. The Terms of Service and verification
+# answers were only ever stored as messages, so both status and text are checked.
+MODERATION_STATUSES = {"blocked_generation"}
+MODERATION_PHRASES = ("safety guidelines", "terms of service", "requires verification")
+
+
+def _error_detail(e: ApiError) -> Any:
+    """The `detail` of an ElevenLabs error body, or the body when it has none."""
+    body = getattr(e, "body", None)
+    if isinstance(body, dict):
+        return body.get("detail", body)
+    return body
+
+
 def _parse_api_error(e: ApiError) -> str:
     """Extract a readable message from an ElevenLabs ApiError."""
-    detail = getattr(e, "body", {})
+    detail = _error_detail(e)
     if isinstance(detail, dict):
-        detail = detail.get("detail", detail)
-    if isinstance(detail, dict):
-        msg = detail.get("message", str(e))
+        msg = detail.get("message") or f"ElevenLabs answered {e.status_code}"
         suggestion = (detail.get("data") or {}).get("prompt_suggestion")
         if suggestion:
             return f"{msg}\n\nSuggested prompt: {suggestion}"
         return msg
-    return str(e)
+    return str(detail) if detail else f"ElevenLabs answered {e.status_code}"
+
+
+def classify_elevenlabs_error(error: ApiError) -> ElevenLabsError:
+    """Turn an ElevenLabs ApiError into a typed error with a readable message."""
+    detail = _error_detail(error)
+    fields = detail if isinstance(detail, dict) else {}
+    status = fields.get("status")
+    request_id = fields.get("request_id")
+    message = _parse_api_error(error)
+
+    if status not in MODERATION_STATUSES and not any(p in message.lower() for p in MODERATION_PHRASES):
+        return ElevenLabsError(message, status=status, request_id=request_id)
+
+    logging.getLogger(__name__).warning("ElevenLabs content moderation refused a request: status=%s request_id=%s", status, request_id)
+    reference = f" (ElevenLabs request {request_id})" if request_id else ""
+    return ContentModerationError(
+        f"ElevenLabs' content moderation blocked this request{reference}: {message}",
+        status=status,
+        request_id=request_id,
+    )
+
+
+def error_from_response(status_code: int, text: str) -> ElevenLabsError:
+    """The typed error for an ElevenLabs answer read outside the SDK."""
+    try:
+        body: Any = json.loads(text)
+    except ValueError:
+        body = text[:500]
+    return classify_elevenlabs_error(ApiError(status_code=status_code, body=body))
+
+
+def typed_errors(func):
+    """Raise classify_elevenlabs_error's result for any ApiError out of `func`."""
+    if inspect.iscoroutinefunction(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            try:
+                return await func(*args, **kwargs)
+            except ApiError as e:
+                raise classify_elevenlabs_error(e) from e
+    else:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except ApiError as e:
+                raise classify_elevenlabs_error(e) from e
+    return wrapper
 
 
 def save_audio_generator(audio_gen, suffix: str = ".mp3") -> str:
@@ -99,7 +174,7 @@ def save_audio_generator(audio_gen, suffix: str = ".mp3") -> str:
                 tmp.write(chunk)
             return tmp.name
     except ApiError as e:
-        raise RuntimeError(_parse_api_error(e)) from e
+        raise classify_elevenlabs_error(e) from e
 
 
 def get_audio_duration(file_path: str, logger: Optional[logging.Logger] = None) -> float:
@@ -121,6 +196,7 @@ def get_audio_duration(file_path: str, logger: Optional[logging.Logger] = None) 
     return 0.0
 
 
+@typed_errors
 def text_to_speech(
     text: str,
     voice_id: str,
@@ -157,6 +233,7 @@ def text_to_speech(
     return file_path
 
 
+@typed_errors
 def speech_to_text(
     audio: str,
     model_id: str = "scribe_v2",
@@ -202,6 +279,7 @@ def speech_to_text(
     return result.model_dump()
 
 
+@typed_errors
 def speech_to_speech(
     audio_path: str,
     voice_id: str,
@@ -235,6 +313,7 @@ def speech_to_speech(
     return file_path
 
 
+@typed_errors
 def isolate_voice(
     audio_path: str,
     logger: Optional[logging.Logger] = None,
@@ -258,6 +337,7 @@ def isolate_voice(
     return file_path
 
 
+@typed_errors
 def generate_sound_effect(
     text: str,
     duration_seconds: Optional[float] = None,
@@ -283,6 +363,7 @@ def generate_sound_effect(
     return file_path
 
 
+@typed_errors
 def compose_music(
     prompt: str,
     duration_seconds: int = 30,
@@ -307,6 +388,7 @@ def compose_music(
     return file_path
 
 
+@typed_errors
 async def create_dubbing(
     audio: str,
     target_lang: str,
@@ -358,6 +440,7 @@ async def create_dubbing(
     return dubbed_audio
 
 
+@typed_errors
 async def poll_dubbing_status(
     dubbing_id: str,
     target_lang: str,
@@ -386,6 +469,7 @@ async def poll_dubbing_status(
         attempt += 1
 
 
+@typed_errors
 def download_dubbed_audio(
     dubbing_id: str,
     language_code: str,
@@ -406,6 +490,7 @@ def download_dubbed_audio(
     return file_path
 
 
+@typed_errors
 def clone_voice(
     name: str,
     files: List[str],
@@ -455,6 +540,7 @@ def clone_voice(
     }
 
 
+@typed_errors
 def list_cloned_voices(
     logger: Optional[logging.Logger] = None,
 ) -> List[Dict[str, Any]]:
@@ -477,6 +563,7 @@ def list_cloned_voices(
     return voices
 
 
+@typed_errors
 def delete_voice(
     voice_id: str,
     logger: Optional[logging.Logger] = None,
@@ -490,6 +577,7 @@ def delete_voice(
         logger.info(f"Voice deleted: {voice_id}")
 
 
+@typed_errors
 def design_voice(
     voice_description: str,
     text: Optional[str] = None,
@@ -531,6 +619,7 @@ def design_voice(
     return previews
 
 
+@typed_errors
 def remix_voice(
     voice_id: str,
     voice_description: str,
@@ -575,6 +664,7 @@ def remix_voice(
     return previews
 
 
+@typed_errors
 def text_to_dialogue(
     inputs: List[Dict[str, str]],
     logger: Optional[logging.Logger] = None,
@@ -600,6 +690,7 @@ def text_to_dialogue(
     return file_path
 
 
+@typed_errors
 def forced_alignment(
     audio_path: str,
     text: str,
