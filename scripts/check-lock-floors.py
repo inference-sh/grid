@@ -88,12 +88,14 @@ def pins(path):
     return out
 
 
-def main(argv):
-    root = Path(__file__).resolve().parent.parent
+def main(argv, root=None):
+    root = root or Path(__file__).resolve().parent.parent
     only = None if "--all" in argv else "inferencesh"
-    dirs = [Path(a) for a in argv if a != "--all"] or [root / "api", root / "native"]
+    paths = [Path(a) for a in argv if a != "--all"]
+    dirs = paths or [root / "api", root / "native"]
     bad = 0
     allowed = exceptions(root)
+    used = set()
     for d in dirs:
         for fname in PINNED:
             for pinned_file in sorted(d.rglob(fname)):
@@ -101,7 +103,11 @@ def main(argv):
                 app = parent.relative_to(root).as_posix() if parent.is_relative_to(root) else parent.as_posix()
                 for name, v in pins(pinned_file).items():
                     floor = SECURITY_FLOORS.get(name)
-                    if floor is not None and v < floor and (app, name) not in allowed:
+                    if floor is None or v >= floor:
+                        continue
+                    if (app, name) in allowed:
+                        used.add((app, name))
+                    else:
                         print(f"{pinned_file}: {name}=={v} is below the security floor {floor}")
                         bad += 1
         for req_txt in sorted(d.rglob("requirements.txt")):
@@ -118,6 +124,11 @@ def main(argv):
                     if v is not None and not req.specifier.contains(v, prereleases=True):
                         print(f"{pinned_file}: {name}=={v} violates '{req.specifier}' in requirements.txt")
                         bad += 1
+    # A partial scan can't tell a stale exception from one in a directory it skipped.
+    if not paths:
+        for app, name in sorted(allowed - used):
+            print(f"{EXCEPTIONS}: {app} {name} is stale; no pin is below the floor, drop the line")
+            bad += 1
     if bad:
         print(f"{bad} pin(s) outside requirements.txt or below a security floor; "
               f"raise them or list the app in {EXCEPTIONS}", file=sys.stderr)
