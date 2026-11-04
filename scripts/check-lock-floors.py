@@ -38,6 +38,7 @@ SECURITY_FLOORS = {
     "numpy": Version("2.4.5"),  # AIKIDO-2026-795744; the 2.5.3 fixes need Python 3.12
     "filelock": Version("4.2.1"),  # AIKIDO-2026-190770 etc.; CVE-2026-112909 etc. fixed in 4.2.1
     "setuptools": Version("84.1.0"),  # GHSA-xmj3-9gf7-h52w
+    "websockets": Version("16.1"),  # AIKIDO-2026-118856, -625161
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

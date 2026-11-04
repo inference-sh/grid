@@ -44,7 +44,7 @@ typing-extensions==4.15.0
 typing-inspection==0.4.2
 urllib3==2.8.0
 vcs-versioning==2.6.0
-websockets==16.0
+websockets==16.1.1
 wheel==0.48.0
 wheel-stub==0.5.0
 yarl==1.25.1

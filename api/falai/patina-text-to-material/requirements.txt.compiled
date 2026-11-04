@@ -54,5 +54,5 @@ typing-inspection==0.4.2
     # via pydantic
 urllib3==2.8.0
     # via requests
-websockets==16.0
+websockets==16.1.1
     # via fal-client
