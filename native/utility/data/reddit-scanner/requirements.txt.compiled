@@ -4,7 +4,7 @@ aiofiles==25.1.0
     # via asyncpraw
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.5
+aiohttp==3.14.5
     # via
     #   asyncpraw
     #   asyncprawcore
@@ -56,6 +56,7 @@ tqdm==4.67.3
     # via inferencesh
 typing-extensions==4.15.0
     # via
+    #   aiohttp
     #   aiosignal
     #   aiosqlite
     #   pydantic
@@ -67,7 +68,7 @@ update-checker==0.18.0
     # via asyncpraw
 urllib3==2.7.0
     # via requests
-yarl==1.23.0
+yarl==1.25.1
     # via
     #   aiohttp
     #   asyncprawcore

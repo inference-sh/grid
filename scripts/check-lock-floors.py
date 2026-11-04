@@ -23,12 +23,13 @@ from packaging.version import InvalidVersion, Version
 
 PINNED = ("requirements.lock", "requirements.txt.compiled")
 
-# Lowest release with the fix for a critical advisory.
+# Lowest release with the fix for an advisory the scanners report.
 SECURITY_FLOORS = {
     "pillow": Version("13.0.0"),  # GHSA-v9pv-5gc8-w2m6, GHSA-5x8w-8jj5-q52h and the 13.0.0 advisories
     "certifi": Version("2026.10.23"),  # GHSA-6q48-6c7w-9gw2 (emSign roots)
     "pyjwt": Version("2.14.0"),  # GHSA-ffc3-869f-jxw9
     "brotli": Version("1.2.1"),  # GHSA-9v8h-qqgm-4m35
+    "aiohttp": Version("3.14.4"),  # GHSA-2g87-pp6c-29x5 and the other 3.14.4 advisories
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

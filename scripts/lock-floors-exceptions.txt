@@ -1,3 +1,4 @@
 # <app dir> <package>  # blocking constraint
 # Apps whose pins stay below a SECURITY_FLOORS entry in scripts/check-lock-floors.py.
 # Drop a line once the app resolves at the floor.
+native/generative/audio/audio-x aiohttp  # owned by another agent; not touched here
