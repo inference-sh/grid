@@ -177,7 +177,7 @@ safetensors==0.9.0rc1
     #   transformers
 sentencepiece==0.2.2
     # via -r requirements.txt
-setuptools==84.0.0
+setuptools==84.2.1
     # via torch
 shellingham==1.5.4
     # via typer

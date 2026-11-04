@@ -52,7 +52,7 @@ pyyaml==6.0.3
 requests==2.34.2
 safetensors==0.9.0rc1
 scikit-build-core==1.1.1
-setuptools==84.0.0
+setuptools==84.2.1
 setuptools-scm==10.3.4
 sympy==1.14.0
 torch==2.14.1

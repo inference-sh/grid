@@ -59,7 +59,7 @@ requests==2.34.2
 safetensors==0.8.0
 scikit-build-core==1.1.2
 scipy==1.15.3
-setuptools==83.0.0
+setuptools==84.2.1
 setuptools-scm==10.3.4
 sk-video==1.1.10
 sympy==1.14.0

@@ -135,7 +135,7 @@ safetensors==0.8.0
     # via accelerate
 scipy==1.15.3
     # via sk-video
-setuptools==83.0.0
+setuptools==84.2.1
     # via torch
 sk-video==1.1.10
     # via -r requirements.txt

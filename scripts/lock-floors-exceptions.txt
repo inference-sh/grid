@@ -23,3 +23,8 @@ native/generative/text/jev/jev-27b-vl numpy  # mistral-common 1.12.0: numpy<2.4
 native/generative/audio/audio-x filelock  # owned by another agent; not touched here
 native/generative/audio/diffrythm filelock  # owned by another agent; not touched here
 native/generative/audio/dramabox filelock  # owned by another agent; not touched here
+native/generative/audio/audio-x setuptools  # owned by another agent; not touched here
+native/generative/audio/diffrythm setuptools  # owned by another agent; not touched here
+native/generative/audio/dramabox setuptools  # owned by another agent; not touched here
+api/eval/pickscore setuptools  # torch 2.11.0: setuptools<82
+native/generative/audio/omnivoice setuptools  # compiled pins 81.0.0; 82 removed pkg_resources, unverified

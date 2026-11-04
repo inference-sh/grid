@@ -38,7 +38,7 @@ requests==2.34.2
 scikit-image==0.26.0
 scikit-learn==1.8.0
 scipy==1.17.1
-setuptools==82.0.1
+setuptools==84.2.1
 setuptools-scm==10.0.5
 simsimd==6.5.16
 six==1.17.0
