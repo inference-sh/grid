@@ -2,8 +2,10 @@ pydantic >= 2.0.0 # required for inference.sh
 inferencesh # required for inference.sh
 
 # Upstream DramaBox pins (github.com/resemble-ai/DramaBox requirements.txt, minus gradio/spaces)
-torch==2.8.0
-torchaudio==2.8.0
+torch==2.14.1
+# last torchaudio release; py3-none wheel requires torch>=2.11. The app uses only transforms and
+# resample from it (ta.save/load would need torchcodec); audio is written with soundfile.
+torchaudio==2.11.1
 safetensors>=0.4.0
 accelerate>=0.25.0
 peft>=0.7.0
@@ -17,12 +19,12 @@ hf_transfer
 bitsandbytes>=0.45.0
 soundfile>=0.12.0
 numpy
-resemble-perth==1.0.1
+# PyPI 1.0.1 imports pkg_resources, gone from setuptools >= 82; this is the commit chatterbox runs
+resemble-perth @ git+https://github.com/resemble-ai/Perth.git@ff1c8ac55a976971245cdd53c18d6131ca00d993
 
 # Transitive imports not declared upstream (ltx_core schedulers/media_io, resemble-perth)
 scipy
 pillow>=13.0.0
 tqdm
 librosa
-# setuptools 81+ drops pkg_resources, which resemble-perth still imports
-setuptools<81
+setuptools>=84.1.0
