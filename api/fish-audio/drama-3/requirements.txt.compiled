@@ -22,7 +22,7 @@ idna==3.20
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.29.1
+inferencesh==0.38.10
     # via -r requirements.txt
 msgpack==1.2.3
     # via -r requirements.txt

@@ -69,11 +69,10 @@
     "output_format": {
       "default": "mp4",
       "description": "Format of the output video file",
-      "examples": [
+      "enum": [
         "mp4",
-        "avi",
         "mov",
-        "webm"
+        "avi"
       ],
       "title": "Output Format",
       "type": "string"

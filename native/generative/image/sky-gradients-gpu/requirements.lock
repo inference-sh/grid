@@ -6,7 +6,7 @@ cython==3.3.1
 flit-core==4.2.0
 glcontext==3.1.0
 idna==3.20
-inferencesh==0.38.6
+inferencesh==0.38.10
 moderngl==5.13.0
 ninja==1.13.2
 numpy==2.4.6

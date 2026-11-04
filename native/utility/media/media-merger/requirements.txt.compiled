@@ -10,7 +10,7 @@ idna==3.11
     # via requests
 imageio-ffmpeg==0.6.0
     # via -r requirements.txt
-inferencesh==0.38.9
+inferencesh==0.38.10
     # via -r requirements.txt
 pydantic==2.13.0b3
     # via
