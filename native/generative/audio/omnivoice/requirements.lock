@@ -60,7 +60,7 @@ pydantic-core==2.46.2
 pydub==0.25.1
 pygments==2.20.0
 pyyaml==6.0.3
-regex==2026.4.4
+regex==2026.9.29
 requests==2.34.2
 rich==15.0.0
 safetensors==0.7.0

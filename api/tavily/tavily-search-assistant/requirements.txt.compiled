@@ -32,7 +32,7 @@ pydantic==2.13.4
     #   inferencesh
 pydantic-core==2.46.4
     # via pydantic
-regex==2026.5.9
+regex==2026.9.29
     # via tiktoken
 requests==2.34.2
     # via

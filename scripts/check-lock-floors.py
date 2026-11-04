@@ -39,6 +39,7 @@ SECURITY_FLOORS = {
     "filelock": Version("4.2.1"),  # AIKIDO-2026-190770 etc.; CVE-2026-112909 etc. fixed in 4.2.1
     "setuptools": Version("84.1.0"),  # GHSA-xmj3-9gf7-h52w
     "websockets": Version("16.1"),  # AIKIDO-2026-118856, -625161
+    "regex": Version("2026.8.31"),  # AIKIDO-2026-447516
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"
 

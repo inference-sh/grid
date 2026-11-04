@@ -42,7 +42,7 @@ packaging==26.2
 psutil==7.2.2
 pygments==2.20.0
 pyyaml==6.0.3
-regex==2026.5.9
+regex==2026.9.29
 rich==15.0.0
 safetensors==0.9.0rc1
 scikit-learn==1.8.0

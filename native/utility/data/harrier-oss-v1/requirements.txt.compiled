@@ -122,7 +122,7 @@ pyyaml==6.0.3
     #   accelerate
     #   huggingface-hub
     #   transformers
-regex==2026.5.9
+regex==2026.9.29
     # via transformers
 rich==15.0.0
     # via typer

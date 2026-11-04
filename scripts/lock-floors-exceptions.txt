@@ -29,3 +29,5 @@ native/generative/audio/dramabox setuptools  # owned by another agent; not touch
 api/eval/pickscore setuptools  # torch 2.11.0: setuptools<82
 native/generative/audio/omnivoice setuptools  # compiled pins 81.0.0; 82 removed pkg_resources, unverified
 api/falai/gemini-3-pro-image-preview websockets  # google-genai 1.56.0: websockets<15.1
+native/generative/audio/audio-x regex  # owned by another agent; not touched here
+native/generative/audio/diffrythm regex  # owned by another agent; not touched here

@@ -163,7 +163,7 @@ pyyaml==6.0.3
     #   huggingface-hub
     #   peft
     #   transformers
-regex==2026.6.28
+regex==2026.9.29
     # via
     #   diffusers
     #   transformers
