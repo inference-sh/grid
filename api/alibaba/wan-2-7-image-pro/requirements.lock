@@ -24,7 +24,6 @@ markdown-it-py==4.2.0
 mdurl==0.1.2
 multidict==6.7.1
 ninja==1.13.2
-numpy==2.4.6
 packaging==26.3
 pathspec==1.1.1
 propcache==0.4.1

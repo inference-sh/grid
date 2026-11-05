@@ -13,7 +13,6 @@ inferencesh==0.38.10
 msgpack==1.2.3
 mutagen==1.48.1
 ninja==1.13.2
-numpy==2.4.6
 packaging==26.3
 pathspec==1.1.1
 pydantic==2.14.1

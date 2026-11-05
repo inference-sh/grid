@@ -10,7 +10,6 @@ google==3.0.0
 idna==3.11
 inferencesh==0.33.0
 ninja==1.13.2
-numpy==2.4.6
 packaging==26.3
 pathspec==1.1.1
 protobuf==7.34.1

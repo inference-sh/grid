@@ -15,7 +15,6 @@ idna==3.11
 inferencesh==0.28.0
 jiter==0.13.0
 ninja==1.13.2
-numpy==2.4.6
 openai==2.30.0
 packaging==26.3
 pathspec==1.1.1

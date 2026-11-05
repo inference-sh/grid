@@ -7,7 +7,6 @@ flit-core==4.1.0
 idna==3.20
 inferencesh==0.34.0
 ninja==1.13.2
-numpy==2.4.6
 packaging==26.3
 pathspec==1.1.1
 pillow==13.0.0

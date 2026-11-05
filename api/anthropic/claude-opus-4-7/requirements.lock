@@ -14,7 +14,6 @@ idna==3.20
 inferencesh==0.37.3
 jiter==0.15.0
 ninja==1.13.2
-numpy==2.4.6
 opentelemetry-api==1.45.1
 packaging==26.3
 pathspec==1.1.1
