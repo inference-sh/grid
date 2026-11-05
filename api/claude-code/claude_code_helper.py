@@ -14,10 +14,9 @@ lines are routed to their run by id. serve finds the `claude` binary through
 CLAUDE_BIN, which setup points at a pinned @anthropic-ai/claude-code installed
 with the worker image's npm.
 
-serve is the latest belt release: setup copies the belt shipped in the app
-dir (bin/belt-linux-<arch>) to the worker's cache and runs `belt update` on
-the copy, since `harness` commands never update themselves. When the update
-can't be had, the copy runs as it is.
+serve is the belt shipped in the app dir (bin/belt-linux-<arch>), so an app
+version always runs the binary it was deployed with: `harness` commands never
+update themselves, and a new belt reaches workers by build.sh and a deploy.
 
 The token is read from the environment at every run and only ever written to
 serve's stdin: it is never put in serve's environment, logged, or echoed in an
@@ -26,16 +25,14 @@ error.
 
 import asyncio
 import fcntl
+import hashlib
 import json
 import logging
 import os
 import platform
-import re
 import shutil
 import subprocess
 import sys
-import tempfile
-import time
 import uuid
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
@@ -87,16 +84,9 @@ def _cache_root() -> Path:
     return Path(base) / "inferencesh" / "claude-code"
 
 
-# How long setup waits for `belt update` before it runs the copy it has, and
-# how long after a timeout it leaves the update alone: a killed update records
-# no backoff of its own.
-BELT_UPDATE_TIMEOUT = 120
-BELT_UPDATE_BACKOFF = 3600
-
-
 def find_belt(app_dir: Path = APP_DIR) -> Path:
-    """BELT_BIN, else the latest belt: the one shipped with the app for this
-    platform, copied to the cache and updated there."""
+    """BELT_BIN, else the belt shipped with the app for this platform, copied
+    to the cache."""
     explicit = os.environ.get("BELT_BIN")
     if explicit:
         return Path(explicit)
@@ -104,75 +94,27 @@ def find_belt(app_dir: Path = APP_DIR) -> Path:
     shipped = app_dir / "bin" / f"belt-{system}-{_arch()}"
     if not shipped.exists():
         raise ClaudeCodeError(f"belt binary for {system}/{_arch()} not found at {shipped}; run build.sh before deploying")
-    return _updated_belt(shipped)
+    return _cached_belt(shipped)
 
 
-def _updated_belt(shipped: Path) -> Path:
-    """The cache's belt, updated to the latest release. The cache holds the
-    newer of the shipped belt and the copy it has (the app dir may be
-    read-only, and the package may not keep the mode bit); an update that
-    fails leaves the copy as it was."""
-    dst = _cache_root() / "bin" / shipped.name
+def _cached_belt(shipped: Path) -> Path:
+    """The shipped belt in the cache, named by its checksum (the app dir may be
+    read-only, and the package may not keep the mode bit). A copy that does not
+    match is replaced, so a belt left by an older version or changed on the
+    worker never runs in place of the shipped one."""
+    digest = _sha256(shipped)
+    dst = _cache_root() / "bin" / f"{shipped.name}-{digest[:16]}"
     dst.parent.mkdir(parents=True, exist_ok=True)
-    timed_out = dst.parent / f".{shipped.name}.update-timeout"
-    with open(dst.parent / f".{shipped.name}.lock", "w") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        _remove_stale_staging(dst)
+    if not dst.exists() or _sha256(dst) != digest:
         tmp = dst.with_suffix(f".{uuid.uuid4().hex}")
         shutil.copyfile(shipped, tmp)
         tmp.chmod(0o755)
-        if not dst.exists() or _belt_version(tmp) > _belt_version(dst):
-            os.replace(tmp, dst)
-        else:
-            tmp.unlink()
-    # Outside the lock: an update stages the download under a name of its own
-    # and renames it over dst, so setups need not wait on each other's.
-    if timed_out.exists() and time.time() - timed_out.stat().st_mtime < BELT_UPDATE_BACKOFF:
-        print(f"belt update skipped: it timed out within {BELT_UPDATE_BACKOFF}s; running {_belt_name(dst)}", flush=True)
-        return dst
-    env = {k: v for k, v in os.environ.items() if k not in _STRIPPED_ENV}
-    work = Path(tempfile.mkdtemp(prefix="belt-update-", dir=dst.parent))
-    env["TMPDIR"] = str(work)
-    try:
-        r = subprocess.run([str(dst), "update"], env=env, stdin=subprocess.DEVNULL, capture_output=True,
-                           text=True, timeout=BELT_UPDATE_TIMEOUT)
-        print(f"belt update: {(r.stdout + r.stderr).strip()[-300:]}", flush=True)
-    except subprocess.TimeoutExpired as e:
-        timed_out.touch()
-        out = "".join(x.decode(errors="replace") if isinstance(x, bytes) else x for x in (e.stdout or "", e.stderr or ""))
-        print(f"belt update timed out after {BELT_UPDATE_TIMEOUT}s ({out.strip()[-200:]}); running {_belt_name(dst)}", flush=True)
-    except (OSError, subprocess.SubprocessError) as e:
-        print(f"belt update failed ({e}); running {_belt_name(dst)}", flush=True)
-    finally:
-        shutil.rmtree(work, ignore_errors=True)
+        os.replace(tmp, dst)
     return dst
 
 
-def _belt_version(path: Path) -> Tuple[int, ...]:
-    """The belt's release version, () when it does not run or say one."""
-    m = re.search(r"belt v(\d+)\.(\d+)\.(\d+)", _belt_name(path))
-    return tuple(int(x) for x in m.groups()) if m else ()
-
-
-def _belt_name(path: Path) -> str:
-    """The first line of `belt version` (it prints on stderr)."""
-    try:
-        r = subprocess.run([str(path), "version"], stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=30)
-    except (OSError, subprocess.SubprocessError):
-        return "an unrunnable belt"
-    return ((r.stdout + r.stderr).strip().splitlines() or ["belt (no version)"])[0]
-
-
-def _remove_stale_staging(dst: Path):
-    """Drop what killed updates and copies leave next to dst: an update's
-    staging file and this helper's own copies, once an hour old."""
-    cutoff = time.time() - BELT_UPDATE_BACKOFF
-    for p in [*dst.parent.glob(f".{dst.name}.new-*"), *dst.parent.glob(".autoupdate-probe-*"), *dst.parent.glob(f"{dst.name}.*"), *dst.parent.glob("belt-update-*")]:
-        try:
-            if p.stat().st_mtime < cutoff:
-                shutil.rmtree(p) if p.is_dir() else p.unlink()
-        except OSError:
-            pass
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def ensure_claude() -> str:
