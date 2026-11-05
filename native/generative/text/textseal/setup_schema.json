@@ -1,0 +1,23 @@
+{
+  "$defs": {
+    "ModelEnum": {
+      "enum": [
+        "Qwen/Qwen3.5-0.8B",
+        "Qwen/Qwen3.5-2B",
+        "Qwen/Qwen3.5-4B",
+        "Qwen/Qwen3.5-9B"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "Qwen/Qwen3.5-2B",
+      "description": "Model that writes the text. Detect with the model that watermarked it."
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}
