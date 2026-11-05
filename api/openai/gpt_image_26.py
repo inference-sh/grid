@@ -1,12 +1,21 @@
 """Shared input, request building and output handling for the GPT Image 2.6 apps."""
 
 import logging
+import math
 from typing import Literal, Optional
 
 from inferencesh import BaseAppInput, BaseAppOutput, File, ImageMeta, OutputMeta
 from pydantic import Field
 
-from .openai_helper import make_size_string, moderated, save_base64_image, validate_and_fix_dimensions
+from .openai_helper import (
+    MAX_EDGE,
+    MAX_PIXELS,
+    MIN_PIXELS,
+    make_size_string,
+    moderated,
+    save_base64_image,
+    validate_and_fix_dimensions,
+)
 
 ComplexityType = Literal["low", "medium", "high"]
 QualityType = Literal["auto", "low", "medium", "high", "xhigh", "max"]
@@ -26,32 +35,28 @@ class ImageInput(BaseAppInput):
     )
     images: Optional[list[File]] = Field(
         default=None,
-        description="Optional image(s) to edit. A mask or markup applies to the first image; "
-        "the others serve as references.",
-    )
-    mask: Optional[File] = Field(
-        default=None,
-        description="Optional mask for the first image. Its transparent areas mark where to edit. "
-        "Cannot be combined with markup.",
+        description="Optional image(s) to edit. Edits apply to the first image; the others serve as references.",
     )
     markup: Optional[File] = Field(
         default=None,
         description="Optional transparent PNG with circles, sketches or other annotations showing where to edit. "
-        "Must match the first image's dimensions. Cannot be combined with mask.",
+        "Must match the first image's dimensions.",
     )
     width: int = Field(
         default=1024,
         ge=256,
         le=3840,
-        description="Output width in pixels. Must be a multiple of 16. For gif this is the frame width; "
-        "leave width and height unset to let the model pick a size that fits the frame count.",
+        description="Output width in pixels. Must be a multiple of 16. When editing, leave width and height unset "
+        "to keep the first image's size. For gif this is the frame width; leave width and height unset "
+        "to let the model pick a size that fits the frame count.",
     )
     height: int = Field(
         default=1024,
         ge=256,
         le=3840,
-        description="Output height in pixels. Must be a multiple of 16. For gif this is the frame height; "
-        "leave width and height unset to let the model pick a size that fits the frame count.",
+        description="Output height in pixels. Must be a multiple of 16. When editing, leave width and height unset "
+        "to keep the first image's size. For gif this is the frame height; leave width and height unset "
+        "to let the model pick a size that fits the frame count.",
     )
     quality: QualityType = Field(
         default="auto",
@@ -102,17 +107,38 @@ class ImageInput(BaseAppInput):
     )
 
 
+class MaskedImageInput(ImageInput):
+    mask: Optional[File] = Field(
+        default=None,
+        description="Optional mask for the first image. Its transparent areas mark where to edit. "
+        "Cannot be combined with markup.",
+    )
+
+
 class ImageOutput(BaseAppOutput):
     images: list[File] = Field(description="The generated image files.")
 
 
+def _edit_dimensions(path: str) -> tuple[int, int]:
+    """The first image's upright size, scaled into OpenAI's limits and snapped to multiples of 16."""
+    from PIL import Image as PILImage, ImageOps
+
+    with PILImage.open(path) as img:
+        width, height = ImageOps.exif_transpose(img).size
+    scale = min(1.0, MAX_EDGE / max(width, height), math.sqrt(MAX_PIXELS / (width * height)))
+    scale = max(scale, math.sqrt(MIN_PIXELS / (width * height)))
+    snap = math.ceil if scale > 1 else math.floor
+    return tuple(snap(side * scale / 16) * 16 for side in (width, height))
+
+
 def _validate(input_data: ImageInput, is_edit: bool) -> None:
     fmt = input_data.output_format
+    mask = getattr(input_data, "mask", None)
     if input_data.background == "transparent" and fmt not in ("png", "webp"):
         raise ValueError("Transparent backgrounds require png or webp output_format")
-    if input_data.mask and input_data.markup:
+    if mask and input_data.markup:
         raise ValueError("mask and markup cannot be combined")
-    if (input_data.mask or input_data.markup) and not is_edit:
+    if (mask or input_data.markup) and not is_edit:
         raise ValueError("mask and markup require input images")
     if fmt in ("gif", "svg") and is_edit:
         raise ValueError(f"{fmt} output is for generation only; image edits do not support it")
@@ -162,8 +188,9 @@ async def _edit(client, model: str, input_data: ImageInput, size: str):
             raise ValueError("No valid images provided for editing")
         kwargs = _common_kwargs(model, input_data, size)
         kwargs["image"] = image_files if len(image_files) > 1 else image_files[0]
-        if input_data.mask and input_data.mask.exists():
-            kwargs["mask"] = _open(input_data.mask.path)
+        mask = getattr(input_data, "mask", None)
+        if mask and mask.exists():
+            kwargs["mask"] = _open(mask.path)
         if input_data.markup and input_data.markup.exists():
             kwargs["markup"] = _open(input_data.markup.path)
         return await client.images.edit(**kwargs, extra_body={"moderation": input_data.moderation})
@@ -199,11 +226,15 @@ async def run_image(client, model: str, input_data: ImageInput, logger: logging.
 
     fmt = input_data.output_format
     width, height = input_data.width, input_data.height
+    size_unset = not {"width", "height"} & input_data.model_fields_set
+    # The defaults would squash a non-square image into 1024x1024.
+    if is_edit and size_unset and fmt != "gif":
+        width, height = _edit_dimensions(input_data.images[0].path)
     if fmt != "gif":
         width, height = validate_and_fix_dimensions(width, height, logger=logger)
     size = make_size_string(width, height)
     # A gif's frames share one sheet, so the default 1024x1024 fits no frame count: let OpenAI pick.
-    if fmt == "gif" and not {"width", "height"} & input_data.model_fields_set:
+    if fmt == "gif" and size_unset:
         size = "auto"
     mode = "edit" if is_edit else "generate"
 

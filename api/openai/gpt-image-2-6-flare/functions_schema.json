@@ -4,6 +4,7 @@
     "kind": "run",
     "capabilities": [],
     "input_schema": {
+      "additionalProperties": false,
       "description": "Input schema for GPT Image 2.6 Flare.",
       "properties": {
         "prompt": {
@@ -29,22 +30,8 @@
             }
           ],
           "default": null,
-          "description": "Optional image(s) to edit. A mask or markup applies to the first image; the others serve as references.",
+          "description": "Optional image(s) to edit. Edits apply to the first image; the others serve as references.",
           "title": "Images"
-        },
-        "mask": {
-          "anyOf": [
-            {
-              "format": "file",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional mask for the first image. Its transparent areas mark where to edit. Cannot be combined with markup.",
-          "title": "Mask"
         },
         "markup": {
           "anyOf": [
@@ -57,12 +44,12 @@
             }
           ],
           "default": null,
-          "description": "Optional transparent PNG with circles, sketches or other annotations showing where to edit. Must match the first image's dimensions. Cannot be combined with mask.",
+          "description": "Optional transparent PNG with circles, sketches or other annotations showing where to edit. Must match the first image's dimensions.",
           "title": "Markup"
         },
         "width": {
           "default": 1024,
-          "description": "Output width in pixels. Must be a multiple of 16. For gif this is the frame width; leave width and height unset to let the model pick a size that fits the frame count.",
+          "description": "Output width in pixels. Must be a multiple of 16. When editing, leave width and height unset to keep the first image's size. For gif this is the frame width; leave width and height unset to let the model pick a size that fits the frame count.",
           "maximum": 3840,
           "minimum": 256,
           "title": "Width",
@@ -70,7 +57,7 @@
         },
         "height": {
           "default": 1024,
-          "description": "Output height in pixels. Must be a multiple of 16. For gif this is the frame height; leave width and height unset to let the model pick a size that fits the frame count.",
+          "description": "Output height in pixels. Must be a multiple of 16. When editing, leave width and height unset to keep the first image's size. For gif this is the frame height; leave width and height unset to let the model pick a size that fits the frame count.",
           "maximum": 3840,
           "minimum": 256,
           "title": "Height",
