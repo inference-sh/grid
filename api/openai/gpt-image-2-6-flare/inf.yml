@@ -1,6 +1,6 @@
 namespace: openai
 name: gpt-image-2-6-flare
-description: "OpenAI's GPT Image 2.6 for fast iteration. Text-to-image, edits with masks or markup, complexity control, transparent backgrounds, SVG and animated GIF output."
+description: "OpenAI's GPT Image 2.6 for fast iteration. Text-to-image, edits with markup, complexity control, transparent backgrounds, SVG and animated GIF output."
 metadata:
     provider: openai
     tags:

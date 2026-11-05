@@ -2,13 +2,13 @@
 
 from inferencesh import BaseApp
 
-from .gpt_image_26 import ImageInput, ImageOutput, run_image
+from .gpt_image_26 import ImageOutput, MaskedImageInput, run_image
 from .openai_helper import create_openai_client, setup_logger
 
 MODEL = "gpt-image-2.6-sunburst"
 
 
-class AppInput(ImageInput):
+class AppInput(MaskedImageInput):
     """Input schema for GPT Image 2.6 Sunburst."""
 
 

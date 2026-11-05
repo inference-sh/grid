@@ -159,8 +159,8 @@ sends a fixed `access_programs.cyber` value with every Responses request.
 | `openai/gpt-image-2-6-flare` | `gpt-image-2.6-flare` | auto, low, medium, high, xhigh, max | transparent background, complexity, markup edits, svg and gif output |
 | `openai/gpt-image-2-6-sunburst` | `gpt-image-2.6-sunburst` | auto, low, medium, high, xhigh, max | transparent background, complexity, markup edits, svg and gif output |
 
-All of them: text-to-image and edit via the Images API, up to 16 reference images, mask inpainting,
-custom `WIDTHxHEIGHT` sizes (multiples of 16, max edge 3840, ratio <= 3:1), png/jpeg/webp output.
+All of them: text-to-image and edit via the Images API, up to 16 reference images, mask inpainting
+(except `gpt-image-2-6-flare`), custom `WIDTHxHEIGHT` sizes (multiples of 16, max edge 3840, ratio <= 3:1), png/jpeg/webp output.
 Mode is inferred: no `images` → generate, `images` → edit.
 
 Token rates are identical ($5 text in / $8 image in / $30 image out per MTok) but the tile grid
@@ -174,7 +174,13 @@ The 2.6 apps share their input and request code in `gpt_image_26.py`. They bill 
 run reports, because 2.6 token counts do not follow the 2.5 tile formula. svg output needs an
 author model, set to `gpt-6-luna` in `SVG_AUTHOR_MODEL`, and its tokens are billed too. gif frames
 render on one sheet: OpenAI refuses sizes where the sheet misses its pixel budget (256x256 with 2
-frames, 1024x1024 with 9), so a gif with no width or height sends `size: auto`.
+frames, 1024x1024 with 9), so a gif with no width or height sends `size: auto`. An edit with no width or height keeps the
+first image's size, scaled into the limits above.
+
+`gpt-image-2-6-flare` takes no `mask`. On 2026-11-05 Flare filled the masked area with black or
+edited outside it on 10 of 11 runs across every `complexity`; Sunburst got the same request right
+on 3 of 3. Its schema sets `additionalProperties: false`, so the API refuses a mask at submit
+instead of dropping it and billing an unmasked edit.
 
 ## Auth
 
