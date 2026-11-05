@@ -156,8 +156,10 @@ sends a fixed `access_programs.cyber` value with every Responses request.
 | `openai/gpt-image-2` | `gpt-image-2` | auto, low, medium, high | transparent background (preview) |
 | `openai/gpt-image-2-5-flare` | `gpt-image-2.5-flare` | auto, low, medium, high, xhigh, max | transparent background, 50% lower latency than gpt-image-2 |
 | `openai/gpt-image-2-5-sunburst` | `gpt-image-2.5-sunburst` | auto, low, medium, high, xhigh, max | transparent background, tighter edit control |
+| `openai/gpt-image-2-6-flare` | `gpt-image-2.6-flare` | auto, low, medium, high, xhigh, max | transparent background, complexity, markup edits, svg and gif output |
+| `openai/gpt-image-2-6-sunburst` | `gpt-image-2.6-sunburst` | auto, low, medium, high, xhigh, max | transparent background, complexity, markup edits, svg and gif output |
 
-All three: text-to-image and edit via the Images API, up to 16 reference images, mask inpainting,
+All of them: text-to-image and edit via the Images API, up to 16 reference images, mask inpainting,
 custom `WIDTHxHEIGHT` sizes (multiples of 16, max edge 3840, ratio <= 3:1), png/jpeg/webp output.
 Mode is inferred: no `images` → generate, `images` → edit.
 
@@ -167,6 +169,12 @@ per quality tier differs between 2 and 2.5 — see each app's `pricing.md`. The 
 
 The quality `Literal` for 2.5 lives in each app's `inference.py`, not in `openai_helper.py`,
 because gpt-image-2 rejects `xhigh` / `max`.
+
+The 2.6 apps share their input and request code in `gpt_image_26.py`. They bill the tokens each
+run reports, because 2.6 token counts do not follow the 2.5 tile formula. svg output needs an
+author model, set to `gpt-6-luna` in `SVG_AUTHOR_MODEL`, and its tokens are billed too. gif frames
+render on one sheet: OpenAI refuses sizes where the sheet misses its pixel budget (256x256 with 2
+frames, 1024x1024 with 9), so a gif with no width or height sends `size: auto`.
 
 ## Auth
 

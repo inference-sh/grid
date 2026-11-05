@@ -1,0 +1,178 @@
+{
+  "description": "Input schema for GPT Image 2.6 Flare.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the desired image. For gif output, describe the subject, motion and loop.",
+      "examples": [
+        "A cat wearing a tiny top hat, oil painting style"
+      ],
+      "maxLength": 32000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional image(s) to edit. A mask or markup applies to the first image; the others serve as references.",
+      "title": "Images"
+    },
+    "mask": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional mask for the first image. Its transparent areas mark where to edit. Cannot be combined with markup.",
+      "title": "Mask"
+    },
+    "markup": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional transparent PNG with circles, sketches or other annotations showing where to edit. Must match the first image's dimensions. Cannot be combined with mask.",
+      "title": "Markup"
+    },
+    "width": {
+      "default": 1024,
+      "description": "Output width in pixels. Must be a multiple of 16. For gif this is the frame width; leave width and height unset to let the model pick a size that fits the frame count.",
+      "maximum": 3840,
+      "minimum": 256,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1024,
+      "description": "Output height in pixels. Must be a multiple of 16. For gif this is the frame height; leave width and height unset to let the model pick a size that fits the frame count.",
+      "maximum": 3840,
+      "minimum": 256,
+      "title": "Height",
+      "type": "integer"
+    },
+    "quality": {
+      "default": "auto",
+      "description": "Rendering quality. 'low' for drafts, 'high' for final assets, 'xhigh' and 'max' for maximum detail at higher cost. For svg, sets the reference image's quality.",
+      "enum": [
+        "auto",
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "complexity": {
+      "default": "high",
+      "description": "How much the model plans before rendering, independent of quality and at no extra cost. Lower suits focused edits; higher helps dense text and complex layouts but adds latency.",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Complexity",
+      "type": "string"
+    },
+    "n": {
+      "default": 1,
+      "description": "Number of images to generate (1-10). svg output requires 1.",
+      "maximum": 10,
+      "minimum": 1,
+      "title": "N",
+      "type": "integer"
+    },
+    "output_format": {
+      "default": "png",
+      "description": "Output file format. gif (animated) and svg (vector) are for generation only, not edits.",
+      "enum": [
+        "png",
+        "jpeg",
+        "webp",
+        "gif",
+        "svg"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_compression": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Compression level for jpeg/webp (0-100). Ignored for other formats.",
+      "title": "Output Compression"
+    },
+    "frame_count": {
+      "default": 9,
+      "description": "Number of animation frames. Used only for gif output.",
+      "maximum": 16,
+      "minimum": 2,
+      "title": "Frame Count",
+      "type": "integer"
+    },
+    "frame_duration_ms": {
+      "default": 200,
+      "description": "Delay per animation frame in milliseconds, rounded to 10 ms. Used only for gif output.",
+      "maximum": 2000,
+      "minimum": 20,
+      "title": "Frame Duration Ms",
+      "type": "integer"
+    },
+    "moderation": {
+      "default": "auto",
+      "description": "Content moderation strictness. 'auto' applies standard filtering; 'low' is less restrictive.",
+      "enum": [
+        "auto",
+        "low"
+      ],
+      "title": "Moderation",
+      "type": "string"
+    },
+    "background": {
+      "default": "auto",
+      "description": "Background transparency. 'transparent' requires png or webp output; prompt for an isolated subject. 'opaque' forces a solid background.",
+      "enum": [
+        "auto",
+        "transparent",
+        "opaque"
+      ],
+      "title": "Background",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
