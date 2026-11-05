@@ -9,8 +9,8 @@ flit-core==4.2.0
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.27.2
-idna==3.20
-inferencesh==0.38.8
+idna==3.11
+inferencesh==0.38.10
 ninja==1.13.2
 numpy==2.4.6
 packaging==26.3
