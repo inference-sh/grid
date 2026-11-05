@@ -1,0 +1,7 @@
+pydantic>=2.0.0
+inferencesh
+huggingface-hub[hf_transfer]
+# pinned to the deployed videoseal version: newer torch fails on the CUDA 12 grid nodes
+torch==2.9.1
+# PyPI textseal 0.0.5 predates textseal2 and the textseal.watermarking package
+git+https://github.com/facebookresearch/textseal.git@0b76bc64013081c570b8633d3d3585e3ee9a495a

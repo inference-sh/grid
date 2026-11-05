@@ -1,0 +1,23 @@
+namespace: infsh
+name: textseal
+title: TextSeal Watermarking
+description: Add or detect an invisible statistical watermark in text with Meta TextSeal2. Rephrases text or generates it from a prompt.
+metadata:
+    tags:
+        - text-generation
+        - media-utilities
+category: text
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+default_function: watermark
+env:
+    HF_HUB_ENABLE_HF_TRANSFER: "1"
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 24000000000
+        type: any
+    ram: 32000000000
