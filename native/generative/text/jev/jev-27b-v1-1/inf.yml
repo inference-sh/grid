@@ -1,0 +1,28 @@
+namespace: autotrust
+name: jev-27b-v1-1
+title: AutoTrust-JEV-27B v1.1
+description: AutoTrust's open text decision model, v1.1. Send text with typed questions (choice, score, yes/no) and get a probability for every answer, with no text generation. Text only.
+metadata:
+    tags:
+        - classification
+        - routing
+        - moderation
+        - open-weights
+category: decision
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+credentials:
+    - provider: huggingface
+      secrets: [HF_TOKEN]
+      description: Faster, rate-limit-free weight downloads. The weights are public.
+      optional: true
+kernel: python-3.11
+resources:
+    gpu:
+        count: 1
+        vram: 80
+        type: any
+    ram: 64
