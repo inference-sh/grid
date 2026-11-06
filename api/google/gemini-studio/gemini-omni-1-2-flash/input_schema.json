@@ -1,0 +1,82 @@
+{
+  "properties": {
+    "prompt": {
+      "description": "What the video shows: scene, camera movement, lighting, mood and audio. Put exclusions in the prompt too (for example 'no dialogue').",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Image to animate. It becomes the starting frame of the video.",
+      "title": "Image"
+    },
+    "last_frame": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Ending frame. Needs image as the starting frame; the video transitions between the two. Durations up to 10 seconds.",
+      "title": "Last Frame"
+    },
+    "reference_images": {
+      "description": "Up to 6 reference images that keep characters, objects or style consistent (up to 3 images per character for up to 2 characters).",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 6,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "aspect_ratio": {
+      "default": "16:9",
+      "description": "16:9 for landscape, 9:16 for portrait.",
+      "enum": [
+        "16:9",
+        "9:16"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "720p",
+      "description": "Output resolution. 1080p and 4k are upscaled.",
+      "enum": [
+        "360p",
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "duration": {
+      "default": 10,
+      "description": "Video length in seconds, 3 to 15.",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

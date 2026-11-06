@@ -1,0 +1,27 @@
+namespace: google
+name: gemini-omni-1-2-flash
+title: Gemini Omni 1.2 Flash
+description: Gemini Omni 1.2 Flash. 3 to 15 second videos with native audio from text, an image, first and last frames, or up to 6 reference images. 360p to 4K.
+metadata:
+    tags:
+        - text-to-video
+        - image-to-video
+        - first-last-frame
+        - reference-to-video
+        - native-audio
+category: video
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/3pvtxdts.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/m0fiiacl.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/q3u9au46.png
+env: {}
+kernel: python-3.11
+credentials:
+    google-gemini:
+        secrets: [GEMINI_API_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
