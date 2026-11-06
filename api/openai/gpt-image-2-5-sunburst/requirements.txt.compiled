@@ -32,7 +32,7 @@ idna==3.19
     #   httpx
     #   httpx2
     #   requests
-inferencesh==0.7.35
+inferencesh==0.38.10
     # via -r requirements.txt
 jiter==0.16.0
     # via openai
