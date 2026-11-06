@@ -88,6 +88,13 @@ def test_a_moderation_error_is_still_a_runtime_error():
     assert issubclass(helper.ContentModerationError, RuntimeError)
 
 
+def test_a_moderation_error_carries_the_platform_error_code():
+    # The engine's kernel reads error_code and the API stores it on the task.
+    e = helper.classify_elevenlabs_error(error(SAFETY))
+    assert e.error_code == "content_moderation"
+    assert getattr(helper.error_from_response(502, "bad gateway"), "error_code", None) is None
+
+
 def test_an_answer_read_outside_the_sdk_is_classified():
     e = helper.error_from_response(403, json.dumps(SAFETY))
     assert type(e) is helper.ContentModerationError

@@ -91,6 +91,9 @@ class ElevenLabsError(RuntimeError):
 class ContentModerationError(ElevenLabsError):
     """Raised when ElevenLabs refuses a prompt or voice on safety or Terms of Service grounds."""
 
+    # Read by the engine's kernel and stored on the failed task (tasks.error_code).
+    error_code = "content_moderation"
+
 
 # The refusals seen in production. The Terms of Service and verification
 # answers were only ever stored as messages, so both status and text are checked.

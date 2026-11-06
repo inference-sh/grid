@@ -467,7 +467,9 @@ class XAIError(RuntimeError):
 
 class ContentModerationError(XAIError):
     """Raised when xAI refuses to generate an image due to content moderation."""
-    pass
+
+    # Read by the engine's kernel and stored on the failed task (tasks.error_code).
+    error_code = "content_moderation"
 
 
 class XAIGenerationError(XAIError):
