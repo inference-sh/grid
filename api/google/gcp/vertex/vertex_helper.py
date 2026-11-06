@@ -9,6 +9,7 @@ This module provides shared functionality for Vertex AI model integrations:
 """
 
 import os
+import re
 import math
 import logging
 import tempfile
@@ -620,6 +621,28 @@ def is_moderation_reason(reason) -> bool:
         return False
     name = getattr(reason, "name", None) or str(reason).rsplit(".", 1)[-1]
     return name in MODERATION_REASONS
+
+
+# Veo reports a refused prompt or input image as an operation error whose
+# message names the policy, and a refused output video as RAI-filtered.
+VEO_REFUSAL = re.compile(r"Responsible AI|usage guidelines|safety settings", re.IGNORECASE)
+
+
+def raise_veo_no_videos(result: dict) -> None:
+    """Raise the error for a Veo operation that returned no videos."""
+    response_data = result.get("response", {}) or {}
+    error = result.get("error")
+    if error:
+        message = error.get("message", "") if isinstance(error, dict) else str(error)
+        cls = ContentModerationError if VEO_REFUSAL.search(message) else RuntimeError
+        raise cls(f"Video generation failed: {error}")
+    rai_reasons = response_data.get("raiMediaFilteredReasons", [])
+    rai_count = response_data.get("raiMediaFilteredCount", 0)
+    if rai_reasons:
+        raise ContentModerationError(
+            f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}"
+        )
+    raise RuntimeError("No videos in response")
 
 
 def wrap_app_error(exc: BaseException, prefix: str) -> RuntimeError:

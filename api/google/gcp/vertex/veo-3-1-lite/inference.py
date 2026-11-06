@@ -5,6 +5,8 @@ from typing import Optional, List
 from enum import Enum
 
 from .vertex_helper import (
+    raise_veo_no_videos,
+    wrap_app_error,
     get_vertex_credentials,
     get_image_dimensions,
     detect_video_aspect_ratio,
@@ -149,14 +151,7 @@ class App(BaseApp):
             videos = response_data.get("videos", [])
 
             if not videos:
-                error = result.get("error")
-                if error:
-                    raise RuntimeError(f"Video generation failed: {error}")
-                rai_reasons = response_data.get("raiMediaFilteredReasons", [])
-                rai_count = response_data.get("raiMediaFilteredCount", 0)
-                if rai_reasons:
-                    raise RuntimeError(f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}")
-                raise RuntimeError("No videos in response")
+                raise_veo_no_videos(result)
 
             if aspect_ratio == "16:9":
                 width, height = (1920, 1080) if input_data.resolution.value == "1080p" else (1280, 720)
@@ -202,4 +197,4 @@ class App(BaseApp):
 
         except Exception as e:
             self.logger.error(f"Error during video generation: {e}")
-            raise RuntimeError(f"Video generation failed: {str(e)}")
+            raise wrap_app_error(e, "Video generation failed") from e

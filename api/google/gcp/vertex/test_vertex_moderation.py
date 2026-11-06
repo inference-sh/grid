@@ -74,3 +74,38 @@ def test_wrapping_keeps_the_class(helper):
     assert str(wrapped) == "Image generation failed: No images were generated"
     plain = helper.wrap_app_error(ValueError("bad"), "Image generation failed")
     assert type(plain) is RuntimeError and str(plain) == "Image generation failed: bad"
+
+
+VERTEX = HELPERS[0]
+
+VEO_REFUSALS = [
+    "The prompt could not be submitted. This prompt contains sensitive words that violate Google's Responsible AI practices.",
+    "Veo could not generate videos because the input image violates Vertex AI's usage guidelines.",
+    "The input image contains content that has been blocked by your current safety settings for person/face generation.",
+]
+
+
+@pytest.mark.parametrize("message", VEO_REFUSALS)
+def test_a_veo_refusal_is_content_moderation(message):
+    with pytest.raises(VERTEX.ContentModerationError) as info:
+        VERTEX.raise_veo_no_videos({"error": {"code": 3, "message": message}})
+    assert info.value.error_code == "content_moderation"
+    assert str(info.value).startswith("Video generation failed: {'code': 3")
+
+
+def test_a_veo_filtered_video_is_content_moderation():
+    result = {"response": {"raiMediaFilteredCount": 1, "raiMediaFilteredReasons": [
+        "1 videos were filtered out because they violated Vertex AI's usage guidelines."]}}
+    with pytest.raises(VERTEX.ContentModerationError, match=r"blocked by content filtering \(1 filtered\)"):
+        VERTEX.raise_veo_no_videos(result)
+
+
+@pytest.mark.parametrize("result", [
+    {"error": {"code": 8, "message": "The service is currently experiencing high load and cannot process your request."}},
+    {"error": {"code": 13, "message": "Internal error. Please try again later."}},
+    {"response": {}},
+])
+def test_other_veo_failures_stay_runtime_error(result):
+    with pytest.raises(RuntimeError) as info:
+        VERTEX.raise_veo_no_videos(result)
+    assert not isinstance(info.value, VERTEX.ContentModerationError)

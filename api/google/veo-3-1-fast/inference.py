@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 
 from .vertex_helper import (
+    raise_veo_no_videos,
+    wrap_app_error,
     get_vertex_credentials,
     get_image_dimensions,
     detect_video_aspect_ratio,
@@ -207,15 +209,7 @@ class App(BaseApp):
 
             if not videos:
                 self.logger.error(f"Full result: {result}")
-                error = result.get("error")
-                if error:
-                    raise RuntimeError(f"Video generation failed: {error}")
-                # Check for RAI content filtering
-                rai_reasons = response_data.get("raiMediaFilteredReasons", [])
-                rai_count = response_data.get("raiMediaFilteredCount", 0)
-                if rai_reasons:
-                    raise RuntimeError(f"Video was blocked by content filtering ({rai_count} filtered): {'; '.join(rai_reasons)}")
-                raise RuntimeError("No videos in response")
+                raise_veo_no_videos(result)
 
             output_videos = []
             output_meta_videos = []
@@ -288,4 +282,4 @@ class App(BaseApp):
 
         except Exception as e:
             self.logger.error(f"Error during video generation: {e}")
-            raise RuntimeError(f"Video generation failed: {str(e)}")
+            raise wrap_app_error(e, "Video generation failed") from e
