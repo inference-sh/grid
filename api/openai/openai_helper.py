@@ -9,10 +9,10 @@ import base64
 import os
 import logging
 import tempfile
-from typing import Literal, Optional
+from typing import Awaitable, Literal, Optional, TypeVar
 
 import httpx
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, BadRequestError
 from inferencesh import File
 
 
@@ -23,6 +23,42 @@ from inferencesh import File
 QualityType = Literal["auto", "low", "medium", "high"]
 
 OutputFormatType = Literal["png", "jpeg", "webp"]
+
+
+# =============================================================================
+# ERRORS
+# =============================================================================
+
+# OpenAI error codes for a request its safety system refused.
+MODERATION_CODES = frozenset({"moderation_blocked", "content_policy_violation"})
+
+T = TypeVar("T")
+
+
+class ContentModerationError(RuntimeError):
+    """OpenAI's safety system refused the request. The message is OpenAI's own."""
+
+    error_code = "content_moderation"
+
+
+def is_moderation_refusal(exc: BaseException) -> bool:
+    """Whether exc is OpenAI refusing a request on safety grounds."""
+    if not isinstance(exc, BadRequestError):
+        return False
+    code = getattr(exc, "code", None)
+    if code is None and isinstance(exc.body, dict):
+        code = exc.body.get("code")
+    return code in MODERATION_CODES
+
+
+async def moderated(call: Awaitable[T]) -> T:
+    """Await an OpenAI call, raising ContentModerationError for a safety refusal."""
+    try:
+        return await call
+    except BadRequestError as exc:
+        if is_moderation_refusal(exc):
+            raise ContentModerationError(str(exc)) from exc
+        raise
 
 
 # =============================================================================

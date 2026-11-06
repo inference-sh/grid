@@ -11,6 +11,7 @@ from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, 
 from pydantic import Field
 
 from .openai_helper import (
+    moderated,
     QualityType,
     OutputFormatType,
     create_openai_client,
@@ -121,9 +122,9 @@ class App(BaseApp):
         )
 
         if is_edit:
-            result = await self._edit(input_data, size_str)
+            result = await moderated(self._edit(input_data, size_str))
         else:
-            result = await self._generate(input_data, size_str)
+            result = await moderated(self._generate(input_data, size_str))
 
         # Save images
         output_images: list[File] = []

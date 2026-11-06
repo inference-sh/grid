@@ -592,6 +592,42 @@ def save_image_to_temp(
 # IMAGE RESPONSE PROCESSING
 # =============================================================================
 
+# =============================================================================
+# MODERATION
+# =============================================================================
+
+# Gemini block and finish reasons for content its safety filters refused.
+# IMAGE_RECITATION (copyright), OTHER and STOP stay plain failures.
+MODERATION_REASONS = frozenset({
+    "SAFETY",
+    "PROHIBITED_CONTENT",
+    "BLOCKLIST",
+    "SPII",
+    "IMAGE_SAFETY",
+    "IMAGE_PROHIBITED_CONTENT",
+})
+
+
+class ContentModerationError(RuntimeError):
+    """Gemini's safety filters refused the prompt or the generated content."""
+
+    error_code = "content_moderation"
+
+
+def is_moderation_reason(reason) -> bool:
+    """Whether a BlockedReason/FinishReason (enum or its str()) is a safety refusal."""
+    if reason is None:
+        return False
+    name = getattr(reason, "name", None) or str(reason).rsplit(".", 1)[-1]
+    return name in MODERATION_REASONS
+
+
+def wrap_app_error(exc: BaseException, prefix: str) -> RuntimeError:
+    """Prefix an error's message, keeping a moderation refusal's class."""
+    cls = ContentModerationError if isinstance(exc, ContentModerationError) else RuntimeError
+    return cls(f"{prefix}: {exc}")
+
+
 @dataclass
 class ImageResponseResult:
     """Result from processing a Gemini image generation response."""
@@ -637,7 +673,9 @@ def process_image_response(
         log.error("No candidates in response")
         block_reason = getattr(response, 'prompt_feedback', None)
         if block_reason:
-            raise RuntimeError(f"Image generation blocked: {block_reason}")
+            blocked = is_moderation_reason(getattr(block_reason, "block_reason", None))
+            error = ContentModerationError if blocked else RuntimeError
+            raise error(f"Image generation blocked: {block_reason}")
         raise RuntimeError("No candidates returned from model")
 
     candidate = response.candidates[0]
@@ -703,7 +741,9 @@ def raise_no_images_error(results: list) -> None:
         if desc:
             error_parts.append(f"Model response: {desc[:500]}")
 
-    raise RuntimeError(". ".join(error_parts))
+    refused = bool(results) and is_moderation_reason(results[-1].finish_reason)
+    error = ContentModerationError if refused else RuntimeError
+    raise error(". ".join(error_parts))
 
 
 def build_image_output_meta(

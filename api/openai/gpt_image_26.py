@@ -6,7 +6,7 @@ from typing import Literal, Optional
 from inferencesh import BaseAppInput, BaseAppOutput, File, ImageMeta, OutputMeta
 from pydantic import Field
 
-from .openai_helper import make_size_string, save_base64_image, validate_and_fix_dimensions
+from .openai_helper import make_size_string, moderated, save_base64_image, validate_and_fix_dimensions
 
 ComplexityType = Literal["low", "medium", "high"]
 QualityType = Literal["auto", "low", "medium", "high", "xhigh", "max"]
@@ -214,9 +214,9 @@ async def run_image(client, model: str, input_data: ImageInput, logger: logging.
     )
 
     if is_edit:
-        response = await _edit(client, model, input_data, size)
+        response = await moderated(_edit(client, model, input_data, size))
     else:
-        response = await _generate(client, model, input_data, size)
+        response = await moderated(_generate(client, model, input_data, size))
 
     files = [File(path=save_base64_image(img.b64_json, fmt)) for img in response.data or []]
     if not files:

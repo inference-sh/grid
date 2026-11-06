@@ -13,6 +13,7 @@ from pydantic import Field
 from typing import Optional, List
 
 from .vertex_helper import (
+    wrap_app_error,
     create_vertex_client,
     get_mime_type,
     OutputFormatEnum,
@@ -204,4 +205,4 @@ class App(BaseApp):
 
         except Exception as e:
             self.logger.error(f"Error: {e}")
-            raise RuntimeError(f"Image generation failed: {str(e)}")
+            raise wrap_app_error(e, "Image generation failed") from e
