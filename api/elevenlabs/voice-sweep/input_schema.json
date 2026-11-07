@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "days": {
+      "default": 30,
+      "description": "Delete voices older than this with no use in this many days.",
+      "maximum": 365,
+      "minimum": 1,
+      "title": "Days",
+      "type": "integer"
+    },
+    "delete": {
+      "default": false,
+      "description": "Actually delete. False is a dry run that only reports.",
+      "title": "Delete",
+      "type": "boolean"
+    },
+    "keep": {
+      "description": "Voice IDs never deleted.",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 500,
+      "title": "Keep",
+      "type": "array"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}

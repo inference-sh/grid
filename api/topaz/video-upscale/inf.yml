@@ -1,0 +1,23 @@
+namespace: topaz
+name: video-upscale
+description: video upscaling and enhancement — proteus family models for precision upscaling, deinterlacing, face recovery, and cgi enhancement
+metadata:
+    checksum: ca995e5b4c15b41bc0fa41b42654ad18ade9444db90bb1dd49010a4cd38a10b5
+category: video
+env: {}
+kernel: python-3.11
+secrets:
+    - key: TOPAZ_KEY
+      description: Topaz Labs API key
+      optional: false
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+title: Topaz Video Upscale
+images:
+    card: https://cloud.inference.sh/app/files/t/65hmp52a/r835vh49.png
+    thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/pz2r0e16.png
+    banner: https://cloud.inference.sh/app/files/t/65hmp52a/7fmm1ieh.png
