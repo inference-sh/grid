@@ -13,6 +13,7 @@ import asyncio
 import json
 import os
 import re
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple
@@ -21,6 +22,11 @@ import httpx
 
 RETRY_STATUSES = (429, 502, 503, 504)
 MAX_ATTEMPTS = 4
+# A 502/504 that took this long is the gateway giving up on the upstream, not
+# the upstream being down: Grafana's datasource proxy answers 502 with an
+# empty body once its dataproxy timeout passes (30s by default). Repeating the
+# same request would time out the same way, so it is not retried.
+GATEWAY_TIMEOUT_SECONDS = 20.0
 
 _DURATION_RE = re.compile(r"^(\d+)(s|m|h|d|w)$")
 _DURATION_SECONDS = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800}
@@ -175,9 +181,19 @@ class GrafanaClient:
         headers = {"Authorization": f"Bearer {get_api_key()}"}
 
         for attempt in range(1, MAX_ATTEMPTS + 1):
+            started = time.monotonic()
             response = await self._client.request(
                 method, url, headers=headers, params=params, json=json_body
             )
+            elapsed = time.monotonic() - started
+            if response.status_code in (502, 504) and elapsed >= GATEWAY_TIMEOUT_SECONDS:
+                raise RuntimeError(
+                    f"Grafana gave up after {elapsed:.0f}s waiting for the datasource "
+                    f"({response.status_code}) for {method} {url}. The query ran past "
+                    "Grafana's dataproxy timeout, so the same request would time out "
+                    "again: narrow the window, add a stream selector or filter, or raise "
+                    "GF_DATAPROXY_TIMEOUT on the Grafana host."
+                )
             if (
                 response.status_code in RETRY_STATUSES
                 and attempt < MAX_ATTEMPTS
@@ -233,19 +249,70 @@ def _retry_after(response: httpx.Response, attempt: int) -> float:
     try:
         return float(response.headers.get("retry-after", ""))
     except ValueError:
-        return min(2 ** (attempt - 1), 30)
+        # 2, 4, 8s: 14s in all, which covers a Grafana container restart
+        # (5-15s between "Shutdown started" and "HTTP Server Listen").
+        return min(2**attempt, 30)
+
+
+def _grafana_message(response: httpx.Response) -> Optional[str]:
+    """The message of a Grafana JSON error body, or None when the body is not one.
+
+    Grafana answers every API error as JSON. Anything else with an error
+    status came from in front of it: Cloudflare's WAF (an HTML block page) or
+    its custom 5xx page standing in for an empty body.
+    """
+    try:
+        body = response.json()
+    except ValueError:
+        return None
+    if not isinstance(body, dict):
+        return None
+    return str(body.get("message") or body.get("error") or json.dumps(body)[:300])
+
+
+def _body_summary(response: httpx.Response) -> str:
+    text = response.text
+    if text.lstrip().startswith("<"):
+        title = re.search(r"<title>(.*?)</title>", text, re.I | re.S)
+        return (
+            f"HTML page {title.group(1).strip()!r}, not a Grafana answer"
+            if title
+            else "an HTML page, not a Grafana answer"
+        )
+    return text[:1000] or "(empty body)"
+
+
+def _denied_message(response: httpx.Response, method: str, url: str) -> str:
+    status = response.status_code
+    detail = _grafana_message(response)
+    if detail is None and "cf-ray" in response.headers:
+        return (
+            f"Cloudflare blocked {method} {url} at the edge ({status}, cf-ray "
+            f"{response.headers.get('cf-ray')}) before it reached Grafana: the request "
+            "matched a WAF rule, usually a LogQL filter that looks like an injection "
+            "payload. The credentials were not checked. Exempt Grafana's /api/ path on "
+            "this host from the managed WAF rules, or reword the filter."
+        )
+    if status == 401:
+        return (
+            f"Grafana rejected the token (401) for {method} {url}: "
+            f"{detail or _body_summary(response)}. Check that GRAFANA_API_KEY is the "
+            "token of this Grafana (GRAFANA_URL) and has not expired or been revoked."
+        )
+    return (
+        f"Grafana denied {method} {url} (403): {detail or _body_summary(response)}. "
+        "The token was accepted but its service account lacks the permission "
+        "(for the datasource proxy, datasources:query on that datasource)."
+    )
 
 
 def _result(response: httpx.Response, method: str, url: str) -> Any:
     if response.status_code in (401, 403):
-        raise RuntimeError(
-            f"Grafana rejected the credentials ({response.status_code}) for {method} {url}. "
-            "Check the GRAFANA_API_KEY secret and the service account's permissions."
-        )
+        raise RuntimeError(_denied_message(response, method, url))
     if response.status_code == 404:
         raise RuntimeError(f"Grafana has no {method} {url} (404): {response.text[:500]}")
     if response.status_code >= 400:
-        message = f"Grafana API error {response.status_code}: {response.text[:1000]}"
+        message = f"Grafana API error {response.status_code}: {_body_summary(response)}"
         oversized = too_large(response.text[:1000])
         if oversized is not None:
             raise ResponseTooLarge(message, oversized.size)
