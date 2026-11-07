@@ -85,11 +85,7 @@ def _input():
 
 
 def test_preprocess_error_body_is_surfaced(monkeypatch):
-    """A failure with no base_resp must surface the real body, not mask it.
-
-    This is the reported bug: the error text used to be thrown away and replaced
-    with 'No cover_feature_id ... {}'.
-    """
+    """A failure with no base_resp must surface the real body, not mask it."""
     body = {"error": "music API access revoked for this account"}
     app = _app([_Resp(200, body)], monkeypatch)
     with pytest.raises(RuntimeError) as exc:
@@ -129,12 +125,7 @@ def test_generation_error_body_is_surfaced(monkeypatch):
 
 
 def test_happy_path_reads_toplevel_fields(monkeypatch):
-    """A valid two-step response must succeed.
-
-    MiniMax returns cover_feature_id at the TOP LEVEL of the preprocess body;
-    reading it from a nested "data" object (the shipped code) fails even on
-    success, which is the reported bug. This fixture uses the documented shape.
-    """
+    """A valid two-step response must succeed; preprocess fields are top-level."""
     pre = {"base_resp": {"status_code": 0}, "cover_feature_id": "cf_123",
            "formatted_lyrics": "la la", "audio_duration": 12.0}
     gen = {"base_resp": {"status_code": 0},

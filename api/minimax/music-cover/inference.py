@@ -82,16 +82,13 @@ class App(BaseApp):
             raise RuntimeError(f"Preprocess error ({preprocess_resp.status_code}): {preprocess_resp.text[:300]}")
 
         preprocess_data = preprocess_resp.json()
-        # MiniMax signals success with base_resp.status_code == 0. A missing or
-        # non-zero status means the call did not succeed (e.g. an account without
-        # music API access), so surface the whole body instead of masking it.
+        # Missing status_code means failure, not success; surface the body.
         base_resp = preprocess_data.get("base_resp") or {}
         if base_resp.get("status_code") != 0:
             detail = base_resp.get("status_msg") or "unknown error"
             raise RuntimeError(f"MiniMax preprocess failed: {detail} | body: {str(preprocess_data)[:500]}")
 
-        # cover_feature_id, formatted_lyrics and audio_duration are returned at the
-        # top level of the response, not inside a "data" object.
+        # These fields are top-level in the response, not under a "data" object.
         cover_feature_id = preprocess_data.get("cover_feature_id")
         if not cover_feature_id:
             raise RuntimeError(f"MiniMax preprocess returned no cover_feature_id | body: {str(preprocess_data)[:500]}")
@@ -135,7 +132,7 @@ class App(BaseApp):
             raise RuntimeError(f"MiniMax music cover returned no audio URL | body: {str(data)[:500]}")
 
         extra_info = data.get("extra_info") or {}
-        # MiniMax reports duration as extra_info.music_duration (milliseconds).
+        # Duration field is music_duration (ms).
         audio_length_ms = float(extra_info.get("music_duration") or 0)
         self.logger.info(f"Cover ready: {audio_length_ms}ms")
 
