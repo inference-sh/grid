@@ -38,8 +38,10 @@ decorator==5.3.1
     # via librosa
 deprecated==1.3.1
     # via pykakasi
-diffusers==0.29.0
-    # via chatterbox-tts
+diffusers==0.42.1
+    # via
+    #   --override (workspace)
+    #   chatterbox-tts
 distlib==0.4.4
     # via virtualenv
 einops==0.9.0.dev0
@@ -83,7 +85,7 @@ idna==3.20
     #   requests
 importlib-metadata==10.1.0
     # via diffusers
-inferencesh==0.38.9
+inferencesh==0.39.0
     # via -r requirements.txt
 jaconv==0.5.0
     # via pykakasi

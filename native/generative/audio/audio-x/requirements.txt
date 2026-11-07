@@ -43,3 +43,6 @@ ffmpeg-python>=0.2.0
 ninja
 soundfile
 setuptools>=84.1.0
+aiohttp>=3.14.5
+ipython>=9.18.1
+regex>=2026.9.29

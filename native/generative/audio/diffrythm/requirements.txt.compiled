@@ -89,7 +89,7 @@ idna==3.18
     #   anyio
     #   httpx2
     #   requests
-inferencesh==0.38.9
+inferencesh==0.39.0
     # via -r requirements.txt
 inflect==7.5.0
     # via -r requirements.txt
@@ -218,7 +218,7 @@ packaging==26.2
     #   pooch
     #   transformers
     #   x-transformers
-pandas==2.2.3
+pandas==2.3.3
     # via -r requirements.txt
 phonemizer==3.3.0
     # via -r requirements.txt
@@ -275,8 +275,9 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.7.19
+regex==2026.11.7
     # via
+    #   -r requirements.txt
     #   segments
     #   transformers
     #   x-clip

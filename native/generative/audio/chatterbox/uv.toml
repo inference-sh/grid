@@ -6,4 +6,5 @@ override-dependencies = [
     "torchaudio==2.11.1",
     "transformers==5.22.1",
     "safetensors==0.8.0",
+    "diffusers>=0.42.1",
 ]

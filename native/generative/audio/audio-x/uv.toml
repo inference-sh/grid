@@ -1,0 +1,8 @@
+# descript-audiotools (via descript-audio-codec) caps wandb below the release
+# that fixes AIKIDO-2026-248146, and caps protobuf below 3.20. wandb 0.31 wants
+# protobuf 5+, but audio-x imports wandb only from stable_audio_tools/training,
+# which inference never loads; protobuf stays at the version the build runs.
+override-dependencies = [
+    "wandb>=0.31.0",
+    "protobuf==3.19.6",
+]

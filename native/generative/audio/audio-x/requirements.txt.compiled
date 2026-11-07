@@ -11,8 +11,10 @@ aeiou==0.0.21
     # via -r requirements.txt
 aiohappyeyeballs==2.7.1
     # via aiohttp
-aiohttp==3.14.3
-    # via fsspec
+aiohttp==3.14.5
+    # via
+    #   -r requirements.txt
+    #   fsspec
 aiosignal==1.4.0
     # via aiohttp
 alias-free-torch==0.0.6
@@ -22,7 +24,10 @@ annotated-doc==0.0.5
 annotated-types==0.8.0
     # via pydantic
 anyio==4.16.0
-    # via httpx2
+    # via
+    #   cwevals
+    #   httpx
+    #   httpx2
 argbind==0.3.9
     # via
     #   descript-audio-codec
@@ -50,8 +55,9 @@ braceexpand==0.1.7
     # via webdataset
 certifi==2026.10.23
     # via
+    #   httpcore
+    #   httpx
     #   requests
-    #   sentry-sdk
 cffi==2.1.0
     # via soundfile
 charset-normalizer==3.4.9
@@ -76,20 +82,22 @@ cuda-pathfinder==1.8.5
     # via cuda-bindings
 cuda-toolkit==13.0.3.0
     # via torch
+cwevals==0.0.1b1
+    # via wandb
 cycler==0.12.1
     # via matplotlib
 dctorch==0.1.2
     # via k-diffusion
 decorator==5.3.1
-    # via
-    #   ipython
-    #   librosa
+    # via librosa
 decord==0.6.0
     # via -r requirements.txt
 descript-audio-codec==1.0.0
     # via -r requirements.txt
 descript-audiotools==0.7.2
     # via descript-audio-codec
+distro==1.9.0
+    # via cwevals
 docstring-parser==0.18.0
     # via argbind
 einops==0.9.0.dev0
@@ -148,20 +156,24 @@ future==1.0.0
     # via ffmpeg-python
 gin-config==0.5.0
     # via prefigure
-gitdb==4.0.12
-    # via gitpython
-gitpython==3.1.62
-    # via wandb
+googleapis-common-protos==1.76.0
+    # via opentelemetry-exporter-otlp-proto-http
 grpcio==1.83.0
     # via tensorboard
 h11==0.16.0
-    # via httpcore2
+    # via
+    #   httpcore
+    #   httpcore2
 hf-xet==1.8.0
     # via huggingface-hub
 holoviews==1.18.0a6
     # via aeiou
+httpcore==1.0.9
+    # via httpx
 httpcore2==2.16.0
     # via httpx2
+httpx==0.28.1
+    # via cwevals
 httpx2==2.16.0
     # via huggingface-hub
 huggingface-hub==2.4.0
@@ -173,6 +185,7 @@ huggingface-hub==2.4.0
 idna==3.18
     # via
     #   anyio
+    #   httpx
     #   httpx2
     #   requests
     #   yarl
@@ -182,10 +195,11 @@ importlib-resources==5.12.0
     # via
     #   -r requirements.txt
     #   descript-audiotools
-inferencesh==0.38.9
+inferencesh==0.39.0
     # via -r requirements.txt
-ipython==9.15.0
+ipython==9.18.1
     # via
+    #   -r requirements.txt
     #   aeiou
     #   descript-audiotools
 ipython-pygments-lexers==1.1.1
@@ -362,10 +376,22 @@ nvidia-nvtx==13.0.85
     # via cuda-toolkit
 opentelemetry-api==1.44.0
     # via
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
+    #   wandb
+opentelemetry-exporter-otlp-proto-common==1.44.0
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-http==1.44.0
+    # via wandb
+opentelemetry-proto==1.44.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-common
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-sdk==1.44.0
-    # via sentry-sdk
+    # via
+    #   opentelemetry-exporter-otlp-proto-http
+    #   wandb
 opentelemetry-semantic-conventions==0.65b0
     # via opentelemetry-sdk
 packaging==26.2
@@ -438,7 +464,10 @@ propcache==0.5.2
     #   yarl
 protobuf==3.19.6
     # via
+    #   --override (workspace)
     #   descript-audiotools
+    #   googleapis-common-protos
+    #   opentelemetry-proto
     #   tensorboard
     #   wandb
 psutil==7.2.2
@@ -456,6 +485,7 @@ pyct==0.6.0
 pydantic==2.14.0a1
     # via
     #   -r requirements.txt
+    #   cwevals
     #   inferencesh
     #   wandb
 pydantic-core==2.47.0
@@ -507,8 +537,9 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2026.7.19
+regex==2026.11.7
     # via
+    #   -r requirements.txt
     #   clip-anytorch
     #   transformers
     #   v-diffusion-pytorch
@@ -516,6 +547,7 @@ requests==2.34.2
     # via
     #   clean-fid
     #   inferencesh
+    #   opentelemetry-exporter-otlp-proto-http
     #   panel
     #   pooch
     #   v-diffusion-pytorch
@@ -560,8 +592,6 @@ scipy==1.17.1
     #   umap-learn
 sentencepiece==0.2.2
     # via -r requirements.txt
-sentry-sdk==3.0.0a7
-    # via wandb
 setuptools==84.2.1
     # via
     #   -r requirements.txt
@@ -572,8 +602,8 @@ shellingham==1.5.4
     # via typer
 six==1.17.0
     # via python-dateutil
-smmap==5.0.3
-    # via gitdb
+sniffio==1.3.1
+    # via cwevals
 soundfile==0.14.0
     # via
     #   -r requirements.txt
@@ -693,6 +723,7 @@ typing-extensions==4.16.0
     #   aiohttp
     #   aiosignal
     #   anyio
+    #   cwevals
     #   grpcio
     #   httpx2
     #   huggingface-hub
@@ -700,6 +731,7 @@ typing-extensions==4.16.0
     #   librosa
     #   lightning-utilities
     #   opentelemetry-api
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
     #   panel
@@ -718,15 +750,14 @@ tzdata==2026.3
 umap-learn==0.5.12
     # via aeiou
 urllib3==2.7.0
-    # via
-    #   requests
-    #   sentry-sdk
+    # via requests
 v-diffusion-pytorch==0.0.2
     # via -r requirements.txt
 vector-quantize-pytorch==1.9.14
     # via -r requirements.txt
-wandb==0.25.1rc20260223
+wandb==0.31.0
     # via
+    #   --override (workspace)
     #   aeiou
     #   k-diffusion
     #   prefigure
@@ -744,7 +775,9 @@ werkzeug==3.1.8
     # via tensorboard
 x-transformers==1.42.11
     # via -r requirements.txt
+xxhash==4.0.2
+    # via wandb
 xyzservices==2026.3.0
     # via bokeh
-yarl==1.24.5
+yarl==1.25.1
     # via aiohttp

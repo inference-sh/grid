@@ -57,7 +57,7 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.38.9
+inferencesh==0.39.0
     # via -r requirements.txt
 jinja2==3.1.6
     # via torch
@@ -191,8 +191,10 @@ scipy==1.17.1
     # via
     #   librosa
     #   scikit-learn
-setuptools==81.0.0
-    # via triton
+setuptools==84.2.1
+    # via
+    #   -r requirements.txt
+    #   triton
 shellingham==1.5.4
     # via typer
 soundfile==0.13.1

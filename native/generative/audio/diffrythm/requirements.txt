@@ -9,7 +9,6 @@ x-transformers==2.1.2
 transformers>=5.5.0
 librosa==0.10.2.post1
 pyarrow==26.0.1
-pandas==2.2.3
 pylance==0.23.2
 ema-pytorch==0.7.7
 bitsandbytes
@@ -26,3 +25,5 @@ inflect==7.5.0
 py3langid
 soundfile
 torch==2.14.1 # imported directly; torchaudio 2.11.1 wheel requires torch>=2.11
+pandas==2.3.3
+regex>=2026.9.29

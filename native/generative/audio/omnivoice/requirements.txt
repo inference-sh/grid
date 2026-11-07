@@ -7,3 +7,4 @@ torchaudio>=2.5,<2.9
 soundfile
 hf_transfer
 pillow>=13.0.0
+setuptools>=84.1.0
