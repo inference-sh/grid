@@ -1,0 +1,36 @@
+--- a/flint_sglang/model.py
++++ b/flint_sglang/model.py
+@@ -47,7 +47,23 @@
+ )
+ from sglang.srt.models.utils import apply_qk_norm
+ from sglang.srt.runtime_context import get_parallel
+-from sglang.srt.server_args import get_global_server_args
++from sglang.srt.arg_groups.arg_utils import namespace_of
++from sglang.srt.runtime_context import get_context
++from sglang.srt.server_args import ServerArgs
++
++
++class _ResolvedServerArgs:
++    """SGLang 0.5.20 retired get_global_server_args(). Each field reads the resolved value by name:
++    fields of the parallel namespace from get_parallel(), the rest from their config bag."""
++
++    def __getattr__(self, name):
++        if namespace_of(ServerArgs).get(name, "").split(".")[0] == "parallel":
++            return getattr(get_parallel(), name)
++        return get_context().config_leaf(name)
++
++
++def get_global_server_args() -> _ResolvedServerArgs:
++    return _ResolvedServerArgs()
+ from sglang.srt.utils import add_prefix
+ from sglang.srt.utils.hf_transformers_utils import get_rope_config
+ from torch import nn
+@@ -364,7 +380,7 @@
+ 
+ def _require_fa4_sink_fix() -> None:
+     """The learned-sink fix for SGLang's vendored FA4 kernel is not in any SGLang release (install.sh applies it)."""
+-    kernel = Path(sys.modules["sglang"].__file__).parent / "jit_kernel" / "flash_attn" / "cute" / "flash_fwd_sm100.py"
++    kernel = Path(sys.modules["sglang"].__file__).parent / "kernels" / "ops" / "attention" / "flash_attn" / "cute" / "flash_fwd_sm100.py"
+     source = kernel.read_text() if kernel.is_file() else ""
+     if not all(marker in source for marker in FA4_SINK_FIX_MARKERS):
+         raise RuntimeError(f"--attention-backend fa4 requires fa4-learned-sink-fix.patch (run install.sh): {kernel}")

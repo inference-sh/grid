@@ -3,7 +3,8 @@
 # where SGLang 0.5.20 forces it: between 0.5.16 and 0.5.20 SGLang moved the vendored FA4 kernel from
 # jit_kernel/flash_attn/cute/ to kernels/ops/attention/flash_attn/cute/, so the kernel path and its
 # hashes are 0.5.20's, and the kit's unchanged patch is applied to that file by name (it still names
-# the old path). Every pin, the patch itself and the wheel come from the kit as shipped.
+# the old path). flint_sglang's model.py gets our 0.5.20 port (flint_sglang-sglang-0.5.20.patch).
+# Every other pin, the FA4 patch and the wheel come from the kit as shipped.
 #
 # Install Flint support into an lmsysorg/sglang:v0.5.16-cu130 environment.
 # Used by the Dockerfile; can also be run (and re-run, e.g. to upgrade) inside an existing
@@ -71,5 +72,13 @@ if [[ ${#wheels[@]} -ne 1 ]]; then
   exit 1
 fi
 pip install --force-reinstall --no-deps "${wheels[0]}"
+
+# flint_sglang 0.1.4 targets SGLang 0.5.16. In 0.5.20 get_global_server_args() raises (resolved
+# values are read from runtime_context), and the vendored FA4 kernel moved. Our patch, kept next to
+# this script, ports both; it applies only to the wheel's model.py as shipped.
+FLINT_MODEL="$(python3 -c "import pathlib, importlib.util; print(pathlib.Path(importlib.util.find_spec('flint_sglang').origin).parent / 'model.py')")"
+echo "948d721be04e0af086021a1d26bd9a7620d2313bf09442739bebbebcf6cb9bf3  $FLINT_MODEL" | sha256sum -c -
+patch "$FLINT_MODEL" < "$(dirname "${BASH_SOURCE[0]}")/flint_sglang-sglang-0.5.20.patch"
+echo "f165d27d1a9047e692d9a4360bfe6e3b2836903781ea8cf80141a87604247d5a  $FLINT_MODEL" | sha256sum -c -
 python3 -c "from importlib.metadata import entry_points; assert any(e.name == 'flint' for e in entry_points(group='sglang.srt.plugins'))"
 echo "Flint support installed ($(basename "${wheels[0]}"))."
