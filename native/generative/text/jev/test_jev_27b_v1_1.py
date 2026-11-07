@@ -83,3 +83,10 @@ def test_images_are_refused(tmp_path):
     app = m.App()
     with pytest.raises(ValueError, match="text-only"):
         asyncio.run(app.run(make_input(images=[{"path": str(image)}])))
+
+
+def test_plugin_allows_only_a_build_tag_of_a_validated_release():
+    assert m.plugin_version_env("0.31.0+cu129") == {"STARTLUX_PREFIX_BIDIR_ALLOW_VERSION": "1"}
+    assert m.plugin_version_env("0.31.0") == {}
+    assert m.plugin_version_env("0.32.0+cu129") == {}
+    assert m.plugin_version_env("") == {}

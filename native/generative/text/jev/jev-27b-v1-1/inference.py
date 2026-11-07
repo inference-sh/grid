@@ -73,7 +73,8 @@ MAX_LOGPROBS = 255
 MAX_IMAGES = 8
 # Printed by the plugin when a model runner reads the prompt bidirectionally (startlux_decide.vllm_plugin).
 PLUGIN_ACTIVE_LINE = "prefix-bidirectional prompt attention ON"
-SERVER_LOG_TAIL = 40
+# A vLLM startup traceback runs ~60 lines; the tail keeps the cause line under it.
+SERVER_LOG_TAIL = 200
 
 
 # ── Input and output ─────────────────────────────────────────────────────────
@@ -200,9 +201,32 @@ def server_command(model_dir: str, port: int) -> List[str]:
     ]
 
 
+# vLLM releases the plugin was validated against (startlux_decide.vllm_plugin's supported list).
+PLUGIN_VLLM_VERSIONS = ("0.19.1", "0.31.0")
+
+
+def plugin_version_env(vllm_version: str) -> Dict[str, str]:
+    """The plugin compares the full version string, so the CUDA 12 build of a validated release
+    ("0.31.0+cu129", same code, other CUDA) reads as unsupported and the plugin does not install.
+    The local build tag is not a different vLLM: allow it, and nothing else."""
+    release = vllm_version.split("+", 1)[0]
+    if release != vllm_version and release in PLUGIN_VLLM_VERSIONS:
+        return {"STARTLUX_PREFIX_BIDIR_ALLOW_VERSION": "1"}
+    return {}
+
+
+def installed_vllm_version() -> str:
+    from importlib.metadata import PackageNotFoundError, version
+    try:
+        return version("vllm")
+    except PackageNotFoundError:
+        return ""
+
+
 def server_env(environ: Dict[str, str]) -> Dict[str, str]:
     # serve_vllm.sh: the plugin on; FlashInfer's sampler compiles with nvcc at first use, which workers lack.
-    return {**environ, "STARTLUX_PREFIX_BIDIR": "1", "VLLM_USE_FLASHINFER_SAMPLER": "0", **vllm_cache_env(environ)}
+    return {**environ, "STARTLUX_PREFIX_BIDIR": "1", "VLLM_USE_FLASHINFER_SAMPLER": "0",
+            **plugin_version_env(installed_vllm_version()), **vllm_cache_env(environ)}
 
 
 # ── Kernel warm-up ───────────────────────────────────────────────────────────
