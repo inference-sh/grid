@@ -205,7 +205,7 @@ idna==3.20
     #   httpx2
     #   requests
     #   yarl
-inferencesh==0.33.0
+inferencesh==0.39.0
     # via -r requirements.txt
 interegular==0.3.3
     # via
