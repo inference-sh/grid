@@ -377,6 +377,35 @@ def venv_cuda_home() -> Optional[str]:
     return None
 
 
+def cuda_toolkit_view(pip_root: str, view: str) -> str:
+    """Lay the pip CUDA toolkit at pip_root out as a CUDA_HOME at view, and return view.
+
+    The wheels keep libraries in lib/ under their sonames only (libcudart.so.13). JIT builds link
+    with -L$CUDA_HOME/lib64 -lcudart, which needs lib64/ and the linker name libcudart.so. The view
+    links every top-level directory of pip_root, and a lib64/ holding each library under its own
+    name and its linker name. Idempotent; links that exist are kept."""
+    os.makedirs(view, exist_ok=True)
+    for name in os.listdir(pip_root):
+        if name in ("lib", "lib64"):
+            continue
+        link = os.path.join(view, name)
+        if not os.path.lexists(link):
+            os.symlink(os.path.join(pip_root, name), link)
+    lib64 = os.path.join(view, "lib64")
+    os.makedirs(lib64, exist_ok=True)
+    lib = os.path.join(pip_root, "lib")
+    for name in sorted(os.listdir(lib)) if os.path.isdir(lib) else []:
+        names = [name]
+        linker = re.match(r"^(lib.+\.so)\.\d", name)
+        if linker:
+            names.append(linker.group(1))
+        for n in names:
+            link = os.path.join(lib64, n)
+            if not os.path.lexists(link):
+                os.symlink(os.path.join(lib, name), link)
+    return view
+
+
 def driver_major(driver: str) -> int:
     match = re.match(r"(\d+)", driver or "")
     return int(match.group(1)) if match else 0
@@ -430,6 +459,7 @@ class App(OpenAIChatMixin, BaseApp):
         cuda_home = venv_cuda_home()
         if cuda_home is None:
             raise RuntimeError("nvidia-cuda-nvcc is not installed in this venv; requirements.txt must bring it")
+        cuda_home = cuda_toolkit_view(cuda_home, os.path.join(sys.prefix, "cuda-toolkit"))
         path.append(os.path.join(cuda_home, "bin"))
         env = {**os.environ, "PATH": ":".join(path + [os.environ.get("PATH", "")]), "CUDA_HOME": cuda_home}
         env.pop("CUDA_PATH", None)

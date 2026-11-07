@@ -150,11 +150,22 @@ def test_server_env_uses_the_venv_cuda_toolkit(tmp_path, monkeypatch):
     import importlib.metadata as md
     monkeypatch.setattr(md, "files", lambda dist: [Entry()] if dist == "nvidia-cuda-nvcc" else [])
     monkeypatch.setenv("CUDA_PATH", "/usr/local/cuda")
+    lib = tmp_path / "nvidia" / "cu13" / "lib"
+    lib.mkdir()
+    (lib / "libcudart.so.13").touch()
+    (lib / "libcudadevrt.a").touch()
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / "venv"))
     home = str(tmp_path / "nvidia" / "cu13")
     assert flint.venv_cuda_home() == home
     env = flint.App()._server_env()
-    assert env["CUDA_HOME"] == home and "CUDA_PATH" not in env
-    assert env["PATH"].split(":")[1] == os.path.join(home, "bin")
+    view = str(tmp_path / "venv" / "cuda-toolkit")
+    assert env["CUDA_HOME"] == view and "CUDA_PATH" not in env
+    assert env["PATH"].split(":")[1] == os.path.join(view, "bin")
+    assert os.path.realpath(os.path.join(view, "bin", "nvcc")) == str(nvcc)
+    lib64 = os.path.join(view, "lib64")
+    assert sorted(os.listdir(lib64)) == ["libcudadevrt.a", "libcudart.so", "libcudart.so.13"]
+    assert os.path.realpath(os.path.join(lib64, "libcudart.so")) == str(lib / "libcudart.so.13")
+    flint.App()._server_env()  # a second start keeps the view
 
 
 def test_server_env_refuses_a_venv_without_nvcc(monkeypatch):
