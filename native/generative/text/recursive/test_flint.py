@@ -133,3 +133,36 @@ def test_fa4_kernel_path_exists_in_installed_sglang():
     sglang = pytest.importorskip("sglang")
     path = os.path.join(os.path.dirname(sglang.__file__), flint.FA4_KERNEL)
     assert os.path.exists(path), path
+
+
+def test_server_env_uses_the_venv_cuda_toolkit(tmp_path, monkeypatch):
+    nvcc = tmp_path / "nvidia" / "cu13" / "bin" / "nvcc"
+    nvcc.parent.mkdir(parents=True)
+    nvcc.touch()
+
+    class Entry:
+        name = "nvcc"
+        parent = types.SimpleNamespace(name="bin")
+
+        def locate(self):
+            return str(nvcc)
+
+    import importlib.metadata as md
+    monkeypatch.setattr(md, "files", lambda dist: [Entry()] if dist == "nvidia-cuda-nvcc" else [])
+    monkeypatch.setenv("CUDA_PATH", "/usr/local/cuda")
+    home = str(tmp_path / "nvidia" / "cu13")
+    assert flint.venv_cuda_home() == home
+    env = flint.App()._server_env()
+    assert env["CUDA_HOME"] == home and "CUDA_PATH" not in env
+    assert env["PATH"].split(":")[1] == os.path.join(home, "bin")
+
+
+def test_server_env_refuses_a_venv_without_nvcc(monkeypatch):
+    import importlib.metadata as md
+
+    def missing(dist):
+        raise md.PackageNotFoundError(dist)
+    monkeypatch.setattr(md, "files", missing)
+    assert flint.venv_cuda_home() is None
+    with pytest.raises(RuntimeError, match="nvidia-cuda-nvcc"):
+        flint.App()._server_env()

@@ -361,6 +361,22 @@ def serve_script_path(model_dir: str, script: str) -> str:
     return local if os.path.exists(local) else os.path.join(model_dir, "sglang", script)
 
 
+def venv_cuda_home() -> Optional[str]:
+    """The CUDA 13 toolkit requirements.txt installs into this venv (nvidia-cuda-nvcc, under
+    nvidia/cu13), or None if it is missing. SGLang's JIT kernels (DeepGEMM, FlashInfer) compile
+    with CUDA_HOME's nvcc. Without it they take the worker image's older system CUDA, and DeepGEMM
+    refuses any nvcc below 12.9."""
+    from importlib.metadata import PackageNotFoundError, files
+    try:
+        entries = files("nvidia-cuda-nvcc") or []
+    except PackageNotFoundError:
+        return None
+    for entry in entries:
+        if entry.name == "nvcc" and entry.parent.name == "bin":
+            return os.path.dirname(os.path.dirname(os.path.abspath(entry.locate())))
+    return None
+
+
 def driver_major(driver: str) -> int:
     match = re.match(r"(\d+)", driver or "")
     return int(match.group(1)) if match else 0
@@ -410,7 +426,13 @@ class App(OpenAIChatMixin, BaseApp):
 
     def _server_env(self) -> Dict[str, str]:
         venv_bin = os.path.dirname(sys.executable)
-        env = {**os.environ, "PATH": f"{venv_bin}:{os.environ.get('PATH', '')}"}
+        path = [venv_bin]
+        cuda_home = venv_cuda_home()
+        if cuda_home is None:
+            raise RuntimeError("nvidia-cuda-nvcc is not installed in this venv; requirements.txt must bring it")
+        path.append(os.path.join(cuda_home, "bin"))
+        env = {**os.environ, "PATH": ":".join(path + [os.environ.get("PATH", "")]), "CUDA_HOME": cuda_home}
+        env.pop("CUDA_PATH", None)
         # Keep compiled kernels in the app's caches so a restart does not recompile them.
         cache_root = os.environ.get("TRITON_CACHE_DIR") or os.path.join(os.environ.get("HF_HOME", os.path.expanduser("~/.cache")), "..", "triton")
         env["FLINT_TRITON_CACHE_BASE"] = cache_root
