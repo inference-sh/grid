@@ -82,17 +82,22 @@ class App(BaseApp):
             raise RuntimeError(f"Preprocess error ({preprocess_resp.status_code}): {preprocess_resp.text[:300]}")
 
         preprocess_data = preprocess_resp.json()
+        # MiniMax signals success with base_resp.status_code == 0. A missing or
+        # non-zero status means the call did not succeed (e.g. an account without
+        # music API access), so surface the whole body instead of masking it.
         base_resp = preprocess_data.get("base_resp") or {}
-        if base_resp.get("status_code", 0) != 0:
-            raise RuntimeError(f"Preprocess error: {base_resp.get('status_msg', 'Unknown')}")
+        if base_resp.get("status_code") != 0:
+            detail = base_resp.get("status_msg") or "unknown error"
+            raise RuntimeError(f"MiniMax preprocess failed: {detail} | body: {str(preprocess_data)[:500]}")
 
-        pp_data = preprocess_data.get("data") or {}
-        cover_feature_id = pp_data.get("cover_feature_id")
+        # cover_feature_id, formatted_lyrics and audio_duration are returned at the
+        # top level of the response, not inside a "data" object.
+        cover_feature_id = preprocess_data.get("cover_feature_id")
         if not cover_feature_id:
-            raise RuntimeError(f"No cover_feature_id in preprocess response: {str(pp_data)[:300]}")
+            raise RuntimeError(f"MiniMax preprocess returned no cover_feature_id | body: {str(preprocess_data)[:500]}")
 
-        formatted_lyrics = pp_data.get("formatted_lyrics", "")
-        audio_duration = float(pp_data.get("audio_duration") or 0)
+        formatted_lyrics = preprocess_data.get("formatted_lyrics", "")
+        audio_duration = float(preprocess_data.get("audio_duration") or 0)
         self.logger.info(f"Preprocessed: feature_id={cover_feature_id[:20]}..., ref_duration={audio_duration}s")
 
         lyrics = input_data.lyrics or formatted_lyrics
@@ -121,15 +126,17 @@ class App(BaseApp):
 
         data = resp.json()
         base_resp = data.get("base_resp") or {}
-        if base_resp.get("status_code", 0) != 0:
-            raise RuntimeError(f"Music cover error: {base_resp.get('status_msg', 'Unknown')}")
+        if base_resp.get("status_code") != 0:
+            detail = base_resp.get("status_msg") or "unknown error"
+            raise RuntimeError(f"MiniMax music cover failed: {detail} | body: {str(data)[:500]}")
 
         audio_url = (data.get("data") or {}).get("audio")
         if not audio_url:
-            raise RuntimeError(f"No audio URL in response: {str(data)[:300]}")
+            raise RuntimeError(f"MiniMax music cover returned no audio URL | body: {str(data)[:500]}")
 
         extra_info = data.get("extra_info") or {}
-        audio_length_ms = float(extra_info.get("audio_length") or 0)
+        # MiniMax reports duration as extra_info.music_duration (milliseconds).
+        audio_length_ms = float(extra_info.get("music_duration") or 0)
         self.logger.info(f"Cover ready: {audio_length_ms}ms")
 
         ext = input_data.format.value
