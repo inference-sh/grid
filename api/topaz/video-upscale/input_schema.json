@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "ContainerEnum": {
+      "enum": [
+        "mp4",
+        "mov",
+        "mkv"
+      ],
+      "title": "ContainerEnum",
+      "type": "string"
+    },
+    "FocusFixEnum": {
+      "enum": [
+        "None",
+        "Normal",
+        "Strong"
+      ],
+      "title": "FocusFixEnum",
+      "type": "string"
+    },
+    "ModelEnum": {
+      "enum": [
+        "prob-4",
+        "pnat-1",
+        "rhea-1",
+        "thd-3",
+        "thf-4",
+        "ahq-12",
+        "alqs-2",
+        "alq-13",
+        "amqs-2",
+        "amq-13",
+        "aaa-9",
+        "ddv-3",
+        "dtv-4",
+        "dtd-4",
+        "dtvs-2",
+        "dtds-2",
+        "gcg-5",
+        "ghq-5",
+        "iris-2",
+        "iris-3"
+      ],
+      "title": "ModelEnum",
+      "type": "string"
+    },
+    "VideoTypeEnum": {
+      "enum": [
+        "Progressive",
+        "Interlaced",
+        "ProgressiveInterlaced"
+      ],
+      "title": "VideoTypeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "video": {
+      "description": "Input video file (max 500MB)",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelEnum",
+      "default": "prob-4",
+      "description": "Enhancement model. proteus: general upscaling, proteus_natural: natural look, artemis_hq: high quality, gaia_cg: CGI/animation, iris_mq: face recovery"
+    },
+    "scale": {
+      "default": 2.0,
+      "description": "Upscale factor (1.0-4.0)",
+      "maximum": 4.0,
+      "minimum": 1.0,
+      "title": "Scale",
+      "type": "number"
+    },
+    "video_type": {
+      "$ref": "#/$defs/VideoTypeEnum",
+      "default": "Progressive",
+      "description": "Source video type"
+    },
+    "focus_fix_level": {
+      "$ref": "#/$defs/FocusFixEnum",
+      "default": "None",
+      "description": "Focus fix level"
+    },
+    "compression": {
+      "default": 0.0,
+      "description": "Compression artifact reduction (-1 to 1)",
+      "maximum": 1.0,
+      "minimum": -1.0,
+      "title": "Compression",
+      "type": "number"
+    },
+    "details": {
+      "default": 0.0,
+      "description": "Detail enhancement (-1 to 1)",
+      "maximum": 1.0,
+      "minimum": -1.0,
+      "title": "Details",
+      "type": "number"
+    },
+    "noise": {
+      "default": 0.0,
+      "description": "Noise reduction (-1 to 1)",
+      "maximum": 1.0,
+      "minimum": -1.0,
+      "title": "Noise",
+      "type": "number"
+    },
+    "halo": {
+      "default": 0.0,
+      "description": "Halo reduction (-1 to 1)",
+      "maximum": 1.0,
+      "minimum": -1.0,
+      "title": "Halo",
+      "type": "number"
+    },
+    "blur": {
+      "default": 0.0,
+      "description": "Blur reduction (-1 to 1)",
+      "maximum": 1.0,
+      "minimum": -1.0,
+      "title": "Blur",
+      "type": "number"
+    },
+    "grain": {
+      "default": 0.0,
+      "description": "Grain amount (0-0.1)",
+      "maximum": 0.1,
+      "minimum": 0.0,
+      "title": "Grain",
+      "type": "number"
+    },
+    "recover_original_detail": {
+      "default": 0.0,
+      "description": "Recover original detail (0-1)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Recover Original Detail",
+      "type": "number"
+    },
+    "output_container": {
+      "$ref": "#/$defs/ContainerEnum",
+      "default": "mp4",
+      "description": "Output container format"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+namespace: elevenlabs
+name: voice-sweep
+title: ElevenLabs Voice Sweep
+description: Admin maintenance. Deletes cloned voices on the platform ElevenLabs account that are unused for N days or past an expires date. Dry run by default.
+metadata: {}
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    elevenlabs:
+        secrets: [ELEVENLABS_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 1000000000
