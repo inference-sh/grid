@@ -23,3 +23,5 @@ native/generative/audio/audio-x filelock  # held at the pin the staged GPU build
 native/generative/audio/diffrythm filelock  # held at the pin the staged GPU build was tested with
 native/generative/audio/dramabox filelock  # held at the pin the staged GPU build was tested with
 api/falai/gemini-3-pro-image-preview websockets  # google-genai 1.56.0: websockets<15.1
+native/generative/text/jev/jev-27b-v1-1 numpy  # held at the pin the deployed vLLM 0.31.0 build (5a51r2yy) was benchmarked with
+native/generative/text/jev/jev-9b numpy  # held at the pin the vLLM build was tested with; not deployed yet
