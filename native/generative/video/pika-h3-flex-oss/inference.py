@@ -188,9 +188,13 @@ class App(BaseApp):
 
         manager = ComponentsManager()
         manager.enable_auto_cpu_offload(device=self.device_str)
-        pipe = ModularPipeline.from_pretrained(MODEL_REPO, revision=MODEL_REVISION, workflow=WORKFLOW,
-                                               components_manager=manager)
+        # Keep the full auto blocks so a text-only request takes the t2va path and a keyframe request the
+        # fl2va path (pruning the blocks with workflow= would run the keyframe conditioning step on text-only
+        # requests and fail). Only the component loading is restricted to the fl2va set, which is the t2va set
+        # too, so the 62GB transformer_ref partition is never pulled.
+        pipe = ModularPipeline.from_pretrained(MODEL_REPO, revision=MODEL_REVISION, components_manager=manager)
         pipe.load_components(
+            workflow=WORKFLOW,
             pretrained_model_name_or_path=MODEL_REPO, revision=MODEL_REVISION,
             dtype={"vae": torch.float32, "audio_vae": torch.float32, "default": torch.bfloat16},
         )
