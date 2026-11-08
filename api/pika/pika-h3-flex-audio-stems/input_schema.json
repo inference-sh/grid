@@ -1,0 +1,26 @@
+{
+  "description": "Split the soundtrack of an audio or video file into Dialogue, Music and Effect stems.",
+  "properties": {
+    "audio": {
+      "description": "Audio file, or a video with sound, up to 120 seconds.",
+      "format": "file",
+      "title": "Audio",
+      "type": "string"
+    },
+    "channel_mode": {
+      "default": "mono",
+      "description": "mono downmixes before separation; stereo keeps both channels in every stem. Both bill the sum of stem seconds.",
+      "enum": [
+        "mono",
+        "stereo"
+      ],
+      "title": "Channel Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audio"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
