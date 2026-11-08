@@ -1,0 +1,125 @@
+{
+  "description": "Pika H3 Flex, self-hosted. Text-to-video, or image-to-video from a first and/or last frame, with audio.",
+  "properties": {
+    "prompt": {
+      "description": "What happens in the video, in plain prose. Describe the shots in order with timing, the camera, the subjects and the sound (dialogue in quotes, ambience, music or 'no music'). There is no prompt rewriter here, so be concrete.",
+      "examples": [
+        "A red fox trots along a frozen riverbank at dawn, breath steaming. 0-3s: low tracking shot beside the fox. 3-5s: it stops and looks straight into the lens. Sound: crunching snow, distant crows, no music."
+      ],
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First frame (JPEG, PNG or WebP). Center-cropped to the canvas aspect ratio and held as frame one.",
+      "title": "Image"
+    },
+    "last_frame_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last frame. Can be given alone to generate up to it, or with image for first-and-last-frame.",
+      "title": "Last Frame Image"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Requested length in whole seconds, 5 to 15. Snapped up to the model's frame grid (5s gives 124 frames, 5.17s).",
+      "maximum": 15,
+      "minimum": 5,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "auto",
+      "description": "Canvas aspect ratio. auto follows the first keyframe when one is given, otherwise 16:9.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "3:2",
+        "4:3",
+        "5:4",
+        "1:1",
+        "4:5",
+        "3:4",
+        "2:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "768p",
+      "description": "Native generation tier. 480p is about twice as fast.",
+      "enum": [
+        "480p",
+        "768p"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "soundscape": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Overall ambience and physical sounds (the model's overall_soundscape field). Defaults to natural sound matching the scene.",
+      "title": "Soundscape"
+    },
+    "music": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Background score (the model's non_diegetic_music field). Default none.",
+      "title": "Music"
+    },
+    "format_prompt": {
+      "default": true,
+      "description": "Wrap the prompt in Pika's structured template (keyframe alignment line, integrated_multimodal_description, overall_soundscape, non_diegetic_music). Off, or a prompt that already contains integrated_multimodal_description, is sent verbatim.",
+      "title": "Format Prompt",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": -1,
+      "description": "Seed, or -1 for a random one.",
+      "minimum": -1,
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

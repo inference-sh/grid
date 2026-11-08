@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "resident_transformer": {
+      "default": false,
+      "description": "Keep the 62 GB transformer on the GPU instead of streaming its blocks from host memory. Faster, but 768p clips over 5 seconds run out of memory on an 80 GB card.",
+      "title": "Resident Transformer",
+      "type": "boolean"
+    }
+  },
+  "title": "AppSetup",
+  "type": "object"
+}

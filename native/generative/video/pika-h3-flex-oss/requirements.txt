@@ -1,0 +1,18 @@
+pydantic>=2.0.0
+inferencesh>=0.26.0
+# CUDA 12.9 builds, the same pins as Pika's own requirements.txt (torch 2.13.0 / torchvision 0.28.0).
+# The PyPI wheels of torch 2.13 are built for CUDA 13 and do not start on workers whose driver stops at CUDA 12.
+torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+torchvision @ https://download.pytorch.org/whl/cu129/torchvision-0.28.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
+# Pika H3 Flex ships in Diffusers main only (modular pipeline + MiniMax-H3 blocks). This is the commit the
+# official examples (examples/_common.py CODE_REVISION) were validated against.
+diffusers @ https://github.com/huggingface/diffusers/archive/d0b9b1b5a540e5f9df2f8ec236347bf9c5aa7d1f.tar.gz
+transformers==5.15.0
+peft==0.20.0
+accelerate==1.14.0
+av==18.1.0
+safetensors==0.8.0
+huggingface_hub>=1.32.0
+numpy
+pillow
+pyyaml
