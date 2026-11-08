@@ -60,6 +60,22 @@ probed short edge: <= 480 px is `480p`, otherwise `768p`. `inputs[0].resolution`
 $0.001 per output stem second (100,000 microcents). `outputs[]` is one `AudioMeta` per stem; bill the sum of `seconds`.
 Estimate from `inputs[0].seconds` x 3 (Dialogue, Music, Effect) x $0.001; exact only after the run.
 
+## pika/pika-h3-flex-oss (self-hosted open weights, native/generative/video/pika-h3-flex-oss)
+
+Priced by GPU time (`inference_expression: resource_fee`, "GPU time, billed per millisecond"), like the other
+80 GB GPU apps. No per-second rate table; the cost is the engine's GPU wall clock including setup on a cold
+engine. Measured on the first cloud runs (480p, 5.17 s, group-offloaded transformer, weights cached on the engine):
+
+| Run | Setup | Generation | Peak GPU |
+|---|---|---|---|
+| text-to-video 480p 5 s | 52 s warm (173 s with the 150 GB download) | 158 s | 62.2 GiB |
+| image-to-video 480p 5 s | 52 s | 165 s | 72.2 GiB |
+
+Fresh task after submit and publish: 2c4kn9pt7j3kydemcv9fwjmscn charged 0, which is expected for the infsh team.
+`usage/cel.go`: a team's own engine prices its resources at 0, so runs on the platform's own GPU fleet stay
+free for infsh (infsh/harrier-oss-v1 shows the same). Other workspaces pay the GPU reservation rate per
+millisecond; `belt app estimate` reports `confidence: unknown, depends_on: [resource_fee]`.
+
 ## Confirmed on 2026-11-08
 
 - Pika bills measured output seconds: a 3 s request produced 73 frames = 3.0417 s (`usage.output_seconds`).

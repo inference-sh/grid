@@ -145,7 +145,9 @@ def format_prompt(prompt: str, mode: str, seconds: float, soundscape: Optional[s
 
 
 def snap_frames(duration: int) -> int:
-    """24 fps frames snapped up to the 17n+5 grid the video VAE decodes."""
+    """The frame count the pipeline will produce: 24 fps frames rounded up to the 17n+5 grid the video VAE
+    decodes. Only for logging and the prompt; the pipeline is given the raw duration * 24 like Pika's own
+    examples, because it range-checks that raw count (120..360) before it rounds up itself."""
     frames = duration * FPS
     while frames % 17 != 5:
         frames += 1
@@ -274,7 +276,7 @@ class App(BaseApp):
         out_path = os.path.join(workdir, "video.mp4")
         t0 = time.monotonic()
         frames, sr, peak = await asyncio.to_thread(
-            self._generate, prompt, image, last_image, width, height, num_frames, seed, out_path)
+            self._generate, prompt, image, last_image, width, height, input_data.duration * FPS, seed, out_path)
         gen_s = time.monotonic() - t0
         self.logger.info(f"Generated {frames} frames in {gen_s:.1f}s, peak GPU {peak:.1f} GiB, audio {sr} Hz")
 
