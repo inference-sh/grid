@@ -70,6 +70,7 @@ engine. Measured on the first cloud runs (480p, 5.17 s, group-offloaded transfor
 |---|---|---|---|
 | text-to-video 480p 5 s | 52 s warm (173 s with the 150 GB download) | 158 s | 62.2 GiB |
 | image-to-video 480p 5 s | 52 s | 165 s | 72.2 GiB |
+| image-to-video 768p 15 s (1344x768, 362 frames, the heaviest setting) | 51 s | 1100 s | 72.2 GiB |
 
 Fresh task after submit and publish: 2c4kn9pt7j3kydemcv9fwjmscn charged 0, which is expected for the infsh team.
 `usage/cel.go`: a team's own engine prices its resources at 0, so runs on the platform's own GPU fleet stay
