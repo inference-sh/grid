@@ -1,0 +1,35 @@
+namespace: pika
+name: pika-h3-flex
+title: Pika H3 Flex
+description: Pika H3 Flex video with synchronized audio. Text-to-video or first/last-frame image-to-video, 3-15s, native 480p/768p, upscaled 1080p, 2K and 4K. Optional dialogue, music and effect stems.
+metadata:
+    provider: pika
+    tags:
+        - text-to-video
+        - image-to-video
+        - first-last-frame
+        - native-audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    pika:
+        secrets: [PIKA_API_KEY]
+        provider: {name: Pika, website: pika.art, docs_uri: https://dev.pika.art}
+        display_name: Pika API key
+        docs_url: https://dev.pika.art
+        instructions: |
+            1. Sign in or create an account at [dev.pika.art/login](https://dev.pika.art/login).
+            2. Create a key at [dev.pika.art/keys](https://dev.pika.art/keys).
+            3. Add prepaid funds at [dev.pika.art/billing](https://dev.pika.art/billing). There is no free tier; jobs fail with `insufficient_balance` until the organization has a balance.
+            4. Paste the key into `PIKA_API_KEY`.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

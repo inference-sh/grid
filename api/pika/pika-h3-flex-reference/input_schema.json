@@ -1,0 +1,120 @@
+{
+  "description": "Pika H3 Flex reference-to-video: generate a video guided by reference images, videos and audio.",
+  "properties": {
+    "prompt": {
+      "description": "What happens in the video. Cite references in order as @Image1, @Image2, @Video1, @Audio1. Describe shots, camera, lighting and sound.",
+      "examples": [
+        "@Image1 walks through the rainy street from @Video1, wearing the jacket in @Image2. The voice from @Audio1 says 'we made it'. Sound: rain, footsteps, no music."
+      ],
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "reference_images": {
+      "description": "Up to 9 reference images (PNG, JPEG or WebP, up to 50 MiB each, aspect between 1:4 and 4:1). Cite as @Image1..@Image9.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 9,
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "reference_videos": {
+      "description": "Up to 3 reference videos, 2-15s each and 15s combined. Input video seconds are billed at the output rate. Cite as @Video1..@Video3.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Videos",
+      "type": "array"
+    },
+    "reference_audios": {
+      "description": "Up to 3 reference audio clips, 2-15s each and 15s combined. Free. Cite as @Audio1..@Audio3.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reference Audios",
+      "type": "array"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video length in whole seconds, 3 to 15. Billed per output second.",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "auto",
+      "description": "Output aspect ratio. auto follows the prompt and reference video.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "3:2",
+        "4:3",
+        "5:4",
+        "1:1",
+        "4:5",
+        "3:4",
+        "2:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "768p",
+      "description": "480p and 768p are native. 1080p, 2k and 4k generate at 768p and upscale once, keeping audio and frame rate.",
+      "enum": [
+        "480p",
+        "768p",
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "rewrite": {
+      "default": true,
+      "description": "Let Pika expand the prompt before generation. Turn off to use the prompt verbatim.",
+      "title": "Rewrite",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": 0,
+      "description": "Seed. 0 lets Pika choose.",
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "audio_stems": {
+      "default": false,
+      "description": "Also return the soundtrack split into Dialogue, Music and Effect WAV stems. Billed per stem second on top of the video.",
+      "title": "Audio Stems",
+      "type": "boolean"
+    },
+    "stems_channel_mode": {
+      "default": "mono",
+      "description": "Audio stems only. mono downmixes before separation; stereo keeps both channels.",
+      "enum": [
+        "mono",
+        "stereo"
+      ],
+      "title": "Stems Channel Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

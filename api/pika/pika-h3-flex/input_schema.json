@@ -1,0 +1,118 @@
+{
+  "description": "Pika H3 Flex video generation with synchronized audio.\n\nThe endpoint is chosen from the inputs: a prompt alone is text-to-video;\na first and/or last frame image is image-to-video.",
+  "properties": {
+    "prompt": {
+      "description": "What happens in the video. Describe shots with time ranges (0-4s, 4-8s), camera moves, subjects, lighting and the sound (dialogue, ambience, music or 'no music').",
+      "examples": [
+        "A red fox trots along a frozen riverbank at dawn, breath steaming. 0-3s: low tracking shot beside the fox. 3-5s: it stops and looks straight into the lens. Sound: crunching snow, distant crows, no music."
+      ],
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First-frame image (JPEG, PNG or WebP, up to 24 MiB and 40 MP). Resized and center-cropped to the output canvas.",
+      "title": "Image"
+    },
+    "last_frame_image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last-frame image, same limits as image. Can be used alone or together with image.",
+      "title": "Last Frame Image"
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video length in whole seconds, 3 to 15. Billed per output second.",
+      "maximum": 15,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    },
+    "aspect_ratio": {
+      "default": "auto",
+      "description": "Output aspect ratio. auto follows the prompt, or the first keyframe when one is given.",
+      "enum": [
+        "auto",
+        "21:9",
+        "16:9",
+        "3:2",
+        "4:3",
+        "5:4",
+        "1:1",
+        "4:5",
+        "3:4",
+        "2:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "Aspect Ratio",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "768p",
+      "description": "480p and 768p are native. 1080p, 2k and 4k generate at 768p and upscale once, keeping audio and frame rate.",
+      "enum": [
+        "480p",
+        "768p",
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    },
+    "rewrite": {
+      "default": true,
+      "description": "Let Pika expand the prompt before generation. Turn off to use the prompt verbatim.",
+      "title": "Rewrite",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": 0,
+      "description": "Seed. 0 lets Pika choose.",
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "audio_stems": {
+      "default": false,
+      "description": "Also return the soundtrack split into Dialogue, Music and Effect WAV stems. Billed per stem second on top of the video.",
+      "title": "Audio Stems",
+      "type": "boolean"
+    },
+    "stems_channel_mode": {
+      "default": "mono",
+      "description": "Audio stems only. mono downmixes before separation; stereo keeps both channels.",
+      "enum": [
+        "mono",
+        "stereo"
+      ],
+      "title": "Stems Channel Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

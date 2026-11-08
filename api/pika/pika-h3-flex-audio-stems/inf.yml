@@ -1,0 +1,34 @@
+namespace: pika
+name: pika-h3-flex-audio-stems
+title: Pika H3 Flex Audio Stems
+description: Split the soundtrack of an audio or video file (up to 120s) into Dialogue, Music and Effect WAV stems with Pika's H3 Flex separator. Billed per stem second.
+metadata:
+    provider: pika
+    tags:
+        - audio-separation
+        - stems
+        - audio-to-audio
+category: audio
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    pika:
+        secrets: [PIKA_API_KEY]
+        provider: {name: Pika, website: pika.art, docs_uri: https://dev.pika.art}
+        display_name: Pika API key
+        docs_url: https://dev.pika.art
+        instructions: |
+            1. Sign in or create an account at [dev.pika.art/login](https://dev.pika.art/login).
+            2. Create a key at [dev.pika.art/keys](https://dev.pika.art/keys).
+            3. Add prepaid funds at [dev.pika.art/billing](https://dev.pika.art/billing). There is no free tier; jobs fail with `insufficient_balance` until the organization has a balance.
+            4. Paste the key into `PIKA_API_KEY`.
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 2000000000

@@ -1,0 +1,27 @@
+{
+  "description": "Upscale a 480p or 768p video to 1080p, 2K or 4K with Pika's H3 Flex upsampler. Frames, frame rate and audio are preserved.",
+  "properties": {
+    "video": {
+      "description": "Source video with a short edge of at most 768 pixels (a 480p or 768p Pika H3 Flex draft, or any similar video). Up to 1441 frames.",
+      "format": "file",
+      "title": "Video",
+      "type": "string"
+    },
+    "resolution": {
+      "default": "2k",
+      "description": "Target resolution. Billed per output second at the target rate minus the source tier's native rate.",
+      "enum": [
+        "1080p",
+        "2k",
+        "4k"
+      ],
+      "title": "Resolution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "video"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
