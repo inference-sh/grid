@@ -1,0 +1,30 @@
+namespace: pika
+name: pika-h3-flex-oss
+title: Pika H3 Flex (self-hosted)
+description: Pika H3 Flex from the open weights, on our GPUs. Text-to-video and first/last-frame image-to-video with synchronized stereo audio. 5-15s, native 480p or 768p, six sampling steps.
+metadata:
+    provider: pika
+    tags:
+        - text-to-video
+        - image-to-video
+        - first-last-frame
+        - native-audio
+        - open-weights
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env:
+    PYTORCH_ALLOC_CONF: expandable_segments:True
+kernel: python-3.11
+credentials:
+    huggingface:
+        secrets: [HF_TOKEN]
+        optional: true
+resources:
+    gpu:
+        count: 1
+        vram: 80
+        type: any
+    ram: 160

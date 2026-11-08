@@ -60,6 +60,15 @@ probed short edge: <= 480 px is `480p`, otherwise `768p`. `inputs[0].resolution`
 $0.001 per output stem second (100,000 microcents). `outputs[]` is one `AudioMeta` per stem; bill the sum of `seconds`.
 Estimate from `inputs[0].seconds` x 3 (Dialogue, Music, Effect) x $0.001; exact only after the run.
 
+## Confirmed on 2026-11-08
+
+- Pika bills measured output seconds: a 3 s request produced 73 frames = 3.0417 s (`usage.output_seconds`).
+- Generation runs charged 0 micro-USD upstream during the launch promo (15 free API generations a day).
+- Upscale 480p -> 1080p, 3.0417 s: Pika charged 76,042 micro-USD = $0.025/s, the launch rate for 0.035 - 0.010.
+- Stems, 3 x 3.072 s: Pika charged 9,216 micro-USD = exactly $0.001 per stem second.
+- Published pricing (regular rates): pika-h3-flex 480p 3.04 s task billed 6,083,333 microcents;
+  audio-stems 9.216 s billed 921,600 microcents.
+
 ## Not wrapped
 
 `pika/pika-h3-flex/prompt-rewriter` ($0.02 per request) is covered by the `rewrite` flag on the generation apps.
