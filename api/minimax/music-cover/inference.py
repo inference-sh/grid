@@ -86,10 +86,13 @@ class App(BaseApp):
         if base_resp.get("status_code", 0) != 0:
             raise RuntimeError(f"Preprocess error: {base_resp.get('status_msg', 'Unknown')}")
 
-        pp_data = preprocess_data.get("data") or {}
+        # MiniMax answers with the fields at the top level; an older shape
+        # nested them under "data".
+        pp_data = preprocess_data.get("data") or preprocess_data
         cover_feature_id = pp_data.get("cover_feature_id")
         if not cover_feature_id:
-            raise RuntimeError(f"No cover_feature_id in preprocess response: {str(pp_data)[:300]}")
+            self.logger.error(f"Preprocess response without cover_feature_id: {str(preprocess_data)[:1000]}")
+            raise RuntimeError(f"No cover_feature_id in preprocess response: {str(preprocess_data)[:300]}")
 
         formatted_lyrics = pp_data.get("formatted_lyrics", "")
         audio_duration = float(pp_data.get("audio_duration") or 0)
@@ -129,7 +132,7 @@ class App(BaseApp):
             raise RuntimeError(f"No audio URL in response: {str(data)[:300]}")
 
         extra_info = data.get("extra_info") or {}
-        audio_length_ms = float(extra_info.get("audio_length") or 0)
+        audio_length_ms = float(extra_info.get("music_duration") or extra_info.get("audio_length") or 0)
         self.logger.info(f"Cover ready: {audio_length_ms}ms")
 
         ext = input_data.format.value
