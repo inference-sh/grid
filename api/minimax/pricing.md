@@ -17,6 +17,41 @@ Pay-as-you-go API pricing. All prices in USD.
 ### Regeneration (768P → 2K)
 - $0.05/sec of regenerated output
 
+## Image Generation (H3 Image)
+
+Billed per token. Source: https://platform.minimax.io/docs/pricing/overview
+
+| Model | Input text /M | Input image /M | Output image /M |
+|-------|---------------|----------------|-----------------|
+| **MiniMax-H3-Image** | $2.30 | $1.50 | $3.80 |
+| MiniMax-H3-Image-Highspeed (no app yet) | $2.30 | $3.00 | $7.60 |
+
+- Reference images bill as input image tokens; there is no per-image fee.
+- Prompt enhancement bills as input text tokens (about 2,300 to 3,200 per image; 8 with enhancement off).
+- Only images that were generated are billed.
+- Vendor promotion until 2026-11-17 16:00 UTC: 50% off the request when the image is at least 16,600,000 px (4K at 1:1 is 16,777,216). The app prices at list rates.
+
+### Measured on minimax/h3-image (2026-11-10)
+
+| Run | Size | Text in | Image in | Image out | List cost | Microcents |
+|-----|------|---------|----------|-----------|-----------|------------|
+| 1K 16:9 | 1360x768 | 2,479 | 0 | 4,080 | $0.021206 | 2,120,570 |
+| 2K auto | 2048x2048 | 2,472 | 0 | 4,096 | $0.021250 | 2,125,040 |
+| 4K 1:1 | 4096x4096 | 2,941 | 0 | 16,384 | $0.069024 | 6,902,350 |
+| 1K 1:1, enhancement off | 1024x1024 | 8 | 0 | 4,096 | $0.015583 | 1,558,320 |
+| 2 images, 1024x768 | 1024x768 | 4,691 | 0 | 8,140 | $0.041721 | 4,172,130 |
+| 1K edit, 1 reference (1360x768) | 1360x768 | 3,140 | 3,650 | 4,080 | $0.028201 | 2,820,100 |
+
+Output image tokens: 1K is pixels/256 (at most 4,096), 2K is 4,096, 4K is pixels/1024 (16,384 at 1:1).
+
+### OutputMeta (h3-image)
+- `outputs[0]` — ImageMeta: `width`, `height` of the first image, `count` = images generated
+- `outputs[0].extra.input_text_tokens`, `input_image_tokens`, `output_image_tokens` — billed tokens for the whole request
+- `outputs[0].extra.generated_images`, `requested_images`, `input_image_count`, `total_pixels`, `max_pixels`, `resolution` ("1K", "2K", "4K" or "custom"), `mode` ("text-to-image" or "image-edit")
+- `inputs[]` — one ImageMeta per reference image, with `width`, `height`
+
+Microcents per token: text in 230, image in 150, image out 380.
+
 ## LLM (M3) — Standard Tier (50% permanent discount applied)
 
 | Context | Input | Output | Cache Read |
