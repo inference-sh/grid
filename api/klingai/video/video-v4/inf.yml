@@ -9,9 +9,9 @@ metadata:
         - native-audio
 category: video
 images:
-    card: ""
-    thumbnail: ""
-    banner: ""
+    card: https://cloud.inference.sh/app/files/t/71ckmsn3/7nkipgzt.png
+    thumbnail: https://cloud.inference.sh/app/files/t/71ckmsn3/ehwnp7ic.png
+    banner: https://cloud.inference.sh/app/files/t/71ckmsn3/n5lph7la.png
 env: {}
 kernel: python-3.11
 secrets:
