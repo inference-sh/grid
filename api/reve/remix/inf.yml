@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/t59d71se.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: REVE_KEY
-      description: Reve partner API key
+credentials:
+    reve:
+        secrets: [REVE_KEY]
 resources:
     gpu:
         count: 0
