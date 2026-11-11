@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/sbyd74n2.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: PRUNA_KEY
-      description: Pruna API key for P-API access
+credentials:
+    pruna:
+        secrets: [PRUNA_KEY]
 resources:
     gpu:
         count: 0

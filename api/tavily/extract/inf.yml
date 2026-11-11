@@ -13,8 +13,9 @@ images:
 env:
     PYTHONPATH: /app
 kernel: python-3.11
-secrets:
-    - key: TVLY_API_KEY
+credentials:
+    tavily:
+        secrets: [TVLY_API_KEY]
 resources:
     gpu:
         count: 0

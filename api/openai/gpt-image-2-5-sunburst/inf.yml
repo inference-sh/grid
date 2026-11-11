@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/za92bc5s.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: OPENAI_KEY
-      description: OpenAI API key for GPT Image 2.5 access
+credentials:
+    openai:
+        secrets: [OPENAI_KEY]
 resources:
     gpu:
         count: 0

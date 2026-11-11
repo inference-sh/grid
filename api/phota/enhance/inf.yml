@@ -11,9 +11,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/2qabonkq.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: PHOTA_KEY
-      description: Phota API key from platform.photalabs.com
+credentials:
+    phota:
+        secrets: [PHOTA_KEY]
 resources:
     gpu:
         count: 0
