@@ -14,9 +14,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/ppubecl2.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: XAI_API_KEY
-      description: xAI API key for Speech to Text access
+credentials:
+    xai:
+        secrets: [XAI_API_KEY]
 resources:
     gpu:
         count: 0
