@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/q4u695gc.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: PIXVERSE_KEY
-      description: PixVerse API key
+credentials:
+    pixverse:
+        secrets: [PIXVERSE_KEY]
 resources:
     gpu:
         count: 0

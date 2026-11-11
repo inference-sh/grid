@@ -12,9 +12,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/caolc0un.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: DASHSCOPE_API_KEY
-      description: Alibaba Cloud DashScope API key
+credentials:
+    dashscope:
+        secrets: [DASHSCOPE_API_KEY]
 resources:
     gpu:
         count: 0

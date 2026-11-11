@@ -14,9 +14,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/motdfqsu.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: KREA_KEY
-      description: Krea API key (id:secret format)
+credentials:
+    krea:
+        secrets: [KREA_KEY]
 resources:
     gpu:
         count: 0

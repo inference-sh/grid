@@ -23,9 +23,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/8t0ejdwo.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: MINIMAX_KEY
-      description: MiniMax API key from platform.minimax.io
+credentials:
+    minimax:
+        secrets: [MINIMAX_KEY]
 resources:
     gpu:
         count: 0

@@ -47,9 +47,9 @@ images:
     banner: ""
 env: {}
 kernel: python-3.11             # Or empty for API-only apps
-secrets:
-    - key: {PROVIDER}_KEY       # Secret env var name (e.g., PRUNA_KEY)
-      description: ...
+credentials:                    # The provider key: the egress gateway places it on requests to the
+    {provider}:                 # provider's bound hosts; the app's env holds a placeholder.
+        secrets: [{PROVIDER}_KEY]   # Env var name (e.g., PRUNA_KEY). Send it in a header, never a query or body.
 resources:
     gpu:
         count: 0                # 0 for API-only apps

@@ -15,9 +15,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/at0257jx.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: HEYGEN_KEY
-      description: HeyGen API key from dashboard
+credentials:
+    heygen:
+        secrets: [HEYGEN_KEY]
 resources:
     gpu:
         count: 0

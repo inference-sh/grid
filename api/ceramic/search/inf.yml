@@ -12,9 +12,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/zqv455xw.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: CERAMIC_KEY
-      description: Ceramic AI API key
+credentials:
+    ceramic:
+        secrets: [CERAMIC_KEY]
 resources:
     gpu:
         count: 0

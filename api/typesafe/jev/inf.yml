@@ -15,10 +15,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/2x4d7cej.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: TYPESAFE_KEY
-      description: TypeSafe API key
-      optional: false
+credentials:
+    typesafe:
+        secrets: [TYPESAFE_KEY]
 resources:
     gpu:
         count: 0
