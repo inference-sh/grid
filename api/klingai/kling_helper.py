@@ -1388,6 +1388,9 @@ class V2TaskResult:
     update_time: Optional[int] = None
     external_id: Optional[str] = None
     outputs: Optional[List[V2Output]] = None
+    # Kling 4.0 tasks only, once the task has ended.
+    usage: Optional[Dict[str, Any]] = None
+    billing: Optional[List[Dict[str, Any]]] = None
 
 
 class KlingV2API:
@@ -1479,6 +1482,8 @@ class KlingV2API:
             update_time=d.get("update_time"),
             external_id=d.get("external_id"),
             outputs=outputs,
+            usage=d.get("usage"),
+            billing=d.get("billing"),
         )
 
 

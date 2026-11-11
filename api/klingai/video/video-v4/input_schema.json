@@ -2,6 +2,7 @@
   "$defs": {
     "AspectRatioEnum": {
       "enum": [
+        "21:9",
         "16:9",
         "9:16",
         "1:1"
@@ -12,8 +13,7 @@
     "ResolutionEnum": {
       "enum": [
         "720p",
-        "1080p",
-        "4k"
+        "1080p"
       ],
       "title": "ResolutionEnum",
       "type": "string"
@@ -22,7 +22,7 @@
   "description": "Kling V4.0 video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)\n- Start/end frame: prompt + image + end_image",
   "properties": {
     "prompt": {
-      "description": "Text prompt describing the video content. Max 3072 chars (recommended \u22642500).",
+      "description": "Text prompt describing the video content. A duration set here takes precedence over one named in the prompt.",
       "examples": [
         "A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"
       ],
@@ -40,7 +40,7 @@
         }
       ],
       "default": null,
-      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 50MB, min 300px.",
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 30MB, min 300px per side, aspect ratio between 2:5 and 5:2.",
       "title": "Image"
     },
     "end_image": {
@@ -57,18 +57,6 @@
       "description": "End frame image. Requires image to be set as start frame.",
       "title": "End Image"
     },
-    "sound": {
-      "default": true,
-      "description": "Generate synchronized native audio with the video.",
-      "title": "Sound",
-      "type": "boolean"
-    },
-    "multi_shot": {
-      "default": true,
-      "description": "Enable multi-shot video generation via prompt format.",
-      "title": "Multi Shot",
-      "type": "boolean"
-    },
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "1080p",
@@ -77,7 +65,7 @@
     "aspect_ratio": {
       "$ref": "#/$defs/AspectRatioEnum",
       "default": "16:9",
-      "description": "Video aspect ratio."
+      "description": "Video aspect ratio. Text-to-video only; with an image the video follows the image."
     },
     "duration": {
       "default": 5,
