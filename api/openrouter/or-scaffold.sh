@@ -168,8 +168,9 @@ images:
     banner: ""
 env: {{}}
 kernel: ""
-secrets:
-    - key: OPENROUTER_API_KEY
+credentials:
+    openrouter:
+        secrets: [OPENROUTER_API_KEY]
 resources:
     gpu:
         count: 0

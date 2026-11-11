@@ -22,8 +22,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/birt9qck.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: ANTHROPIC_KEY
+credentials:
+    anthropic:
+        secrets: [ANTHROPIC_KEY]
 resources:
     gpu:
         count: 0
