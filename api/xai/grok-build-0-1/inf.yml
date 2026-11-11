@@ -22,9 +22,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/l265txl1.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: XAI_API_KEY
-      description: xAI API key
+credentials:
+    xai:
+        secrets: [XAI_API_KEY]
 resources:
     gpu:
         count: 0

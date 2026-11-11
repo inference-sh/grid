@@ -14,9 +14,9 @@ images:
 env: {}
 kernel: python-3.11
 default_function: talk
-secrets:
-    - key: XAI_API_KEY
-      description: xAI API key for the Voice Agent API
+credentials:
+    xai:
+        secrets: [XAI_API_KEY]
 resources:
     gpu:
         count: 0

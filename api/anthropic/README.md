@@ -65,7 +65,7 @@ deployed app keeps the copy bundled at its own deploy time and does not pick up 
 
 ## Auth
 
-Uses `ANTHROPIC_KEY` secret (set via `belt secrets set ANTHROPIC_KEY <your-key>`).
+Declares `credentials: anthropic: secrets: [ANTHROPIC_KEY]`. Behind the egress gateway the app's `ANTHROPIC_KEY` holds a placeholder; the gateway puts the real key in the `x-api-key` header on requests to api.anthropic.com.
 
 ## Pricing
 
