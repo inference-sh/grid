@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/ncrkx5us.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: CAPTIONS_KEY
-      description: Mirage/Captions API key from platform.mirage.app
+credentials:
+    captions:
+        secrets: [CAPTIONS_KEY]
 resources:
     gpu:
         count: 0

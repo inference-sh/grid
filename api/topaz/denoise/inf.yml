@@ -12,9 +12,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/kk8yy9b0.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: TOPAZ_KEY
-      description: Topaz Labs API key
+credentials:
+    topaz:
+        secrets: [TOPAZ_KEY]
 resources:
     gpu:
         count: 0

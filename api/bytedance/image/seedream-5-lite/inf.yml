@@ -15,9 +15,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/7tt83p6x.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: ARK_API_KEY
-      description: BytePlus ModelArk API key for Seedream image generation
+credentials:
+    bytedance:
+        secrets: [ARK_API_KEY]
 resources:
     gpu:
         count: 0
