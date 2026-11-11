@@ -22,7 +22,7 @@ idna==3.19
     #   anyio
     #   httpx
     #   requests
-inferencesh==0.28.0
+inferencesh==0.39.0
     # via -r requirements.txt
 pillow==13.0.0
     # via inferencesh
