@@ -4,12 +4,14 @@ from typing import Optional
 from enum import Enum
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta, ImageMeta
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from .runway_helper import RunwayClient, download_file
 
 
 class RatioEnum(str, Enum):
+    # Union of Runway's gen4.5 ratio enums (docs.dev.runwayml.com/api, 2026-11).
+    # text_to_video accepts only TEXT_TO_VIDEO_RATIOS; image_to_video accepts all.
     r1280_720 = "1280:720"
     r720_1280 = "720:1280"
     r1104_832 = "1104:832"
@@ -17,6 +19,9 @@ class RatioEnum(str, Enum):
     r960_960 = "960:960"
     r1584_672 = "1584:672"
 
+
+TEXT_TO_VIDEO_RATIOS = ("1280:720", "720:1280")
+IMAGE_TO_VIDEO_RATIOS = ("1280:720", "720:1280", "1104:832", "832:1104", "960:960", "1584:672")
 
 RATIO_DIMS = {
     "1280:720": (1280, 720),
@@ -38,7 +43,10 @@ class AppInput(BaseAppInput):
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.r1280_720,
-        description="Output video aspect ratio.",
+        description=(
+            "Output video aspect ratio. Text-to-video (no image): 1280:720 or 720:1280 only. "
+            "Image-to-video: 1280:720, 720:1280, 1104:832, 832:1104, 960:960 or 1584:672."
+        ),
     )
     duration: int = Field(
         default=5,
@@ -50,6 +58,16 @@ class AppInput(BaseAppInput):
         default=None,
         description="Seed for reproducible results.",
     )
+
+    @model_validator(mode="after")
+    def _check_ratio_for_mode(self):
+        if self.image is None and self.ratio.value not in TEXT_TO_VIDEO_RATIOS:
+            raise ValueError(
+                f"ratio {self.ratio.value} is not available for text-to-video; "
+                f"use {' or '.join(TEXT_TO_VIDEO_RATIOS)}, or provide an image for image-to-video "
+                f"({', '.join(IMAGE_TO_VIDEO_RATIOS)})"
+            )
+        return self
 
 
 class AppOutput(BaseAppOutput):
