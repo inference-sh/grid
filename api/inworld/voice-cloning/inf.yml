@@ -11,9 +11,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/74u3aueg.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: INWORLD_KEY
-      description: Inworld API key
+credentials:
+    inworld:
+        secrets: [INWORLD_KEY]
 resources:
     gpu:
         count: 0

@@ -19,10 +19,9 @@ BytePlus apps require an API key from the BytePlus ModelArk console.
 ### inf.yml Configuration
 
 ```yaml
-secrets:
-  - key: ARK_API_KEY
-    description: BytePlus ModelArk API key
-    optional: false
+credentials:
+  bytedance:
+    secrets: [ARK_API_KEY]
 ```
 
 ### Accessing in Code

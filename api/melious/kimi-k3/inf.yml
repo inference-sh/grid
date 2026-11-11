@@ -24,9 +24,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/71ckmsn3/o82l05xh.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: MELIOUS_KEY
-      description: Melious API key
+credentials:
+    melious:
+        secrets: [MELIOUS_KEY]
 resources:
     gpu:
         count: 0

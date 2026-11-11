@@ -13,9 +13,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/7c2zb4r0.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: RUNWAY_KEY
-      description: Runway API secret key from dev.runwayml.com
+credentials:
+    runway:
+        secrets: [RUNWAY_KEY]
 resources:
     gpu:
         count: 0

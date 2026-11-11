@@ -13,12 +13,11 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/4fg8q99k.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: FAL_KEY
-      description: fal.ai API key for fallback
 credentials:
     - key: gcp.vertex_ai
       description: Access Vertex AI models
+    - slug: fal
+      secrets: [FAL_KEY]
 resources:
     gpu:
         count: 0

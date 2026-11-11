@@ -23,9 +23,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/4lfty59r.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: OPENAI_KEY
-      description: OpenAI API key
+credentials:
+    openai:
+        secrets: [OPENAI_KEY]
 resources:
     gpu:
         count: 0

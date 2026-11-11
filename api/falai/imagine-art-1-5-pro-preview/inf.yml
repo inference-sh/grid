@@ -11,9 +11,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/ta807kq1.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: FAL_KEY
-      description: fal.ai API key for model access
+credentials:
+    fal:
+        secrets: [FAL_KEY]
 resources:
     gpu:
         count: 0
