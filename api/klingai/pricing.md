@@ -45,6 +45,9 @@ Billed on `usage.output_duration` (the requested length).
 Units confirmed from the task `billing` field on 2026-11-11: 3 s 720p = 3 units, 3 s 1080p = 4.5 units
 (text-to-video, image-to-video and start/end frame all the same).
 
+`klingai/video-v4-flash` price: `per_second_720p` 9,400,000 mc. Confirmed the same day: 3 s = 1.8 units
+(text-to-video and image-to-video).
+
 ### V2.x Models (per-clip billing)
 
 | Model | Mode | 5s | 10s |

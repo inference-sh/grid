@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "enum": [
+        "21:9",
+        "16:9",
+        "9:16",
+        "1:1"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    }
+  },
+  "description": "Kling V4.0 Flash video generation.\n\nModes determined by inputs:\n- Text-to-video: prompt only\n- Image-to-video: prompt + image (first frame)",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the video content. A duration set here takes precedence over one named in the prompt.",
+      "examples": [
+        "A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"
+      ],
+      "title": "Prompt",
+      "type": "string"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 30MB, min 300px per side, aspect ratio between 2:5 and 5:2.",
+      "title": "Image"
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "16:9",
+      "description": "Video aspect ratio. Text-to-video only; with an image the video follows the image."
+    },
+    "duration": {
+      "default": 5,
+      "description": "Video duration in seconds (3-20). Billed per second.",
+      "maximum": 20,
+      "minimum": 3,
+      "title": "Duration",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}

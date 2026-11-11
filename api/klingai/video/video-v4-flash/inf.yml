@@ -1,0 +1,30 @@
+namespace: klingai
+name: video-v4-flash
+description: Kling V4.0 Flash, the faster and cheaper Kling 4.0. Text-to-video and first-frame image-to-video at 720p, 3-20s billed per second, native audio and automatic shot-splitting.
+metadata:
+    provider: klingai
+    tags:
+        - text-to-video
+        - image-to-video
+        - native-audio
+category: video
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+secrets:
+    - key: KLING_KEY
+      description: Kling AI API key (V2)
+    - key: KLING_ACCESS_KEY
+      description: Kling AI API access key
+    - key: KLING_SECRET_KEY
+      description: Kling AI API secret key
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
+title: Kling Video V4 Flash
