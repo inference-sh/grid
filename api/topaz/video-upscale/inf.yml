@@ -6,10 +6,9 @@ metadata:
 category: video
 env: {}
 kernel: python-3.11
-secrets:
-    - key: TOPAZ_KEY
-      description: Topaz Labs API key
-      optional: false
+credentials:
+    topaz:
+        secrets: [TOPAZ_KEY]
 resources:
     gpu:
         count: 0
