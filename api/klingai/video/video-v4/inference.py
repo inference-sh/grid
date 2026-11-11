@@ -1,9 +1,9 @@
 """
 Kling Video V4.0 Video Generation
 
-Kling V4.0 video model. Supports up to 4K output,
-multi-shot video generation, flexible 3-30s duration (billed per second),
-element control, motion control, and start/end frames.
+Kling V4.0 video model. 720p and 1080p output, 3-30s duration billed per
+second, start/end frames. Native audio and smart shot-splitting are always
+on: the model accepts no way to turn either off.
 """
 
 import os
@@ -12,7 +12,7 @@ from typing import Optional
 from enum import Enum
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File, OutputMeta, VideoMeta
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from .kling_helper import KlingClient, KlingAPIError, poll_task_v2
 from .download_helper import download_video
@@ -21,6 +21,7 @@ MODEL = "kling-4.0"
 
 
 class AspectRatioEnum(str, Enum):
+    r21_9 = "21:9"
     r16_9 = "16:9"
     r9_16 = "9:16"
     r1_1 = "1:1"
@@ -29,7 +30,6 @@ class AspectRatioEnum(str, Enum):
 class ResolutionEnum(str, Enum):
     r720p = "720p"
     r1080p = "1080p"
-    r4k = "4k"
 
 
 class AppInput(BaseAppInput):
@@ -42,24 +42,16 @@ class AppInput(BaseAppInput):
     """
 
     prompt: str = Field(
-        description="Text prompt describing the video content. Max 3072 chars (recommended ≤2500).",
+        description="Text prompt describing the video content. A duration set here takes precedence over one named in the prompt.",
         examples=["A cinematic drone shot sweeping over a coastal city at golden hour, waves crashing against the harbor"],
     )
     image: Optional[File] = Field(
         default=None,
-        description="Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 50MB, min 300px.",
+        description="Start frame image for image-to-video. Formats: jpg, jpeg, png. Max 30MB, min 300px per side, aspect ratio between 2:5 and 5:2.",
     )
     end_image: Optional[File] = Field(
         default=None,
         description="End frame image. Requires image to be set as start frame.",
-    )
-    sound: bool = Field(
-        default=True,
-        description="Generate synchronized native audio with the video.",
-    )
-    multi_shot: bool = Field(
-        default=True,
-        description="Enable multi-shot video generation via prompt format.",
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.r1080p,
@@ -67,7 +59,7 @@ class AppInput(BaseAppInput):
     )
     aspect_ratio: AspectRatioEnum = Field(
         default=AspectRatioEnum.r16_9,
-        description="Video aspect ratio.",
+        description="Video aspect ratio. Text-to-video only; with an image the video follows the image.",
     )
     duration: int = Field(
         default=5,
@@ -75,6 +67,13 @@ class AppInput(BaseAppInput):
         le=30,
         description="Video duration in seconds (3-30). Billed per second.",
     )
+
+
+    @model_validator(mode="after")
+    def _end_needs_start(self):
+        if self.end_image is not None and self.image is None:
+            raise ValueError("end_image requires image (the start frame)")
+        return self
 
 
 class AppOutput(BaseAppOutput):
@@ -86,8 +85,6 @@ DIMENSION_MAP = {
     ("720p", "1:1"): (960, 960),
     ("1080p", "16:9"): (1920, 1080), ("1080p", "9:16"): (1080, 1920),
     ("1080p", "1:1"): (1440, 1440),
-    ("4k", "16:9"): (3840, 2160), ("4k", "9:16"): (2160, 3840),
-    ("4k", "1:1"): (2880, 2880),
 }
 
 
@@ -120,13 +117,12 @@ class App(BaseApp):
 
         settings = {
             "resolution": input_data.resolution.value,
-            "aspect_ratio": input_data.aspect_ratio.value,
             "duration": input_data.duration,
-            "audio": "native" if input_data.sound else "off",
-            "multi_shot": input_data.multi_shot,
         }
 
         if mode == "text-to-video":
+            # image-to-video refuses aspect_ratio; the video follows the image.
+            settings["aspect_ratio"] = input_data.aspect_ratio.value
             task = await self.client.v2.text_to_video(
                 model=MODEL,
                 prompt=input_data.prompt,
@@ -150,20 +146,29 @@ class App(BaseApp):
         if not video_out or not video_out.url:
             raise RuntimeError(f"No video URL: {result.message}")
 
-        video_duration = float(video_out.duration) if video_out.duration else float(input_data.duration)
+        # Kling bills usage.output_duration (the target length), not the file length.
+        usage = result.usage or {}
+        self.logger.info(f"Usage: {usage}, billing: {result.billing}, file duration: {video_out.duration}")
+        try:
+            billed_seconds = float(usage.get("output_duration") or input_data.duration)
+        except (TypeError, ValueError):
+            billed_seconds = float(input_data.duration)
         video_path = download_video(video_out.url, self.logger)
 
-        width, height = DIMENSION_MAP.get(
-            (input_data.resolution.value, input_data.aspect_ratio.value), (1920, 1080)
-        )
+        # Known for text-to-video only; with an image the size follows the image.
+        width, height = (0, 0)
+        if mode == "text-to-video":
+            width, height = DIMENSION_MAP.get(
+                (input_data.resolution.value, input_data.aspect_ratio.value), (0, 0)
+            )
 
         output_meta = OutputMeta(
             outputs=[
                 VideoMeta(
                     width=width, height=height,
                     resolution=input_data.resolution.value,
-                    seconds=video_duration, fps=24,
-                    extra={"mode": mode, "model": MODEL, "sound": "native" if input_data.sound else "off"},
+                    seconds=billed_seconds, fps=24,
+                    extra={"mode": mode, "model": MODEL, "billing": result.billing or []},
                 )
             ]
         )

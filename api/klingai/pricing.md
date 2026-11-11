@@ -29,6 +29,22 @@ Prepaid credit-based system. 1 unit = $0.14. Failed tasks are not charged.
 | **Kling Video-3O** | 4k (no audio) | 3.0 units ($0.42) | $2.10 | $4.20 |
 | **Kling Video-3O** | 4k (audio) | 3.0 units ($0.42) | $2.10 | $4.20 |
 
+### Kling V4.0 (per-second billing, own unit price)
+
+Kling lists 4.0 at about $0.157 per unit, not the $0.14 of older models.
+Audio and shot-splitting are always on; there is no audio or 4K price yet.
+Billed on `usage.output_duration` (the requested length).
+
+| Model | Feature | 720p | 1080p |
+|-------|---------|------|-------|
+| **Kling 4.0** | no input video (text/image-to-video) | 1.0 unit ($0.157) /s | 1.5 units ($0.235) /s |
+| **Kling 4.0** | with input video (omni only) | 0.6 units ($0.094) /s | 0.9 units ($0.141) /s |
+| **Kling 4.0 Flash** | no input video | 0.6 units ($0.094) /s | - |
+
+`klingai/video-v4` prices: `per_second_720p` 15,700,000 mc, `per_second_1080p` 23,500,000 mc.
+Units confirmed from the task `billing` field on 2026-11-11: 3 s 720p = 3 units, 3 s 1080p = 4.5 units
+(text-to-video, image-to-video and start/end frame all the same).
+
 ### V2.x Models (per-clip billing)
 
 | Model | Mode | 5s | 10s |

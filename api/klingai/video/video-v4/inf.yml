@@ -1,6 +1,6 @@
 namespace: klingai
 name: video-v4
-description: Kling V4.0 video generation. Text-to-video and image-to-video with start/end frames, 3-30s duration billed per second, up to 4K, multi-shot and synchronized native audio.
+description: Kling V4.0 video generation. Text-to-video and image-to-video with start and end frames, 3-30s billed per second, 720p or 1080p, native audio and automatic shot-splitting.
 metadata:
     provider: klingai
     tags:
