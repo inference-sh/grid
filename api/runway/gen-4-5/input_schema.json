@@ -36,7 +36,7 @@
     "ratio": {
       "$ref": "#/$defs/RatioEnum",
       "default": "1280:720",
-      "description": "Output video aspect ratio."
+      "description": "Output video aspect ratio. Text-to-video (no image): 1280:720 or 720:1280 only. Image-to-video: 1280:720, 720:1280, 1104:832, 832:1104, 960:960 or 1584:672."
     },
     "duration": {
       "default": 5,
