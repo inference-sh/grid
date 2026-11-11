@@ -15,9 +15,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/q3u9au46.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: GEMINI_API_KEY
-      description: Google API key for model access
+credentials:
+    google-gemini:
+        secrets: [GEMINI_API_KEY]
 resources:
     gpu:
         count: 0

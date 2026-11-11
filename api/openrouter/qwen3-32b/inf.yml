@@ -19,8 +19,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/pgzv8dcq.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: OPENROUTER_API_KEY
+credentials:
+    openrouter:
+        secrets: [OPENROUTER_API_KEY]
 resources:
     gpu:
         count: 0
