@@ -1,0 +1,26 @@
+namespace: bytedance
+name: seedream-5-5
+title: Seedream 5.5
+description: ByteDance Seedream 5.5 image model via BytePlus ModelArk. Text-to-image, editing and multi-reference generation with up to 10 images, transparent PNG output, 1K to 2K resolution.
+metadata:
+    provider: bytedance
+    tags:
+        - text-to-image
+        - image-to-image
+        - image-editing
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+credentials:
+    bytedance:
+        secrets: [ARK_API_KEY]
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 4000000000
