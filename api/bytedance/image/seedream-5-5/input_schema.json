@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "AspectRatioEnum": {
+      "description": "Output aspect ratio.",
+      "enum": [
+        "1:1",
+        "4:3",
+        "3:4",
+        "16:9",
+        "9:16",
+        "3:2",
+        "2:3",
+        "21:9"
+      ],
+      "title": "AspectRatioEnum",
+      "type": "string"
+    },
+    "BackgroundEnum": {
+      "description": "Transparency mode of the output image.",
+      "enum": [
+        "auto",
+        "transparent",
+        "opaque"
+      ],
+      "title": "BackgroundEnum",
+      "type": "string"
+    },
+    "OutputFormatEnum": {
+      "description": "Output image format.",
+      "enum": [
+        "png",
+        "jpeg"
+      ],
+      "title": "OutputFormatEnum",
+      "type": "string"
+    },
+    "SizeEnum": {
+      "description": "Output resolution tier.",
+      "enum": [
+        "1K",
+        "1.5K",
+        "2K"
+      ],
+      "title": "SizeEnum",
+      "type": "string"
+    }
+  },
+  "description": "Input schema for Seedream 5.5 image generation.",
+  "properties": {
+    "prompt": {
+      "description": "Text prompt describing the image to generate or the edit to perform. Best under about 600 English words. Supports text rendering in 16 languages.",
+      "examples": [
+        "A glass perfume bottle on a pale stone pedestal, soft morning light, product photography"
+      ],
+      "minLength": 1,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "images": {
+      "description": "Optional reference images for editing or multi-reference generation, up to 10. jpeg, png, webp, bmp, tiff or gif; aspect ratio between 1:16 and 16:1.",
+      "items": {
+        "format": "file",
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Images",
+      "type": "array"
+    },
+    "size": {
+      "$ref": "#/$defs/SizeEnum",
+      "default": "2K",
+      "description": "Output resolution tier. 1K and 1.5K are billed at the lower rate, 2K at the higher rate."
+    },
+    "aspect_ratio": {
+      "$ref": "#/$defs/AspectRatioEnum",
+      "default": "1:1"
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormatEnum",
+      "default": "png",
+      "description": "Output image format. Transparent backgrounds need png."
+    },
+    "background": {
+      "$ref": "#/$defs/BackgroundEnum",
+      "default": "auto",
+      "description": "Transparency of the output. auto lets the model decide from the prompt, transparent returns an RGBA png, opaque returns an RGB image."
+    },
+    "watermark": {
+      "default": false,
+      "description": "Add an 'AI generated' watermark to the lower-right corner.",
+      "title": "Watermark",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "prompt"
+  ],
+  "title": "AppInput",
+  "type": "object"
+}
