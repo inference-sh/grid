@@ -88,6 +88,9 @@ class App(BaseApp):
         os.symlink(llm, os.path.join(self.workdir, LLM_DIR))
         os.symlink(os.path.join(APP_DIR, "configs"), os.path.join(self.workdir, "configs"))
         os.chdir(self.workdir)
+        # The bpy server unpickles payload files from this directory only.
+        self.payload_dir = os.path.join(self.workdir, "bpy_payload")
+        os.mkdir(self.payload_dir, 0o700)
 
         self.bpy = self._start_bpy_server()
 
@@ -101,10 +104,13 @@ class App(BaseApp):
         self.logger.info("TokenRig loaded from %s", TOKENRIG_CKPT)
 
     def _start_bpy_server(self) -> subprocess.Popen:
-        from skintokens.server.spec import BPY_SERVER
+        from skintokens.server.spec import BPY_PAYLOAD_DIR_ENV, BPY_SERVER
 
         code = "import sys; sys.path.insert(0, %r); from skintokens.server.bpy_server import run; run()" % APP_DIR
-        proc = subprocess.Popen([sys.executable, "-c", code], cwd=self.workdir, start_new_session=True)
+        proc = subprocess.Popen(
+            [sys.executable, "-c", code], cwd=self.workdir, start_new_session=True,
+            env={**os.environ, BPY_PAYLOAD_DIR_ENV: self.payload_dir},
+        )
         deadline = time.monotonic() + BPY_START_TIMEOUT
         while time.monotonic() < deadline:
             if proc.poll() is not None:
@@ -123,7 +129,7 @@ class App(BaseApp):
         """One export or transfer on the bpy server; the payload goes by file, as upstream does."""
         from skintokens.server.spec import BPY_SERVER, bytes_to_object, object_to_bytes
 
-        fd, payload_path = tempfile.mkstemp(suffix=".pt", dir=self.workdir)
+        fd, payload_path = tempfile.mkstemp(suffix=".pt", dir=self.payload_dir)
         with os.fdopen(fd, "wb") as f:
             f.write(object_to_bytes(payload))
         response = requests.post("%s/%s" % (BPY_SERVER, endpoint), data=object_to_bytes({"payload_path": payload_path}))
