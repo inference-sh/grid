@@ -1,0 +1,250 @@
+# belt app init --openapi: how https://app.aikido.dev/api/public/v1/openapi/spec becomes apps.
+#
+# Edit and rerun "belt app init --openapi <this file>": every app's
+# _generated.py, test_requests and the credentials block of inf.yml are
+# rewritten from it; inference.py and the rest of inf.yml are written once
+# and then left to you. A function you drop here keeps its method in
+# inference.py and its row in pricing.md until you remove them (belt says
+# which).
+#   apps[].functions[]  move an entry between apps or rename it; "op" is the
+#                       spec's operationId (or "METHOD /path") and must stay.
+#   auth[].*_secret     the secret names the platform injects; match what
+#                       "belt credentials list" already holds for the vendor.
+#                       The vendor credential must hold every secret of every
+#                       scheme listed here, or the app stays "setup required":
+#                       drop a scheme nobody can provide, and the functions
+#                       that need it.
+#   credential.slug     the credential every app declares in inf.yml.
+spec: https://app.aikido.dev/api/public/v1/openapi/spec
+vendor: aikido
+title: Aikido
+base_url: https://app.aikido.dev/api/public/v1
+credential:
+    slug: aikido
+    provider:
+        name: Aikido
+        website: aikido.dev
+auth:
+    - scheme: oauth
+      kind: oauth2
+      default: true
+      flow: client_credentials
+      token_url: https://app.aikido.dev/api/oauth/token
+      scopes:
+        - autofix:read
+        - autofix:write
+        - basics:read
+        - broker:read
+        - broker:write
+        - bug_bounty:read
+        - bug_bounty:write
+        - clouds:read
+        - clouds:write
+        - code_coverage:read
+        - code_quality:read
+        - code_quality:write
+        - containers:read
+        - containers:write
+        - custom_sast_rules:read
+        - custom_sast_rules:write
+        - domains:read
+        - domains:write
+        - endpoint_protection:read
+        - firewall:read
+        - firewall:write
+        - issues:read
+        - issues:write
+        - license:write
+        - licenses:write
+        - pentests:read
+        - pentests:write
+        - reports:read
+        - repositories:read
+        - repositories:write
+        - request_inbox:read
+        - request_inbox:write
+        - research:read
+        - task_tracking:read
+        - task_tracking:write
+        - teams:read
+        - teams:write
+        - users:read
+        - users:write
+        - virtual_machines:read
+        - webhooks:read
+        - webhooks:write
+      client_id_secret: AIKIDO_CLIENT_ID
+      client_secret_secret: AIKIDO_CLIENT_SECRET
+apps:
+    - name: issues
+      title: Aikido Issues
+      functions:
+        - name: list_open_issue_groups
+          op: listOpenIssueGroups
+          method: GET
+          path: /open-issue-groups
+        - name: get_issue_counts
+          op: getIssueCounts
+          method: GET
+          path: /issues/counts
+        - name: get_issue_cve_exploitability_bulk
+          op: getIssueCveExploitabilityBulk
+          method: GET
+          path: /issues/cveExploitability/bulk
+        - name: get_issue_details_bulk
+          op: getIssueDetailsBulk
+          method: GET
+          path: /issues/detail/bulk
+        - name: export_issues
+          op: exportIssues
+          method: GET
+          path: /issues/export
+        - name: get_issue_group_details
+          op: getIssueGroupDetails
+          method: GET
+          path: /issues/groups/{issue_group_id}
+        - name: ignore_issue_group
+          op: ignoreIssueGroup
+          method: PUT
+          path: /issues/groups/{issue_group_id}/ignore
+        - name: list_notes_for_issue_group
+          op: listNotesForIssueGroup
+          method: GET
+          path: /issues/groups/{issue_group_id}/notes
+        - name: add_note_to_issue_group
+          op: addNoteToIssueGroup
+          method: POST
+          path: /issues/groups/{issue_group_id}/notes
+        - name: adjust_group_severity
+          op: adjustGroupSeverity
+          method: POST
+          path: /issues/groups/{issue_group_id}/severity/adjust
+        - name: snooze_issue_group
+          op: snoozeIssueGroup
+          method: PUT
+          path: /issues/groups/{issue_group_id}/snooze
+        - name: get_issue_group_tasks
+          op: getIssueGroupTasks
+          method: GET
+          path: /issues/groups/{issue_group_id}/tasks
+        - name: unignore_issue_group
+          op: unignoreIssueGroup
+          method: PUT
+          path: /issues/groups/{issue_group_id}/unignore
+        - name: unsnooze_issue_group
+          op: unsnoozeIssueGroup
+          method: PUT
+          path: /issues/groups/{issue_group_id}/unsnooze
+        - name: get_issue_detail
+          op: getIssueDetail
+          method: GET
+          path: /issues/{issue_id}
+        - name: get_issue_cve_exploitability
+          op: getIssueCveExploitability
+          method: GET
+          path: /issues/{issue_id}/cveExploitability
+        - name: ignore_issue
+          op: ignoreIssue
+          method: PUT
+          path: /issues/{issue_id}/ignore
+        - name: get_issue_reachability
+          op: getIssueReachability
+          method: GET
+          path: /issues/{issue_id}/reachability
+        - name: adjust_severity
+          op: adjustSeverity
+          method: POST
+          path: /issues/{issue_id}/severity/adjust
+        - name: snooze_issue
+          op: snoozeIssue
+          method: PUT
+          path: /issues/{issue_id}/snooze
+        - name: solve_issue
+          op: solveIssue
+          method: PUT
+          path: /issues/{issue_id}/solve
+        - name: unignore_issue
+          op: UnignoreIssue
+          method: PUT
+          path: /issues/{issue_id}/unignore
+        - name: unsnooze_issue
+          op: UnsnoozeIssue
+          method: PUT
+          path: /issues/{issue_id}/unsnooze
+    - name: pentests
+      title: Aikido Pentests
+      functions:
+        - name: list_pentest_assessments
+          op: listPentestAssessments
+          method: GET
+          path: /pentests/assessments
+        - name: create_pentest_draft_assessment
+          op: createPentestDraftAssessment
+          method: POST
+          path: /pentests/assessments/createDraft
+        - name: get_pentest_assessment_detail
+          op: getPentestAssessmentDetail
+          method: GET
+          path: /pentests/assessments/{assessment_id}/detail
+        - name: list_code_audits
+          op: listCodeAudits
+          method: GET
+          path: /pentests/code-audits
+        - name: get_attack_analysis
+          op: getAttackAnalysis
+          method: GET
+          path: /pentests/issues/{issue_id}/attackAnalysis
+    - name: task-tracking
+      title: Aikido Task Tracking
+      functions:
+        - name: list_task_tracking_integrations
+          op: listTaskTrackingIntegrations
+          method: GET
+          path: /task_tracking/integrations
+        - name: link_task_to_issue_group
+          op: linkTaskToIssueGroup
+          method: POST
+          path: /task_tracking/linkTaskToIssueGroup
+        - name: map_repos_to_project
+          op: mapReposToProject
+          method: POST
+          path: /task_tracking/mapCodeReposToProjects
+        - name: map_teams_to_project
+          op: mapTeamsToProject
+          method: POST
+          path: /task_tracking/mapTeamsToProjects
+        - name: get_project_mapping
+          op: getProjectMapping
+          method: GET
+          path: /task_tracking/projectMapping
+        - name: get_projects
+          op: getProjects
+          method: GET
+          path: /task_tracking/projects
+        - name: get_tasks
+          op: getTasks
+          method: GET
+          path: /task_tracking/projects/{project_id}/tasks
+        - name: unlink_task_from_issue_group
+          op: unlinkTaskFromIssueGroup
+          method: POST
+          path: /task_tracking/unlinkTaskFromIssueGroup
+    - name: workspace
+      title: Aikido Workspace
+      functions:
+        - name: get_workspace_info
+          op: getWorkspaceInfo
+          method: GET
+          path: /workspace
+        - name: get_workspace_configuration_errors
+          op: getWorkspaceConfigurationErrors
+          method: GET
+          path: /workspace/configurationErrors
+        - name: get_sla_settings
+          op: getSlaSettings
+          method: GET
+          path: /workspace/slaSettings
+        - name: get_wallet_balance
+          op: getWalletBalance
+          method: GET
+          path: /workspace/wallet

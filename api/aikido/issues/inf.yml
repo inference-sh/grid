@@ -1,0 +1,31 @@
+namespace: aikido
+name: issues
+title: Aikido Issues
+description: "Aikido security issues: list open issue groups, export and filter issues by type, severity, repo or assessment, read one issue's detail and reachability, and ignore, snooze or solve them."
+metadata:
+    tags:
+        - security
+        - vulnerabilities
+        - sast
+        - appsec
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: list_open_issue_groups
+credentials:
+    aikido:
+        secrets: [AIKIDO_CLIENT_ID, AIKIDO_CLIENT_SECRET]
+        scopes: ['issues:read', 'issues:write']
+        provider:
+            name: Aikido
+            website: aikido.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
