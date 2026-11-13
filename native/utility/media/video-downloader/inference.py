@@ -6,9 +6,42 @@ import tempfile
 import os
 import logging
 import json
+import ipaddress
+import socket
+import urllib.request
+from urllib.parse import urlparse
 import yt_dlp
 
 logging.basicConfig(level=logging.INFO)
+
+
+def _check_public_url(url):
+    """A subtitle URL comes from the page's metadata, which the page's author
+    writes: only http(s) to a public address is fetched."""
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if parsed.scheme not in ("http", "https") or not host:
+        raise ValueError("subtitle URL must be http(s)")
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    for info in socket.getaddrinfo(host, port, proto=socket.IPPROTO_TCP):
+        ip = ipaddress.ip_address(info[4][0].split('%')[0])
+        if ip.version == 6 and ip.ipv4_mapped:
+            ip = ip.ipv4_mapped
+        if not ip.is_global or ip.is_multicast:
+            raise ValueError(f"subtitle URL host {host} is not a public address")
+
+
+class _PublicRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Checks every redirect hop the same way as the first URL."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        _check_public_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def _open_public(url, timeout=30):
+    _check_public_url(url)
+    return urllib.request.build_opener(_PublicRedirectHandler).open(url, timeout=timeout)
 
 
 class ExportFormat(str, Enum):
@@ -189,9 +222,8 @@ class App(BaseApp):
 
     def _fetch_json3_transcript(self, url: str) -> Optional[List[TranscriptSegment]]:
         """Fetch and parse json3 subtitle format from URL."""
-        import urllib.request
         try:
-            with urllib.request.urlopen(url, timeout=30) as resp:
+            with _open_public(url, timeout=30) as resp:
                 data = json.loads(resp.read().decode())
             segments = []
             for event in data.get('events', []):
