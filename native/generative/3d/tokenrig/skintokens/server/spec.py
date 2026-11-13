@@ -15,6 +15,8 @@ TMP_CKPT_DIR = "./tmp_ckpt"
 
 BPY_PORT = 59876
 BPY_SERVER = f"http://localhost:{BPY_PORT}"
+# The one directory the bpy server reads (and then deletes) payload files from.
+BPY_PAYLOAD_DIR_ENV = "TOKENRIG_BPY_PAYLOAD_DIR"
 
 @dataclass
 class TensorPacket:
@@ -62,8 +64,9 @@ def object_to_bytes(t):
     torch.save(t, buffer)
     return buffer.getvalue()
 
-def bytes_to_object(b, map_location=None):
-    return torch.load(io.BytesIO(b), weights_only=False, map_location=map_location)
+def bytes_to_object(b, map_location=None, weights_only=False):
+    """weights_only=False unpickles arbitrary objects (Asset, TensorPacket): only for bytes this app wrote."""
+    return torch.load(io.BytesIO(b), weights_only=weights_only, map_location=map_location)
 
 def get_model(
     ckpt_path: str,
