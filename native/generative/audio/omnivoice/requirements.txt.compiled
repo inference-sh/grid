@@ -181,7 +181,7 @@ requests==2.34.2
     #   pooch
 rich==15.0.0
     # via typer
-safetensors==0.7.0
+safetensors==0.8.0
     # via
     #   accelerate
     #   transformers
@@ -227,7 +227,7 @@ tqdm==4.67.3
     #   huggingface-hub
     #   inferencesh
     #   transformers
-transformers==5.5.3
+transformers==5.15.0
     # via omnivoice
 triton==3.4.0
     # via torch

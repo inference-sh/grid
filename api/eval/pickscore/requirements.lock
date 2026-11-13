@@ -55,7 +55,7 @@ pyyaml==6.0.3
 regex==2026.9.29
 requests==2.34.2
 rich==14.3.3
-safetensors==0.7.0
+safetensors==0.8.0
 scikit-build-core==1.1.2
 setuptools==84.2.1
 setuptools-scm==10.3.4
@@ -64,7 +64,7 @@ sympy==1.14.0
 tokenizers==0.22.2
 torch==2.14.1
 tqdm==4.67.3
-transformers==5.5.4
+transformers==5.15.0
 triton==3.8.0
 truststore==0.10.5
 typer==0.24.1
