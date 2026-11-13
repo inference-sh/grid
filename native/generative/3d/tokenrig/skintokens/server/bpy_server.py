@@ -6,14 +6,26 @@ import queue
 import threading
 import traceback
 
-from .spec import bytes_to_object, object_to_bytes, BPY_PORT
+from .spec import bytes_to_object, object_to_bytes, BPY_PORT, BPY_PAYLOAD_DIR_ENV
 
 from ..rig_package.parser.bpy import BpyParser, transfer_rigging
 
 
+def _payload_file(payload_path):
+    """payload_path resolved, and only if it is a file directly in the payload directory."""
+    payload_dir = os.environ.get(BPY_PAYLOAD_DIR_ENV)
+    if not payload_dir:
+        raise ValueError(f"payload_path needs {BPY_PAYLOAD_DIR_ENV}")
+    if not isinstance(payload_path, str):
+        raise ValueError("payload_path is not a string")
+    resolved = os.path.realpath(payload_path)
+    if os.path.dirname(resolved) != os.path.realpath(payload_dir):
+        raise ValueError("payload_path is outside the payload directory")
+    return resolved
+
 def _resolve_payload(data):
     if isinstance(data, dict) and "payload_path" in data:
-        payload_path = data["payload_path"]
+        payload_path = _payload_file(data["payload_path"])
         try:
             with open(payload_path, "rb") as f:
                 return bytes_to_object(f.read())
@@ -68,7 +80,9 @@ def run():
         d = path_queue.get()
         op = d[0]
         try:
-            data = _resolve_payload(bytes_to_object(d[1]))
+            # The request body is a path or {"payload_path": path}: plain types only,
+            # so nothing that reaches the port can unpickle an object.
+            data = _resolve_payload(bytes_to_object(d[1], weights_only=True))
             if op == 'load':
                 print("[SERVER] received load path:", data)
                 asset = BpyParser.load(data)
