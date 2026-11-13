@@ -6,10 +6,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -398,10 +394,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -789,10 +781,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -1180,10 +1168,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -2476,10 +2460,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -3117,10 +3097,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -3599,10 +3575,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -4080,10 +4052,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -4968,10 +4936,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -5862,10 +5826,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -6426,10 +6386,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -6950,10 +6906,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -7469,10 +7421,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -7864,10 +7812,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -8264,10 +8208,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -8721,10 +8661,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:read"
         ]
@@ -9455,10 +9391,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -9857,10 +9789,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -10264,10 +10192,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -10637,10 +10561,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -11032,10 +10952,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -11414,10 +11330,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]
@@ -11796,10 +11708,6 @@
     "credentials": [
       {
         "slug": "aikido",
-        "secrets": [
-          "AIKIDO_CLIENT_ID",
-          "AIKIDO_CLIENT_SECRET"
-        ],
         "scopes": [
           "issues:write"
         ]

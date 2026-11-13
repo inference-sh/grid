@@ -16,11 +16,15 @@ kernel: python-3.11
 default_function: list_task_tracking_integrations
 credentials:
     aikido:
-        secrets: [AIKIDO_CLIENT_ID, AIKIDO_CLIENT_SECRET]
         scopes: ['task_tracking:read', 'task_tracking:write']
         provider:
             name: Aikido
             website: aikido.dev
+        auth:
+            kind: oauth2
+            flow: client_credentials
+            token_endpoint: https://app.aikido.dev/api/oauth/token
+            scopes: ['autofix:read', 'autofix:write', 'basics:read', 'broker:read', 'broker:write', 'bug_bounty:read', 'bug_bounty:write', 'clouds:read', 'clouds:write', 'code_coverage:read', 'code_quality:read', 'code_quality:write', 'containers:read', 'containers:write', 'custom_sast_rules:read', 'custom_sast_rules:write', 'domains:read', 'domains:write', 'endpoint_protection:read', 'firewall:read', 'firewall:write', 'issues:read', 'issues:write', 'license:write', 'licenses:write', 'pentests:read', 'pentests:write', 'reports:read', 'repositories:read', 'repositories:write', 'request_inbox:read', 'request_inbox:write', 'research:read', 'task_tracking:read', 'task_tracking:write', 'teams:read', 'teams:write', 'users:read', 'users:write', 'virtual_machines:read', 'webhooks:read', 'webhooks:write']
 resources:
     gpu:
         count: 0

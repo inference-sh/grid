@@ -392,7 +392,7 @@ from pydantic import Field
 BASE_URL = "https://app.aikido.dev/api/public/v1"
 CREDENTIAL = "aikido"
 AUTH = {
-    "oauth": Auth(kind="oauth2", flow="client_credentials", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
+    "oauth": Auth(kind="oauth2", flow="client_credentials", secret="AIKIDO_ACCESS_TOKEN", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
 }
 DEFAULT_AUTH = "oauth"
 
@@ -405,7 +405,7 @@ list_task_tracking_integrations = Operation(
     path="/task_tracking/integrations",
     body="none",
     annotations={"title": "List task tracking integrations", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:read"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:read"]}},
     summary="List task tracking integrations",
 )
 
@@ -431,7 +431,7 @@ link_task_to_issue_group = Operation(
     path="/task_tracking/linkTaskToIssueGroup",
     body="json",
     annotations={"title": "Link existing task to issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:write"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:write"]}},
     summary="Link existing task to issue",
 )
 
@@ -457,7 +457,7 @@ map_repos_to_project = Operation(
     path="/task_tracking/mapCodeReposToProjects",
     body="json",
     annotations={"title": "Map code repo to task tracking projects", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:write"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:write"]}},
     summary="Map code repo to task tracking projects",
 )
 
@@ -483,7 +483,7 @@ map_teams_to_project = Operation(
     path="/task_tracking/mapTeamsToProjects",
     body="json",
     annotations={"title": "Map teams to task tracking projects", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:write"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:write"]}},
     summary="Map teams to task tracking projects",
 )
 
@@ -510,7 +510,7 @@ get_project_mapping = Operation(
     query_params=("integration_id",),
     body="none",
     annotations={"title": "Get project mapping", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:read"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:read"]}},
     summary="Get project mapping",
 )
 
@@ -537,7 +537,7 @@ get_projects = Operation(
     query_params=("integration_id",),
     body="none",
     annotations={"title": "List task tracking projects", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:read"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:read"]}},
     summary="List task tracking projects",
 )
 
@@ -565,7 +565,7 @@ get_tasks = Operation(
     query_params=("search", "integration_id",),
     body="none",
     annotations={"title": "List tasks from project", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:read"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:read"]}},
     summary="List tasks from project",
 )
 
@@ -591,7 +591,7 @@ unlink_task_from_issue_group = Operation(
     path="/task_tracking/unlinkTaskFromIssueGroup",
     body="json",
     annotations={"title": "Unlink a task from issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["task_tracking:write"]}},
+    credentials={"aikido": {"scopes": ["task_tracking:write"]}},
     summary="Unlink a task from issue",
 )
 

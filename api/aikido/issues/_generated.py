@@ -1460,7 +1460,7 @@ from pydantic import Field
 BASE_URL = "https://app.aikido.dev/api/public/v1"
 CREDENTIAL = "aikido"
 AUTH = {
-    "oauth": Auth(kind="oauth2", flow="client_credentials", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
+    "oauth": Auth(kind="oauth2", flow="client_credentials", secret="AIKIDO_ACCESS_TOKEN", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
 }
 DEFAULT_AUTH = "oauth"
 
@@ -1474,7 +1474,7 @@ list_open_issue_groups = Operation(
     query_params=("page", "per_page", "filter_code_repo_id", "filter_external_code_repo_id", "filter_code_repo_name", "filter_container_repo_id", "filter_team_id", "filter_issue_type", "filter_status",),
     body="none",
     annotations={"title": "List open issue groups", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="List open issue groups",
 )
 
@@ -1501,7 +1501,7 @@ get_issue_counts = Operation(
     query_params=("filter_code_repo_id", "filter_external_code_repo_id", "filter_code_repo_name", "filter_container_repo_id", "filter_team_id", "since_timestamp",),
     body="none",
     annotations={"title": "Get issue counts", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue counts",
 )
 
@@ -1528,7 +1528,7 @@ get_issue_cve_exploitability_bulk = Operation(
     query_params=("issue_ids",),
     body="none",
     annotations={"title": "Get issue CVE exploitability bulk", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue CVE exploitability bulk",
 )
 
@@ -1555,7 +1555,7 @@ get_issue_details_bulk = Operation(
     query_params=("issue_ids", "include_epss_score",),
     body="none",
     annotations={"title": "Get issue details bulk", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue details bulk",
 )
 
@@ -1582,7 +1582,7 @@ export_issues = Operation(
     query_params=("format", "filter_status", "filter_team_id", "filter_issue_group_id", "filter_code_repo_id", "filter_code_repo_name", "filter_container_repo_id", "filter_container_repo_name", "filter_container_repo_ids", "filter_domain_id", "filter_virtual_machine_id", "filter_issue_type", "filter_assessment_id", "filter_cve_id", "filter_severities", "sla_remediate_by_after", "sla_remediate_by_before", "filter_language", "page", "per_page",),
     body="none",
     annotations={"title": "Export all issues", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Export all issues",
 )
 
@@ -1609,7 +1609,7 @@ get_issue_group_details = Operation(
     path_params=("issue_group_id",),
     body="none",
     annotations={"title": "Get issue group detail", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue group detail",
 )
 
@@ -1636,7 +1636,7 @@ ignore_issue_group = Operation(
     path_params=("issue_group_id",),
     body="json",
     annotations={"title": "Ignore an issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Ignore an issue group",
 )
 
@@ -1664,7 +1664,7 @@ list_notes_for_issue_group = Operation(
     query_params=("include_personal_notes",),
     body="none",
     annotations={"title": "List notes for issue group", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="List notes for issue group",
 )
 
@@ -1691,7 +1691,7 @@ add_note_to_issue_group = Operation(
     path_params=("issue_group_id",),
     body="json",
     annotations={"title": "Add note to issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Add note to issue group",
 )
 
@@ -1718,7 +1718,7 @@ adjust_group_severity = Operation(
     path_params=("issue_group_id",),
     body="json",
     annotations={"title": "Adjust severity of an issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Adjust severity of an issue group",
 )
 
@@ -1745,7 +1745,7 @@ snooze_issue_group = Operation(
     path_params=("issue_group_id",),
     body="json",
     annotations={"title": "Snooze an issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Snooze an issue group",
 )
 
@@ -1772,7 +1772,7 @@ get_issue_group_tasks = Operation(
     path_params=("issue_group_id",),
     body="none",
     annotations={"title": "Get issue group tasks", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue group tasks",
 )
 
@@ -1799,7 +1799,7 @@ unignore_issue_group = Operation(
     path_params=("issue_group_id",),
     body="json",
     annotations={"title": "Unignore an issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Unignore an issue group",
 )
 
@@ -1826,7 +1826,7 @@ unsnooze_issue_group = Operation(
     path_params=("issue_group_id",),
     body="none",
     annotations={"title": "Unsnooze an issue group", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Unsnooze an issue group",
 )
 
@@ -1854,7 +1854,7 @@ get_issue_detail = Operation(
     query_params=("include_epss_score",),
     body="none",
     annotations={"title": "Get issue detail", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue detail",
 )
 
@@ -1881,7 +1881,7 @@ get_issue_cve_exploitability = Operation(
     path_params=("issue_id",),
     body="none",
     annotations={"title": "Get issue CVE exploitability", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue CVE exploitability",
 )
 
@@ -1908,7 +1908,7 @@ ignore_issue = Operation(
     path_params=("issue_id",),
     body="json",
     annotations={"title": "Ignore an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Ignore an issue",
 )
 
@@ -1936,7 +1936,7 @@ get_issue_reachability = Operation(
     query_params=("include_dev_deps",),
     body="none",
     annotations={"title": "Get issue reachability", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:read"]}},
+    credentials={"aikido": {"scopes": ["issues:read"]}},
     summary="Get issue reachability",
 )
 
@@ -1963,7 +1963,7 @@ adjust_severity = Operation(
     path_params=("issue_id",),
     body="json",
     annotations={"title": "Adjust severity of an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Adjust severity of an issue",
 )
 
@@ -1990,7 +1990,7 @@ snooze_issue = Operation(
     path_params=("issue_id",),
     body="json",
     annotations={"title": "Snooze an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Snooze an issue",
 )
 
@@ -2017,7 +2017,7 @@ solve_issue = Operation(
     path_params=("issue_id",),
     body="none",
     annotations={"title": "Solve an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Solve an issue",
 )
 
@@ -2044,7 +2044,7 @@ unignore_issue = Operation(
     path_params=("issue_id",),
     body="json",
     annotations={"title": "Unignore an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Unignore an issue",
 )
 
@@ -2071,7 +2071,7 @@ unsnooze_issue = Operation(
     path_params=("issue_id",),
     body="json",
     annotations={"title": "Unsnooze an issue", "readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["issues:write"]}},
+    credentials={"aikido": {"scopes": ["issues:write"]}},
     summary="Unsnooze an issue",
 )
 
