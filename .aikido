@@ -1,0 +1,42 @@
+# Aikido scanner configuration.
+# https://help.aikido.dev/code-scanning/scanning-practices/ignore-via-code-with-aikido-files
+#
+# Excluded: third-party model source code committed (vendored) inside native/ apps.
+# It is upstream code we do not maintain, and it produces hundreds of findings
+# (mostly "Dangerous use of assert") that we cannot fix locally. Grid apps run in
+# engine-controlled containers that never run Python with -O, so asserts stay active.
+#
+# Not excluded: each app's own code (inference.py, inf.yml, schemas) and its
+# requirements*.txt / requirements.lock, so dependency CVE scanning keeps working.
+# Only vendored subdirectories are listed. Aikido matches by substring and does not
+# support wildcards, so each entry is a full path from the repository root.
+exclude:
+  paths:
+    # SkinTokens (TokenRig upstream, has LICENSE and UPSTREAM)
+    - native/generative/3d/tokenrig/skintokens
+    # Stability AI stable-audio-tools
+    - native/generative/audio/audio-x/stable_audio_tools
+    # Meta VideoSeal
+    - native/generative/video/videoseal/videoseal
+    # Resemble AI DramaBox (has LICENSE and UPSTREAM.txt)
+    - native/generative/audio/dramabox/DramaBox
+    # ASLP-LAB DiffRhythm model code
+    - native/generative/audio/diffrythm/model
+    # Amphion g2p used by DiffRhythm
+    - native/generative/audio/diffrythm/g2p
+    # LangSegment, third-party package bundled with DiffRhythm
+    - native/generative/audio/diffrythm/thirdparty
+    # ByteDance USO (flux code from Black Forest Labs / XLabs-AI)
+    - native/generative/image/bytedance-uso/uso
+    # HiDream-ai HiDream-I1 (hi_diffusers)
+    - native/generative/image/hidream-i1-fast/hi_diffusers
+    # RIFE (hzwer/ECCV2022-RIFE, has LICENSE). Listed per entry because the upstream
+    # requirements.txt in this directory must stay scanned.
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/benchmark
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/model
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/train_log
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/docker
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/dataset.py
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/inference_img.py
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/inference_video.py
+    - native/generative/video/rife-video-interpolation/ECCV2022-RIFE/train.py
