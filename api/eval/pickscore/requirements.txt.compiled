@@ -129,7 +129,7 @@ requests==2.34.2
     # via inferencesh
 rich==14.3.3
     # via typer
-safetensors==0.7.0
+safetensors==0.8.0
     # via transformers
 setuptools==84.2.1
     # via
@@ -148,7 +148,7 @@ tqdm==4.67.3
     #   huggingface-hub
     #   inferencesh
     #   transformers
-transformers==5.5.4
+transformers==5.15.0
     # via -r requirements.txt
 triton==3.8.0
     # via torch
