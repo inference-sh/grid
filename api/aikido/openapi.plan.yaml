@@ -73,6 +73,7 @@ auth:
         - virtual_machines:read
         - webhooks:read
         - webhooks:write
+      secret: AIKIDO_ACCESS_TOKEN
       client_id_secret: AIKIDO_CLIENT_ID
       client_secret_secret: AIKIDO_CLIENT_SECRET
 apps:

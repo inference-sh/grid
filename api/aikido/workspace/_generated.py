@@ -156,7 +156,7 @@ from pydantic import Field
 BASE_URL = "https://app.aikido.dev/api/public/v1"
 CREDENTIAL = "aikido"
 AUTH = {
-    "oauth": Auth(kind="oauth2", flow="client_credentials", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
+    "oauth": Auth(kind="oauth2", flow="client_credentials", secret="AIKIDO_ACCESS_TOKEN", token_url="https://app.aikido.dev/api/oauth/token", client_id_secret="AIKIDO_CLIENT_ID", client_secret_secret="AIKIDO_CLIENT_SECRET", scopes=("autofix:read", "autofix:write", "basics:read", "broker:read", "broker:write", "bug_bounty:read", "bug_bounty:write", "clouds:read", "clouds:write", "code_coverage:read", "code_quality:read", "code_quality:write", "containers:read", "containers:write", "custom_sast_rules:read", "custom_sast_rules:write", "domains:read", "domains:write", "endpoint_protection:read", "firewall:read", "firewall:write", "issues:read", "issues:write", "license:write", "licenses:write", "pentests:read", "pentests:write", "reports:read", "repositories:read", "repositories:write", "request_inbox:read", "request_inbox:write", "research:read", "task_tracking:read", "task_tracking:write", "teams:read", "teams:write", "users:read", "users:write", "virtual_machines:read", "webhooks:read", "webhooks:write",)),
 }
 DEFAULT_AUTH = "oauth"
 
@@ -169,7 +169,7 @@ get_workspace_info = Operation(
     path="/workspace",
     body="none",
     annotations={"title": "Get workspace info", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["basics:read"]}},
+    credentials={"aikido": {"scopes": ["basics:read"]}},
     summary="Get workspace info",
 )
 
@@ -195,7 +195,7 @@ get_workspace_configuration_errors = Operation(
     path="/workspace/configurationErrors",
     body="none",
     annotations={"title": "Get workspace configuration errors", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["basics:read"]}},
+    credentials={"aikido": {"scopes": ["basics:read"]}},
     summary="Get workspace configuration errors",
 )
 
@@ -221,7 +221,7 @@ get_sla_settings = Operation(
     path="/workspace/slaSettings",
     body="none",
     annotations={"title": "Get SLA settings", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["basics:read"]}},
+    credentials={"aikido": {"scopes": ["basics:read"]}},
     summary="Get SLA settings",
 )
 
@@ -247,7 +247,7 @@ get_wallet_balance = Operation(
     path="/workspace/wallet",
     body="none",
     annotations={"title": "Get wallet balance", "readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True},
-    credentials={"aikido": {"secrets": ["AIKIDO_CLIENT_ID", "AIKIDO_CLIENT_SECRET"], "scopes": ["basics:read"]}},
+    credentials={"aikido": {"scopes": ["basics:read"]}},
     summary="Get wallet balance",
 )
 
