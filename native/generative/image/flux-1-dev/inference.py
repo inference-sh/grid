@@ -14,6 +14,9 @@ from PIL import Image
 import logging
 import json
 import requests
+import ipaddress
+import socket
+from urllib.parse import urlparse, urljoin
 from datetime import datetime
 from accelerate import Accelerator
 from dateutil.parser import parse as parse_date
@@ -78,19 +81,46 @@ def get_civit_download_url(model_id):
         logging.error(f"Failed to fetch Civitai model info: {e}")
         return None
 
+def _is_civitai_host(host):
+    return host == "civitai.com" or host.endswith(".civitai.com")
+
+def _check_public_url(url):
+    """lora_url is caller input: only http(s) to a public address is fetched."""
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if parsed.scheme not in ("http", "https") or not host:
+        raise ValueError("LoRA URL must be http(s)")
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    for info in socket.getaddrinfo(host, port, proto=socket.IPPROTO_TCP):
+        ip = ipaddress.ip_address(info[4][0].split('%')[0])
+        if ip.version == 6 and ip.ipv4_mapped:
+            ip = ip.ipv4_mapped
+        if not ip.is_global or ip.is_multicast:
+            raise ValueError(f"LoRA URL host {host} is not a public address")
+    return parsed
+
+def _get_public(url, civitai_token=None, max_redirects=5):
+    """GET url, checking every redirect hop the same way as the first URL.
+    The Civitai token goes only to a civitai.com host."""
+    for _ in range(max_redirects + 1):
+        parsed = _check_public_url(url)
+        params = None
+        if civitai_token and _is_civitai_host(parsed.hostname.lower()):
+            params = {"token": civitai_token}
+        response = requests.get(url, params=params, allow_redirects=False)
+        location = response.headers.get("Location")
+        if response.status_code in (301, 302, 303, 307, 308) and location:
+            url = urljoin(url, location)
+            continue
+        return response
+    raise ValueError("too many redirects fetching LoRA")
+
 def download_model_data(model_id, downloadUrl, targetFolder):
     if not os.path.exists(targetFolder):
         os.makedirs(targetFolder)
     filePath = os.path.join(targetFolder, f"{model_id}.safetensors")
     if not os.path.isfile(filePath):
-        # If downloading from civitai, add token if present
-        civitai_token = os.environ.get('CIVITAI_TOKEN')
-        if 'civitai.com' in downloadUrl and civitai_token:
-            if '?' in downloadUrl:
-                downloadUrl = f"{downloadUrl}&token={civitai_token}"
-            else:
-                downloadUrl = f"{downloadUrl}?token={civitai_token}"
-        response = requests.get(downloadUrl)
+        response = _get_public(downloadUrl, os.environ.get('CIVITAI_TOKEN'))
         with open(filePath, 'wb') as file:
             file.write(response.content)
     return filePath
