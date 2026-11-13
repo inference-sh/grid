@@ -1,0 +1,29 @@
+namespace: aikido
+name: task-tracking
+title: Aikido Task Tracking
+description: "Aikido task tracking: see the connected trackers (Linear, Jira and others), their projects and mappings, and link or unlink tasks on issue groups."
+metadata:
+    tags:
+        - security
+        - task-tracking
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: list_task_tracking_integrations
+credentials:
+    aikido:
+        secrets: [AIKIDO_CLIENT_ID, AIKIDO_CLIENT_SECRET]
+        scopes: ['task_tracking:read', 'task_tracking:write']
+        provider:
+            name: Aikido
+            website: aikido.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

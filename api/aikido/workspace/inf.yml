@@ -1,0 +1,29 @@
+namespace: aikido
+name: workspace
+title: Aikido Workspace
+description: "Aikido workspace: workspace info, configuration errors, SLA settings and wallet balance."
+metadata:
+    tags:
+        - security
+        - workspace
+category: other
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+default_function: get_workspace_info
+credentials:
+    aikido:
+        secrets: [AIKIDO_CLIENT_ID, AIKIDO_CLIENT_SECRET]
+        scopes: ['basics:read']
+        provider:
+            name: Aikido
+            website: aikido.dev
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0
