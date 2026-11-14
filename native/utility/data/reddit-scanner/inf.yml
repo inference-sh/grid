@@ -11,11 +11,9 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/ebzlbz66.png
 env: {}
 kernel: python-3.11
-secrets:
-    - key: REDDIT_CLIENT_ID
-      description: Reddit app client ID (from reddit.com/prefs/apps)
-    - key: REDDIT_CLIENT_SECRET
-      description: Reddit app client secret
+credentials:
+    - key: reddit.read
+      description: Read posts, comments, and listings
 resources:
     gpu:
         count: 0
