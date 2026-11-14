@@ -55,9 +55,9 @@ class AppOutput(BaseAppOutput):
 MODEL_FILENAME = "flux1-dev-F16.gguf"
 
 def get_civit_download_url(model_id):
-    url = f"https://civitai.com/models/{model_id}"
+    url = f"https://civitai.com/api/v1/models/{model_id}"
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=30)
         response.raise_for_status()
         data = response.json()
         versions = data["modelVersions"]
@@ -78,22 +78,19 @@ def get_civit_download_url(model_id):
         logging.error(f"Failed to fetch Civitai model info: {e}")
         return None
 
-def download_model_data(model_id, downloadUrl, targetFolder):
-    if not os.path.exists(targetFolder):
-        os.makedirs(targetFolder)
-    filePath = os.path.join(targetFolder, f"{model_id}.safetensors")
-    if not os.path.isfile(filePath):
-        # If downloading from civitai, add token if present
+def fetch_lora(url):
+    """The LoRA file at url, through the SDK's file cache (FILE_CACHE_DIR):
+    fetched once per URL, reused by later tasks, and expired by the engine
+    when unused. Not /tmp, which is per-task scratch."""
+    host = urllib.parse.urlsplit(url).hostname or ""
+    if host == "civitai.com" or host.endswith(".civitai.com"):
         civitai_token = os.environ.get('CIVITAI_TOKEN')
-        if 'civitai.com' in downloadUrl and civitai_token:
-            if '?' in downloadUrl:
-                downloadUrl = f"{downloadUrl}&token={civitai_token}"
-            else:
-                downloadUrl = f"{downloadUrl}?token={civitai_token}"
-        response = requests.get(downloadUrl)
-        with open(filePath, 'wb') as file:
-            file.write(response.content)
-    return filePath
+        if civitai_token:
+            # The SDK logs the URL without its query, so the token stays out
+            # of task logs and errors.
+            sep = "&" if "?" in url else "?"
+            url = f"{url}{sep}token={urllib.parse.quote(civitai_token)}"
+    return File(uri=url).path
 
 def load_lora_adapter(pipeline, lora_url, adapter_name="lora", lora_multiplier=1.0):
     """
@@ -157,13 +154,7 @@ def load_lora_adapter(pipeline, lora_url, adapter_name="lora", lora_multiplier=1
         
         # 4. Other direct .safetensors URL
         elif lora_url.endswith('.safetensors') and lora_url.startswith('http'):
-            # Download to local cache
-            lora_dir = "loras" if os.path.isdir("loras") else "/tmp/loras"
-            if not os.path.exists(lora_dir):
-                os.makedirs(lora_dir)
-            
-            model_id = os.path.splitext(os.path.basename(lora_url))[0]
-            lora_path = download_model_data(model_id, lora_url, lora_dir)
+            lora_path = fetch_lora(lora_url)
             pipeline.load_lora_weights(lora_path, adapter_name=adapter_name, lora_scale=lora_multiplier)
             logging.info(f"Loaded LoRA adapter '{adapter_name}' from URL: {lora_url}")
             return True
@@ -181,11 +172,7 @@ def load_lora_adapter(pipeline, lora_url, adapter_name="lora", lora_multiplier=1
                 logging.error(f"No download URL found for Civitai model {model_id}")
                 return False
             
-            lora_dir = "loras" if os.path.isdir("loras") else "/tmp/loras"
-            if not os.path.exists(lora_dir):
-                os.makedirs(lora_dir)
-            
-            lora_path = download_model_data(model_id, download_url, lora_dir)
+            lora_path = fetch_lora(download_url)
             pipeline.load_lora_weights(lora_path, adapter_name=adapter_name, lora_scale=lora_multiplier)
             logging.info(f"Loaded LoRA adapter '{adapter_name}' from Civitai model: {model_id}")
             return True
