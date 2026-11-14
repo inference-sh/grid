@@ -30,6 +30,12 @@ class AppOutput(BaseAppOutput):
     parsed_entries: int = Field(description="Number of entries after cleaning")
 
 
+# Not a credential: asyncpraw refuses to construct without a client id, and
+# with a supplied access token it is never put on a request.
+REDDIT_CLIENT_LABEL = "inference.sh"
+# Only asyncpraw's local "is the token fresh" flag; nothing is refreshed here.
+TOKEN_LIFETIME_SECONDS = 3600
+
 # Sanitization patterns
 URL_RE = re.compile(r"https?://\S+")
 EMOJI_RE = re.compile(
@@ -100,18 +106,30 @@ def sanitize(text: str) -> Optional[str]:
 
 class App(BaseApp):
     async def setup(self, config):
-        self.client_id = os.environ["REDDIT_CLIENT_ID"]
-        self.client_secret = os.environ["REDDIT_CLIENT_SECRET"]
+        pass
 
     async def run(self, input_data: AppInput) -> AppOutput:
         max_posts = min(input_data.max_posts, 1000)
         logger.info(f"Scanning r/{input_data.subreddit} for up to {max_posts} posts (sort={input_data.sort})")
 
+        # The platform runs Reddit's OAuth and hands this run an access token
+        # (the reddit.read credential); the Reddit app's client secret never
+        # reaches this process. Read per run so a renewed token is picked up.
+        access_token = os.environ.get("REDDIT_ACCESS_TOKEN")
+        if not access_token:
+            raise RuntimeError("REDDIT_ACCESS_TOKEN is not set: connect a Reddit account for this app")
+
+        # asyncpraw only sends the token: with client_secret=None and an
+        # implicit authorization it has nothing to exchange or refresh, so
+        # it never calls www.reddit.com/api/v1/access_token, and every
+        # request goes to oauth.reddit.com as "Authorization: bearer <token>".
+        # client_id is required by the constructor and is not sent.
         reddit = asyncpraw.Reddit(
-            client_id=self.client_id,
-            client_secret=self.client_secret,
+            client_id=REDDIT_CLIENT_LABEL,
+            client_secret=None,
             user_agent="inference.sh:reddit-scanner:v1.0",
         )
+        reddit.auth.implicit(access_token=access_token, expires_in=TOKEN_LIFETIME_SECONDS, scope="identity read")
 
         try:
             return await self._scan(reddit, input_data, max_posts)
