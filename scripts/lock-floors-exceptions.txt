@@ -1,9 +1,6 @@
 # <app dir> <package>  # blocking constraint
 # Apps whose pins stay below a SECURITY_FLOORS entry in scripts/check-lock-floors.py.
 # Drop a line once the app resolves at the floor.
-native/generative/audio/fast-whisper-large-v3 huggingface-hub  # requirements.txt pins 0.25.0; no fix on 0.x, needs a 1.x move
-native/generative/video/rife-video-interpolation huggingface-hub  # locked 0.36.2; no fix on 0.x, needs a 1.x move
-native/generative/audio/dramabox huggingface-hub  # held at the pin the staged GPU build was tested with
 native/generative/audio/audio-x urllib3  # held at the pin the staged GPU build was tested with
 native/generative/audio/diffrythm urllib3  # held at the pin the staged GPU build was tested with
 native/generative/audio/dramabox urllib3  # held at the pin the staged GPU build was tested with
@@ -25,5 +22,4 @@ native/generative/audio/dramabox filelock  # held at the pin the staged GPU buil
 api/falai/gemini-3-pro-image-preview websockets  # google-genai 1.56.0: websockets<15.1
 native/generative/text/jev/jev-27b-v1-1 numpy  # held at the pin the deployed vLLM 0.31.0 build (5a51r2yy) was benchmarked with
 native/generative/text/jev/jev-9b numpy  # held at the pin the vLLM build was tested with; not deployed yet
-native/generative/audio/dramabox transformers  # locked 4.57.6 with huggingface_hub<1.0; the fixes need the 5.x move
 native/generative/text/recursive/flint transformers  # sglang 0.5.20 pins transformers==5.12.1

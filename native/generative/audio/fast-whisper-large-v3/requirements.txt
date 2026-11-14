@@ -7,7 +7,7 @@ dtw-python
 accelerate
 numba==0.61.0
 datasets[audio]
-huggingface_hub==0.25.0
+huggingface_hub>=1.32.0
 hf-transfer==0.1.9
 sentencepiece
 soundfile
