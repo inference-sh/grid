@@ -19,14 +19,12 @@ from .xai_helper import (
     XAIError,
     MODERATION_NOTICE,
     is_moderated,
-    upstream_cost_usd,
-    create_xai_client,
     setup_logger,
     encode_image_base64,
     get_video_dimensions,
     retry_on_rate_limit,
-    wait_for_video,
 )
+from .xai_video_rest import require_xai_api_key, start_generation, wait_for_video
 
 
 ResolutionType = Literal["720p", "480p"]
@@ -68,12 +66,12 @@ class AppOutput(BaseAppOutput):
 
 
 class App(BaseApp):
-    """Grok reference-to-video generation application using xAI SDK."""
+    """Grok reference-to-video generation application using the xAI REST API."""
 
     async def setup(self):
-        """Initialize the xAI client."""
+        """Check the xAI API key is present."""
         self.logger = setup_logger(__name__)
-        self.client = create_xai_client()
+        require_xai_api_key()
         self.model = "grok-imagine-video"
         self.logger.info(f"Grok Reference Video initialized with model: {self.model}")
 
@@ -113,16 +111,16 @@ class App(BaseApp):
 
             # Start the job, then poll it without blocking the event loop: no
             # timeout (the platform owns it) and a cancel stops polling.
-            start = await retry_on_rate_limit(
-                lambda: self.client.video.start(**kwargs), logger=self.logger, in_thread=True,
+            request_id = await retry_on_rate_limit(
+                lambda: start_generation(**kwargs), logger=self.logger, in_thread=True,
             )
-            self.logger.info(f"Video request started: {start.request_id}")
-            response = await wait_for_video(self.client, start.request_id, self.logger, self._cancelled)
+            self.logger.info(f"Video request started: {request_id}")
+            response = await wait_for_video(request_id, self.logger, self._cancelled)
 
             # A moderated video is generated and billed by xAI, so the run
             # succeeds and is billed with the video left out.
             moderated = is_moderated(response)
-            cost_usd = upstream_cost_usd(response)
+            cost_usd = response.cost_usd
             video_file = None
             if moderated:
                 self.logger.warning("xAI content moderation withheld the video")

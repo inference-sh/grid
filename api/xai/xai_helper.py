@@ -16,10 +16,14 @@ import random
 import tempfile
 import math
 from dataclasses import dataclass
-from typing import Optional, Literal, Callable, TypeVar
+from typing import TYPE_CHECKING, Optional, Literal, Callable, TypeVar
 
 from inferencesh import File
-from xai_sdk import Client
+
+# xai_sdk (gRPC) is imported where it is used: the apps that call the REST API
+# (xai_video_rest.py) share this helper and do not install it.
+if TYPE_CHECKING:
+    from xai_sdk import Client
 
 T = TypeVar('T')
 
@@ -247,7 +251,7 @@ async def retry_on_rate_limit(
 # =============================================================================
 
 async def wait_for_video(
-    client: Client,
+    client: "Client",
     request_id: str,
     logger: logging.Logger,
     is_cancelled: Callable[[], bool],
@@ -294,7 +298,7 @@ async def wait_for_video(
 # CLIENT INITIALIZATION
 # =============================================================================
 
-def create_xai_client() -> Client:
+def create_xai_client() -> "Client":
     """
     Create an xAI client using the XAI_API_KEY environment variable.
 
@@ -304,6 +308,8 @@ def create_xai_client() -> Client:
     Raises:
         RuntimeError: If XAI_API_KEY is not set
     """
+    from xai_sdk import Client
+
     api_key = os.environ.get("XAI_API_KEY")
     if not api_key:
         raise RuntimeError("XAI_API_KEY environment variable is required")
