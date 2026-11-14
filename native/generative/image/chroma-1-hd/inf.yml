@@ -19,3 +19,8 @@ resources:
         type: any
     ram: 16000000000
 title: Chroma 1 HD
+credentials:
+    - provider: civitai
+      secrets: [CIVITAI_TOKEN]
+      description: Loads Civitai LoRAs that need a Civitai login. Public LoRAs load without it.
+      optional: true
