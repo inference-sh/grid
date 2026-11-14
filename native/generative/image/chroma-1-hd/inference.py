@@ -63,7 +63,7 @@ def get_civit_download_url(model_id):
             except Exception:
                 return parse_date('1970-01-01T00:00:00Z')
         sorted_data = sorted(versions, key=get_date, reverse=True)
-        versions = [v for v in sorted_data if v.get('baseModel') == 'Flux.1 D']
+        versions = [v for v in sorted_data if v.get('baseModel') == 'Chroma']
 
         latest_version = versions[0]
         downloadUrl = latest_version["downloadUrl"]
