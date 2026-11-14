@@ -1,5 +1,5 @@
 pydantic >= 2.0.0 # required for inference.sh
-inferencesh
+inferencesh >= 0.39.3 # File download logs the URL without its query (CIVITAI_TOKEN)
 torch==2.14.1
 gguf>=0.13.0
 tqdm
