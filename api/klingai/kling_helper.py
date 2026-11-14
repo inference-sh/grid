@@ -377,7 +377,9 @@ class KlingClient:
             self.access_key = access_key
             self.secret_key = secret_key
         else:
-            raise ValueError("Provide either api_key (V2) or access_key + secret_key (V1)")
+            raise ValueError(
+                "No usable Kling credentials: set KLING_KEY, or both KLING_ACCESS_KEY and KLING_SECRET_KEY"
+            )
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self._client: Optional[httpx.AsyncClient] = None

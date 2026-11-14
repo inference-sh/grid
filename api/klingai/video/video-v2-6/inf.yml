@@ -18,10 +18,13 @@ kernel: python-3.11
 secrets:
     - key: KLING_KEY
       description: Kling AI API key (V2)
+      optional: true
     - key: KLING_ACCESS_KEY
       description: Kling AI API access key
+      optional: true
     - key: KLING_SECRET_KEY
       description: Kling AI API secret key
+      optional: true
 resources:
     gpu:
         count: 0
