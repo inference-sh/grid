@@ -50,28 +50,21 @@ MODEL_VARIANTS = {}
 DEFAULT_VARIANT = "default"
 
 def get_civit_download_url(model_id):
+    """The download URL of Civitai model model_id's latest Chroma version."""
     url = f"https://civitai.com/api/v1/models/{model_id}"
-    try:
-        response = requests.get(url, headers=civitai_auth(), timeout=30)
-        response.raise_for_status()
-        data = response.json()
-        versions = data["modelVersions"]
-        def get_date(item):
-            date_str = item.get('updatedAt') or item.get('publishedAt') or item.get('createdAt') or ''
-            try:
-                dt = parse_date(date_str)
-                return dt
-            except Exception:
-                return parse_date('1970-01-01T00:00:00Z')
-        sorted_data = sorted(versions, key=get_date, reverse=True)
-        versions = [v for v in sorted_data if v.get('baseModel') == 'Chroma']
-
-        latest_version = versions[0]
-        downloadUrl = latest_version["downloadUrl"]
-        return downloadUrl
-    except Exception as e:
-        logging.error(f"Failed to fetch Civitai model info: {e}")
-        return None
+    response = requests.get(url, headers=civitai_auth(), timeout=30)
+    response.raise_for_status()
+    def get_date(item):
+        date_str = item.get('updatedAt') or item.get('publishedAt') or item.get('createdAt') or ''
+        try:
+            return parse_date(date_str)
+        except Exception:
+            return parse_date('1970-01-01T00:00:00Z')
+    versions = sorted(response.json()["modelVersions"], key=get_date, reverse=True)
+    versions = [v for v in versions if v.get('baseModel') == 'Chroma']
+    if not versions:
+        raise ValueError(f"Civitai model {model_id} has no Chroma version")
+    return versions[0]["downloadUrl"]
 
 def civitai_auth():
     """The Authorization header for civitai.com when the user connected
@@ -102,105 +95,58 @@ def fetch_lora(url):
                 out.write(chunk)
     return path
 
-def load_lora_adapter(pipeline, lora_url, adapter_name="lora", lora_multiplier=1.0):
-    """
-    Load a LoRA adapter using the modern Diffusers PEFT integration.
-    Supports Hugging Face repos, direct URLs, and Civitai models.
-    """
-    if not lora_url:
-        return False
-    
-    try:
-        # 1. Hugging Face blob URL (e.g., https://huggingface.co/username/repo/blob/main/file.safetensors)
-        if "huggingface.co" in lora_url and "/blob/" in lora_url:
-            # Convert blob URL to repo format
-            # Example: https://huggingface.co/XLabs-AI/flux-lora-collection/blob/main/anime_lora.safetensors
-            # -> repo_id: "XLabs-AI/flux-lora-collection", weight_name: "anime_lora.safetensors"
-            parts = lora_url.split('/')
-            if len(parts) >= 7 and 'huggingface.co' in parts and 'blob' in parts:
-                repo_start = parts.index('huggingface.co') + 1
-                blob_index = parts.index('blob')
-                repo_id = '/'.join(parts[repo_start:blob_index])
-                weight_name = '/'.join(parts[blob_index + 2:])  # Skip 'blob' and branch name
-                pipeline.load_lora_weights(repo_id, weight_name=weight_name, adapter_name=adapter_name, lora_scale=lora_multiplier)
-                logging.info(f"Loaded LoRA adapter '{adapter_name}' from HF repo: {repo_id}, file: {weight_name}")
-                return True
-            else:
-                logging.error(f"Invalid Hugging Face blob URL format: {lora_url}")
-                return False
-        
-        # 2. Hugging Face resolve URL (e.g., https://huggingface.co/username/repo/resolve/main/file.safetensors)
-        elif "huggingface.co" in lora_url and "/resolve/" in lora_url:
-            # Convert resolve URL to repo format
-            parts = lora_url.split('/')
-            if len(parts) >= 7 and 'huggingface.co' in parts and 'resolve' in parts:
-                repo_start = parts.index('huggingface.co') + 1
-                resolve_index = parts.index('resolve')
-                repo_id = '/'.join(parts[repo_start:resolve_index])
-                weight_name = '/'.join(parts[resolve_index + 2:])  # Skip 'resolve' and branch name
-                pipeline.load_lora_weights(repo_id, weight_name=weight_name, adapter_name=adapter_name, lora_scale=lora_multiplier)
-                logging.info(f"Loaded LoRA adapter '{adapter_name}' from HF repo: {repo_id}, file: {weight_name}")
-                return True
-            else:
-                logging.error(f"Invalid Hugging Face resolve URL format: {lora_url}")
-                return False
-        
-        # 3. Hugging Face repository string (e.g., "username/repo" or "username/repo/filename.safetensors")
-        elif "/" in lora_url and not lora_url.startswith('http') and "civitai.com" not in lora_url:
-            parts = lora_url.split('/')
-            if len(parts) == 2:
-                # Format: "username/repo" - let Diffusers auto-detect the weight file
-                repo_id = lora_url
-                pipeline.load_lora_weights(repo_id, adapter_name=adapter_name, lora_scale=lora_multiplier)
-                logging.info(f"Loaded LoRA adapter '{adapter_name}' from HF repo: {repo_id}")
-                return True
-            elif len(parts) > 2:
-                # Format: "username/repo/filename.safetensors"
-                repo_id = '/'.join(parts[:2])
-                weight_name = '/'.join(parts[2:])
-                pipeline.load_lora_weights(repo_id, weight_name=weight_name, adapter_name=adapter_name, lora_scale=lora_multiplier)
-                logging.info(f"Loaded LoRA adapter '{adapter_name}' from HF repo: {repo_id}, file: {weight_name}")
-                return True
-        
-        # 4. Other direct .safetensors URL
-        elif lora_url.endswith('.safetensors') and lora_url.startswith('http'):
-            lora_path = fetch_lora(lora_url)
-            pipeline.load_lora_weights(lora_path, adapter_name=adapter_name, lora_scale=lora_multiplier)
-            logging.info(f"Loaded LoRA adapter '{adapter_name}' from URL: {lora_url}")
-            return True
-        
-        # 5. Civitai model URL
-        elif "civitai.com" in lora_url:
-            match = re.search(r"/models/(\d+)", lora_url)
-            if not match:
-                logging.error("Could not extract model ID from Civitai URL")
-                return False
-            
-            model_id = match.group(1)
-            download_url = get_civit_download_url(model_id)
-            if not download_url:
-                logging.error(f"No download URL found for Civitai model {model_id}")
-                return False
-            
-            lora_path = fetch_lora(download_url)
-            pipeline.load_lora_weights(lora_path, adapter_name=adapter_name, lora_scale=lora_multiplier)
-            logging.info(f"Loaded LoRA adapter '{adapter_name}' from Civitai model: {model_id}")
-            return True
-        
-        else:
-            logging.warning(f"Unsupported LoRA URL format: {lora_url}")
-            return False
-            
-    except Exception as e:
-        logging.error(f"Failed to load LoRA adapter '{adapter_name}': {e}")
-        return False
+def lora_source(lora_url):
+    """Where the LoRA at lora_url is: (a Hugging Face repo, the file in it,
+    or None for the one diffusers finds) or (a local file, None)."""
+    # Hugging Face file URL: https://huggingface.co/owner/repo/(blob|resolve)/<branch>/file.safetensors
+    if "huggingface.co" in lora_url and ("/blob/" in lora_url or "/resolve/" in lora_url):
+        parts = lora_url.split('/')
+        marker = 'blob' if 'blob' in parts else 'resolve'
+        if len(parts) < 7 or 'huggingface.co' not in parts or marker not in parts:
+            raise ValueError(f"Invalid Hugging Face file URL: {lora_url}")
+        at = parts.index(marker)
+        return '/'.join(parts[parts.index('huggingface.co') + 1:at]), '/'.join(parts[at + 2:])
+    # Hugging Face repo: "owner/repo" or "owner/repo/file.safetensors"
+    if "/" in lora_url and not lora_url.startswith('http') and "civitai.com" not in lora_url:
+        parts = lora_url.split('/')
+        return '/'.join(parts[:2]), '/'.join(parts[2:]) or None
+    if lora_url.endswith('.safetensors') and lora_url.startswith('http'):
+        return fetch_lora(lora_url), None
+    if "civitai.com" in lora_url:
+        match = re.search(r"/models/(\d+)", lora_url)
+        if not match:
+            raise ValueError(f"No model ID in Civitai URL: {lora_url}")
+        return fetch_lora(get_civit_download_url(match.group(1))), None
+    raise ValueError(f"Unsupported LoRA URL: {lora_url} (use a Hugging Face repo or file, a .safetensors URL, or a Civitai model page)")
 
-def resolve_and_load_lora(pipeline, lora_url, lora_multiplier=1.0):
-    """
-    Legacy function for backward compatibility.
-    Use load_lora_adapter for new implementations.
-    """
-    return load_lora_adapter(pipeline, lora_url, "lora", lora_multiplier)
+def comfy_to_kohya(state_dict):
+    """ComfyUI and ai-toolkit save LoRAs under the original model's names
+    (diffusion_model.double_blocks.0.img_attn.qkv) in PEFT form
+    (lora_A/lora_B), which diffusers loads as no weights at all. diffusers
+    maps the same names in kohya form (lora_down/lora_up), so this renames
+    them to that. Anything else passes through."""
+    if not any(k.startswith("diffusion_model.") and ".lora_A." in k for k in state_dict):
+        return state_dict
+    return {k.replace(".lora_A.", ".lora_down.").replace(".lora_B.", ".lora_up."): v for k, v in state_dict.items()}
+
+def adapters(pipeline):
+    return {name for names in pipeline.get_list_adapters().values() for name in names}
+
+def load_lora_adapter(pipeline, lora_url, adapter_name, lora_multiplier=1.0):
+    """Load the LoRA at lora_url into pipeline as adapter_name. Raises when
+    it cannot be fetched or read, or none of its weights fit the model: the
+    run asked for it, and an image made without it is not what was asked."""
+    try:
+        source, weight_name = lora_source(lora_url)
+        state_dict, alphas = pipeline.lora_state_dict(source, weight_name=weight_name, return_alphas=True)
+        pipeline.load_lora_weights(comfy_to_kohya({**state_dict, **(alphas or {})}), adapter_name=adapter_name)
+        if adapter_name not in adapters(pipeline):
+            raise ValueError("none of its weights match this model")
+    except Exception as e:
+        if adapter_name in adapters(pipeline):
+            pipeline.delete_adapters(adapter_name)
+        raise ValueError(f"LoRA '{adapter_name}' ({lora_url}) could not be loaded: {e or type(e).__name__}") from e
+    logging.info(f"Loaded LoRA adapter '{adapter_name}' from {lora_url} (multiplier {lora_multiplier})")
 
 class App(BaseApp):
     async def setup(self, metadata):
@@ -247,12 +193,10 @@ class App(BaseApp):
                 self.loaded_loras[lora.adapter_name][0] != lora.lora_url or
                 self.loaded_loras[lora.adapter_name][1] != lora.lora_multiplier
             ):
-                success = load_lora_adapter(self.pipeline, lora.lora_url, lora.adapter_name, lora.lora_multiplier)
-                if success:
-                    self.loaded_loras[lora.adapter_name] = (lora.lora_url, lora.lora_multiplier)
-            if lora.adapter_name in self.loaded_loras:
-                active_adapters.append(lora.adapter_name)
-                adapter_weights.append(lora.lora_multiplier)
+                load_lora_adapter(self.pipeline, lora.lora_url, lora.adapter_name, lora.lora_multiplier)
+                self.loaded_loras[lora.adapter_name] = (lora.lora_url, lora.lora_multiplier)
+            active_adapters.append(lora.adapter_name)
+            adapter_weights.append(lora.lora_multiplier)
 
         # Set all active adapters
         if active_adapters:
