@@ -41,6 +41,7 @@ SECURITY_FLOORS = {
     "websockets": Version("16.1"),  # AIKIDO-2026-118856, -625161
     "regex": Version("2026.8.31"),  # AIKIDO-2026-447516
     "fsspec": Version("2026.6.0"),  # CVE-2026-104851
+    "oauthlib": Version("4.0.0"),  # CVE-2026-118669
     "transformers": Version("5.15.0"),  # CVE-2026-4372 (5.3.0), AIKIDO-2026-295187 (5.13.0), -614493 (5.14.0), -391542 (5.15.0)
 }
 EXCEPTIONS = "scripts/lock-floors-exceptions.txt"

@@ -10,7 +10,7 @@ idna==3.18
     # via requests
 inferencesh==0.7.23
     # via -r requirements.txt
-oauthlib==3.3.1
+oauthlib==4.0.1
     # via requests-oauthlib
 pillow==13.0.0
     # via -r requirements.txt
