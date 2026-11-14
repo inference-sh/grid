@@ -6,6 +6,7 @@ from diffusers import (
     ChromaPipeline
 )
 import os
+import tempfile
 import logging
 import requests
 from accelerate import Accelerator
@@ -51,7 +52,7 @@ DEFAULT_VARIANT = "default"
 def get_civit_download_url(model_id):
     url = f"https://civitai.com/api/v1/models/{model_id}"
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(url, headers=civitai_auth(), timeout=30)
         response.raise_for_status()
         data = response.json()
         versions = data["modelVersions"]
@@ -72,19 +73,34 @@ def get_civit_download_url(model_id):
         logging.error(f"Failed to fetch Civitai model info: {e}")
         return None
 
+def civitai_auth():
+    """The Authorization header for civitai.com when the user connected
+    Civitai (credential civitai, CIVITAI_TOKEN), else none. The run holds a
+    placeholder; the egress gateway puts the key in only toward civitai.com,
+    so the header is sent there and nowhere else."""
+    token = os.environ.get('CIVITAI_TOKEN')
+    return {"Authorization": f"Bearer {token}"} if token else {}
+
 def fetch_lora(url):
-    """The LoRA file at url, through the SDK's file cache (FILE_CACHE_DIR):
-    fetched once per URL, reused by later tasks, and expired by the engine
-    when unused. Not /tmp, which is per-task scratch."""
-    host = urllib.parse.urlsplit(url).hostname or ""
-    if host == "civitai.com" or host.endswith(".civitai.com"):
-        civitai_token = os.environ.get('CIVITAI_TOKEN')
-        if civitai_token:
-            # The SDK logs the URL without its query, so the token stays out
-            # of task logs and errors.
-            sep = "&" if "?" in url else "?"
-            url = f"{url}{sep}token={urllib.parse.quote(civitai_token)}"
-    return File(uri=url).path
+    """The LoRA file at url. A public file goes through the SDK's file cache
+    (FILE_CACHE_DIR): fetched once per URL, reused by later tasks, expired
+    by the engine. A Civitai file that needs the user's login is fetched
+    with it into this task's scratch (TMPDIR), never into the shared cache:
+    what one user's login unlocks is not served to another."""
+    try:
+        return File(uri=url).path
+    except Exception:
+        auth = civitai_auth()
+        if not auth or (urllib.parse.urlsplit(url).hostname or "") != "civitai.com":
+            raise
+    # requests drops Authorization on the redirect to Civitai's CDN.
+    with requests.get(url, headers=auth, stream=True, timeout=120) as response:
+        response.raise_for_status()
+        fd, path = tempfile.mkstemp(suffix=".safetensors")
+        with os.fdopen(fd, "wb") as out:
+            for chunk in response.iter_content(chunk_size=1 << 20):
+                out.write(chunk)
+    return path
 
 def load_lora_adapter(pipeline, lora_url, adapter_name="lora", lora_multiplier=1.0):
     """
