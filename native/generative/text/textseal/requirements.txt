@@ -1,7 +1,8 @@
 pydantic>=2.0.0
 inferencesh
 huggingface-hub[hf_transfer]
-# pinned to the deployed videoseal version: newer torch fails on the CUDA 12 grid nodes
-torch==2.9.1
+# CUDA 12.9 build, the same pin as pika-h3-flex-oss. The PyPI wheels of torch 2.13 are built for
+# CUDA 13 and do not start on workers whose driver stops at CUDA 12.
+torch @ https://download.pytorch.org/whl/cu129/torch-2.13.0%2Bcu129-cp311-cp311-manylinux_2_28_x86_64.whl
 # PyPI textseal 0.0.5 predates textseal2 and the textseal.watermarking package
 git+https://github.com/facebookresearch/textseal.git@0b76bc64013081c570b8633d3d3585e3ee9a495a
