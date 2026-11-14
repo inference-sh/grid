@@ -66,7 +66,7 @@ idna==3.20
     #   requests
 importlib-metadata==10.1.0
     # via diffusers
-inferencesh==0.40.0
+inferencesh==0.41.0
     # via -r requirements.txt
 jinja2==3.1.6
     # via torch

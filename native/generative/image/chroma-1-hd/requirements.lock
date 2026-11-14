@@ -25,8 +25,9 @@ httpx2==2.16.0
 huggingface-hub==2.4.0
 idna==3.20
 importlib-metadata==10.1.0
-inferencesh==0.38.7
+inferencesh==0.41.0
 jinja2==3.1.6
+lazy-importer==0.1.0
 markdown-it-py==4.2.0
 markupsafe==3.0.4
 mdurl==0.1.2
