@@ -30,7 +30,7 @@ httplib2==0.32.0
     #   google-auth-httplib2
 idna==3.20
     # via requests
-inferencesh==0.30.0
+inferencesh==0.41.1
     # via -r requirements.txt
 opentelemetry-api==1.45.1
     # via google-api-core

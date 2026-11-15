@@ -13,6 +13,25 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 
+class GoogleLoginRejected(Exception):
+    """Google refused the access token: the user removed our access, or the
+    token died early. The platform reads error_code, refreshes the login and
+    runs the call again, or asks the user to reconnect Google."""
+
+    error_code = "credential_rejected"
+
+
+class _GoogleToken(Credentials):
+    """The access token the platform gave this task. The app holds no refresh
+    token, so when Google rejects the token it reports that instead of
+    trying to refresh it."""
+
+    def refresh(self, request):
+        raise GoogleLoginRejected(
+            "Google rejected the login: access was removed or the token expired. Reconnect Google."
+        )
+
+
 # --- list_messages ---
 
 class ListMessagesInput(BaseAppInput):
@@ -204,7 +223,7 @@ class App(BaseApp):
                 "GOOGLE_OAUTH_ACCESS_TOKEN not found. "
                 "Please ensure the Google Gmail integration is connected in Settings."
             )
-        creds = Credentials(token=token)
+        creds = _GoogleToken(token=token)
         self.service = build("gmail", "v1", credentials=creds)
         self.logger.info("Gmail service initialized")
 

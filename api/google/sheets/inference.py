@@ -7,6 +7,25 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 
+class GoogleLoginRejected(Exception):
+    """Google refused the access token: the user removed our access, or the
+    token died early. The platform reads error_code, refreshes the login and
+    runs the call again, or asks the user to reconnect Google."""
+
+    error_code = "credential_rejected"
+
+
+class _GoogleToken(Credentials):
+    """The access token the platform gave this task. The app holds no refresh
+    token, so when Google rejects the token it reports that instead of
+    trying to refresh it."""
+
+    def refresh(self, request):
+        raise GoogleLoginRejected(
+            "Google rejected the login: access was removed or the token expired. Reconnect Google."
+        )
+
+
 # --- read_sheet ---
 
 class ReadSheetInput(BaseAppInput):
@@ -98,7 +117,7 @@ class App(BaseApp):
         token = os.environ.get("GOOGLE_OAUTH_ACCESS_TOKEN")
         if not token:
             raise ValueError("GOOGLE_OAUTH_ACCESS_TOKEN not found")
-        creds = Credentials(token=token)
+        creds = _GoogleToken(token=token)
         self.service = build("sheets", "v4", credentials=creds)
 
     @function(
