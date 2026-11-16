@@ -1,0 +1,21 @@
+namespace: infsh
+name: qr-code-generator
+title: QR Code Generator
+description: "Styled QR codes for URLs, Wi-Fi, contacts, events and payments. Custom shapes, colors, gradients, logo and frame. PNG, JPG, WEBP or vector SVG, PDF, EPS."
+metadata:
+    tags:
+        - media-utilities
+        - qr-code
+category: image
+images:
+    card: ""
+    thumbnail: ""
+    banner: ""
+env: {}
+kernel: python-3.11
+resources:
+    gpu:
+        count: 0
+        vram: 0
+        type: none
+    ram: 0

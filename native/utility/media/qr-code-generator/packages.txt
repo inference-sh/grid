@@ -1,0 +1,2 @@
+libcairo2
+fonts-dejavu-core
