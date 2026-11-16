@@ -7,6 +7,7 @@ metadata:
         - media-utilities
         - qr-code
 category: image
+default_function: url
 images:
     card: ""
     thumbnail: ""
