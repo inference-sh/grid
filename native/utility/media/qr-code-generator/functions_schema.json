@@ -12,11 +12,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -33,18 +33,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -57,9 +50,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -67,21 +74,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -111,46 +105,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -161,19 +163,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -197,19 +192,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -282,32 +270,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -356,158 +330,81 @@
           "type": "string"
         },
         "last_name": {
-          "anyOf": [
-            {
-              "maxLength": 100,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Last name.",
-          "title": "Last Name"
+          "maxLength": 100,
+          "title": "Last Name",
+          "type": "string"
         },
         "organization": {
-          "anyOf": [
-            {
-              "maxLength": 200,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Company (vCard only).",
-          "title": "Organization"
+          "maxLength": 200,
+          "title": "Organization",
+          "type": "string"
         },
         "title": {
-          "anyOf": [
-            {
-              "maxLength": 200,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Job title (vCard only).",
-          "title": "Title"
+          "maxLength": 200,
+          "title": "Title",
+          "type": "string"
         },
         "phone": {
-          "anyOf": [
-            {
-              "maxLength": 40,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Phone number.",
-          "title": "Phone"
+          "maxLength": 40,
+          "title": "Phone",
+          "type": "string"
         },
         "email": {
-          "anyOf": [
-            {
-              "maxLength": 200,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Email address.",
-          "title": "Email"
+          "maxLength": 200,
+          "title": "Email",
+          "type": "string"
         },
         "website": {
-          "anyOf": [
-            {
-              "maxLength": 300,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Website.",
-          "title": "Website"
+          "maxLength": 300,
+          "title": "Website",
+          "type": "string"
         },
         "street": {
-          "anyOf": [
-            {
-              "maxLength": 200,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Street address (vCard only).",
-          "title": "Street"
+          "maxLength": 200,
+          "title": "Street",
+          "type": "string"
         },
         "city": {
-          "anyOf": [
-            {
-              "maxLength": 100,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "City.",
-          "title": "City"
+          "maxLength": 100,
+          "title": "City",
+          "type": "string"
         },
         "zip": {
-          "anyOf": [
-            {
-              "maxLength": 20,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Postal code.",
-          "title": "Zip"
+          "maxLength": 20,
+          "title": "Zip",
+          "type": "string"
         },
         "country": {
-          "anyOf": [
-            {
-              "maxLength": 100,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Country.",
-          "title": "Country"
+          "maxLength": 100,
+          "title": "Country",
+          "type": "string"
         },
         "note": {
-          "anyOf": [
-            {
-              "maxLength": 500,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Note.",
-          "title": "Note"
+          "maxLength": 500,
+          "title": "Note",
+          "type": "string"
         },
         "format": {
           "default": "vcard",
@@ -524,28 +421,12 @@
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -863,7 +744,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -942,11 +823,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -963,18 +844,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -987,9 +861,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -997,21 +885,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -1041,46 +916,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -1091,19 +974,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -1127,19 +1003,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -1212,32 +1081,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -1286,60 +1141,30 @@
           "type": "string"
         },
         "subject": {
-          "anyOf": [
-            {
-              "maxLength": 300,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Subject.",
-          "title": "Subject"
+          "maxLength": 300,
+          "title": "Subject",
+          "type": "string"
         },
         "body": {
-          "anyOf": [
-            {
-              "maxLength": 2000,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Message body.",
-          "title": "Body"
+          "maxLength": 2000,
+          "title": "Body",
+          "type": "string"
         },
         "style": {
           "$ref": "#/$defs/StyleOptions",
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -1657,7 +1482,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -1736,11 +1561,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -1757,18 +1582,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -1781,9 +1599,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -1791,21 +1623,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -1835,46 +1654,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -1885,19 +1712,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -1921,19 +1741,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -2006,32 +1819,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -2086,74 +1885,37 @@
           "type": "string"
         },
         "end": {
-          "anyOf": [
-            {
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}:?\\d{2})?$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "End, ISO 8601.",
-          "title": "End"
+          "default": "",
+          "description": "End, ISO 8601. Empty for none.",
+          "pattern": "^(\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}:?\\d{2})?)?$",
+          "title": "End",
+          "type": "string"
         },
         "location": {
-          "anyOf": [
-            {
-              "maxLength": 300,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Location.",
-          "title": "Location"
+          "maxLength": 300,
+          "title": "Location",
+          "type": "string"
         },
         "description": {
-          "anyOf": [
-            {
-              "maxLength": 1000,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Description.",
-          "title": "Description"
+          "maxLength": 1000,
+          "title": "Description",
+          "type": "string"
         },
         "style": {
           "$ref": "#/$defs/StyleOptions",
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -2472,7 +2234,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -2551,11 +2313,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -2572,18 +2334,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -2596,9 +2351,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -2606,21 +2375,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -2650,46 +2406,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -2700,19 +2464,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -2736,19 +2493,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -2821,32 +2571,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -2906,28 +2642,12 @@
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -3246,7 +2966,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -3325,11 +3045,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -3346,18 +3066,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -3370,9 +3083,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -3380,21 +3107,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -3424,46 +3138,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -3474,19 +3196,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -3510,19 +3225,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -3595,32 +3303,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -3682,60 +3376,30 @@
           "type": "number"
         },
         "bic": {
-          "anyOf": [
-            {
-              "pattern": "^[A-Za-z0-9]{8}([A-Za-z0-9]{3})?$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Beneficiary BIC (optional inside the EEA).",
-          "title": "Bic"
+          "pattern": "^([A-Za-z0-9]{8}([A-Za-z0-9]{3})?)?$",
+          "title": "Bic",
+          "type": "string"
         },
         "reference": {
-          "anyOf": [
-            {
-              "maxLength": 140,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Remittance text shown to the payer.",
-          "title": "Reference"
+          "maxLength": 140,
+          "title": "Reference",
+          "type": "string"
         },
         "style": {
           "$ref": "#/$defs/StyleOptions",
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -4055,7 +3719,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -4134,11 +3798,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -4155,18 +3819,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -4179,9 +3836,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -4189,21 +3860,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -4233,46 +3891,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -4283,19 +3949,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -4319,19 +3978,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -4404,32 +4056,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -4488,46 +4126,23 @@
           "type": "string"
         },
         "message": {
-          "anyOf": [
-            {
-              "maxLength": 1000,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Prefilled message (sms, whatsapp).",
-          "title": "Message"
+          "maxLength": 1000,
+          "title": "Message",
+          "type": "string"
         },
         "style": {
           "$ref": "#/$defs/StyleOptions",
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -4845,7 +4460,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -4924,11 +4539,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -4945,18 +4560,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -4969,9 +4577,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -4979,21 +4601,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -5023,46 +4632,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -5073,19 +4690,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -5109,19 +4719,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -5194,32 +4797,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -5272,28 +4861,12 @@
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -5611,7 +5184,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -5690,11 +5263,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -5711,18 +5284,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -5735,9 +5301,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -5745,21 +5325,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -5789,46 +5356,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -5839,19 +5414,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -5875,19 +5443,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -5960,32 +5521,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -6038,28 +5585,12 @@
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -6377,7 +5908,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
@@ -6456,11 +5987,11 @@
     "input_schema": {
       "$defs": {
         "FrameOptions": {
-          "description": "A frame and caption around the code.",
+          "description": "A frame and caption around the code. Off by default.",
           "properties": {
             "style": {
-              "default": "banner",
-              "description": "none (caption only), a rounded border, or a border with a filled caption banner.",
+              "default": "none",
+              "description": "none, a rounded border, or a border with a filled caption banner (like 'SCAN ME' frames).",
               "enum": [
                 "none",
                 "border",
@@ -6477,18 +6008,11 @@
               "type": "string"
             },
             "text": {
-              "anyOf": [
-                {
-                  "maxLength": 60,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "SCAN ME",
-              "description": "Caption text. Empty for none.",
-              "title": "Text"
+              "default": "",
+              "description": "Caption, e.g. 'SCAN ME'. Empty for none. Works with every style.",
+              "maxLength": 60,
+              "title": "Text",
+              "type": "string"
             },
             "position": {
               "default": "bottom",
@@ -6501,9 +6025,23 @@
               "type": "string"
             },
             "text_color": {
+              "default": "auto",
+              "description": "Caption color, or 'auto': background color on a banner, frame color otherwise.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Text Color",
+              "type": "string"
+            }
+          },
+          "title": "FrameOptions",
+          "type": "object"
+        },
+        "LogoOptions": {
+          "description": "A logo in the center of the code. Leave image empty for no logo.",
+          "properties": {
+            "image": {
               "anyOf": [
                 {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "format": "file",
                   "type": "string"
                 },
                 {
@@ -6511,21 +6049,8 @@
                 }
               ],
               "default": null,
-              "description": "Caption color. Empty: background color on a banner, frame color otherwise.",
-              "title": "Text Color"
-            }
-          },
-          "title": "FrameOptions",
-          "type": "object"
-        },
-        "LogoOptions": {
-          "description": "A logo in the center of the code.",
-          "properties": {
-            "image": {
-              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG.",
-              "format": "file",
-              "title": "Image",
-              "type": "string"
+              "description": "Logo file: PNG, JPG, WEBP, GIF or SVG. Empty for no logo.",
+              "title": "Image"
             },
             "size": {
               "default": 0.22,
@@ -6555,46 +6080,54 @@
               "type": "string"
             },
             "background_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Fill the cleared area with this color. Empty shows the background.",
-              "title": "Background Color"
+              "default": "transparent",
+              "description": "Fill the cleared area with this color, or 'transparent' to show the background.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+              "title": "Background Color",
+              "type": "string"
             }
           },
-          "required": [
-            "image"
-          ],
           "title": "LogoOptions",
           "type": "object"
         },
         "OutputOptions": {
-          "description": "File formats, size and encoding.",
+          "description": "File formats, size and encoding. The PNG preview in `image` is always returned.",
           "properties": {
-            "formats": {
-              "description": "Files to produce. svg, pdf and eps are vector (any size); png, jpg and webp are raster at `size` pixels.",
-              "items": {
-                "enum": [
-                  "png",
-                  "svg",
-                  "pdf",
-                  "jpg",
-                  "webp",
-                  "eps"
-                ],
-                "type": "string"
-              },
-              "maxItems": 6,
-              "minItems": 1,
-              "title": "Formats",
-              "type": "array"
+            "png": {
+              "default": true,
+              "description": "PNG file (raster, `size` pixels wide, keeps transparency).",
+              "title": "Png",
+              "type": "boolean"
+            },
+            "svg": {
+              "default": true,
+              "description": "SVG file (vector, scales to any size).",
+              "title": "Svg",
+              "type": "boolean"
+            },
+            "pdf": {
+              "default": false,
+              "description": "PDF file (vector, for print).",
+              "title": "Pdf",
+              "type": "boolean"
+            },
+            "eps": {
+              "default": false,
+              "description": "EPS file (vector, for print and design tools).",
+              "title": "Eps",
+              "type": "boolean"
+            },
+            "jpg": {
+              "default": false,
+              "description": "JPG file (raster, white background).",
+              "title": "Jpg",
+              "type": "boolean"
+            },
+            "webp": {
+              "default": false,
+              "description": "WEBP file (raster, lossless, keeps transparency).",
+              "title": "Webp",
+              "type": "boolean"
             },
             "size": {
               "default": 1024,
@@ -6605,19 +6138,12 @@
               "type": "integer"
             },
             "print_size_mm": {
-              "anyOf": [
-                {
-                  "maximum": 2000,
-                  "minimum": 5,
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Physical width of svg, pdf and eps in millimetres. Empty sizes them from `size`.",
-              "title": "Print Size Mm"
+              "default": 0,
+              "description": "Physical width of svg, pdf and eps in millimetres. 0 sizes them from `size`.",
+              "maximum": 2000,
+              "minimum": 0,
+              "title": "Print Size Mm",
+              "type": "number"
             },
             "quiet_zone": {
               "default": 4,
@@ -6641,19 +6167,12 @@
               "type": "string"
             },
             "qr_version": {
-              "anyOf": [
-                {
-                  "maximum": 40,
-                  "minimum": 1,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Force a QR version (1-40). Empty picks the smallest that fits.",
-              "title": "Qr Version"
+              "default": 0,
+              "description": "Force a QR version (1-40). 0 picks the smallest that fits.",
+              "maximum": 40,
+              "minimum": 0,
+              "title": "Qr Version",
+              "type": "integer"
             },
             "verify_scan": {
               "default": true,
@@ -6726,32 +6245,18 @@
               "type": "string"
             },
             "eye_frame_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye ring color. Empty uses the code color or gradient.",
-              "title": "Eye Frame Color"
+              "default": "auto",
+              "description": "Eye ring color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Frame Color",
+              "type": "string"
             },
             "eye_ball_color": {
-              "anyOf": [
-                {
-                  "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "description": "Eye center color. Empty uses the code color or gradient.",
-              "title": "Eye Ball Color"
+              "default": "auto",
+              "description": "Eye center color, hex, or 'auto' for the code color or gradient.",
+              "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|auto)$",
+              "title": "Eye Ball Color",
+              "type": "string"
             },
             "gradient": {
               "default": "none",
@@ -6800,18 +6305,11 @@
           "type": "string"
         },
         "password": {
-          "anyOf": [
-            {
-              "maxLength": 128,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": "",
           "description": "Network password. Required unless security is nopass.",
-          "title": "Password"
+          "maxLength": 128,
+          "title": "Password",
+          "type": "string"
         },
         "security": {
           "default": "WPA",
@@ -6835,28 +6333,12 @@
           "description": "Shapes, colors and gradient."
         },
         "logo": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/LogoOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional logo in the center."
+          "$ref": "#/$defs/LogoOptions",
+          "description": "Logo in the center (off until an image is set)."
         },
         "frame": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/FrameOptions"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional frame and caption."
+          "$ref": "#/$defs/FrameOptions",
+          "description": "Frame and caption (off by default)."
         },
         "output": {
           "$ref": "#/$defs/OutputOptions",
@@ -7174,7 +6656,7 @@
           "type": "string"
         },
         "files": {
-          "description": "One file per requested output format.",
+          "description": "One file per format switched on in `output`.",
           "items": {
             "format": "file",
             "type": "string"
