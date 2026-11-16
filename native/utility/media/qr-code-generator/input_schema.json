@@ -1,0 +1,764 @@
+{
+  "properties": {
+    "content_type": {
+      "default": "url",
+      "description": "What the QR code holds. url/text/phone/sms/whatsapp/email use `data`; wifi, vcard, mecard, geo, event and epc_payment use their own fields.",
+      "enum": [
+        "url",
+        "text",
+        "email",
+        "phone",
+        "sms",
+        "whatsapp",
+        "wifi",
+        "vcard",
+        "mecard",
+        "geo",
+        "event",
+        "epc_payment"
+      ],
+      "title": "Content Type",
+      "type": "string"
+    },
+    "data": {
+      "anyOf": [
+        {
+          "maxLength": 4000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Main value: the URL or text, the phone number (phone, sms, whatsapp), or the recipient address (email).",
+      "title": "Data"
+    },
+    "subject": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Email subject (email).",
+      "title": "Subject"
+    },
+    "message": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Message body (email, sms, whatsapp).",
+      "title": "Message"
+    },
+    "wifi_ssid": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Wi-Fi network name (wifi).",
+      "title": "Wifi Ssid"
+    },
+    "wifi_password": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Wi-Fi password (wifi).",
+      "title": "Wifi Password"
+    },
+    "wifi_security": {
+      "default": "WPA",
+      "description": "Wi-Fi security (wifi). WPA covers WPA2/WPA3.",
+      "enum": [
+        "WPA",
+        "WEP",
+        "nopass"
+      ],
+      "title": "Wifi Security",
+      "type": "string"
+    },
+    "wifi_hidden": {
+      "default": false,
+      "description": "The Wi-Fi network is hidden (wifi).",
+      "title": "Wifi Hidden",
+      "type": "boolean"
+    },
+    "contact_first_name": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First name (vcard, mecard).",
+      "title": "Contact First Name"
+    },
+    "contact_last_name": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last name (vcard, mecard).",
+      "title": "Contact Last Name"
+    },
+    "contact_organization": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Company (vcard).",
+      "title": "Contact Organization"
+    },
+    "contact_title": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Job title (vcard).",
+      "title": "Contact Title"
+    },
+    "contact_phone": {
+      "anyOf": [
+        {
+          "maxLength": 40,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Phone number (vcard, mecard).",
+      "title": "Contact Phone"
+    },
+    "contact_email": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Email (vcard, mecard).",
+      "title": "Contact Email"
+    },
+    "contact_website": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Website (vcard, mecard).",
+      "title": "Contact Website"
+    },
+    "contact_street": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Street address (vcard).",
+      "title": "Contact Street"
+    },
+    "contact_city": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "City (vcard, mecard).",
+      "title": "Contact City"
+    },
+    "contact_zip": {
+      "anyOf": [
+        {
+          "maxLength": 20,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Postal code (vcard, mecard).",
+      "title": "Contact Zip"
+    },
+    "contact_country": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Country (vcard, mecard).",
+      "title": "Contact Country"
+    },
+    "contact_note": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Note (vcard, mecard).",
+      "title": "Contact Note"
+    },
+    "latitude": {
+      "anyOf": [
+        {
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Latitude (geo).",
+      "title": "Latitude"
+    },
+    "longitude": {
+      "anyOf": [
+        {
+          "maximum": 180,
+          "minimum": -180,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Longitude (geo).",
+      "title": "Longitude"
+    },
+    "event_title": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Event title (event).",
+      "title": "Event Title"
+    },
+    "event_start": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}:?\\d{2})?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start, ISO 8601: 2025-06-01 (all day) or 2025-06-01T18:00 or with Z/offset (event).",
+      "title": "Event Start"
+    },
+    "event_end": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}:?\\d{2})?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "End, ISO 8601 (event).",
+      "title": "Event End"
+    },
+    "event_location": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Event location (event).",
+      "title": "Event Location"
+    },
+    "event_description": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Event description (event).",
+      "title": "Event Description"
+    },
+    "payment_name": {
+      "anyOf": [
+        {
+          "maxLength": 70,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Beneficiary name (epc_payment, SEPA EUR transfer).",
+      "title": "Payment Name"
+    },
+    "payment_iban": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z]{2}[0-9]{2}[A-Za-z0-9 ]{10,36}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Beneficiary IBAN (epc_payment).",
+      "title": "Payment Iban"
+    },
+    "payment_bic": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9]{8}([A-Za-z0-9]{3})?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Beneficiary BIC (epc_payment, optional).",
+      "title": "Payment Bic"
+    },
+    "payment_amount": {
+      "anyOf": [
+        {
+          "maximum": 999999999.99,
+          "minimum": 0.01,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Amount in EUR (epc_payment).",
+      "title": "Payment Amount"
+    },
+    "payment_reference": {
+      "anyOf": [
+        {
+          "maxLength": 140,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Remittance text shown to the payer (epc_payment).",
+      "title": "Payment Reference"
+    },
+    "error_correction": {
+      "default": "auto",
+      "description": "Error correction: L 7%, M 15%, Q 25%, H 30%. auto picks M, or H when a logo is added (EPC payments are always M).",
+      "enum": [
+        "auto",
+        "L",
+        "M",
+        "Q",
+        "H"
+      ],
+      "title": "Error Correction",
+      "type": "string"
+    },
+    "qr_version": {
+      "anyOf": [
+        {
+          "maximum": 40,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Force a QR version (1-40, grid of 21 to 177 modules). Empty picks the smallest that fits.",
+      "title": "Qr Version"
+    },
+    "module_style": {
+      "default": "square",
+      "description": "Shape of the data dots.",
+      "enum": [
+        "square",
+        "rounded",
+        "dots",
+        "diamond",
+        "fluid",
+        "leaf",
+        "small-squares",
+        "horizontal-bars",
+        "vertical-bars"
+      ],
+      "title": "Module Style",
+      "type": "string"
+    },
+    "eye_frame_style": {
+      "default": "square",
+      "description": "Shape of the outer ring of the three corner eyes.",
+      "enum": [
+        "square",
+        "rounded",
+        "extra-rounded",
+        "circle",
+        "leaf"
+      ],
+      "title": "Eye Frame Style",
+      "type": "string"
+    },
+    "eye_ball_style": {
+      "default": "square",
+      "description": "Shape of the inner square of the three corner eyes.",
+      "enum": [
+        "square",
+        "rounded",
+        "circle",
+        "diamond",
+        "leaf"
+      ],
+      "title": "Eye Ball Style",
+      "type": "string"
+    },
+    "foreground_color": {
+      "default": "#000000",
+      "description": "Color of the code, hex #RGB, #RRGGBB or #RRGGBBAA.",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "title": "Foreground Color",
+      "type": "string"
+    },
+    "background_color": {
+      "default": "#FFFFFF",
+      "description": "Background color, hex, or 'transparent' (JPG falls back to white).",
+      "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|transparent)$",
+      "title": "Background Color",
+      "type": "string"
+    },
+    "eye_frame_color": {
+      "anyOf": [
+        {
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Color of the eye rings. Empty uses the foreground color (or gradient).",
+      "title": "Eye Frame Color"
+    },
+    "eye_ball_color": {
+      "anyOf": [
+        {
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Color of the eye centers. Empty uses the foreground color (or gradient).",
+      "title": "Eye Ball Color"
+    },
+    "gradient_type": {
+      "default": "none",
+      "description": "Fill the code with a gradient instead of the foreground color.",
+      "enum": [
+        "none",
+        "linear",
+        "radial"
+      ],
+      "title": "Gradient Type",
+      "type": "string"
+    },
+    "gradient_start_color": {
+      "default": "#000000",
+      "description": "Gradient start color (center for radial).",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "title": "Gradient Start Color",
+      "type": "string"
+    },
+    "gradient_end_color": {
+      "default": "#3B5BDB",
+      "description": "Gradient end color (edge for radial).",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "title": "Gradient End Color",
+      "type": "string"
+    },
+    "gradient_angle": {
+      "default": 45,
+      "description": "Linear gradient angle in degrees (0 = left to right, 90 = top to bottom).",
+      "maximum": 360,
+      "minimum": 0,
+      "title": "Gradient Angle",
+      "type": "integer"
+    },
+    "logo": {
+      "anyOf": [
+        {
+          "format": "file",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Logo placed in the center: PNG, JPG, WEBP, GIF or SVG.",
+      "title": "Logo"
+    },
+    "logo_size": {
+      "default": 0.22,
+      "description": "Logo width as a fraction of the code width (max 0.3 keeps it scannable).",
+      "maximum": 0.3,
+      "minimum": 0.05,
+      "title": "Logo Size",
+      "type": "number"
+    },
+    "logo_margin": {
+      "default": 1.0,
+      "description": "Empty space around the logo, in modules.",
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Logo Margin",
+      "type": "number"
+    },
+    "logo_shape": {
+      "default": "rounded",
+      "description": "Shape of the area cleared behind the logo.",
+      "enum": [
+        "square",
+        "rounded",
+        "circle"
+      ],
+      "title": "Logo Shape",
+      "type": "string"
+    },
+    "logo_background_color": {
+      "anyOf": [
+        {
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fill the cleared logo area with this color. Empty shows the background.",
+      "title": "Logo Background Color"
+    },
+    "frame_style": {
+      "default": "none",
+      "description": "none, a rounded border, or a border with a filled label banner (like 'SCAN ME' frames).",
+      "enum": [
+        "none",
+        "border",
+        "banner"
+      ],
+      "title": "Frame Style",
+      "type": "string"
+    },
+    "frame_color": {
+      "default": "#000000",
+      "description": "Border and banner color.",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "title": "Frame Color",
+      "type": "string"
+    },
+    "label_text": {
+      "anyOf": [
+        {
+          "maxLength": 60,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Caption such as 'SCAN ME'.",
+      "title": "Label Text"
+    },
+    "label_position": {
+      "default": "bottom",
+      "description": "Where the caption goes.",
+      "enum": [
+        "bottom",
+        "top"
+      ],
+      "title": "Label Position",
+      "type": "string"
+    },
+    "label_color": {
+      "anyOf": [
+        {
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Caption color. Empty: foreground color, or the background color on a banner.",
+      "title": "Label Color"
+    },
+    "output_formats": {
+      "description": "Files to produce. svg, pdf and eps are vector (scale to any size); png, jpg and webp are raster at `size` pixels.",
+      "items": {
+        "enum": [
+          "png",
+          "svg",
+          "pdf",
+          "jpg",
+          "webp",
+          "eps"
+        ],
+        "type": "string"
+      },
+      "maxItems": 6,
+      "minItems": 1,
+      "title": "Output Formats",
+      "type": "array"
+    },
+    "size": {
+      "default": 1024,
+      "description": "Raster width in pixels (png, jpg, webp).",
+      "maximum": 4096,
+      "minimum": 64,
+      "title": "Size",
+      "type": "integer"
+    },
+    "quiet_zone": {
+      "default": 4,
+      "description": "White border around the code in modules (4 is the standard).",
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Quiet Zone",
+      "type": "integer"
+    },
+    "print_size_mm": {
+      "anyOf": [
+        {
+          "maximum": 2000,
+          "minimum": 5,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Physical width for svg, pdf and eps in millimetres. Empty sizes them from `size`.",
+      "title": "Print Size Mm"
+    },
+    "verify_scan": {
+      "default": true,
+      "description": "Decode the rendered code and report whether it scans back to the same content.",
+      "title": "Verify Scan",
+      "type": "boolean"
+    }
+  },
+  "title": "AppInput",
+  "type": "object"
+}
