@@ -42,8 +42,9 @@ def get_bot_token() -> str:
     token = os.environ.get("SLACK_BOT_TOKEN")
     if not token:
         raise RuntimeError(
-            "SLACK_BOT_TOKEN is not set. Connect the Slack integration in Settings and "
-            "provide its bot token (xoxb-...)."
+            "SLACK_BOT_TOKEN is not set. Connect Slack in Settings through your own Slack app "
+            "and give that app's bot token (xoxb-...); the platform's Slack app's bot token is "
+            "not given to apps."
         )
     return token.strip()
 

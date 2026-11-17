@@ -21,7 +21,6 @@ resources:
     ram: 2
 title: Slack Chat
 credentials:
-    - key: slack.channels.write
-      description: Post, edit and delete messages in channels
-    - key: slack.channels.read
-      description: List channels for list_channels and name lookup
+    - slug: slack
+      secrets: [SLACK_BOT_TOKEN]
+      description: The bot token of the Slack app your login was made through; posts, edits and deletes messages and lists channels
