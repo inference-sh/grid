@@ -46,6 +46,15 @@
           "description": "BCC recipients (comma-separated)",
           "title": "Bcc",
           "type": "string"
+        },
+        "attachments": {
+          "description": "Files to attach",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Attachments",
+          "type": "array"
         }
       },
       "required": [
@@ -2442,6 +2451,15 @@
           "description": "BCC recipients (comma-separated)",
           "title": "Bcc",
           "type": "string"
+        },
+        "attachments": {
+          "description": "Files to attach",
+          "items": {
+            "format": "file",
+            "type": "string"
+          },
+          "title": "Attachments",
+          "type": "array"
         }
       },
       "required": [
