@@ -2,6 +2,9 @@ import os
 import tempfile
 import base64
 import logging
+import mimetypes
+from email import encoders
+from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -98,6 +101,7 @@ class SendMessageInput(BaseAppInput):
     body: str = Field(description="Email body (plain text)")
     cc: str = Field(default="", description="CC recipients (comma-separated)")
     bcc: str = Field(default="", description="BCC recipients (comma-separated)")
+    attachments: List[File] = Field(default_factory=list, description="Files to attach")
 
 
 class SendMessageOutput(BaseAppOutput):
@@ -113,6 +117,7 @@ class CreateDraftInput(BaseAppInput):
     body: str = Field(description="Email body (plain text)")
     cc: str = Field(default="", description="CC recipients (comma-separated)")
     bcc: str = Field(default="", description="BCC recipients (comma-separated)")
+    attachments: List[File] = Field(default_factory=list, description="Files to attach")
 
 
 class CreateDraftOutput(BaseAppOutput):
@@ -196,8 +201,29 @@ def _attachments(payload: dict) -> List[AttachmentInfo]:
     return out
 
 
-def _build_mime_message(to: str, subject: str, body: str, cc: str = "", bcc: str = "") -> str:
+# Gmail refuses a message over 35 MB, counted on the RFC 822 message with its
+# attachments base64-encoded (about 25 MB of files).
+GMAIL_MAX_MESSAGE_BYTES = 35 * 1024 * 1024
+
+
+def _mb(n: int) -> str:
+    return "%.1f MB" % (n / (1024 * 1024))
+
+
+def _attachment_name(f: File) -> str:
+    """The original file name: File.filename, else the local path's, else the URL's."""
+    for candidate in (f.filename, f.path, f.uri):
+        if candidate:
+            name = os.path.basename(str(candidate).split("?", 1)[0])
+            if name:
+                return name
+    return "attachment"
+
+
+def _build_mime_message(to: str, subject: str, body: str, cc: str = "", bcc: str = "",
+                        attachments: Optional[List[File]] = None) -> str:
     """Build a MIME message and return base64url-encoded raw string."""
+    attachments = attachments or []
     message = MIMEMultipart()
     message["to"] = to
     message["subject"] = subject
@@ -206,8 +232,38 @@ def _build_mime_message(to: str, subject: str, body: str, cc: str = "", bcc: str
     if bcc:
         message["bcc"] = bcc
     message.attach(MIMEText(body, "plain"))
-    raw = base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
-    return raw
+
+    total = 0
+    for f in attachments:
+        if not f.path or not os.path.exists(f.path):
+            raise ValueError(f"Attachment could not be read: {f.uri or f.path or 'unknown file'}")
+        total += os.path.getsize(f.path)
+        # Base64 makes the encoded message at least a third larger than the
+        # files, so refuse before reading them all into memory.
+        if total > GMAIL_MAX_MESSAGE_BYTES:
+            raise ValueError(
+                f"Attachments total {_mb(total)} before encoding, over Gmail's "
+                f"{_mb(GMAIL_MAX_MESSAGE_BYTES)} message limit."
+            )
+        filename = _attachment_name(f)
+        mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        maintype, subtype = mime_type.split("/", 1)
+        with open(f.path, "rb") as fh:
+            data = fh.read()
+        part = MIMEBase(maintype, subtype)
+        part.set_payload(data)
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition", "attachment", filename=filename)
+        message.attach(part)
+
+    mime_bytes = message.as_bytes()
+    if len(mime_bytes) > GMAIL_MAX_MESSAGE_BYTES:
+        raise ValueError(
+            f"The encoded message is {_mb(len(mime_bytes))} ({len(attachments)} attachment(s), "
+            f"{_mb(total)} of files), over Gmail's {_mb(GMAIL_MAX_MESSAGE_BYTES)} message limit. "
+            f"Send fewer or smaller files."
+        )
+    return base64.urlsafe_b64encode(mime_bytes).decode("utf-8")
 
 
 # --- App ---
@@ -339,7 +395,7 @@ class App(BaseApp):
     )
     async def send_message(self, input_data: SendMessageInput) -> SendMessageOutput:
         """Send an email via Gmail."""
-        self.logger.info(f"Sending message to={input_data.to} subject='{input_data.subject}'")
+        self.logger.info(f"Sending message to={input_data.to} subject='{input_data.subject}' attachments={len(input_data.attachments)}")
 
         raw = _build_mime_message(
             to=input_data.to,
@@ -347,6 +403,7 @@ class App(BaseApp):
             body=input_data.body,
             cc=input_data.cc,
             bcc=input_data.bcc,
+            attachments=input_data.attachments,
         )
 
         result = self.service.users().messages().send(
@@ -366,7 +423,7 @@ class App(BaseApp):
     )
     async def create_draft(self, input_data: CreateDraftInput) -> CreateDraftOutput:
         """Create a draft email in Gmail."""
-        self.logger.info(f"Creating draft to={input_data.to} subject='{input_data.subject}'")
+        self.logger.info(f"Creating draft to={input_data.to} subject='{input_data.subject}' attachments={len(input_data.attachments)}")
 
         raw = _build_mime_message(
             to=input_data.to,
@@ -374,6 +431,7 @@ class App(BaseApp):
             body=input_data.body,
             cc=input_data.cc,
             bcc=input_data.bcc,
+            attachments=input_data.attachments,
         )
 
         result = self.service.users().drafts().create(
