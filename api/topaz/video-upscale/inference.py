@@ -224,18 +224,35 @@ class App(BaseApp):
 
             output_path = download_result(download_url, self.logger)
 
-            # Estimate credits: ~4 credits per 10s at 1080p for Proteus
-            duration = info["duration"] or 10
-            # Scale credits by output resolution relative to 1080p
-            resolution_factor = (out_width * out_height) / (1920 * 1080)
-            credits = max(1, int(duration / 10 * 4 * resolution_factor))
-            cost_cents = credits * 12  # $0.12 per credit = 12 cents
+            # Report raw Topaz credits; pricing converts credits to dollars.
+            # Prefer Topaz's own figure (same field the proteus app uses).
+            estimates = status_data.get("estimates") or {}
+            cost_range = estimates.get("cost") or []
+            credits = cost_range[-1] if cost_range else 0
+            credits_source = "topaz"
+            if not credits:
+                # Fallback: ~4 credits per 10s at 1080p, scaled by output pixels
+                duration = info["duration"] or 10
+                resolution_factor = (out_width * out_height) / (1920 * 1080)
+                credits = max(1, int(duration / 10 * 4 * resolution_factor))
+                credits_source = "estimate"
 
-            self.logger.info(f"Estimated {credits} credits = ${credits * 0.12:.2f}")
+            self.logger.info(f"{credits} credits used ({credits_source})")
 
             return AppOutput(
                 video=File(path=output_path),
-                output_meta=OutputMeta(outputs=[RawMeta(cost=cost_cents)]),
+                output_meta=OutputMeta(outputs=[RawMeta(
+                    cost=credits,
+                    extra={
+                        "credits": credits,
+                        "credits_source": credits_source,
+                        "model": input_data.model.value,
+                        "scale": input_data.scale,
+                        "input_resolution": f"{src_width}x{src_height}",
+                        "output_resolution": f"{out_width}x{out_height}",
+                        "duration": info["duration"] or 0,
+                    },
+                )]),
             )
 
         except Exception as e:
