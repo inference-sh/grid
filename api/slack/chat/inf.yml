@@ -20,7 +20,12 @@ resources:
         type: none
     ram: 2
 title: Slack Chat
+secrets:
+    - key: SLACK_BOT_TOKEN
+      description: Your Slack bot's token (xoxb-...), with chat:write and channels:read. Add it as a workspace secret; it is used unless a Slack login below gives one
+      optional: true
 credentials:
     - slug: slack
       secrets: [SLACK_BOT_TOKEN]
-      description: The bot token of the Slack app your login was made through; posts, edits and deletes messages and lists channels
+      description: Or connect Slack and add our bot to your workspace; its bot token is used ahead of the secret above
+      optional: true
