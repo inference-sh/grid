@@ -25,5 +25,5 @@ inflect==7.5.0
 py3langid
 soundfile
 torch==2.14.1 # imported directly; torchaudio 2.11.1 wheel requires torch>=2.11
-pandas==2.3.3
+pandas>=3.0.4
 regex>=2026.9.29
