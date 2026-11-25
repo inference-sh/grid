@@ -2,8 +2,8 @@ pydantic >= 2.0.0
 inferencesh
 accelerate
 omnivoice
-torch>=2.5,<2.9
-torchaudio>=2.5,<2.9
+torch==2.14.1 # torch 2.8 carries AIKIDO-2026-636203; same torch as the other audio apps
+torchaudio==2.11.1 # omnivoice loads and writes audio with soundfile/librosa, not torchaudio I/O
 soundfile
 hf_transfer
 pillow>=13.0.0
