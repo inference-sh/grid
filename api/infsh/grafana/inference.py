@@ -17,7 +17,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Literal, Optional, Union
 
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, OutputMeta
-from pydantic import BaseModel, Field, model_validator, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator, field_validator
 
 from .grafana_http import (
     DEFAULT_LINE_BYTES,
@@ -108,9 +108,22 @@ class Matcher(BaseModel):
         description="Value to match against. Numbers are accepted and used as text, so "
         "status=401 works whether you send 401 or \"401\".",
     )
-    is_regex: bool = Field(default=False, description="Treat value as a regular expression.")
+    # A matcher with a key this model does not know used to be accepted with that
+    # key dropped: {"isRegex": true} (Alertmanager's own spelling) became an exact
+    # match on the literal pattern, so create_silence made a silence that muted
+    # nothing and the alert kept paging (2026-11-25, ".*daily dump missing.*").
+    # Both spellings are accepted now, and any other key is refused.
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    is_regex: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("is_regex", "isRegex"),
+        description="Treat value as a regular expression (RE2, anchored by Grafana).",
+    )
     is_equal: bool = Field(
-        default=True, description="False inverts the match (label must NOT equal value)."
+        default=True,
+        validation_alias=AliasChoices("is_equal", "isEqual"),
+        description="False inverts the match (label must NOT equal value).",
     )
 
     @field_validator("value", mode="before")
