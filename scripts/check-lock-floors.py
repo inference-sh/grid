@@ -35,7 +35,12 @@ SECURITY_FLOORS = {
     "matplotlib": Version("3.10.9"),  # AIKIDO-2026-10536 (eval in axes.prop_cycle)
     "requests": Version("2.34.0"),  # AIKIDO-2026-106840, CVE-2026-25645
     "urllib3": Version("2.8.0"),  # CVE-2026-44431 (2.7.0), CVE-2026-97687/97688/97689 (2.8.0)
-    "numpy": Version("2.4.5"),  # AIKIDO-2026-795744; the 2.5.3 fixes need Python 3.12
+    "numpy": Version("2.5.3"),  # AIKIDO-2026-795744 (2.4.5), -125890 (2.5.2), -344675, -775417 (2.5.3); 2.5 needs Python 3.12
+    "scipy": Version("1.18.1"),  # AIKIDO-2026-950571; 1.18 needs Python 3.12
+    "timm": Version("1.0.28"),  # AIKIDO-2026-873810
+    "tokenizers": Version("0.23.1"),  # AIKIDO-2026-10636
+    "torch": Version("2.9.0"),  # AIKIDO-2026-636203
+    "pandas": Version("3.0.4"),  # AIKIDO-2026-367021
     "filelock": Version("4.2.1"),  # AIKIDO-2026-190770 etc.; CVE-2026-112909 etc. fixed in 4.2.1
     "setuptools": Version("84.1.0"),  # GHSA-xmj3-9gf7-h52w
     "websockets": Version("16.1"),  # AIKIDO-2026-118856, -625161
