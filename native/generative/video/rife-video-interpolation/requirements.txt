@@ -11,9 +11,8 @@ accelerate>=1.1.1
 huggingface_hub # downloads the RIFE weights at setup
 
 # RIFE specific dependencies (from ECCV2022-RIFE)
-numpy>=1.16,<=1.23.5
+numpy>=2.5.3 # sk-video (np.float/np.int) replaced by OpenCV frame reading
 tqdm>=4.35.0
-sk-video>=1.1.10
 opencv-python>=4.1.2
 moviepy>=1.0.3
 

@@ -3,7 +3,7 @@ inferencesh
 torch==2.14.1
 torchvision==0.29.1
 pillow>=13.0.0
-numpy>=1.23.5,<2
+numpy>=1.23.5
 flit-core
 videoseal
 
@@ -13,7 +13,7 @@ opencv-python
 omegaconf==2.3.0
 einops==0.8.1
 lpips
-timm==0.9.16
+timm>=1.0.28
 pre-commit
 ipykernel
 pycocotools

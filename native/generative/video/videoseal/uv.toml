@@ -1,0 +1,5 @@
+# videoseal 1.0.1 (PyPI) pins timm==0.9.16 (AIKIDO-2026-873810); its timm imports
+# (timm.models.layers, timm.optim, timm.scheduler) are still in timm 1.0.
+override-dependencies = [
+    "timm>=1.0.28",
+]

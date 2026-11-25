@@ -5,4 +5,6 @@
 override-dependencies = [
     "wandb>=0.31.0",
     "protobuf==3.19.6",
+    # dctorch (via k-diffusion) caps numpy below 2; it only calls numpy for the DCT basis
+    "numpy>=2.5.3,<2.6",
 ]

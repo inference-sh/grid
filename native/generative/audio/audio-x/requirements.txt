@@ -16,11 +16,11 @@ k-diffusion==0.1.1
 # laion-clap==1.1.6
 local-attention==1.8.6
 numpy>1.23.5
-pandas==2.0.2
+pandas>=3.0.4
 pedalboard==0.9.16
 prefigure==0.0.9
 pytorch_lightning==2.6.6
-PyWavelets==1.4.1
+PyWavelets>=1.8.0 # 1.4.1 is built against numpy 1.x and has no cp312 wheel
 safetensors
 sentencepiece>=0.2.0
 torch==2.14.1
@@ -35,7 +35,6 @@ vector-quantize-pytorch==1.9.14
 # wandb
 webdataset==0.2.48
 x-transformers==1.42.11
-numpy<2.0.0
 accelerate>=0.20.3
 scipy>=1.10.1
 librosa>=0.10.0

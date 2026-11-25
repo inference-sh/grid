@@ -2,13 +2,13 @@ pydantic >= 2.0.0
 inferencesh
 accelerate
 diffusers==0.42.1
-controlnet_aux==0.0.8
+controlnet_aux==0.0.10 # 0.0.8 caps timm<=0.6.7 (AIKIDO-2026-873810)
 huggingface_hub
 insightface==0.7.3
-numpy==1.26.2
-opencv_contrib_python==4.9.0.80
-opencv_python==4.9.0.80
-opencv_python_headless==4.9.0.80
+numpy>=2.5.3
+opencv_contrib_python==4.11.0.86 # 4.9 wheels are built against numpy 1.x
+opencv_python==4.11.0.86 # 4.9 wheels are built against numpy 1.x
+opencv_python_headless==4.11.0.86 # 4.9 wheels are built against numpy 1.x
 Pillow>=13.0.0
 # 2.7.0 lacks kernels for the newer GPUs now in the fleet
 # (`CUDA error: no kernel image is available for execution on the device`)

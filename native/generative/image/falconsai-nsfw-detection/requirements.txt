@@ -6,7 +6,7 @@ transformers==5.22.1
 tokenizers==0.23.3
 pillow>=13.0.0
 opencv-python-headless>=4.8.0
-numpy>=1.23.0,<2
+numpy>=1.23.0
 huggingface-hub
 # required by HF_HUB_ENABLE_HF_TRANSFER=1 in inf.yml
 hf_transfer
