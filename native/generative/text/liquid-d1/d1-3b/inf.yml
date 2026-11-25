@@ -20,7 +20,7 @@ credentials:
       secrets: [HF_TOKEN]
       description: Faster, rate-limit-free weight downloads. The weights are public.
       optional: true
-kernel: python-3.11
+kernel: python-3.12
 resources:
     gpu:
         count: 1
