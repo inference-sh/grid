@@ -14,7 +14,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/owa2nl3x.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/syvu1i0n.png
 env: {}
-kernel: python-3.11
+kernel: python-3.12
 secrets:
     - key: HF_TOKEN
 resources:

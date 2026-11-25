@@ -9,7 +9,7 @@ idna==3.20
 inferencesh==0.38.6
 moderngl==5.13.0
 ninja==1.13.2
-numpy==2.4.6
+numpy==2.5.5
 packaging==26.3
 pathspec==1.1.1
 pillow==13.0.0

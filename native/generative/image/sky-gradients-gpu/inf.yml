@@ -14,7 +14,7 @@ images:
     banner: ""
 env:
     NVIDIA_DRIVER_CAPABILITIES: all
-kernel: python-3.11
+kernel: python-3.12
 default_function: render_image
 resources:
     gpu:

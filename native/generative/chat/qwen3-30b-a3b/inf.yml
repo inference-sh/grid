@@ -19,7 +19,7 @@ images:
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/geainq9v.png
 env:
     CMAKE_ARGS: -DGGML_CUDA=on
-kernel: python-3.11
+kernel: python-3.12
 resources:
     gpu:
         count: 1

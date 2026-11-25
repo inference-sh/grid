@@ -10,7 +10,7 @@ images:
     thumbnail: ""
     banner: ""
 env: {}
-kernel: python-3.11
+kernel: python-3.12
 resources:
     gpu:
         count: 0
