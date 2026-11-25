@@ -17,7 +17,7 @@ images:
     banner: ""
 env:
     PYTORCH_ALLOC_CONF: expandable_segments:True
-kernel: python-3.11
+kernel: python-3.12
 credentials:
     huggingface:
         secrets: [HF_TOKEN]
