@@ -11,7 +11,7 @@ images:
     thumbnail: https://cloud.inference.sh/app/files/t/65hmp52a/ku55qu1k.png
     banner: https://cloud.inference.sh/app/files/t/65hmp52a/kzerpqpz.png
 env: {}
-kernel: python-3.11
+kernel: python-3.12
 resources:
     gpu:
         count: 1
