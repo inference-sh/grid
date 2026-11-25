@@ -6,7 +6,6 @@ import numpy as np
 from tqdm import tqdm
 from torch.nn import functional as F
 import warnings
-import skvideo.io
 import tempfile
 from inferencesh import BaseApp, BaseAppInput, BaseAppOutput, File
 from pydantic import Field
@@ -22,6 +21,24 @@ if rife_dir not in sys.path:
     sys.path.append(rife_dir)
 
 warnings.filterwarnings("ignore")
+
+
+def read_rgb_frames(path):
+    """Yield the video's frames as RGB uint8 arrays (what skvideo.io.vreader gave).
+
+    sk-video 1.1.10 uses np.float/np.int, removed in numpy 1.24, which held the app at
+    numpy 1.23.5; OpenCV (already a dependency) decodes through FFmpeg as well."""
+    cap = cv2.VideoCapture(path)
+    if not cap.isOpened():
+        raise RuntimeError(f"Failed to open video: {path}")
+    try:
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            yield cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    finally:
+        cap.release()
 
 class AppInput(BaseAppInput):
     video: File = Field(description="Input video file to interpolate")
@@ -211,7 +228,7 @@ class App(BaseApp):
         print(f"Parameters: scale={scale}, exp={exp}, output_fps={output_fps}, fp16={fp16}")
         
         # Setup video reader and writer
-        videogen = skvideo.io.vreader(input_path)
+        videogen = read_rgb_frames(input_path)
         lastframe = next(videogen)
         h, w, _ = lastframe.shape
         print(f"Video dimensions: {w}x{h}")

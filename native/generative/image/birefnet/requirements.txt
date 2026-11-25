@@ -3,7 +3,7 @@ inferencesh
 transformers==5.22.1
 torch==2.14.1
 torchvision==0.29.1
-numpy<2
+numpy
 opencv-python
 timm
 scipy

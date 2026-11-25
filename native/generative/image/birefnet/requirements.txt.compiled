@@ -74,7 +74,7 @@ networkx==3.7
     # via
     #   scikit-image
     #   torch
-numpy==1.26.4
+numpy==2.5.5
     # via
     #   -r requirements.txt
     #   accelerate
@@ -172,7 +172,7 @@ safetensors==0.8.0
     #   transformers
 scikit-image==0.26.0
     # via -r requirements.txt
-scipy==1.17.1
+scipy==1.18.1
     # via
     #   -r requirements.txt
     #   scikit-image
