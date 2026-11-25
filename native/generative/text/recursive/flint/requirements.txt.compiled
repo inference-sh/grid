@@ -559,7 +559,7 @@ safetensors==0.9.0rc1
     #   humming-kernels
     #   timm
     #   transformers
-scipy==1.17.1
+scipy==1.18.1
     # via sglang
 sentencepiece==0.2.2
     # via sglang
