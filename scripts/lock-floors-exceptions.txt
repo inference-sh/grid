@@ -4,22 +4,14 @@
 native/generative/audio/audio-x urllib3  # held at the pin the staged GPU build was tested with
 native/generative/audio/diffrythm urllib3  # held at the pin the staged GPU build was tested with
 native/generative/audio/dramabox urllib3  # held at the pin the staged GPU build was tested with
-native/generative/audio/audio-x numpy  # held at the pin the staged GPU build was tested with
-native/generative/audio/chatterbox numpy  # held at the pin the staged GPU build was tested with
-native/generative/image/omni-zero numpy  # held at the pin the staged GPU build was tested with
-native/generative/text/recursive/flint numpy  # staged SGLang build under test; pins held until promoted
-native/generative/3d/tokenrig numpy  # bpy 4.2.0 needs numpy 1.x; requirements.txt numpy<2
-native/generative/image/birefnet numpy  # requirements.txt numpy<2
-native/generative/image/bytedance-uso numpy  # requirements.txt numpy<2
-native/generative/image/falconsai-nsfw-detection numpy  # requirements.txt numpy<2
-native/generative/video/rife-video-interpolation numpy  # requirements.txt numpy<=1.23.5
-native/generative/video/videoseal numpy  # requirements.txt numpy<2
-native/generative/audio/fast-whisper-large-v3 numpy  # numba 0.61.0: numpy<2.2
-native/generative/text/jev/jev-27b-vl numpy  # mistral-common 1.12.0: numpy<2.4
-native/generative/audio/audio-x filelock  # held at the pin the staged GPU build was tested with
-native/generative/audio/diffrythm filelock  # held at the pin the staged GPU build was tested with
-native/generative/audio/dramabox filelock  # held at the pin the staged GPU build was tested with
+native/generative/text/recursive/flint numpy  # sglang 0.5.20 pins numba==0.65.1 (numpy<2.5) and needs mistral-common (numpy<2.4 on Python <= 3.12)
+native/generative/3d/tokenrig numpy  # bpy 4.2.0 needs Python 3.11 and numpy 1.x; the next bpy (5.1) needs Python 3.13
+native/generative/text/jev/jev-27b-vl numpy  # vllm 0.32.0: numba==0.65.0 (numpy<2.5), mistral-common (numpy<2.4 on Python <= 3.12)
 api/falai/gemini-3-pro-image-preview websockets  # google-genai 1.56.0: websockets<15.1
-native/generative/text/jev/jev-27b-v1-1 numpy  # held at the pin the deployed vLLM 0.31.0 build (5a51r2yy) was benchmarked with
-native/generative/text/jev/jev-9b numpy  # held at the pin the vLLM build was tested with; not deployed yet
+native/generative/text/jev/jev-27b-v1-1 numpy  # vllm 0.31.0: numba==0.65.0 (numpy<2.5), mistral-common (numpy<2.4 on Python <= 3.12)
+native/generative/text/jev/jev-9b numpy  # vllm 0.32.0: numba==0.65.0 (numpy<2.5), mistral-common (numpy<2.4 on Python <= 3.12)
 native/generative/text/recursive/flint transformers  # sglang 0.5.20 pins transformers==5.12.1
+native/generative/3d/tokenrig scipy  # scipy 1.18 needs Python 3.12; bpy 4.2.0 holds the app on 3.11
+native/generative/text/recursive/flint timm  # sglang 0.5.20 pins timm==1.0.16; the flint_sglang kit imports against 0.5.20 only
+native/generative/text/recursive/flint tokenizers  # sglang 0.5.20 pins tokenizers==0.22.2; the flint_sglang kit imports against 0.5.20 only
+native/generative/video/pika-h3-flex-oss tokenizers  # transformers==5.15.0 caps tokenizers<=0.23.0
