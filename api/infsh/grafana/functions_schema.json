@@ -387,6 +387,7 @@
     "input_schema": {
       "$defs": {
         "Matcher": {
+          "additionalProperties": false,
           "description": "One label condition. A silence matches an alert when every matcher does.",
           "properties": {
             "name": {
@@ -411,7 +412,7 @@
             },
             "is_regex": {
               "default": false,
-              "description": "Treat value as a regular expression.",
+              "description": "Treat value as a regular expression (RE2, anchored by Grafana).",
               "title": "Is Regex",
               "type": "boolean"
             },
@@ -1169,6 +1170,7 @@
     "input_schema": {
       "$defs": {
         "Matcher": {
+          "additionalProperties": false,
           "description": "One label condition. A silence matches an alert when every matcher does.",
           "properties": {
             "name": {
@@ -1193,7 +1195,7 @@
             },
             "is_regex": {
               "default": false,
-              "description": "Treat value as a regular expression.",
+              "description": "Treat value as a regular expression (RE2, anchored by Grafana).",
               "title": "Is Regex",
               "type": "boolean"
             },
@@ -2022,6 +2024,7 @@
     "input_schema": {
       "$defs": {
         "Matcher": {
+          "additionalProperties": false,
           "description": "One label condition. A silence matches an alert when every matcher does.",
           "properties": {
             "name": {
@@ -2046,7 +2049,7 @@
             },
             "is_regex": {
               "default": false,
-              "description": "Treat value as a regular expression.",
+              "description": "Treat value as a regular expression (RE2, anchored by Grafana).",
               "title": "Is Regex",
               "type": "boolean"
             },
@@ -2181,6 +2184,7 @@
           "type": "object"
         },
         "Matcher": {
+          "additionalProperties": false,
           "description": "One label condition. A silence matches an alert when every matcher does.",
           "properties": {
             "name": {
@@ -2205,7 +2209,7 @@
             },
             "is_regex": {
               "default": false,
-              "description": "Treat value as a regular expression.",
+              "description": "Treat value as a regular expression (RE2, anchored by Grafana).",
               "title": "Is Regex",
               "type": "boolean"
             },
