@@ -85,7 +85,7 @@ idna==3.20
     #   requests
 importlib-metadata==10.1.0
     # via diffusers
-inferencesh==0.39.0
+inferencesh==0.42.0
     # via -r requirements.txt
 jaconv==0.5.0
     # via pykakasi
