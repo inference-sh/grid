@@ -24,8 +24,10 @@ Not used by the Seedance 1.x apps: those take a different input shape
 rather than as top-level request fields.
 """
 
+import asyncio
 import hashlib
 import logging
+import time
 from typing import Any, ClassVar, Optional
 
 from inferencesh import (
@@ -64,6 +66,41 @@ RESOLUTION_MAP = {
     '4k': VideoResolution.VIDEO_RES4_K,
 }
 
+# The apps' public task_type values -> what BytePlus accepts for
+# omni_reference_task_type (auto / reference / edit / extend). Sending the
+# public names verbatim was refused upstream.
+TASK_TYPE_MAP = {
+    'video_reference': 'reference',
+    'video_editing': 'edit',
+    'video_extension': 'extend',
+    'reference': 'reference',
+    'edit': 'edit',
+    'extend': 'extend',
+}
+
+# Waiting for a slot when task creation is refused with a 429. 4K allows one
+# concurrent task and 15 RPM per account, so a second 4K request has to wait
+# for the first instead of failing. No task exists after a refused create, so
+# retrying cannot double-bill.
+SLOT_POLL_SECONDS = 15.0
+SLOT_WAIT_MAX_SECONDS = 20 * 60
+# 429s that waiting does not clear: the account's own inference cap ("Safe
+# Experience Mode"), an exhausted free trial, or a usage quota.
+NON_RETRYABLE_429_CODES = {'SetLimitExceeded'}
+NON_RETRYABLE_429_MARKERS = ('free trial', 'usage quota')
+
+
+def _is_slot_wait_error(error: Exception) -> bool:
+    """True for a 429 on create that clears by waiting (concurrency, RPM, queue)."""
+    status = getattr(error, 'status_code', None)
+    if status != 429:
+        return False
+    code = getattr(error, 'code', None) or ''
+    if code in NON_RETRYABLE_429_CODES:
+        return False
+    message = str(getattr(error, 'message', '') or error).lower()
+    return not any(marker in message for marker in NON_RETRYABLE_429_MARKERS)
+
 
 class SeedanceApp(BaseApp):
     """Seedance 2.0 video generation via the BytePlus ARK SDK.
@@ -92,9 +129,11 @@ class SeedanceApp(BaseApp):
     # Draft mode (2.5): `draft` renders a cheap 480p preview and returns its
     # task id; `draft_task_id` renders the final video from that draft, reusing
     # its prompt, inputs, duration, ratio, seed and audio setting. A final from
-    # a draft only accepts draft_final_resolution.
+    # a draft renders at the requested resolution when it is one of
+    # draft_final_resolutions, else at draft_final_resolution.
     supports_draft: ClassVar[bool] = False
     draft_final_resolution: ClassVar[str] = "1080p"
+    draft_final_resolutions: ClassVar[tuple] = ("1080p",)
 
     async def setup(self, metadata):
         """Initialize the BytePlus client."""
@@ -330,7 +369,7 @@ class SeedanceApp(BaseApp):
             task_type = getattr(input_data, "task_type", None)
             if task_type and hasattr(task_type, "value") and task_type.value != "auto":
                 # Not a Tasks.create() kwarg in the pinned SDK.
-                extra_body["omni_reference_task_type"] = task_type.value
+                extra_body["omni_reference_task_type"] = TASK_TYPE_MAP.get(task_type.value, task_type.value)
             output_format = getattr(input_data, "output_format", None)
             if output_format:
                 extra_body["output_format"] = output_format
@@ -339,11 +378,9 @@ class SeedanceApp(BaseApp):
                 extra_body["draft"] = True
             if extra_body:
                 api_params["extra_body"] = extra_body
-            self.current_task_id = create_content_task(
-                self.client,
+            self.current_task_id = await self._create_task(
                 model=self._select_model(input_data),
                 content=content,
-                logger=self.logger,
                 **api_params,
             )
             task_id = self.current_task_id
@@ -363,6 +400,42 @@ class SeedanceApp(BaseApp):
             raise RuntimeError(f"Video generation failed: {str(e)}{self._sensitive_image_hint(e)}")
         finally:
             self.current_task_id = None
+
+    async def _create_task(self, **api_params) -> str:
+        """Create the generation task, waiting for a slot on a retryable 429.
+
+        4K allows one concurrent task per account (15 RPM), so a refused
+        create waits SLOT_POLL_SECONDS and tries again, up to
+        SLOT_WAIT_MAX_SECONDS, instead of failing the task. The SDK call is
+        blocking, so it runs in a worker thread to keep cancellation live.
+        """
+        started = time.monotonic()
+        attempt = 0
+        while True:
+            try:
+                return await asyncio.to_thread(
+                    create_content_task, self.client, logger=self.logger, **api_params
+                )
+            except Exception as e:
+                if not _is_slot_wait_error(e):
+                    raise
+                waited = time.monotonic() - started
+                if waited + SLOT_POLL_SECONDS > SLOT_WAIT_MAX_SECONDS:
+                    raise RuntimeError(
+                        f"No generation slot became free within {SLOT_WAIT_MAX_SECONDS // 60} minutes "
+                        f"(resolution {api_params.get('resolution')}): {e}"
+                    )
+                attempt += 1
+                self.logger.info(
+                    f"Create refused with 429 ({getattr(e, 'code', None)}); waiting for a slot, "
+                    f"attempt {attempt}, waited {waited:.0f}s"
+                )
+                slept = 0.0
+                while slept < SLOT_POLL_SECONDS:
+                    if self.cancel_flag:
+                        raise RuntimeError("Task was cancelled by user while waiting for a generation slot")
+                    await asyncio.sleep(1.0)
+                    slept += 1.0
 
     async def _wait_for_video(self):
         """Poll the current task to completion and download its video."""
@@ -396,10 +469,11 @@ class SeedanceApp(BaseApp):
         if not self.supports_draft:
             raise RuntimeError(f"{self.display_name} does not support draft mode.")
 
-        resolution = self.draft_final_resolution
-        if input_data.resolution.value != resolution:
-            self.logger.info(f"Final from draft: rendering at {resolution} instead of {input_data.resolution.value} (the only resolution a draft final supports)")
-        self.logger.info(f"Rendering final video from draft {draft_task_id}")
+        requested = input_data.resolution.value
+        resolution = requested if requested in self.draft_final_resolutions else self.draft_final_resolution
+        if requested != resolution:
+            self.logger.info(f"Final from draft: rendering at {resolution} instead of {requested} (a draft final supports {', '.join(self.draft_final_resolutions)})")
+        self.logger.info(f"Rendering final video from draft {draft_task_id} at {resolution}")
 
         api_params = {"resolution": resolution}
         if input_data.safety_identifier:
@@ -408,21 +482,19 @@ class SeedanceApp(BaseApp):
         if output_format:
             api_params["extra_body"] = {"output_format": output_format}
 
-        self.current_task_id = create_content_task(
-            self.client,
+        self.current_task_id = await self._create_task(
             model=self._select_model(input_data),
             content=[{"type": "draft_task", "draft_task": {"id": draft_task_id}}],
-            logger=self.logger,
             **api_params,
         )
 
         result, video_path = await self._wait_for_video()
-        output_meta = self._build_draft_final_meta(input_data, result, video_path)
+        output_meta = self._build_draft_final_meta(input_data, result, video_path, resolution)
 
         self.logger.info(f"Final video generated from draft: {video_path}")
         return self.OutputType(video=File(path=video_path), output_meta=output_meta)
 
-    def _build_draft_final_meta(self, input_data, result, video_path: str) -> OutputMeta:
+    def _build_draft_final_meta(self, input_data, result, video_path: str, requested_resolution: Optional[str] = None) -> OutputMeta:
         """Output metadata for a final rendered from a draft.
 
         The request has no inputs of its own (they were billed with the draft),
@@ -430,7 +502,7 @@ class SeedanceApp(BaseApp):
         from the result and the output file.
         """
         probe = probe_video(video_path)
-        resolution = getattr(result, 'resolution', None) or self.draft_final_resolution
+        resolution = getattr(result, 'resolution', None) or requested_resolution or self.draft_final_resolution
         ratio = getattr(result, 'ratio', None) or "16:9"
         if ratio == 'adaptive':
             ratio = '16:9'
