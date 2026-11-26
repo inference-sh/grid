@@ -101,6 +101,14 @@ def fetch_lora(url):
                 out.write(chunk)
     return path
 
+def is_civitai_url(url):
+    """Whether url points at civitai.com (or a subdomain), judged by its host,
+    with or without a scheme."""
+    if "://" not in url:
+        url = "https://" + url
+    host = (urllib.parse.urlsplit(url).hostname or "").lower()
+    return host == "civitai.com" or host.endswith(".civitai.com")
+
 def lora_source(lora_url):
     """Where the LoRA at lora_url is: (a Hugging Face repo, the file in it,
     or None for the one diffusers finds) or (a local file, None)."""
@@ -113,12 +121,12 @@ def lora_source(lora_url):
         at = parts.index(marker)
         return '/'.join(parts[parts.index('huggingface.co') + 1:at]), '/'.join(parts[at + 2:])
     # Hugging Face repo: "owner/repo" or "owner/repo/file.safetensors"
-    if "/" in lora_url and not lora_url.startswith('http') and "civitai.com" not in lora_url:
+    if "/" in lora_url and not lora_url.startswith('http') and not is_civitai_url(lora_url):
         parts = lora_url.split('/')
         return '/'.join(parts[:2]), '/'.join(parts[2:]) or None
     if lora_url.endswith('.safetensors') and lora_url.startswith('http'):
         return fetch_lora(lora_url), None
-    if "civitai.com" in lora_url:
+    if is_civitai_url(lora_url):
         match = re.search(r"/models/(\d+)", lora_url)
         if not match:
             raise ValueError(f"No model ID in Civitai URL: {lora_url}")
