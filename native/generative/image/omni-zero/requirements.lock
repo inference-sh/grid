@@ -35,11 +35,12 @@ humanfriendly==10.0
 idna==3.20
 imageio==2.38.1
 importlib-metadata==10.1.0
-inferencesh==0.38.9
+inferencesh==0.42.0
 insightface==0.7.3
 jinja2==3.1.6
 joblib==1.6.0
 kiwisolver==1.5.1
+lazy-importer==0.1.0
 lazy-loader==0.6
 markdown-it-py==4.2.0
 markupsafe==3.0.4

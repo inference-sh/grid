@@ -174,6 +174,12 @@ class App(BaseApp):
         ratio = interpolation_target_fps / original_fps
         exp = max(1, min(3, int(np.ceil(np.log2(ratio)))))
         print(f"Target FPS {target_fps} requires {2**exp}x frames (exp={exp})")
+        # 2**exp can overshoot the target (24 -> 30 fps still doubles the frames), so the
+        # interpolated frames are written at their own rate, which keeps the duration
+        # (doubled in slow motion), and the re-encode resamples them to target_fps.
+        interpolated_fps = original_fps * 2**exp
+        if input_data.slow_motion:
+            interpolated_fps /= 2
         
         # Handle fast mode (fp16)
         use_fp16 = input_data.fast_mode and torch.cuda.is_available()
@@ -183,8 +189,6 @@ class App(BaseApp):
             # Instead, we handle tensor dtype conversion explicitly
         
         # Video properties already read above
-        
-        # Output FPS already calculated above as target_fps
         
         # Create temporary output files
         temp_output_fd, temp_output_path = tempfile.mkstemp(suffix='_temp.mp4')
@@ -199,7 +203,7 @@ class App(BaseApp):
                 temp_output_path,
                 scale=scale,
                 exp=exp,
-                output_fps=target_fps,
+                output_fps=interpolated_fps,
                 fp16=use_fp16,
                 tot_frame=tot_frame
             )

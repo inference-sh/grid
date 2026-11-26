@@ -26,7 +26,7 @@ httpcore2==2.16.0
 httpx2==2.16.0
 huggingface-hub==2.4.0
 idna==3.20
-inferencesh==0.39.3
+inferencesh==0.42.0
 jinja2==3.1.6
 joblib==1.6.0
 lazy-loader==0.6

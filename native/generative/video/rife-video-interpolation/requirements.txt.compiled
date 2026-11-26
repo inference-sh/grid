@@ -54,7 +54,7 @@ imageio==2.37.4
     # via moviepy
 imageio-ffmpeg==0.6.0
     # via moviepy
-inferencesh==0.39.3
+inferencesh==0.42.0
     # via -r requirements.txt
 jinja2==3.1.6
     # via torch

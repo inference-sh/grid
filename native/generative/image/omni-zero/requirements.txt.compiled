@@ -88,7 +88,7 @@ importlib-metadata==10.1.0
     # via
     #   controlnet-aux
     #   diffusers
-inferencesh==0.38.9
+inferencesh==0.42.0
     # via -r requirements.txt
 insightface==0.7.3
     # via -r requirements.txt
