@@ -19,6 +19,7 @@ class ResolutionEnum(str, Enum):
     p480 = "480p"
     p720 = "720p"
     p1080 = "1080p"
+    k4 = "4k"
 
 
 class RatioEnum(str, Enum):
@@ -90,7 +91,7 @@ class AppInput(BaseAppInput):
     )
     resolution: ResolutionEnum = Field(
         default=ResolutionEnum.p720,
-        description="Video resolution. 1080p for high quality, 720p for balanced, 480p for fastest."
+        description="Video resolution. 4k for 3840x2160-class output (10-bit H.265/HEVC; one 4K job runs at a time per account, extra 4K requests wait their turn), 1080p for high quality, 720p for balanced, 480p for fastest."
     )
     ratio: RatioEnum = Field(
         default=RatioEnum.adaptive,
@@ -126,11 +127,11 @@ class AppInput(BaseAppInput):
     )
     draft: bool = Field(
         default=False,
-        description="Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p later. Iterate on drafts, then render only the one you want."
+        description="Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p or 4K later. Iterate on drafts, then render only the one you want."
     )
     draft_task_id: Optional[str] = Field(
         default=None,
-        description="Render the final 1080p video from a draft (the draft_task_id of an earlier draft run, valid for 7 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Resolution is always 1080p."
+        description="Render the final video from a draft (the draft_task_id of an earlier draft run, valid for 14 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Set resolution to 4k for a 4K final; any other resolution renders at 1080p."
     )
     safety_identifier: Optional[str] = Field(
         default=None,
@@ -142,7 +143,7 @@ class AppOutput(BaseAppOutput):
     video: File = Field(description="The generated video file.")
     draft_task_id: Optional[str] = Field(
         default=None,
-        description="Set on a draft run: pass it as draft_task_id to render this take as the final 1080p video."
+        description="Set on a draft run: pass it as draft_task_id to render this take as the final 1080p or 4K video."
     )
 
 
@@ -153,6 +154,7 @@ class App(SeedanceStudioApp):
     supports_audio_only: ClassVar[bool] = True
     force_adaptive_ratio: ClassVar[bool] = True
     supports_draft: ClassVar[bool] = True
+    draft_final_resolutions: ClassVar[tuple] = ("1080p", "4k")
     OutputType: ClassVar[Any] = AppOutput
 
     async def run(self, input_data: AppInput, metadata) -> AppOutput:

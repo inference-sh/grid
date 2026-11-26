@@ -25,7 +25,8 @@
       "enum": [
         "480p",
         "720p",
-        "1080p"
+        "1080p",
+        "4k"
       ],
       "title": "ResolutionEnum",
       "type": "string"
@@ -116,7 +117,7 @@
     "resolution": {
       "$ref": "#/$defs/ResolutionEnum",
       "default": "720p",
-      "description": "Video resolution. 1080p for high quality, 720p for balanced, 480p for fastest."
+      "description": "Video resolution. 4k for 3840x2160-class output (10-bit H.265/HEVC; one 4K job runs at a time per account, extra 4K requests wait their turn), 1080p for high quality, 720p for balanced, 480p for fastest."
     },
     "ratio": {
       "$ref": "#/$defs/RatioEnum",
@@ -165,7 +166,7 @@
     },
     "draft": {
       "default": false,
-      "description": "Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p later. Iterate on drafts, then render only the one you want.",
+      "description": "Draft mode: render a fast, low-cost 480p preview instead of the final video. The output's draft_task_id renders the chosen take at 1080p or 4K later. Iterate on drafts, then render only the one you want.",
       "title": "Draft",
       "type": "boolean"
     },
@@ -179,7 +180,7 @@
         }
       ],
       "default": null,
-      "description": "Render the final 1080p video from a draft (the draft_task_id of an earlier draft run, valid for 7 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Resolution is always 1080p.",
+      "description": "Render the final video from a draft (the draft_task_id of an earlier draft run, valid for 14 days). Prompt, images, references, duration, ratio, seed and audio are reused from the draft; those inputs are ignored here. Set resolution to 4k for a 4K final; any other resolution renders at 1080p.",
       "title": "Draft Task Id"
     },
     "safety_identifier": {
