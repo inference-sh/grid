@@ -27,6 +27,7 @@ from .grafana_http import (
     SKIP_DISTINCT,
     GrafanaClient,
     from_nanos,
+    from_seconds,
     millis,
     normalize_line,
     parse_record,
@@ -833,19 +834,19 @@ class App(BaseApp):
         for item in data.get("result") or []:
             labels = item.get("metric") or item.get("stream") or {}
             if "value" in item:
-                nanos, value = item["value"][0], item["value"][1]
+                seconds, value = item["value"][0], item["value"][1]
                 results.append(
-                    InstantResult(labels=labels, value=str(value), timestamp=from_nanos(nanos))
+                    InstantResult(labels=labels, value=str(value), timestamp=from_seconds(seconds))
                 )
             for entry in item.get("values") or []:
-                nanos, value = entry[0], entry[1]
+                at, value = entry[0], entry[1]
                 if result_type == "streams":
                     results.append(
-                        InstantResult(labels=labels, line=value, timestamp=from_nanos(nanos))
+                        InstantResult(labels=labels, line=value, timestamp=from_nanos(at))
                     )
                 else:
                     results.append(
-                        InstantResult(labels=labels, value=str(value), timestamp=from_nanos(nanos))
+                        InstantResult(labels=labels, value=str(value), timestamp=from_seconds(at))
                     )
 
         self.logger.info(f"query_logs_instant returned {len(results)} results ({result_type})")

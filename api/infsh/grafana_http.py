@@ -119,6 +119,16 @@ def from_nanos(nanos: Any) -> str:
     return datetime.fromtimestamp(seconds, timezone.utc).isoformat()
 
 
+def from_seconds(seconds: Any) -> str:
+    """Loki metric samples (vector and matrix) carry Unix seconds as a float,
+    unlike stream entries, which carry nanoseconds as a string."""
+    try:
+        value = float(seconds)
+    except (TypeError, ValueError):
+        return str(seconds)
+    return datetime.fromtimestamp(value, timezone.utc).isoformat()
+
+
 def rfc3339(moment: datetime) -> str:
     return moment.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
