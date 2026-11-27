@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 from typing import Dict, Any, Optional, List, Literal
 from tavily import TavilyClient
@@ -8,6 +9,34 @@ from pydantic import Field, BaseModel
 # Enable logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Tavily accepts plain domains, subdomains, "*.example.com" and domain paths
+# ("example.com/blog/*"). Callers often send URLs or stray characters, and one bad
+# entry makes Tavily reject the whole search.
+_DOMAIN_RE = re.compile(
+    r"^(\*\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{0,62}(?:/[^\s?#]*)?$"
+)
+
+
+def clean_domains(values, field):
+    """Return (kept, dropped). Fixes only what is unambiguous (spaces, case, a URL's
+    scheme, query or fragment, a trailing slash); anything still invalid is dropped,
+    not guessed at, so the search never quietly targets a different site."""
+    kept, dropped = [], []
+    for raw in values or []:
+        v = str(raw).strip().lower()
+        v = re.sub(r"^[a-z][a-z0-9+.-]*://", "", v)
+        v = v.split("#", 1)[0].split("?", 1)[0]
+        if v.endswith("/") and not v.endswith("/*"):
+            v = v.rstrip("/")
+        if _DOMAIN_RE.match(v):
+            if v not in kept:
+                kept.append(v)
+        else:
+            dropped.append(str(raw))
+    if dropped:
+        logger.warning(f"    ⚠️ Ignoring invalid {field} entries: {dropped}")
+    return kept, dropped
 
 class SearchResult(BaseModel):
     """Individual search result from Tavily."""
@@ -109,12 +138,20 @@ class App(BaseApp):
 
             # Add domain filters if provided
             if input_data.include_domains:
-                search_params["include_domains"] = input_data.include_domains
-                logger.info(f"    ✅ Including domains: {input_data.include_domains}")
+                include, bad = clean_domains(input_data.include_domains, "include_domains")
+                if not include:
+                    raise ValueError(
+                        f"include_domains has no valid entries: {bad}. Use plain domains such as "
+                        "'example.com', 'api.example.com', '*.example.com' or 'example.com/blog/*'."
+                    )
+                search_params["include_domains"] = include
+                logger.info(f"    ✅ Including domains: {include}")
 
             if input_data.exclude_domains:
-                search_params["exclude_domains"] = input_data.exclude_domains
-                logger.info(f"    ❌ Excluding domains: {input_data.exclude_domains}")
+                exclude, _ = clean_domains(input_data.exclude_domains, "exclude_domains")
+                if exclude:
+                    search_params["exclude_domains"] = exclude
+                    logger.info(f"    ❌ Excluding domains: {exclude}")
 
             # Perform Tavily search
             import time
