@@ -4,6 +4,7 @@ Run with the sdk-py venv:
   cd grid/api/anthropic && /home/ok/inference/sdk-py/.venv/bin/python -m pytest test_anthropic_helper.py -q
 """
 
+import asyncio
 import base64
 import sys
 from pathlib import Path
@@ -258,6 +259,55 @@ async def test_stream_completion_default_shape_unchanged():
     client = FakeClient([ev_text("A")])
     outs = [x async for x in h.stream_completion(client, LLMInput(text="hi"), "claude-sonnet-5")]
     assert outs == [{"response": "A"}]
+
+
+class SlowStream:
+    """Events with a delay before each: delays[i] seconds before events[i]."""
+    def __init__(self, events, delays): self._events, self._delays = events, delays
+    def __aiter__(self):
+        async def gen():
+            for e, d in zip(self._events, self._delays):
+                await asyncio.sleep(d)
+                yield e
+        return gen()
+
+
+class SlowClient(FakeClient):
+    def __init__(self, events, delays): super().__init__(events); self.delays = delays
+    class _Messages(FakeClient._Messages):
+        async def create(self, **params):
+            return SlowStream(self.outer.events, self.outer.delays)
+    @property
+    def messages(self): return self._Messages(self)
+
+
+@pytest.mark.asyncio
+async def test_stream_slow_first_event_within_start_timeout(monkeypatch):
+    # A long prefill before the first event is not an idle stream.
+    monkeypatch.setattr(h, "STREAM_START_TIMEOUT", 0.5)
+    monkeypatch.setattr(h, "STREAM_IDLE_TIMEOUT", 0.1)
+    client = SlowClient([ev_text("A"), ev_text("B")], [0.3, 0.01])
+    outs = [x async for x in h.stream_completion(client, LLMInput(text="hi"), "claude-sonnet-5")]
+    assert outs[-1] == {"response": "AB"}
+
+
+@pytest.mark.asyncio
+async def test_stream_idle_gap_times_out_without_waiting_for_next_event(monkeypatch):
+    monkeypatch.setattr(h, "STREAM_START_TIMEOUT", 0.5)
+    monkeypatch.setattr(h, "STREAM_IDLE_TIMEOUT", 0.1)
+    client = SlowClient([ev_text("A"), ev_text("B")], [0.01, 5.0])
+    start = asyncio.get_event_loop().time()
+    with pytest.raises(RuntimeError, match="after the last event"):
+        _ = [x async for x in h.stream_completion(client, LLMInput(text="hi"), "claude-sonnet-5")]
+    assert asyncio.get_event_loop().time() - start < 1.0
+
+
+@pytest.mark.asyncio
+async def test_stream_no_first_event_times_out(monkeypatch):
+    monkeypatch.setattr(h, "STREAM_START_TIMEOUT", 0.1)
+    client = SlowClient([ev_text("A")], [5.0])
+    with pytest.raises(RuntimeError, match="before the first event"):
+        _ = [x async for x in h.stream_completion(client, LLMInput(text="hi"), "claude-sonnet-5")]
 
 
 # ── tool input_schema normalization ───────────────────────────────────

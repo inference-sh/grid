@@ -36,6 +36,9 @@ NON_STREAM_MAX_TOKENS = 16000
 # Time until the stream opens. It covers prefill, which on an uncached
 # context near 1M tokens takes well over a minute.
 STREAM_START_TIMEOUT = 300.0
+# Longest wait for the next stream event once the stream has opened. The
+# first event can arrive after prefill, so it gets STREAM_START_TIMEOUT.
+STREAM_IDLE_TIMEOUT = 300.0
 
 # Budget tokens mapping for reasoning effort levels
 EFFORT_TO_BUDGET = {
@@ -845,14 +848,31 @@ async def stream_completion(
         raise handle_api_error(e)
 
     state = create_initial_state()
-    last_chunk_time = asyncio.get_event_loop().time()
+    loop = asyncio.get_event_loop()
+    opened = last = loop.time()
+    first_event_s = None
+    max_gap_s = 0.0
+    events = stream.__aiter__()
 
     try:
-        async for event in stream:
-            now = asyncio.get_event_loop().time()
-            if now - last_chunk_time > 120.0:
-                raise RuntimeError("Stream timed out - no events for 120 seconds")
-            last_chunk_time = now
+        while True:
+            # Wait on the next event itself: a check made only when an event
+            # arrives misses a stream that never sends one, and kills a stream
+            # that was slow (a long prefill before the first event) but alive.
+            limit = STREAM_IDLE_TIMEOUT if first_event_s is not None else STREAM_START_TIMEOUT
+            try:
+                event = await asyncio.wait_for(events.__anext__(), timeout=limit)
+            except StopAsyncIteration:
+                break
+            except asyncio.TimeoutError:
+                where = "after the last event" if first_event_s is not None else "before the first event"
+                raise RuntimeError(f"Stream timed out - no events for {limit:.0f} seconds {where}")
+            now = loop.time()
+            if first_event_s is None:
+                first_event_s = now - opened
+            else:
+                max_gap_s = max(max_gap_s, now - last)
+            last = now
 
             delta = apply_stream_event(event, state)
             output = build_output(state)
@@ -867,6 +887,7 @@ async def stream_completion(
         f"Anthropic stream complete: in={state['input_tokens']} out={state['output_tokens']}"
         f" cache_read={state.get('cache_read_input_tokens', 0)}"
         f" cache_write={state.get('cache_creation_input_tokens', 0)}"
+        f" first_event={first_event_s or 0:.1f}s max_gap={max_gap_s:.1f}s"
     )
 
 
