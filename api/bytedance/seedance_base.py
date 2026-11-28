@@ -89,6 +89,26 @@ SLOT_WAIT_MAX_SECONDS = 20 * 60
 NON_RETRYABLE_429_CODES = {'SetLimitExceeded'}
 NON_RETRYABLE_429_MARKERS = ('free trial', 'usage quota')
 
+# A draft run returns its BytePlus task id with a tag saying whether the draft
+# had visual input (image, frames or references): "<id>~v" or "<id>~t". The
+# final reuses the draft's inputs but its own request carries none, and
+# BytePlus bills it at the draft's rate (visual-input rates are lower), so the
+# final reports the tag in output_meta for pricing. An id without a tag (from
+# before tagging) still works; its visual input is then unknown.
+DRAFT_ID_SEP = "~"
+
+
+def encode_draft_id(task_id: str, visual_input: bool) -> str:
+    return f"{task_id}{DRAFT_ID_SEP}{'v' if visual_input else 't'}"
+
+
+def decode_draft_id(draft_id: str) -> tuple:
+    """(BytePlus task id, visual input True/False, or None when untagged)."""
+    base, sep, tag = (draft_id or "").strip().partition(DRAFT_ID_SEP)
+    if not sep:
+        return base, None
+    return base, {"v": True, "t": False}.get(tag)
+
 
 def _is_slot_wait_error(error: Exception) -> bool:
     """True for a 429 on create that clears by waiting (concurrency, RPM, queue)."""
@@ -391,8 +411,12 @@ class SeedanceApp(BaseApp):
             self.logger.info(f"Video generated successfully: {video_path}")
 
             if draft:
-                self.logger.info(f"Draft task id: {task_id}")
-                return self.OutputType(video=File(path=video_path), output_meta=output_meta, draft_task_id=task_id)
+                # Visual input as BytePlus rates it: audio references alone are not.
+                visual_input = bool(input_data.image or input_data.end_image
+                                    or input_data.reference_images or input_data.reference_videos)
+                draft_id = encode_draft_id(task_id, visual_input)
+                self.logger.info(f"Draft task id: {draft_id}")
+                return self.OutputType(video=File(path=video_path), output_meta=output_meta, draft_task_id=draft_id)
             return self.OutputType(video=File(path=video_path), output_meta=output_meta)
 
         except Exception as e:
@@ -473,6 +497,7 @@ class SeedanceApp(BaseApp):
         resolution = requested if requested in self.draft_final_resolutions else self.draft_final_resolution
         if requested != resolution:
             self.logger.info(f"Final from draft: rendering at {resolution} instead of {requested} (a draft final supports {', '.join(self.draft_final_resolutions)})")
+        draft_task_id, visual_input = decode_draft_id(draft_task_id)
         self.logger.info(f"Rendering final video from draft {draft_task_id} at {resolution}")
 
         api_params = {"resolution": resolution}
@@ -489,12 +514,13 @@ class SeedanceApp(BaseApp):
         )
 
         result, video_path = await self._wait_for_video()
-        output_meta = self._build_draft_final_meta(input_data, result, video_path, resolution)
+        output_meta = self._build_draft_final_meta(input_data, result, video_path, resolution, draft_task_id, visual_input)
 
         self.logger.info(f"Final video generated from draft: {video_path}")
         return self.OutputType(video=File(path=video_path), output_meta=output_meta)
 
-    def _build_draft_final_meta(self, input_data, result, video_path: str, requested_resolution: Optional[str] = None) -> OutputMeta:
+    def _build_draft_final_meta(self, input_data, result, video_path: str, requested_resolution: Optional[str] = None,
+                                draft_task_id: Optional[str] = None, visual_input: Optional[bool] = None) -> OutputMeta:
         """Output metadata for a final rendered from a draft.
 
         The request has no inputs of its own (they were billed with the draft),
@@ -515,7 +541,9 @@ class SeedanceApp(BaseApp):
         extra = {
             "mode": "draft-final",
             "draft": False,
-            "draft_task_id": input_data.draft_task_id.strip(),
+            "draft_task_id": draft_task_id or decode_draft_id(input_data.draft_task_id)[0],
+            # Whether the draft had visual input; None for an untagged id.
+            "draft_visual_input": visual_input,
             "ratio": ratio,
             "generate_audio": generate_audio if generate_audio is not None else probe.get("has_audio", True),
             "seed": getattr(result, 'seed', None),
